@@ -1,0 +1,150 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {createSlice} from '@reduxjs/toolkit';
+import {useDispatch} from 'react-redux';
+import {getLocaleFromDevice, useLocale} from 'src/i18n/useLocale';
+import APIS from 'src/modules/apis';
+import {getServerLocale} from 'src/modules/utils';
+import {JWT_TOKEN} from 'src/modules/contants';
+import {
+  asyncActions,
+  useApiGETWithToken,
+  useApiPOST,
+} from 'src/redux/asyncReducer';
+
+export const useLogin = () => {
+  const {tempLocale} = useLocale();
+  const dispatch = useDispatch();
+  const apiPOST = useApiPOST();
+  return (email, password, successHandler?, errHandler?) => {
+    apiPOST(
+      APIS.auth.signIn(),
+      {
+        email: email,
+        password: password,
+        session_role: 'student',
+        locale: getServerLocale(tempLocale),
+      },
+      props => {
+        dispatch(async () => {
+          const {jwt_token} = props.data;
+          await AsyncStorage.setItem(JWT_TOKEN, jwt_token);
+          dispatch(appActions.login(props.data));
+          if (successHandler) {
+            await successHandler(props);
+          }
+        });
+      },
+      async props => {
+        await errHandler(props);
+      },
+    );
+  };
+};
+
+export const useSocialLogin = () => {
+  const dispatch = useDispatch();
+  const apiPOST = useApiPOST();
+  return (body, successHandler?, errHandler?) => {
+    apiPOST(
+      APIS.auth.signIn(),
+      body,
+      props => {
+        dispatch(async () => {
+          if (!props.data.is_new_user) {
+            const {jwt_token} = props.data;
+            await AsyncStorage.setItem(JWT_TOKEN, jwt_token);
+            dispatch(appActions.login(props.data));
+          }
+          if (successHandler) {
+            await successHandler(props);
+          }
+        });
+      },
+      async props => {
+        await errHandler(props);
+      },
+    );
+  };
+};
+
+export const useAutoLogin = () => {
+  const dispatch = useDispatch();
+  const apiGETWithToken = useApiGETWithToken();
+  return (token, successHandler?, errHandler?) => {
+    apiGETWithToken(
+      APIS.profile.get(),
+      token,
+      props => {
+        dispatch(async () => {
+          await AsyncStorage.setItem(JWT_TOKEN, token);
+          const payload = {
+            ...props.data,
+            jwt_token: token,
+          };
+          dispatch(appActions.login(payload));
+          if (successHandler) {
+            await successHandler(props);
+          }
+        });
+      },
+      async props => {
+        await errHandler(props);
+      },
+    );
+  };
+};
+
+export const useLogout = () => {
+  const dispatch = useDispatch();
+  return async (callback?) => {
+    dispatch(async () => {
+      await AsyncStorage.removeItem(JWT_TOKEN);
+      dispatch(appActions.logout());
+      dispatch(asyncActions.reset());
+      if (callback) {
+        await callback();
+      }
+    });
+  };
+};
+
+const appSlice = createSlice({
+  name: 'app',
+  initialState: {
+    isLoggedIn: false,
+    session: {
+      user: null,
+      token: null,
+      trialComplete: false,
+    },
+    tempLocale: getLocaleFromDevice(),
+  },
+  reducers: {
+    setTempLocale(state, action) {
+      const {locale} = action.payload;
+      state.tempLocale = locale;
+    },
+    login(state, action) {
+      const {jwt_token, user, trial_complete} = action.payload;
+      state.session = {
+        token: jwt_token,
+        user: user,
+        trialComplete: trial_complete,
+      };
+      state.isLoggedIn = true;
+    },
+    logout(state) {
+      state.isLoggedIn = false;
+      state.session.user = null;
+      state.session.token = null;
+      state.session.trialComplete = false;
+    },
+    updateUser(state, action) {
+      const {user} = action.payload;
+      state.session.user = user;
+    },
+  },
+});
+
+export const appReducer = appSlice.reducer;
+export const appActions = appSlice.actions;
