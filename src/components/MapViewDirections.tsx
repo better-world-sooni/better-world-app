@@ -26,10 +26,18 @@ interface Props {
 	alternatives?: boolean
 }
 
-interface State {
+interface Step {
 	coordinates: any;
 	distance: number;
 	duration: number;
+	travel_mode: string;
+	transport_num: string;
+	transport_desc: string;
+	vehicle: string;
+}
+
+interface State {
+	steps: Array<Step>
 }
 
 class MapViewDirections extends React.Component<Props, State> {
@@ -38,9 +46,15 @@ class MapViewDirections extends React.Component<Props, State> {
 		super( props );
 
 		this.state = {
-			coordinates: null,
-			distance: null,
-			duration: null,
+			steps: [{
+				coordinates: null,
+				distance: null,
+				duration: null,
+				travel_mode: null,
+				transport_num: null,
+				transport_desc: null,
+				vehicle: null
+			}]
 		};
 	}
 
@@ -62,9 +76,15 @@ class MapViewDirections extends React.Component<Props, State> {
 
 	resetState = ( cb = null ) => {
 		this.setState( {
-			coordinates: null,
-			distance: null,
-			duration: null,
+			steps: [{
+				coordinates: null,
+				distance: null,
+				duration: null,
+				travel_mode: null,
+				transport_num: null,
+				transport_desc: null,
+				vehicle: null
+			}]
 		}, cb );
 	}
 
@@ -213,37 +233,15 @@ class MapViewDirections extends React.Component<Props, State> {
 			);
 		} ) ).then( results => {
 			// Combine all Directions API Request results into one
-			const result = results.reduce( ( acc, { distance, duration, coordinates, fare, waypointOrder } ) => {
-				acc.coordinates = [
-					...acc.coordinates,
-					...coordinates,
-				];
-				acc.distance += distance;
-				acc.duration += duration;
-				acc.fares = [
-					...acc.fares,
-					fare,
-				];
-				acc.waypointOrder = [
-					...acc.waypointOrder,
-					waypointOrder,
-				];
-
-				return acc;
-			}, {
-				coordinates: [],
-				distance: 0,
-				duration: 0,
-				fares: [],
-				waypointOrder: [],
-			} );
+			const route = results[0].map((item) => item._W)
+			console.log("--------------------------------")
+			console.log(route)
 
 			// Plot it out and call the onReady callback
-			this.setState( {
-				coordinates: result.coordinates,
-			}, function () {
+			this.setState( 
+				{steps: route}, function () {
 				if ( onReady ) {
-					onReady( result );
+					onReady( route );
 				}
 			} );
 		} )
@@ -273,8 +271,7 @@ class MapViewDirections extends React.Component<Props, State> {
 			.then( json => {
 
 				console.log( json )
-				console.log( json.routes )
-				console.log( json.routes.length )
+				console.log( json.routes[0].legs )
 				// [
 				// 	{"bounds": 
 				// 		{"northeast": [Object], 
@@ -366,7 +363,6 @@ class MapViewDirections extends React.Component<Props, State> {
 				// 	}]
 				console.log( json.routes[0].legs[0].steps[1].transit_details )
 
-				console.log( json.routes[0].legs[0].steps[3].transit_details )
 
 
 				if ( json.status !== 'OK' ) {
@@ -376,28 +372,21 @@ class MapViewDirections extends React.Component<Props, State> {
 
 				if ( json.routes.length ) {
 
-					const route = json.routes[0];
+					const steps = json.routes[0].legs[0].steps;
 
-					return Promise.resolve( {
-						distance: route.legs.reduce( ( carry, curr ) => {
-							return carry + curr.distance.value;
-						}, 0 ) / 1000,
-						duration: route.legs.reduce( ( carry, curr ) => {
-							return carry + ( curr.duration_in_traffic ? curr.duration_in_traffic.value : curr.duration.value );
-						}, 0 ) / 60,
-						coordinates: (
-							( precision === 'low' ) ?
-								this.decode( [{ polyline: route.overview_polyline }] ) :
-								route.legs.reduce( ( carry, curr ) => {
-									return [
-										...carry,
-										...this.decode( curr.steps ),
-									];
-								}, [] )
-						),
-						fare: route.fare,
-						waypointOrder: route.waypoint_order,
-					} );
+					const route = steps.map((step) => {
+						return Promise.resolve( {
+							distance: step.distance.value,
+							duration: step.duration.value,
+							coordinates: this.decode( [{ polyline: step.polyline }] ),
+							travel_mode: step.travel_mode,
+							transport_desc: step.transit_details?.line?.name,
+							transport_num: step.transit_details?.line?.short_name,
+							vehicle: step.transit_details?.line?.vehicle?.type
+						} );
+					})
+					
+					return route;
 
 				} else {
 					return Promise.reject();
@@ -409,12 +398,11 @@ class MapViewDirections extends React.Component<Props, State> {
 	}
 
 	render() {
-		const { coordinates } = this.state;
+		const { steps: steps } = this.state;
 
-		if ( !coordinates ) {
+		if ( !steps ) {
 			return null;
 		}
-
 		const {
 			origin, // eslint-disable-line no-unused-vars
 			waypoints, // eslint-disable-line no-unused-vars
@@ -430,8 +418,44 @@ class MapViewDirections extends React.Component<Props, State> {
 			...props
 		} = this.props;
 
+		const lineSymbol = {
+			path: "M 0,-1 0,1",
+			strokeOpacity: 1,
+			scale: 4,
+		  };
+
+		const convertToColor = (step) => {
+			if (step.vehicle == "BUS"){
+				switch (step.transport_desc) {
+					case '서울 지선버스':
+					  return 'green'
+					default:
+					  return 'black'
+				}
+			}
+			else{
+				switch (step.transport_num) {
+					case '1':
+					  return 'blue'
+					case '2':
+					  return 'yellow'
+					default:
+					  return 'black'
+				}
+			}
+			
+		}
+
 		return (
-			<Polyline coordinates={coordinates} strokeColor={"red"} {...props} />
+			steps.map( (step, index) => {
+				if (step.travel_mode == "WALKING"){
+					return (<Polyline key={index} coordinates={step.coordinates} strokeWidth={2} strokeColor={"red"} {...props} />)
+				}
+				else{					
+					return (<Polyline key={index} coordinates={step.coordinates} strokeWidth={4} strokeColor={convertToColor(step)} {...props} />)
+				}
+				
+			})
 		);
 	}
 

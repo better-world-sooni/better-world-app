@@ -77,7 +77,6 @@ const LessonScreen = ({route}) => {
             // waypoints={ (Coordinates.length > 2) ? Coordinates.slice(1, -1): null}
             destination={"강남 위워크"}
             apikey={GOOGLE_MAPS_APIKEY}
-            strokeWidth={3}
             precision="low"
             mode="TRANSIT"
             language="ko"
