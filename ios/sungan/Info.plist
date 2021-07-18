@@ -57,14 +57,14 @@
 		<string>DroidSerif-BoldItalic.ttf</string>
 		<string>DroidSerif-Italic.ttf</string>
 		<string>DroidSerif.ttf</string>
+		<string>Gugi-Regular.ttf</string>
+		<string>Jua-Regular.ttf</string>
 		<string>NotoSansKR-Black.otf</string>
 		<string>NotoSansKR-Bold.otf</string>
 		<string>NotoSansKR-Light.otf</string>
 		<string>NotoSansKR-Medium.otf</string>
 		<string>NotoSansKR-Regular.otf</string>
 		<string>NotoSansKR-Thin.otf</string>
-		<string>Gugi-Regular.ttf</string>
-		<string>Jua-Regular.ttf</string>
 	</array>
 </dict>
 </plist>
