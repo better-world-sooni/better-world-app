@@ -10,6 +10,7 @@ import {NAV_NAMES} from 'src/modules/navNames';
 import { useLocale } from 'src/i18n/useLocale';
 import { s_common } from 'src/i18n/text/s_common';
 import HomeScreen from 'src/screens/Home/HomeScreen';
+import LessonScreen from 'src/screens/Home/LessonScreen';
 
 const RootStack = createStackNavigator();
 
@@ -32,7 +33,7 @@ const MainBottomTabs = () => {
       />
       <Tab.Screen
         name={NAV_NAMES.MainTab_Home}
-        component={HomeScreen}
+        component={LessonScreen}
         options={{
           tabBarLabel: t(s_common.home),
         }}

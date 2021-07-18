@@ -299,22 +299,22 @@ const HomeScreen = (props) => {
   const apiPOST = useApiPOST();
   const {t, locale} = useLocale();
   const {data: curationData, isLoading} = useApiSelector(APIS.home.curation);
-  const events = curationData ? curationData.events : [];
-  const homeContents = curationData ? curationData.data : [];
-  const {data: upcomingData} = useApiSelector(APIS.lessons.upcomings);
-  const upcomingLessons = upcomingData ? upcomingData.upcoming_lessons : [];
-  const {data: notiData} = useApiSelector(APIS.notifications.get);
-  const {data: unassignedData} = useApiSelector(APIS.lessons.unassigned.get);
-  const unassignedLessons = unassignedData
-    ? unassignedData.unassigned_lessons
-    : [];
-  const hasUnreadNotification = notiData
-    ? notiData.pushNotifications.some((notification) => !notification.has_read)
-    : false;
-  const {data: creditData} = useApiSelector(APIS.credit.creditList);
-  const creditPackages = creditData
-    ? creditData.packages.filter((e) => !e.is_free)
-    : [];
+  // const events = curationData ? curationData.events : [];
+  // const homeContents = curationData ? curationData.data : [];
+  // const {data: upcomingData} = useApiSelector(APIS.lessons.upcomings);
+  // const upcomingLessons = upcomingData ? upcomingData.upcoming_lessons : [];
+  // const {data: notiData} = useApiSelector(APIS.notifications.get);
+  // const {data: unassignedData} = useApiSelector(APIS.lessons.unassigned.get);
+  // const unassignedLessons = unassignedData
+  //   ? unassignedData.unassigned_lessons
+  //   : [];
+  // const hasUnreadNotification = notiData
+  //   ? notiData.pushNotifications.some((notification) => !notification.has_read)
+  //   : false;
+  // const {data: creditData} = useApiSelector(APIS.credit.creditList);
+  // const creditPackages = creditData
+  //   ? creditData.packages.filter((e) => !e.is_free)
+  //   : [];
 
   // const {userId} = useSelector(
   //   (root: RootState) => ({userId: root.app.session.user?.id}),
@@ -505,7 +505,7 @@ const HomeScreen = (props) => {
             <Col></Col>
             <Col auto>
               <Div relative onPress={onPressPNList} >
-                {hasUnreadNotification && (
+                {true && (
                   <Div absolute bgDanger w8 h8 rounded16 zIndex5 top={-4} right20 />
                 )}
                 <Img w21 h50 source={IMAGES.mainLogo} />
@@ -542,6 +542,7 @@ const HomeScreen = (props) => {
               {[0, 80, 160, 240].map((item, index) => {
                 return (
                   <Div 
+                    key={index}
                     absolute 
                     auto 
                     rounded100 
@@ -563,7 +564,7 @@ const HomeScreen = (props) => {
         <Row itemsCenter bgGray100 my5>
           <Col>
             <Div onPress={onPressLogo} >
-              <Span fontFamily={'Jua'} fontSize={25}>즐겨찾는 길</Span>
+              <Span fontFamily={'Jua'} fontSize={25}>내 길</Span>
             </Div>
             <Col
               my10

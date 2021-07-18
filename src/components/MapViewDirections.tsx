@@ -1,0 +1,440 @@
+import React from 'react';
+import {Polyline} from 'react-native-maps';
+import isEqual from 'lodash.isequal';
+
+const WAYPOINT_LIMIT = 10;
+
+interface Props {
+    origin: string;
+	destination: string;
+	waypoints?: string;
+	mode?: 'DRIVING' | 'BICYCLING' | 'TRANSIT' | 'WALKING';
+	splitWaypoints?: boolean;
+	resetOnChange?: boolean;
+	optimizeWaypoints?: boolean;
+	directionsServiceBaseUrl?: string;
+	precision?: 'high' | 'low';
+	timePrecision?: 'high' | 'low';
+	strokeWidth?: number;
+	channel?: string;
+	apikey: string; 
+	onStart?: Function;
+	onReady?: Function; 
+	onError?: Function;
+	language?: string; 
+	region?: string; 
+	alternatives?: boolean
+}
+
+interface State {
+	coordinates: any;
+	distance: number;
+	duration: number;
+}
+
+class MapViewDirections extends React.Component<Props, State> {
+
+	constructor( props ) {
+		super( props );
+
+		this.state = {
+			coordinates: null,
+			distance: null,
+			duration: null,
+		};
+	}
+
+	componentDidMount() {
+		this.fetchAndRenderRoute( this.props );
+	}
+
+	componentDidUpdate( prevProps ) {
+		if ( !isEqual( prevProps.origin, this.props.origin ) || !isEqual( prevProps.destination, this.props.destination ) || !isEqual( prevProps.waypoints, this.props.waypoints ) || !isEqual( prevProps.mode, this.props.mode ) || !isEqual( prevProps.precision, this.props.precision ) || !isEqual( prevProps.splitWaypoints, this.props.splitWaypoints ) ) {
+			if ( this.props.resetOnChange === false ) {
+				this.fetchAndRenderRoute( this.props );
+			} else {
+				this.resetState( () => {
+					this.fetchAndRenderRoute( this.props );
+				} );
+			}
+		}
+	}
+
+	resetState = ( cb = null ) => {
+		this.setState( {
+			coordinates: null,
+			distance: null,
+			duration: null,
+		}, cb );
+	}
+
+	decode( t ) {
+		let points = [];
+		for ( let step of t ) {
+			let encoded = step.polyline.points;
+			let index = 0, len = encoded.length;
+			let lat = 0, lng = 0;
+			while ( index < len ) {
+				let b, shift = 0, result = 0;
+				do {
+					b = encoded.charAt( index++ ).charCodeAt( 0 ) - 63;
+					result |= ( b & 0x1f ) << shift;
+					shift += 5;
+				} while ( b >= 0x20 );
+
+				let dlat = ( ( result & 1 ) != 0 ? ~( result >> 1 ) : ( result >> 1 ) );
+				lat += dlat;
+				shift = 0;
+				result = 0;
+				do {
+					b = encoded.charAt( index++ ).charCodeAt( 0 ) - 63;
+					result |= ( b & 0x1f ) << shift;
+					shift += 5;
+				} while ( b >= 0x20 );
+				let dlng = ( ( result & 1 ) != 0 ? ~( result >> 1 ) : ( result >> 1 ) );
+				lng += dlng;
+
+				points.push( { latitude: ( lat / 1E5 ), longitude: ( lng / 1E5 ) } );
+			}
+		}
+		return points;
+	}
+
+	fetchAndRenderRoute = ( props ) => {
+
+		let {
+			origin: initialOrigin,
+			destination: initialDestination,
+			waypoints: initialWaypoints = [],
+			apikey,
+			onStart,
+			onReady,
+			onError,
+			mode = 'TRANSIT',
+			language = 'en',
+			optimizeWaypoints,
+			splitWaypoints,
+			directionsServiceBaseUrl = 'https://maps.googleapis.com/maps/api/directions/json',
+			region,
+			precision = 'low',
+			timePrecision = 'none',
+			channel,
+			alternatives = true,
+		} = props;
+
+		if ( !apikey ) {
+			console.warn( `MapViewDirections Error: Missing API Key` ); // eslint-disable-line no-console
+			return;
+		}
+
+		if ( !initialOrigin || !initialDestination ) {
+			return;
+		}
+
+		const timePrecisionString = timePrecision === 'none' ? '' : timePrecision;
+
+		// Routes array which we'll be filling.
+		// We'll perform a Directions API Request for reach route
+		const routes = [];
+
+		// We need to split the waypoints in chunks, in order to not exceede the max waypoint limit
+		// ~> Chunk up the waypoints, yielding multiple routes
+		if ( splitWaypoints && initialWaypoints && initialWaypoints.length > WAYPOINT_LIMIT ) {
+			// Split up waypoints in chunks with chunksize WAYPOINT_LIMIT
+			const chunckedWaypoints = initialWaypoints.reduce( ( accumulator, waypoint, index ) => {
+				const numChunk = Math.floor( index / WAYPOINT_LIMIT );
+				accumulator[numChunk] = [].concat( ( accumulator[numChunk] || [] ), waypoint );
+				return accumulator;
+			}, [] );
+
+			// Create routes for each chunk, using:
+			// - Endpoints of previous chunks as startpoints for the route (except for the first chunk, which uses initialOrigin)
+			// - Startpoints of next chunks as endpoints for the route (except for the last chunk, which uses initialDestination)
+			for ( let i = 0; i < chunckedWaypoints.length; i++ ) {
+				routes.push( {
+					waypoints: chunckedWaypoints[i],
+					origin: ( i === 0 ) ? initialOrigin : chunckedWaypoints[i - 1][chunckedWaypoints[i - 1].length - 1],
+					destination: ( i === chunckedWaypoints.length - 1 ) ? initialDestination : chunckedWaypoints[i + 1][0],
+				} );
+			}
+		}
+
+		// No splitting of the waypoints is requested/needed.
+		// ~> Use one single route
+		else {
+			routes.push( {
+				waypoints: initialWaypoints,
+				origin: initialOrigin,
+				destination: initialDestination,
+			} );
+		}
+
+		// Perform a Directions API Request for each route
+		Promise.all( routes.map( ( route, index ) => {
+			let {
+				origin,
+				destination,
+				waypoints,
+			} = route;
+
+			if ( origin.latitude && origin.longitude ) {
+				origin = `${origin.latitude},${origin.longitude}`;
+			}
+
+			if ( destination.latitude && destination.longitude ) {
+				destination = `${destination.latitude},${destination.longitude}`;
+			}
+
+			waypoints = waypoints
+				.map( waypoint => ( waypoint.latitude && waypoint.longitude ) ? `${waypoint.latitude},${waypoint.longitude}` : waypoint )
+				.join( '|' );
+
+			if ( optimizeWaypoints ) {
+				waypoints = `optimize:true|${waypoints}`;
+			}
+
+			if ( index === 0 ) {
+				onStart && onStart( {
+					origin,
+					destination,
+					waypoints: initialWaypoints,
+				} );
+			}
+
+			return (
+				this.fetchRoute( directionsServiceBaseUrl, origin, waypoints, destination, apikey, mode, language, region, precision, timePrecisionString, channel, alternatives)
+					.then( result => {
+						console.log( result )
+						return result;
+					} )
+					.catch( errorMessage => {
+						return Promise.reject( errorMessage );
+					} )
+			);
+		} ) ).then( results => {
+			// Combine all Directions API Request results into one
+			const result = results.reduce( ( acc, { distance, duration, coordinates, fare, waypointOrder } ) => {
+				acc.coordinates = [
+					...acc.coordinates,
+					...coordinates,
+				];
+				acc.distance += distance;
+				acc.duration += duration;
+				acc.fares = [
+					...acc.fares,
+					fare,
+				];
+				acc.waypointOrder = [
+					...acc.waypointOrder,
+					waypointOrder,
+				];
+
+				return acc;
+			}, {
+				coordinates: [],
+				distance: 0,
+				duration: 0,
+				fares: [],
+				waypointOrder: [],
+			} );
+
+			// Plot it out and call the onReady callback
+			this.setState( {
+				coordinates: result.coordinates,
+			}, function () {
+				if ( onReady ) {
+					onReady( result );
+				}
+			} );
+		} )
+			.catch( errorMessage => {
+				this.resetState();
+				console.warn( `MapViewDirections Error: ${errorMessage}` ); // eslint-disable-line no-console
+				onError && onError( errorMessage );
+			} );
+	}
+
+	fetchRoute( directionsServiceBaseUrl, origin, waypoints, destination, apikey, mode, language, region, precision, timePrecision, channel, alternatives) {
+
+		// Define the URL to call. Only add default parameters to the URL if it's a string.
+		let url = directionsServiceBaseUrl;
+		if ( typeof ( directionsServiceBaseUrl ) === 'string' ) {
+			url += `?origin=${origin}&waypoints=${waypoints}&destination=${destination}&key=${apikey}&mode=${mode.toLowerCase()}&language=${language}&region=${region}&alternatives=${alternatives}`;
+			if ( timePrecision ) {
+				url += `&departure_time=${timePrecision}`;
+			}
+			if ( channel ) {
+				url += `&channel=${channel}`;
+			}
+		}
+
+		return fetch( url )
+			.then( response => response.json() )
+			.then( json => {
+
+				console.log( json )
+				console.log( json.routes )
+				console.log( json.routes.length )
+				// [
+				// 	{"bounds": 
+				// 		{"northeast": [Object], 
+				// 		"southwest": [Object]}, 
+				// 	"copyrights": "Map data ©2021 SK telecom", 
+				// 	"legs": [[Object]], 
+				// 	"overview_polyline": 
+				// 		{"points": "evrcFw|yeWiB|BsNvBkFyAmCo@m@OWLQTwFj@yLvAsGXm@qASYaFqKgAwA_BkA_AWoEwAiHiB_AQwAOeBI[?w@AoAJmH`AkMtAy@DaBGgJw@{ACsALHaA\\yApDyMtGgUtFkRjAsDnEcPtA{EJk@`@gCVuD?wDIaBa@}CwA_J[eBUeBa@_EWsD[uGKgKB_EJ{CHeABsCd@wH?kAs@mEq@kCa@eA}AuDqD}ImBeFeAwDuBaJaFcT_BkIIu@g@}HQ}BkAcH_@yAo@{AaAwAq@o@iAs@m@WiAWkEc@aMiA_Jy@iC[i@KaA_@yA}@q@_ASg@s@wCiAqF}Ieb@y@sEuAcGuIeb@uF_XgCmMxCK~Ew@"}, 
+				// 	"summary": "", 
+				// 	"warnings": [
+				// 		"Walking directions are in beta. Use caution – This route may be missing sidewalks or pedestrian paths."
+				// 	],
+				// 	"waypoint_order": []
+				// 	}
+				// ]
+				console.log( json.routes[0].legs[0].steps )
+
+				// [
+				// 	//0
+				// 	{
+				// 		"distance": { "text": "80 m", "value": 80 },
+				// 		"duration": { "text": "1 min", "value": 81 },
+				// 		"end_location": { "lat": 37.45704, "lng": 126.94941 },
+				// 		"html_instructions": "Walk to College of Agriculture and Life Sciences",
+				// 		"polyline": { "points": "evrcFw|yeWiB|B" },
+				// 		"start_location": { "lat": 37.4565095, "lng": 126.9500385 },
+				// 		"steps": [[Object]], "travel_mode": "WALKING"
+				// 	},
+				// 	//1
+				// 	{
+				// 		"distance": { "text": "2.8 km", "value": 2779 },
+				// 		"duration": { "text": "9 mins", "value": 529 },
+				// 		"end_location": { "lat": 37.480317, "lng": 126.952777 },
+				// 		"html_instructions": "Bus towards 중앙대",
+				// 		"polyline": { "points": "oyrcFyxyeW}MnBUFuBi@uBo@gBa@e@Mm@OWLQTwFj@kHz@mCZsGXm@qAQUACiCoFwAaDgAwA_BkA}@UAA_Cu@oAa@iHiB_AQm@Gi@GmAGWAY?A?w@AoAJgH~@E@mEb@}Fp@w@DA?a@C_ACeJw@A?@A" },
+				// 		"start_location": { "lat": 37.45704, "lng": 126.94941 },
+				// 		"transit_details": {
+				// 			"arrival_stop": [Object],
+				// 			"arrival_time": [Object],
+				// 			"departure_stop": [Object],
+				// 			"departure_time": [Object],
+				// 			"headsign": "중앙대",
+				// 			"headway": 780,
+				// 			"line": [Object],
+				// 			"num_stops": 9
+				// 		},
+				// 		"travel_mode": "TRANSIT"
+				// 	},
+				// 	//2
+				// 	{
+				// 		"distance": { "text": "0.1 km", "value": 100 },
+				// 		"duration": { "text": "2 mins", "value": 101 },
+				// 		"end_location": { "lat": 37.48122, "lng": 126.952728 },
+				// 		"html_instructions": "Walk to Seoul Nat‘l Univ. (Gwanak-gu Office)",
+				// 		"polyline": { "points": "_kwcF{mzeW}AAuAJ" },
+				// 		"start_location": { "lat": 37.480317, "lng": 126.952777 },
+				// 		"steps": [[Object], [Object], [Object], [Object], [Object]],
+				// 		"travel_mode": "WALKING"
+				// 	},
+				// 	//3 
+				// 	{
+				// 		"distance": { "text": "7.8 km", "value": 7821 },
+				// 		"duration": { "text": "14 mins", "value": 840 },
+				// 		"end_location": { "lat": 37.49795, "lng": 127.027637 },
+				// 		"html_instructions": "Subway towards 234",
+				// 		"polyline": { "points": "spwcFqmzeW@@HaA\\yAv@oCxBiIpBeHbDaLlCgJfBcGjAsDhB{GdBgGtA{EJk@Ny@PmAJoAJeB@eAAqBIaBa@}Cm@uDi@iD[eBUeBa@_EWsDSsDGaBG_ECgEB_EJ{CHeABsCd@wH@c@Ag@Io@i@}Cq@kCa@eAq@eBk@oAwAmDyAoDqAgD[}@I[{@{Cu@gD_AyDoBoIqBsIu@{Di@oC?AIs@OyBWcEQ}BkAcHMk@Qm@Um@Ym@a@q@_@e@q@o@iAs@m@WiAWgCWcAKoEa@qFg@yD[eD]iAK_AOi@KaA_@w@a@a@[[_@U_@Sg@s@wCgAqFA?}DeR_D_Oy@sEuAcGcC{LqEiTcBcIqC{MgCkM?A?A" },
+				// 		"start_location": { "lat": 37.48122, "lng": 126.952728 },
+				// 		"transit_details": {
+				// 			"arrival_stop": [Object],
+				// 			"arrival_time": [Object],
+				// 			"departure_stop": [Object],
+				// 			"departure_time": [Object],
+				// 			"headsign": "234",
+				// 			"line": [Object],
+				// 			"num_stops": 6
+				// 		},
+				// 		"travel_mode": "TRANSIT"
+				// 	},
+				// 	//4
+				// 	{
+				// 		"distance": { "text": "0.2 km", "value": 211 },
+				// 		"duration": { "text": "4 mins", "value": 213 },
+				// 		"end_location": { "lat": 37.4960607, "lng": 127.0279746 },
+				// 		"html_instructions": "Walk to 373 Gangnam-daero, Seocho-dong, Seocho-gu, Seoul, South Korea",
+				// 		"polyline": { "points": "eyzcFwaifWxCI~Ew@" },
+				// 		"start_location": { "lat": 37.49795, "lng": 127.027637 },
+				// 		"steps": [[Object], [Object], [Object], [Object]],
+				// 		"travel_mode": "WALKING"
+				// 	}]
+				console.log( json.routes[0].legs[0].steps[1].transit_details )
+
+				console.log( json.routes[0].legs[0].steps[3].transit_details )
+
+
+				if ( json.status !== 'OK' ) {
+					const errorMessage = json.error_message || json.status || 'Unknown error';
+					return Promise.reject( errorMessage );
+				}
+
+				if ( json.routes.length ) {
+
+					const route = json.routes[0];
+
+					return Promise.resolve( {
+						distance: route.legs.reduce( ( carry, curr ) => {
+							return carry + curr.distance.value;
+						}, 0 ) / 1000,
+						duration: route.legs.reduce( ( carry, curr ) => {
+							return carry + ( curr.duration_in_traffic ? curr.duration_in_traffic.value : curr.duration.value );
+						}, 0 ) / 60,
+						coordinates: (
+							( precision === 'low' ) ?
+								this.decode( [{ polyline: route.overview_polyline }] ) :
+								route.legs.reduce( ( carry, curr ) => {
+									return [
+										...carry,
+										...this.decode( curr.steps ),
+									];
+								}, [] )
+						),
+						fare: route.fare,
+						waypointOrder: route.waypoint_order,
+					} );
+
+				} else {
+					return Promise.reject();
+				}
+			} )
+			.catch( err => {
+				return Promise.reject( `Error on GMAPS route request: ${err}` );
+			} );
+	}
+
+	render() {
+		const { coordinates } = this.state;
+
+		if ( !coordinates ) {
+			return null;
+		}
+
+		const {
+			origin, // eslint-disable-line no-unused-vars
+			waypoints, // eslint-disable-line no-unused-vars
+			splitWaypoints, // eslint-disable-line no-unused-vars
+			destination, // eslint-disable-line no-unused-vars
+			apikey, // eslint-disable-line no-unused-vars
+			onReady, // eslint-disable-line no-unused-vars
+			onError, // eslint-disable-line no-unused-vars
+			mode, // eslint-disable-line no-unused-vars
+			language, // eslint-disable-line no-unused-vars
+			region, // eslint-disable-line no-unused-vars
+			precision,  // eslint-disable-line no-unused-vars
+			...props
+		} = this.props;
+
+		return (
+			<Polyline coordinates={coordinates} strokeColor={"red"} {...props} />
+		);
+	}
+
+}
+
+export default MapViewDirections;
