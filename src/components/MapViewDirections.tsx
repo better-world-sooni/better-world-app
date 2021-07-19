@@ -1,6 +1,8 @@
-import React from 'react';
-import {Polyline} from 'react-native-maps';
+import React, {useRef} from 'react';
+import {Circle, Polyline, Marker} from 'react-native-maps';
 import isEqual from 'lodash.isequal';
+import { IMAGES } from 'src/modules/images';
+import { Img } from 'src/components/common/Img';
 
 const WAYPOINT_LIMIT = 10;
 
@@ -446,15 +448,58 @@ class MapViewDirections extends React.Component<Props, State> {
 			
 		}
 
+		const CircleFix = ({step}) => {
+			const circleRef = useRef(null);
+			return(
+				step.coordinates &&
+					<Circle 
+						onLayout={() => (circleRef.current.setNativeProps({
+							strokeColor: "grey",
+							fillColor: "white"
+						  }))}
+						center={step.coordinates[step.coordinates.length-1]} 
+						radius={30} 
+						fillColor={null} 
+						strokeWidth={4} 
+						strokeColor={null}
+						zIndex={10}
+						ref={circleRef}/>	
+			)
+		}
+		
+		const PatternedPolyline = ({step}) => {
+			return(
+				<>
+					<Polyline tappable lineJoin={'round'} coordinates={step.coordinates} lineDashPattern={[10,10]} strokeWidth={2} strokeColor={"red"} {...props} />
+					<Polyline tappable lineJoin={'round'} coordinates={step.coordinates} strokeWidth={4} strokeColor={convertToColor(step)} {...props} />
+				</>
+			)
+		}
+
+		const polylineConditionalProps = (step) => {
+			if (step.travel_mode == "WALKING"){
+				return {
+					strokeWidth: 2,
+					strokeColor: "red",
+					lineDashPattern: [10,10]
+				}
+			}
+			else{
+				return {
+					strokeWidth: 4,
+					strokeColor: convertToColor(step),
+				}
+			}
+		}
+
 		return (
 			steps.map( (step, index) => {
-				if (step.travel_mode == "WALKING"){
-					return (<Polyline key={index} coordinates={step.coordinates} strokeWidth={2} strokeColor={"red"} {...props} />)
-				}
-				else{					
-					return (<Polyline key={index} coordinates={step.coordinates} strokeWidth={4} strokeColor={convertToColor(step)} {...props} />)
-				}
-				
+					return (
+					<>
+						{step.coordinates && (index == 0) && <CircleFix step={{coordinates: [step.coordinates[0]]}}/>}
+						<Polyline miterLimit={90} tappable lineJoin={'miter'} key={index} coordinates={step.coordinates} {...polylineConditionalProps(step)} {...props} />
+						<CircleFix step={step}/>
+					</>)
 			})
 		);
 	}

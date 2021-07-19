@@ -5,6 +5,10 @@ import { NAV_NAMES } from 'src/modules/navNames';
 import { useApiSelector } from 'src/redux/asyncReducer';
 import APIS from 'src/modules/apis';
 import { Div } from 'src/components/common/Div';
+import { Row } from 'src/components/common/Row';
+import { Col } from 'src/components/common/Col';
+import { Img } from 'src/components/common/Img';
+import { IMAGES } from 'src/modules/images';
 import { Dimensions, StyleSheet } from 'react-native';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import MapViewDirections from 'src/components/MapViewDirections';
@@ -63,7 +67,6 @@ const LessonScreen = ({route}) => {
 
   return (
     <Div flex={1}>
-      <Span>Hello</Span>
       <MapView  
         provider={PROVIDER_GOOGLE}
         initialRegion={MapCenter} 
@@ -95,6 +98,26 @@ const LessonScreen = ({route}) => {
           />
         )}
       </MapView>
+      <Div flex={1} pointerEvents={'none'}>
+          <Div bgWhite flex={1} borderBottomLeftRadius={30} borderBottomRightRadius={30}>
+            <Row mt15 itemsCenter>
+              <Col itemsCenter><Span>서울대학교</Span></Col>
+              <Col >
+              </Col>
+              <Col itemsCenter><Span>강남 위워크</Span></Col>
+            </Row>
+          </Div>
+          <Div flex={13}></Div>
+          <Div bgWhite flex={1} borderTopLeftRadius={30} borderTopRightRadius={30}>
+            <Row>
+              <Col></Col>
+              <Col auto >
+                <Img w21 h50 source={IMAGES.mainLogo} />
+              </Col>
+              <Col></Col>
+            </Row>
+          </Div>
+      </Div>
     </Div>
   )
 }
