@@ -9,7 +9,7 @@ import { Row } from 'src/components/common/Row';
 import { Col } from 'src/components/common/Col';
 import { Img } from 'src/components/common/Img';
 import { IMAGES } from 'src/modules/images';
-import { Dimensions, StyleSheet } from 'react-native';
+import { Animated, View, TouchableWithoutFeedback, Text, StyleSheet } from 'react-native';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import MapViewDirections from 'src/components/MapViewDirections';
 import { Span } from 'src/components/common/Span';
@@ -65,9 +65,77 @@ const LessonScreen = ({route}) => {
     // initialRegion();
   }, []);
 
+  const on = {
+    bgWhite: true,
+    borderBottomLeftRadius: 30,
+    borderBottomRightRadius:30,
+  }
+  const off = false
+  const [ExpandHeader, useExpandHeader] = useState([on, off]);
+  const [AnimatedStyles, setAnimatedStyles] = useState({
+    animationValue : new Animated.Value(1),
+    viewState : true
+  })
+
+  const toggle = () => {
+    if (AnimatedStyles.viewState){
+      Animated.timing(AnimatedStyles.animationValue, {
+        useNativeDriver: true,
+        toValue : 350,
+        duration : 50
+      }).start(()=>{
+        setAnimatedStyles({
+          animationValue : new Animated.Value(350),
+          viewState : false
+        })
+      });
+      setTimeout(() => {useExpandHeader([off, on])}, 40);
+      }
+    else{
+      useExpandHeader([on, off]);
+      Animated.timing(AnimatedStyles.animationValue, {
+        useNativeDriver: false,
+        toValue : 1,
+        duration : 50
+      }).start(()=>{
+        setAnimatedStyles({
+          animationValue : new Animated.Value(1),
+          viewState : true
+        })
+      });
+      }
+  }
+
+  const Header = () => {
+
+    return(
+        <Div activeOpacity={1.0} auto onPress={(e)=> console.log()} >
+          <Animated.View style={{height: 1, transform: [{scaleY: AnimatedStyles.animationValue}], alignContent: "center", backgroundColor: "white", borderBottomLeftRadius: 30, borderBottomRightRadius: 30}} >
+          </Animated.View>
+          <Row bgWhite h50 itemsCenter borderBottomLeftRadius={30} borderBottomRightRadius={30}>
+            <Col itemsCenter><Span>서울대학교</Span></Col>
+            <Col auto items center>
+              <Span>→</Span>
+            </Col>
+            <Col itemsCenter><Span>강남 위워크</Span></Col>
+          </Row>
+          {ExpandHeader[1] && (
+            <Row h200 itemsCenter {...ExpandHeader[1]}>
+              <Col>
+                {[1,2,3].map((step, index) => {
+                  return(<Row key={index}><Span>Hello</Span></Row>)
+                })}
+              </Col>
+            </Row>
+            )}
+        </Div>
+    )
+  }
+
   return (
     <Div flex={1}>
       <MapView  
+        onPress={(e)=>toggle()}
         provider={PROVIDER_GOOGLE}
         initialRegion={MapCenter} 
         style={StyleSheet.absoluteFill}>
@@ -76,7 +144,7 @@ const LessonScreen = ({route}) => {
         )} */}
         {(Coordinates.length >= 2) && (
           <MapViewDirections
-            origin={"서울대학교"}
+            origin={"역삼동 793-18"}
             // waypoints={ (Coordinates.length > 2) ? Coordinates.slice(1, -1): null}
             destination={"강남 위워크"}
             apikey={GOOGLE_MAPS_APIKEY}
@@ -98,17 +166,10 @@ const LessonScreen = ({route}) => {
           />
         )}
       </MapView>
-      <Div flex={1} pointerEvents={'none'}>
-          <Div bgWhite flex={1} borderBottomLeftRadius={30} borderBottomRightRadius={30}>
-            <Row mt15 itemsCenter>
-              <Col itemsCenter><Span>서울대학교</Span></Col>
-              <Col >
-              </Col>
-              <Col itemsCenter><Span>강남 위워크</Span></Col>
-            </Row>
-          </Div>
-          <Div flex={13}></Div>
-          <Div bgWhite flex={1} borderTopLeftRadius={30} borderTopRightRadius={30}>
+      <Div flex={1} pointerEvents={'box-none'}>
+          <Header></Header>
+          <Div collapsable flex={1} pointerEvents={'none'}></Div>
+          <Div bgWhite h50 borderTopLeftRadius={30} borderTopRightRadius={30}>
             <Row>
               <Col></Col>
               <Col auto >

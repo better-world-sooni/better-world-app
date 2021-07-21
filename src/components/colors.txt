@@ -1,0 +1,71 @@
+const convertToColor = (step) => {
+				if (step.vehicle == "BUS"){
+					switch (step.transport_desc) {
+						case '서울 간선버스':
+						  return '#0000ff'
+						  case '서울 지선버스':
+						  return '#00ff00'
+						  case '서울 순환버스':
+						  return '#ffff00'
+						  case '서울 광역버스':
+						  return '#ff4000'
+						  case '서울 마을버스':
+						  return 'green'
+						  case '서울 맞춤버스':
+						  return 'green'
+						default:
+						  return 'black'
+					}
+				}
+				else{
+					switch (step.transport_num) {
+						case '1호선':
+						  return '#0d3692'
+						case '2호선':
+						  return '#33a23d'
+						case '3호선':
+							return '#fe5d10'
+						case '4호선':
+							return '#00a2d1'
+						case '5호선':
+							return '#8b50a4'
+						case '6호선':
+							return '#c55c1d'
+						case '7호선':
+							return '#54640d'
+						case '8호선':
+							return '#f14c82'
+						case '9호선':
+							return '#aa9872'
+						case '경의중앙선':
+							return '#73c7a6'
+						case '경의중앙선':
+							return '#73c7a6'
+						case '분당선.수인선':
+							return '#73c7a6'
+						case '경춘선':
+							return '#73c7a6'
+						case '경강선':
+							return '#73c7a6'
+						case '공항철도':
+							return '#73c7a6'
+						case '인천 1호선':
+							return '#73c7a6'
+						case '인천 2호선':
+							return '#73c7a6'
+						case '신분당선':
+							return '#73c7a6'
+						case '경의중앙선':
+							return '#73c7a6'
+						case '의정부경전철':
+							return '#73c7a6'
+						case '용인경전철':
+							return '#73c7a6'
+						case '인천자기부상':
+							return '#73c7a6'
+						default:
+						  return 'black'
+					}
+				}
+				
+			}

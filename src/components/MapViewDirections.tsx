@@ -1,4 +1,4 @@
-import React, {useRef} from 'react';
+import React, {useRef, Fragment} from 'react';
 import {Circle, Polyline, Marker} from 'react-native-maps';
 import isEqual from 'lodash.isequal';
 import { IMAGES } from 'src/modules/images';
@@ -36,10 +36,20 @@ interface Step {
 	transport_num: string;
 	transport_desc: string;
 	vehicle: string;
+	color: string;
+	start_location: string;
+	end_location: string;
+}
+
+interface LatLng {
+	latitude: number,
+	longitude: number
 }
 
 interface State {
 	steps: Array<Step>
+	origin: LatLng
+	destination: LatLng
 }
 
 class MapViewDirections extends React.Component<Props, State> {
@@ -55,8 +65,13 @@ class MapViewDirections extends React.Component<Props, State> {
 				travel_mode: null,
 				transport_num: null,
 				transport_desc: null,
-				vehicle: null
-			}]
+				vehicle: null,
+				color: null,
+				start_location: null,
+				end_location: null,
+			}],
+			origin: {latitude: 0, longitude: 0},
+			destination: {latitude: 0, longitude: 0}
 		};
 	}
 
@@ -85,8 +100,13 @@ class MapViewDirections extends React.Component<Props, State> {
 				travel_mode: null,
 				transport_num: null,
 				transport_desc: null,
-				vehicle: null
-			}]
+				vehicle: null,
+				color: null,
+				start_location: null,
+				end_location: null,
+			}],
+		origin: {latitude: 0, longitude: 0},
+		destination: {latitude: 0, longitude: 0}
 		}, cb );
 	}
 
@@ -226,7 +246,6 @@ class MapViewDirections extends React.Component<Props, State> {
 			return (
 				this.fetchRoute( directionsServiceBaseUrl, origin, waypoints, destination, apikey, mode, language, region, precision, timePrecisionString, channel, alternatives)
 					.then( result => {
-						console.log( result )
 						return result;
 					} )
 					.catch( errorMessage => {
@@ -236,12 +255,14 @@ class MapViewDirections extends React.Component<Props, State> {
 		} ) ).then( results => {
 			// Combine all Directions API Request results into one
 			const route = results[0].map((item) => item._W)
-			console.log("--------------------------------")
-			console.log(route)
-
+			const start_location = route[0].start_location
+			const end_location = route[route.length-1].end_location
 			// Plot it out and call the onReady callback
 			this.setState( 
-				{steps: route}, function () {
+				{steps: route,
+				origin: {latitude: start_location.lat, longitude: start_location.lng},
+				destination: {latitude: end_location.lat, longitude: end_location.lng},
+				}, function () {
 				if ( onReady ) {
 					onReady( route );
 				}
@@ -272,8 +293,8 @@ class MapViewDirections extends React.Component<Props, State> {
 			.then( response => response.json() )
 			.then( json => {
 
-				console.log( json )
-				console.log( json.routes[0].legs )
+				// console.log( json )
+				// console.log( json.routes[0].legs )
 				// [
 				// 	{"bounds": 
 				// 		{"northeast": [Object], 
@@ -289,7 +310,8 @@ class MapViewDirections extends React.Component<Props, State> {
 				// 	"waypoint_order": []
 				// 	}
 				// ]
-				console.log( json.routes[0].legs[0].steps )
+				// console.log( "json.routes[0].legs[0].steps" )
+				// console.log( json.routes[0].legs[0].steps )
 
 				// [
 				// 	//0
@@ -363,6 +385,7 @@ class MapViewDirections extends React.Component<Props, State> {
 				// 		"steps": [[Object], [Object], [Object], [Object]],
 				// 		"travel_mode": "WALKING"
 				// 	}]
+				console.log( "json.routes[0].legs[0].steps[1].transit_details" )
 				console.log( json.routes[0].legs[0].steps[1].transit_details )
 
 
@@ -375,7 +398,7 @@ class MapViewDirections extends React.Component<Props, State> {
 				if ( json.routes.length ) {
 
 					const steps = json.routes[0].legs[0].steps;
-
+					console.log(json.routes[0].legs[0].steps[3])
 					const route = steps.map((step) => {
 						return Promise.resolve( {
 							distance: step.distance.value,
@@ -384,7 +407,10 @@ class MapViewDirections extends React.Component<Props, State> {
 							travel_mode: step.travel_mode,
 							transport_desc: step.transit_details?.line?.name,
 							transport_num: step.transit_details?.line?.short_name,
-							vehicle: step.transit_details?.line?.vehicle?.type
+							vehicle: step.transit_details?.line?.vehicle?.type,
+							color: step.transit_details?.line?.color,
+							start_location: step.start_location,
+							end_location: step.end_location
 						} );
 					})
 					
@@ -400,9 +426,9 @@ class MapViewDirections extends React.Component<Props, State> {
 	}
 
 	render() {
-		const { steps: steps } = this.state;
+		const { steps: Steps, origin: Origin, destination: Destination } = this.state;
 
-		if ( !steps ) {
+		if ( !Steps ) {
 			return null;
 		}
 		const {
@@ -419,34 +445,6 @@ class MapViewDirections extends React.Component<Props, State> {
 			precision,  // eslint-disable-line no-unused-vars
 			...props
 		} = this.props;
-
-		const lineSymbol = {
-			path: "M 0,-1 0,1",
-			strokeOpacity: 1,
-			scale: 4,
-		  };
-
-		const convertToColor = (step) => {
-			if (step.vehicle == "BUS"){
-				switch (step.transport_desc) {
-					case '서울 지선버스':
-					  return 'green'
-					default:
-					  return 'black'
-				}
-			}
-			else{
-				switch (step.transport_num) {
-					case '1':
-					  return 'blue'
-					case '2':
-					  return 'yellow'
-					default:
-					  return 'black'
-				}
-			}
-			
-		}
 
 		const CircleFix = ({step}) => {
 			const circleRef = useRef(null);
@@ -467,40 +465,44 @@ class MapViewDirections extends React.Component<Props, State> {
 			)
 		}
 		
-		const PatternedPolyline = ({step}) => {
-			return(
-				<>
-					<Polyline tappable lineJoin={'round'} coordinates={step.coordinates} lineDashPattern={[10,10]} strokeWidth={2} strokeColor={"red"} {...props} />
-					<Polyline tappable lineJoin={'round'} coordinates={step.coordinates} strokeWidth={4} strokeColor={convertToColor(step)} {...props} />
-				</>
-			)
-		}
 
 		const polylineConditionalProps = (step) => {
 			if (step.travel_mode == "WALKING"){
 				return {
-					strokeWidth: 2,
-					strokeColor: "red",
+					strokeWidth: 5,
+					strokeColor: "#33b8ff",
 					lineDashPattern: [10,10]
 				}
 			}
 			else{
 				return {
-					strokeWidth: 4,
-					strokeColor: convertToColor(step),
+					strokeWidth: 7,
+					strokeColor: step.color,
 				}
 			}
 		}
 
+		const PatternedPolyline = ({step}) => {
+			return(
+				<>
+					<Polyline miterLimit={90} tappable lineJoin={'miter'} coordinates={step.coordinates} strokeWidth={10} strokeColor={"white"} {...props} />
+					<Polyline miterLimit={90} tappable lineJoin={'miter'} coordinates={step.coordinates} {...polylineConditionalProps(step)} {...props} />
+				</>
+			)
+		}
 		return (
-			steps.map( (step, index) => {
+			<>
+			{Origin && <Marker title={"출발"} pinColor={"blue"} coordinate={Origin}></Marker>}
+			{Steps.map( (step, index) => {
 					return (
-					<>
+					<Fragment key={index}>
 						{step.coordinates && (index == 0) && <CircleFix step={{coordinates: [step.coordinates[0]]}}/>}
-						<Polyline miterLimit={90} tappable lineJoin={'miter'} key={index} coordinates={step.coordinates} {...polylineConditionalProps(step)} {...props} />
+						<PatternedPolyline step={step}/>
 						<CircleFix step={step}/>
-					</>)
-			})
+					</Fragment>)
+			}) }
+			{Destination && <Marker title={"도착"} coordinate={Destination}></Marker>}
+			</>
 		);
 	}
 
