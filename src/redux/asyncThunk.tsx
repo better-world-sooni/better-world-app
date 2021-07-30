@@ -13,6 +13,7 @@ export const asyncThunk =
   }) =>
   async dispatch => {
     const time = elapsed();
+    
     try {
       if (reload) {
         dispatch(asyncActions.fetchReload({key: key, args: args}));
@@ -43,6 +44,7 @@ export const asyncThunk =
           });
         }
       } else {
+        console.log("Smthings wrong")
         const err = new Error();
         err.data = data;
         err.status = status;

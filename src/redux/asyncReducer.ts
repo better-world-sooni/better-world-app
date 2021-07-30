@@ -7,7 +7,7 @@ import {asyncThunk} from './asyncThunk';
 
 const getPromiseFn = async args => {
   const {url, token} = args;
-  const res = await fetch(url, {
+  const res = await fetch(url.url, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -73,6 +73,8 @@ export const useApiGET = (props = {}) => {
   const navigation = useNavigation();
   return (api, successHandler?, errHandler?) => {
     const key = getKeyByApi(api, scope);
+    console.log("api.url")
+    console.log(api.url)
     dispatch(
       asyncThunk({
         key: key,
@@ -113,7 +115,7 @@ export const useReloadGET = (props = {}) => {
   //   (root: RootState) => ({userToken: root.app.session.token}),
   //   shallowEqual,
   // );
-  const userToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJ1c2VyX2lkIjo5Mjc5OCwiZXhwIjoxNjU3ODI2NDQ5MDAwfQ.jvMcDNNw3Hh2Po6FbHcmuHFHILVyuyTMh_MufrkkQF08w_GRWfttTgPa-x3-i5hh_NqggOeGqO-amA7qJeMi0lkttL3NXlCoRKN_9eKD2rei0ecTwnn0wSEqegnNrF4Wv1EH7u7N0D4xlnKdrr5w4m6cEFkJm_wxbdp0sY627kMD_r8WnxN0VktjSKbMG3XAS4qRxrZxIb0-ZGtAvcDWEaAAw5EgJgVruwOrgcSgNoDb8TaZy7c6SbW0MjSLi5oopVuc6eL00tU7hZkqIDIMjiPkwW4MRBjF1SNs0qAGAHR8PaLq61hLEUxJ7xITMDXZwDVoGkFQ9ME6mgEcneM_Cg"
+  const userToken = null;
   const finalToken = token ? token : userToken;
   const dispatch = useDispatch();
   const navigation = useNavigation();
@@ -122,7 +124,7 @@ export const useReloadGET = (props = {}) => {
     dispatch(
       asyncThunk({
         key: key,
-        args: {url: api.url, ...(finalToken && {token: finalToken})},
+        args: { url: api, ...(finalToken && { token: finalToken }) },
         promiseFn: getPromiseFn,
         successHandler,
         errHandler,

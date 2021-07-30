@@ -1,6 +1,6 @@
 import urljoin from 'url-join';
 
-const BASE_URL = 'https://app.ringleplus.com';
+const BASE_URL = 'http://localhost:3000';
 const toUrl = (...args) => ({url: urljoin(...args)});
 const base = path => toUrl(BASE_URL, path);
 const v1 = path => toUrl(BASE_URL, '/api/v1', path);
@@ -11,6 +11,9 @@ const v3_student = path => toUrl(BASE_URL, '/api/v3/student', path);
 const v4_student = path => toUrl(BASE_URL, '/api/v4/student', path);
 
 const APIS = {
+  paths: {
+    default: () => base('/default')
+  },
   lessonEnter: id => v1(`/rtc/rtc_lesson_info?lesson_id=${id}`),
   version: (platform, target) =>
     v4(`/version?platform=${platform}&target=${target}`),

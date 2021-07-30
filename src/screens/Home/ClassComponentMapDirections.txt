@@ -1,15 +1,10 @@
-import React, {useRef, Fragment} from 'react';
-import {Circle, Polyline, Marker} from 'react-native-maps';
 import isEqual from 'lodash.isequal';
-import { IMAGES } from 'src/modules/images';
-import { Img } from 'src/components/common/Img';
-
-const WAYPOINT_LIMIT = 10;
 
 interface Props {
     origin: string;
 	destination: string;
 	waypoints?: string;
+	defaultRoute: any;
 	mode?: 'DRIVING' | 'BICYCLING' | 'TRANSIT' | 'WALKING';
 	splitWaypoints?: boolean;
 	resetOnChange?: boolean;
@@ -76,7 +71,7 @@ class MapViewDirections extends React.Component<Props, State> {
 	}
 
 	componentDidMount() {
-		this.fetchAndRenderRoute( this.props );
+		this.setRoute( this.props.defaultRoute );
 	}
 
 	componentDidUpdate( prevProps ) {
@@ -108,6 +103,22 @@ class MapViewDirections extends React.Component<Props, State> {
 		origin: {latitude: 0, longitude: 0},
 		destination: {latitude: 0, longitude: 0}
 		}, cb );
+	}
+
+	setRoute = (route) => {
+		console.log(route)
+		const start_location = route[0].start_location
+		const end_location = route[route.length-1].end_location
+		// Plot it out and call the onReady callback
+		this.setState( 
+			{steps: route,
+			origin: {latitude: start_location.lat, longitude: start_location.lng},
+			destination: {latitude: end_location.lat, longitude: end_location.lng},
+			}, function () {
+			if ( this.props.onReady ) {
+				this.props.onReady( route );
+			}
+		} );
 	}
 
 	decode( t ) {
@@ -254,19 +265,7 @@ class MapViewDirections extends React.Component<Props, State> {
 			);
 		} ) ).then( results => {
 			// Combine all Directions API Request results into one
-			const route = results[0].map((item) => item._W)
-			const start_location = route[0].start_location
-			const end_location = route[route.length-1].end_location
-			// Plot it out and call the onReady callback
-			this.setState( 
-				{steps: route,
-				origin: {latitude: start_location.lat, longitude: start_location.lng},
-				destination: {latitude: end_location.lat, longitude: end_location.lng},
-				}, function () {
-				if ( onReady ) {
-					onReady( route );
-				}
-			} );
+			this.setRoute(results[0]);
 		} )
 			.catch( errorMessage => {
 				this.resetState();
@@ -293,114 +292,16 @@ class MapViewDirections extends React.Component<Props, State> {
 			.then( response => response.json() )
 			.then( json => {
 
-				// console.log( json )
-				// console.log( json.routes[0].legs )
-				// [
-				// 	{"bounds": 
-				// 		{"northeast": [Object], 
-				// 		"southwest": [Object]}, 
-				// 	"copyrights": "Map data ©2021 SK telecom", 
-				// 	"legs": [[Object]], 
-				// 	"overview_polyline": 
-				// 		{"points": "evrcFw|yeWiB|BsNvBkFyAmCo@m@OWLQTwFj@yLvAsGXm@qASYaFqKgAwA_BkA_AWoEwAiHiB_AQwAOeBI[?w@AoAJmH`AkMtAy@DaBGgJw@{ACsALHaA\\yApDyMtGgUtFkRjAsDnEcPtA{EJk@`@gCVuD?wDIaBa@}CwA_J[eBUeBa@_EWsD[uGKgKB_EJ{CHeABsCd@wH?kAs@mEq@kCa@eA}AuDqD}ImBeFeAwDuBaJaFcT_BkIIu@g@}HQ}BkAcH_@yAo@{AaAwAq@o@iAs@m@WiAWkEc@aMiA_Jy@iC[i@KaA_@yA}@q@_ASg@s@wCiAqF}Ieb@y@sEuAcGuIeb@uF_XgCmMxCK~Ew@"}, 
-				// 	"summary": "", 
-				// 	"warnings": [
-				// 		"Walking directions are in beta. Use caution – This route may be missing sidewalks or pedestrian paths."
-				// 	],
-				// 	"waypoint_order": []
-				// 	}
-				// ]
-				// console.log( "json.routes[0].legs[0].steps" )
-				// console.log( json.routes[0].legs[0].steps )
-
-				// [
-				// 	//0
-				// 	{
-				// 		"distance": { "text": "80 m", "value": 80 },
-				// 		"duration": { "text": "1 min", "value": 81 },
-				// 		"end_location": { "lat": 37.45704, "lng": 126.94941 },
-				// 		"html_instructions": "Walk to College of Agriculture and Life Sciences",
-				// 		"polyline": { "points": "evrcFw|yeWiB|B" },
-				// 		"start_location": { "lat": 37.4565095, "lng": 126.9500385 },
-				// 		"steps": [[Object]], "travel_mode": "WALKING"
-				// 	},
-				// 	//1
-				// 	{
-				// 		"distance": { "text": "2.8 km", "value": 2779 },
-				// 		"duration": { "text": "9 mins", "value": 529 },
-				// 		"end_location": { "lat": 37.480317, "lng": 126.952777 },
-				// 		"html_instructions": "Bus towards 중앙대",
-				// 		"polyline": { "points": "oyrcFyxyeW}MnBUFuBi@uBo@gBa@e@Mm@OWLQTwFj@kHz@mCZsGXm@qAQUACiCoFwAaDgAwA_BkA}@UAA_Cu@oAa@iHiB_AQm@Gi@GmAGWAY?A?w@AoAJgH~@E@mEb@}Fp@w@DA?a@C_ACeJw@A?@A" },
-				// 		"start_location": { "lat": 37.45704, "lng": 126.94941 },
-				// 		"transit_details": {
-				// 			"arrival_stop": [Object],
-				// 			"arrival_time": [Object],
-				// 			"departure_stop": [Object],
-				// 			"departure_time": [Object],
-				// 			"headsign": "중앙대",
-				// 			"headway": 780,
-				// 			"line": [Object],
-				// 			"num_stops": 9
-				// 		},
-				// 		"travel_mode": "TRANSIT"
-				// 	},
-				// 	//2
-				// 	{
-				// 		"distance": { "text": "0.1 km", "value": 100 },
-				// 		"duration": { "text": "2 mins", "value": 101 },
-				// 		"end_location": { "lat": 37.48122, "lng": 126.952728 },
-				// 		"html_instructions": "Walk to Seoul Nat‘l Univ. (Gwanak-gu Office)",
-				// 		"polyline": { "points": "_kwcF{mzeW}AAuAJ" },
-				// 		"start_location": { "lat": 37.480317, "lng": 126.952777 },
-				// 		"steps": [[Object], [Object], [Object], [Object], [Object]],
-				// 		"travel_mode": "WALKING"
-				// 	},
-				// 	//3 
-				// 	{
-				// 		"distance": { "text": "7.8 km", "value": 7821 },
-				// 		"duration": { "text": "14 mins", "value": 840 },
-				// 		"end_location": { "lat": 37.49795, "lng": 127.027637 },
-				// 		"html_instructions": "Subway towards 234",
-				// 		"polyline": { "points": "spwcFqmzeW@@HaA\\yAv@oCxBiIpBeHbDaLlCgJfBcGjAsDhB{GdBgGtA{EJk@Ny@PmAJoAJeB@eAAqBIaBa@}Cm@uDi@iD[eBUeBa@_EWsDSsDGaBG_ECgEB_EJ{CHeABsCd@wH@c@Ag@Io@i@}Cq@kCa@eAq@eBk@oAwAmDyAoDqAgD[}@I[{@{Cu@gD_AyDoBoIqBsIu@{Di@oC?AIs@OyBWcEQ}BkAcHMk@Qm@Um@Ym@a@q@_@e@q@o@iAs@m@WiAWgCWcAKoEa@qFg@yD[eD]iAK_AOi@KaA_@w@a@a@[[_@U_@Sg@s@wCgAqFA?}DeR_D_Oy@sEuAcGcC{LqEiTcBcIqC{MgCkM?A?A" },
-				// 		"start_location": { "lat": 37.48122, "lng": 126.952728 },
-				// 		"transit_details": {
-				// 			"arrival_stop": [Object],
-				// 			"arrival_time": [Object],
-				// 			"departure_stop": [Object],
-				// 			"departure_time": [Object],
-				// 			"headsign": "234",
-				// 			"line": [Object],
-				// 			"num_stops": 6
-				// 		},
-				// 		"travel_mode": "TRANSIT"
-				// 	},
-				// 	//4
-				// 	{
-				// 		"distance": { "text": "0.2 km", "value": 211 },
-				// 		"duration": { "text": "4 mins", "value": 213 },
-				// 		"end_location": { "lat": 37.4960607, "lng": 127.0279746 },
-				// 		"html_instructions": "Walk to 373 Gangnam-daero, Seocho-dong, Seocho-gu, Seoul, South Korea",
-				// 		"polyline": { "points": "eyzcFwaifWxCI~Ew@" },
-				// 		"start_location": { "lat": 37.49795, "lng": 127.027637 },
-				// 		"steps": [[Object], [Object], [Object], [Object]],
-				// 		"travel_mode": "WALKING"
-				// 	}]
-				console.log( "json.routes[0].legs[0].steps[1].transit_details" )
-				console.log( json.routes[0].legs[0].steps[1].transit_details )
-
-
-
 				if ( json.status !== 'OK' ) {
 					const errorMessage = json.error_message || json.status || 'Unknown error';
 					return Promise.reject( errorMessage );
 				}
 
 				if ( json.routes.length ) {
-
+					
 					const steps = json.routes[0].legs[0].steps;
-					console.log(json.routes[0].legs[0].steps[3])
 					const route = steps.map((step) => {
-						return Promise.resolve( {
+						return {
 							distance: step.distance.value,
 							duration: step.duration.value,
 							coordinates: this.decode( [{ polyline: step.polyline }] ),
@@ -411,7 +312,7 @@ class MapViewDirections extends React.Component<Props, State> {
 							color: step.transit_details?.line?.color,
 							start_location: step.start_location,
 							end_location: step.end_location
-						} );
+						} ;
 					})
 					
 					return route;
@@ -505,7 +406,4 @@ class MapViewDirections extends React.Component<Props, State> {
 			</>
 		);
 	}
-
 }
-
-export default MapViewDirections;
