@@ -1,0 +1,1621 @@
+{
+    "geocoded_waypoints": [
+        {
+            "geocoder_status": "OK",
+            "partial_match": true,
+            "place_id": "ChIJpeKhoOiffDUR58XwBLzu4qE",
+            "types": [
+                "establishment",
+                "point_of_interest",
+                "university"
+            ]
+        },
+        {
+            "geocoder_status": "OK",
+            "place_id": "ChIJd3pwjby8fDURyV1XC6iKAxU",
+            "types": [
+                "establishment",
+                "point_of_interest",
+                "university"
+            ]
+        }
+    ],
+    "routes": [
+        {
+            "bounds": {
+                "northeast": {
+                    "lat": 37.590799,
+                    "lng": 127.032272
+                },
+                "southwest": {
+                    "lat": 37.4469711,
+                    "lng": 126.94818
+                }
+            },
+            "copyrights": "Map data ©2021 SK telecom",
+            "legs": [
+                {
+                    "arrival_time": {
+                        "text": "오전 1:02",
+                        "time_zone": "Asia/Seoul",
+                        "value": 1627747350
+                    },
+                    "departure_time": {
+                        "text": "오후 11:42",
+                        "time_zone": "Asia/Seoul",
+                        "value": 1627742521
+                    },
+                    "distance": {
+                        "text": "23.5 km",
+                        "value": 23453
+                    },
+                    "duration": {
+                        "text": "1시간 20분",
+                        "value": 4829
+                    },
+                    "end_address": "대한민국 서울특별시 성북구 안암동 안암로 145",
+                    "end_location": {
+                        "lat": 37.590799,
+                        "lng": 127.0277773
+                    },
+                    "start_address": "대한민국 서울특별시 관악구 관악로 1 서울대학교 생명과학부 504동",
+                    "start_location": {
+                        "lat": 37.4565095,
+                        "lng": 126.9500385
+                    },
+                    "steps": [
+                        {
+                            "distance": {
+                                "text": "91 m",
+                                "value": 91
+                            },
+                            "duration": {
+                                "text": "2분",
+                                "value": 92
+                            },
+                            "end_location": {
+                                "lat": 37.457002,
+                                "lng": 126.949203
+                            },
+                            "html_instructions": "농생대까지 도보",
+                            "polyline": {
+                                "points": "evrcFw|yeWaBfD"
+                            },
+                            "start_location": {
+                                "lat": 37.4565095,
+                                "lng": 126.9500385
+                            },
+                            "steps": [
+                                {
+                                    "distance": {
+                                        "text": "91 m",
+                                        "value": 91
+                                    },
+                                    "duration": {
+                                        "text": "2분",
+                                        "value": 92
+                                    },
+                                    "end_location": {
+                                        "lat": 37.457002,
+                                        "lng": 126.949203
+                                    },
+                                    "polyline": {
+                                        "points": "evrcFw|yeWaBfD"
+                                    },
+                                    "start_location": {
+                                        "lat": 37.4565095,
+                                        "lng": 126.9500385
+                                    },
+                                    "travel_mode": "WALKING"
+                                }
+                            ],
+                            "travel_mode": "WALKING"
+                        },
+                        {
+                            "distance": {
+                                "text": "3.9 km",
+                                "value": 3945
+                            },
+                            "duration": {
+                                "text": "7분",
+                                "value": 435
+                            },
+                            "end_location": {
+                                "lat": 37.466029,
+                                "lng": 126.952118
+                            },
+                            "html_instructions": "버스 신림2동차고지행",
+                            "polyline": {
+                                "points": "gyrcFowyeW?CfBYtFiAj@M`FcA|@O@?^CdBKj@A`@Fj@Xf@Th@J`ARn@DhBJl@AbBMlABh@FhDjAdCv@^FX?^K^]R]H[Cu@j@gE@_@Aa@EWCOMc@c@q@[Sk@Sy@M_AG_CPm@?sFH{BeAcC_AA?aImCUI}@_@CAwA}@cEkCoE}C}DwCa@W_@MUMgCi@s@Ug@U{@q@s@Ya@I[A]Bg@NiF`CA?IBQLM\\Ij@e@rDETUj@IRKJMHK@_AAgACu@Ec@G[KkAg@[MeAa@SIOCA?i@EQ?y@D_BHcAFc@Z_@j@ABSX?@Od@Oj@Aj@?f@@b@DZFj@Fl@JbAJnACh@?@@?"
+                            },
+                            "start_location": {
+                                "lat": 37.457002,
+                                "lng": 126.949203
+                            },
+                            "transit_details": {
+                                "arrival_stop": {
+                                    "location": {
+                                        "lat": 37.466029,
+                                        "lng": 126.952118
+                                    },
+                                    "name": "경영대"
+                                },
+                                "arrival_time": {
+                                    "text": "오후 11:50",
+                                    "time_zone": "Asia/Seoul",
+                                    "value": 1627743048
+                                },
+                                "departure_stop": {
+                                    "location": {
+                                        "lat": 37.457002,
+                                        "lng": 126.949203
+                                    },
+                                    "name": "농생대"
+                                },
+                                "departure_time": {
+                                    "text": "오후 11:43",
+                                    "time_zone": "Asia/Seoul",
+                                    "value": 1627742613
+                                },
+                                "headsign": "신림2동차고지",
+                                "headway": 600,
+                                "line": {
+                                    "agencies": [
+                                        {
+                                            "name": "서울특별시버스운송사업조합",
+                                            "url": "http://www.odsay.com/Bus/Seoul_Main.asp?CID=1000&LMenu=1"
+                                        }
+                                    ],
+                                    "color": "#0abb0c",
+                                    "name": "서울 지선버스",
+                                    "short_name": "5516",
+                                    "text_color": "#ffffff",
+                                    "vehicle": {
+                                        "icon": "//maps.gstatic.com/mapfiles/transit/iw2/6/bus2.png",
+                                        "name": "버스",
+                                        "type": "BUS"
+                                    }
+                                },
+                                "num_stops": 11
+                            },
+                            "travel_mode": "TRANSIT"
+                        },
+                        {
+                            "distance": {
+                                "text": "0.3 km",
+                                "value": 285
+                            },
+                            "duration": {
+                                "text": "5분",
+                                "value": 285
+                            },
+                            "end_location": {
+                                "lat": 37.467021,
+                                "lng": 126.949131
+                            },
+                            "html_instructions": "서울대학교까지 도보",
+                            "polyline": {
+                                "points": "uqtcFwizeWeEtQ"
+                            },
+                            "start_location": {
+                                "lat": 37.466029,
+                                "lng": 126.952118
+                            },
+                            "steps": [
+                                {
+                                    "distance": {
+                                        "text": "0.3 km",
+                                        "value": 285
+                                    },
+                                    "duration": {
+                                        "text": "5분",
+                                        "value": 285
+                                    },
+                                    "end_location": {
+                                        "lat": 37.467021,
+                                        "lng": 126.949131
+                                    },
+                                    "polyline": {
+                                        "points": "uqtcFwizeWeEtQ"
+                                    },
+                                    "start_location": {
+                                        "lat": 37.466029,
+                                        "lng": 126.952118
+                                    },
+                                    "travel_mode": "WALKING"
+                                }
+                            ],
+                            "travel_mode": "WALKING"
+                        },
+                        {
+                            "distance": {
+                                "text": "7.3 km",
+                                "value": 7258
+                            },
+                            "duration": {
+                                "text": "19분",
+                                "value": 1124
+                            },
+                            "end_location": {
+                                "lat": 37.523972,
+                                "lng": 126.962983
+                            },
+                            "html_instructions": "버스 덕은동행",
+                            "polyline": {
+                                "points": "{wtcFawyeWACiCoFwAaDgAwA_BkA}@UAA_Cu@oAa@iHiB_AQm@Gi@GmAGWAY?A?w@AoAJgH~@E@mEb@}Fp@w@DA?qAEoD[cHq@iD{@yEmDm@c@AAyD{CkCqBcAw@AAyFwEwGcFAAg@Km@MiADa@JYH{@^cEhCaB|@sAp@i@LqBFGAWCA?qCi@c@Hk@Ng@LeBzAaJlHaEhDa@\\eCvBcH|F}@t@_E~CkGnFiBzA{DbDa@Fm@KWYaCyEAC_@w@W[UOoAs@gGsCcEcBaIkD}EsB_FyBwCwAe@Uo@]AA[[[i@]m@uByEY_@iBoAcPkK{E{CAAAAqDsBeOkHmCwAiDkAwAk@oBmAu@m@?@"
+                            },
+                            "start_location": {
+                                "lat": 37.467021,
+                                "lng": 126.949131
+                            },
+                            "transit_details": {
+                                "arrival_stop": {
+                                    "location": {
+                                        "lat": 37.523972,
+                                        "lng": 126.962983
+                                    },
+                                    "name": "한강대교북단.LG유플러스"
+                                },
+                                "arrival_time": {
+                                    "text": "오전 12:16",
+                                    "time_zone": "Asia/Seoul",
+                                    "value": 1627744606
+                                },
+                                "departure_stop": {
+                                    "location": {
+                                        "lat": 37.467021,
+                                        "lng": 126.949131
+                                    },
+                                    "name": "서울대학교"
+                                },
+                                "departure_time": {
+                                    "text": "오후 11:58",
+                                    "time_zone": "Asia/Seoul",
+                                    "value": 1627743482
+                                },
+                                "headsign": "덕은동",
+                                "headway": 600,
+                                "line": {
+                                    "agencies": [
+                                        {
+                                            "name": "서울특별시버스운송사업조합",
+                                            "url": "http://www.odsay.com/Bus/Seoul_Main.asp?CID=1000&LMenu=1"
+                                        }
+                                    ],
+                                    "color": "#374ff2",
+                                    "name": "서울 간선버스",
+                                    "short_name": "750A",
+                                    "text_color": "#ffffff",
+                                    "vehicle": {
+                                        "icon": "//maps.gstatic.com/mapfiles/transit/iw2/6/bus2.png",
+                                        "name": "버스",
+                                        "type": "BUS"
+                                    }
+                                },
+                                "num_stops": 14
+                            },
+                            "travel_mode": "TRANSIT"
+                        },
+                        {
+                            "distance": {
+                                "text": "9.8 km",
+                                "value": 9805
+                            },
+                            "duration": {
+                                "text": "27분",
+                                "value": 1600
+                            },
+                            "end_location": {
+                                "lat": 37.576622,
+                                "lng": 127.023365
+                            },
+                            "html_instructions": "버스 수유동행",
+                            "polyline": {
+                                "points": "y{_dFsm|eW?AAAmAgAAAaQgPAAmDgDeQmPAAmEeEsQ}PAAcCoBc@QECA?u@IeAP}NdCwXzEA?_Cb@cF|@yL\\{IN_Eg@e@Gq@AqBWAAmL}BiDi@mDCuB?A?A?E?oFd@yBa@iIsHq@UyBg@g@Qm@g@Ke@MkDm@oCo@}CMcAQ{A?C}@qHe@}Bc@{AgAkA}BqAcAa@gAc@cAIeCg@gAUiDk@eAsB?qJG_FQoL?CMoHG}C?Cs@_`@E}B?C]gOAIKuG?CKeF?ICgCR{AdBwQ@Cb@}EDo@Ag@Qk@e@e@gB}@{CcBCAkGyCa@OoAIiBV{AX_DtAa@u@[gDgAgI]cBaAcF?CeB}IW{A_AqF}@iE[wAAAW}@q@sCCMmEyPS{@G[k@u@m@Uy@EeB@?@"
+                            },
+                            "start_location": {
+                                "lat": 37.523972,
+                                "lng": 126.962983
+                            },
+                            "transit_details": {
+                                "arrival_stop": {
+                                    "location": {
+                                        "lat": 37.576622,
+                                        "lng": 127.023365
+                                    },
+                                    "name": "신설동역1번출구"
+                                },
+                                "arrival_time": {
+                                    "text": "오전 12:46",
+                                    "time_zone": "Asia/Seoul",
+                                    "value": 1627746366
+                                },
+                                "departure_stop": {
+                                    "location": {
+                                        "lat": 37.523972,
+                                        "lng": 126.962983
+                                    },
+                                    "name": "한강대교북단.LG유플러스"
+                                },
+                                "departure_time": {
+                                    "text": "오전 12:19",
+                                    "time_zone": "Asia/Seoul",
+                                    "value": 1627744766
+                                },
+                                "headsign": "수유동",
+                                "headway": 660,
+                                "line": {
+                                    "agencies": [
+                                        {
+                                            "name": "서울특별시버스운송사업조합",
+                                            "url": "http://www.odsay.com/Bus/Seoul_Main.asp?CID=1000&LMenu=1"
+                                        }
+                                    ],
+                                    "color": "#374ff2",
+                                    "name": "서울 간선버스",
+                                    "short_name": "152",
+                                    "text_color": "#ffffff",
+                                    "vehicle": {
+                                        "icon": "//maps.gstatic.com/mapfiles/transit/iw2/6/bus2.png",
+                                        "name": "버스",
+                                        "type": "BUS"
+                                    }
+                                },
+                                "num_stops": 18
+                            },
+                            "travel_mode": "TRANSIT"
+                        },
+                        {
+                            "distance": {
+                                "text": "1.4 km",
+                                "value": 1367
+                            },
+                            "duration": {
+                                "text": "4분",
+                                "value": 243
+                            },
+                            "end_location": {
+                                "lat": 37.585579,
+                                "lng": 127.032272
+                            },
+                            "html_instructions": "버스 우이동행",
+                            "polyline": {
+                                "points": "{djdFaghfW?AA?aIFMEWU{@aBgDqFQYAAyD{GuIkN?AH_@@YCu@IYOMAAYO[AU@YPC@aGkFwC_CuBcB?@"
+                            },
+                            "start_location": {
+                                "lat": 37.576622,
+                                "lng": 127.023365
+                            },
+                            "transit_details": {
+                                "arrival_stop": {
+                                    "location": {
+                                        "lat": 37.585579,
+                                        "lng": 127.032272
+                                    },
+                                    "name": "우신향병원"
+                                },
+                                "arrival_time": {
+                                    "text": "오전 12:50",
+                                    "time_zone": "Asia/Seoul",
+                                    "value": 1627746647
+                                },
+                                "departure_stop": {
+                                    "location": {
+                                        "lat": 37.576622,
+                                        "lng": 127.023365
+                                    },
+                                    "name": "신설동역1번출구"
+                                },
+                                "departure_time": {
+                                    "text": "오전 12:46",
+                                    "time_zone": "Asia/Seoul",
+                                    "value": 1627746404
+                                },
+                                "headsign": "우이동",
+                                "headway": 600,
+                                "line": {
+                                    "agencies": [
+                                        {
+                                            "name": "서울특별시버스운송사업조합",
+                                            "url": "http://www.odsay.com/Bus/Seoul_Main.asp?CID=1000&LMenu=1"
+                                        }
+                                    ],
+                                    "color": "#374ff2",
+                                    "name": "서울 간선버스",
+                                    "short_name": "144",
+                                    "text_color": "#ffffff",
+                                    "vehicle": {
+                                        "icon": "//maps.gstatic.com/mapfiles/transit/iw2/6/bus2.png",
+                                        "name": "버스",
+                                        "type": "BUS"
+                                    }
+                                },
+                                "num_stops": 3
+                            },
+                            "travel_mode": "TRANSIT"
+                        },
+                        {
+                            "distance": {
+                                "text": "0.7 km",
+                                "value": 702
+                            },
+                            "duration": {
+                                "text": "12분",
+                                "value": 703
+                            },
+                            "end_location": {
+                                "lat": 37.590799,
+                                "lng": 127.0277773
+                            },
+                            "html_instructions": "대한민국 서울특별시 성북구 안암동 안암로 145까지 도보",
+                            "polyline": {
+                                "points": "{|kdFu~ifWs_@`["
+                            },
+                            "start_location": {
+                                "lat": 37.585579,
+                                "lng": 127.032272
+                            },
+                            "steps": [
+                                {
+                                    "distance": {
+                                        "text": "0.7 km",
+                                        "value": 702
+                                    },
+                                    "duration": {
+                                        "text": "12분",
+                                        "value": 703
+                                    },
+                                    "end_location": {
+                                        "lat": 37.590799,
+                                        "lng": 127.0277773
+                                    },
+                                    "polyline": {
+                                        "points": "{|kdFu~ifWs_@`["
+                                    },
+                                    "start_location": {
+                                        "lat": 37.585579,
+                                        "lng": 127.032272
+                                    },
+                                    "travel_mode": "WALKING"
+                                }
+                            ],
+                            "travel_mode": "WALKING"
+                        }
+                    ],
+                    "traffic_speed_entry": [],
+                    "via_waypoint": []
+                }
+            ],
+            "overview_polyline": {
+                "points": "evrcFw|yeWaBfD?CfBYtFiAj@M`FcA|@O`@CdBKj@A`@Fj@Xf@Th@J`ARn@DhBJl@AbBMlABh@FhDjAdCv@^FX?^K^]R]H[Cu@j@gE@_@Gy@Qs@c@q@[Sk@Sy@M_AG_CPaHH{BeAcC_AcImCsAi@_HkEmKuHaAe@UMgCi@{Ak@{@q@s@Y}@K]Bg@NkF`CIBQLM\\o@~EETUj@IRKJYJgCEyAMiEcBc@Mk@EkADcDPc@Z_@j@U\\Of@Oj@Aj@@jALfARpBJnACh@@@eEtQkCsFwAaDgAwA_BkA}@UaCw@oAa@iHiBmBYwBOq@Ay@AoAJgH~@sEd@}Fp@w@DsAEsMmAiD{@yEmDo@e@kKgIyFwEwGcFi@Mm@MiAD{@T{@^cEhCuDnBi@LqBF_@EsCi@oAXg@LeBzAcPvMgDtCaJrH_E~CkGnFeH~Fa@Fm@KWYaCyEa@{@W[UOoAs@gGsCeOoG}LmF}DmBq@_@[[[i@sCgGY_@iBoA_WgPAAsDuBeOkHmCwAiDkAwAk@oBmAu@m@oAiAsVsUij@sh@eCqBi@Uw@IcQvC}c@|HyL\\{INeFo@q@AqBWoL_CiDi@mDCwB?G?oFd@yBa@iIsHq@UaDy@m@g@Ke@MkDm@oCo@}CMcAQ_B}@qHe@}Bc@{AgAkA}BqAcAa@gAc@cAImE}@iDk@eAsB?qJG_FQsLiAqn@e@sSWiOCgCR{AfB{Qh@mGAg@Qk@e@e@gB}@_DeBkGyCa@OoAIiBV{AX_DtAa@u@[gDgAgI]cBaAgF}ByL_AqF}@iE]yAiAqEmF_Tk@u@m@Uy@EeB@?@?AcIFMEWU{@aBgDqFS[yD{GuIkNHa@AoAIYOM[Qq@?]RaGkFwC_CuBaBs_@`["
+            },
+            "summary": "",
+            "warnings": [
+                "도보 경로는 베타 서비스입니다. 주의 – 이 경로에는 인도 또는 보행 경로가 누락되었을 수도 있습니다."
+            ],
+            "waypoint_order": []
+        },
+        {
+            "bounds": {
+                "northeast": {
+                    "lat": 37.590799,
+                    "lng": 127.032272
+                },
+                "southwest": {
+                    "lat": 37.4565095,
+                    "lng": 126.94818
+                }
+            },
+            "copyrights": "Map data ©2021 SK telecom",
+            "legs": [
+                {
+                    "arrival_time": {
+                        "text": "오전 1:02",
+                        "time_zone": "Asia/Seoul",
+                        "value": 1627747350
+                    },
+                    "departure_time": {
+                        "text": "오후 11:38",
+                        "time_zone": "Asia/Seoul",
+                        "value": 1627742310
+                    },
+                    "distance": {
+                        "text": "20.3 km",
+                        "value": 20303
+                    },
+                    "duration": {
+                        "text": "1시간 24분",
+                        "value": 5040
+                    },
+                    "end_address": "대한민국 서울특별시 성북구 안암동 안암로 145",
+                    "end_location": {
+                        "lat": 37.590799,
+                        "lng": 127.0277773
+                    },
+                    "start_address": "대한민국 서울특별시 관악구 관악로 1 서울대학교 생명과학부 504동",
+                    "start_location": {
+                        "lat": 37.4565095,
+                        "lng": 126.9500385
+                    },
+                    "steps": [
+                        {
+                            "distance": {
+                                "text": "1.2 km",
+                                "value": 1171
+                            },
+                            "duration": {
+                                "text": "20분",
+                                "value": 1172
+                            },
+                            "end_location": {
+                                "lat": 37.467021,
+                                "lng": 126.949131
+                            },
+                            "html_instructions": "서울대학교까지 도보",
+                            "polyline": {
+                                "points": "evrcFw|yeWu`AtD"
+                            },
+                            "start_location": {
+                                "lat": 37.4565095,
+                                "lng": 126.9500385
+                            },
+                            "steps": [
+                                {
+                                    "distance": {
+                                        "text": "1.2 km",
+                                        "value": 1171
+                                    },
+                                    "duration": {
+                                        "text": "20분",
+                                        "value": 1172
+                                    },
+                                    "end_location": {
+                                        "lat": 37.467021,
+                                        "lng": 126.949131
+                                    },
+                                    "polyline": {
+                                        "points": "evrcFw|yeWu`AtD"
+                                    },
+                                    "start_location": {
+                                        "lat": 37.4565095,
+                                        "lng": 126.9500385
+                                    },
+                                    "travel_mode": "WALKING"
+                                }
+                            ],
+                            "travel_mode": "WALKING"
+                        },
+                        {
+                            "distance": {
+                                "text": "7.3 km",
+                                "value": 7258
+                            },
+                            "duration": {
+                                "text": "19분",
+                                "value": 1124
+                            },
+                            "end_location": {
+                                "lat": 37.523972,
+                                "lng": 126.962983
+                            },
+                            "html_instructions": "버스 덕은동행",
+                            "polyline": {
+                                "points": "{wtcFawyeWACiCoFwAaDgAwA_BkA}@UAA_Cu@oAa@iHiB_AQm@Gi@GmAGWAY?A?w@AoAJgH~@E@mEb@}Fp@w@DA?qAEoD[cHq@iD{@yEmDm@c@AAyD{CkCqBcAw@AAyFwEwGcFAAg@Km@MiADa@JYH{@^cEhCaB|@sAp@i@LqBFGAWCA?qCi@c@Hk@Ng@LeBzAaJlHaEhDa@\\eCvBcH|F}@t@_E~CkGnFiBzA{DbDa@Fm@KWYaCyEAC_@w@W[UOoAs@gGsCcEcBaIkD}EsB_FyBwCwAe@Uo@]AA[[[i@]m@uByEY_@iBoAcPkK{E{CAAAAqDsBeOkHmCwAiDkAwAk@oBmAu@m@?@"
+                            },
+                            "start_location": {
+                                "lat": 37.467021,
+                                "lng": 126.949131
+                            },
+                            "transit_details": {
+                                "arrival_stop": {
+                                    "location": {
+                                        "lat": 37.523972,
+                                        "lng": 126.962983
+                                    },
+                                    "name": "한강대교북단.LG유플러스"
+                                },
+                                "arrival_time": {
+                                    "text": "오전 12:16",
+                                    "time_zone": "Asia/Seoul",
+                                    "value": 1627744606
+                                },
+                                "departure_stop": {
+                                    "location": {
+                                        "lat": 37.467021,
+                                        "lng": 126.949131
+                                    },
+                                    "name": "서울대학교"
+                                },
+                                "departure_time": {
+                                    "text": "오후 11:58",
+                                    "time_zone": "Asia/Seoul",
+                                    "value": 1627743482
+                                },
+                                "headsign": "덕은동",
+                                "headway": 600,
+                                "line": {
+                                    "agencies": [
+                                        {
+                                            "name": "서울특별시버스운송사업조합",
+                                            "url": "http://www.odsay.com/Bus/Seoul_Main.asp?CID=1000&LMenu=1"
+                                        }
+                                    ],
+                                    "color": "#374ff2",
+                                    "name": "서울 간선버스",
+                                    "short_name": "750A",
+                                    "text_color": "#ffffff",
+                                    "vehicle": {
+                                        "icon": "//maps.gstatic.com/mapfiles/transit/iw2/6/bus2.png",
+                                        "name": "버스",
+                                        "type": "BUS"
+                                    }
+                                },
+                                "num_stops": 14
+                            },
+                            "travel_mode": "TRANSIT"
+                        },
+                        {
+                            "distance": {
+                                "text": "9.8 km",
+                                "value": 9805
+                            },
+                            "duration": {
+                                "text": "27분",
+                                "value": 1600
+                            },
+                            "end_location": {
+                                "lat": 37.576622,
+                                "lng": 127.023365
+                            },
+                            "html_instructions": "버스 수유동행",
+                            "polyline": {
+                                "points": "y{_dFsm|eW?AAAmAgAAAaQgPAAmDgDeQmPAAmEeEsQ}PAAcCoBc@QECA?u@IeAP}NdCwXzEA?_Cb@cF|@yL\\{IN_Eg@e@Gq@AqBWAAmL}BiDi@mDCuB?A?A?E?oFd@yBa@iIsHq@UyBg@g@Qm@g@Ke@MkDm@oCo@}CMcAQ{A?C}@qHe@}Bc@{AgAkA}BqAcAa@gAc@cAIeCg@gAUiDk@eAsB?qJG_FQoL?CMoHG}C?Cs@_`@E}B?C]gOAIKuG?CKeF?ICgCR{AdBwQ@Cb@}EDo@Ag@Qk@e@e@gB}@{CcBCAkGyCa@OoAIiBV{AX_DtAa@u@[gDgAgI]cBaAcF?CeB}IW{A_AqF}@iE[wAAAW}@q@sCCMmEyPS{@G[k@u@m@Uy@EeB@?@"
+                            },
+                            "start_location": {
+                                "lat": 37.523972,
+                                "lng": 126.962983
+                            },
+                            "transit_details": {
+                                "arrival_stop": {
+                                    "location": {
+                                        "lat": 37.576622,
+                                        "lng": 127.023365
+                                    },
+                                    "name": "신설동역1번출구"
+                                },
+                                "arrival_time": {
+                                    "text": "오전 12:46",
+                                    "time_zone": "Asia/Seoul",
+                                    "value": 1627746366
+                                },
+                                "departure_stop": {
+                                    "location": {
+                                        "lat": 37.523972,
+                                        "lng": 126.962983
+                                    },
+                                    "name": "한강대교북단.LG유플러스"
+                                },
+                                "departure_time": {
+                                    "text": "오전 12:19",
+                                    "time_zone": "Asia/Seoul",
+                                    "value": 1627744766
+                                },
+                                "headsign": "수유동",
+                                "headway": 660,
+                                "line": {
+                                    "agencies": [
+                                        {
+                                            "name": "서울특별시버스운송사업조합",
+                                            "url": "http://www.odsay.com/Bus/Seoul_Main.asp?CID=1000&LMenu=1"
+                                        }
+                                    ],
+                                    "color": "#374ff2",
+                                    "name": "서울 간선버스",
+                                    "short_name": "152",
+                                    "text_color": "#ffffff",
+                                    "vehicle": {
+                                        "icon": "//maps.gstatic.com/mapfiles/transit/iw2/6/bus2.png",
+                                        "name": "버스",
+                                        "type": "BUS"
+                                    }
+                                },
+                                "num_stops": 18
+                            },
+                            "travel_mode": "TRANSIT"
+                        },
+                        {
+                            "distance": {
+                                "text": "1.4 km",
+                                "value": 1367
+                            },
+                            "duration": {
+                                "text": "4분",
+                                "value": 243
+                            },
+                            "end_location": {
+                                "lat": 37.585579,
+                                "lng": 127.032272
+                            },
+                            "html_instructions": "버스 우이동행",
+                            "polyline": {
+                                "points": "{djdFaghfW?AA?aIFMEWU{@aBgDqFQYAAyD{GuIkN?AH_@@YCu@IYOMAAYO[AU@YPC@aGkFwC_CuBcB?@"
+                            },
+                            "start_location": {
+                                "lat": 37.576622,
+                                "lng": 127.023365
+                            },
+                            "transit_details": {
+                                "arrival_stop": {
+                                    "location": {
+                                        "lat": 37.585579,
+                                        "lng": 127.032272
+                                    },
+                                    "name": "우신향병원"
+                                },
+                                "arrival_time": {
+                                    "text": "오전 12:50",
+                                    "time_zone": "Asia/Seoul",
+                                    "value": 1627746647
+                                },
+                                "departure_stop": {
+                                    "location": {
+                                        "lat": 37.576622,
+                                        "lng": 127.023365
+                                    },
+                                    "name": "신설동역1번출구"
+                                },
+                                "departure_time": {
+                                    "text": "오전 12:46",
+                                    "time_zone": "Asia/Seoul",
+                                    "value": 1627746404
+                                },
+                                "headsign": "우이동",
+                                "headway": 600,
+                                "line": {
+                                    "agencies": [
+                                        {
+                                            "name": "서울특별시버스운송사업조합",
+                                            "url": "http://www.odsay.com/Bus/Seoul_Main.asp?CID=1000&LMenu=1"
+                                        }
+                                    ],
+                                    "color": "#374ff2",
+                                    "name": "서울 간선버스",
+                                    "short_name": "144",
+                                    "text_color": "#ffffff",
+                                    "vehicle": {
+                                        "icon": "//maps.gstatic.com/mapfiles/transit/iw2/6/bus2.png",
+                                        "name": "버스",
+                                        "type": "BUS"
+                                    }
+                                },
+                                "num_stops": 3
+                            },
+                            "travel_mode": "TRANSIT"
+                        },
+                        {
+                            "distance": {
+                                "text": "0.7 km",
+                                "value": 702
+                            },
+                            "duration": {
+                                "text": "12분",
+                                "value": 703
+                            },
+                            "end_location": {
+                                "lat": 37.590799,
+                                "lng": 127.0277773
+                            },
+                            "html_instructions": "대한민국 서울특별시 성북구 안암동 안암로 145까지 도보",
+                            "polyline": {
+                                "points": "{|kdFu~ifWs_@`["
+                            },
+                            "start_location": {
+                                "lat": 37.585579,
+                                "lng": 127.032272
+                            },
+                            "steps": [
+                                {
+                                    "distance": {
+                                        "text": "0.7 km",
+                                        "value": 702
+                                    },
+                                    "duration": {
+                                        "text": "12분",
+                                        "value": 703
+                                    },
+                                    "end_location": {
+                                        "lat": 37.590799,
+                                        "lng": 127.0277773
+                                    },
+                                    "polyline": {
+                                        "points": "{|kdFu~ifWs_@`["
+                                    },
+                                    "start_location": {
+                                        "lat": 37.585579,
+                                        "lng": 127.032272
+                                    },
+                                    "travel_mode": "WALKING"
+                                }
+                            ],
+                            "travel_mode": "WALKING"
+                        }
+                    ],
+                    "traffic_speed_entry": [],
+                    "via_waypoint": []
+                }
+            ],
+            "overview_polyline": {
+                "points": "evrcFw|yeWu`AtDkCsFwAaDgAwA_BkA}@UaCw@oAa@iHiBmBYwBOkBCoAJgH~@sEd@}Fp@w@DsAEsMmAiD{@yEmDo@e@eImGeAy@yFwEwGcFi@Mm@MiAD{@T{@^cEhCuDnBi@LqBF_@EsCi@oAXg@LeBzAcPvMgDtCaJrH_E~CkGnFeH~Fa@Fm@KWYaCyEa@{@W[UOoAs@gGsCeOoG}LmFoFmC[[[i@sCgGY_@iBoA_WgPuDwBeOkHmCwAiDkAwAk@oBmAu@m@sSsRwVyUaXcWeCqBi@Uw@I}j@rJcJ`ByL\\{INeFo@q@AqBWoL_CiDi@mDCwB?G?oFd@yBa@iIsHq@UaDy@m@g@Ke@MkDm@oCo@}CMcAQ_B}@qHe@}Bc@{AgAkA}BqAcAa@gAc@cAImE}@iDk@eAsB?qJG_FQsLUmMy@ed@k@kXKoFCgCR{AfB{Qh@mGAg@Qk@e@e@gB}@_DeBkGyCa@OoAIiBV{AX_DtAa@u@[gDgAgI]cBaAgF}ByL_AqF}@iE]yA{GyW[wAk@u@m@Uy@EeB@?@?AcIFMEWU{@aBgDqFS[yD{GuIkNHa@AoAIYOM[Qq@?]RaGkFwC_CuBaBs_@`["
+            },
+            "summary": "",
+            "warnings": [
+                "도보 경로는 베타 서비스입니다. 주의 – 이 경로에는 인도 또는 보행 경로가 누락되었을 수도 있습니다."
+            ],
+            "waypoint_order": []
+        },
+        {
+            "bounds": {
+                "northeast": {
+                    "lat": 37.590799,
+                    "lng": 127.032272
+                },
+                "southwest": {
+                    "lat": 37.4469711,
+                    "lng": 126.94818
+                }
+            },
+            "copyrights": "Map data ©2021 SK telecom",
+            "legs": [
+                {
+                    "arrival_time": {
+                        "text": "오전 1:10",
+                        "time_zone": "Asia/Seoul",
+                        "value": 1627747819
+                    },
+                    "departure_time": {
+                        "text": "오후 11:42",
+                        "time_zone": "Asia/Seoul",
+                        "value": 1627742521
+                    },
+                    "distance": {
+                        "text": "23.7 km",
+                        "value": 23684
+                    },
+                    "duration": {
+                        "text": "1시간 28분",
+                        "value": 5298
+                    },
+                    "end_address": "대한민국 서울특별시 성북구 안암동 안암로 145",
+                    "end_location": {
+                        "lat": 37.590799,
+                        "lng": 127.0277773
+                    },
+                    "start_address": "대한민국 서울특별시 관악구 관악로 1 서울대학교 생명과학부 504동",
+                    "start_location": {
+                        "lat": 37.4565095,
+                        "lng": 126.9500385
+                    },
+                    "steps": [
+                        {
+                            "distance": {
+                                "text": "91 m",
+                                "value": 91
+                            },
+                            "duration": {
+                                "text": "2분",
+                                "value": 92
+                            },
+                            "end_location": {
+                                "lat": 37.457002,
+                                "lng": 126.949203
+                            },
+                            "html_instructions": "농생대까지 도보",
+                            "polyline": {
+                                "points": "evrcFw|yeWaBfD"
+                            },
+                            "start_location": {
+                                "lat": 37.4565095,
+                                "lng": 126.9500385
+                            },
+                            "steps": [
+                                {
+                                    "distance": {
+                                        "text": "91 m",
+                                        "value": 91
+                                    },
+                                    "duration": {
+                                        "text": "2분",
+                                        "value": 92
+                                    },
+                                    "end_location": {
+                                        "lat": 37.457002,
+                                        "lng": 126.949203
+                                    },
+                                    "polyline": {
+                                        "points": "evrcFw|yeWaBfD"
+                                    },
+                                    "start_location": {
+                                        "lat": 37.4565095,
+                                        "lng": 126.9500385
+                                    },
+                                    "travel_mode": "WALKING"
+                                }
+                            ],
+                            "travel_mode": "WALKING"
+                        },
+                        {
+                            "distance": {
+                                "text": "3.9 km",
+                                "value": 3945
+                            },
+                            "duration": {
+                                "text": "7분",
+                                "value": 435
+                            },
+                            "end_location": {
+                                "lat": 37.466029,
+                                "lng": 126.952118
+                            },
+                            "html_instructions": "버스 신림2동차고지행",
+                            "polyline": {
+                                "points": "gyrcFowyeW?CfBYtFiAj@M`FcA|@O@?^CdBKj@A`@Fj@Xf@Th@J`ARn@DhBJl@AbBMlABh@FhDjAdCv@^FX?^K^]R]H[Cu@j@gE@_@Aa@EWCOMc@c@q@[Sk@Sy@M_AG_CPm@?sFH{BeAcC_AA?aImCUI}@_@CAwA}@cEkCoE}C}DwCa@W_@MUMgCi@s@Ug@U{@q@s@Ya@I[A]Bg@NiF`CA?IBQLM\\Ij@e@rDETUj@IRKJMHK@_AAgACu@Ec@G[KkAg@[MeAa@SIOCA?i@EQ?y@D_BHcAFc@Z_@j@ABSX?@Od@Oj@Aj@?f@@b@DZFj@Fl@JbAJnACh@?@@?"
+                            },
+                            "start_location": {
+                                "lat": 37.457002,
+                                "lng": 126.949203
+                            },
+                            "transit_details": {
+                                "arrival_stop": {
+                                    "location": {
+                                        "lat": 37.466029,
+                                        "lng": 126.952118
+                                    },
+                                    "name": "경영대"
+                                },
+                                "arrival_time": {
+                                    "text": "오후 11:50",
+                                    "time_zone": "Asia/Seoul",
+                                    "value": 1627743048
+                                },
+                                "departure_stop": {
+                                    "location": {
+                                        "lat": 37.457002,
+                                        "lng": 126.949203
+                                    },
+                                    "name": "농생대"
+                                },
+                                "departure_time": {
+                                    "text": "오후 11:43",
+                                    "time_zone": "Asia/Seoul",
+                                    "value": 1627742613
+                                },
+                                "headsign": "신림2동차고지",
+                                "headway": 600,
+                                "line": {
+                                    "agencies": [
+                                        {
+                                            "name": "서울특별시버스운송사업조합",
+                                            "url": "http://www.odsay.com/Bus/Seoul_Main.asp?CID=1000&LMenu=1"
+                                        }
+                                    ],
+                                    "color": "#0abb0c",
+                                    "name": "서울 지선버스",
+                                    "short_name": "5516",
+                                    "text_color": "#ffffff",
+                                    "vehicle": {
+                                        "icon": "//maps.gstatic.com/mapfiles/transit/iw2/6/bus2.png",
+                                        "name": "버스",
+                                        "type": "BUS"
+                                    }
+                                },
+                                "num_stops": 11
+                            },
+                            "travel_mode": "TRANSIT"
+                        },
+                        {
+                            "distance": {
+                                "text": "0.3 km",
+                                "value": 285
+                            },
+                            "duration": {
+                                "text": "5분",
+                                "value": 285
+                            },
+                            "end_location": {
+                                "lat": 37.467021,
+                                "lng": 126.949131
+                            },
+                            "html_instructions": "서울대학교까지 도보",
+                            "polyline": {
+                                "points": "uqtcFwizeWeEtQ"
+                            },
+                            "start_location": {
+                                "lat": 37.466029,
+                                "lng": 126.952118
+                            },
+                            "steps": [
+                                {
+                                    "distance": {
+                                        "text": "0.3 km",
+                                        "value": 285
+                                    },
+                                    "duration": {
+                                        "text": "5분",
+                                        "value": 285
+                                    },
+                                    "end_location": {
+                                        "lat": 37.467021,
+                                        "lng": 126.949131
+                                    },
+                                    "polyline": {
+                                        "points": "uqtcFwizeWeEtQ"
+                                    },
+                                    "start_location": {
+                                        "lat": 37.466029,
+                                        "lng": 126.952118
+                                    },
+                                    "travel_mode": "WALKING"
+                                }
+                            ],
+                            "travel_mode": "WALKING"
+                        },
+                        {
+                            "distance": {
+                                "text": "10.6 km",
+                                "value": 10621
+                            },
+                            "duration": {
+                                "text": "27분",
+                                "value": 1644
+                            },
+                            "end_location": {
+                                "lat": 37.550976,
+                                "lng": 126.972149
+                            },
+                            "html_instructions": "버스 덕은동행",
+                            "polyline": {
+                                "points": "{wtcFawyeWACiCoFwAaDgAwA_BkA}@UAA_Cu@oAa@iHiB_AQm@Gi@GmAGWAY?A?w@AoAJgH~@E@mEb@}Fp@w@DA?qAEoD[cHq@iD{@yEmDm@c@AAyD{CkCqBcAw@AAyFwEwGcFAAg@Km@MiADa@JYH{@^cEhCaB|@sAp@i@LqBFGAWCA?qCi@c@Hk@Ng@LeBzAaJlHaEhDa@\\eCvBcH|F}@t@_E~CkGnFiBzA{DbDa@Fm@KWYaCyEAC_@w@W[UOoAs@gGsCcEcBaIkD}EsB_FyBwCwAe@Uo@]AA[[[i@]m@uByEY_@iBoAcPkK{E{CAAAAqDsBeOkHmCwAiDkAwAk@oBmAu@m@AAmAgAAAaQgPAAmDgDeQmPAAmEeEsQ}PAAcCoBc@QECA?u@IeAP}NdCwXzEA?_Cb@cF|@yL\\{IN_Eg@e@Gq@AqBWA@"
+                            },
+                            "start_location": {
+                                "lat": 37.467021,
+                                "lng": 126.949131
+                            },
+                            "transit_details": {
+                                "arrival_stop": {
+                                    "location": {
+                                        "lat": 37.550976,
+                                        "lng": 126.972149
+                                    },
+                                    "name": "갈월동"
+                                },
+                                "arrival_time": {
+                                    "text": "오전 12:25",
+                                    "time_zone": "Asia/Seoul",
+                                    "value": 1627745126
+                                },
+                                "departure_stop": {
+                                    "location": {
+                                        "lat": 37.467021,
+                                        "lng": 126.949131
+                                    },
+                                    "name": "서울대학교"
+                                },
+                                "departure_time": {
+                                    "text": "오후 11:58",
+                                    "time_zone": "Asia/Seoul",
+                                    "value": 1627743482
+                                },
+                                "headsign": "덕은동",
+                                "headway": 600,
+                                "line": {
+                                    "agencies": [
+                                        {
+                                            "name": "서울특별시버스운송사업조합",
+                                            "url": "http://www.odsay.com/Bus/Seoul_Main.asp?CID=1000&LMenu=1"
+                                        }
+                                    ],
+                                    "color": "#374ff2",
+                                    "name": "서울 간선버스",
+                                    "short_name": "750A",
+                                    "text_color": "#ffffff",
+                                    "vehicle": {
+                                        "icon": "//maps.gstatic.com/mapfiles/transit/iw2/6/bus2.png",
+                                        "name": "버스",
+                                        "type": "BUS"
+                                    }
+                                },
+                                "num_stops": 19
+                            },
+                            "travel_mode": "TRANSIT"
+                        },
+                        {
+                            "distance": {
+                                "text": "2.4 km",
+                                "value": 2353
+                            },
+                            "duration": {
+                                "text": "8분",
+                                "value": 508
+                            },
+                            "end_location": {
+                                "lat": 37.567702,
+                                "lng": 126.98294
+                            },
+                            "html_instructions": "버스 우이동행",
+                            "polyline": {
+                                "points": "sdedF}f~eW@AAAmL}BiDi@mDCuB?A?A?E?oFd@yBa@iIsHq@UyBg@g@Qm@g@Ke@MkDm@oCo@}CMcAQ{A?C}@qHe@}Bc@{AgAkA}BqAeAYcBa@mDs@k@K_Dc@{@MeDQuEGQ?"
+                            },
+                            "start_location": {
+                                "lat": 37.550976,
+                                "lng": 126.972149
+                            },
+                            "transit_details": {
+                                "arrival_stop": {
+                                    "location": {
+                                        "lat": 37.567702,
+                                        "lng": 126.98294
+                                    },
+                                    "name": "우리은행종로지점"
+                                },
+                                "arrival_time": {
+                                    "text": "오전 12:33",
+                                    "time_zone": "Asia/Seoul",
+                                    "value": 1627745638
+                                },
+                                "departure_stop": {
+                                    "location": {
+                                        "lat": 37.550976,
+                                        "lng": 126.972149
+                                    },
+                                    "name": "갈월동"
+                                },
+                                "departure_time": {
+                                    "text": "오전 12:25",
+                                    "time_zone": "Asia/Seoul",
+                                    "value": 1627745130
+                                },
+                                "headsign": "우이동",
+                                "headway": 840,
+                                "line": {
+                                    "agencies": [
+                                        {
+                                            "name": "서울특별시버스운송사업조합",
+                                            "url": "http://www.odsay.com/Bus/Seoul_Main.asp?CID=1000&LMenu=1"
+                                        }
+                                    ],
+                                    "color": "#374ff2",
+                                    "name": "서울 간선버스",
+                                    "short_name": "151",
+                                    "text_color": "#ffffff",
+                                    "vehicle": {
+                                        "icon": "//maps.gstatic.com/mapfiles/transit/iw2/6/bus2.png",
+                                        "name": "버스",
+                                        "type": "BUS"
+                                    }
+                                },
+                                "num_stops": 4
+                            },
+                            "travel_mode": "TRANSIT"
+                        },
+                        {
+                            "distance": {
+                                "text": "5.7 km",
+                                "value": 5687
+                            },
+                            "duration": {
+                                "text": "22분",
+                                "value": 1324
+                            },
+                            "end_location": {
+                                "lat": 37.585579,
+                                "lng": 127.032272
+                            },
+                            "html_instructions": "버스 월계동행",
+                            "polyline": {
+                                "points": "cmhdFkj`fWmC@Y?M]@S`@gE?CXkCJcAl@yELgC@]F}C?mB?CCyAUmJ[uHUmH?C?CWaIKmBIoB?CUyE{AoMe@}D?CYmCAcCAiBC}G?CCeLMyHGwD?ACy@FyCC_RA}D?C?aIEkBe@iCc@cBm@cB{@oBk@sAACmBaF[iAWqAQiBEyABqADo@?I@CTiBBe@C[EUSMqB?G?oHHA?sBBgMPA?aIFMEWU{@aBgDqFQYAAyD{GuIkN?AH_@@YCu@IYOMAAYO[AU@YPC@aGkFwC_CuBcB?@"
+                            },
+                            "start_location": {
+                                "lat": 37.567702,
+                                "lng": 126.98294
+                            },
+                            "transit_details": {
+                                "arrival_stop": {
+                                    "location": {
+                                        "lat": 37.585579,
+                                        "lng": 127.032272
+                                    },
+                                    "name": "우신향병원"
+                                },
+                                "arrival_time": {
+                                    "text": "오전 12:58",
+                                    "time_zone": "Asia/Seoul",
+                                    "value": 1627747116
+                                },
+                                "departure_stop": {
+                                    "location": {
+                                        "lat": 37.567702,
+                                        "lng": 126.98294
+                                    },
+                                    "name": "우리은행종로지점"
+                                },
+                                "departure_time": {
+                                    "text": "오전 12:36",
+                                    "time_zone": "Asia/Seoul",
+                                    "value": 1627745792
+                                },
+                                "headsign": "월계동",
+                                "headway": 780,
+                                "line": {
+                                    "agencies": [
+                                        {
+                                            "name": "서울특별시버스운송사업조합",
+                                            "url": "http://www.odsay.com/Bus/Seoul_Main.asp?CID=1000&LMenu=1"
+                                        }
+                                    ],
+                                    "color": "#374ff2",
+                                    "name": "서울 간선버스",
+                                    "short_name": "173",
+                                    "text_color": "#ffffff",
+                                    "vehicle": {
+                                        "icon": "//maps.gstatic.com/mapfiles/transit/iw2/6/bus2.png",
+                                        "name": "버스",
+                                        "type": "BUS"
+                                    }
+                                },
+                                "num_stops": 15
+                            },
+                            "travel_mode": "TRANSIT"
+                        },
+                        {
+                            "distance": {
+                                "text": "0.7 km",
+                                "value": 702
+                            },
+                            "duration": {
+                                "text": "12분",
+                                "value": 703
+                            },
+                            "end_location": {
+                                "lat": 37.590799,
+                                "lng": 127.0277773
+                            },
+                            "html_instructions": "대한민국 서울특별시 성북구 안암동 안암로 145까지 도보",
+                            "polyline": {
+                                "points": "{|kdFu~ifWs_@`["
+                            },
+                            "start_location": {
+                                "lat": 37.585579,
+                                "lng": 127.032272
+                            },
+                            "steps": [
+                                {
+                                    "distance": {
+                                        "text": "0.7 km",
+                                        "value": 702
+                                    },
+                                    "duration": {
+                                        "text": "12분",
+                                        "value": 703
+                                    },
+                                    "end_location": {
+                                        "lat": 37.590799,
+                                        "lng": 127.0277773
+                                    },
+                                    "polyline": {
+                                        "points": "{|kdFu~ifWs_@`["
+                                    },
+                                    "start_location": {
+                                        "lat": 37.585579,
+                                        "lng": 127.032272
+                                    },
+                                    "travel_mode": "WALKING"
+                                }
+                            ],
+                            "travel_mode": "WALKING"
+                        }
+                    ],
+                    "traffic_speed_entry": [],
+                    "via_waypoint": []
+                }
+            ],
+            "overview_polyline": {
+                "points": "evrcFw|yeWaBfD?CfBYtFiAj@M`FcA|@O`@CdBKj@A`@Fj@Xf@Th@J`ARn@DhBJl@AbBMlABh@FhDjAdCv@^FX?^K^]R]H[Cu@j@gE@_@Gy@Qs@c@q@[Sk@Sy@M_AG_CPaHH{BeAcC_AcImCsAi@_HkEmKuHaAe@UMgCi@{Ak@{@q@s@Y}@K]Bg@NkF`CIBQLM\\o@~EETUj@IRKJYJgCEyAMiEcBc@Mk@EkADcDPc@Z_@j@U\\Of@Oj@Aj@@jALfARpBJnACh@@@eEtQkCsFwAaDgAwA_BkA}@UaCw@oAa@iHiBmBYwBOq@Ay@AoAJgH~@sEd@}Fp@w@DsAEsMmAiD{@yEmDo@e@kKgIyFwEwGcFi@Mm@MiAD{@T{@^cEhCuDnBi@LqBF_@EsCi@oAXg@LeBzAcPvMgDtCaJrH_E~CkGnFeH~Fa@Fm@KWYaCyEa@{@W[UOoAs@gGsCeOoG}LmF}DmBq@_@[[[i@sCgGY_@iBoA_WgPAAsDuBeOkHmCwAiDkAwAk@oBmAu@m@oAiAcQiPwVyUaXcWeCqBi@Uw@I}j@rJcJ`ByL\\{INeFo@q@AqBWoL_CiDi@mDCwB?G?oFd@yBa@iIsHq@UaDy@m@g@Ke@MkDm@oCo@}CMcAQ_B}@qHe@}Bc@{AgAkA}BqAeAYqGuAkEo@{@MeDQgFGgD@M]@S`@kEd@oEl@yELgCH{D?qBYgMq@cRc@wLIsBUyE{AoMe@aEYmCAcCEgKCiLYmPFyCC_RAaE?aIEkBe@iCc@cBiBsEm@wAmBaF[iAWqAQiBEyABqADy@VmBBe@C[EUSMyB?mZ^cIFMEWU{@aBgDqFS[yD{GuIkNHa@AoAIYOM[Qq@?]RaGkFwC_CuBaBs_@`["
+            },
+            "summary": "",
+            "warnings": [
+                "도보 경로는 베타 서비스입니다. 주의 – 이 경로에는 인도 또는 보행 경로가 누락되었을 수도 있습니다."
+            ],
+            "waypoint_order": []
+        },
+        {
+            "bounds": {
+                "northeast": {
+                    "lat": 37.590799,
+                    "lng": 127.032272
+                },
+                "southwest": {
+                    "lat": 37.4565095,
+                    "lng": 126.94818
+                }
+            },
+            "copyrights": "Map data ©2021 SK telecom",
+            "legs": [
+                {
+                    "arrival_time": {
+                        "text": "오전 5:48",
+                        "time_zone": "Asia/Seoul",
+                        "value": 1627764502
+                    },
+                    "departure_time": {
+                        "text": "오전 4:03",
+                        "time_zone": "Asia/Seoul",
+                        "value": 1627758191
+                    },
+                    "distance": {
+                        "text": "20.4 km",
+                        "value": 20376
+                    },
+                    "duration": {
+                        "text": "1시간 45분",
+                        "value": 6311
+                    },
+                    "end_address": "대한민국 서울특별시 성북구 안암동 안암로 145",
+                    "end_location": {
+                        "lat": 37.590799,
+                        "lng": 127.0277773
+                    },
+                    "start_address": "대한민국 서울특별시 관악구 관악로 1 서울대학교 생명과학부 504동",
+                    "start_location": {
+                        "lat": 37.4565095,
+                        "lng": 126.9500385
+                    },
+                    "steps": [
+                        {
+                            "distance": {
+                                "text": "1.2 km",
+                                "value": 1171
+                            },
+                            "duration": {
+                                "text": "20분",
+                                "value": 1172
+                            },
+                            "end_location": {
+                                "lat": 37.467021,
+                                "lng": 126.949131
+                            },
+                            "html_instructions": "서울대학교까지 도보",
+                            "polyline": {
+                                "points": "evrcFw|yeWu`AtD"
+                            },
+                            "start_location": {
+                                "lat": 37.4565095,
+                                "lng": 126.9500385
+                            },
+                            "steps": [
+                                {
+                                    "distance": {
+                                        "text": "1.2 km",
+                                        "value": 1171
+                                    },
+                                    "duration": {
+                                        "text": "20분",
+                                        "value": 1172
+                                    },
+                                    "end_location": {
+                                        "lat": 37.467021,
+                                        "lng": 126.949131
+                                    },
+                                    "polyline": {
+                                        "points": "evrcFw|yeWu`AtD"
+                                    },
+                                    "start_location": {
+                                        "lat": 37.4565095,
+                                        "lng": 126.9500385
+                                    },
+                                    "travel_mode": "WALKING"
+                                }
+                            ],
+                            "travel_mode": "WALKING"
+                        },
+                        {
+                            "distance": {
+                                "text": "12.7 km",
+                                "value": 12686
+                            },
+                            "duration": {
+                                "text": "34분",
+                                "value": 2018
+                            },
+                            "end_location": {
+                                "lat": 37.568429,
+                                "lng": 126.977309
+                            },
+                            "html_instructions": "버스 종로2가행",
+                            "polyline": {
+                                "points": "{wtcFawyeWACoAkCy@cBwAaDgAwA_BkA}@UAA_Cu@oAa@iHiB_AQm@Gi@GmAGWAY?A?w@AoAJgH~@E@mEb@}Fp@w@DA?qAEoD[cHq@iD{@yEmDm@c@AAyD{CkCqBcAw@AAyFwEwGcFAAg@Km@MiADa@JYH{@^cEhCaB|@sAp@i@LqBFGAWCA?qCi@c@Hk@Ng@LeBzAaJlHaEhDa@\\eCvBcH|F}@t@_E~CkGnFiBzA{DbDa@Fm@KWYaCyEAC_@w@W[UOoAs@gGsCcEcBaIkD}EsB_FyBwCwAe@Uo@]AA[[[i@]m@uByEY_@iBoAcPkK{E{CAAAAqDsBeOkHmCwAiDkAwAk@oBmAu@m@AAmAgAAAaQgPAAmDgDeQmPAAmEeEsQ}PAAcCoBc@QECA?u@IeAP}NdCwXzEA?_Cb@cF|@yL\\{IN_Eg@e@Gq@AqBWAAmL}BiDi@mDCuB?A?A?_BCsCf@gBAyGaFgB{AwAq@uAm@e@a@M_@w@gBaAs@qCw@yBm@eGaBmDeAcAQqBHw@?uLPcC@?B"
+                            },
+                            "start_location": {
+                                "lat": 37.467021,
+                                "lng": 126.949131
+                            },
+                            "transit_details": {
+                                "arrival_stop": {
+                                    "location": {
+                                        "lat": 37.568429,
+                                        "lng": 126.977309
+                                    },
+                                    "name": "서울신문사"
+                                },
+                                "arrival_time": {
+                                    "text": "오전 5:06",
+                                    "time_zone": "Asia/Seoul",
+                                    "value": 1627761981
+                                },
+                                "departure_stop": {
+                                    "location": {
+                                        "lat": 37.467021,
+                                        "lng": 126.949131
+                                    },
+                                    "name": "서울대학교"
+                                },
+                                "departure_time": {
+                                    "text": "오전 4:32",
+                                    "time_zone": "Asia/Seoul",
+                                    "value": 1627759963
+                                },
+                                "headsign": "종로2가",
+                                "headway": 600,
+                                "line": {
+                                    "agencies": [
+                                        {
+                                            "name": "서울특별시버스운송사업조합",
+                                            "url": "http://www.odsay.com/Bus/Seoul_Main.asp?CID=1000&LMenu=1"
+                                        }
+                                    ],
+                                    "color": "#374ff2",
+                                    "name": "서울 간선버스",
+                                    "short_name": "501",
+                                    "text_color": "#ffffff",
+                                    "vehicle": {
+                                        "icon": "//maps.gstatic.com/mapfiles/transit/iw2/6/bus2.png",
+                                        "name": "버스",
+                                        "type": "BUS"
+                                    }
+                                },
+                                "num_stops": 22
+                            },
+                            "travel_mode": "TRANSIT"
+                        },
+                        {
+                            "distance": {
+                                "text": "5.8 km",
+                                "value": 5817
+                            },
+                            "duration": {
+                                "text": "16분",
+                                "value": 978
+                            },
+                            "end_location": {
+                                "lat": 37.585579,
+                                "lng": 127.032272
+                            },
+                            "html_instructions": "버스 우이동행",
+                            "polyline": {
+                                "points": "uqhdFeg_fW?CA?eHBUCOGGY?sBByO?C?wBGyW?A@kD?gFAkCQcHCqAYoMUcN?CEsBm@eUC}AUsOS{N?CEiFI{OOqA]wAUs@w@aH_@{Ce@{C?AeAaF?CeB}IW{A_AqF}@iE[wAAAW}@q@sCCMmEyPS{@G[k@u@m@Uy@EeB@A?aIFMEWU{@aBgDqFQYAAyD{GuIkN?AH_@@YCu@IYOMAAYO[AU@YPC@aGkFwC_CuBcB?@"
+                            },
+                            "start_location": {
+                                "lat": 37.568429,
+                                "lng": 126.977309
+                            },
+                            "transit_details": {
+                                "arrival_stop": {
+                                    "location": {
+                                        "lat": 37.585579,
+                                        "lng": 127.032272
+                                    },
+                                    "name": "우신향병원"
+                                },
+                                "arrival_time": {
+                                    "text": "오전 5:36",
+                                    "time_zone": "Asia/Seoul",
+                                    "value": 1627763799
+                                },
+                                "departure_stop": {
+                                    "location": {
+                                        "lat": 37.568429,
+                                        "lng": 126.977309
+                                    },
+                                    "name": "서울신문사"
+                                },
+                                "departure_time": {
+                                    "text": "오전 5:20",
+                                    "time_zone": "Asia/Seoul",
+                                    "value": 1627762821
+                                },
+                                "headsign": "우이동",
+                                "headway": 840,
+                                "line": {
+                                    "agencies": [
+                                        {
+                                            "name": "서울특별시버스운송사업조합",
+                                            "url": "http://www.odsay.com/Bus/Seoul_Main.asp?CID=1000&LMenu=1"
+                                        }
+                                    ],
+                                    "color": "#374ff2",
+                                    "name": "서울 간선버스",
+                                    "short_name": "101",
+                                    "text_color": "#ffffff",
+                                    "vehicle": {
+                                        "icon": "//maps.gstatic.com/mapfiles/transit/iw2/6/bus2.png",
+                                        "name": "버스",
+                                        "type": "BUS"
+                                    }
+                                },
+                                "num_stops": 12
+                            },
+                            "travel_mode": "TRANSIT"
+                        },
+                        {
+                            "distance": {
+                                "text": "0.7 km",
+                                "value": 702
+                            },
+                            "duration": {
+                                "text": "12분",
+                                "value": 703
+                            },
+                            "end_location": {
+                                "lat": 37.590799,
+                                "lng": 127.0277773
+                            },
+                            "html_instructions": "대한민국 서울특별시 성북구 안암동 안암로 145까지 도보",
+                            "polyline": {
+                                "points": "{|kdFu~ifWs_@`["
+                            },
+                            "start_location": {
+                                "lat": 37.585579,
+                                "lng": 127.032272
+                            },
+                            "steps": [
+                                {
+                                    "distance": {
+                                        "text": "0.7 km",
+                                        "value": 702
+                                    },
+                                    "duration": {
+                                        "text": "12분",
+                                        "value": 703
+                                    },
+                                    "end_location": {
+                                        "lat": 37.590799,
+                                        "lng": 127.0277773
+                                    },
+                                    "polyline": {
+                                        "points": "{|kdFu~ifWs_@`["
+                                    },
+                                    "start_location": {
+                                        "lat": 37.585579,
+                                        "lng": 127.032272
+                                    },
+                                    "travel_mode": "WALKING"
+                                }
+                            ],
+                            "travel_mode": "WALKING"
+                        }
+                    ],
+                    "traffic_speed_entry": [],
+                    "via_waypoint": []
+                }
+            ],
+            "overview_polyline": {
+                "points": "evrcFw|yeWu`AtDqAoCqCeGgAwA_BkA_AWoEwAiHiB_AQwAOaCIw@AoAJmH`AkMtAy@DqAEoD[cHq@iD{@gGqE{D}CoEiD{FyEyGeFuAYiADa@JuAh@cEhCaB|@sAp@i@LyBDYCqCi@c@HsA\\gMhKcFfEiLtJ}FtEuJjI{DbDa@Fm@KWYcC}E_@w@W[eBcAgGsCcEcB_P_H_FyBwCwAuAs@]]y@wAuByEY_@mS{M_F_DqDsBeOkHmCwAiDkAwAk@oBmAw@o@sSsRc]}[uQ_QcCoBc@QGCu@IeAPuh@`JaCb@cF|@yL\\{IN_Eg@e@Gq@AsBYmL}BiDi@cHCC?_BCsCf@gBAyGaFgB{AwAq@uAm@e@a@M_@w@gBaAs@qCw@_KoCmDeAcAQqBHw@?uLPcC@?B?CgHBUCOGGY?sBB}OE_a@AsJUuJo@s\\EwBq@cXi@o_@EmFI{OOqAs@kCwA}Le@}CeAeF}ByL_AqF}@iE]yAiAqEmF_Tk@u@m@Uy@EeB@cIFMEWU{@aBgDqFS[yD{GuIkNHa@AoAIYOM[Qq@?]RaGkFwC_CuBaBs_@`["
+            },
+            "summary": "",
+            "warnings": [
+                "도보 경로는 베타 서비스입니다. 주의 – 이 경로에는 인도 또는 보행 경로가 누락되었을 수도 있습니다."
+            ],
+            "waypoint_order": []
+        }
+    ],
+    "status": "OK"
+}

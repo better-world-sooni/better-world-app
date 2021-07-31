@@ -1,0 +1,425 @@
+import { NAV_NAMES } from 'src/modules/navNames';
+import { useApiPOST, useApiSelector, useReloadGET } from 'src/redux/asyncReducer';
+import APIS from 'src/modules/apis';
+import React, {useState, useEffect} from 'react';
+import { NativeBaseProvider, TextField } from 'native-base';
+import { Div } from 'src/components/common/Div';
+import { Row } from 'src/components/common/Row';
+import { Col } from 'src/components/common/Col';
+import { Span } from 'src/components/common/Span';
+import {useDispatch} from 'react-redux';
+import { useSelector } from 'react-redux';
+import { RootState } from 'src/redux/rootReducer';
+import { shallowEqual } from 'react-redux';
+import {setUserSearchOrigin, setUserSearchDestination, setSearchResults} from 'src/redux/pathReducer';
+
+const WAYPOINT_LIMIT = 10;
+
+interface LatLng {
+	latitude: number,
+	longitude: number
+}
+
+interface Step {
+	coordinates: any;
+	distance: number;
+	duration: number;
+	travel_mode: string;
+	transport_num: string;
+	transport_desc: string;
+	vehicle: string;
+	color: string;
+	start_location: string;
+	end_location: string;
+	html_instructions: string;
+	departure_stop: string;
+	arrival_stop: string;
+}
+
+interface State {
+	steps: Array<Step>
+	origin: LatLng
+	destination: LatLng
+}
+
+interface Props {
+    origin: string;
+	destination: string;
+	waypoints?: Array<any>;
+	mode?: 'DRIVING' | 'BICYCLING' | 'TRANSIT' | 'WALKING';
+	splitWaypoints?: boolean;
+	resetOnChange?: boolean;
+	optimizeWaypoints?: boolean;
+	directionsServiceBaseUrl?: string;
+	precision?: 'high' | 'low';
+	timePrecision?: 'high' | 'low';
+	strokeWidth?: number;
+	channel?: string;
+	apikey: string; 
+	onStart?: Function;
+	onReady?: Function; 
+	onError?: Function;
+	language?: string; 
+	region?: string; 
+	alternatives?: boolean
+}
+
+export default function SearchPage() {
+    const GOOGLE_MAPS_APIKEY = 'AIzaSyAKr85NZ139cK6XvE_UExdhmtfivHiG8qE';
+	const apiGET = useReloadGET();
+	const {data: defaultRoute, isLoading} = useApiSelector(APIS.paths.default);
+    const dispatch = useDispatch();
+    const [tentativeOrigin, setTentativeOrigin] = useState("");
+    const [tentativeDestination, setTentativeDestination] = useState("");
+    const { origin, destination} = useSelector(
+        (root: RootState) => (root.path.userSearch), shallowEqual
+    );
+    const setOrigin = (origin) => {
+        dispatch(setUserSearchOrigin(origin))
+    }
+    const setDestination = (destination) => {
+        dispatch(setUserSearchDestination(destination))
+    }
+    const searchResults = useSelector(
+        (root: RootState) => (root.path.searchResults), shallowEqual
+    );
+
+    const waypoints = [];
+
+    const apikey = GOOGLE_MAPS_APIKEY;
+
+    const precision = "high";
+
+    const mode = "TRANSIT";
+    
+    const language = "ko";
+
+    const alternatives = true;
+
+    const onError = (errorMessage) => {
+        console.log('GOT AN ERROR');
+    }
+
+    const onStart =  (params) => {
+        console.log(`Started routing between "${params.origin}" and "${params.destination}"`);
+    }
+
+    const onReady = (result) => {
+        console.log(JSON.stringify(result))
+		console.log(`Distance: ${result.distance/10} km`)
+		console.log(`Duration: ${result.duration} min.`)
+    }
+
+    const props = {
+        waypoints: waypoints,
+        apikey: apikey,
+        precision: precision,
+        mode: mode,
+        language: language,
+        onStart: onStart,
+        onReady: onReady,
+        onError: onError,
+        alternatives: alternatives
+    }
+
+    useEffect(() => {
+        fetchAndSetSearchResults( props )
+    }, [origin, destination])
+
+	const resetState = () => {
+		dispatch(setSearchResults( [{
+			steps: [{
+				coordinates: null,
+				distance: null,
+				duration: null,
+				travel_mode: null,
+				transport_num: null,
+				transport_desc: null,
+				vehicle: null,
+				color: null,
+				start_location: null,
+				end_location: null,
+				html_instructions: null,
+				departure_stop: null,
+				arrival_stop: null,
+			}],
+		origin: {latitude: 0, longitude: 0},
+		destination: {latitude: 0, longitude: 0}
+		}]));
+	}
+
+	const setRoute = (routes) => {
+		if (routes){
+			const searchResults = routes.map((route) => {
+                const start_location = route[0].start_location
+                const end_location = route[route.length-1].end_location
+                return {
+                        steps: route,
+                        origin: {latitude: start_location.lat, longitude: start_location.lng},
+                        destination: {latitude: end_location.lat, longitude: end_location.lng}
+                    }
+            })
+            dispatch(setSearchResults(searchResults))
+            if ( onReady ) {
+                onReady( routes );
+            }
+		}
+	} 
+
+	const decode = ( t ) => {
+		let points = [];
+		for ( let step of t ) {
+			let encoded = step.polyline.points;
+			let index = 0, len = encoded.length;
+			let lat = 0, lng = 0;
+			while ( index < len ) {
+				let b, shift = 0, result = 0;
+				do {
+					b = encoded.charAt( index++ ).charCodeAt( 0 ) - 63;
+					result |= ( b & 0x1f ) << shift;
+					shift += 5;
+				} while ( b >= 0x20 );
+
+				let dlat = ( ( result & 1 ) != 0 ? ~( result >> 1 ) : ( result >> 1 ) );
+				lat += dlat;
+				shift = 0;
+				result = 0;
+				do {
+					b = encoded.charAt( index++ ).charCodeAt( 0 ) - 63;
+					result |= ( b & 0x1f ) << shift;
+					shift += 5;
+				} while ( b >= 0x20 );
+				let dlng = ( ( result & 1 ) != 0 ? ~( result >> 1 ) : ( result >> 1 ) );
+				lng += dlng;
+
+				points.push( { latitude: ( lat / 1E5 ), longitude: ( lng / 1E5 ) } );
+			}
+		}
+		return points;
+	}
+
+	const fetchAndSetSearchResults = ( props ) => {
+        
+		let {
+			waypoints: initialWaypoints = [],
+			apikey,
+			onStart,
+			onReady,
+			onError,
+			mode = 'TRANSIT',
+			language = 'en',
+			optimizeWaypoints,
+			splitWaypoints,
+			directionsServiceBaseUrl = 'https://maps.googleapis.com/maps/api/directions/json',
+			region,
+			precision = 'low',
+			timePrecision = 'none',
+			channel,
+			alternatives = true,
+		} = props;
+
+		if ( !apikey ) {
+			console.warn( `MapViewDirections Error: Missing API Key` ); // eslint-disable-line no-console
+			return;
+		}
+
+        if ( !origin || !destination ) {
+			return;
+		}
+
+		const timePrecisionString = timePrecision === 'none' ? '' : timePrecision;
+
+		// Routes array which we'll be filling.
+		// We'll perform a Directions API Request for reach route
+		const routes = [];
+
+		// We need to split the waypoints in chunks, in order to not exceede the max waypoint limit
+		// ~> Chunk up the waypoints, yielding multiple routes
+		if ( splitWaypoints && initialWaypoints && initialWaypoints.length > WAYPOINT_LIMIT ) {
+			// Split up waypoints in chunks with chunksize WAYPOINT_LIMIT
+			const chunckedWaypoints = initialWaypoints.reduce( ( accumulator, waypoint, index ) => {
+				const numChunk = Math.floor( index / WAYPOINT_LIMIT );
+				accumulator[numChunk] = [].concat( ( accumulator[numChunk] || [] ), waypoint );
+				return accumulator;
+			}, [] );
+
+			// Create routes for each chunk, using:
+			// - Endpoints of previous chunks as startpoints for the route (except for the first chunk, which uses initialOrigin)
+			// - Startpoints of next chunks as endpoints for the route (except for the last chunk, which uses initialDestination)
+			for ( let i = 0; i < chunckedWaypoints.length; i++ ) {
+				routes.push( {
+					waypoints: chunckedWaypoints[i],
+					origin: ( i === 0 ) ? origin : chunckedWaypoints[i - 1][chunckedWaypoints[i - 1].length - 1],
+					destination: ( i === chunckedWaypoints.length - 1 ) ? destination : chunckedWaypoints[i + 1][0],
+				} );
+			}
+		}
+
+		// No splitting of the waypoints is requested/needed.
+		// ~> Use one single route
+		else {
+			routes.push( {
+				waypoints: initialWaypoints,
+				origin: origin,
+				destination: destination,
+			} );
+		}
+
+		// Perform a Directions API Request for each route
+		Promise.all( routes.map( ( route, index ) => {
+			let {
+				origin,
+				destination,
+				waypoints,
+			} = route;
+
+			if ( origin.latitude && origin.longitude ) {
+				origin = `${origin.latitude},${origin.longitude}`;
+			}
+
+			if ( destination.latitude && destination.longitude ) {
+				destination = `${destination.latitude},${destination.longitude}`;
+			}
+
+			waypoints = waypoints
+				.map( waypoint => ( waypoint.latitude && waypoint.longitude ) ? `${waypoint.latitude},${waypoint.longitude}` : waypoint )
+				.join( '|' );
+
+			if ( optimizeWaypoints ) {
+				waypoints = `optimize:true|${waypoints}`;
+			}
+
+			if ( index === 0 ) {
+				onStart && onStart( {
+					origin,
+					destination,
+					waypoints: initialWaypoints,
+				} );
+			}
+
+			return (
+				fetchRoute( directionsServiceBaseUrl, origin, waypoints, destination, apikey, mode, language, region, precision, timePrecisionString, channel, alternatives)
+					.then( result => {
+						return result;
+					} )
+					.catch( errorMessage => {
+						return Promise.reject( errorMessage );
+					} )
+			);
+		} ) ).then( results => {
+			// Combine all Directions API Request results into one
+            console.log("setRoute(results);")
+            console.log(results)
+			setRoute(results);
+		} )
+			.catch( errorMessage => {
+				resetState();
+				console.warn( `MapViewDirections Error: ${errorMessage}` ); // eslint-disable-line no-console
+				onError && onError( errorMessage );
+			} );
+	}
+
+	const fetchRoute = ( directionsServiceBaseUrl, origin, waypoints, destination, apikey, mode, language, region, precision, timePrecision, channel, alternatives) => {
+
+		// Define the URL to call. Only add default parameters to the URL if it's a string.
+		let url = directionsServiceBaseUrl;
+		if ( typeof ( directionsServiceBaseUrl ) === 'string' ) {
+			url += `?origin=${origin}&waypoints=${waypoints}&destination=${destination}&key=${apikey}&mode=${mode.toLowerCase()}&language=${language}&region=${region}&alternatives=${alternatives}`;
+			if ( timePrecision ) {
+				url += `&departure_time=${timePrecision}`;
+			}
+			if ( channel ) {
+				url += `&channel=${channel}`;
+			}
+		}
+
+		return fetch( url )
+			.then( response => response.json() )
+			.then( json => {
+
+				if ( json.status !== 'OK' ) {
+					const errorMessage = json.error_message || json.status || 'Unknown error';
+					return Promise.reject( errorMessage );
+				}
+
+				if ( json.routes.length ) {
+                    console.log("Tkdla")
+                    console.log(json.routes[0])
+					console.log(JSON.stringify(json))
+					const steps = json.routes[0].legs[0].steps;
+					const route = steps.map((step) => {
+						return {
+							distance: step.distance.value,
+							duration: step.duration.value,
+							coordinates: decode( [{ polyline: step.polyline }] ),
+							travel_mode: step.travel_mode,
+							transport_desc: step.transit_details?.line?.name,
+							transport_num: step.transit_details?.line?.short_name,
+							vehicle: step.transit_details?.line?.vehicle?.type,
+							color: step.transit_details?.line?.color,
+							start_location: step.start_location,
+							end_location: step.end_location,
+							html_instructions: step.html_instructions,
+							departure_stop: step.transit_details?.departure_stop?.name,
+							arrival_stop: step.transit_details?.arrival_stop?.name,
+						} ;
+					})
+					const bounds = json.routes[0].bounds;
+					console.log("legs");
+					console.log(JSON.stringify(route));
+					return route;
+
+				} else {
+					return Promise.reject();
+				}
+			} )
+			.catch( err => {
+				return Promise.reject( `Error on GMAPS route request: ${err}` );
+		} );
+	}
+
+    return (
+        <Div flex={1}>
+            <NativeBaseProvider>
+                <Div bgWhite px20 py10 activeOpacity={1.0} auto >
+                    <Row bgWhite h50 >
+                        <Col onPress={(e)=> console.log()}>
+                            <TextField
+                                textContentType={"fullStreetAddress"}
+                                placeholder={'출발지'}
+                                value={tentativeOrigin}
+                                onBlur={() => setOrigin(tentativeOrigin)}
+                                onChangeText={(text) => setTentativeOrigin(text)}
+                            ></TextField>
+                        </Col>
+                        <Col auto ml20 justifyCenter onPress={(e)=> console.log()}>
+                            <Span bold>출발</Span>
+                        </Col>
+                    </Row>
+                    <Row bgWhite h50 >
+                        <Col onPress={(e)=> console.log()}>
+                            <TextField
+                                placeholder={'도착지'}
+                                value={tentativeDestination}
+                                onBlur={() => setDestination(tentativeDestination)}
+                                onChangeText={(text) => setTentativeDestination(text)}
+                            ></TextField>
+                        </Col>
+                        <Col auto justifyCenter ml20 onPress={(e)=> console.log()}>
+                            <Span bold>도착</Span>
+                        </Col>
+                    </Row>
+                </Div>
+                <Div>
+                    {searchResults.map((result, i) => {
+                        return (
+                            <Row key={i}>
+                                <Span>{JSON.stringify(result.steps)}</Span>
+                            </Row>
+                        )
+                    })}
+                </Div>
+            </NativeBaseProvider>
+        </Div>
+    )
+}
