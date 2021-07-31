@@ -210,7 +210,7 @@ const HomeScreen = (props) => {
         </Col>
         <Col itemsCenter auto>
           <Div>
-            <Span>역삼동 793-18 / 강남 WeWork</Span>
+            <Span bold>역삼동 793-18 / 강남 WeWork</Span>
           </Div>
         </Col>
         <Col >
@@ -239,7 +239,7 @@ const HomeScreen = (props) => {
         <Row itemsCenter bgGray100 my5>
           <Col auto >
             <Div onPress={onPressLogo} >
-              <Span fontFamily={'Jua'} fontSize={25}>뉴스</Span>
+              <Span fontSize={25}>뉴스</Span>
             </Div>
             <Div onPress={onPressLogo} my10>
               <CreditPackages/>
@@ -249,7 +249,7 @@ const HomeScreen = (props) => {
         <Row itemsCenter bgGray100 my5>
           <Col auto >
             <Div onPress={onPressLogo} >
-              <Span fontFamily={'Jua'} fontSize={25}>Hot 순간</Span>
+              <Span fontSize={25}>Hot 순간</Span>
             </Div>
             <Div onPress={onPressLogo} my10 h100>
               {[0, 80, 160, 240].map((item, index) => {
@@ -277,7 +277,7 @@ const HomeScreen = (props) => {
         <Row itemsCenter bgGray100 my5>
           <Col>
             <Div onPress={onPressLogo} >
-              <Span fontFamily={'Jua'} fontSize={25}>내 길</Span>
+              <Span fontSize={25}>내 길</Span>
             </Div>
             <Col
               my10
@@ -293,7 +293,7 @@ const HomeScreen = (props) => {
         <Row itemsCenter bgGray100 my5>
           <Col>
             <Div onPress={onPressLogo} >
-              <Span fontFamily={'Jua'} fontSize={25}>날씨</Span>
+              <Span fontSize={25}>날씨</Span>
             </Div>
             <Col
               my10

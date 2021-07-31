@@ -12,6 +12,8 @@ import { IMAGES } from 'src/modules/images';
 import { Animated, View, TouchableWithoutFeedback, Text, StyleSheet } from 'react-native';
 import MapView, { Circle, Polyline, Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import { Span } from 'src/components/common/Span';
+import { NativeBaseProvider, TextField } from 'native-base';
+import _ from "lodash"
 // import GetLocation from 'react-native-get-location'
 
 const WAYPOINT_LIMIT = 10;
@@ -38,10 +40,9 @@ interface Props {
 	alternatives?: boolean
 }
 
-interface MapViewDirectionsProps { 
-	steps: Array<Step>, 
-	origin: LatLng, 
-	destination: LatLng 
+interface LatLng {
+	latitude: number,
+	longitude: number
 }
 
 interface Step {
@@ -55,11 +56,15 @@ interface Step {
 	color: string;
 	start_location: string;
 	end_location: string;
+	html_instructions: string;
+	departure_stop: string;
+	arrival_stop: string;
 }
 
-interface LatLng {
-	latitude: number,
-	longitude: number
+interface MapViewDirectionsProps { 
+	steps: Array<Step>, 
+	origin: LatLng, 
+	destination: LatLng 
 }
 
 interface State {
@@ -100,7 +105,8 @@ const MapViewDirections: FC<MapViewDirectionsProps> = (props): ReactElement => {
 		if (step.travel_mode == "WALKING"){
 			return {
 				strokeWidth: 5,
-				strokeColor: "#33b8ff",
+				strokeColor: "grey",
+				// strokeColor: "#33b8ff",
 				lineDashPattern: [10,10]
 			}
 		}
@@ -137,8 +143,6 @@ const MapViewDirections: FC<MapViewDirectionsProps> = (props): ReactElement => {
 	);
 }
 
-
- 
 
 const LessonScreen = ({route}) => {
 	const GOOGLE_MAPS_APIKEY = 'AIzaSyAKr85NZ139cK6XvE_UExdhmtfivHiG8qE';
@@ -189,7 +193,7 @@ const LessonScreen = ({route}) => {
       ])
 
 	const props: Props = {
-		origin: "서울대학교",
+		origin: "동국대학교",
 		waypoints: [],
 		destination: "역삼동 793-18",
 		apikey: GOOGLE_MAPS_APIKEY,
@@ -230,12 +234,13 @@ const LessonScreen = ({route}) => {
 	}, []);
 
 	useEffect(() => {
-		if (!isLoading){
-			setRoute( defaultRoute );
-		}else{
-			resetState();
-		}
-	}, [isLoading])
+		// if (!isLoading){
+		// 	setRoute( defaultRoute );
+		// }else{
+		// 	resetState();
+		// }
+		fetchAndRenderRoute( props )
+	}, [])
 
 	// useEffect(() => {
 	// 	fetchAndRenderRoute( props );
@@ -294,6 +299,9 @@ const LessonScreen = ({route}) => {
 			color: null,
 			start_location: null,
 			end_location: null,
+			html_instructions: null,
+			departure_stop: null,
+			arrival_stop: null,
 		}],
 		origin: {latitude: 0, longitude: 0},
 		destination: {latitude: 0, longitude: 0}
@@ -312,6 +320,9 @@ const LessonScreen = ({route}) => {
 				color: null,
 				start_location: null,
 				end_location: null,
+				html_instructions: null,
+				departure_stop: null,
+				arrival_stop: null,
 			}],
 		origin: {latitude: 0, longitude: 0},
 		destination: {latitude: 0, longitude: 0}
@@ -523,10 +534,15 @@ const LessonScreen = ({route}) => {
 							vehicle: step.transit_details?.line?.vehicle?.type,
 							color: step.transit_details?.line?.color,
 							start_location: step.start_location,
-							end_location: step.end_location
+							end_location: step.end_location,
+							html_instructions: step.html_instructions,
+							departure_stop: step.transit_details?.departure_stop?.name,
+							arrival_stop: step.transit_details?.arrival_stop?.name,
 						} ;
 					})
-					
+					const bounds = json.routes[0].bounds;
+					console.log("legs");
+					console.log(JSON.stringify(route));
 					return route;
 
 				} else {
@@ -538,24 +554,58 @@ const LessonScreen = ({route}) => {
 		} );
 	}
 
+	const [SearchTab, setSearchTab] = useState(false)
+
+	const expandSearchTab = () => {
+		setSearchTab(true);
+	}
+
+
 	const Header = () => {
 
 		return(
-			<Div activeOpacity={1.0} auto onPress={(e)=> console.log()} >
+			<Div activeOpacity={1.0} auto >
 			  <Animated.View style={{height: 1, transform: [{scaleY: AnimatedStyles.animationValue}], alignContent: "center", backgroundColor: "white", borderBottomLeftRadius: 30, borderBottomRightRadius: 30}} >
 			  </Animated.View>
-			  <Row bgWhite h50 itemsCenter borderBottomLeftRadius={30} borderBottomRightRadius={30}>
-				<Col itemsCenter><Span>서울대학교</Span></Col>
-				<Col auto items center>
+			  <Row bgWhite h50 itemsCenter borderBottomLeftRadius={30} borderBottomRightRadius={30} >
+				<Col itemsCenter onPress={(e)=> expandSearchTab()}><Span bold>서울대학교</Span></Col>
+				<Col auto itemsCenter>
 				  <Span>→</Span>
 				</Col>
-				<Col itemsCenter><Span>강남 위워크</Span></Col>
+				<Col itemsCenter onPress={(e)=> expandSearchTab()}><Span bold>강남 위워크</Span></Col>
 			  </Row>
 			  {ExpandHeader[1] && (
-				<Row h200 itemsCenter {...ExpandHeader[1]}>
+				<Row itemsCenter {...ExpandHeader[1]}>
 				  <Col>
-					{[1,2,3].map((step, index) => {
-					  return(<Row key={index}><Span>Hello</Span></Row>)
+					{defaultRoute.map((step, index) => {
+						return(<Row my15 key={index}>
+									<Col mx20>
+										<Row>
+											<Col auto>
+												<Row ><Span bold>{step.html_instructions}</Span></Row>
+												{step.transport_num && <Row><Span red>{step.transport_num}</Span></Row>}
+											</Col>
+											<Col ml5>
+												<Row my5>
+													{step.travel_mode == "WALKING" ? (
+														_.range(1).map((i) => {
+															return(<Col mx2 h10 key={i} borderRadius={1} backgroundColor={"grey"}></Col>)
+														})
+													):
+														<Col h10 borderRadius={1} backgroundColor={step.color}></Col>}
+												</Row>
+												{step.arrival_stop && step.departure_stop &&
+													<Row>
+														<Col itemsStart auto><Span>{step.arrival_stop}</Span></Col>
+														<Col itemsCenter></Col>
+														<Col itemsEnd auto><Span>{step.departure_stop}</Span></Col>
+													</Row>
+												}
+											</Col>
+										</Row>
+										{false && <Row ><Col itemsCenter><Span>{step.transport_num}</Span></Col></Row>}
+									</Col>
+								</Row>)
 					})}
 				  </Col>
 				</Row>
@@ -564,37 +614,115 @@ const LessonScreen = ({route}) => {
 		)
 	  }
 
-  	return (
-		<Div flex={1}>
-		<MapView  
-			onPress={(e)=>toggle()}
-			provider={PROVIDER_GOOGLE}
-			initialRegion={MapCenter} 
-			style={StyleSheet.absoluteFill}>
-			{/* {Coordinates.map((coordinate, index) =>
-			<Marker key={`coordinate_${index}`} coordinate={coordinate} />
-			)} */}
-			{(Coordinates.length >= 2) && (!isLoading) && (
-			<MapViewDirections
-				steps={State.steps} origin={State.origin} destination={State.destination}
-			/>
-			)}
-		</MapView>
-		<Div flex={1} pointerEvents={'box-none'}>
-			<Header ></Header>
-			<Div collapsable flex={1} pointerEvents={'none'}></Div>
-			<Div bgWhite h50 borderTopLeftRadius={30} borderTopRightRadius={30}>
-				<Row>
-				<Col></Col>
-				<Col auto >
-					<Img w21 h50 source={IMAGES.mainLogo} />
-				</Col>
-				<Col></Col>
-				</Row>
+	const SearchPage = () => {
+		return (
+			<Div flex={1}>
+				<NativeBaseProvider>
+					<Div bgWhite px20 pt20 activeOpacity={1.0} auto >
+						<Row bgWhite h50  >
+							<Col onPress={(e)=> console.log()}>
+								<TextField
+									placeholder={'출발지'}
+									value={""}
+									onChangeText={(text) => console.log(text)}
+								></TextField>
+							</Col>
+							<Col auto ml20 justifyCenter onPress={(e)=> console.log()}>
+								<Span bold>출발</Span>
+							</Col>
+						</Row>
+						<Row bgWhite h50  >ㄴ
+							<Col onPress={(e)=> console.log()}>
+								<TextField
+									placeholder={'도착지'}
+									value={""}
+									onChangeText={(text) => console.log(text)}
+								></TextField>
+							</Col>
+							<Col auto justifyCenter ml20 onPress={(e)=> console.log()}>
+								<Span bold>도착</Span>
+							</Col>
+						</Row>
+					</Div>
+					{ExpandHeader[1] && (
+						<Row itemsCenter>
+						<Col>
+							{defaultRoute.map((step, index) => {
+								return(<Row my15 key={index}>
+											<Col mx20>
+												<Row>
+													<Col auto>
+														<Row ><Span bold>{step.html_instructions}</Span></Row>
+														{step.transport_num && <Row><Span red>{step.transport_num}</Span></Row>}
+													</Col>
+													<Col ml5>
+														<Row my5>
+															{step.travel_mode == "WALKING" ? (
+																_.range(1).map((i) => {
+																	return(<Col mx2 h10 key={i} borderRadius={1} backgroundColor={"grey"}></Col>)
+																})
+															):
+																<Col h10 borderRadius={1} backgroundColor={step.color}></Col>}
+														</Row>
+														{step.arrival_stop && step.departure_stop &&
+															<Row>
+																<Col itemsStart auto><Span>{step.arrival_stop}</Span></Col>
+																<Col itemsCenter></Col>
+																<Col itemsEnd auto><Span>{step.departure_stop}</Span></Col>
+															</Row>
+														}
+													</Col>
+												</Row>
+												{false && <Row ><Col itemsCenter><Span>{step.transport_num}</Span></Col></Row>}
+											</Col>
+										</Row>)
+								})}
+							</Col>
+						</Row>
+					)}
+				</NativeBaseProvider>
 			</Div>
-		</Div>
-		</Div>
+		)
+	}
+
+  	return (
+		<>
+			{SearchTab ?
+			(<SearchPage></SearchPage>)
+			:
+			(<Div flex={1}>
+				<MapView  
+					onPress={(e)=>toggle()}
+					provider={PROVIDER_GOOGLE}
+					initialRegion={MapCenter} 
+					style={StyleSheet.absoluteFill}>
+					{/* {Coordinates.map((coordinate, index) =>
+					<Marker key={`coordinate_${index}`} coordinate={coordinate} />
+					)} */}
+					{(Coordinates.length >= 2) && (!isLoading) && (
+					<MapViewDirections
+						steps={State.steps} origin={State.origin} destination={State.destination}
+					/>
+					)}
+				</MapView>
+				<Div flex={1} pointerEvents={'box-none'}>
+					<Header ></Header>
+					<Div collapsable flex={1} pointerEvents={'none'}></Div>
+					<Div bgWhite h50 borderTopLeftRadius={30} borderTopRightRadius={30}>
+						<Row>
+						<Col></Col>
+						<Col auto >
+							<Img w21 h50 source={IMAGES.mainLogo} />
+						</Col>
+						<Col></Col>
+						</Row>
+					</Div>
+				</Div>
+			</Div>)
+			}
+		</>
 	)
 }
+
 
 export default LessonScreen;
