@@ -18,15 +18,6 @@ import { s_home } from 'src/i18n/text/s_home';
 import { s_mypage } from 'src/i18n/text/s_mypage';
 import { useLocale } from 'src/i18n/useLocale';
 import APIS from 'src/modules/apis';
-import {
-  CHALLENGE,
-  GEN_FREE_LESSON,
-  INVITE,
-  MOVE_WEBVIEW,
-  PURCHASE_PROMOTION,
-  TUTOR_SCHEDULE_UPLOAD
-} from 'src/modules/contants';
-import { ICONS } from 'src/modules/icons';
 import { IMAGES } from 'src/modules/images';
 import { NAV_NAMES } from 'src/modules/navNames';
 import { DEVICE_WIDTH, PADDINGED_WIDTH, varStyle } from 'src/modules/styles';

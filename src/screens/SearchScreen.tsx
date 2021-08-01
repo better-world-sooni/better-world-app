@@ -1,5 +1,4 @@
-import { NAV_NAMES } from 'src/modules/navNames';
-import { useApiPOST, useApiSelector, useReloadGET } from 'src/redux/asyncReducer';
+import { useApiSelector, useReloadGET } from 'src/redux/asyncReducer';
 import APIS from 'src/modules/apis';
 import React, {useState, useEffect} from 'react';
 import { NativeBaseProvider, TextField } from 'native-base';
@@ -11,7 +10,12 @@ import {useDispatch} from 'react-redux';
 import { useSelector } from 'react-redux';
 import { RootState } from 'src/redux/rootReducer';
 import { shallowEqual } from 'react-redux';
-import {setUserSearchOrigin, setUserSearchDestination, setSearchResults} from 'src/redux/pathReducer';
+import {setUserSearchOrigin, setUserSearchDestination, setSearchResults, setCurrentRouteIndex, confirmCurrentRoute} from 'src/redux/pathReducer';
+import { Img } from 'src/components/common/Img';
+import { Image } from 'react-native';
+import { ScrollView } from 'src/modules/viewComponents';
+import { RefreshControl } from 'react-native';
+import { current } from 'immer';
 
 const WAYPOINT_LIMIT = 10;
 
@@ -65,24 +69,30 @@ interface Props {
 }
 
 export default function SearchPage() {
+
     const GOOGLE_MAPS_APIKEY = 'AIzaSyAKr85NZ139cK6XvE_UExdhmtfivHiG8qE';
-	const apiGET = useReloadGET();
-	const {data: defaultRoute, isLoading} = useApiSelector(APIS.paths.default);
-    const dispatch = useDispatch();
-    const [tentativeOrigin, setTentativeOrigin] = useState("");
-    const [tentativeDestination, setTentativeDestination] = useState("");
     const { origin, destination} = useSelector(
         (root: RootState) => (root.path.userSearch), shallowEqual
     );
+	const apiGET = useReloadGET();
+	const {data: defaultRoute, isLoading} = useApiSelector(APIS.paths.default);
+    const {data: searchResults, isLoading: isSearchLoading} = useApiSelector(APIS.paths.fetch);
+    const dispatch = useDispatch();
+    const [tentativeOrigin, setTentativeOrigin] = useState(origin);
+    const [tentativeDestination, setTentativeDestination] = useState(destination);
+
+    const setCurrenRoute = (index) => {
+        dispatch(setCurrentRouteIndex(index))
+        dispatch(confirmCurrentRoute(true))
+    }
+    
     const setOrigin = (origin) => {
         dispatch(setUserSearchOrigin(origin))
     }
+
     const setDestination = (destination) => {
         dispatch(setUserSearchDestination(destination))
     }
-    const searchResults = useSelector(
-        (root: RootState) => (root.path.searchResults), shallowEqual
-    );
 
     const waypoints = [];
 
@@ -97,6 +107,7 @@ export default function SearchPage() {
     const alternatives = true;
 
     const onError = (errorMessage) => {
+        resetState()
         console.log('GOT AN ERROR');
     }
 
@@ -122,80 +133,16 @@ export default function SearchPage() {
         alternatives: alternatives
     }
 
+    const pullToRefresh = () => {
+        fetchAndSetSearchResults( props );
+      };
+
     useEffect(() => {
-        fetchAndSetSearchResults( props )
+        pullToRefresh();
     }, [origin, destination])
 
 	const resetState = () => {
-		dispatch(setSearchResults( [{
-			steps: [{
-				coordinates: null,
-				distance: null,
-				duration: null,
-				travel_mode: null,
-				transport_num: null,
-				transport_desc: null,
-				vehicle: null,
-				color: null,
-				start_location: null,
-				end_location: null,
-				html_instructions: null,
-				departure_stop: null,
-				arrival_stop: null,
-			}],
-		origin: {latitude: 0, longitude: 0},
-		destination: {latitude: 0, longitude: 0}
-		}]));
-	}
-
-	const setRoute = (routes) => {
-		if (routes){
-			const searchResults = routes.map((route) => {
-                const start_location = route[0].start_location
-                const end_location = route[route.length-1].end_location
-                return {
-                        steps: route,
-                        origin: {latitude: start_location.lat, longitude: start_location.lng},
-                        destination: {latitude: end_location.lat, longitude: end_location.lng}
-                    }
-            })
-            dispatch(setSearchResults(searchResults))
-            if ( onReady ) {
-                onReady( routes );
-            }
-		}
-	} 
-
-	const decode = ( t ) => {
-		let points = [];
-		for ( let step of t ) {
-			let encoded = step.polyline.points;
-			let index = 0, len = encoded.length;
-			let lat = 0, lng = 0;
-			while ( index < len ) {
-				let b, shift = 0, result = 0;
-				do {
-					b = encoded.charAt( index++ ).charCodeAt( 0 ) - 63;
-					result |= ( b & 0x1f ) << shift;
-					shift += 5;
-				} while ( b >= 0x20 );
-
-				let dlat = ( ( result & 1 ) != 0 ? ~( result >> 1 ) : ( result >> 1 ) );
-				lat += dlat;
-				shift = 0;
-				result = 0;
-				do {
-					b = encoded.charAt( index++ ).charCodeAt( 0 ) - 63;
-					result |= ( b & 0x1f ) << shift;
-					shift += 5;
-				} while ( b >= 0x20 );
-				let dlng = ( ( result & 1 ) != 0 ? ~( result >> 1 ) : ( result >> 1 ) );
-				lng += dlng;
-
-				points.push( { latitude: ( lat / 1E5 ), longitude: ( lng / 1E5 ) } );
-			}
-		}
-		return points;
+		dispatch(setSearchResults([]));
 	}
 
 	const fetchAndSetSearchResults = ( props ) => {
@@ -219,7 +166,7 @@ export default function SearchPage() {
 		} = props;
 
 		if ( !apikey ) {
-			console.warn( `MapViewDirections Error: Missing API Key` ); // eslint-disable-line no-console
+			console.warn( `MapDirections Error: Missing API Key` ); // eslint-disable-line no-console
 			return;
 		}
 
@@ -296,86 +243,10 @@ export default function SearchPage() {
 					waypoints: initialWaypoints,
 				} );
 			}
-
 			return (
-				fetchRoute( directionsServiceBaseUrl, origin, waypoints, destination, apikey, mode, language, region, precision, timePrecisionString, channel, alternatives)
-					.then( result => {
-						return result;
-					} )
-					.catch( errorMessage => {
-						return Promise.reject( errorMessage );
-					} )
+				apiGET(APIS.paths.fetch({directionsServiceBaseUrl, origin, waypoints, destination, apikey, mode, language, region, precision, timePrecisionString, channel, alternatives}), (results) =>onReady(results.data), (error) => onError(error))
 			);
-		} ) ).then( results => {
-			// Combine all Directions API Request results into one
-            console.log("setRoute(results);")
-            console.log(results)
-			setRoute(results);
-		} )
-			.catch( errorMessage => {
-				resetState();
-				console.warn( `MapViewDirections Error: ${errorMessage}` ); // eslint-disable-line no-console
-				onError && onError( errorMessage );
-			} );
-	}
-
-	const fetchRoute = ( directionsServiceBaseUrl, origin, waypoints, destination, apikey, mode, language, region, precision, timePrecision, channel, alternatives) => {
-
-		// Define the URL to call. Only add default parameters to the URL if it's a string.
-		let url = directionsServiceBaseUrl;
-		if ( typeof ( directionsServiceBaseUrl ) === 'string' ) {
-			url += `?origin=${origin}&waypoints=${waypoints}&destination=${destination}&key=${apikey}&mode=${mode.toLowerCase()}&language=${language}&region=${region}&alternatives=${alternatives}`;
-			if ( timePrecision ) {
-				url += `&departure_time=${timePrecision}`;
-			}
-			if ( channel ) {
-				url += `&channel=${channel}`;
-			}
-		}
-
-		return fetch( url )
-			.then( response => response.json() )
-			.then( json => {
-
-				if ( json.status !== 'OK' ) {
-					const errorMessage = json.error_message || json.status || 'Unknown error';
-					return Promise.reject( errorMessage );
-				}
-
-				if ( json.routes.length ) {
-                    console.log("Tkdla")
-                    console.log(json.routes[0])
-					console.log(JSON.stringify(json))
-					const steps = json.routes[0].legs[0].steps;
-					const route = steps.map((step) => {
-						return {
-							distance: step.distance.value,
-							duration: step.duration.value,
-							coordinates: decode( [{ polyline: step.polyline }] ),
-							travel_mode: step.travel_mode,
-							transport_desc: step.transit_details?.line?.name,
-							transport_num: step.transit_details?.line?.short_name,
-							vehicle: step.transit_details?.line?.vehicle?.type,
-							color: step.transit_details?.line?.color,
-							start_location: step.start_location,
-							end_location: step.end_location,
-							html_instructions: step.html_instructions,
-							departure_stop: step.transit_details?.departure_stop?.name,
-							arrival_stop: step.transit_details?.arrival_stop?.name,
-						} ;
-					})
-					const bounds = json.routes[0].bounds;
-					console.log("legs");
-					console.log(JSON.stringify(route));
-					return route;
-
-				} else {
-					return Promise.reject();
-				}
-			} )
-			.catch( err => {
-				return Promise.reject( `Error on GMAPS route request: ${err}` );
-		} );
+		})) 
 	}
 
     return (
@@ -410,14 +281,92 @@ export default function SearchPage() {
                         </Col>
                     </Row>
                 </Div>
-                <Div>
-                    {searchResults.map((result, i) => {
-                        return (
-                            <Row key={i}>
-                                <Span>{JSON.stringify(result.steps)}</Span>
-                            </Row>
-                        )
-                    })}
+                <Div mt10 bgWhite flex={1}>
+                    <ScrollView
+                        flex={1}
+                        bgGray100
+                        showsVerticalScrollIndicator={false}
+                        refreshControl={
+                        <RefreshControl refreshing={isLoading} onRefresh={pullToRefresh} />
+                        }>
+                        {searchResults && searchResults.routes.map((result, i) => {
+                            return (
+                                <Div borderBottom borderGray200 py20 px20 key={i} onPress={() => setCurrenRoute(i)}>
+                                    <Row my10>
+                                        <Col auto justifyCenter mr10><Span fontSize={23}>{result.legs[0].duration.text}</Span></Col>
+                                        <Col justifyCenter><Span>{`${result.legs[0].departure_time.text} ~ ${result.legs[0].arrival_time.text}`}</Span></Col>
+                                    </Row>
+                                    <Row mt2 mb10>
+                                        <Div flex={3}>
+                                            <Row>
+                                                {result.legs[0].steps.map((step, ind)=>{
+                                                    return (
+                                                        <Div key={ind} mx1 flexDirection={"column"} flex={ step.distance.value / result.legs[0].distance.value} justifyCenter >
+                                                            <Div h3 borderRadius={1} backgroundColor={step.transit_details?.line?.color || "silver"}>
+                                                            </Div>
+                                                        </Div>
+                                                    )
+                                                })}
+                                            </Row>
+                                        </Div>
+                                        <Div flex={1}>
+                                        </Div>
+                                    </Row>
+                                    {result.legs[0].steps.filter(step => step.transit_details).map((step, index , arr)=>{
+
+                                        return (
+                                            <>
+                                                <Row my5 fontSize={15} justifyCenter key={index} >
+                                                    <Col w25 auto mr5 itemsCenter justifyCenter>
+                                                        <Div h25 w25 itemsCenter justifyCenter backgroundColor={step.transit_details.line.color} borderRadius={50}>
+                                                            {
+                                                                step.transit_details?.line?.vehicle?.name !== "버스" ? 
+                                                                (<Span white bold>{step.transit_details.line.short_name.slice(0, -2)}</Span>)
+                                                                :
+                                                                (<Image style={{width: 15, height: 15, tintColor: "white"}} source={{ uri: `https:${step.transit_details.line.vehicle.icon}`}}></Image>)
+                                                            }
+                                                        </Div>
+                                                    </Col>
+                                                    <Col justifyCenter>
+                                                        <Span>{step.transit_details.departure_stop.name}</Span>
+                                                    </Col>
+                                                </Row>
+                                                {   
+                                                    step.transit_details?.line?.vehicle?.name == "버스" &&
+                                                    <Row mb5 justifyCenter >
+                                                        <Col w25 auto mr5 itemsCenter justifyCenter>
+                                                        </Col>
+                                                        <Col justifyCenter mr5 auto>
+                                                            <Div itemsCenter justifyCenter backgroundColor={step.transit_details.line.color} borderRadius={5} px5>
+                                                                <Span fontSize={10} white>{step.transit_details.line.name.split(" ").pop().slice(0,2)}</Span>
+                                                            </Div>
+                                                        </Col>
+                                                        <Col justifyCenter auto>
+                                                                <Span >{step.transit_details.line.short_name}</Span>
+                                                        </Col>
+                                                        <Col></Col>
+                                                    </Row>
+                                                }
+                                                {
+                                                    arr.length && (arr.length - 1 == index) && 
+                                                    <Row my5 fontSize={15} justifyCenter >
+                                                        <Col w25 auto mr5 itemsCenter justifyCenter>
+                                                            <Div h15 w15 itemsCenter justifyCenter backgroundColor={step.transit_details.line.color} borderRadius={50}>
+                                                                <Div h5 w5 backgroundColor={"white"} borderRadius={10}></Div>
+                                                            </Div>
+                                                        </Col>
+                                                        <Col justifyCenter>
+                                                            <Span>{step.transit_details.arrival_stop.name}</Span>
+                                                        </Col>
+                                                    </Row>
+                                                }
+                                            </>
+                                        )
+                                    })}
+                                </Div>
+                            )
+                        })}
+                    </ScrollView>
                 </Div>
             </NativeBaseProvider>
         </Div>

@@ -1,19 +1,22 @@
-import React, {useState, useEffect, useRef, Fragment, FC, ReactElement} from 'react';
+import React, {useState, useEffect} from 'react';
+import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
 import { Div } from 'src/components/common/Div';
 import { Row } from 'src/components/common/Row';
 import { Col } from 'src/components/common/Col';
 import { Img } from 'src/components/common/Img';
 import { IMAGES } from 'src/modules/images';
 import { Span } from 'src/components/common/Span';
-import { useApiPOST, useApiSelector, useReloadGET } from 'src/redux/asyncReducer';
+import { useApiSelector, useReloadGET } from 'src/redux/asyncReducer';
 import APIS from 'src/modules/apis';
-import { Animated, View, TouchableWithoutFeedback, Text, StyleSheet } from 'react-native';
-import MapView, { Circle, Polyline, Marker, PROVIDER_GOOGLE } from 'react-native-maps';
+import { Animated, Dimensions, StyleSheet } from 'react-native';
 import SearchScreen from 'src/screens/SearchScreen'
 import _ from "lodash";
 import { useSelector } from 'react-redux';
 import { RootState } from 'src/redux/rootReducer';
 import { shallowEqual } from 'react-redux';
+import MapViewDirections from 'src/components/MapViewDirections';
+import {confirmCurrentRoute} from 'src/redux/pathReducer';
+import {useDispatch} from 'react-redux';
 
 // import GetLocation from 'react-native-get-location'
 //   useEffect(() => {
@@ -42,132 +45,53 @@ import { shallowEqual } from 'react-redux';
   //   }
   // }
 
-interface LatLng {
-	latitude: number,
-	longitude: number
-}
-
-interface Step {
-	coordinates: any;
-	distance: number;
-	duration: number;
-	travel_mode: string;
-	transport_num: string;
-	transport_desc: string;
-	vehicle: string;
-	color: string;
-	start_location: string;
-	end_location: string;
-	html_instructions: string;
-	departure_stop: string;
-	arrival_stop: string;
-}
-
-interface MapViewDirectionsProps { 
-	steps: Array<Step>, 
-	origin: LatLng, 
-	destination: LatLng 
-}
-
-const MapViewDirections: FC<MapViewDirectionsProps> = (props): ReactElement => {
-
-	const { steps: Steps, origin: Origin, destination: Destination } = props;
-
-	if ( !Steps ) {
-		return null;
-	}
-
-	const CircleFix = ({step}) => {
-		const circleRef = useRef(null);
-		return(
-			step.coordinates &&
-				<Circle 
-					onLayout={() => (circleRef.current.setNativeProps({
-						strokeColor: "grey",
-						fillColor: "white"
-						}))}
-					center={step.coordinates[step.coordinates.length-1]} 
-					radius={30} 
-					fillColor={null} 
-					strokeWidth={4} 
-					strokeColor={null}
-					zIndex={10}
-					ref={circleRef}/>	
-		)
-	}
-	
-
-	const polylineConditionalProps = (step) => {
-		if (step.travel_mode == "WALKING"){
-			return {
-				strokeWidth: 5,
-				strokeColor: "grey",
-				// strokeColor: "#33b8ff",
-				lineDashPattern: [10,10]
-			}
-		}
-		else{
-			return {
-				strokeWidth: 7,
-				strokeColor: step.color,
-			}
-		}
-	}
-
-	const PatternedPolyline = ({step}) => {
-		return(
-			<>
-				<Polyline miterLimit={90} tappable lineJoin={'miter'} coordinates={step.coordinates} strokeWidth={10} strokeColor={"white"} {...props} />
-				<Polyline miterLimit={90} tappable lineJoin={'miter'} coordinates={step.coordinates} {...polylineConditionalProps(step)} {...props} />
-			</>
-		)
-	}
-	
-	return (
-		<>
-		{Origin && <Marker title={"출발"} pinColor={"blue"} coordinate={Origin}></Marker>}
-		{Steps.map( (step, index) => {
-				return (
-				<Fragment key={index}>
-					{step.coordinates && (index == 0) && <CircleFix step={{coordinates: [step.coordinates[0]]}}/>}
-					<PatternedPolyline step={step}/>
-					<CircleFix step={step}/>
-				</Fragment>)
-		}) }
-		{Destination && <Marker title={"도착"} coordinate={Destination}></Marker>}
-		</>
-	);
-}
 
 
 const LessonScreen = ({route}) => {
-
+	const {data: searchResults, isLoading: isSearchLoading} = useApiSelector(APIS.paths.fetch);
 	const {data: defaultRoute, isLoading} = useApiSelector(APIS.paths.default);
 	const apiGET = useReloadGET();
+	const dispatch = useDispatch();
 	useEffect(() => {
 		apiGET(APIS.paths.default())
 	}, []);
 
-	const {steps, originCoord, destinationCoord} = useSelector(
-        (root: RootState) => (root.path.currentRoute), shallowEqual
+	const { origin, destination} = useSelector(
+        (root: RootState) => (root.path.userSearch), shallowEqual
+    );
+	const CurrentRouteIndex = useSelector(
+        (root: RootState) => (root.path.currentRouteIndex), shallowEqual
+    );
+	const currentRouteConfirmed = useSelector(
+        (root: RootState) => (root.path.currentRouteConfirmed), shallowEqual
     );
 
-	const [MapCenter, setMapCenter] = useState({
-		latitude: 37.517235,
-		longitude: 127.047325,
-		latitudeDelta: 0.0922,
-		longitudeDelta: 0.0421,
-	})
-  	const [Coordinates, setCoordinates] = useState([
-        {
-          latitude: 37.517235,
-          longitude: 127.047325,
-        },
-        {
-          latitude: 37.5317,
-          longitude: 127.0303,
-        },
-      ])
+	const calculatInitialMapRegion = () => {
+		const bounds = searchResults?.routes[CurrentRouteIndex].bounds
+		if (bounds){
+			const { width, height } = Dimensions.get('window')
+			const ASPECT_RATIO = width / height
+			const latitude = (bounds.northeast.lat + bounds.southwest.lat) / 2;
+			const longitude = (bounds.northeast.lng + bounds.southwest.lng) /2;
+			const longitudeDelta = (bounds.northeast.lng - bounds.southwest.lng)*2;
+			const latitudeDelta = longitudeDelta * ASPECT_RATIO;
+			return {
+				latitude: latitude,
+				longitude: longitude,
+				latitudeDelta: latitudeDelta,
+				longitudeDelta: longitudeDelta,
+			}}
+		else {
+			return {
+				latitude: 37.5663,
+				longitude: 126.9779,
+				latitudeDelta: 1,
+				longitudeDelta: 1,
+			}
+		}
+	}
+
+	const [mapRegion, setMapRegion] = useState(null)
 
 	const on = {
 		bgWhite: true,
@@ -209,34 +133,33 @@ const LessonScreen = ({route}) => {
 		}
 	}
 
-	const [SearchTab, setSearchTab] = useState(false)
 	const expandSearchTab = () => {
-		setSearchTab(true);
+		dispatch(confirmCurrentRoute(false));
 	}
 
 	const Header = () => {
-
 		return(
 			<Div activeOpacity={1.0} auto >
 			  <Animated.View style={{height: 1, transform: [{scaleY: AnimatedStyles.animationValue}], alignContent: "center", backgroundColor: "white", borderBottomLeftRadius: 30, borderBottomRightRadius: 30}} >
 			  </Animated.View>
 			  <Row bgWhite h50 itemsCenter borderBottomLeftRadius={30} borderBottomRightRadius={30} >
-				<Col itemsCenter onPress={(e)=> expandSearchTab()}><Span bold>서울대학교</Span></Col>
+				<Col itemsCenter onPress={(e)=> expandSearchTab()}><Span bold>{origin}</Span></Col>
 				<Col auto itemsCenter>
 				  <Span>→</Span>
 				</Col>
-				<Col itemsCenter onPress={(e)=> expandSearchTab()}><Span bold>강남 위워크</Span></Col>
+				<Col itemsCenter onPress={(e)=> expandSearchTab()}><Span bold>{destination}</Span></Col>
 			  </Row>
 			  {ExpandHeader[1] && (
 				<Row itemsCenter {...ExpandHeader[1]}>
 				  <Col>
-					{defaultRoute.map((step, index) => {
+					{searchResults?.routes.length && 
+					searchResults.routes[CurrentRouteIndex].legs[0].steps.map((step, index) => {
 						return(<Row my15 key={index}>
 									<Col mx20>
 										<Row>
 											<Col auto>
 												<Row ><Span bold>{step.html_instructions}</Span></Row>
-												{step.transport_num && <Row><Span red>{step.transport_num}</Span></Row>}
+												{step.transit_details && <Row><Span red>{step.transit_details?.line.short_name}</Span></Row>}
 											</Col>
 											<Col ml5>
 												<Row my5>
@@ -245,13 +168,13 @@ const LessonScreen = ({route}) => {
 															return(<Col mx2 h10 key={i} borderRadius={1} backgroundColor={"grey"}></Col>)
 														})
 													):
-														<Col h10 borderRadius={1} backgroundColor={step.color}></Col>}
+														<Col h10 borderRadius={1} backgroundColor={step.transit_details?.line.color}></Col>}
 												</Row>
-												{step.arrival_stop && step.departure_stop &&
+												{step.transit_details &&
 													<Row>
-														<Col itemsStart auto><Span>{step.arrival_stop}</Span></Col>
+														<Col itemsStart auto><Span>{step.transit_details.arrival_stop.name}</Span></Col>
 														<Col itemsCenter></Col>
-														<Col itemsEnd auto><Span>{step.departure_stop}</Span></Col>
+														<Col itemsEnd auto><Span>{step.transit_details.departure_stop.name}</Span></Col>
 													</Row>
 												}
 											</Col>
@@ -265,25 +188,20 @@ const LessonScreen = ({route}) => {
 				)}
 			</Div>
 		)
-	  }
+	}
 
   	return (
 		<>
-			{SearchTab ?
-			(<SearchScreen></SearchScreen>)
-			:
+			{currentRouteConfirmed ?
 			(<Div flex={1}>
 				<MapView  
 					onPress={(e)=>toggle()}
 					provider={PROVIDER_GOOGLE}
-					initialRegion={MapCenter} 
+					initialRegion={calculatInitialMapRegion()} 
 					style={StyleSheet.absoluteFill}>
-					{/* {Coordinates.map((coordinate, index) =>
-					<Marker key={`coordinate_${index}`} coordinate={coordinate} />
-					)} */}
-					{(Coordinates.length >= 2) && (!isLoading) && (
+					{searchResults && (
 						<MapViewDirections
-							steps={steps} origin={originCoord} destination={destinationCoord}
+							route={searchResults.routes[CurrentRouteIndex]}
 						/>
 					)}
 				</MapView>
@@ -301,6 +219,8 @@ const LessonScreen = ({route}) => {
 					</Div>
 				</Div>
 			</Div>)
+			:
+			(<SearchScreen></SearchScreen>)
 			}
 		</>
 	)

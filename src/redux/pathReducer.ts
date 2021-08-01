@@ -7,28 +7,9 @@ const pathSlice = createSlice({
       origin: "",
       destination: ""
     },
-    searchResults: [{
-      steps: [],
-      originCoord: {
-        latitude: 37.517235,
-        longitude: 127.047325,
-      },
-      destinationCoord: {
-        latitude: 37.5317,
-        longitude: 127.0303,
-      }
-    }],
-    currentRoute: {
-      steps: [],
-      originCoord: {
-        latitude: 37.517235,
-        longitude: 127.047325,
-      },
-      destinationCoord: {
-        latitude: 37.5317,
-        longitude: 127.0303,
-      }
-    }
+    searchResults: [],
+    currentRouteIndex: 0,
+    currentRouteConfirmed: true
   },
   reducers: {
     setUserSearchOrigin: (state, action) => {
@@ -40,8 +21,11 @@ const pathSlice = createSlice({
     setSearchResults: (state, action) => {
       state.searchResults = action.payload;
     },
-    setCurrentRoute: (state, action) => {
-      state.currentRoute = action.payload;
+    setCurrentRouteIndex: (state, action) => {
+      state.currentRouteIndex = action.payload;
+    },
+    confirmCurrentRoute: (state, action) => {
+      state.currentRouteConfirmed = action.payload;
     },
     addSelectedTutor: (state, action) => {
       state.searchResults.unshift(action.payload);
@@ -53,6 +37,6 @@ const pathSlice = createSlice({
 });
 
 export const pathReducer = pathSlice.reducer;
-export const { setUserSearchOrigin, setUserSearchDestination, setSearchResults, setCurrentRoute, addSelectedTutor, deleteSelectedTutor } =
+export const { setUserSearchOrigin, setUserSearchDestination, setSearchResults, setCurrentRouteIndex, confirmCurrentRoute, addSelectedTutor, deleteSelectedTutor } =
   pathSlice.actions;
 export const pathListSelector = state => state.path.selectedTutorList;

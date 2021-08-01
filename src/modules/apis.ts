@@ -9,10 +9,24 @@ const v3 = path => toUrl(BASE_URL, '/api/v3', path);
 const v4 = path => toUrl(BASE_URL, '/api/v4', path);
 const v3_student = path => toUrl(BASE_URL, '/api/v3/student', path);
 const v4_student = path => toUrl(BASE_URL, '/api/v4/student', path);
+const fetchRoute = ({ directionsServiceBaseUrl = "https://maps.googleapis.com/maps/api/directions/json", origin, waypoints, destination, apikey, mode, language, region, precision, timePrecisionString, channel, alternatives }) => {
+  let url = directionsServiceBaseUrl;
+  if (typeof (directionsServiceBaseUrl) === 'string') {
+    url += `?origin=${origin}&waypoints=${waypoints}&destination=${destination}&key=${apikey}&mode=${mode.toLowerCase()}&language=${language}&region=${region}&alternatives=${alternatives}`;
+    if (timePrecisionString) {
+      url += `&departure_time=${timePrecisionString}`;
+    }
+    if (channel) {
+      url += `&channel=${channel}`;
+    }
+  }
+  return { url: url }
+}
 
 const APIS = {
   paths: {
-    default: () => base('/default')
+    default: () => base('/default'),
+    fetch: fetchRoute
   },
   lessonEnter: id => v1(`/rtc/rtc_lesson_info?lesson_id=${id}`),
   version: (platform, target) =>
