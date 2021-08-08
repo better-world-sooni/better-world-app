@@ -9,4 +9,9 @@ export const ICONS = {
   iconChevronRightBlack: require('assets/icons/iconChevronRightBlack.png'),
   iconChevronRightGray: require('assets/icons/iconChevronRightGray.png'),
   iconBell: require('assets/icons/iconBell.png'),
+  iconMapMarker: require('assets/icons/mapMarker.png'),
+  blankProfile: require('assets/icons/blankProfile.png'),
+  iconSearch: require('assets/icons/search.png'),
+  iosBack: require('assets/icons/iosBack.png'),
+  x: require('assets/icons/x.png'),
 };

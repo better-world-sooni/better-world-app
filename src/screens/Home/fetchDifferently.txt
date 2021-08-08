@@ -427,13 +427,13 @@ export default function SearchPage() {
 {
       bounds: {
           northeast: {
-              lat: 37.5518018,
-              lng: 127.0736345
+            lat: 37.5663,
+            lng: 126.9779,
           },
           southwest: {
-              lat: 37.4928068,
-              lng: 127.0340956
-          }
+            lat: 37.5663,
+            lng: 126.9779,
+          },
       },
       copyrights: "",
       legs: [
@@ -488,35 +488,81 @@ export default function SearchPage() {
                           lat: null,
                           lng: null
                       },
+                      transit_details: {
+                        arrival_stop: {
+                            location: {
+                              lat: 37.5663,
+                              lng: 126.9779,
+                            },
+                            name: ""
+                        },
+                        arrival_time: {
+                            text: "",
+                            time_zone: "Asia/Seoul",
+                            value: 0
+                        },
+                        departure_stop: {
+                            location: {
+                                lat: 0,
+                                lng: 0
+                            },
+                            name: ""
+                        },
+                        departure_time: {
+                            text: "",
+                            time_zone: "Asia/Seoul",
+                            value: 0
+                        },
+                        headsign: "",
+                        headway: 660,
+                        line: {
+                            agencies: [
+                                {
+                                    name: "",
+                                    url: ""
+                                }
+                            ],
+                            color: "",
+                            name: "",
+                            short_name: "",
+                            text_color: "",
+                            vehicle: {
+                                icon: "",
+                                name: "",
+                                type: ""
+                            }
+                        },
+                        num_stops: 10
+                      },
                       steps: [
                           {
-                              "distance": {
-                                  "text": "",
-                                  "value": 0
+                              distance: {
+                                  text: "",
+                                  value: 0
                               },
-                              "duration": {
-                                  "text": "",
-                                  "value": 0
+                              duration: {
+                                  text: "",
+                                  value: 0
                               },
-                              "end_location": {
-                                  "lat": 37.494174,
-                                  "lng": 127.034097
+                              end_location: {
+                                lat: 37.5663,
+                                lng: 126.9779,
                               },
-                              "polyline": {
-                                  "points": ""
+                              polyline: {
+                                  points: ""
                               },
-                              "start_location": {
-                                  "lat": 37.4928068,
-                                  "lng": 127.0367729
+                              start_location: {
+                                lat: 37.5663,
+                                lng: 126.9779,
                               },
-                              "travel_mode": "WALKING"
+                              travel_mode: ""
                           }
                       ],
-                      "travel_mode": "WALKING"
+                      travel_mode: ""
                   },
               ],
-              "traffic_speed_entry": [],
-              "via_waypoint": []
+              traffic_speed_entry: [],
+              via_waypoint: []
           }
       ],
       overview_polyline: {

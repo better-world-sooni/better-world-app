@@ -8,7 +8,7 @@ const pathSlice = createSlice({
       destination: ""
     },
     searchResults: [],
-    currentRouteIndex: 0,
+    currentRouteIndex: false,
     currentRouteConfirmed: true
   },
   reducers: {

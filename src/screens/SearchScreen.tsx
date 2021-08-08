@@ -1,6 +1,6 @@
 import { useApiSelector, useReloadGET } from 'src/redux/asyncReducer';
 import APIS from 'src/modules/apis';
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import { NativeBaseProvider, TextField } from 'native-base';
 import { Div } from 'src/components/common/Div';
 import { Row } from 'src/components/common/Row';
@@ -11,11 +11,14 @@ import { useSelector } from 'react-redux';
 import { RootState } from 'src/redux/rootReducer';
 import { shallowEqual } from 'react-redux';
 import {setUserSearchOrigin, setUserSearchDestination, setSearchResults, setCurrentRouteIndex, confirmCurrentRoute} from 'src/redux/pathReducer';
-import { Img } from 'src/components/common/Img';
 import { Image } from 'react-native';
 import { ScrollView } from 'src/modules/viewComponents';
 import { RefreshControl } from 'react-native';
-import { current } from 'immer';
+import { ICONS } from 'src/modules/icons';
+import { Img } from 'src/components/common/Img';
+import { Shuffle, X } from 'react-native-feather';
+import { useNavigation } from '@react-navigation/native';
+import { NAV_NAMES } from 'src/modules/navNames';
 
 const WAYPOINT_LIMIT = 10;
 
@@ -68,22 +71,34 @@ interface Props {
 	alternatives?: boolean
 }
 
-export default function SearchPage() {
+export default function SearchScreen() {
 
     const GOOGLE_MAPS_APIKEY = 'AIzaSyAKr85NZ139cK6XvE_UExdhmtfivHiG8qE';
     const { origin, destination} = useSelector(
         (root: RootState) => (root.path.userSearch), shallowEqual
     );
 	const apiGET = useReloadGET();
-	const {data: defaultRoute, isLoading} = useApiSelector(APIS.paths.default);
     const {data: searchResults, isLoading: isSearchLoading} = useApiSelector(APIS.paths.fetch);
+    const {data: autocompleteResults, isLoading: isAutocompleteLoading} = useApiSelector(APIS.paths.queryAutocomplete);
     const dispatch = useDispatch();
     const [tentativeOrigin, setTentativeOrigin] = useState(origin);
     const [tentativeDestination, setTentativeDestination] = useState(destination);
+    const [NONE, ORIGIN, DESINTATION] = [0, 1, 2]
+    const [editFocus, setEditfocus] = useState(NONE)
 
-    const setCurrenRoute = (index) => {
+    const originRef = useRef(null)
+    const destinationRef = useRef(null)
+
+    const navigation = useNavigation()
+
+    useEffect(() => {
+        pullToRefresh();
+    }, [origin, destination])
+
+    const setCurrentRoute = (index) => {
         dispatch(setCurrentRouteIndex(index))
         dispatch(confirmCurrentRoute(true))
+        setEditfocus(NONE)
     }
     
     const setOrigin = (origin) => {
@@ -92,6 +107,55 @@ export default function SearchPage() {
 
     const setDestination = (destination) => {
         dispatch(setUserSearchDestination(destination))
+    }
+
+    const onFocus = (which) => [
+        setEditfocus(which)
+    ]
+ 
+    const onChangeText = (text, which) => {
+        if (which == "origin"){
+            setTentativeOrigin(text)
+        }else{
+            setTentativeDestination(text)
+        }
+        let props = {
+            apikey: GOOGLE_MAPS_APIKEY,
+            language: 'ko',
+            input: text,
+        }
+        apiGET(APIS.paths.queryAutocomplete(props), (results) =>onReady(results.data), (error) => onError(error))
+    }
+
+    const onAutoCompleteSelect = (index) => {
+        const autocompleteDescription = autocompleteResults?.predictions[index].description
+        const autocompleteTerm = autocompleteResults?.predictions[index].terms[0].value
+        if (!autocompleteDescription || !autocompleteTerm) return
+        if (editFocus == 2){
+            setTentativeDestination(autocompleteTerm)
+            setDestination(autocompleteTerm)
+            setEditfocus(NONE)
+            destinationRef.current.blur()
+        }
+        else{
+            setTentativeOrigin(autocompleteTerm)
+            setOrigin(autocompleteTerm)
+            setEditfocus(NONE)
+            originRef.current.blur()
+        }
+    }
+
+    const onPressExit = () => {
+		navigation.navigate(NAV_NAMES.Home)
+    }
+
+    const onPressSwitch = () => {
+        const d = destination
+        const o = origin
+        setTentativeOrigin(d)
+        setTentativeDestination(o)
+        setOrigin(d)
+        setDestination(o)
     }
 
     const waypoints = [];
@@ -136,10 +200,6 @@ export default function SearchPage() {
     const pullToRefresh = () => {
         fetchAndSetSearchResults( props );
       };
-
-    useEffect(() => {
-        pullToRefresh();
-    }, [origin, destination])
 
 	const resetState = () => {
 		dispatch(setSearchResults([]));
@@ -249,125 +309,176 @@ export default function SearchPage() {
 		})) 
 	}
 
+    const AutoCompleteSuggestions = () => {
+
+        const iconifyResultType = (types) => {
+            return(
+                <Div rounded100 backgroundColor={"silver"} h30 w30 itemsCenter justifyCenter>
+                    {
+                        types?.includes("establishment") ?
+                        <Img tintColor={"white"} h25 w20 white source={ICONS.iconMapMarker}></Img>
+                        :
+                        <Img tintColor={"white"} h20 w20 source={ICONS.iconSearch}></Img>
+                    }
+                </Div>
+            )
+        }
+
+        return(
+            <Div mt10 bgWhite flex={1}>
+                <ScrollView
+                    flex={1}
+                    bgGray100
+                    showsVerticalScrollIndicator={false}
+                >
+                    <Div px20>
+                    {
+                        autocompleteResults?.predictions?.map((result, index) => {
+                            return (
+                                <Row py20 justifyCenter borderBottom borderGray200 key={index} onPress={(e) => onAutoCompleteSelect(index)}>
+                                    <Col justifyCenter mr10 auto>{iconifyResultType(result.types)}</Col>
+                                    <Col justifyCenter><Span>{result.terms[0].value}</Span></Col>
+                                </Row>
+                            )
+                        })
+                    }
+                    </Div>
+                </ScrollView>
+            </Div>
+        )
+    }
+
     return (
         <Div flex={1}>
             <NativeBaseProvider>
                 <Div bgWhite px20 py10 activeOpacity={1.0} auto >
-                    <Row bgWhite h50 >
-                        <Col onPress={(e)=> console.log()}>
+                    { (!editFocus || editFocus == 1) && <Row bgWhite h50 >
+                        <Col auto justifyCenter mr5 >
+                            <Span >출발: </Span>
+                        </Col>
+                        <Col >
                             <TextField
+                                ref={originRef}
                                 textContentType={"fullStreetAddress"}
                                 placeholder={'출발지'}
                                 value={tentativeOrigin}
-                                onBlur={() => setOrigin(tentativeOrigin)}
-                                onChangeText={(text) => setTentativeOrigin(text)}
+                                onFocus={() => onFocus(ORIGIN)}
+                                onChangeText={(text) => onChangeText(text, 'origin')}
                             ></TextField>
                         </Col>
-                        <Col auto ml20 justifyCenter onPress={(e)=> console.log()}>
-                            <Span bold>출발</Span>
+                        {!editFocus && <Col auto ml20 justifyCenter onPress={(e)=> onPressExit()}>
+                            <X stroke="#2e2e2e" fill="#fff" width={18} ></X>
+                        </Col>}
+                    </Row>}
+                    {(!editFocus || editFocus == 2) &&<Row bgWhite h50 >
+                        <Col auto justifyCenter mr5 >
+                            <Span >도착: </Span>
                         </Col>
-                    </Row>
-                    <Row bgWhite h50 >
-                        <Col onPress={(e)=> console.log()}>
+                        <Col >
                             <TextField
+                                ref={destinationRef}
                                 placeholder={'도착지'}
                                 value={tentativeDestination}
-                                onBlur={() => setDestination(tentativeDestination)}
-                                onChangeText={(text) => setTentativeDestination(text)}
+                                onFocus={() => onFocus(DESINTATION)}
+                                onChangeText={(text) => onChangeText(text, 'destination')}
                             ></TextField>
                         </Col>
-                        <Col auto justifyCenter ml20 onPress={(e)=> console.log()}>
-                            <Span bold>도착</Span>
-                        </Col>
-                    </Row>
+                        {!editFocus && <Col auto justifyCenter ml20 onPress={(e)=> onPressSwitch()}>
+                            <Shuffle stroke="#2e2e2e" fill="#fff" width={18} ></Shuffle>
+                        </Col>}
+                    </Row>}
                 </Div>
-                <Div mt10 bgWhite flex={1}>
-                    <ScrollView
-                        flex={1}
-                        bgGray100
-                        showsVerticalScrollIndicator={false}
-                        refreshControl={
-                        <RefreshControl refreshing={isLoading} onRefresh={pullToRefresh} />
-                        }>
-                        {searchResults && searchResults.routes.map((result, i) => {
-                            return (
-                                <Div borderBottom borderGray200 py20 px20 key={i} onPress={() => setCurrenRoute(i)}>
-                                    <Row my10>
-                                        <Col auto justifyCenter mr10><Span fontSize={23}>{result.legs[0].duration.text}</Span></Col>
-                                        <Col justifyCenter><Span>{`${result.legs[0].departure_time.text} ~ ${result.legs[0].arrival_time.text}`}</Span></Col>
-                                    </Row>
-                                    <Row mt2 mb10>
-                                        <Div flex={3}>
-                                            <Row>
-                                                {result.legs[0].steps.map((step, ind)=>{
-                                                    return (
-                                                        <Div key={ind} mx1 flexDirection={"column"} flex={ step.distance.value / result.legs[0].distance.value} justifyCenter >
-                                                            <Div h3 borderRadius={1} backgroundColor={step.transit_details?.line?.color || "silver"}>
+                {editFocus ?
+                    <AutoCompleteSuggestions/>
+                :
+                    <Div mt10 bgWhite flex={1}>
+                        <ScrollView
+                            flex={1}
+                            bgGray100
+                            showsVerticalScrollIndicator={false}
+                            refreshControl={
+                            <RefreshControl refreshing={isSearchLoading} onRefresh={pullToRefresh} />
+                            }>
+                            {searchResults && searchResults.routes.map((result, i) => {
+                                return (
+                                    <Div borderBottom borderGray200 py20 px20 key={i} onPress={() => setCurrentRoute(i)}>
+                                        <Row my10>
+                                            <Col auto justifyCenter mr10><Span fontSize={23}>{result.legs[0].duration.text}</Span></Col>
+                                            <Col justifyCenter><Span>{`${result.legs[0].departure_time.text} ~ ${result.legs[0].arrival_time.text}`}</Span></Col>
+                                        </Row>
+                                        <Row mt2 mb10>
+                                            <Div flex={3}>
+                                                <Row>
+                                                    {result.legs[0].steps.map((step, ind)=>{
+                                                        return (
+                                                            <Div key={ind} mx1 flexDirection={"column"} flex={ step.distance.value / result.legs[0].distance.value} justifyCenter >
+                                                                <Div h3 borderRadius={1} backgroundColor={step.transit_details?.line?.color || "silver"}>
+                                                                </Div>
                                                             </Div>
-                                                        </Div>
-                                                    )
-                                                })}
-                                            </Row>
-                                        </Div>
-                                        <Div flex={1}>
-                                        </Div>
-                                    </Row>
-                                    {result.legs[0].steps.filter(step => step.transit_details).map((step, index , arr)=>{
-
-                                        return (
-                                            <>
-                                                <Row my5 fontSize={15} justifyCenter key={index} >
-                                                    <Col w25 auto mr5 itemsCenter justifyCenter>
-                                                        <Div h25 w25 itemsCenter justifyCenter backgroundColor={step.transit_details.line.color} borderRadius={50}>
-                                                            {
-                                                                step.transit_details?.line?.vehicle?.name !== "버스" ? 
-                                                                (<Span white bold>{step.transit_details.line.short_name.slice(0, -2)}</Span>)
-                                                                :
-                                                                (<Image style={{width: 15, height: 15, tintColor: "white"}} source={{ uri: `https:${step.transit_details.line.vehicle.icon}`}}></Image>)
-                                                            }
-                                                        </Div>
-                                                    </Col>
-                                                    <Col justifyCenter>
-                                                        <Span>{step.transit_details.departure_stop.name}</Span>
-                                                    </Col>
+                                                        )
+                                                    })}
                                                 </Row>
-                                                {   
-                                                    step.transit_details?.line?.vehicle?.name == "버스" &&
-                                                    <Row mb5 justifyCenter >
+                                            </Div>
+                                            <Div flex={1}>
+                                            </Div>
+                                        </Row>
+                                        {result.legs[0].steps.filter(step => step.transit_details).map((step, index , arr)=>{
+
+                                            return (
+                                                <React.Fragment key={index} >
+                                                    <Row my5 fontSize={15} justifyCenter>
                                                         <Col w25 auto mr5 itemsCenter justifyCenter>
-                                                        </Col>
-                                                        <Col justifyCenter mr5 auto>
-                                                            <Div itemsCenter justifyCenter backgroundColor={step.transit_details.line.color} borderRadius={5} px5>
-                                                                <Span fontSize={10} white>{step.transit_details.line.name.split(" ").pop().slice(0,2)}</Span>
-                                                            </Div>
-                                                        </Col>
-                                                        <Col justifyCenter auto>
-                                                                <Span >{step.transit_details.line.short_name}</Span>
-                                                        </Col>
-                                                        <Col></Col>
-                                                    </Row>
-                                                }
-                                                {
-                                                    arr.length && (arr.length - 1 == index) && 
-                                                    <Row my5 fontSize={15} justifyCenter >
-                                                        <Col w25 auto mr5 itemsCenter justifyCenter>
-                                                            <Div h15 w15 itemsCenter justifyCenter backgroundColor={step.transit_details.line.color} borderRadius={50}>
-                                                                <Div h5 w5 backgroundColor={"white"} borderRadius={10}></Div>
+                                                            <Div h25 w25 itemsCenter justifyCenter backgroundColor={step.transit_details.line.color} borderRadius={50}>
+                                                                {
+                                                                    step.transit_details?.line?.vehicle?.name !== "버스" ? 
+                                                                    (<Span white bold>{step.transit_details?.line?.short_name?.slice(0, -2)}</Span>)
+                                                                    :
+                                                                    (<Image style={{width: 15, height: 15, tintColor: "white"}} source={{ uri: `https:${step.transit_details.line.vehicle.icon}`}}></Image>)
+                                                                }
                                                             </Div>
                                                         </Col>
                                                         <Col justifyCenter>
-                                                            <Span>{step.transit_details.arrival_stop.name}</Span>
+                                                            <Span>{step.transit_details.departure_stop.name}</Span>
                                                         </Col>
                                                     </Row>
-                                                }
-                                            </>
-                                        )
-                                    })}
-                                </Div>
-                            )
-                        })}
-                    </ScrollView>
-                </Div>
+                                                    {   
+                                                        step.transit_details?.line?.vehicle?.name == "버스" &&
+                                                        <Row mb5 justifyCenter >
+                                                            <Col w25 auto mr5 itemsCenter justifyCenter>
+                                                            </Col>
+                                                            <Col justifyCenter mr5 auto>
+                                                                <Div itemsCenter justifyCenter backgroundColor={step.transit_details.line.color} borderRadius={5} px5>
+                                                                    <Span fontSize={10} white>{step.transit_details.line.name.split(" ").pop().slice(0,2)}</Span>
+                                                                </Div>
+                                                            </Col>
+                                                            <Col justifyCenter auto>
+                                                                    <Span >{step.transit_details.line.short_name}</Span>
+                                                            </Col>
+                                                            <Col></Col>
+                                                        </Row>
+                                                    }
+                                                    {
+                                                        arr.length && (arr.length - 1 == index) && 
+                                                        <Row my5 fontSize={15} justifyCenter >
+                                                            <Col w25 auto mr5 itemsCenter justifyCenter>
+                                                                <Div h15 w15 itemsCenter justifyCenter backgroundColor={step.transit_details.line.color} borderRadius={50}>
+                                                                    <Div h5 w5 backgroundColor={"white"} borderRadius={10}></Div>
+                                                                </Div>
+                                                            </Col>
+                                                            <Col justifyCenter>
+                                                                <Span>{step.transit_details.arrival_stop.name}</Span>
+                                                            </Col>
+                                                        </Row>
+                                                    }
+                                                </React.Fragment>
+                                            )
+                                        })}
+                                    </Div>
+                                )
+                            })}
+                        </ScrollView>
+                    </Div>
+                }
             </NativeBaseProvider>
         </Div>
     )

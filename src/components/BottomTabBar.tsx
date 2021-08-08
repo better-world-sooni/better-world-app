@@ -71,35 +71,36 @@ const BottomTabBar = ({state, descriptors, navigation}) => {
     };
   });
   return (
-    <Div h80>
-      <NativeBaseProvider >
-        <Box flex={1} safeAreaTop>
-          <Center flex={1}>
-          </Center>
-          <HStack bg="white" safeAreaBottom paddingTop={2} shadow={1}>
-          {list.map(item => {
-            return (
-              <Div
-                key={item.key}
-                onPress={item.onPress}
-                flex
-                itemsCenter
-                justifyCenter>
-                {item.image}
-                <Span
-                  sectionBody2
-                  styleComp={[
-                    item.isFocused ? <Style primary bold /> : <Style black />,
-                  ]}>
-                  {/* {item.label} */}
-                </Span>
-              </Div>
-            );
-          })}
-          </HStack>
-        </Box>
-      </NativeBaseProvider>
-    </Div>
+    <></>
+    // <Div h80 borderBottomLeftRadius={10} borderBottomRightRadius={10}>
+    //   <NativeBaseProvider >
+    //     <Box flex={1} safeAreaTop >
+    //       <Center flex={1}>
+    //       </Center>
+    //       <HStack bg="white" safeAreaBottom paddingTop={2} shadow={1}>
+    //       {list.map(item => {
+    //         return (
+    //           <Div
+    //             key={item.key}
+    //             onPress={item.onPress}
+    //             flex
+    //             itemsCenter
+    //             justifyCenter>
+    //             {item.image}
+    //             <Span
+    //               sectionBody2
+    //               styleComp={[
+    //                 item.isFocused ? <Style primary bold /> : <Style black />,
+    //               ]}>
+    //               {/* {item.label} */}
+    //             </Span>
+    //           </Div>
+    //         );
+    //       })}
+    //       </HStack>
+    //     </Box>
+    //   </NativeBaseProvider>
+    // </Div>
   );
 };
 

@@ -23,10 +23,22 @@ const fetchRoute = ({ directionsServiceBaseUrl = "https://maps.googleapis.com/ma
   return { url: url }
 }
 
+const queryAutocomplete = ({ directionsServiceBaseUrl = "https://maps.googleapis.com/maps/api/place/queryautocomplete/json", location = null, apikey, language, input }) => {
+  let url = directionsServiceBaseUrl;
+  if (typeof (directionsServiceBaseUrl) === 'string') {
+    url += `?key=${apikey}&language=${language}&input=${input}`;
+    if (location) {
+      url += `&location=${location}`;
+    }
+  }
+  return { url: url }
+}
+
 const APIS = {
   paths: {
-    default: () => base('/default'),
-    fetch: fetchRoute
+    defaultTo: () => base('/defaultTo'),
+    fetch: fetchRoute,
+    queryAutocomplete: queryAutocomplete
   },
   lessonEnter: id => v1(`/rtc/rtc_lesson_info?lesson_id=${id}`),
   version: (platform, target) =>

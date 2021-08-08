@@ -5,12 +5,11 @@ import TopHeader from 'src/components/TopHeader';
 import React from 'react';
 import BottomTabBar from 'src/components/BottomTabBar';
 import {Div} from 'src/components/common/Div';
-import {Span} from 'src/components/common/Span';
 import {NAV_NAMES} from 'src/modules/navNames';
 import { useLocale } from 'src/i18n/useLocale';
 import { s_common } from 'src/i18n/text/s_common';
 import HomeScreen from 'src/screens/Home/HomeScreen';
-import LessonScreen from 'src/screens/Home/LessonScreen';
+import MapScreen from 'src/screens/Home/MapScreen';
 
 const RootStack = createStackNavigator();
 
@@ -25,15 +24,15 @@ const MainBottomTabs = () => {
       tabBar={tabBarFunc}
       initialRouteName={NAV_NAMES.MainTab_Home}>
       <Tab.Screen
-        name={NAV_NAMES.MainTab_1_1_lesson}
+        name={NAV_NAMES.Home}
         component={HomeScreen}
         options={{
           tabBarLabel: t(s_common._1_1_lesson),
         }}
       />
       <Tab.Screen
-        name={NAV_NAMES.MainTab_Home}
-        component={LessonScreen}
+        name={NAV_NAMES.MainTab_Map}
+        component={MapScreen}
         options={{
           tabBarLabel: t(s_common.home),
         }}
@@ -83,9 +82,16 @@ export const AppContent = () => {
         header: topHeader({...props, headerShown: false}),
       }),
     },
+    {
+      name: NAV_NAMES.MainTab_Map,
+      component: MapScreen,
+      options: props => ({
+        header: topHeader({...props, headerShown: false}),
+      }),
+    },
   ];
   return (
-    <Div flex={1} bgDanger>
+    <Div flex={1} borderBottomLeftRadius={10} borderBottomRightRadius={10}>
       <NavigationContainer>
         <RootStack.Navigator headerMode="screen">
           {Navs.map((item, i) => (
