@@ -2,7 +2,7 @@ import {
   useNavigation
 } from '@react-navigation/native';
 import React, { useEffect, useState } from 'react';
-import { RefreshControl } from 'react-native';
+import { RefreshControl, StyleSheet } from 'react-native';
 import firebase from '@react-native-firebase/app';
 import '@react-native-firebase/messaging';
 import '@react-native-firebase/auth';
@@ -15,20 +15,16 @@ import { useLocale } from 'src/i18n/useLocale';
 import APIS from 'src/modules/apis';
 import { IMAGES } from 'src/modules/images';
 import { NAV_NAMES } from 'src/modules/navNames';
-import { ScrollView } from 'src/modules/viewComponents';
+import { FlatList, ScrollView, View } from 'src/modules/viewComponents';
 import { useApiPOST, useApiSelector, useReloadGET } from 'src/redux/asyncReducer';
-import CreditPackages from 'src/components/CreditPackages';
 import { useDispatch } from 'react-redux';
-import SunganCollection from 'src/components/SunganCollection';
-
 import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
 import MapViewDirections from 'src/components/MapViewDirections';
 import { Dimensions } from 'react-native';
 import { ICONS } from 'src/modules/icons';
 import { confirmCurrentRoute } from 'src/redux/pathReducer';
-import { Search } from 'react-native-feather';
-
-
+import { Map, PlusSquare, Menu, Plus, ChevronRight, ArrowRight, Code, ChevronDown, Bell } from 'react-native-feather';
+import LinearGradient from 'react-native-linear-gradient';
 
 const HomeScreen = (props) => {
   const {data: defaultTo, isLoading} = useApiSelector(APIS.paths.defaultTo);
@@ -62,15 +58,20 @@ const HomeScreen = (props) => {
     navigation.navigate(NAV_NAMES.Home);
   };
   const onPressMyRoute = () => {
-    navigation.navigate(NAV_NAMES.MainTab_Map);
+    navigation.navigate(NAV_NAMES.Map);
   }
-
+  // const onPressSunganCam = () => {
+  //   navigation.navigate(NAV_NAMES.SunganCam);
+  // }
   const expandSearchTab = () => {
 		dispatch(confirmCurrentRoute(false));
 	}
   const onPressFind = () => {
-    navigation.navigate(NAV_NAMES.MainTab_Map);
+    navigation.navigate(NAV_NAMES.Map);
     expandSearchTab()
+  }
+  const onPressMood = () => {
+    navigation.navigate(NAV_NAMES.Mood)
   }
 
   const calculatInitialMapRegion = () => {
@@ -104,123 +105,217 @@ const HomeScreen = (props) => {
 	}
 
   return (
-    <Div px20 flex bgGray100>
-      {/** ========= HEADER =========== */}
-      <Row h50 itemsCenter bgGray100 my5>
-        <Col bgDanger>
-          <Div onPress={onPressLogo} >
-          </Div>
-        </Col>
-        <Col itemsCenter auto>
-          <Div>
-            
-          </Div>
-        </Col>
-        <Col >
-          <Row>
-            <Col></Col>
-            <Col auto>
-              <Div relative onPress={onPressPNList} >
-                {true && (
-                  <Div absolute bgDanger w10 h10 rounded16 zIndex5 top={-3} right />
-                )}
-                <Img w25 h25 source={ICONS.blankProfile} />
-              </Div>
-            </Col>
-          </Row>
-        </Col>
-      </Row>
+    <Div flex
+    backgroundColor={'white'}>
+        {/** ========= HEADER =========== */}
+      <Div px20 >
+        <Row h40 itemsCenter >
+          <Col auto rounded20 backgroundColor={'rgb(242, 242, 247)'} px10 py5>
+            <Row itemsCenter justifyEnd>
+              <Col auto><Span bold>역삼동 793-18</Span></Col>
+              <Col auto mx10>
+                <Code color={"black"} height={15}></Code>
+              </Col>
+              <Col auto><Span bold>강남 WeWork</Span></Col>
+            </Row>
+          </Col>
+          <Col ></Col>
+          <Col auto ml5>
+            <Div relative onPress={onPressPNList} >
+              {true && (
+                <Div absolute bgDanger w10 h10 rounded16 zIndex5 top={-3} right />
+              )}
+              <Bell stroke="#2e2e2e" fill="#fff" strokeWidth={1.5} ></Bell>
+            </Div>
+          </Col>
+        </Row>
+      </Div>
 
       {/** ========== BODY =========== */}
       <ScrollView
         flex={1}
-        bgGray100
         showsVerticalScrollIndicator={false}
         refreshControl={
           <RefreshControl refreshing={isLoading} onRefresh={pullToRefresh} />
         }>
-        <Row itemsCenter bgGray100 my5>
-          <Col auto >
-            <Div onPress={onPressLogo} >
-              <Span fontSize={20}>뉴스</Span>
-            </Div>
-            <Div onPress={onPressLogo} my10>
-              <CreditPackages/>
-            </Div>
-          </Col>
-        </Row>
-        <Row itemsCenter bgGray100 my5>
-          <Col auto >
-            <Div onPress={onPressLogo} >
-              <Span fontSize={20}>Hot 순간</Span>
-            </Div>
-            <Div onPress={onPressLogo} my10 h100>
-              <SunganCollection></SunganCollection>
-            </Div>
-          </Col>
-        </Row>
-        <Row itemsCenter bgGray100 my5>
-          <Col>
-            <Row onPress={onPressLogo} >
-              <Col justifyEnd mr10><Span fontSize={20}>내 길</Span></Col>
-              <Col></Col>
-              <Col justifyEnd auto><Span >역삼동 793-18 / 강남 WeWork</Span></Col>
-            </Row>
-            <Col
-              my10
-              h200
-              border
-              borderGray300
-              rounded6>
-                
-                <MapView  
-                  mapPadding={{bottom: 50, top: 0, left: 0, right: 0}}
-                  userLocationPriority={'high'}
-                  showsBuildings={true}
-                  showsUserLocation={true}
-                  onPress={(e)=>onPressMyRoute()}
-                  provider={PROVIDER_GOOGLE}
-                  initialRegion={calculatInitialMapRegion()} 
-                  style={{
-                    position: 'absolute',
-                    left: -70,
-                    right: 0,
-                    top: 0,
-                    bottom: 0,
-                  }}>
-                  {Route && (
-                    <MapViewDirections
-                      route={Route}
-                    />
-                  )}
-                </MapView>
-                
+        <Div relative>
+          <Row
+          itemsCenter 
+          mt10
+          >
+            <Col>
+              <Row itemsCenter px20 py20>
+                <Col textCenter auto>
+                  <Row ><Span medium fontSize={20}>순간</Span></Row>
+                </Col>
+                <Col></Col>
+                <Col auto>
+                  <Row>
+                    <Col auto><Span>쭉보기</Span></Col>
+                    <Col auto><ChevronRight color={"black"} height={22} /></Col>
+                  </Row>
+                </Col>
+              </Row>
+              <Row pl10>
+                <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+                  {["😀", "🙃", "🤩", "😜", "🤭", "😱"].map((emoji, index) => {
+                    return(
+                      <Div
+                        backgroundColor={'rgb(242, 242, 247)'}
+                        overflow={'hidden'}
+                        rounded20
+                        mx10
+                        w200
+                      >
+                        <Row>
+                          <Col></Col>
+                          <Col auto><Span key={index} fontSize={50}>{emoji}</Span></Col>
+                          <Col></Col>
+                        </Row>
+                        <Row 
+                        backgroundColor={'rgb(225, 225, 227)'}
+                        px20
+                        py10
+                        >
+                          <Col auto>
+                            <Span color={"rgb(66, 66, 66)"} bold>개 망했다..</Span>
+                          </Col>
+                          <Col></Col>
+                        </Row>
+                      </Div>
+                      
+                    )
+                  })}
+                </ScrollView>
+              </Row>
             </Col>
-          </Col>
-        </Row>
-        <Row itemsCenter bgGray100 my5>
-          <Col>
-            <Div onPress={onPressLogo} >
-              <Span fontSize={20}>날씨</Span>
-            </Div>
-            <Col
-              my10
-              h200
-              border
-              borderGray300
-              rounded6>
-                <Row px10 py10>
-                </Row>
+          </Row>
+          <Row 
+          itemsCenter 
+          my20
+          mx20
+          >
+            <Col>
+              <Row itemsCenter py20>
+                <Col textCenter auto>
+                  <Row ><Span medium fontSize={20}>도착지로 순간이동</Span></Row>
+                </Col>
+                <Col></Col>
+                <Col auto>
+                  <Row>
+                    <Col auto><Span>자세히</Span></Col>
+                    <Col auto><ChevronRight color={"black"} height={22} /></Col>
+                  </Row>
+                </Col>
+              </Row>
+              <Row 
+              itemsCenter
+              backgroundColor={'rgb(255, 232, 196)'}
+              overflow={'hidden'}
+              rounded20>
+                <Col >
+                  <Row>
+                    <Col>
+                    <Row
+                      h400
+                      relative>
+                        <MapView  
+                          mapPadding={{bottom: 0, top: 0, left: 0, right: 0}}
+                          userLocationPriority={'high'}
+                          showsBuildings={true}
+                          showsUserLocation={true}
+                          showsMyLocationButton={true}
+                          onPress={(e)=>onPressMyRoute()}
+                          provider={PROVIDER_GOOGLE}
+                          initialRegion={calculatInitialMapRegion()} 
+                          style={{
+                            position: 'absolute',
+                            left: 0,
+                            right: 0,
+                            top: 0,
+                            bottom: 0,
+                          }}>
+                          {Route && (
+                            <MapViewDirections
+                              route={Route}
+                            />
+                          )}
+                        </MapView>
+                        <Div absolute width={"100%"} top10>
+                          <Row>
+                            <Col></Col>
+                            <Col justifyEnd bgWhite auto rounded50 shadowColor={"black"}>
+                              <Span medium textCenter px10 py5 >
+                                역삼동 793-18 / 강남 WeWork
+                              </Span>
+                            </Col>
+                            <Col></Col>
+                          </Row>
+                        </Div>
+                    </Row>
+                  </Col>
+                  </Row>
+                </Col>
+              </Row>
             </Col>
-          </Col>
-        </Row>
-
+          </Row>
+          <Row
+          itemsCenter 
+          >
+            <Col>
+              <Row itemsCenter px20 py20>
+                <Col textCenter auto>
+                  <Row ><Span medium fontSize={20}>빌런/이슈 제보</Span></Row>
+                </Col>
+                <Col></Col>
+                <Col auto>
+                  <Row>
+                    <Col auto><Span>전체</Span></Col>
+                    <Col auto><ChevronRight color={"black"} height={22} /></Col>
+                  </Row>
+                </Col>
+              </Row>
+              <Row pl10>
+                <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+                  {["⚠️", "🚨", "⚠️", "🚨", "⚠️", "🚨",].map((emoji, index) => {
+                    return(
+                      <Div
+                        backgroundColor={'rgb(255, 224, 222)'}
+                        overflow={'hidden'}
+                        rounded20
+                        mx10
+                        w200
+                      >
+                        <Row>
+                          <Col></Col>
+                          <Col auto><Span key={index} fontSize={50}>{emoji}</Span></Col>
+                          <Col></Col>
+                        </Row>
+                        <Row 
+                        backgroundColor={'rgb(255, 191, 186)'}
+                        px20
+                        py10
+                        >
+                          <Col auto>
+                            <Span color={"rgb(255, 59, 48)"} bold>공항도둑 지하철에서 발견.</Span>
+                          </Col>
+                          <Col></Col>
+                        </Row>
+                      </Div>
+                      
+                    )
+                  })}
+                </ScrollView>
+              </Row>
+            </Col>
+          </Row>
+        </Div>
       </ScrollView>
       <Div
       onPress={(e) => onPressFind()}>
-        <Div bgWhite 
+        <Div bgDanger 
               absolute 
-              right0 
+              right10
               bottom10 
               w50 
               h50 
@@ -230,7 +325,7 @@ const HomeScreen = (props) => {
               shadowColor={"#000"}
               shadowOffset= {{ width: 0, height: 2, }}
               shadowOpacity={0.25}>
-          <Search stroke="#2e2e2e" fill="#fff" width={32} height={32}></Search>
+          <Plus stroke="white" fill="#ffffff" strokeWidth={1.2} width={30} height={30}></Plus>
         </Div>
       </Div>
     </Div>

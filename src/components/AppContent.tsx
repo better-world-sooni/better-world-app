@@ -10,6 +10,13 @@ import { useLocale } from 'src/i18n/useLocale';
 import { s_common } from 'src/i18n/text/s_common';
 import HomeScreen from 'src/screens/Home/HomeScreen';
 import MapScreen from 'src/screens/Home/MapScreen';
+import SunganCam from 'src/screens/CameraScreen';
+import SearchScreen from 'src/screens/SearchScreen';
+import MoodScreen from 'src/screens/Home/MoodScreen';
+import { AlertCircle, Flag, Heart, Home, Map, User } from 'react-native-feather';
+import VillainScreen from 'src/screens/Home/VillainScreen';
+import CameraScreen from 'src/screens/CameraScreen';
+import ProfileScreen from 'src/screens/Home/ProfileScreen';
 
 const RootStack = createStackNavigator();
 
@@ -22,33 +29,45 @@ const MainBottomTabs = () => {
   return (
     <Tab.Navigator
       tabBar={tabBarFunc}
-      initialRouteName={NAV_NAMES.MainTab_Home}>
+      initialRouteName={NAV_NAMES.Home}>
       <Tab.Screen
         name={NAV_NAMES.Home}
         component={HomeScreen}
         options={{
           tabBarLabel: t(s_common._1_1_lesson),
+          tabBarIcon: (props) => <Home color={props.focused ? "black" : "gray"} strokeWidth={1.5}></Home>
         }}
       />
       <Tab.Screen
-        name={NAV_NAMES.MainTab_Map}
+        name={NAV_NAMES.Map}
         component={MapScreen}
         options={{
           tabBarLabel: t(s_common.home),
+          tabBarIcon: (props) => <Map color={props.focused ? "black" : "gray"} strokeWidth={1.5}></Map>
         }}
       />
       <Tab.Screen
-        name={NAV_NAMES.MainTab_Log}
-        component={HomeScreen}
+        name={NAV_NAMES.Mood}
+        component={MoodScreen}
+        options={{
+          tabBarLabel: t(s_common.home),
+          tabBarIcon: (props) => <Heart color={props.focused ? "black" : "gray"} strokeWidth={1.5}></Heart>
+        }}
+      />
+      <Tab.Screen
+        name={NAV_NAMES.Villain}
+        component={VillainScreen}
         options={{
           tabBarLabel: t(s_common.log),
+          tabBarIcon: (props) => <Flag color={props.focused ? "black" : "gray"} strokeWidth={1.5}></Flag>
         }}
       />
       <Tab.Screen
-        name={NAV_NAMES.MainTab_Mypage}
-        component={HomeScreen}
+        name={NAV_NAMES.Profile}
+        component={ProfileScreen}
         options={{
           tabBarLabel: t(s_common.my_page),
+          tabBarIcon: (props) => <User color={props.focused ? "black" : "gray"} strokeWidth={1.5}></User>
         }}
       />
     </Tab.Navigator>
@@ -80,18 +99,60 @@ export const AppContent = () => {
       component: MainBottomTabs,
       options: props => ({
         header: topHeader({...props, headerShown: false}),
+        cardStyle: { backgroundColor: 'white' },
       }),
     },
     {
-      name: NAV_NAMES.MainTab_Map,
+      name: NAV_NAMES.Map,
       component: MapScreen,
       options: props => ({
         header: topHeader({...props, headerShown: false}),
+        cardStyle: { backgroundColor: 'white', presentation: 'modal' },
+      }),
+    },
+    {
+      name: NAV_NAMES.Camera,
+      component: CameraScreen,
+      options: props => ({
+        header: topHeader({...props, headerShown: false}),
+        cardStyle: { backgroundColor: 'white', presentation: 'modal' },
+      }),
+    },
+    {
+      name: NAV_NAMES.Villain,
+      component: VillainScreen,
+      options: props => ({
+        header: topHeader({...props, headerShown: false}),
+        cardStyle: { backgroundColor: 'white', presentation: 'modal' },
+      }),
+    },
+    {
+      name: NAV_NAMES.Search,
+      component: SearchScreen,
+      options: props => ({
+        header: topHeader({...props, headerShown: false}),
+        cardStyle: { backgroundColor: 'white', presentation: 'modal' },
+      }),
+    },
+    {
+      name: NAV_NAMES.Mood,
+      component: MoodScreen,
+      options: props => ({
+        header: topHeader({...props, headerShown: false}),
+        cardStyle: { backgroundColor: 'white', presentation: 'modal' },
+      }),
+    },
+    {
+      name: NAV_NAMES.Profile,
+      component: ProfileScreen,
+      options: props => ({
+        header: topHeader({...props, headerShown: false}),
+        cardStyle: { backgroundColor: 'transparent' },
       }),
     },
   ];
   return (
-    <Div flex={1} borderBottomLeftRadius={10} borderBottomRightRadius={10}>
+    // <Div flex={1} borderBottomLeftRadius={10} borderBottomRightRadius={10}>
       <NavigationContainer>
         <RootStack.Navigator headerMode="screen">
           {Navs.map((item, i) => (
@@ -104,6 +165,6 @@ export const AppContent = () => {
           ))}
         </RootStack.Navigator>
       </NavigationContainer>
-    </Div>
+    // </Div>
   );
 };

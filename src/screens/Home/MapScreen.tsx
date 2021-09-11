@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
 	useNavigation
   } from '@react-navigation/native';
@@ -29,7 +29,7 @@ import { NAV_NAMES } from 'src/modules/navNames';
 const MapScreen = ({route}) => {
 	const {data: defaultTo, isLoading} = useApiSelector(APIS.paths.defaultTo);
 	const {data: searchResults, isLoading: isSearchLoading} = useApiSelector(APIS.paths.fetch);
-	const apiGET = useReloadGET();
+	
 	const dispatch = useDispatch();
 
 	const navigation = useNavigation();
@@ -44,20 +44,12 @@ const MapScreen = ({route}) => {
         (root: RootState) => (root.path.currentRouteConfirmed), shallowEqual
     );
 
-	const setOrigin = (origin) => {
-		dispatch(setUserSearchOrigin(origin))
-	}
-
-	const setDestination = (destination) => {
-		dispatch(setUserSearchDestination(destination))
-	}
-
 	const Route = searchResults?.routes[CurrentRouteIndex] || defaultTo?.route
 
-	if(Route == defaultTo?.route){
-		setOrigin(defaultTo.origin)
-		setDestination(defaultTo.destination)
-	}
+	// if(Route == defaultTo?.route){
+	// 	setOrigin(defaultTo?.origin)
+	// 	setDestination(defaultTo?.destination)
+	// }
 
 	const calculatInitialMapRegion = () => {
 		const bounds = Route?.bounds
@@ -108,29 +100,32 @@ const MapScreen = ({route}) => {
 	}
 
 	const expandSearchTab = () => {
-		dispatch(confirmCurrentRoute(false));
+		navigation.navigate(NAV_NAMES.Search)
 	}
 
 	const onPressBack = () => {
 		expandSearchTab()
 	}
 
-	const onPressExit = () => [
+	const onPressExit = () => {
 		navigation.navigate(NAV_NAMES.Home)
-	]
+	}
 
 	const Header = () => {
 		return(
 			<Div activeOpacity={1.0} auto>
 			  <Row bgWhite h50 itemsCenter >
-				<Col auto itemsCenter p20 onPress={(e) => onPressBack()}>
+				{/* <Col auto itemsCenter p20 onPress={(e) => onPressBack()}>
 					<ChevronLeft stroke="#2e2e2e" fill="#fff" width={18} ></ChevronLeft>
+				</Col> */}
+				<Col auto itemsCenter p20  >
+					<X stroke="#ffffff" fill="#fff" width={18} ></X>
 				</Col>
-				<Col itemsCenter>
+				<Col itemsCenter >
 					<Row >
-						<Span onPress={(e) => expandSearchTab()}>{origin && (origin.length > 12 ?  `${origin.substring(0, 10)}...` : origin)}</Span>
-						<Span> → </Span>
-						<Span onPress={(e) => expandSearchTab()}>{destination && (destination.length > 12 ?  `${destination.substring(0, 10)}...` : destination)}</Span>
+						<Col width={"45%"} onPress={(e) => expandSearchTab()}><Span>{origin && (origin.length > 15 ?  `${origin.substring(0, 12)}...` : origin)}</Span></Col>
+						<Col width={"10%"} itemsCenter><Span> → </Span></Col>
+						<Col width={"45%"} onPress={(e) => expandSearchTab()}><Span>{destination && (destination.length > 15 ?  `${destination.substring(0, 12)}...` : destination)}</Span></Col>
 					</Row>
 				</Col>
 				<Col auto itemsCenter p20 onPress={(e) => onPressExit()} >
@@ -261,40 +256,36 @@ const MapScreen = ({route}) => {
 	}
 
   	return (
-		<>
-			{currentRouteConfirmed ?
-			(<Div flex={1}>
-				<MapView  
-					mapPadding={{bottom: 0, top: 0, left: 0, right: 0}}
-					userLocationPriority={'high'}
-					showsBuildings={true}
-					showsMyLocationButton={true}
-					showsUserLocation={true}
-					onPress={(e)=>toggle()}
-					provider={PROVIDER_GOOGLE}
-					initialRegion={calculatInitialMapRegion()} 
-					style={{
-						position: 'absolute',
-						left: -60,
-						right: 0,
-						top: 30,
-						bottom: 0,
-					}}>
-					{Route && (
-						<MapViewDirections
-							route={Route}
-						/>
-					)}
-				</MapView>
-				<Div flex={1} pointerEvents={'box-none'}>
-					<Header ></Header>
-					<Div collapsable flex={1} pointerEvents={'none'}></Div>
-				</Div>
-			</Div>)
-			:
-			(<SearchScreen></SearchScreen>)
-			}
-		</>
+
+		<Div flex={1}>
+			<MapView  
+				mapPadding={{bottom: 0, top: 0, left: 0, right: 0}}
+				userLocationPriority={'high'}
+				showsBuildings={true}
+				showsMyLocationButton={true}
+				showsUserLocation={true}
+				onPress={(e)=>toggle()}
+				provider={PROVIDER_GOOGLE}
+				initialRegion={calculatInitialMapRegion()} 
+				style={{
+					position: 'absolute',
+					left: -60,
+					right: 0,
+					top: 30,
+					bottom: 0,
+				}}>
+				{Route && (
+					<MapViewDirections
+						route={Route}
+					/>
+				)}
+			</MapView>
+			<Div flex={1} pointerEvents={'box-none'}>
+				<Header ></Header>
+				<Div collapsable flex={1} pointerEvents={'none'}></Div>
+			</Div>
+		</Div>
+
 	)
 }
 

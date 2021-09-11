@@ -17,9 +17,13 @@ const TopHeader = props => {
 
   const onPressGoBack = useGoBack(onGoBack);
   return (
+    <>
+    {!headerShown ?
+    (<Div h={HAS_NOTCH ? 44 : 20} />)
+    :
+     (
     <Div bg={headerBlack ? varStyle.realBlack : varStyle.gray100}>
       <Div h={HAS_NOTCH ? 44 : 20} />
-      {headerShown && (
         <Row
           w="100%"
           h54
@@ -42,8 +46,10 @@ const TopHeader = props => {
           </Col>
           <Col w50 auto />
         </Row>
-      )}
+      
     </Div>
+    )}
+    </>
   );
 };
 

@@ -71,7 +71,7 @@ interface Props {
 	alternatives?: boolean
 }
 
-export default function SearchScreen() {
+const SearchScreen = () => {
 
     const GOOGLE_MAPS_APIKEY = 'AIzaSyAKr85NZ139cK6XvE_UExdhmtfivHiG8qE';
     const { origin, destination} = useSelector(
@@ -97,11 +97,12 @@ export default function SearchScreen() {
 
     const setCurrentRoute = (index) => {
         dispatch(setCurrentRouteIndex(index))
-        dispatch(confirmCurrentRoute(true))
         setEditfocus(NONE)
+        navigation.navigate(NAV_NAMES.Map)
     }
     
     const setOrigin = (origin) => {
+        console.log("set user origin")
         dispatch(setUserSearchOrigin(origin))
     }
 
@@ -181,6 +182,7 @@ export default function SearchScreen() {
 
     const onReady = (result) => {
         console.log(JSON.stringify(result))
+        console.log("apis alright")
 		console.log(`Distance: ${result.distance/10} km`)
 		console.log(`Duration: ${result.duration} min.`)
     }
@@ -198,6 +200,7 @@ export default function SearchScreen() {
     }
 
     const pullToRefresh = () => {
+        console.log("pullto refesh")
         fetchAndSetSearchResults( props );
       };
 
@@ -231,6 +234,7 @@ export default function SearchScreen() {
 		}
 
         if ( !origin || !destination ) {
+            console.log("resturednas ")
 			return;
 		}
 
@@ -303,13 +307,14 @@ export default function SearchScreen() {
 					waypoints: initialWaypoints,
 				} );
 			}
+            console.log("attempete")
 			return (
 				apiGET(APIS.paths.fetch({directionsServiceBaseUrl, origin, waypoints, destination, apikey, mode, language, region, precision, timePrecisionString, channel, alternatives}), (results) =>onReady(results.data), (error) => onError(error))
 			);
 		})) 
 	}
 
-    const AutoCompleteSuggestions = () => {
+    const AutoCompleteSuggestions = ({onPress, autoCompleteResults}) => {
 
         const iconifyResultType = (types) => {
             return(
@@ -333,9 +338,9 @@ export default function SearchScreen() {
                 >
                     <Div px20>
                     {
-                        autocompleteResults?.predictions?.map((result, index) => {
+                        autoCompleteResults?.predictions?.map((result, index) => {
                             return (
-                                <Row py20 justifyCenter borderBottom borderGray200 key={index} onPress={(e) => onAutoCompleteSelect(index)}>
+                                <Row py20 justifyCenter borderBottom borderGray200 key={index} onPress={(e) => onPress(index)}>
                                     <Col justifyCenter mr10 auto>{iconifyResultType(result.types)}</Col>
                                     <Col justifyCenter><Span>{result.terms[0].value}</Span></Col>
                                 </Row>
@@ -389,7 +394,7 @@ export default function SearchScreen() {
                     </Row>}
                 </Div>
                 {editFocus ?
-                    <AutoCompleteSuggestions/>
+                    <AutoCompleteSuggestions onPress={onAutoCompleteSelect} autoCompleteResults={autocompleteResults}/>
                 :
                     <Div mt10 bgWhite flex={1}>
                         <ScrollView
@@ -483,3 +488,5 @@ export default function SearchScreen() {
         </Div>
     )
 }
+
+export default SearchScreen;
