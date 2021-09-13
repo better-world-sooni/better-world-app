@@ -10,7 +10,6 @@ import { Div } from 'src/components/common/Div';
 import { Img } from 'src/components/common/Img';
 import { Row } from 'src/components/common/Row';
 import { Span } from 'src/components/common/Span';
-import { useLocale } from 'src/i18n/useLocale';
 import APIS from 'src/modules/apis';
 import { IMAGES } from 'src/modules/images';
 import { NAV_NAMES } from 'src/modules/navNames';
@@ -18,13 +17,13 @@ import { ScrollView, View } from 'src/modules/viewComponents';
 import { useApiPOST, useApiSelector, useReloadGET } from 'src/redux/asyncReducer';
 import { useDispatch } from 'react-redux';
 import { Map, PlusSquare, Menu, Plus, Code, Bell } from 'react-native-feather';
+import RouteShelf from 'src/components/RouteShelf';
   
   const MoodScreen = (props) => {
     const {data: defaultTo, isLoading} = useApiSelector(APIS.paths.defaultTo);
     const navigation = useNavigation();
     const apiGET = useReloadGET();
     const apiPOST = useApiPOST();
-    const {t, locale} = useLocale();
     const dispatch = useDispatch()
   
     const pullToRefresh = () => {
@@ -58,29 +57,7 @@ import { Map, PlusSquare, Menu, Plus, Code, Bell } from 'react-native-feather';
   
     return (
       <Div flex backgroundColor={"white"}>
-        <Div px20 >
-        <Row h40 itemsCenter >
-          <Col auto rounded20 backgroundColor={'rgb(242, 242, 247)'} px10 py5>
-            <Row itemsCenter justifyEnd>
-              <Col auto><Span bold>역삼동 793-18</Span></Col>
-              <Col auto mx10>
-                <Code color={"black"} height={15}></Code>
-              </Col>
-              <Col auto><Span bold>강남 WeWork</Span></Col>
-              {/* <Col auto><Span bold>모든 노선</Span></Col> */}
-            </Row>
-          </Col>
-          <Col ></Col>
-          <Col auto ml5>
-            <Div relative onPress={onPressPNList} >
-              {true && (
-                <Div absolute bgDanger w10 h10 rounded16 zIndex5 top={-3} right />
-              )}
-              <Bell stroke="#2e2e2e" fill="#fff" strokeWidth={1.5} ></Bell>
-            </Div>
-          </Col>
-        </Row>
-      </Div>
+        <RouteShelf></RouteShelf>
         {/** ========== BODY =========== */}
         <ScrollView
           flex={1}

@@ -1,7 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {createSlice} from '@reduxjs/toolkit';
-import {useDispatch} from 'react-redux';
-import {getLocaleFromDevice, useLocale} from 'src/i18n/useLocale';
+import { useDispatch } from 'react-redux';
 import APIS from 'src/modules/apis';
 import {getServerLocale} from 'src/modules/utils';
 import {JWT_TOKEN} from 'src/modules/contants';
@@ -12,7 +11,6 @@ import {
 } from 'src/redux/asyncReducer';
 
 export const useLogin = () => {
-  const {tempLocale} = useLocale();
   const dispatch = useDispatch();
   const apiPOST = useApiPOST();
   return (email, password, successHandler?, errHandler?) => {
@@ -21,8 +19,6 @@ export const useLogin = () => {
       {
         email: email,
         password: password,
-        session_role: 'student',
-        locale: getServerLocale(tempLocale),
       },
       props => {
         dispatch(async () => {
@@ -115,21 +111,17 @@ const appSlice = createSlice({
     session: {
       user: null,
       token: null,
-      trialComplete: false,
     },
-    tempLocale: getLocaleFromDevice(),
   },
   reducers: {
     setTempLocale(state, action) {
-      const {locale} = action.payload;
-      state.tempLocale = locale;
+      const { locale } = action.payload;
     },
     login(state, action) {
-      const {jwt_token, user, trial_complete} = action.payload;
+      const { jwt_token, user } = action.payload;
       state.session = {
         token: jwt_token,
         user: user,
-        trialComplete: trial_complete,
       };
       state.isLoggedIn = true;
     },
@@ -137,7 +129,6 @@ const appSlice = createSlice({
       state.isLoggedIn = false;
       state.session.user = null;
       state.session.token = null;
-      state.session.trialComplete = false;
     },
     updateUser(state, action) {
       const {user} = action.payload;

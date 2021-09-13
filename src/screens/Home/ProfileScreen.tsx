@@ -11,7 +11,6 @@ import { Div } from 'src/components/common/Div';
 import { Img } from 'src/components/common/Img';
 import { Row } from 'src/components/common/Row';
 import { Span } from 'src/components/common/Span';
-import { useLocale } from 'src/i18n/useLocale';
 import APIS from 'src/modules/apis';
 import { IMAGES } from 'src/modules/images';
 import { NAV_NAMES } from 'src/modules/navNames';
@@ -31,7 +30,6 @@ const ProfileScreen = (props) => {
     const navigation = useNavigation();
     const apiGET = useReloadGET();
     const apiPOST = useApiPOST();
-    const {t, locale} = useLocale();
     const dispatch = useDispatch()
 
     const pullToRefresh = () => {

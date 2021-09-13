@@ -46,7 +46,7 @@ const APIS = {
   auth: {
     get: () => v4_student('/auth'),
     signup: () => v3('/common/authenticate/signup'),
-    signIn: () => v4('/authenticate/signin'),
+    signIn: () => v1('/auth'),
     signupWithProvider: () => v3('/common/authenticate/signup_with_provider'),
     checkPromoCode: () => v4_student('/profile/promo'),
     checkReferralCode: () => v4_student('/profile/referral'),
@@ -233,7 +233,7 @@ const APIS = {
     pastStudy: id => v4_student(`/lesson/past/${id}/study`),
   },
   profile: {
-    get: () => v4_student('/profile'),
+    get: () => v1('/auth'),
     setInfo: () => v4_student('/profile/info'),
     video: () => v4_student('/video/submit'),
     zoom: () => v4_student('/profile/zoom'),

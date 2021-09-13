@@ -6,8 +6,6 @@ import React from 'react';
 import BottomTabBar from 'src/components/BottomTabBar';
 import {Div} from 'src/components/common/Div';
 import {NAV_NAMES} from 'src/modules/navNames';
-import { useLocale } from 'src/i18n/useLocale';
-import { s_common } from 'src/i18n/text/s_common';
 import HomeScreen from 'src/screens/Home/HomeScreen';
 import MapScreen from 'src/screens/Home/MapScreen';
 import SunganCam from 'src/screens/CameraScreen';
@@ -17,6 +15,8 @@ import { AlertCircle, Flag, Heart, Home, Map, User } from 'react-native-feather'
 import VillainScreen from 'src/screens/Home/VillainScreen';
 import CameraScreen from 'src/screens/CameraScreen';
 import ProfileScreen from 'src/screens/Home/ProfileScreen';
+import SplashScreen from 'src/screens/Common/SplashScreen';
+import SignInScreen from 'src/screens/Auth/SignInScreen';
 
 const RootStack = createStackNavigator();
 
@@ -25,7 +25,6 @@ const Tab = createBottomTabNavigator();
 const tabBarFunc = props => <BottomTabBar {...props} />;
 
 const MainBottomTabs = () => {
-  const {t} = useLocale();
   return (
     <Tab.Navigator
       tabBar={tabBarFunc}
@@ -34,7 +33,6 @@ const MainBottomTabs = () => {
         name={NAV_NAMES.Home}
         component={HomeScreen}
         options={{
-          tabBarLabel: t(s_common._1_1_lesson),
           tabBarIcon: (props) => <Home color={props.focused ? "black" : "gray"} strokeWidth={1.5}></Home>
         }}
       />
@@ -42,7 +40,6 @@ const MainBottomTabs = () => {
         name={NAV_NAMES.Map}
         component={MapScreen}
         options={{
-          tabBarLabel: t(s_common.home),
           tabBarIcon: (props) => <Map color={props.focused ? "black" : "gray"} strokeWidth={1.5}></Map>
         }}
       />
@@ -50,7 +47,6 @@ const MainBottomTabs = () => {
         name={NAV_NAMES.Mood}
         component={MoodScreen}
         options={{
-          tabBarLabel: t(s_common.home),
           tabBarIcon: (props) => <Heart color={props.focused ? "black" : "gray"} strokeWidth={1.5}></Heart>
         }}
       />
@@ -58,7 +54,6 @@ const MainBottomTabs = () => {
         name={NAV_NAMES.Villain}
         component={VillainScreen}
         options={{
-          tabBarLabel: t(s_common.log),
           tabBarIcon: (props) => <Flag color={props.focused ? "black" : "gray"} strokeWidth={1.5}></Flag>
         }}
       />
@@ -66,7 +61,6 @@ const MainBottomTabs = () => {
         name={NAV_NAMES.Profile}
         component={ProfileScreen}
         options={{
-          tabBarLabel: t(s_common.my_page),
           tabBarIcon: (props) => <User color={props.focused ? "black" : "gray"} strokeWidth={1.5}></User>
         }}
       />
@@ -80,26 +74,26 @@ const topHeader = props => {
 
 export const AppContent = () => {
   const Navs = [
-    // {
-    //   name: NAV_NAMES.Splash,
-    //   component: SplashScreen,
-    //   options: props => ({
-    //     header: topHeader({...props, headerShown: false}),
-    //   }),
-    // },
-    // {
-    //   name: NAV_NAMES.SignIn,
-    //   component: SignInScreen,
-    //   options: props => ({
-    //     header: topHeader({...props, headerShown: false}),
-    //   }),
-    // } as any,
+    {
+      name: NAV_NAMES.Splash,
+      component: SplashScreen,
+      options: props => ({
+        header: topHeader({...props, headerShown: false}),
+      }),
+    },
+    {
+      name: NAV_NAMES.SignIn,
+      component: SignInScreen,
+      options: props => ({
+        header: topHeader({...props, headerShown: false}),
+      }),
+    } as any,
     {
       name: NAV_NAMES.Home,
       component: MainBottomTabs,
       options: props => ({
         header: topHeader({...props, headerShown: false}),
-        cardStyle: { backgroundColor: 'white' },
+        // cardStyle: { backgroundColor: 'white', presentation: 'modal' }
       }),
     },
     {

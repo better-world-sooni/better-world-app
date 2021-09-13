@@ -1,4 +1,6 @@
 export const NAV_NAMES = {
+    SignIn: 'SignIn',
+    SignUp: 'SignUp',
     Home: 'Home',
     Map: 'Map',
     Camera: 'Camera',
@@ -6,5 +8,6 @@ export const NAV_NAMES = {
     Mood: 'Mood',
     Villain: 'Villain',
     Profile: 'Profile',
+    Splash: "Splash",
 };
 

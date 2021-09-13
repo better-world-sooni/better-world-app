@@ -7,7 +7,7 @@ import {asyncThunk} from './asyncThunk';
 
 const getPromiseFn = async args => {
   const {url, token} = args;
-  const res = await fetch(url.url, {
+  const res = await fetch(url, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -73,8 +73,6 @@ export const useApiGET = (props = {}) => {
   const navigation = useNavigation();
   return (api, successHandler?, errHandler?) => {
     const key = getKeyByApi(api, scope);
-    console.log("api.url")
-    console.log(api.url)
     dispatch(
       asyncThunk({
         key: key,
@@ -92,7 +90,6 @@ export const useApiGETWithToken = (props = {}) => {
   const {scope} = props as any;
   const dispatch = useDispatch();
   const navigation = useNavigation();
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const route = useRoute();
   return (api, token, successHandler?, errHandler?) => {
     const key = getKeyByApi(api, scope);
@@ -137,11 +134,10 @@ export const useReloadGET = (props = {}) => {
 
 export const useApiPOST = (props = {}) => {
   const {scope, token} = props as any;
-  // const {userToken} = useSelector(
-  //   (root: RootState) => ({userToken: root.app.session.token}),
-  //   shallowEqual,
-  // );
-  const userToken = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJ1c2VyX2lkIjo5Mjc5OCwiZXhwIjoxNjU3ODI2NDQ5MDAwfQ.jvMcDNNw3Hh2Po6FbHcmuHFHILVyuyTMh_MufrkkQF08w_GRWfttTgPa-x3-i5hh_NqggOeGqO-amA7qJeMi0lkttL3NXlCoRKN_9eKD2rei0ecTwnn0wSEqegnNrF4Wv1EH7u7N0D4xlnKdrr5w4m6cEFkJm_wxbdp0sY627kMD_r8WnxN0VktjSKbMG3XAS4qRxrZxIb0-ZGtAvcDWEaAAw5EgJgVruwOrgcSgNoDb8TaZy7c6SbW0MjSLi5oopVuc6eL00tU7hZkqIDIMjiPkwW4MRBjF1SNs0qAGAHR8PaLq61hLEUxJ7xITMDXZwDVoGkFQ9ME6mgEcneM_Cg"
+  const { userToken } = useSelector(
+    (root: RootState) => ({ userToken: root.app.session.token }),
+    shallowEqual,
+  );
   const finalToken = token ? token : userToken;
   const dispatch = useDispatch();
   const navigation = useNavigation();

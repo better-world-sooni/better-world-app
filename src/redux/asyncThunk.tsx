@@ -21,6 +21,7 @@ export const asyncThunk =
         dispatch(asyncActions.fetchEvery({key: key, args: args}));
       }
       const ret = await promiseFn(args);
+      console.log(ret)
       const {ok, data, status} = ret;
       if (ok && (data.success === undefined || data.success)) {
         const elapsedTime = time();
@@ -61,7 +62,6 @@ export const asyncThunk =
         }),
       );
       if (errHandler) {
-        console.log('error callback');
         await errHandler({
           success: false,
           error: error.data,

@@ -25,8 +25,7 @@ function* asyncSaga(action) {
   const time = elapsed();
   const token = yield select((root: RootState) => root.app.session.token);
   try {
-    const ret = yield call(promiseFn, {token, ...args});
-    console.log(ret);
+    const ret = yield call(promiseFn, { token, ...args });
     const {ok, data, status} = ret;
     if (ok && (data.success === undefined || data.success)) {
       const elapsedTime = time();
@@ -39,7 +38,6 @@ function* asyncSaga(action) {
         }),
       );
       if (successHandler) {
-        console.log('success callback');
         yield call(successHandler, {
           success: true,
           error: null,
@@ -66,7 +64,6 @@ function* asyncSaga(action) {
       }),
     );
     if (errHandler) {
-      console.log('error callback');
       yield call(errHandler, {
         success: false,
         error: error.data,

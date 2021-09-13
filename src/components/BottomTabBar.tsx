@@ -14,8 +14,6 @@ import {
   Pressable,
 } from 'native-base';
 import React from 'react';
-import {s_common} from 'src/i18n/text/s_common';
-import {useLocale} from 'src/i18n/useLocale';
 import {ICONS} from 'src/modules/icons';
 import {Div} from './common/Div';
 import {Img} from './common/Img';
@@ -24,11 +22,9 @@ import {Style} from './common/Style';
 import { IMAGES } from 'src/modules/images';
 
 const BottomTabBar = ({state, descriptors, navigation}) => {
-  const {t} = useLocale();
   const list = state.routes.map((route, index) => {
     const {key, name} = route;
     const {options} = descriptors[key];
-    console.log(options)
     const label =
       options.tabBarLabel !== undefined
         ? options.tabBarLabel
