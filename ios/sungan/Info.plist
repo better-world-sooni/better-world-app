@@ -24,6 +24,8 @@
 	<string>1</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<!-- <key>MGLMapboxMetricsEnabledSettingShownInApp<key>
+	<string>YES<string> -->
 	<!-- Required with iOS 10 and higher -->
 	<key>NSCameraUsageDescription</key>
 	<string>Your message to user when the camera is accessed for the first time</string>

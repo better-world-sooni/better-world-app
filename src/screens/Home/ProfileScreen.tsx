@@ -22,18 +22,21 @@ import MapViewDirections from 'src/components/MapViewDirections';
 import { Dimensions } from 'react-native';
 import { ICONS } from 'src/modules/icons';
 import { confirmCurrentRoute } from 'src/redux/pathReducer';
-import { Map, PlusSquare, Menu, Plus, ChevronRight, ArrowRight, Code, ChevronDown, Bell, Info, Lock, Send, Folder, Edit, Rss } from 'react-native-feather';
+import { Map, PlusSquare, Menu, Plus, ChevronRight, ArrowRight, Code, ChevronDown, Bell, Info, Lock, Send, Folder, Edit, Rss, LogOut } from 'react-native-feather';
 import LinearGradient from 'react-native-linear-gradient';
+import { HAS_NOTCH } from 'src/modules/contants';
+import { useLogout } from 'src/redux/appReducer';
 
 const ProfileScreen = (props) => {
-    const {data: defaultTo, isLoading} = useApiSelector(APIS.paths.defaultTo);
+    const {data: defaultTo, isLoading} = useApiSelector(APIS.route.default);
     const navigation = useNavigation();
     const apiGET = useReloadGET();
     const apiPOST = useApiPOST();
     const dispatch = useDispatch()
+    const logout = useLogout(() => navigation.navigate(NAV_NAMES.SignIn))
 
     const pullToRefresh = () => {
-        apiGET(APIS.paths.defaultTo())
+        apiGET(APIS.route.default())
     };
 
     const [Route, setRoute] = useState(null)
@@ -43,14 +46,10 @@ const ProfileScreen = (props) => {
     }, []);
     useEffect(() => {
         if(defaultTo){
-        console.log("setRoute")
         setRoute(defaultTo.route)
         };
     }, [isLoading]);
 
-    const onPressLogo = () => {
-        // TODO:
-    };
     const onPressPNList = () => {
         // initBadgeNum();
         navigation.navigate(NAV_NAMES.Home);
@@ -69,38 +68,9 @@ const ProfileScreen = (props) => {
         expandSearchTab()
     }
 
-    const calculatInitialMapRegion = () => {
-            const bounds = Route?.bounds
-            if (bounds){
-                const { width, height } = Dimensions.get('window')
-                const ASPECT_RATIO = width / height
-                const latitude = (bounds.northeast.lat + bounds.southwest.lat) / 2;
-                const longitude = ((bounds.northeast.lng + bounds.southwest.lng) /2) - 0.02;
-                let longitudeDelta = (bounds.northeast.lng - bounds.southwest.lng);
-                let latitudeDelta = (bounds.northeast.lng - bounds.southwest.lng);
-                if (longitudeDelta - latitudeDelta > 0){
-                    latitudeDelta = longitudeDelta * ASPECT_RATIO;
-                }{
-                    longitudeDelta = latitudeDelta / ASPECT_RATIO;
-                }
-                return {
-                    latitude: latitude,
-                    longitude: longitude,
-                    latitudeDelta: latitudeDelta,
-                    longitudeDelta: longitudeDelta,
-                }}
-            else {
-                return {
-                    latitude: 37.5663,
-                    longitude: 126.9779,
-                    latitudeDelta: 0.5,
-                    longitudeDelta: 0.5,
-                }
-            }
-        }
-
     return (
         <Div flex backgroundColor={"white"}>
+            <Div h={HAS_NOTCH ? 44 : 20} />
             <ScrollView
                 flex={1}
                 showsVerticalScrollIndicator={false}
@@ -155,6 +125,11 @@ const ProfileScreen = (props) => {
                                 <Col auto><Span fontSize={15}>보안</Span></Col>
                                 <Col></Col>
                             </Row>
+                            <Row py10 onPress={logout}>
+                                <Col auto mr5><LogOut color={"black"} strokeWidth={1.5}></LogOut></Col>
+                                <Col auto><Span fontSize={15}>로그아웃</Span></Col>
+                                <Col></Col>
+                            </Row>
                         </Col>
                     </Row>
                     <Row 
@@ -196,23 +171,6 @@ const ProfileScreen = (props) => {
                     </Row>
                 </Div>
             </ScrollView>
-        <Div
-        onPress={(e) => onPressFind()}>
-            <Div bgDanger 
-                absolute 
-                right10
-                bottom10 
-                w50 
-                h50 
-                borderRadius={60} 
-                itemsCenter
-                justifyCenter
-                shadowColor={"#000"}
-                shadowOffset= {{ width: 0, height: 2, }}
-                shadowOpacity={0.25}>
-            <Plus stroke="white" fill="#ffffff" strokeWidth={1.2} width={30} height={30}></Plus>
-            </Div>
-        </Div>
         </Div>
     );
 };

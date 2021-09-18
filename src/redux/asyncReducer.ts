@@ -108,11 +108,10 @@ export const useApiGETWithToken = (props = {}) => {
 
 export const useReloadGET = (props = {}) => {
   const {scope, token} = props as any;
-  // const {userToken} = useSelector(
-  //   (root: RootState) => ({userToken: root.app.session.token}),
-  //   shallowEqual,
-  // );
-  const userToken = null;
+  const { userToken } = useSelector(
+    (root: RootState) => ({ userToken: root.app.session.token }),
+    shallowEqual,
+  );
   const finalToken = token ? token : userToken;
   const dispatch = useDispatch();
   const navigation = useNavigation();
@@ -121,7 +120,7 @@ export const useReloadGET = (props = {}) => {
     dispatch(
       asyncThunk({
         key: key,
-        args: { url: api, ...(finalToken && { token: finalToken }) },
+        args: { url: api.url, ...(finalToken && { token: finalToken }) },
         promiseFn: getPromiseFn,
         successHandler,
         errHandler,
@@ -243,7 +242,7 @@ const asyncSlice = createSlice({
       state[key] = {
         args: args,
         data: null,
-        ...(prevData && {data: prevData}),
+        // ...(prevData && {data: prevData}),
         isLoading: true,
         startedAt: new Date().toString(),
         finishedAt: null,

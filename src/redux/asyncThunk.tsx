@@ -13,7 +13,6 @@ export const asyncThunk =
   }) =>
   async dispatch => {
     const time = elapsed();
-    
     try {
       if (reload) {
         dispatch(asyncActions.fetchReload({key: key, args: args}));
@@ -21,7 +20,6 @@ export const asyncThunk =
         dispatch(asyncActions.fetchEvery({key: key, args: args}));
       }
       const ret = await promiseFn(args);
-      console.log(ret)
       const {ok, data, status} = ret;
       if (ok && (data.success === undefined || data.success)) {
         const elapsedTime = time();
@@ -34,7 +32,6 @@ export const asyncThunk =
           }),
         );
         if (successHandler) {
-          console.log('success callback');
           await successHandler({
             success: true,
             error: null,
@@ -45,7 +42,6 @@ export const asyncThunk =
           });
         }
       } else {
-        console.log("Smthings wrong")
         const err = new Error();
         err.data = data;
         err.status = status;

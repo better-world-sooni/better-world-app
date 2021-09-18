@@ -20,6 +20,8 @@ import {Img} from './common/Img';
 import {Span} from './common/Span';
 import {Style} from './common/Style';
 import { IMAGES } from 'src/modules/images';
+import { Row } from './common/Row';
+import { Col } from './common/Col';
 
 const BottomTabBar = ({state, descriptors, navigation}) => {
   const list = state.routes.map((route, index) => {
@@ -53,12 +55,13 @@ const BottomTabBar = ({state, descriptors, navigation}) => {
     };
   });
   return (
-    <Div h80 borderBottomLeftRadius={10} borderBottomRightRadius={10}>
+    <Div h80 borderTopLeftRadius={10} borderTopRightRadius={10} overflowHidden >
+      {/* <Row ><Col></Col><Col itemsCenter fontSize={15} bold><Span >나는 지금.. 역삼역!</Span></Col><Col></Col></Row> */}
       <NativeBaseProvider >
         <Box flex={1} safeAreaTop >
           <Center flex={1}>
           </Center>
-          <HStack bg="white" safeAreaBottom paddingTop={2} shadow={1}>
+          <HStack bg="white" safeAreaBottom paddingTop={5} shadow={1}>
           {list.map(item => {
             return (
               <Div

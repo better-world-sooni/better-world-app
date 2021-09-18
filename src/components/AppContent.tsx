@@ -44,20 +44,6 @@ const MainBottomTabs = () => {
         }}
       />
       <Tab.Screen
-        name={NAV_NAMES.Mood}
-        component={MoodScreen}
-        options={{
-          tabBarIcon: (props) => <Heart color={props.focused ? "black" : "gray"} strokeWidth={1.5}></Heart>
-        }}
-      />
-      <Tab.Screen
-        name={NAV_NAMES.Villain}
-        component={VillainScreen}
-        options={{
-          tabBarIcon: (props) => <Flag color={props.focused ? "black" : "gray"} strokeWidth={1.5}></Flag>
-        }}
-      />
-      <Tab.Screen
         name={NAV_NAMES.Profile}
         component={ProfileScreen}
         options={{
@@ -79,6 +65,7 @@ export const AppContent = () => {
       component: SplashScreen,
       options: props => ({
         header: topHeader({...props, headerShown: false}),
+        
       }),
     },
     {
@@ -93,7 +80,7 @@ export const AppContent = () => {
       component: MainBottomTabs,
       options: props => ({
         header: topHeader({...props, headerShown: false}),
-        // cardStyle: { backgroundColor: 'white', presentation: 'modal' }
+        cardStyle: { backgroundColor: 'white', presentation: 'screen'},
       }),
     },
     {
@@ -101,7 +88,7 @@ export const AppContent = () => {
       component: MapScreen,
       options: props => ({
         header: topHeader({...props, headerShown: false}),
-        cardStyle: { backgroundColor: 'white', presentation: 'modal' },
+        cardStyle: { backgroundColor: 'white', presentation: 'screen' },
       }),
     },
     {
@@ -117,7 +104,7 @@ export const AppContent = () => {
       component: VillainScreen,
       options: props => ({
         header: topHeader({...props, headerShown: false}),
-        cardStyle: { backgroundColor: 'white', presentation: 'modal' },
+        cardStyle: { backgroundColor: 'white', presentation: 'screen' },
       }),
     },
     {
@@ -125,7 +112,7 @@ export const AppContent = () => {
       component: SearchScreen,
       options: props => ({
         header: topHeader({...props, headerShown: false}),
-        cardStyle: { backgroundColor: 'white', presentation: 'modal' },
+        cardStyle: { backgroundColor: 'white', presentation: 'screen' },
       }),
     },
     {
@@ -133,7 +120,7 @@ export const AppContent = () => {
       component: MoodScreen,
       options: props => ({
         header: topHeader({...props, headerShown: false}),
-        cardStyle: { backgroundColor: 'white', presentation: 'modal' },
+        cardStyle: { backgroundColor: 'white', presentation: 'screen' },
       }),
     },
     {
@@ -148,7 +135,7 @@ export const AppContent = () => {
   return (
     // <Div flex={1} borderBottomLeftRadius={10} borderBottomRightRadius={10}>
       <NavigationContainer>
-        <RootStack.Navigator headerMode="screen">
+        <RootStack.Navigator screenOptions={{ headerShown: false }}>
           {Navs.map((item, i) => (
             <RootStack.Screen
               key={i}

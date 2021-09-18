@@ -26,7 +26,7 @@ export const useLogin = () => {
           await AsyncStorage.setItem(JWT_TOKEN, jwt_token);
           dispatch(appActions.login(props.data));
           if (successHandler) {
-            await successHandler(props);
+            const success = await successHandler(props);
           }
         });
       },
@@ -90,14 +90,15 @@ export const useAutoLogin = () => {
   };
 };
 
-export const useLogout = () => {
+export const useLogout = (callback?) => {
   const dispatch = useDispatch();
-  return async (callback?) => {
+  return () => {
     dispatch(async () => {
       await AsyncStorage.removeItem(JWT_TOKEN);
       dispatch(appActions.logout());
       dispatch(asyncActions.reset());
       if (callback) {
+        console.log("bhansdofnoiaskdjnfjkasd")
         await callback();
       }
     });

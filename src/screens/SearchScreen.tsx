@@ -19,6 +19,7 @@ import { Img } from 'src/components/common/Img';
 import { Shuffle, X } from 'react-native-feather';
 import { useNavigation } from '@react-navigation/native';
 import { NAV_NAMES } from 'src/modules/navNames';
+import { HAS_NOTCH } from 'src/modules/contants';
 
 const WAYPOINT_LIMIT = 10;
 
@@ -91,18 +92,13 @@ const SearchScreen = () => {
 
     const navigation = useNavigation()
 
-    useEffect(() => {
-        pullToRefresh();
-    }, [origin, destination])
-
     const setCurrentRoute = (index) => {
         dispatch(setCurrentRouteIndex(index))
         setEditfocus(NONE)
-        navigation.navigate(NAV_NAMES.Map)
+        navigation.goBack()
     }
     
     const setOrigin = (origin) => {
-        console.log("set user origin")
         dispatch(setUserSearchOrigin(origin))
     }
 
@@ -134,16 +130,17 @@ const SearchScreen = () => {
         if (!autocompleteDescription || !autocompleteTerm) return
         if (editFocus == 2){
             setTentativeDestination(autocompleteTerm)
-            setDestination(autocompleteTerm)
+            setOrigin(tentativeOrigin)
             setEditfocus(NONE)
             destinationRef.current.blur()
         }
         else{
             setTentativeOrigin(autocompleteTerm)
-            setOrigin(autocompleteTerm)
-            setEditfocus(NONE)
+            setDestination(tentativeDestination)
+            setEditfocus(NONE)            
             originRef.current.blur()
         }
+        fetchAndSetSearchResults(props);
     }
 
     const onPressExit = () => {
@@ -199,11 +196,6 @@ const SearchScreen = () => {
         alternatives: alternatives
     }
 
-    const pullToRefresh = () => {
-        console.log("pullto refesh")
-        fetchAndSetSearchResults( props );
-      };
-
 	const resetState = () => {
 		dispatch(setSearchResults([]));
 	}
@@ -243,6 +235,7 @@ const SearchScreen = () => {
 		// Routes array which we'll be filling.
 		// We'll perform a Directions API Request for reach route
 		const routes = [];
+        console.log("helloheloo")
 
 		// We need to split the waypoints in chunks, in order to not exceede the max waypoint limit
 		// ~> Chunk up the waypoints, yielding multiple routes
@@ -307,7 +300,7 @@ const SearchScreen = () => {
 					waypoints: initialWaypoints,
 				} );
 			}
-            console.log("attempete")
+           
 			return (
 				apiGET(APIS.paths.fetch({directionsServiceBaseUrl, origin, waypoints, destination, apikey, mode, language, region, precision, timePrecisionString, channel, alternatives}), (results) =>onReady(results.data), (error) => onError(error))
 			);
@@ -355,6 +348,7 @@ const SearchScreen = () => {
 
     return (
         <Div flex={1}>
+            <Div h={HAS_NOTCH ? 44 : 20} />
             <NativeBaseProvider>
                 <Div bgWhite px20 py10 activeOpacity={1.0} auto >
                     { (!editFocus || editFocus == 1) && <Row bgWhite h50 >
@@ -402,7 +396,7 @@ const SearchScreen = () => {
                             bgGray100
                             showsVerticalScrollIndicator={false}
                             refreshControl={
-                            <RefreshControl refreshing={isSearchLoading} onRefresh={pullToRefresh} />
+                            <RefreshControl refreshing={isSearchLoading} onRefresh={() => fetchAndSetSearchResults( props )} />
                             }>
                             {searchResults && searchResults.routes.map((result, i) => {
                                 return (

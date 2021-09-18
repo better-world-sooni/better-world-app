@@ -20,14 +20,14 @@ import { Map, PlusSquare, Menu, Plus, Code, Bell } from 'react-native-feather';
 import RouteShelf from 'src/components/RouteShelf';
   
   const MoodScreen = (props) => {
-    const {data: defaultTo, isLoading} = useApiSelector(APIS.paths.defaultTo);
+    const {data: defaultTo, isLoading} = useApiSelector(APIS.route.default);
     const navigation = useNavigation();
     const apiGET = useReloadGET();
     const apiPOST = useApiPOST();
     const dispatch = useDispatch()
   
     const pullToRefresh = () => {
-      apiGET(APIS.paths.defaultTo())
+      apiGET(APIS.route.default())
     };
   
     const [Route, setRoute] = useState(null)
@@ -37,7 +37,6 @@ import RouteShelf from 'src/components/RouteShelf';
     }, []);
     useEffect(() => {
       if(defaultTo){
-        console.log("setRoute")
         setRoute(defaultTo.route)
       };
     }, [isLoading]);

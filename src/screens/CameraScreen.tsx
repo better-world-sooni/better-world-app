@@ -59,7 +59,6 @@ const CameraScreen = () => {
         const options = { quality: 0.5, base64: true };
         const data = await camera.takePictureAsync(options);
         //  eslint-disable-next-line
-        console.log(data.uri);
       };
 
     return(

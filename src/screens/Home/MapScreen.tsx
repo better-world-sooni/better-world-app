@@ -23,11 +23,16 @@ import {useDispatch} from 'react-redux';
 import { Image } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import { ICONS } from 'src/modules/icons';
-import { ChevronLeft, X } from 'react-native-feather';
+import { ChevronLeft, Crosshair, X } from 'react-native-feather';
 import { NAV_NAMES } from 'src/modules/navNames';
+import MapboxGL from '@react-native-mapbox-gl/maps';
+import RouteShelf from 'src/components/RouteShelf';
+import { HAS_NOTCH } from 'src/modules/contants';
+import { View } from 'src/modules/viewComponents';
 
 const MapScreen = ({route}) => {
-	const {data: defaultTo, isLoading} = useApiSelector(APIS.paths.defaultTo);
+	const shadowProp = {shadowOffset: {height: 1, width: 1}, shadowColor: "gray", shadowOpacity: 0.5, shadowRadius: 3}
+	const {data: defaultTo, isLoading} = useApiSelector(APIS.route.default);
 	const {data: searchResults, isLoading: isSearchLoading} = useApiSelector(APIS.paths.fetch);
 	
 	const dispatch = useDispatch();
@@ -40,62 +45,46 @@ const MapScreen = ({route}) => {
 	const CurrentRouteIndex = useSelector(
         (root: RootState) => (root.path.currentRouteIndex), shallowEqual
     );
-	const currentRouteConfirmed = useSelector(
-        (root: RootState) => (root.path.currentRouteConfirmed), shallowEqual
-    );
 
-	const Route = searchResults?.routes[CurrentRouteIndex] || defaultTo?.route
+	const Route = searchResults?.routes[CurrentRouteIndex] || defaultTo?.default_route.route
 
-	// if(Route == defaultTo?.route){
-	// 	setOrigin(defaultTo?.origin)
-	// 	setDestination(defaultTo?.destination)
-	// }
+	useEffect(() => {
+		setMapBounds(calculatInitialMapRegion())
+	}, [searchResults?.routes[CurrentRouteIndex]])
 
 	const calculatInitialMapRegion = () => {
 		const bounds = Route?.bounds
 		if (bounds){
-			const { width, height } = Dimensions.get('window')
-			const ASPECT_RATIO = width / height
-			const latitude = (bounds.northeast.lat + bounds.southwest.lat) / 2;
-			const longitude = ((bounds.northeast.lng + bounds.southwest.lng) /2) - 0.02;
-			let longitudeDelta = (bounds.northeast.lng - bounds.southwest.lng);
-			let latitudeDelta = (bounds.northeast.lng - bounds.southwest.lng);
-			if (longitudeDelta - latitudeDelta > 0){
-				latitudeDelta = longitudeDelta * ASPECT_RATIO;
-			}{
-				longitudeDelta = latitudeDelta / ASPECT_RATIO;
-			}
 			return {
-				latitude: latitude,
-				longitude: longitude,
-				latitudeDelta: latitudeDelta,
-				longitudeDelta: longitudeDelta,
-			}}
+			ne: [
+			bounds.northeast.lng, 
+			bounds.northeast.lat,
+			], 
+			sw: [
+			bounds.southwest.lng,
+			bounds.southwest.lat, 
+			]
+		}
+		}
 		else {
 			return {
-				latitude: 37.5663,
-				longitude: 126.9779,
-				latitudeDelta: 0.5,
-				longitudeDelta: 0.5,
+				ne: [37.715133, 127.269311], 
+        		sw:  [37.413294, 126.734086],
 			}
 		}
 	}
 
+	const [mapBounds, setMapBounds] = useState(calculatInitialMapRegion())
+
+	const [userCoordinates, setUserCoordinates] = useState(null)
+
 	const [ExpandHeader, setExpandHeader] = useState( false );
-	const [HeaderAnimation, setHeaderAnimation] = useState('slideInDown')
 
 	const toggle = () => {
 		if (ExpandHeader){
-			setHeaderAnimation('bounceOutUp')
-		}else {
-			setHeaderAnimation('slideInDown')
-			setExpandHeader(true)
-		}
-	}
-
-	const finishToggle = () => {
-		if (HeaderAnimation == 'bounceOutUp'){
 			setExpandHeader(false)
+		}else {
+			setExpandHeader(true)
 		}
 	}
 
@@ -103,47 +92,24 @@ const MapScreen = ({route}) => {
 		navigation.navigate(NAV_NAMES.Search)
 	}
 
-	const onPressBack = () => {
-		expandSearchTab()
-	}
-
-	const onPressExit = () => {
-		navigation.navigate(NAV_NAMES.Home)
-	}
-
 	const Header = () => {
 		return(
-			<Div activeOpacity={1.0} auto>
-			  <Row bgWhite h50 itemsCenter >
-				{/* <Col auto itemsCenter p20 onPress={(e) => onPressBack()}>
-					<ChevronLeft stroke="#2e2e2e" fill="#fff" width={18} ></ChevronLeft>
-				</Col> */}
-				<Col auto itemsCenter p20  >
-					<X stroke="#ffffff" fill="#fff" width={18} ></X>
-				</Col>
+			<Div activeOpacity={1.0} w={"100%"} px20 {...shadowProp}>
+			  <Row bgWhite h50 itemsCenter rounded20 overflowHidden mb10>
 				<Col itemsCenter >
 					<Row >
-						<Col width={"45%"} onPress={(e) => expandSearchTab()}><Span>{origin && (origin.length > 15 ?  `${origin.substring(0, 12)}...` : origin)}</Span></Col>
-						<Col width={"10%"} itemsCenter><Span> → </Span></Col>
-						<Col width={"45%"} onPress={(e) => expandSearchTab()}><Span>{destination && (destination.length > 15 ?  `${destination.substring(0, 12)}...` : destination)}</Span></Col>
+						<Col width={"45%"} onPress={(e) => expandSearchTab()} justifyCenter itemsCenter><Span>{origin && (origin.length > 20 ?  `${origin.substring(0, 15)}...` : origin)}</Span></Col>
+						<Col itemsCenter auto><Span> → </Span></Col>
+						<Col width={"45%"} onPress={(e) => expandSearchTab()}justifyCenter itemsCenter><Span>{destination && (destination.length > 20 ?  `${destination.substring(0, 15)}...` : destination)}</Span></Col>
 					</Row>
 				</Col>
-				<Col auto itemsCenter p20 onPress={(e) => onPressExit()} >
-					<X stroke="#2e2e2e" fill="#fff" width={18} ></X>
-				</Col>
-			  </Row>
-			  
-			  {ExpandHeader && (
-				<Animatable.View animation={HeaderAnimation} onAnimationEnd={(e) => finishToggle()} duration={200} style={{backgroundColor: "white", zIndex: -1, borderBottomLeftRadius: 10, borderBottomRightRadius: 10,}}>
-				<Row itemsCenter mt10 overflowScroll>
-				  <Col>
-					{Route && [Route].map((result, i) => {
-						return (
-							<Div borderBottom borderGray200 pb10 px20 key={i}>
-								{result.legs[0].steps.map((step, index , arr)=>{
-
+				</Row>
+				{ExpandHeader && (
+					<Div bgWhite zIndex={-1} py20 rounded20>
+					{Route && 
+							<Div pb10 px20>
+								{Route.legs[0].steps.map((step, index , arr)=>{
 									const topProps = {borderTop: false}
-
 									if (step.transit_details) 
 									{	
 										return (
@@ -196,7 +162,7 @@ const MapScreen = ({route}) => {
 									}
 									else{
 										return (
-											<Div key={index} {...topProps} borderGray200>
+											<Div key={index} {...topProps}>
 												{	
 													(0 == index) &&
 													<Row>
@@ -245,47 +211,70 @@ const MapScreen = ({route}) => {
 									}
 								})}
 							</Div>
-						)
-					})}
-				  </Col>
-				</Row>
-				</Animatable.View>
+						}
+				  </Div>
 				)}
 			</Div>
 		)
 	}
 
   	return (
-
-		<Div flex={1}>
-			<MapView  
-				mapPadding={{bottom: 0, top: 0, left: 0, right: 0}}
-				userLocationPriority={'high'}
-				showsBuildings={true}
-				showsMyLocationButton={true}
-				showsUserLocation={true}
-				onPress={(e)=>toggle()}
-				provider={PROVIDER_GOOGLE}
-				initialRegion={calculatInitialMapRegion()} 
-				style={{
-					position: 'absolute',
-					left: -60,
-					right: 0,
-					top: 30,
-					bottom: 0,
-				}}>
-				{Route && (
-					<MapViewDirections
-						route={Route}
-					/>
-				)}
-			</MapView>
-			<Div flex={1} pointerEvents={'box-none'}>
-				<Header ></Header>
-				<Div collapsable flex={1} pointerEvents={'none'}></Div>
-			</Div>
-		</Div>
-
+	<Div flex
+		relative
+		>
+      <MapboxGL.MapView
+        style={{flex: 1}} 
+        styleURL={"mapbox://styles/nomacguffins/cktjvxy3m0sd017qwn660ct0g"}
+        logoEnabled={false}
+		attributionPosition={{bottom: 10, left:20}}
+        compassEnabled={false}
+		onPress={toggle}
+        >
+          <MapboxGL.UserLocation
+		  onUpdate={(payload) => {setUserCoordinates(payload)}}
+		  androidRenderMode="compass"
+		  ></MapboxGL.UserLocation>
+          <MapboxGL.Camera 
+			// maxBounds={{
+			// 	ne: [37.715133, 127.269311], 
+			// 	sw:  [37.413294, 126.734086]
+			// }}
+			defaultSettings={{bounds: calculatInitialMapRegion()}}
+			bounds={mapBounds}
+			zoomLevel={11}></MapboxGL.Camera>
+          {Route && (
+            <MapViewDirections
+              route={Route}
+            />
+          )}
+      </MapboxGL.MapView>
+      <Div absolute h={"100%"} w={"100%"}  pointerEvents="box-none" flex>
+	  	<Div h={HAS_NOTCH ? 44 : 20} />
+		<Header></Header>
+        <Row flex pointerEvents="none">
+            
+        </Row>
+        <Row pointerEvents="box-none" px20 py10>
+          <Col pointerEvents="none"></Col>
+          <Col 
+		  itemsCenter 
+		  justifyCenter 
+		  rounded100 
+		  w50 
+		  h50 
+		  bgWhite 
+		  auto 
+		  {...shadowProp} 
+		  onPress={
+			  ()=>setMapBounds({
+					  ne: [userCoordinates.coords.longitude+0.001, userCoordinates.coords.latitude+0.001],
+					  sw: [userCoordinates.coords.longitude-0.001, userCoordinates.coords.latitude-0.001]
+				})}>
+			<Crosshair color={"black"} strokeWidth={2}></Crosshair>
+		  </Col>
+        </Row>
+      </Div>
+    </Div>
 	)
 }
 

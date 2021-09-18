@@ -36,9 +36,11 @@ const queryAutocomplete = ({ directionsServiceBaseUrl = "https://maps.googleapis
 
 const APIS = {
   paths: {
-    defaultTo: () => base('/defaultTo'),
     fetch: fetchRoute,
     queryAutocomplete: queryAutocomplete
+  },
+  route: {
+    default: () => v1('/route/default'),
   },
   lessonEnter: id => v1(`/rtc/rtc_lesson_info?lesson_id=${id}`),
   version: (platform, target) =>

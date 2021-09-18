@@ -96,7 +96,6 @@ const SplashScreen = ({route}) => {
 
   const isAutoLoginChecked = () => {
     AsyncStorage.getItem(JWT_TOKEN).then((value) => {
-      console.log(value);
       if (value) {
         autoLogin(
           value,

@@ -1,8 +1,9 @@
 import React, { useEffect} from 'react';
-import {LogBox} from 'react-native';
+import {LogBox, Platform, StatusBar, View} from 'react-native';
 import codePush from 'react-native-code-push';
 import {withRootReducer} from './src/redux/withRootReducer';
 import {AppContent} from 'src/components/AppContent';
+
 
 const App = () => {
   useEffect(() => {

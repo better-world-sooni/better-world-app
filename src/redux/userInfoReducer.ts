@@ -21,7 +21,6 @@ const userInfoSlice = createSlice({
       }
     },
     setNames: (state, action) => {
-      console.log(action);
       state.userInfo = {
         ...state.userInfo,
         first_name: action.payload.first_name,
