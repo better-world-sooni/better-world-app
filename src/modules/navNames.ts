@@ -9,5 +9,7 @@ export const NAV_NAMES = {
     Villain: 'Villain',
     Profile: 'Profile',
     Splash: "Splash",
+    Post: "Post",
+    Select: "Select",
 };
 

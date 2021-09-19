@@ -62,7 +62,7 @@ const MapViewDirections: FC<MapViewDirectionsProps> = (props): ReactElement => {
 				lineCap: 'round',
 				lineWidth: white ? 10 : 6,
 				lineColor: white ? "white" : "grey",
-				lineDasharray: [10,10],
+				lineDasharray: [0,1],
 				lineMiterLimit: 1,
 			}
 		}

@@ -2,40 +2,27 @@ import React, {useState, useEffect} from 'react';
 import {
 	useNavigation
   } from '@react-navigation/native';
-import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
 import { Div } from 'src/components/common/Div';
 import { Row } from 'src/components/common/Row';
 import { Col } from 'src/components/common/Col';
-import { Img } from 'src/components/common/Img';
-import { IMAGES } from 'src/modules/images';
 import { Span } from 'src/components/common/Span';
 import { useApiSelector, useReloadGET } from 'src/redux/asyncReducer';
 import APIS from 'src/modules/apis';
-import { Dimensions } from 'react-native';
-import SearchScreen from 'src/screens/SearchScreen'
 import _ from "lodash";
 import { useSelector } from 'react-redux';
 import { RootState } from 'src/redux/rootReducer';
 import { shallowEqual } from 'react-redux';
 import MapViewDirections from 'src/components/MapViewDirections';
-import {confirmCurrentRoute, setUserSearchDestination, setUserSearchOrigin} from 'src/redux/pathReducer';
-import {useDispatch} from 'react-redux';
 import { Image } from 'react-native';
-import * as Animatable from 'react-native-animatable';
-import { ICONS } from 'src/modules/icons';
 import { ChevronLeft, Crosshair, X } from 'react-native-feather';
 import { NAV_NAMES } from 'src/modules/navNames';
 import MapboxGL from '@react-native-mapbox-gl/maps';
-import RouteShelf from 'src/components/RouteShelf';
 import { HAS_NOTCH } from 'src/modules/contants';
-import { View } from 'src/modules/viewComponents';
 
 const MapScreen = ({route}) => {
 	const shadowProp = {shadowOffset: {height: 1, width: 1}, shadowColor: "gray", shadowOpacity: 0.5, shadowRadius: 3}
 	const {data: defaultTo, isLoading} = useApiSelector(APIS.route.default);
 	const {data: searchResults, isLoading: isSearchLoading} = useApiSelector(APIS.paths.fetch);
-	
-	const dispatch = useDispatch();
 
 	const navigation = useNavigation();
 
@@ -78,19 +65,11 @@ const MapScreen = ({route}) => {
 
 	const [userCoordinates, setUserCoordinates] = useState(null)
 
-	const [ExpandHeader, setExpandHeader] = useState( false );
+	const [ExpandHeader, setExpandHeader] = useState( true );
 
-	const toggle = () => {
-		if (ExpandHeader){
-			setExpandHeader(false)
-		}else {
-			setExpandHeader(true)
-		}
-	}
+	const toggle = () => ExpandHeader ? setExpandHeader(false) : setExpandHeader(true)
 
-	const expandSearchTab = () => {
-		navigation.navigate(NAV_NAMES.Search)
-	}
+	const goToSearch = () => navigation.navigate(NAV_NAMES.Search)
 
 	const Header = () => {
 		return(
@@ -98,9 +77,9 @@ const MapScreen = ({route}) => {
 			  <Row bgWhite h50 itemsCenter rounded20 overflowHidden mb10>
 				<Col itemsCenter >
 					<Row >
-						<Col width={"45%"} onPress={(e) => expandSearchTab()} justifyCenter itemsCenter><Span>{origin && (origin.length > 20 ?  `${origin.substring(0, 15)}...` : origin)}</Span></Col>
+						<Col width={"45%"} onPress={(e) => goToSearch()} justifyCenter itemsCenter><Span bold numberOfLines={1} ellipsizeMode='head' px10>{origin}</Span></Col>
 						<Col itemsCenter auto><Span> → </Span></Col>
-						<Col width={"45%"} onPress={(e) => expandSearchTab()}justifyCenter itemsCenter><Span>{destination && (destination.length > 20 ?  `${destination.substring(0, 15)}...` : destination)}</Span></Col>
+						<Col width={"45%"} onPress={(e) => goToSearch()}justifyCenter itemsCenter><Span bold numberOfLines={1} ellipsizeMode='head' px10>{destination}</Span></Col>
 					</Row>
 				</Col>
 				</Row>
@@ -235,10 +214,6 @@ const MapScreen = ({route}) => {
 		  androidRenderMode="compass"
 		  ></MapboxGL.UserLocation>
           <MapboxGL.Camera 
-			// maxBounds={{
-			// 	ne: [37.715133, 127.269311], 
-			// 	sw:  [37.413294, 126.734086]
-			// }}
 			defaultSettings={{bounds: calculatInitialMapRegion()}}
 			bounds={mapBounds}
 			zoomLevel={11}></MapboxGL.Camera>
@@ -252,7 +227,6 @@ const MapScreen = ({route}) => {
 	  	<Div h={HAS_NOTCH ? 44 : 20} />
 		<Header></Header>
         <Row flex pointerEvents="none">
-            
         </Row>
         <Row pointerEvents="box-none" px20 py10>
           <Col pointerEvents="none"></Col>

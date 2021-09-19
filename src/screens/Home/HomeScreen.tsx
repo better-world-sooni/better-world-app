@@ -14,36 +14,38 @@ import { Span } from 'src/components/common/Span';
 import APIS from 'src/modules/apis';
 import { IMAGES } from 'src/modules/images';
 import { NAV_NAMES } from 'src/modules/navNames';
-import { FlatList, ScrollView, View } from 'src/modules/viewComponents';
-import { useApiPOST, useApiSelector, useReloadGET } from 'src/redux/asyncReducer';
-import { useDispatch } from 'react-redux';
+import { ScrollView, View } from 'src/modules/viewComponents';
+import { useApiSelector, useReloadGET } from 'src/redux/asyncReducer';
+import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
 import MapViewDirections from 'src/components/MapViewDirections';
-import { Dimensions } from 'react-native';
-import { ICONS } from 'src/modules/icons';
-import { confirmCurrentRoute } from 'src/redux/pathReducer';
-import { Map, PlusSquare, Menu, Plus, ChevronRight, ArrowRight, Code, ChevronDown, Bell, Sun, Thermometer, Rss, Bluetooth, MessageCircle, AlertCircle, Heart, Send, Search } from 'react-native-feather';
+import { PlusSquare, Bell, MessageCircle, AlertCircle, Heart, Send, Search } from 'react-native-feather';
 import RouteShelf from 'src/components/RouteShelf';
 import MapboxGL from "@react-native-mapbox-gl/maps";
 import type {CameraSettings} from "@react-native-mapbox-gl/maps"
 import { HAS_NOTCH } from 'src/modules/contants';
 import BottomNav from 'src/components/BottomNav';
 import LinearGradient from 'react-native-linear-gradient';
-import { BlurView } from "@react-native-community/blur";
+import { setUserSearchDestination, setUserSearchOrigin } from 'src/redux/pathReducer';
+import { shortenAddress } from 'src/modules/utils';
+import { RootState } from 'src/redux/rootReducer';
 
 const HomeScreen = (props) => {
   MapboxGL.setAccessToken("pk.eyJ1Ijoibm9tYWNndWZmaW5zIiwiYSI6ImNrdGp2cHozYzBxZHAzMW1zcWZ3c2p2aXAifQ.NsgkwiPWRhtBN5RX4wwa5w");
   
   const {data: defaultTo, isLoading} = useApiSelector(APIS.route.default);
+  const { origin, destination} = useSelector(
+      (root: RootState) => (root.path.userSearch), shallowEqual
+  );
   const navigation = useNavigation();
   const apiGET = useReloadGET();
   const dispatch = useDispatch()
+  const setOrigin = (origin) => dispatch(setUserSearchOrigin(origin))
+  const setDestination = (destination) => dispatch(setUserSearchDestination(destination))
+  const goToMap = () => navigation.navigate(NAV_NAMES.Map)
+  const goToSelect = () => navigation.navigate(NAV_NAMES.Select)
 
-  const pullToRefresh = () => {
-    apiGET(APIS.route.default())
-  };
-
-
+  const pullToRefresh = () => apiGET(APIS.route.default())
   const [Route, setRoute] = useState(null)
 
   useEffect(() => {
@@ -52,26 +54,11 @@ const HomeScreen = (props) => {
   useEffect(() => {
     if(defaultTo){
       setRoute(defaultTo.default_route.route)
+      setOrigin(shortenAddress(defaultTo.default_route.route.legs[0].start_address))
+      setDestination(shortenAddress(defaultTo.default_route.route.legs[0].end_address))
     };
   }, [isLoading]);
 
-  const onPressMyRoute = () => {
-    navigation.navigate(NAV_NAMES.Map);
-  }
-  // const onPressSunganCam = () => {
-  //   navigation.navigate(NAV_NAMES.SunganCam);
-  // }
-  const expandSearchTab = () => {
-		dispatch(confirmCurrentRoute(false));
-	}
-  const onPressFind = () => {
-    navigation.navigate(NAV_NAMES.Map);
-    expandSearchTab()
-  }
-  const onPressMood = () => {
-    navigation.navigate(NAV_NAMES.Mood)
-  }
-  
 
   const calculatInitialMapRegion = () => {
 		const bounds = Route?.bounds
@@ -96,32 +83,6 @@ const HomeScreen = (props) => {
 
 	}
 
-
-  const [scrollOffset, setScrollOffset] = useState(0)
-  const handleScroll = (scrollEvent) => {
-    const offset = scrollEvent.nativeEvent.contentOffset.y  
-    if(offset <= 120 && offset >= 0){
-      console.log(offset)
-      setScrollOffset(offset/100)
-    }
-  }
-
-  const HEADER_MAX_HEIGHT = 100;
-  const HEADER_MIN_HEIGHT = 0;
-  const HEADER_SCROLL_DISTANCE = HEADER_MAX_HEIGHT - HEADER_MIN_HEIGHT;
-  const animatedScrollYValue = useRef(new Animated.Value(0)).current;
-  const headerOpacity = animatedScrollYValue.interpolate({
-    inputRange: [0, HEADER_SCROLL_DISTANCE],
-    outputRange: [1, 0],
-    extrapolate: 'clamp',
-  });
-  const dividerOpacity = animatedScrollYValue.interpolate({
-    inputRange: [0, HEADER_SCROLL_DISTANCE],
-    outputRange: [0, 1],
-    extrapolate: 'clamp',
-  });
-
-
   const iconSettings = {
     strokeWidth:2,
     color: "black", 
@@ -140,60 +101,39 @@ const HomeScreen = (props) => {
     <Div h={HAS_NOTCH ? 44 : 20} />
     <Div px20 >
       <Row rounded20 overflowHidden >
-        <Col auto itemsCenter justifyCenter>
-          <RouteShelf></RouteShelf>
+        <Col itemsCenter justifyCenter>
+          <RouteShelf origin={origin} destination={destination}></RouteShelf>
         </Col>
-        <Col/>
         <Col auto>
           {/* <Animated.View style={{opacity: headerOpacity, transform: [{scaleX: headerOpacity, }]}}> */}
-          <Animated.View >
-              <Row py10 rounded20 overflowHidden my10 w120>
+          <View >
+              <Row py10 rounded20 overflowHidden my7 w120>
                 <Col itemsCenter justifyCenter >
                     <AlertCircle {...iconSettings} color={"red"}></AlertCircle>
                 </Col>
-                <Col itemsCenter justifyCenter >
+                <Col itemsCenter justifyCenter onPress={goToSelect}>
                     <PlusSquare {...iconSettings} color={"black"}></PlusSquare>
                 </Col>
                 <Col itemsCenter justifyCenter>
                     <Bell {...iconSettings} color={"black"}></Bell>
                 </Col>
               </Row>
-              <Animated.View
-                  style={{
-                    opacity: dividerOpacity,
-                    borderBottomColor: 'gray',
-                    borderBottomWidth: 0.2,
-                  }}
-                />
-          </Animated.View>
+          </View>
         </Col>
       </Row>
     </Div>
   <Animated.ScrollView 
     showsVerticalScrollIndicator={false}
     stickyHeaderIndices={[1]}
-    onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: animatedScrollYValue } } }], {useNativeDriver: true})}
+    // onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: animatedScrollYValue } } }], {useNativeDriver: true})}
     scrollEventThrottle={16}
     refreshControl={
     <RefreshControl refreshing={isLoading} onRefresh={pullToRefresh} />
     }
   >
   <LinearGradient style={{flex:1}} colors={["#edfffe", "#f5f5f5", "#f5f5f5", "#f5f5f5", "#f5f5f5", "#f5f5f5", "#f5f5f5", "#f5f5f5"]}>
-    {/* <Animated.View style={{opacity: headerOpacity, transform: [{scaleX: headerOpacity, }]}}>
-        <Row py10 rounded20 overflowHidden mb10 mx20 bgWhite>
-          <Col itemsCenter justifyCenter>
-              <AlertCircle {...iconSettings}></AlertCircle>
-          </Col>
-          <Col itemsCenter justifyCenter>
-              <Plus {...iconSettings}></Plus>
-          </Col>
-          <Col itemsCenter justifyCenter>
-              <Bell {...iconSettings}></Bell>
-          </Col>
-        </Row>
-      </Animated.View> */}
         <Div mx20> 
-          <Row h250 rounded20 overflowHidden my10 bgWhite>
+          <Row h250 rounded20 overflowHidden my10 bgWhite onPress={goToMap}>
             <Col w={"50%"} px20 py10>
               <Row><Span fontSize={14}>예상도착 시간</Span></Row>
               <Row><Span bold fontSize={30}>31분</Span></Row>

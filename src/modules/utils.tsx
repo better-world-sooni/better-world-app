@@ -1,6 +1,5 @@
 /* eslint-disable no-bitwise */
 import querystring from 'query-string';
-import {LOCALE_EN, LOCALE_KO} from 'src/i18n/useLocale';
 
 export const urlWithQuery = (url, query) => {
   return query ? `${url}?${querystring.stringify(query)}` : url;
@@ -13,15 +12,6 @@ export const getDday = date => {
   return days;
 };
 
-export const getServerLocale = locale => {
-  if (locale === LOCALE_EN) {
-    return 'en';
-  }
-  if (locale === LOCALE_KO) {
-    return 'kr';
-  }
-  return 'kr';
-};
 export const cyrb53 = function (str, seed = 0) {
   let h1 = 0xdeadbeef ^ seed,
     h2 = 0x41c6ce57 ^ seed;
@@ -38,3 +28,7 @@ export const cyrb53 = function (str, seed = 0) {
     Math.imul(h1 ^ (h1 >>> 13), 3266489909);
   return 4294967296 * (2097151 & h2) + (h1 >>> 0);
 };
+
+export const shortenAddress = function (address) {
+  return address.replace("대한민국 서울특별시","");
+}

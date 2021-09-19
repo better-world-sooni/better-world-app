@@ -19,7 +19,6 @@ import { NAV_NAMES } from 'src/modules/navNames';
 import { IOS_APP_VERSION, IOS_CODE_PUSH_VERSION, ANDROID_APP_VERSION, ANDROID_CODE_PUSH_VERSION } from 'src/modules/contants';
 import { ScrollView } from 'src/modules/viewComponents';
 import { useLogin, useSocialLogin } from 'src/redux/appReducer';
-import { getServerLocale } from 'src/modules/utils';
 import { IMAGES } from 'src/modules/images';
 
 declare enum KAKAO_AUTH_TYPES {

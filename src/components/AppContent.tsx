@@ -17,6 +17,8 @@ import CameraScreen from 'src/screens/CameraScreen';
 import ProfileScreen from 'src/screens/Home/ProfileScreen';
 import SplashScreen from 'src/screens/Common/SplashScreen';
 import SignInScreen from 'src/screens/Auth/SignInScreen';
+import PostScreen from 'src/screens/PostScreen';
+import SelectScreen from 'src/screens/SelectScreen';
 
 const RootStack = createStackNavigator();
 
@@ -128,12 +130,29 @@ export const AppContent = () => {
       component: ProfileScreen,
       options: props => ({
         header: topHeader({...props, headerShown: false}),
-        cardStyle: { backgroundColor: 'transparent' },
+        cardStyle: { backgroundColor: 'transparent' }, 
+      }),
+    },
+    {
+      name: NAV_NAMES.Post,
+      component: PostScreen,
+      options: props => ({
+        header: topHeader({...props, title: "새 게시물"}),
+        // cardStyle: { backgroundColor: 'white', presentation: 'modal' },
+        headerShown: true,
+      }),
+    },
+    {
+      name: NAV_NAMES.Select,
+      component: SelectScreen,
+      options: props => ({
+        // header: topHeader({...props, title: "새 게시물", headerBlack: "true"}),
+        cardStyle: { backgroundColor: 'black', presentation: 'screen' },
+        // headerShown: true,
       }),
     },
   ];
   return (
-    // <Div flex={1} borderBottomLeftRadius={10} borderBottomRightRadius={10}>
       <NavigationContainer>
         <RootStack.Navigator screenOptions={{ headerShown: false }}>
           {Navs.map((item, i) => (
@@ -146,6 +165,5 @@ export const AppContent = () => {
           ))}
         </RootStack.Navigator>
       </NavigationContainer>
-    // </Div>
   );
 };

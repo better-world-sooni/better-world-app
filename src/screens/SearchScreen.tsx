@@ -92,6 +92,10 @@ const SearchScreen = () => {
 
     const navigation = useNavigation()
 
+    useEffect(() => {
+        pullToRefresh();
+    }, [origin, destination])
+
     const setCurrentRoute = (index) => {
         dispatch(setCurrentRouteIndex(index))
         setEditfocus(NONE)
@@ -130,17 +134,16 @@ const SearchScreen = () => {
         if (!autocompleteDescription || !autocompleteTerm) return
         if (editFocus == 2){
             setTentativeDestination(autocompleteTerm)
-            setOrigin(tentativeOrigin)
+            setDestination(autocompleteTerm)
             setEditfocus(NONE)
             destinationRef.current.blur()
         }
         else{
             setTentativeOrigin(autocompleteTerm)
-            setDestination(tentativeDestination)
-            setEditfocus(NONE)            
+            setOrigin(autocompleteTerm)
+            setEditfocus(NONE)
             originRef.current.blur()
         }
-        fetchAndSetSearchResults(props);
     }
 
     const onPressExit = () => {
@@ -196,6 +199,10 @@ const SearchScreen = () => {
         alternatives: alternatives
     }
 
+    const pullToRefresh = () => {
+        fetchAndSetSearchResults( props );
+    };
+
 	const resetState = () => {
 		dispatch(setSearchResults([]));
 	}
@@ -235,7 +242,6 @@ const SearchScreen = () => {
 		// Routes array which we'll be filling.
 		// We'll perform a Directions API Request for reach route
 		const routes = [];
-        console.log("helloheloo")
 
 		// We need to split the waypoints in chunks, in order to not exceede the max waypoint limit
 		// ~> Chunk up the waypoints, yielding multiple routes
@@ -300,7 +306,7 @@ const SearchScreen = () => {
 					waypoints: initialWaypoints,
 				} );
 			}
-           
+            console.log("attempete")
 			return (
 				apiGET(APIS.paths.fetch({directionsServiceBaseUrl, origin, waypoints, destination, apikey, mode, language, region, precision, timePrecisionString, channel, alternatives}), (results) =>onReady(results.data), (error) => onError(error))
 			);
@@ -359,6 +365,7 @@ const SearchScreen = () => {
                             <TextField
                                 ref={originRef}
                                 textContentType={"fullStreetAddress"}
+                                numberOfLines={1}
                                 placeholder={'출발지'}
                                 value={tentativeOrigin}
                                 onFocus={() => onFocus(ORIGIN)}
@@ -377,6 +384,7 @@ const SearchScreen = () => {
                             <TextField
                                 ref={destinationRef}
                                 placeholder={'도착지'}
+                                numberOfLines={1}
                                 value={tentativeDestination}
                                 onFocus={() => onFocus(DESINTATION)}
                                 onChangeText={(text) => onChangeText(text, 'destination')}
@@ -396,7 +404,7 @@ const SearchScreen = () => {
                             bgGray100
                             showsVerticalScrollIndicator={false}
                             refreshControl={
-                            <RefreshControl refreshing={isSearchLoading} onRefresh={() => fetchAndSetSearchResults( props )} />
+                            <RefreshControl refreshing={isSearchLoading} onRefresh={pullToRefresh} />
                             }>
                             {searchResults && searchResults.routes.map((result, i) => {
                                 return (
