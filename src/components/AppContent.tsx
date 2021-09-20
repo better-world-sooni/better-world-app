@@ -10,15 +10,14 @@ import HomeScreen from 'src/screens/Home/HomeScreen';
 import MapScreen from 'src/screens/Home/MapScreen';
 import SunganCam from 'src/screens/CameraScreen';
 import SearchScreen from 'src/screens/SearchScreen';
-import MoodScreen from 'src/screens/Home/MoodScreen';
-import { AlertCircle, Flag, Heart, Home, Map, User } from 'react-native-feather';
-import VillainScreen from 'src/screens/Home/VillainScreen';
+import { AlertCircle, Flag, Globe, Heart, Home, Map, User } from 'react-native-feather';
 import CameraScreen from 'src/screens/CameraScreen';
 import ProfileScreen from 'src/screens/Home/ProfileScreen';
 import SplashScreen from 'src/screens/Common/SplashScreen';
 import SignInScreen from 'src/screens/Auth/SignInScreen';
 import PostScreen from 'src/screens/PostScreen';
 import SelectScreen from 'src/screens/SelectScreen';
+import MetaverseScreen from 'src/screens/Home/MetaverseScreen';
 
 const RootStack = createStackNavigator();
 
@@ -36,6 +35,13 @@ const MainBottomTabs = () => {
         component={HomeScreen}
         options={{
           tabBarIcon: (props) => <Home color={props.focused ? "black" : "gray"} strokeWidth={1.5}></Home>
+        }}
+      />
+      <Tab.Screen
+        name={NAV_NAMES.Metaverse}
+        component={MetaverseScreen}
+        options={{
+          tabBarIcon: (props) => <Globe color={props.focused ? "black" : "gray"} strokeWidth={1.5}></Globe>
         }}
       />
       <Tab.Screen
@@ -102,24 +108,8 @@ export const AppContent = () => {
       }),
     },
     {
-      name: NAV_NAMES.Villain,
-      component: VillainScreen,
-      options: props => ({
-        header: topHeader({...props, headerShown: false}),
-        cardStyle: { backgroundColor: 'white', presentation: 'screen' },
-      }),
-    },
-    {
       name: NAV_NAMES.Search,
       component: SearchScreen,
-      options: props => ({
-        header: topHeader({...props, headerShown: false}),
-        cardStyle: { backgroundColor: 'white', presentation: 'screen' },
-      }),
-    },
-    {
-      name: NAV_NAMES.Mood,
-      component: MoodScreen,
       options: props => ({
         header: topHeader({...props, headerShown: false}),
         cardStyle: { backgroundColor: 'white', presentation: 'screen' },
@@ -149,6 +139,13 @@ export const AppContent = () => {
         // header: topHeader({...props, title: "새 게시물", headerBlack: "true"}),
         cardStyle: { backgroundColor: 'black', presentation: 'screen' },
         // headerShown: true,
+      }),
+    },
+    {
+      name: NAV_NAMES.Metaverse,
+      component: MetaverseScreen,
+      options: props => ({
+        cardStyle: { backgroundColor: 'black', presentation: 'screen' },
       }),
     },
   ];
