@@ -95,27 +95,27 @@ const SplashScreen = ({route}) => {
   // };
 
   const isAutoLoginChecked = () => {
-    AsyncStorage.getItem(JWT_TOKEN).then((value) => {
-      if (value) {
-        autoLogin(
-          value,
-          (props) => {
-            navigation.dispatch(
-              CommonActions.reset({
-                index: 0,
-                routes: [{name: NAV_NAMES.Home}],
-              }),
-            );
-          },
-          (props) => {
-            Alert.alert('Message', props.error.message, [{text: "ok"}]);
-          },
-        );
-      } else {
-        navigation.navigate(NAV_NAMES.SignIn);
-      }
-    });
-    // navigation.navigate(NAV_NAMES.SignIn);
+    // AsyncStorage.getItem(JWT_TOKEN).then((value) => {
+    //   if (value) {
+    //     autoLogin(
+    //       value,
+    //       (props) => {
+    //         navigation.dispatch(
+    //           CommonActions.reset({
+    //             index: 0,
+    //             routes: [{name: NAV_NAMES.Home}],
+    //           }),
+    //         );
+    //       },
+    //       (props) => {
+    //         Alert.alert('Message', props.error.message, [{text: "ok"}]);
+    //       },
+    //     );
+    //   } else {
+    //     navigation.navigate(NAV_NAMES.SignIn);
+    //   }
+    // });
+    navigation.navigate(NAV_NAMES.SignIn);
   };
   return (
     <Div bgWhite flex itemsCenter justifyCenter>

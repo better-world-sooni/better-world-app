@@ -73,19 +73,19 @@ const SignInScreen = ({ navigation }) => {
       return;
     }
     setLoading(true);
-    // login(
-    //   email,
-    //   password,
-    //   (props) => {
-    //     setLoading(false);
-    //     goToHome()
-    //   },
-    //   (props) => {
-    //     setLoading(false);
-    //     Alert.alert('Error', props.error.message, [{ text: "네" }]);
-    //   },
-    // );
-    goToHome()
+    login(
+      email,
+      password,
+      (props) => {
+        setLoading(false);
+        goToHome()
+      },
+      (props) => {
+        setLoading(false);
+        Alert.alert('Error', props.error.message, [{ text: "네" }]);
+      },
+    );
+    // goToHome()
   };
   // const facebookSignIn = () => {
   //   LoginManager.logInWithPermissions(['public_profile']).then(

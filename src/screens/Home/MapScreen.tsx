@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {
 	useNavigation
   } from '@react-navigation/native';
@@ -13,11 +13,13 @@ import { useSelector } from 'react-redux';
 import { RootState } from 'src/redux/rootReducer';
 import { shallowEqual } from 'react-redux';
 import MapViewDirections from 'src/components/MapViewDirections';
-import { Image } from 'react-native';
-import { ChevronLeft, Crosshair, X } from 'react-native-feather';
+import { Animated, Dimensions, Easing, Image } from 'react-native';
+import { ChevronLeft, Crosshair, Grid, Star, X } from 'react-native-feather';
 import { NAV_NAMES } from 'src/modules/navNames';
 import MapboxGL from '@react-native-mapbox-gl/maps';
 import { HAS_NOTCH } from 'src/modules/contants';
+import { shortenAddress } from 'src/modules/utils';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 
 const MapScreen = ({route}) => {
 	const shadowProp = {shadowOffset: {height: 1, width: 1}, shadowColor: "gray", shadowOpacity: 0.5, shadowRadius: 3}
@@ -67,13 +69,54 @@ const MapScreen = ({route}) => {
 
 	const [ExpandHeader, setExpandHeader] = useState( true );
 
-	const toggle = () => ExpandHeader ? setExpandHeader(false) : setExpandHeader(true)
+	const toggle = () => {
+		if (ExpandHeader) {
+			setExpandHeader(false)
+		} else{
+			setExpandHeader(true)
+		}
+	}
 
 	const goToSearch = () => navigation.navigate(NAV_NAMES.Search)
 
+	const putDefaultRoute = () => {
+
+	}
+
+	const iconSettings = {
+		strokeWidth:2,
+		color: "black", 
+		height: 20,
+	}
+	
+
 	const Header = () => {
+
+		const animatedValue = useRef(new Animated.Value(0)).current;
+
+		const startAnimation = toValue => {
+			Animated.timing(animatedValue, {
+				toValue,
+				duration: 500,
+				easing: Easing.ease,
+				useNativeDriver: true,
+			}).start()
+		}
+
+		function translateX(index) {
+			return animatedValue.interpolate({
+				inputRange: [0, 1],
+				outputRange: [Dimensions.get('window').width + (index * 100), 0],
+				extrapolate: 'clamp'
+			})
+		}
+
+		useEffect(()=> {
+			startAnimation(1)
+		})
+
 		return(
-			<Div activeOpacity={1.0} w={"100%"} px20 {...shadowProp}>
+			<Div activeOpacity={1.0} w={"100%"} px20 {...shadowProp} pointerEvents="box-none">
 			  <Row bgWhite h50 itemsCenter rounded20 overflowHidden mb10>
 				<Col itemsCenter >
 					<Row >
@@ -84,108 +127,82 @@ const MapScreen = ({route}) => {
 				</Col>
 				</Row>
 				{ExpandHeader && (
-					<Div bgWhite zIndex={-1} py20 rounded20>
+					<Div zIndex={-1}>
 					{Route && 
-							<Div pb10 px20>
-								{Route.legs[0].steps.map((step, index , arr)=>{
+							<Div>
+								{Route.legs[0].steps.map((step, index )=>{
 									const topProps = {borderTop: false}
 									if (step.transit_details) 
 									{	
 										return (
-											<Div key={index} {...topProps} my1 borderGray200>
-												<Row my5 fontSize={15} justifyCenter>
-													<Col w25 auto mr5 itemsCenter justifyCenter>
-														<Div h25 w25 itemsCenter justifyCenter backgroundColor={step.transit_details.line.color} borderRadius={50}>
-															{
-																step.transit_details?.line?.vehicle?.name !== "버스" ? 
-																(<Span white bold>{step.transit_details?.line?.short_name?.slice(0, -2)}</Span>)
-																:
-																(<Image style={{width: 15, height: 15, tintColor: "white"}} source={{ uri: `https:${step.transit_details.line.vehicle.icon}`}}></Image>)
-															}
-														</Div>
+											<Animated.View style={[{ transform: [{ translateX: translateX(index) }] }]}>
+												<Row key={index} {...topProps} my1 borderGray200 bgWhite rounded20 py10 px20 my5 justifyCenter>
+													<Col hFull>
+														<Row my5 fontSize={15} justifyCenter>
+															<Col w25 auto mr5 itemsCenter justifyCenter>
+																	{
+																		step.transit_details?.line?.vehicle?.name !== "버스" ? 
+																		(
+																			<Div h25 w25 itemsCenter justifyCenter backgroundColor={step.transit_details.line.color} borderRadius={50}>
+																				<Span white bold>{step.transit_details?.line?.short_name?.slice(0, -2)}</Span>
+																			</Div>
+																		)
+																		:
+																		(<FontAwesomeIcon icon="bus" color={step.transit_details.line.color}></FontAwesomeIcon>)
+																	}
+															</Col>
+															<Col justifyCenter pb2>
+																<Span>{step.transit_details.departure_stop.name.split(".")[0]}</Span>
+															</Col>
+														</Row>
+														{   
+															step.transit_details?.line?.vehicle?.name == "버스" &&
+															<Row my3>
+																<Col w25 auto mr5 itemsCenter justifyCenter>
+																</Col>
+																<Col justifyCenter mr5 auto>
+																	<Div  backgroundColor={step.transit_details.line.color} borderRadius={5} px5>
+																		<Span fontSize={10} white>{step.transit_details.line.name.split(" ").pop().slice(0,2)}</Span>
+																	</Div>
+																</Col>
+																<Col auto pb2>
+																	<Span >{step.transit_details.line.short_name}</Span>
+																</Col>
+																<Col></Col>
+															</Row>
+														}
+														<Row mt2 fontSize={15} justifyCenter >
+															<Col w25 auto mr5 itemsCenter justifyCenter>
+																<Div h15 w15 itemsCenter justifyCenter backgroundColor={step.transit_details.line.color} borderRadius={50}>
+																	<Div h5 w5 backgroundColor={"white"} borderRadius={10}></Div>
+																</Div>
+															</Col>
+															<Col justifyCenter pb2>
+																<Span>{step.transit_details.arrival_stop.name.split(".")[0]}</Span>
+															</Col>
+														</Row>
 													</Col>
-													<Col justifyCenter pb2>
-														<Span>{step.transit_details.departure_stop.name}</Span>
+													<Col auto itemsCenter justifyCenter>
+														<Grid {...iconSettings}></Grid>
 													</Col>
 												</Row>
-												{   
-													step.transit_details?.line?.vehicle?.name == "버스" &&
-													<Row my3>
-														<Col w25 auto mr5 itemsCenter justifyCenter>
-														</Col>
-														<Col justifyCenter mr5 auto>
-															<Div  backgroundColor={step.transit_details.line.color} borderRadius={5} px5>
-																<Span fontSize={10} white>{step.transit_details.line.name.split(" ").pop().slice(0,2)}</Span>
-															</Div>
-														</Col>
-														<Col auto pb2>
-															<Span >{step.transit_details.line.short_name}</Span>
-														</Col>
-														<Col></Col>
-													</Row>
-												}
-												{
-													<Row mt2 fontSize={15} justifyCenter >
-														<Col w25 auto mr5 itemsCenter justifyCenter>
-															<Div h15 w15 itemsCenter justifyCenter backgroundColor={step.transit_details.line.color} borderRadius={50}>
-																<Div h5 w5 backgroundColor={"white"} borderRadius={10}></Div>
-															</Div>
-														</Col>
-														<Col justifyCenter pb2>
-															<Span>{step.transit_details.arrival_stop.name}</Span>
-														</Col>
-													</Row>
-												}
-											</Div>
+											</Animated.View>
 										)
 									}
 									else{
 										return (
-											<Div key={index} {...topProps}>
-												{	
-													(0 == index) &&
+											<Animated.View key={index} style={[{ transform: [{ translateX: translateX(index) }] }]}>
+												<Div {...topProps} bgWhite rounded20 py10 px20 my5 justifyCenter>
 													<Row>
 														<Col w25 auto mr5 itemsCenter justifyCenter>
-															{
-																<Div h15 w15 key={index} itemsCenter my1 justifyCenter backgroundColor={"silver"} borderRadius={50}>
-																</Div>
-															}
+															<FontAwesomeIcon icon="walking"></FontAwesomeIcon>
 														</Col>
 														<Col justifyCenter pb2>
-															<Span >{step.html_instructions}</Span>
+															<Span >{shortenAddress(step.html_instructions)}</Span>
 														</Col>
 													</Row>
-												}
-												<Row fontSize={15} justifyCenter>
-													<Col w25 auto mr5 itemsCenter justifyCenter>
-														{
-															[1, 2, 3, 4].map((index) => {
-																return(
-																	<Div h5 w5 key={index} itemsCenter my1 justifyCenter backgroundColor={"silver"} borderRadius={50}>
-																	</Div>
-																)
-															})
-														}
-													</Col>
-													<Col justifyCenter pb2>
-														{/* <Span fontSize={10}>{step.html_instructions}</Span> */}
-													</Col>
-												</Row>
-												{	
-													(arr.length - 1 == index) &&
-													<Row>
-														<Col w25 auto mr5 itemsCenter justifyCenter>
-															{
-																<Div h15 w15 key={index} itemsCenter my1 justifyCenter backgroundColor={"silver"} borderRadius={50}>
-																</Div>
-															}
-														</Col>
-														<Col justifyCenter pb2>
-															<Span>{step.html_instructions}</Span>
-														</Col>
-													</Row>
-												}
-											</Div>
+												</Div>
+											</Animated.View>
 										)
 									}
 								})}
@@ -193,6 +210,17 @@ const MapScreen = ({route}) => {
 						}
 				  </Div>
 				)}
+				{!ExpandHeader && <Row pointerEvents="box-none" >
+					<Col pointerEvents="none" ></Col>
+					<Col auto px10 py10 rounded20 bgWhite><Star {...iconSettings}></Star></Col>
+				</Row>}
+				{ExpandHeader && 
+				<Animated.View style={[{ transform: [{ translateX: translateX(Route.legs[0].steps.length) }] }]}>
+					<Row pointerEvents="box-none" >
+						<Col pointerEvents="none" ></Col>
+						<Col auto px10 py10 rounded20 bgWhite><Star {...iconSettings}></Star></Col>
+					</Row>
+				</Animated.View>}
 			</Div>
 		)
 	}

@@ -142,6 +142,8 @@ export const useApiPOST = (props = {}) => {
   const navigation = useNavigation();
   return (api, body?, successHandler?, errHandler?) => {
     const key = getKeyByApi(api, scope);
+    console.log('console.log(key)')
+    console.log(api.url)
     dispatch(
       asyncThunk({
         key: key,

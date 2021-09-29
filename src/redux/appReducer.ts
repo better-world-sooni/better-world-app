@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {createSlice} from '@reduxjs/toolkit';
 import { useDispatch } from 'react-redux';
 import APIS from 'src/modules/apis';
-import {getServerLocale} from 'src/modules/utils';
+// import {getServerLocale} from 'src/modules/utils';
 import {JWT_TOKEN} from 'src/modules/contants';
 import {
   asyncActions,
@@ -22,8 +22,10 @@ export const useLogin = () => {
       },
       props => {
         dispatch(async () => {
-          const {jwt_token} = props.data;
-          await AsyncStorage.setItem(JWT_TOKEN, jwt_token);
+          console.log("props.data")
+          console.log(props.data)
+          const { jwtToken } = props.data;
+          await AsyncStorage.setItem(JWT_TOKEN, jwtToken);
           dispatch(appActions.login(props.data));
           if (successHandler) {
             const success = await successHandler(props);

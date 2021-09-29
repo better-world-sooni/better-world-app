@@ -3,7 +3,10 @@ import {LogBox, Platform, StatusBar, View} from 'react-native';
 import codePush from 'react-native-code-push';
 import {withRootReducer} from './src/redux/withRootReducer';
 import {AppContent} from 'src/components/AppContent';
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { faWalking, faBus, faSubway } from '@fortawesome/free-solid-svg-icons'
 
+library.add(faWalking, faBus, faSubway)
 
 const App = () => {
   useEffect(() => {

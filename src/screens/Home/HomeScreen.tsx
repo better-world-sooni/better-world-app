@@ -24,7 +24,6 @@ import RouteShelf from 'src/components/RouteShelf';
 import MapboxGL from "@react-native-mapbox-gl/maps";
 import type {CameraSettings} from "@react-native-mapbox-gl/maps"
 import { HAS_NOTCH } from 'src/modules/contants';
-import BottomNav from 'src/components/BottomNav';
 import LinearGradient from 'react-native-linear-gradient';
 import { setUserSearchDestination, setUserSearchOrigin } from 'src/redux/pathReducer';
 import { shortenAddress } from 'src/modules/utils';
@@ -51,6 +50,7 @@ const HomeScreen = (props) => {
   useEffect(() => {
     pullToRefresh();
   }, []);
+
   useEffect(() => {
     if(defaultTo){
       setRoute(defaultTo.default_route.route)
@@ -80,7 +80,6 @@ const HomeScreen = (props) => {
         sw:  [37.413294, 126.734086],
       }
     }
-
 	}
 
   const iconSettings = {
@@ -145,7 +144,7 @@ const HomeScreen = (props) => {
                 logoEnabled={false}
                 compassEnabled={false}
                 zoomEnabled={false}
-                scrollEnabled={false}
+                // scrollEnabled={false}
                 pitchEnabled={false}
                 rotateEnabled={false}
                 >
@@ -157,7 +156,7 @@ const HomeScreen = (props) => {
                     // }}
                     defaultSettings={{bounds: calculatInitialMapRegion()}}
                     bounds={calculatInitialMapRegion()}
-                    zoomLevel={11}></MapboxGL.Camera>
+                    zoomLevel={7}></MapboxGL.Camera>
                   {Route && (
                     <MapViewDirections
                       route={Route}

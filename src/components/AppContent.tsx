@@ -8,16 +8,15 @@ import {Div} from 'src/components/common/Div';
 import {NAV_NAMES} from 'src/modules/navNames';
 import HomeScreen from 'src/screens/Home/HomeScreen';
 import MapScreen from 'src/screens/Home/MapScreen';
-import SunganCam from 'src/screens/CameraScreen';
 import SearchScreen from 'src/screens/SearchScreen';
-import { AlertCircle, Flag, Globe, Heart, Home, Map, User } from 'react-native-feather';
+import { Grid, Home, Map, User } from 'react-native-feather';
 import CameraScreen from 'src/screens/CameraScreen';
 import ProfileScreen from 'src/screens/Home/ProfileScreen';
 import SplashScreen from 'src/screens/Common/SplashScreen';
 import SignInScreen from 'src/screens/Auth/SignInScreen';
 import PostScreen from 'src/screens/PostScreen';
 import SelectScreen from 'src/screens/SelectScreen';
-import MetaverseScreen from 'src/screens/Home/MetaverseScreen';
+import MetaSunganScreen from 'src/screens/Home/MetaverseScreen';
 
 const RootStack = createStackNavigator();
 
@@ -39,9 +38,9 @@ const MainBottomTabs = () => {
       />
       <Tab.Screen
         name={NAV_NAMES.Metaverse}
-        component={MetaverseScreen}
+        component={MetaSunganScreen}
         options={{
-          tabBarIcon: (props) => <Globe color={props.focused ? "black" : "gray"} strokeWidth={1.5}></Globe>
+          tabBarIcon: (props) => <Grid color={props.focused ? "black" : "gray"} strokeWidth={1.5}></Grid>
         }}
       />
       <Tab.Screen
@@ -143,7 +142,7 @@ export const AppContent = () => {
     },
     {
       name: NAV_NAMES.Metaverse,
-      component: MetaverseScreen,
+      component: MetaSunganScreen,
       options: props => ({
         cardStyle: { backgroundColor: 'black', presentation: 'screen' },
       }),

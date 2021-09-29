@@ -1,6 +1,6 @@
 import urljoin from 'url-join';
 
-const BASE_URL = 'http://localhost:4000';
+const BASE_URL = 'http://localhost:8080';
 const toUrl = (...args) => ({url: urljoin(...args)});
 const base = path => toUrl(BASE_URL, path);
 const v1 = path => toUrl(BASE_URL, '/api/v1', path);
@@ -9,10 +9,10 @@ const v3 = path => toUrl(BASE_URL, '/api/v3', path);
 const v4 = path => toUrl(BASE_URL, '/api/v4', path);
 const v3_student = path => toUrl(BASE_URL, '/api/v3/student', path);
 const v4_student = path => toUrl(BASE_URL, '/api/v4/student', path);
-const fetchRoute = ({ directionsServiceBaseUrl = "https://maps.googleapis.com/maps/api/directions/json", origin, waypoints, destination, apikey, mode, language, region, precision, timePrecisionString, channel, alternatives }) => {
+const fetchRoute = ({ directionsServiceBaseUrl = "https://maps.googleapis.com/maps/api/directions/json", origin, waypoints, destination, apikey, mode, language, region, precision, timePrecisionString, channel, alternatives, transitMode }) => {
   let url = directionsServiceBaseUrl;
   if (typeof (directionsServiceBaseUrl) === 'string') {
-    url += `?origin=${origin}&waypoints=${waypoints}&destination=${destination}&key=${apikey}&mode=${mode.toLowerCase()}&language=${language}&region=${region}&alternatives=${alternatives}`;
+    url += `?origin=${origin}&waypoints=${waypoints}&destination=${destination}&key=${apikey}&mode=${mode.toLowerCase()}&language=${language}&region=${region}&alternatives=${alternatives}&transit_routing_preference=fewer_transfers&transit_mode=${transitMode}`;
     if (timePrecisionString) {
       url += `&departure_time=${timePrecisionString}`;
     }
@@ -48,7 +48,7 @@ const APIS = {
   auth: {
     get: () => v4_student('/auth'),
     signup: () => v3('/common/authenticate/signup'),
-    signIn: () => v1('/auth'),
+    signIn: () => v1('/auth/log-in'),
     signupWithProvider: () => v3('/common/authenticate/signup_with_provider'),
     checkPromoCode: () => v4_student('/profile/promo'),
     checkReferralCode: () => v4_student('/profile/referral'),

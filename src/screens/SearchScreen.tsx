@@ -1,7 +1,7 @@
 import { useApiSelector, useReloadGET } from 'src/redux/asyncReducer';
 import APIS from 'src/modules/apis';
 import React, {useState, useEffect, useRef} from 'react';
-import { NativeBaseProvider, TextField } from 'native-base';
+import { NativeBaseProvider, Input } from 'native-base';
 import { Div } from 'src/components/common/Div';
 import { Row } from 'src/components/common/Row';
 import { Col } from 'src/components/common/Col';
@@ -16,12 +16,14 @@ import { ScrollView } from 'src/modules/viewComponents';
 import { RefreshControl } from 'react-native';
 import { ICONS } from 'src/modules/icons';
 import { Img } from 'src/components/common/Img';
-import { Shuffle, X } from 'react-native-feather';
+import { ChevronLeft, Search, Shuffle, X } from 'react-native-feather';
 import { useNavigation } from '@react-navigation/native';
 import { NAV_NAMES } from 'src/modules/navNames';
 import { HAS_NOTCH } from 'src/modules/contants';
 
 const WAYPOINT_LIMIT = 10;
+
+const GO_COLOR = "rgb(10, 96, 254)"
 
 interface LatLng {
 	latitude: number,
@@ -81,20 +83,21 @@ const SearchScreen = () => {
 	const apiGET = useReloadGET();
     const {data: searchResults, isLoading: isSearchLoading} = useApiSelector(APIS.paths.fetch);
     const {data: autocompleteResults, isLoading: isAutocompleteLoading} = useApiSelector(APIS.paths.queryAutocomplete);
+    const originRef = useRef(null)
+    const destinationRef = useRef(null)
+    const navigation = useNavigation()
     const dispatch = useDispatch();
+
     const [tentativeOrigin, setTentativeOrigin] = useState(origin);
     const [tentativeDestination, setTentativeDestination] = useState(destination);
     const [NONE, ORIGIN, DESINTATION] = [0, 1, 2]
+    const [RAIL, BUS] = ["rail", "bus"]
     const [editFocus, setEditfocus] = useState(NONE)
-
-    const originRef = useRef(null)
-    const destinationRef = useRef(null)
-
-    const navigation = useNavigation()
+    const [preferredTransit, setPreferredTransit] = useState(RAIL)
 
     useEffect(() => {
         pullToRefresh();
-    }, [origin, destination])
+    }, [origin, destination, preferredTransit])
 
     const setCurrentRoute = (index) => {
         dispatch(setCurrentRouteIndex(index))
@@ -150,6 +153,33 @@ const SearchScreen = () => {
 		navigation.navigate(NAV_NAMES.Home)
     }
 
+    const onPressBack = () => {
+        setEditfocus((previousFocus) =>{ 
+            if (previousFocus == ORIGIN){
+                setTentativeOrigin(origin)
+                originRef.current.blur()
+            }
+            else if (previousFocus == DESINTATION){
+                setTentativeDestination(destination)
+                destinationRef.current.blur()
+            }
+            return NONE 
+        })
+    }
+
+    const onPressSubmit = () => {
+        if (editFocus == DESINTATION){
+            setDestination(tentativeDestination)
+            setEditfocus(NONE)
+            destinationRef.current.blur()
+        }
+        else{
+            setOrigin(tentativeOrigin)
+            setEditfocus(NONE)
+            originRef.current.blur()
+        }
+    }
+
     const onPressSwitch = () => {
         const d = destination
         const o = origin
@@ -196,7 +226,8 @@ const SearchScreen = () => {
         onStart: onStart,
         onReady: onReady,
         onError: onError,
-        alternatives: alternatives
+        alternatives: alternatives,
+        transitMode: preferredTransit
     }
 
     const pullToRefresh = () => {
@@ -225,6 +256,7 @@ const SearchScreen = () => {
 			timePrecision = 'none',
 			channel,
 			alternatives = true,
+            transitMode = "rail"
 		} = props;
 
 		if ( !apikey ) {
@@ -306,9 +338,8 @@ const SearchScreen = () => {
 					waypoints: initialWaypoints,
 				} );
 			}
-            console.log("attempete")
 			return (
-				apiGET(APIS.paths.fetch({directionsServiceBaseUrl, origin, waypoints, destination, apikey, mode, language, region, precision, timePrecisionString, channel, alternatives}), (results) =>onReady(results.data), (error) => onError(error))
+				apiGET(APIS.paths.fetch({directionsServiceBaseUrl, origin, waypoints, destination, apikey, mode, language, region, precision, timePrecisionString, channel, alternatives, transitMode}), (results) =>onReady(results.data), (error) => onError(error))
 			);
 		})) 
 	}
@@ -356,43 +387,54 @@ const SearchScreen = () => {
         <Div flex={1}>
             <Div h={HAS_NOTCH ? 44 : 20} />
             <NativeBaseProvider>
-                <Div bgWhite px20 py10 activeOpacity={1.0} auto >
-                    { (!editFocus || editFocus == 1) && <Row bgWhite h50 >
-                        <Col auto justifyCenter mr5 >
-                            <Span >출발: </Span>
-                        </Col>
+                <Div bgWhite px20 activeOpacity={1.0} auto >
+                    { (!editFocus || editFocus == ORIGIN) && <Row bgWhite py5>
                         <Col >
-                            <TextField
+                            <Input
                                 ref={originRef}
                                 textContentType={"fullStreetAddress"}
                                 numberOfLines={1}
                                 placeholder={'출발지'}
+                                onSubmitEditing={onPressSubmit}
                                 value={tentativeOrigin}
+                                InputLeftElement={editFocus == ORIGIN && <Div pl10 onPress={onPressBack}><ChevronLeft stroke="#2e2e2e" fill="#fff" height={25}></ChevronLeft></Div>}
                                 onFocus={() => onFocus(ORIGIN)}
                                 onChangeText={(text) => onChangeText(text, 'origin')}
-                            ></TextField>
+                                placeholderTextColor={"#DCDCDC"}
+                                returnKeyType="search"
+                            />
                         </Col>
-                        {!editFocus && <Col auto ml20 justifyCenter onPress={(e)=> onPressExit()}>
+                         {!editFocus && <Col auto ml20 justifyCenter onPress={(e)=> onPressExit()}>
                             <X stroke="#2e2e2e" fill="#fff" width={18} ></X>
                         </Col>}
                     </Row>}
-                    {(!editFocus || editFocus == 2) &&<Row bgWhite h50 >
-                        <Col auto justifyCenter mr5 >
-                            <Span >도착: </Span>
-                        </Col>
-                        <Col >
-                            <TextField
+                    {(!editFocus || editFocus == DESINTATION) && <Row bgWhite py5>
+                        <Col relative>
+                            <Input
                                 ref={destinationRef}
                                 placeholder={'도착지'}
+                                onSubmitEditing={onPressSubmit}
                                 numberOfLines={1}
+                                InputLeftElement={editFocus == DESINTATION && <Div pl10 onPress={onPressBack}><ChevronLeft stroke="#2e2e2e" fill="#fff" height={25}></ChevronLeft></Div>}
                                 value={tentativeDestination}
                                 onFocus={() => onFocus(DESINTATION)}
                                 onChangeText={(text) => onChangeText(text, 'destination')}
-                            ></TextField>
+                                placeholderTextColor="#DCDCDC"
+                                returnKeyType="search"
+                            />
                         </Col>
-                        {!editFocus && <Col auto justifyCenter ml20 onPress={(e)=> onPressSwitch()}>
+                         {!editFocus && <Col auto justifyCenter ml20 onPress={(e)=> onPressSwitch()}>
                             <Shuffle stroke="#2e2e2e" fill="#fff" width={18} ></Shuffle>
                         </Col>}
+                    </Row>}
+                    {!editFocus && <Row py5>
+                        <Col ></Col>
+                        <Col onPress={() => setPreferredTransit(RAIL)} px10 auto rounded20 py5 mx10 bg={preferredTransit == RAIL && GO_COLOR}>
+                            <Span color={preferredTransit == RAIL && "white"} medium>지하철 선호</Span>
+                        </Col>
+                        <Col onPress={() => setPreferredTransit(BUS)} px10 auto rounded20 py5 mx10 bg={preferredTransit == BUS && GO_COLOR}>
+                            <Span color={preferredTransit == BUS && "white"} medium>버스 선호</Span>
+                        </Col>
                     </Row>}
                 </Div>
                 {editFocus ?
