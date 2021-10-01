@@ -112,7 +112,7 @@ const appSlice = createSlice({
   initialState: {
     isLoggedIn: false,
     session: {
-      user: null,
+      // user: null,
       token: null,
     },
   },
@@ -121,22 +121,21 @@ const appSlice = createSlice({
       const { locale } = action.payload;
     },
     login(state, action) {
-      const { jwt_token, user } = action.payload;
+      const { jwtToken } = action.payload;
       state.session = {
-        token: jwt_token,
-        user: user,
+        token: jwtToken,
       };
       state.isLoggedIn = true;
     },
     logout(state) {
       state.isLoggedIn = false;
-      state.session.user = null;
+      // state.session.user = null;
       state.session.token = null;
     },
-    updateUser(state, action) {
-      const {user} = action.payload;
-      state.session.user = user;
-    },
+    // updateUser(state, action) {
+    //   const {user} = action.payload;
+    //   state.session.user = user;
+    // },
   },
 });
 

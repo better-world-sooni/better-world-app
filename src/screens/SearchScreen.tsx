@@ -10,7 +10,7 @@ import {useDispatch} from 'react-redux';
 import { useSelector } from 'react-redux';
 import { RootState } from 'src/redux/rootReducer';
 import { shallowEqual } from 'react-redux';
-import {setUserSearchOrigin, setUserSearchDestination, setSearchResults, setCurrentRouteIndex, confirmCurrentRoute} from 'src/redux/pathReducer';
+import {setUserSearchOrigin, setUserSearchDestination, setCurrentRouteIndex} from 'src/redux/pathReducer';
 import { Image } from 'react-native';
 import { ScrollView } from 'src/modules/viewComponents';
 import { RefreshControl } from 'react-native';
@@ -20,69 +20,61 @@ import { ChevronLeft, Search, Shuffle, X } from 'react-native-feather';
 import { useNavigation } from '@react-navigation/native';
 import { NAV_NAMES } from 'src/modules/navNames';
 import { HAS_NOTCH } from 'src/modules/contants';
-
-const WAYPOINT_LIMIT = 10;
+import 'react-native-get-random-values';
+import { v4 as uuidv4 } from 'uuid';
 
 const GO_COLOR = "rgb(10, 96, 254)"
 
-interface LatLng {
-	latitude: number,
-	longitude: number
-}
+const AutoCompleteSuggestions = ({onPress, autoCompleteResults}) => {
 
-interface Step {
-	coordinates: any;
-	distance: number;
-	duration: number;
-	travel_mode: string;
-	transport_num: string;
-	transport_desc: string;
-	vehicle: string;
-	color: string;
-	start_location: string;
-	end_location: string;
-	html_instructions: string;
-	departure_stop: string;
-	arrival_stop: string;
-}
+    const iconifyResultType = (types) => {
+        return(
+            <Div rounded100 backgroundColor={"silver"} h30 w30 itemsCenter justifyCenter>
+                {
+                    types?.includes("establishment") ?
+                    <Img tintColor={"white"} h25 w20 white source={ICONS.iconMapMarker}></Img>
+                    :
+                    <Img tintColor={"white"} h20 w20 source={ICONS.iconSearch}></Img>
+                }
+            </Div>
+        )
+    }
 
-interface State {
-	steps: Array<Step>
-	origin: LatLng
-	destination: LatLng
-}
-
-interface Props {
-    origin: string;
-	destination: string;
-	waypoints?: Array<any>;
-	mode?: 'DRIVING' | 'BICYCLING' | 'TRANSIT' | 'WALKING';
-	splitWaypoints?: boolean;
-	resetOnChange?: boolean;
-	optimizeWaypoints?: boolean;
-	directionsServiceBaseUrl?: string;
-	precision?: 'high' | 'low';
-	timePrecision?: 'high' | 'low';
-	strokeWidth?: number;
-	channel?: string;
-	apikey: string; 
-	onStart?: Function;
-	onReady?: Function; 
-	onError?: Function;
-	language?: string; 
-	region?: string; 
-	alternatives?: boolean
+    return(
+        <Div mt10 bgWhite flex={1}>
+            <ScrollView
+                flex={1}
+                bgGray100
+                showsVerticalScrollIndicator={false}
+            >
+                <Div px20>
+                {
+                    autoCompleteResults?.predictions?.map((result, index) => {
+                        return (
+                            <Row py20 justifyCenter borderBottom borderGray200 key={index} onPress={(e) => onPress(index)}>
+                                <Col justifyCenter mr10 auto>{iconifyResultType(result.types)}</Col>
+                                <Col justifyCenter><Span>{result.terms[0].value}</Span></Col>
+                            </Row>
+                        )
+                    })
+                }
+                </Div>
+            </ScrollView>
+        </Div>
+    )
 }
 
 const SearchScreen = () => {
 
-    const GOOGLE_MAPS_APIKEY = 'AIzaSyAKr85NZ139cK6XvE_UExdhmtfivHiG8qE';
     const { origin, destination} = useSelector(
         (root: RootState) => (root.path.userSearch), shallowEqual
     );
 	const apiGET = useReloadGET();
-    const {data: searchResults, isLoading: isSearchLoading} = useApiSelector(APIS.paths.fetch);
-    const {data: autocompleteResults, isLoading: isAutocompleteLoading} = useApiSelector(APIS.paths.queryAutocomplete);
+    const {data: directionsResponse, isLoading: isSearchLoading} = useApiSelector(APIS.directions.get);
+    const {data: autocompleteResponse, isLoading: isAutocompleteLoading} = useApiSelector(APIS.autocomplete.get);
+    const directions = directionsResponse?.data
+    const suggestions = autocompleteResponse?.data
+
     const originRef = useRef(null)
     const destinationRef = useRef(null)
     const navigation = useNavigation()
@@ -94,6 +86,7 @@ const SearchScreen = () => {
     const [RAIL, BUS] = ["rail", "bus"]
     const [editFocus, setEditfocus] = useState(NONE)
     const [preferredTransit, setPreferredTransit] = useState(RAIL)
+    const [uuid, setUuid] = useState(uuidv4())
 
     useEffect(() => {
         pullToRefresh();
@@ -123,17 +116,21 @@ const SearchScreen = () => {
         }else{
             setTentativeDestination(text)
         }
-        let props = {
-            apikey: GOOGLE_MAPS_APIKEY,
+        console.log("uuid")
+        console.log(uuid)
+        apiGET(APIS.autocomplete.get({
             language: 'ko',
             input: text,
-        }
-        apiGET(APIS.paths.queryAutocomplete(props), (results) =>onReady(results.data), (error) => onError(error))
+            force: false,
+            sessiontoken: uuid,
+        }))
+        console.log("console.log(suggestions)")
+        console.log(suggestions)
     }
 
     const onAutoCompleteSelect = (index) => {
-        const autocompleteDescription = autocompleteResults?.predictions[index].description
-        const autocompleteTerm = autocompleteResults?.predictions[index].terms[0].value
+        const autocompleteDescription = suggestions?.predictions[index].description
+        const autocompleteTerm = suggestions?.predictions[index].terms[0].value
         if (!autocompleteDescription || !autocompleteTerm) return
         if (editFocus == 2){
             setTentativeDestination(autocompleteTerm)
@@ -189,199 +186,26 @@ const SearchScreen = () => {
         setDestination(o)
     }
 
-    const waypoints = [];
-
-    const apikey = GOOGLE_MAPS_APIKEY;
-
-    const precision = "high";
-
-    const mode = "TRANSIT";
-    
-    const language = "ko";
-
-    const alternatives = true;
-
-    const onError = (errorMessage) => {
-        resetState()
-        console.log('GOT AN ERROR');
-    }
-
-    const onStart =  (params) => {
-        console.log(`Started routing between "${params.origin}" and "${params.destination}"`);
-    }
-
-    const onReady = (result) => {
-        console.log(JSON.stringify(result))
-        console.log("apis alright")
-		console.log(`Distance: ${result.distance/10} km`)
-		console.log(`Duration: ${result.duration} min.`)
-    }
-
-    const props = {
-        waypoints: waypoints,
-        apikey: apikey,
-        precision: precision,
-        mode: mode,
-        language: language,
-        onStart: onStart,
-        onReady: onReady,
-        onError: onError,
-        alternatives: alternatives,
-        transitMode: preferredTransit
-    }
-
-    const pullToRefresh = () => {
-        fetchAndSetSearchResults( props );
-    };
-
-	const resetState = () => {
-		dispatch(setSearchResults([]));
-	}
-
-	const fetchAndSetSearchResults = ( props ) => {
-        
-		let {
-			waypoints: initialWaypoints = [],
-			apikey,
-			onStart,
-			onReady,
-			onError,
-			mode = 'TRANSIT',
-			language = 'en',
-			optimizeWaypoints,
-			splitWaypoints,
-			directionsServiceBaseUrl = 'https://maps.googleapis.com/maps/api/directions/json',
-			region,
-			precision = 'low',
-			timePrecision = 'none',
-			channel,
-			alternatives = true,
-            transitMode = "rail"
-		} = props;
-
-		if ( !apikey ) {
-			console.warn( `MapDirections Error: Missing API Key` ); // eslint-disable-line no-console
-			return;
-		}
-
-        if ( !origin || !destination ) {
-            console.log("resturednas ")
-			return;
-		}
-
-		const timePrecisionString = timePrecision === 'none' ? '' : timePrecision;
-
-		// Routes array which we'll be filling.
-		// We'll perform a Directions API Request for reach route
-		const routes = [];
-
-		// We need to split the waypoints in chunks, in order to not exceede the max waypoint limit
-		// ~> Chunk up the waypoints, yielding multiple routes
-		if ( splitWaypoints && initialWaypoints && initialWaypoints.length > WAYPOINT_LIMIT ) {
-			// Split up waypoints in chunks with chunksize WAYPOINT_LIMIT
-			const chunckedWaypoints = initialWaypoints.reduce( ( accumulator, waypoint, index ) => {
-				const numChunk = Math.floor( index / WAYPOINT_LIMIT );
-				accumulator[numChunk] = [].concat( ( accumulator[numChunk] || [] ), waypoint );
-				return accumulator;
-			}, [] );
-
-			// Create routes for each chunk, using:
-			// - Endpoints of previous chunks as startpoints for the route (except for the first chunk, which uses initialOrigin)
-			// - Startpoints of next chunks as endpoints for the route (except for the last chunk, which uses initialDestination)
-			for ( let i = 0; i < chunckedWaypoints.length; i++ ) {
-				routes.push( {
-					waypoints: chunckedWaypoints[i],
-					origin: ( i === 0 ) ? origin : chunckedWaypoints[i - 1][chunckedWaypoints[i - 1].length - 1],
-					destination: ( i === chunckedWaypoints.length - 1 ) ? destination : chunckedWaypoints[i + 1][0],
-				} );
-			}
-		}
-
-		// No splitting of the waypoints is requested/needed.
-		// ~> Use one single route
-		else {
-			routes.push( {
-				waypoints: initialWaypoints,
-				origin: origin,
-				destination: destination,
-			} );
-		}
-
-		// Perform a Directions API Request for each route
-		Promise.all( routes.map( ( route, index ) => {
-			let {
-				origin,
-				destination,
-				waypoints,
-			} = route;
-
-			if ( origin.latitude && origin.longitude ) {
-				origin = `${origin.latitude},${origin.longitude}`;
-			}
-
-			if ( destination.latitude && destination.longitude ) {
-				destination = `${destination.latitude},${destination.longitude}`;
-			}
-
-			waypoints = waypoints
-				.map( waypoint => ( waypoint.latitude && waypoint.longitude ) ? `${waypoint.latitude},${waypoint.longitude}` : waypoint )
-				.join( '|' );
-
-			if ( optimizeWaypoints ) {
-				waypoints = `optimize:true|${waypoints}`;
-			}
-
-			if ( index === 0 ) {
-				onStart && onStart( {
-					origin,
-					destination,
-					waypoints: initialWaypoints,
-				} );
-			}
-			return (
-				apiGET(APIS.paths.fetch({directionsServiceBaseUrl, origin, waypoints, destination, apikey, mode, language, region, precision, timePrecisionString, channel, alternatives, transitMode}), (results) =>onReady(results.data), (error) => onError(error))
-			);
-		})) 
-	}
-
-    const AutoCompleteSuggestions = ({onPress, autoCompleteResults}) => {
-
-        const iconifyResultType = (types) => {
-            return(
-                <Div rounded100 backgroundColor={"silver"} h30 w30 itemsCenter justifyCenter>
-                    {
-                        types?.includes("establishment") ?
-                        <Img tintColor={"white"} h25 w20 white source={ICONS.iconMapMarker}></Img>
-                        :
-                        <Img tintColor={"white"} h20 w20 source={ICONS.iconSearch}></Img>
-                    }
-                </Div>
-            )
+    const pullToRefresh = async () => {
+        let props = {
+            origin: origin,
+            destination: destination,
+            mode: "transit",
+            language: "ko",
+            region: "kr",
+            alternatives: true,
+            transitMode: preferredTransit,
+            force: false,
+            sessiontoken: uuid,
         }
-
-        return(
-            <Div mt10 bgWhite flex={1}>
-                <ScrollView
-                    flex={1}
-                    bgGray100
-                    showsVerticalScrollIndicator={false}
-                >
-                    <Div px20>
-                    {
-                        autoCompleteResults?.predictions?.map((result, index) => {
-                            return (
-                                <Row py20 justifyCenter borderBottom borderGray200 key={index} onPress={(e) => onPress(index)}>
-                                    <Col justifyCenter mr10 auto>{iconifyResultType(result.types)}</Col>
-                                    <Col justifyCenter><Span>{result.terms[0].value}</Span></Col>
-                                </Row>
-                            )
-                        })
-                    }
-                    </Div>
-                </ScrollView>
-            </Div>
-        )
-    }
+        if ( !origin || !destination ) {
+            console.log("missing origin or destination")
+			return;
+		}
+        const direction = await apiGET(APIS.directions.get(props))
+        console.log(direction)
+        console.log("console.log(direction)v")
+    };
 
     return (
         <Div flex={1}>
@@ -438,7 +262,7 @@ const SearchScreen = () => {
                     </Row>}
                 </Div>
                 {editFocus ?
-                    <AutoCompleteSuggestions onPress={onAutoCompleteSelect} autoCompleteResults={autocompleteResults}/>
+                    <AutoCompleteSuggestions onPress={onAutoCompleteSelect} autoCompleteResults={suggestions}/>
                 :
                     <Div mt10 bgWhite flex={1}>
                         <ScrollView
@@ -448,7 +272,7 @@ const SearchScreen = () => {
                             refreshControl={
                             <RefreshControl refreshing={isSearchLoading} onRefresh={pullToRefresh} />
                             }>
-                            {searchResults && searchResults.routes.map((result, i) => {
+                            {directions && directions.routes.map((result, i) => {
                                 return (
                                     <Div borderBottom borderGray200 py20 px20 key={i} onPress={() => setCurrentRoute(i)}>
                                         <Row my10>

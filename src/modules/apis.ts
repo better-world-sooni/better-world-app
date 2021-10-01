@@ -1,6 +1,6 @@
 import urljoin from 'url-join';
 
-const BASE_URL = 'http://localhost:8080';
+const BASE_URL = 'http://localhost:80';
 const toUrl = (...args) => ({url: urljoin(...args)});
 const base = path => toUrl(BASE_URL, path);
 const v1 = path => toUrl(BASE_URL, '/api/v1', path);
@@ -9,35 +9,13 @@ const v3 = path => toUrl(BASE_URL, '/api/v3', path);
 const v4 = path => toUrl(BASE_URL, '/api/v4', path);
 const v3_student = path => toUrl(BASE_URL, '/api/v3/student', path);
 const v4_student = path => toUrl(BASE_URL, '/api/v4/student', path);
-const fetchRoute = ({ directionsServiceBaseUrl = "https://maps.googleapis.com/maps/api/directions/json", origin, waypoints, destination, apikey, mode, language, region, precision, timePrecisionString, channel, alternatives, transitMode }) => {
-  let url = directionsServiceBaseUrl;
-  if (typeof (directionsServiceBaseUrl) === 'string') {
-    url += `?origin=${origin}&waypoints=${waypoints}&destination=${destination}&key=${apikey}&mode=${mode.toLowerCase()}&language=${language}&region=${region}&alternatives=${alternatives}&transit_routing_preference=fewer_transfers&transit_mode=${transitMode}`;
-    if (timePrecisionString) {
-      url += `&departure_time=${timePrecisionString}`;
-    }
-    if (channel) {
-      url += `&channel=${channel}`;
-    }
-  }
-  return { url: url }
-}
-
-const queryAutocomplete = ({ directionsServiceBaseUrl = "https://maps.googleapis.com/maps/api/place/queryautocomplete/json", location = null, apikey, language, input }) => {
-  let url = directionsServiceBaseUrl;
-  if (typeof (directionsServiceBaseUrl) === 'string') {
-    url += `?key=${apikey}&language=${language}&input=${input}`;
-    if (location) {
-      url += `&location=${location}`;
-    }
-  }
-  return { url: url }
-}
 
 const APIS = {
-  paths: {
-    fetch: fetchRoute,
-    queryAutocomplete: queryAutocomplete
+  autocomplete: {
+    get: ({ language, input, sessiontoken, force }) => v1(`/route/autocomplete?language=${language}&input=${input}&sessiontoken=${sessiontoken}&force=${force}`),
+  },
+  directions: {
+    get: ({ origin, destination, mode, language, region, alternatives, transitMode, sessiontoken, force }) => v1(`/route/directions?origin=${origin}&destination=${destination}&mode=${mode}&language=${language}&region=${region}&alternatives=${alternatives}&transitRoutingPreference=fewer_transfers&transitMode=${transitMode}&sessiontoken=${sessiontoken}&force=${force}`),
   },
   route: {
     default: () => v1('/route/default'),

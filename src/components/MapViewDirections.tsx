@@ -76,49 +76,49 @@ const MapViewDirections: FC<MapViewDirectionsProps> = (props): ReactElement => {
 		}
 	}
 
-	const styles = {
-		icon: {
-		  iconImage: ['get', 'icon'], 
-		  iconSize: [
-			'match',
-			['get', 'icon'],
-			'example',
-			0.3,
-			'airport-15',
-			0.3,
-			/* default */ 1,
-		  ],
-		},
-		circles: (color) => { 
-			return {
-			visibility: 'visible',
-			circleRadius: 8,
-			circleColor: color || "grey",
-			circleStrokeColor: "white",
-			circleStrokeWidth: 1,
-			circleOpacity: 1.0,
-		  }
-		},
-	};
+	// const styles = {
+	// 	icon: {
+	// 	  iconImage: ['get', 'icon'], 
+	// 	  iconSize: [
+	// 		'match',
+	// 		['get', 'icon'],
+	// 		'example',
+	// 		0.3,
+	// 		'airport-15',
+	// 		0.3,
+	// 		/* default */ 1,
+	// 	  ],
+	// 	},
+	// 	circles: (color) => { 
+	// 		return {
+	// 		visibility: 'visible',
+	// 		circleRadius: 8,
+	// 		circleColor: color || "grey",
+	// 		circleStrokeColor: "white",
+	// 		circleStrokeWidth: 1,
+	// 		circleOpacity: 1.0,
+	// 	  }
+	// 	},
+	// };
 
-	const pointShape = (coordinates, id) => {
-		return {
-			'type': 'FeatureCollection',
-			'features': [
-				{
-				  type: 'Feature',
-				  id: `9d10456e-bdda-4aa9-9269-04c1667d4552${id}`,
-				  properties: {
-					icon: 'example',
-				  },
-				  geometry: {
-					type: 'Point',
-					coordinates: coordinates,
-				  },
-				},
-			  ]
-		};
-	}
+	// const pointShape = (coordinates, id) => {
+	// 	return {
+	// 		'type': 'FeatureCollection',
+	// 		'features': [
+	// 			{
+	// 			  type: 'Feature',
+	// 			  id: `9d10456e-bdda-4aa9-9269-04c1667d4552${id}`,
+	// 			  properties: {
+	// 				icon: 'example',
+	// 			  },
+	// 			  geometry: {
+	// 				type: 'Point',
+	// 				coordinates: coordinates,
+	// 			  },
+	// 			},
+	// 		  ]
+	// 	};
+	// }
 
 	const PatternedPolyline = ({step, index}) => {
 		return(
@@ -136,7 +136,6 @@ const MapViewDirections: FC<MapViewDirectionsProps> = (props): ReactElement => {
 		)
 	}
 
-	  
  	return (
 		<>
 			{Origin && <MapboxGL.MarkerView id={"destination"} coordinate={Origin}>

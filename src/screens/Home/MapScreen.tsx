@@ -24,7 +24,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 const MapScreen = ({route}) => {
 	const shadowProp = {shadowOffset: {height: 1, width: 1}, shadowColor: "gray", shadowOpacity: 0.5, shadowRadius: 3}
 	const {data: defaultTo, isLoading} = useApiSelector(APIS.route.default);
-	const {data: searchResults, isLoading: isSearchLoading} = useApiSelector(APIS.paths.fetch);
+	const {data: directionsResponse, isLoading: isSearchLoading} = useApiSelector(APIS.directions.get);
+	const directions = directionsResponse?.data
 
 	const navigation = useNavigation();
 
@@ -35,11 +36,11 @@ const MapScreen = ({route}) => {
         (root: RootState) => (root.path.currentRouteIndex), shallowEqual
     );
 
-	const Route = searchResults?.routes[CurrentRouteIndex] || defaultTo?.default_route.route
+	const Route = directions?.routes[CurrentRouteIndex] || defaultTo?.default_route.route
 
 	useEffect(() => {
 		setMapBounds(calculatInitialMapRegion())
-	}, [searchResults?.routes[CurrentRouteIndex]])
+	}, [directions?.routes[CurrentRouteIndex]])
 
 	const calculatInitialMapRegion = () => {
 		const bounds = Route?.bounds
@@ -135,8 +136,8 @@ const MapScreen = ({route}) => {
 									if (step.transit_details) 
 									{	
 										return (
-											<Animated.View style={[{ transform: [{ translateX: translateX(index) }] }]}>
-												<Row key={index} {...topProps} my1 borderGray200 bgWhite rounded20 py10 px20 my5 justifyCenter>
+											<Animated.View key={index} style={[{ transform: [{ translateX: translateX(index) }] }]}>
+												<Row  {...topProps} my1 borderGray200 bgWhite rounded20 py10 px20 my5 justifyCenter>
 													<Col hFull>
 														<Row my5 fontSize={15} justifyCenter>
 															<Col w25 auto mr5 itemsCenter justifyCenter>
@@ -214,7 +215,7 @@ const MapScreen = ({route}) => {
 					<Col pointerEvents="none" ></Col>
 					<Col auto px10 py10 rounded20 bgWhite><Star {...iconSettings}></Star></Col>
 				</Row>}
-				{ExpandHeader && 
+				{ExpandHeader && Route?.legs[0]?.steps?.length &&
 				<Animated.View style={[{ transform: [{ translateX: translateX(Route.legs[0].steps.length) }] }]}>
 					<Row pointerEvents="box-none" >
 						<Col pointerEvents="none" ></Col>
