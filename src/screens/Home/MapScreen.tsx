@@ -6,28 +6,31 @@ import { Div } from 'src/components/common/Div';
 import { Row } from 'src/components/common/Row';
 import { Col } from 'src/components/common/Col';
 import { Span } from 'src/components/common/Span';
-import { useApiSelector, useReloadGET } from 'src/redux/asyncReducer';
+import { useApiPOST, useApiSelector, useReloadGET } from 'src/redux/asyncReducer';
 import APIS from 'src/modules/apis';
 import _ from "lodash";
 import { useSelector } from 'react-redux';
 import { RootState } from 'src/redux/rootReducer';
 import { shallowEqual } from 'react-redux';
 import MapViewDirections from 'src/components/MapViewDirections';
-import { Animated, Dimensions, Easing, Image } from 'react-native';
+import { Animated, Dimensions, Easing, Image, RefreshControl } from 'react-native';
 import { ChevronLeft, Crosshair, Grid, Star, X } from 'react-native-feather';
 import { NAV_NAMES } from 'src/modules/navNames';
 import MapboxGL from '@react-native-mapbox-gl/maps';
 import { HAS_NOTCH } from 'src/modules/contants';
 import { shortenAddress } from 'src/modules/utils';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { ScrollView } from 'react-native-gesture-handler';
 
 const MapScreen = ({route}) => {
 	const shadowProp = {shadowOffset: {height: 1, width: 1}, shadowColor: "gray", shadowOpacity: 0.5, shadowRadius: 3}
-	const {data: defaultTo, isLoading} = useApiSelector(APIS.route.default);
+	const {data: starredResponse, isLoading} = useApiSelector(APIS.route.starred);
 	const {data: directionsResponse, isLoading: isSearchLoading} = useApiSelector(APIS.directions.get);
+	const defaultRoute = starredResponse?.data?.[0]
 	const directions = directionsResponse?.data
 
 	const navigation = useNavigation();
+	const apiPOST = useApiPOST()
 
 	const { origin, destination} = useSelector(
         (root: RootState) => (root.path.userSearch), shallowEqual
@@ -36,7 +39,7 @@ const MapScreen = ({route}) => {
         (root: RootState) => (root.path.currentRouteIndex), shallowEqual
     );
 
-	const Route = directions?.routes[CurrentRouteIndex] || defaultTo?.default_route.route
+	const Route = directions?.routes[CurrentRouteIndex] || defaultRoute?.route
 
 	useEffect(() => {
 		setMapBounds(calculatInitialMapRegion())
@@ -72,7 +75,7 @@ const MapScreen = ({route}) => {
 
 	const toggle = () => {
 		if (ExpandHeader) {
-			setExpandHeader(false)
+			startAnimation(0, () => setExpandHeader(false))
 		} else{
 			setExpandHeader(true)
 		}
@@ -80,8 +83,11 @@ const MapScreen = ({route}) => {
 
 	const goToSearch = () => navigation.navigate(NAV_NAMES.Search)
 
-	const putDefaultRoute = () => {
-
+	const postDefaultRoute = () => {
+		apiPOST({
+			main: false,
+			route: Route
+		})
 	}
 
 	const iconSettings = {
@@ -89,32 +95,32 @@ const MapScreen = ({route}) => {
 		color: "black", 
 		height: 20,
 	}
+
+	const animatedValue = useRef(new Animated.Value(0)).current;
+
+	const startAnimation = (toValue, callback?) => {
+		Animated.timing(animatedValue, {
+			toValue,
+			duration: 500,
+			easing: Easing.ease,
+			useNativeDriver: true,
+		}).start(callback)
+	}
+
+	function translateX(index) {
+		return animatedValue.interpolate({
+			inputRange: [0, 1],
+			outputRange: [Dimensions.get('window').width + (index * 100), 0],
+			extrapolate: 'clamp'
+		})
+	}
 	
 
 	const Header = () => {
 
-		const animatedValue = useRef(new Animated.Value(0)).current;
-
-		const startAnimation = toValue => {
-			Animated.timing(animatedValue, {
-				toValue,
-				duration: 500,
-				easing: Easing.ease,
-				useNativeDriver: true,
-			}).start()
-		}
-
-		function translateX(index) {
-			return animatedValue.interpolate({
-				inputRange: [0, 1],
-				outputRange: [Dimensions.get('window').width + (index * 100), 0],
-				extrapolate: 'clamp'
-			})
-		}
-
 		useEffect(()=> {
-			startAnimation(1)
-		})
+			ExpandHeader && startAnimation(1)
+		}, [ExpandHeader])
 
 		return(
 			<Div activeOpacity={1.0} w={"100%"} px20 {...shadowProp} pointerEvents="box-none">
@@ -128,15 +134,24 @@ const MapScreen = ({route}) => {
 				</Col>
 				</Row>
 				{ExpandHeader && (
-					<Div zIndex={-1}>
+					<Div zIndex={-1} >
 					{Route && 
-							<Div>
+							<ScrollView
+							pointerEvents="box-none" 
+							showsVerticalScrollIndicator={false}
+							refreshControl={
+								<RefreshControl
+								  refreshing={!ExpandHeader}
+								  onRefresh={() => startAnimation(0, () => setExpandHeader(false))}
+								/>
+							  }
+							>
 								{Route.legs[0].steps.map((step, index )=>{
 									const topProps = {borderTop: false}
 									if (step.transit_details) 
 									{	
 										return (
-											<Animated.View key={index} style={[{ transform: [{ translateX: translateX(index) }] }]}>
+											<Animated.View key={index} style={[{ transform: [{ translateX: translateX(index) }] }]} >
 												<Row  {...topProps} my1 borderGray200 bgWhite rounded20 py10 px20 my5 justifyCenter>
 													<Col hFull>
 														<Row my5 fontSize={15} justifyCenter>
@@ -207,21 +222,21 @@ const MapScreen = ({route}) => {
 										)
 									}
 								})}
-							</Div>
+								<Animated.View style={[{ transform: [{ translateX: translateX(Route.legs[0].steps.length) }] }]}>
+									<Row pointerEvents="box-none" >
+										<Col pointerEvents="none" pr10 py10 rounded20 itemsCenter><Span>끌어내려서 맵보기</Span></Col>
+										<Col auto px10 py10 rounded20 bgWhite onPress={postDefaultRoute}><Star {...iconSettings}></Star></Col>
+									</Row>
+								</Animated.View>
+								{/* <Div h={200} pointerEvents="none"></Div> */}
+							</ScrollView>
 						}
 				  </Div>
 				)}
 				{!ExpandHeader && <Row pointerEvents="box-none" >
 					<Col pointerEvents="none" ></Col>
-					<Col auto px10 py10 rounded20 bgWhite><Star {...iconSettings}></Star></Col>
+					<Col auto px10 py10 rounded20 bgWhite onPress={postDefaultRoute}><Star {...iconSettings}></Star></Col>
 				</Row>}
-				{ExpandHeader && Route?.legs[0]?.steps?.length &&
-				<Animated.View style={[{ transform: [{ translateX: translateX(Route.legs[0].steps.length) }] }]}>
-					<Row pointerEvents="box-none" >
-						<Col pointerEvents="none" ></Col>
-						<Col auto px10 py10 rounded20 bgWhite><Star {...iconSettings}></Star></Col>
-					</Row>
-				</Animated.View>}
 			</Div>
 		)
 	}

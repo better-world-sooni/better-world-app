@@ -17,6 +17,7 @@ import SignInScreen from 'src/screens/Auth/SignInScreen';
 import PostScreen from 'src/screens/PostScreen';
 import SelectScreen from 'src/screens/SelectScreen';
 import MetaSunganScreen from 'src/screens/Home/MetaverseScreen';
+import ReportScreen from 'src/screens/ReportScreen';
 
 const RootStack = createStackNavigator();
 
@@ -126,9 +127,15 @@ export const AppContent = () => {
       name: NAV_NAMES.Post,
       component: PostScreen,
       options: props => ({
-        header: topHeader({...props, title: "새 게시물"}),
+        header: topHeader({...props,  title: "새 게시물"}),
         // cardStyle: { backgroundColor: 'white', presentation: 'modal' },
         headerShown: true,
+      }),
+    },
+    {
+      name: NAV_NAMES.Report,
+      component: ReportScreen,
+      options: props => ({
       }),
     },
     {

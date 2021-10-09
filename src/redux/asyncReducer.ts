@@ -20,6 +20,8 @@ const getPromiseFn = async args => {
 
 const postPromiseFn = async args => {
   const {url, body, token} = args;
+  console.log("https://console.aws.amazon.com/billing/home?region=ap-northeast-2#/paymentsoverview/transactions")
+  console.log(url)
   const res = await fetch(url, {
     method: 'POST',
     headers: {
@@ -29,6 +31,8 @@ const postPromiseFn = async args => {
     ...(body && {body: JSON.stringify(body)}),
   });
   const json = await res.json();
+
+
   return {ok: res.ok, data: json, status: res.status};
 };
 
@@ -142,8 +146,6 @@ export const useApiPOST = (props = {}) => {
   const navigation = useNavigation();
   return (api, body?, successHandler?, errHandler?) => {
     const key = getKeyByApi(api, scope);
-    console.log('console.log(key)')
-    console.log(api.url)
     dispatch(
       asyncThunk({
         key: key,

@@ -6,12 +6,12 @@ import {Div} from './common/Div';
 import {Img} from './common/Img';
 import {Row} from './common/Row';
 import {Span} from './common/Span';
-import {HAS_NOTCH} from 'src/modules/contants';
+import {GO_COLOR, HAS_NOTCH} from 'src/modules/contants';
 import {useGoBack} from 'src/modules/useCustomHooks';
 import { StatusBar } from 'native-base';
 
 const TopHeader = props => {
-  const { route, title, headerBlack, nextText, onPressNext } = props;
+  const { route, title, headerColor, nextText, onPressNext } = props;
 
   const {params = {}} = route;
   const {headerTitle, onGoBack} = params;
@@ -20,13 +20,13 @@ const TopHeader = props => {
   return (
     <Div >
       <StatusBar animated={true} barStyle='light-content'/>
-      <Div h={HAS_NOTCH ? 44 : 20} bg={headerBlack ? varStyle.realBlack : "white"}/>
+      <Div h={HAS_NOTCH ? 44 : 20} bg={headerColor}/>
       <Row
         w="100%"
         h54
-        bg={headerBlack ? varStyle.realBlack : "white"}>
+        bg={headerColor}>
         <Col w50 auto pl20 justifyCenter onPress={onPressGoBack}>
-          {headerBlack ? (
+          {headerColor == "black" ? (
             <Img w7 h12 source={ICONS.icChveronLeftWhite100} />
           ) : (
             <Img w7 h12 source={ICONS.iconChevronLeftBold} />
@@ -38,11 +38,11 @@ const TopHeader = props => {
             numberOfLines={1}
             bold
             fontSize={14}
-            color={headerBlack ? varStyle.white : varStyle.black}>
+            color={headerColor == "black" ? varStyle.white : varStyle.black}>
             {title ? title : headerTitle}
           </Span>
         </Col>
-        <Col pr20 w50 auto onPress={onPressNext} justifyCenter itemsCenter><Span color={headerBlack ? varStyle.white : varStyle.black}>{nextText}</Span></Col>
+        <Col pr20 w50 auto onPress={onPressNext} justifyCenter itemsCenter><Span medium color={GO_COLOR}>{nextText}</Span></Col>
       </Row>
       
     </Div>

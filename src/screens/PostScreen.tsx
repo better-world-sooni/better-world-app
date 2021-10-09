@@ -16,35 +16,6 @@
   import { RootState } from 'src/redux/rootReducer';
   
   const PostScreen = (props) => {
-    const {data: defaultTo, isLoading} = useApiSelector(APIS.route.default);
-    const { origin, destination} = useSelector(
-        (root: RootState) => (root.path.userSearch), shallowEqual
-    );
-    const apiGET = useReloadGET();
-    const dispatch = useDispatch()
-  
-    const setOrigin = (origin) => {
-      dispatch(setUserSearchOrigin(origin))
-    }
-  
-    const setDestination = (destination) => {
-      dispatch(setUserSearchDestination(destination))
-    }
-  
-    const pullToRefresh = () => {
-      apiGET(APIS.route.default())
-    };
-
-    useEffect(() => {
-      pullToRefresh();
-    }, []);
-
-    useEffect(() => {
-      if(defaultTo){
-        setOrigin(shortenAddress(defaultTo.default_route.route.legs[0].start_address))
-        setDestination(shortenAddress(defaultTo.default_route.route.legs[0].end_address))
-      };
-    }, [isLoading]);
   
     const iconSettings = {
       strokeWidth:2,

@@ -22,8 +22,6 @@ export const useLogin = () => {
       },
       props => {
         dispatch(async () => {
-          console.log("props.data")
-          console.log(props.data)
           const { jwtToken } = props.data;
           await AsyncStorage.setItem(JWT_TOKEN, jwtToken);
           dispatch(appActions.login(props.data));

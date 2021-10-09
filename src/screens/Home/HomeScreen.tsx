@@ -32,7 +32,8 @@ import { RootState } from 'src/redux/rootReducer';
 const HomeScreen = (props) => {
   MapboxGL.setAccessToken("pk.eyJ1Ijoibm9tYWNndWZmaW5zIiwiYSI6ImNrdGp2cHozYzBxZHAzMW1zcWZ3c2p2aXAifQ.NsgkwiPWRhtBN5RX4wwa5w");
   
-  const {data: defaultTo, isLoading} = useApiSelector(APIS.route.default);
+  const {data: starredResponse, isLoading} = useApiSelector(APIS.route.starred);
+  const defaultRoute = starredResponse?.data?.[0]
   const { origin, destination} = useSelector(
       (root: RootState) => (root.path.userSearch), shallowEqual
   );
@@ -43,8 +44,9 @@ const HomeScreen = (props) => {
   const setDestination = (destination) => dispatch(setUserSearchDestination(destination))
   const goToMap = () => navigation.navigate(NAV_NAMES.Map)
   const goToSelect = () => navigation.navigate(NAV_NAMES.Select)
+  const goToReport = () => navigation.navigate(NAV_NAMES.Report)
 
-  const pullToRefresh = () => apiGET(APIS.route.default())
+  const pullToRefresh = () => apiGET(APIS.route.starred())
   const [Route, setRoute] = useState(null)
 
   useEffect(() => {
@@ -52,10 +54,10 @@ const HomeScreen = (props) => {
   }, []);
 
   useEffect(() => {
-    if(defaultTo){
-      setRoute(defaultTo.default_route.route)
-      setOrigin(shortenAddress(defaultTo.default_route.route.legs[0].start_address))
-      setDestination(shortenAddress(defaultTo.default_route.route.legs[0].end_address))
+    if(defaultRoute){
+      setRoute(defaultRoute.route)
+      setOrigin(shortenAddress(defaultRoute.route.legs[0].start_address))
+      setDestination(shortenAddress(defaultRoute.route.legs[0].end_address))
     };
   }, [isLoading]);
 
@@ -107,7 +109,7 @@ const HomeScreen = (props) => {
           {/* <Animated.View style={{opacity: headerOpacity, transform: [{scaleX: headerOpacity, }]}}> */}
           <View >
               <Row py10 rounded20 overflowHidden my7 w120>
-                <Col itemsCenter justifyCenter >
+                <Col itemsCenter justifyCenter onPress={goToReport}>
                     <AlertCircle {...iconSettings} color={"red"}></AlertCircle>
                 </Col>
                 <Col itemsCenter justifyCenter onPress={goToSelect}>
@@ -144,19 +146,19 @@ const HomeScreen = (props) => {
                 logoEnabled={false}
                 compassEnabled={false}
                 zoomEnabled={false}
-                // scrollEnabled={false}
+                scrollEnabled={false}
                 pitchEnabled={false}
                 rotateEnabled={false}
                 >
                   <MapboxGL.UserLocation></MapboxGL.UserLocation>
                   <MapboxGL.Camera 
-                    // maxBounds={{
-                    //   ne: [37.715133, 127.269311], 
-                    //   sw:  [37.413294, 126.734086],
-                    // }}
+                    maxBounds={{
+                      ne: [37.715133, 127.269311], 
+                      sw:  [37.413294, 126.734086],
+                    }}
                     defaultSettings={{bounds: calculatInitialMapRegion()}}
                     bounds={calculatInitialMapRegion()}
-                    zoomLevel={7}></MapboxGL.Camera>
+                    zoomLevel={9}></MapboxGL.Camera>
                   {Route && (
                     <MapViewDirections
                       route={Route}
@@ -219,7 +221,7 @@ const HomeScreen = (props) => {
                 </Col>
               </Row>
               <Row itemsCenter px20 pb10 pt5 bgWhite>
-                <Span color={'black'}>ㅈㄴ 늦었다 진짜 와</Span><Span ml5 color={'gray'}>...더보기</Span>
+                <Span color={'black'}>늦었다 진짜 와</Span><Span ml5 color={'gray'}>...더보기</Span>
               </Row>
               <Row itemsCenter px20 py5 bgWhite>
                 <Span color={'gray'}>50개 댓글 더보기</Span>
@@ -261,7 +263,7 @@ const HomeScreen = (props) => {
                   </Col>
                 </Row>
                 <Row itemsCenter px20 pb10 pt5>
-                  <Span color={'black'}>ㅈㄴ 늦었다 진짜 와</Span><Span ml5 color={'gray'}>...더보기</Span>
+                  <Span color={'black'}>늦었다 진짜 와</Span><Span ml5 color={'gray'}>...더보기</Span>
                 </Row>
                 <Row itemsCenter px20 py5>
                   <Span color={'gray'}>50개 댓글 더보기</Span>
@@ -303,7 +305,7 @@ const HomeScreen = (props) => {
                   </Col>
                 </Row>
                 <Row itemsCenter px20 pb10 pt5>
-                  <Span color={'black'}>ㅈㄴ 늦었다 진짜 와</Span><Span ml5 color={'gray'}>...더보기</Span>
+                  <Span color={'black'}>늦었다 진짜 와</Span><Span ml5 color={'gray'}>...더보기</Span>
                 </Row>
                 <Row itemsCenter px20 py5 bgWhite>
                   <Span color={'gray'}>50개 댓글 더보기</Span>

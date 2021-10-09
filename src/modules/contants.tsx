@@ -42,3 +42,4 @@ export const NOTICE = 'notice';
 export const INVITE = 'invite';
 export const JWT_TOKEN = 'jwt_token';
 export const HAS_NOTCH = hasNotch();
+export const GO_COLOR = "rgb(10, 96, 254)"

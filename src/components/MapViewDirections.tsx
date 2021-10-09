@@ -15,7 +15,6 @@ interface MapViewDirectionsProps {
 }
 
 const MapViewDirections: FC<MapViewDirectionsProps> = (props): ReactElement => {
-	// const { bounds, copyrights, legs, overview_polyline, summary, warnings, waypoint_order, } = props.route
 	const legs = props.route.legs
 	const {
 		arrival_time,
@@ -36,7 +35,7 @@ const MapViewDirections: FC<MapViewDirectionsProps> = (props): ReactElement => {
 			return {
 				// coordinates: decode( [{ polyline: step.polyline }] ),
 				coordinates: polyline.toGeoJSON(step.polyline.points),
-				travel_mode: step.travel_mode,
+				travelMode: step.travel_mode == "WALKING" ? "walking" : step.transit_details?.line.vehicle?.type.toLowerCase(),
                 color: step.transit_details?.line?.color,
 				circleImage: step.transit_details?.line.vehicle?.icon
 			}
@@ -57,7 +56,7 @@ const MapViewDirections: FC<MapViewDirectionsProps> = (props): ReactElement => {
 	]
 
 	const polylineConditionalProps = (step, white?) => {
-		if (step.travel_mode == "WALKING"){
+		if (step.travelMode == "walking"){
 			return {
 				lineCap: 'round',
 				lineWidth: white ? 10 : 6,
@@ -76,55 +75,104 @@ const MapViewDirections: FC<MapViewDirectionsProps> = (props): ReactElement => {
 		}
 	}
 
-	// const styles = {
-	// 	icon: {
-	// 	  iconImage: ['get', 'icon'], 
-	// 	  iconSize: [
-	// 		'match',
-	// 		['get', 'icon'],
-	// 		'example',
-	// 		0.3,
-	// 		'airport-15',
-	// 		0.3,
-	// 		/* default */ 1,
-	// 	  ],
-	// 	},
-	// 	circles: (color) => { 
-	// 		return {
-	// 		visibility: 'visible',
-	// 		circleRadius: 8,
-	// 		circleColor: color || "grey",
-	// 		circleStrokeColor: "white",
-	// 		circleStrokeWidth: 1,
-	// 		circleOpacity: 1.0,
-	// 	  }
-	// 	},
-	// };
+	const styles = {
+		bus: {
+		  iconImage: ['get', 'icon'], 
+		  iconSize: [
+			'match',
+			['get', 'icon'],
+			'bus',
+			0.03,
+			'airport-15',
+			0.03,
+			1,
+		  ],
+		},
+		subway: {
+			iconImage: ['get', 'icon'], 
+			iconSize: [
+				'match',
+				['get', 'icon'],
+				'subway',
+				0.03,
+				'airport-15',
+				0.03,
+				1,
+			],
+		},
+		walking: {
+			iconImage: ['get', 'icon'], 
+			iconSize: [
+				'match',
+				['get', 'icon'],
+				'walking',
+				0.03,
+				'airport-15',
+				0.03,
+				 1,
+			],
+		},
+		origin: {
+			iconImage: ['get', 'icon'], 
+			iconSize: [
+				'match',
+				['get', 'icon'],
+				'origin',
+				0.5,
+				'airport-15',
+				0.5,
+				 1,
+			],
+		},
+		destination: {
+			iconImage: ['get', 'icon'], 
+			iconSize: [
+				'match',
+				['get', 'icon'],
+				'destination',
+				0.5,
+				'airport-15',
+				0.5,
+				 1,
+			],
+		},
+		circles: (color) => { 
+			return {
+			visibility: 'visible',
+			circleRadius: 8,
+			circleColor: color || "grey",
+			circleStrokeColor: "white",
+			circleStrokeWidth: 1,
+			circleOpacity: 1.0,
+		  }
+		},
+	};
 
-	// const pointShape = (coordinates, id) => {
-	// 	return {
-	// 		'type': 'FeatureCollection',
-	// 		'features': [
-	// 			{
-	// 			  type: 'Feature',
-	// 			  id: `9d10456e-bdda-4aa9-9269-04c1667d4552${id}`,
-	// 			  properties: {
-	// 				icon: 'example',
-	// 			  },
-	// 			  geometry: {
-	// 				type: 'Point',
-	// 				coordinates: coordinates,
-	// 			  },
-	// 			},
-	// 		  ]
-	// 	};
-	// }
+	const pointShape = (coordinates, id, iconName) => {
+		return {
+			'type': 'FeatureCollection',
+			'features': [
+				{
+				  type: 'Feature',
+				  id: `9d10456e-bdda-4aa9-9269-04c1667d4552${id}`,
+				  properties: {
+					icon: iconName,
+				  },
+				  geometry: {
+					type: 'Point',
+					coordinates: coordinates,
+				  },
+				},
+			  ]
+		};
+	}
 
 	const PatternedPolyline = ({step, index}) => {
 		return(
 			<MapboxGL.ShapeSource id={`line${index}`} shape={step.coordinates}>
 				<MapboxGL.LineLayer 
 				id={`linelayer${index}White`} 
+				belowLayerID={`circleFill${index}`}
 				//@ts-ignore
 				style={polylineConditionalProps(step, true)} />
 				<MapboxGL.LineLayer 
@@ -138,54 +186,56 @@ const MapViewDirections: FC<MapViewDirectionsProps> = (props): ReactElement => {
 
  	return (
 		<>
-			{Origin && <MapboxGL.MarkerView id={"destination"} coordinate={Origin}>
-				<Div>
-					<Row p5 rounded30>
-						<Img source={IMAGES.blueMapMarker} h={30*84/60} w30></Img>
-					</Row>
-					<Row h45>
-					</Row>
-				</Div>
-			</MapboxGL.MarkerView>}
+			<MapboxGL.Images
+				images={{
+					//@ts-ignore
+					origin: require('../../assets/images/blueMapMarker.png'),
+					destination: require('../../assets/images/redMapMarker.png'),
+					bus: require('../../assets/icons/bus.png'),
+					subway: require('../../assets/icons/subway.png'),
+					walking: require('../../assets/icons/walking.png'),
+				}}
+			/>
 			{DecodedPolylines.map( (step, index) => {
-					return (
-					<Fragment key={index}>
-						<PatternedPolyline step={step} index={index}/>
-						{/* <MapboxGL.Images
-							nativeAssetImages={[`stop${index}`]}
+				return (
+				<Fragment key={index}>
+					<MapboxGL.ShapeSource 
+						id={`circle${index}`} 
+						//@ts-ignore
+						shape={pointShape(step.coordinates.coordinates[0], index, step.travelMode)}>
+						<MapboxGL.CircleLayer
+							id={`circleFill${index}`}
 							//@ts-ignore
-							images={{ example: `https:${step.circleImage}`}}
-						/>
-						{
-						step.coordinates.coordinates && 
-						<MapboxGL.ShapeSource 
-							id={`circle${index}`} 
+							style={styles.circles(step.color)} />
+						<MapboxGL.SymbolLayer 
+							id={`circleIcon${index}`}
 							//@ts-ignore
-							shape={pointShape(step.coordinates.coordinates[0], index)}>
-							<MapboxGL.CircleLayer
-								id={`circleFill${index}`}
-								aboveLayerId={`linelayer${index}`} 
-								//@ts-ignore
-								style={styles.circles(step.color)} />
-							<MapboxGL.SymbolLayer 
-								id={`circleIcon${index}`}
-								aboveLayerId={`circleFill${index}`}
-								//@ts-ignore
-							style={styles.icon} />
-						</MapboxGL.ShapeSource>
-						} */}
-					</Fragment>				
-					)
+						style={styles[step.travelMode]} />
+					</MapboxGL.ShapeSource>
+					<PatternedPolyline step={step} index={index}/>
+				</Fragment>				
+				)
 			})}
-			{Destination && <MapboxGL.MarkerView id={"destination"} coordinate={Destination}>
-				<Div>
-					<Row p5 rounded30>
-						<Img source={IMAGES.redMapMarker} h={30*84/60} w30></Img>
-					</Row>
-					<Row h45>
-					</Row>
-				</Div>
-			</MapboxGL.MarkerView>}
+			{Origin && <MapboxGL.ShapeSource 
+							id={`origin`} 
+							//@ts-ignore
+							shape={pointShape(Origin, 0, "origin")}>
+							<MapboxGL.SymbolLayer 
+								id={`originIcon`}
+								//@ts-ignore
+							style={styles.origin} />
+						</MapboxGL.ShapeSource>}
+			{Destination && <MapboxGL.ShapeSource 
+				id={`destination`} 
+				//@ts-ignore
+				shape={pointShape(Destination, 0, "destination")}>
+				<MapboxGL.SymbolLayer 
+					id={`destinationIcon`}
+					// aboveLayerID={`originIcon`}
+					//@ts-ignore
+				style={styles.destination} />
+			</MapboxGL.ShapeSource>}
+			
 		</>
 	);
 }

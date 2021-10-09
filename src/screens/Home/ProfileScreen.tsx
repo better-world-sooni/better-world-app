@@ -28,7 +28,8 @@ import { HAS_NOTCH } from 'src/modules/contants';
 import { useLogout } from 'src/redux/appReducer';
 
 const ProfileScreen = (props) => {
-    const {data: defaultTo, isLoading} = useApiSelector(APIS.route.default);
+    const {data: starredResponse, isLoading} = useApiSelector(APIS.route.starred);
+    const defaultRoute = starredResponse?.[0]
     const navigation = useNavigation();
     const apiGET = useReloadGET();
     const apiPOST = useApiPOST();
@@ -36,7 +37,7 @@ const ProfileScreen = (props) => {
     const logout = useLogout(() => navigation.navigate(NAV_NAMES.SignIn))
 
     const pullToRefresh = () => {
-        apiGET(APIS.route.default())
+        apiGET(APIS.route.starred())
     };
 
     const [Route, setRoute] = useState(null)
@@ -45,8 +46,8 @@ const ProfileScreen = (props) => {
         pullToRefresh();
     }, []);
     useEffect(() => {
-        if(defaultTo){
-        setRoute(defaultTo.route)
+        if(defaultRoute){
+        setRoute(defaultRoute.route)
         };
     }, [isLoading]);
 

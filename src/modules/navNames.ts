@@ -10,6 +10,7 @@ export const NAV_NAMES = {
     Profile: 'Profile',
     Splash: "Splash",
     Post: "Post",
+    Report: "Report",
     Select: "Select",
     Metaverse: "Metaverse",
 };

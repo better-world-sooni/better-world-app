@@ -18,38 +18,12 @@ import { NAV_NAMES } from 'src/modules/navNames';
 import {launchImageLibrary} from 'react-native-image-picker';
   
 const SelectScreen = (props) => {
-    const {data: defaultTo, isLoading} = useApiSelector(APIS.route.default);
     const { origin, destination} = useSelector(
         (root: RootState) => (root.path.userSearch), shallowEqual
     );
-    const apiGET = useReloadGET();
-    const dispatch = useDispatch()
     const navigation = useNavigation()
   
-    const setOrigin = (origin) => {
-      dispatch(setUserSearchOrigin(origin))
-    }
-  
-    const setDestination = (destination) => {
-      dispatch(setUserSearchDestination(destination))
-    }
-  
-    const pullToRefresh = () => {
-      apiGET(APIS.route.default())
-    };
-
     const goToPost = () => navigation.navigate(NAV_NAMES.Post)
-
-    useEffect(() => {
-      pullToRefresh();
-    }, []);
-
-    useEffect(() => {
-      if(defaultTo){
-        setOrigin(shortenAddress(defaultTo.default_route.route.legs[0].start_address))
-        setDestination(shortenAddress(defaultTo.default_route.route.legs[0].end_address))
-      };
-    }, [isLoading]);
   
     const [selected, setSelected] = useState({
         type: "emoji",

@@ -1,6 +1,6 @@
 import urljoin from 'url-join';
 
-const BASE_URL = 'http://localhost:80';
+const BASE_URL = 'https://www.metasgid.com';
 const toUrl = (...args) => ({url: urljoin(...args)});
 const base = path => toUrl(BASE_URL, path);
 const v1 = path => toUrl(BASE_URL, '/api/v1', path);
@@ -18,7 +18,7 @@ const APIS = {
     get: ({ origin, destination, mode, language, region, alternatives, transitMode, sessiontoken, force }) => v1(`/route/directions?origin=${origin}&destination=${destination}&mode=${mode}&language=${language}&region=${region}&alternatives=${alternatives}&transitRoutingPreference=fewer_transfers&transitMode=${transitMode}&sessiontoken=${sessiontoken}&force=${force}`),
   },
   route: {
-    default: () => v1('/route/default'),
+    starred: () => v1('/route/starred'),
   },
   lessonEnter: id => v1(`/rtc/rtc_lesson_info?lesson_id=${id}`),
   version: (platform, target) =>

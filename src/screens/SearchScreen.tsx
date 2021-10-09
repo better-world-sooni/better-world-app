@@ -19,11 +19,9 @@ import { Img } from 'src/components/common/Img';
 import { ChevronLeft, Search, Shuffle, X } from 'react-native-feather';
 import { useNavigation } from '@react-navigation/native';
 import { NAV_NAMES } from 'src/modules/navNames';
-import { HAS_NOTCH } from 'src/modules/contants';
+import { GO_COLOR, HAS_NOTCH } from 'src/modules/contants';
 import 'react-native-get-random-values';
 import { v4 as uuidv4 } from 'uuid';
-
-const GO_COLOR = "rgb(10, 96, 254)"
 
 const AutoCompleteSuggestions = ({onPress, autoCompleteResults}) => {
 
@@ -203,8 +201,6 @@ const SearchScreen = () => {
 			return;
 		}
         const direction = await apiGET(APIS.directions.get(props))
-        console.log(direction)
-        console.log("console.log(direction)v")
     };
 
     return (
