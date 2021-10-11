@@ -3,12 +3,6 @@ import React, {useRef, Fragment, FC, ReactElement} from 'react';
 import {Route} from 'src/components/types/MapDirectionsTypes'
 import MapboxGL from '@react-native-mapbox-gl/maps';
 import polyline from '@mapbox/polyline'
-import { Div } from './common/Div';
-import { IMAGES } from 'src/modules/images';
-import { Span } from './common/Span';
-import { MapPin } from 'react-native-feather';
-import { Row } from './common/Row';
-import { Img } from './common/Img';
 
 interface MapViewDirectionsProps {
 	route: Route;
@@ -172,12 +166,12 @@ const MapViewDirections: FC<MapViewDirectionsProps> = (props): ReactElement => {
 			<MapboxGL.ShapeSource id={`line${index}`} shape={step.coordinates}>
 				<MapboxGL.LineLayer 
 				id={`linelayer${index}White`} 
-				belowLayerID={`circleFill${index}`}
+				belowLayerID={`linelayer${index}`}
 				//@ts-ignore
 				style={polylineConditionalProps(step, true)} />
 				<MapboxGL.LineLayer 
 				id={`linelayer${index}`} 
-				aboveLayerID={`linelayer${index}White`}
+				belowLayerID={`destinationIcon`}
 				//@ts-ignore
 				style={polylineConditionalProps(step, false)} />
 			</MapboxGL.ShapeSource>
@@ -196,46 +190,47 @@ const MapViewDirections: FC<MapViewDirectionsProps> = (props): ReactElement => {
 					walking: require('../../assets/icons/walking.png'),
 				}}
 			/>
-			{DecodedPolylines.map( (step, index) => {
-				return (
-				<Fragment key={index}>
-					<MapboxGL.ShapeSource 
-						id={`circle${index}`} 
-						//@ts-ignore
-						shape={pointShape(step.coordinates.coordinates[0], index, step.travelMode)}>
-						<MapboxGL.CircleLayer
-							id={`circleFill${index}`}
-							//@ts-ignore
-							style={styles.circles(step.color)} />
-						<MapboxGL.SymbolLayer 
-							id={`circleIcon${index}`}
-							//@ts-ignore
-						style={styles[step.travelMode]} />
-					</MapboxGL.ShapeSource>
-					<PatternedPolyline step={step} index={index}/>
-				</Fragment>				
-				)
-			})}
-			{Origin && <MapboxGL.ShapeSource 
-							id={`origin`} 
-							//@ts-ignore
-							shape={pointShape(Origin, 0, "origin")}>
-							<MapboxGL.SymbolLayer 
-								id={`originIcon`}
-								//@ts-ignore
-							style={styles.origin} />
-						</MapboxGL.ShapeSource>}
-			{Destination && <MapboxGL.ShapeSource 
-				id={`destination`} 
-				//@ts-ignore
-				shape={pointShape(Destination, 0, "destination")}>
-				<MapboxGL.SymbolLayer 
-					id={`destinationIcon`}
-					// aboveLayerID={`originIcon`}
+			{Origin && Destination &&
+			<>
+				{DecodedPolylines.map( (step, index) => {
+					return (
+					// <Fragment key={index}>
+					// 	<MapboxGL.ShapeSource 
+					// 		id={`circle${index}`} 
+					// 		//@ts-ignore
+					// 		shape={pointShape(step.coordinates.coordinates[0], index, step.travelMode)}>
+					// 		<MapboxGL.CircleLayer
+					// 			id={`circleFill${index}`}
+					// 			//@ts-ignore
+					// 			style={styles.circles(step.color)} />
+					// 		<MapboxGL.SymbolLayer 
+					// 			id={`circleIcon${index}`}
+					// 			//@ts-ignore
+					// 		style={styles[step.travelMode]} />
+					// 	</MapboxGL.ShapeSource>
+					// </Fragment>				
+					<PatternedPolyline step={step} index={index} key={index} />
+					)
+				})}
+				<MapboxGL.ShapeSource 
+					id={`destination`} 
 					//@ts-ignore
-				style={styles.destination} />
-			</MapboxGL.ShapeSource>}
-			
+					shape={pointShape(Destination, 0, "destination")}>
+					<MapboxGL.SymbolLayer 
+						id={`destinationIcon`}
+						//@ts-ignore
+					style={styles.destination} />
+				</MapboxGL.ShapeSource>
+				<MapboxGL.ShapeSource 
+					id={`origin`} 
+					//@ts-ignore
+					shape={pointShape(Origin, 0, "origin")}>
+					<MapboxGL.SymbolLayer 
+						id={`originIcon`}
+						//@ts-ignore
+					style={styles.origin} />
+				</MapboxGL.ShapeSource>
+			</>}
 		</>
 	);
 }
