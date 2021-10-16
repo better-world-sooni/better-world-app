@@ -19,7 +19,7 @@ import { Img } from 'src/components/common/Img';
 import { ChevronLeft, Search, Shuffle, X } from 'react-native-feather';
 import { useNavigation } from '@react-navigation/native';
 import { NAV_NAMES } from 'src/modules/navNames';
-import { GO_COLOR, HAS_NOTCH } from 'src/modules/contants';
+import { GO_COLOR, HAS_NOTCH } from 'src/modules/constants';
 import 'react-native-get-random-values';
 import { v4 as uuidv4 } from 'uuid';
 

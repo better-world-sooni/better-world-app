@@ -18,7 +18,7 @@ import { Checkbox, Input, NativeBaseProvider } from 'native-base';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import TopHeader from 'src/components/TopHeader';
 import { useNavigation } from '@react-navigation/core';
-import { GO_COLOR } from 'src/modules/contants';
+import { GO_COLOR } from 'src/modules/constants';
   
   const ReportScreen = (props) => {
   

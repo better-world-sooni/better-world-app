@@ -1,31 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
-import {useCallback, useState} from 'react';
-import {useDispatch} from 'react-redux';
-import APIS from 'src/modules/apis';
-import {appActions} from 'src/redux/appReducer';
+import { useCallback, useState } from 'react';
 import {useApiGET, useApiPOST} from 'src/redux/asyncReducer';
-
-export const useUpdateUser = initCallback => {
-  const apiGET = useApiGET({scope: 'GET'});
-  const dispatch = useDispatch();
-  const update = (callback?) => {
-    apiGET(APIS.profile.get(), ({data}) => {
-      dispatch(appActions.updateUser({user: data.user}));
-      if (callback) {
-        callback(data);
-      } else {
-        initCallback(data);
-      }
-    });
-  };
-  useFocusEffect(
-    useCallback(() => {
-      update(initCallback);
-    }, []),
-  );
-  return update;
-};
 
 export const useBetterApiPOST = (props = {scope: 'POST'}) => {
   const apiPOST = useApiPOST(props);

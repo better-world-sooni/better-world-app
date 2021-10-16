@@ -23,7 +23,7 @@ import { PlusSquare, Bell, MessageCircle, AlertCircle, Heart, Send, Search } fro
 import RouteShelf from 'src/components/RouteShelf';
 import MapboxGL from "@react-native-mapbox-gl/maps";
 import type {CameraSettings} from "@react-native-mapbox-gl/maps"
-import { HAS_NOTCH } from 'src/modules/contants';
+import { HAS_NOTCH } from 'src/modules/constants';
 import LinearGradient from 'react-native-linear-gradient';
 import { setUserSearchDestination, setUserSearchOrigin } from 'src/redux/pathReducer';
 import { shortenAddress } from 'src/modules/utils';

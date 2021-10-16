@@ -4,7 +4,7 @@ import { Span } from 'src/components/common/Span';
 import { Style } from 'src/components/common/Style';
 import { ActivityIndicator } from 'react-native';
 import { varStyle } from 'src/modules/styles';
-import { HAS_NOTCH } from 'src/modules/contants';
+import { HAS_NOTCH } from 'src/modules/constants';
 
 const Button = (props) => {
   const {

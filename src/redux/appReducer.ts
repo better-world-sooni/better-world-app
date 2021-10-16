@@ -2,8 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {createSlice} from '@reduxjs/toolkit';
 import { useDispatch } from 'react-redux';
 import APIS from 'src/modules/apis';
-// import {getServerLocale} from 'src/modules/utils';
-import {JWT_TOKEN} from 'src/modules/contants';
+import { JWT_TOKEN } from 'src/modules/constants';
 import {
   asyncActions,
   useApiGETWithToken,
@@ -47,8 +46,8 @@ export const useSocialLogin = () => {
       props => {
         dispatch(async () => {
           if (!props.data.is_new_user) {
-            const {jwt_token} = props.data;
-            await AsyncStorage.setItem(JWT_TOKEN, jwt_token);
+            const { jwtToken } = props.data;
+            await AsyncStorage.setItem(JWT_TOKEN, jwtToken);
             dispatch(appActions.login(props.data));
           }
           if (successHandler) {
@@ -110,7 +109,7 @@ const appSlice = createSlice({
   initialState: {
     isLoggedIn: false,
     session: {
-      // user: null,
+      currentUser: null,
       token: null,
     },
   },
@@ -119,8 +118,9 @@ const appSlice = createSlice({
       const { locale } = action.payload;
     },
     login(state, action) {
-      const { jwtToken } = action.payload;
+      const { jwtToken, user } = action.payload;
       state.session = {
+        currentUser: user,
         token: jwtToken,
       };
       state.isLoggedIn = true;

@@ -388,8 +388,6 @@ PODS:
     - React-Core
   - react-native-camera/RN (4.0.1):
     - React-Core
-  - react-native-cookies (5.0.1):
-    - React-Core
   - react-native-get-random-values (1.7.0):
     - React-Core
   - react-native-google-maps (0.28.0):
@@ -564,7 +562,6 @@ DEPENDENCIES:
   - React-jsiexecutor (from `../node_modules/react-native/ReactCommon/jsiexecutor`)
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
   - react-native-camera (from `../node_modules/react-native-camera`)
-  - "react-native-cookies (from `../node_modules/@react-native-community/cookies`)"
   - react-native-get-random-values (from `../node_modules/react-native-get-random-values`)
   - react-native-google-maps (from `../node_modules/react-native-maps`)
   - react-native-image-picker (from `../node_modules/react-native-image-picker`)
@@ -673,8 +670,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/jsinspector"
   react-native-camera:
     :path: "../node_modules/react-native-camera"
-  react-native-cookies:
-    :path: "../node_modules/@react-native-community/cookies"
   react-native-get-random-values:
     :path: "../node_modules/react-native-get-random-values"
   react-native-google-maps:
@@ -787,7 +782,6 @@ SPEC CHECKSUMS:
   React-jsiexecutor: 124e8f99992490d0d13e0649d950d3e1aae06fe9
   React-jsinspector: 500a59626037be5b3b3d89c5151bc3baa9abf1a9
   react-native-camera: 11166fe7e3a673493c152f52966e8ab1c5cdcacc
-  react-native-cookies: ce50e42ace7cf0dd47769260ca5bbe8eee607e4e
   react-native-get-random-values: 237bffb1c7e05fb142092681531810a29ba53015
   react-native-google-maps: 46dea4aa4acb7300beff508f64d9f8c84e9fb106
   react-native-image-picker: a6e56460d34905c849ada551db30897dc7f3d535

@@ -24,7 +24,7 @@ import { ICONS } from 'src/modules/icons';
 import { confirmCurrentRoute } from 'src/redux/pathReducer';
 import { Map, PlusSquare, Menu, Plus, ChevronRight, ArrowRight, Code, ChevronDown, Bell, Info, Lock, Send, Folder, Edit, Rss, LogOut } from 'react-native-feather';
 import LinearGradient from 'react-native-linear-gradient';
-import { HAS_NOTCH } from 'src/modules/contants';
+import { HAS_NOTCH } from 'src/modules/constants';
 import { useLogout } from 'src/redux/appReducer';
 
 const ProfileScreen = (props) => {

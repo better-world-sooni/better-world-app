@@ -6,7 +6,7 @@ import {Div} from './common/Div';
 import {Img} from './common/Img';
 import {Row} from './common/Row';
 import {Span} from './common/Span';
-import {GO_COLOR, HAS_NOTCH} from 'src/modules/contants';
+import {GO_COLOR, HAS_NOTCH} from 'src/modules/constants';
 import {useGoBack} from 'src/modules/useCustomHooks';
 import { StatusBar } from 'native-base';
 

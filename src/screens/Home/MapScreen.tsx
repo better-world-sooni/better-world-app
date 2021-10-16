@@ -17,7 +17,7 @@ import { Animated, Dimensions, Easing, Image, RefreshControl } from 'react-nativ
 import { ChevronLeft, Crosshair, Grid, Star, X } from 'react-native-feather';
 import { NAV_NAMES } from 'src/modules/navNames';
 import MapboxGL from '@react-native-mapbox-gl/maps';
-import { HAS_NOTCH } from 'src/modules/contants';
+import { HAS_NOTCH } from 'src/modules/constants';
 import { shortenAddress } from 'src/modules/utils';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { ScrollView } from 'react-native-gesture-handler';

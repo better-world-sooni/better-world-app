@@ -14,7 +14,7 @@ import {
   IOS_DOWNLOAD_URL,
   JWT_TOKEN,
   RINGLE,
-} from 'src/modules/contants';
+} from 'src/modules/constants';
 import {useAutoLogin} from 'src/redux/appReducer';
 import {useApiGET} from 'src/redux/asyncReducer';
 import { IMAGES } from 'src/modules/images';

@@ -16,7 +16,7 @@ import { Span } from 'src/components/common/Span';
 import { TextField } from 'src/components/TextField';
 import { ICONS } from 'src/modules/icons';
 import { NAV_NAMES } from 'src/modules/navNames';
-import { IOS_APP_VERSION, IOS_CODE_PUSH_VERSION, ANDROID_APP_VERSION, ANDROID_CODE_PUSH_VERSION } from 'src/modules/contants';
+import { IOS_APP_VERSION, IOS_CODE_PUSH_VERSION, ANDROID_APP_VERSION, ANDROID_CODE_PUSH_VERSION } from 'src/modules/constants';
 import { ScrollView } from 'src/modules/viewComponents';
 import { useLogin, useSocialLogin } from 'src/redux/appReducer';
 import { IMAGES } from 'src/modules/images';
