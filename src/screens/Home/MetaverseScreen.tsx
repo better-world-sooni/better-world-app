@@ -3,16 +3,12 @@ import { WebView } from 'react-native-webview';
 import { shallowEqual, useDispatch, useSelector } from 'react-redux';
 import { RootState } from 'src/redux/rootReducer';
 import { useFocusEffect } from '@react-navigation/core';
-import { sendChatSocketMessage } from 'src/hooks/useSocketInput';
-import { chatSocket, metasunganListener } from 'src/connections/socket';
-import { setMetasunganUser } from 'src/redux/metasunganReducer';
-import { pushNewRoom, setChatHeadEnabled } from 'src/redux/chatReducer';
+import { setChatBody, setChatHeadEnabled, setChatRoom } from 'src/redux/chatReducer';
 
 interface MetasunganWindowMessage{
-  payload: ChatRoom;
+  payload: any;
   action: MetasunganAction;
 }
-
 interface ChatRoom {
   chatRoom: {
       __v: number;
@@ -24,6 +20,9 @@ interface ChatRoom {
       updatedAt: string;
       usernames: Array<string>;
   };
+}
+interface ChatRoomId {
+  chatRoomId: string;
 }
 
 enum MetasunganAction {
@@ -55,9 +54,6 @@ const MetaSunganScreen = () =>  {
   const reload = () => {
     webViewRef && webViewRef.current.reload();
   }
-  const login = useCallback((user) => {
-    dispatch(setMetasunganUser(user));
-  }, [dispatch])
   const tryParseJSONObject = useCallback((jsonString) => {
     try {
         var o = JSON.parse(jsonString);
@@ -66,22 +62,21 @@ const MetaSunganScreen = () =>  {
         }
     }
     catch (e) { }
-
     return false;
   }, []);
   const handleMessage = (event) => {
-    console.log('enterChatRoom')
     const message = tryParseJSONObject(event.nativeEvent.data)
     if (message && "metasunganWindowMessage" in message){
       handleMetasunganWindowMessage(message.metasunganWindowMessage);
     }
   }
   const handleMetasunganWindowMessage = (message: MetasunganWindowMessage) => {
+    console.log(message.payload)
     if(message.action == MetasunganAction.ENTER_CHAT_ROOM) {
-      dispatch(pushNewRoom(message.payload));
-      dispatch(setChatHeadEnabled(true));
+      dispatch(setChatRoom(message.payload.chatRoom));
+      dispatch(setChatBody({ enabled: true, enabledRoomId: message.payload.chatRoom._id}))
     } else if(message.action == MetasunganAction.OPEN_CHAT_ROOM){
-      dispatch(setChatHeadEnabled(true));
+      dispatch(setChatBody({ enabled: true, enabledRoomId: message.payload.chatRoomId}))
     }
   }
   
@@ -90,13 +85,6 @@ const MetaSunganScreen = () =>  {
       reload()
     },[]),
   )
-  
-  useEffect(() => {
-    chatSocket.on('login', login);
-    return () => {
-      chatSocket.off('login');
-    }
-  }, [])
   
   return (
     <WebView 

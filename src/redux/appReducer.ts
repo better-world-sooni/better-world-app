@@ -8,6 +8,7 @@ import {
   useApiGETWithToken,
   useApiPOST,
 } from 'src/redux/asyncReducer';
+import { chatLogout } from './chatReducer';
 
 export const useLogin = () => {
   const dispatch = useDispatch();
@@ -96,6 +97,7 @@ export const useLogout = (callback?) => {
       await AsyncStorage.removeItem(JWT_TOKEN);
       dispatch(appActions.logout());
       dispatch(asyncActions.reset());
+      dispatch(chatLogout())
       if (callback) {
         console.log("bhansdofnoiaskdjnfjkasd")
         await callback();

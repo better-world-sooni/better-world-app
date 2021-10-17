@@ -1,0 +1,205 @@
+import React, { useCallback, useEffect, useState } from 'react';
+import Draggable from 'react-native-draggable';
+import { Dimensions, Modal } from 'react-native';
+import { shallowEqual, useDispatch, useSelector } from 'react-redux';
+import { RootState } from 'src/redux/rootReducer';
+import { GiftedChat } from 'react-native-gifted-chat';
+import { pushNewMessage, setChatBodyEnabled, setChatHeadEnabled, setChatRooms, setSocket, toggleChatHeadBodyEnabled } from 'src/redux/chatReducer';
+import { MessageCircle, X } from 'react-native-feather';
+import { HAS_NOTCH } from 'src/modules/constants';
+import { manager } from 'src/connections/socket';
+import { setMetasunganUser } from 'src/redux/metasunganReducer';
+import { Span } from './common/Span';
+import {Div} from 'src/components/common/Div';
+import useSocketInput from 'src/hooks/useSocketInput';
+
+const ChatManager = () => {
+
+    const { chatHead, chatBody, chatRooms, chatSocket } = useSelector(
+        (root: RootState) => (root.chat),
+        shallowEqual,
+    );
+    const { isLoggedIn, session } = useSelector(
+        (root: RootState) => (root.app),
+        shallowEqual,
+    );
+    const { metasunganUser } = useSelector(
+        (root: RootState) => (root.metasungan),
+        shallowEqual,
+    );
+    const dispatch = useDispatch();
+    const sendSocketMessage = useSocketInput();
+
+    const login = useCallback((loginParams) => {
+        console.log('user', loginParams)
+        dispatch(setMetasunganUser(loginParams.user));
+    }, [dispatch])
+
+    const bulkUpdateChatRooms = useCallback((bulkUpdateChatRoomsParams) => {
+        console.log('chatRooms', bulkUpdateChatRoomsParams.chatRooms)
+        const newRooms = {};
+        bulkUpdateChatRoomsParams.chatRooms.forEach((item) => {
+            newRooms[item._id] = item;
+        })
+        dispatch(setChatRooms(newRooms));
+    }, [dispatch])
+
+    useEffect(() => {
+        if(isLoggedIn){
+        const newSocket = manager.socket('/chat', {
+            auth: {
+                token: session.token,
+            },
+        });
+        dispatch(setSocket(newSocket));
+        newSocket.on('login', login);
+        newSocket.on('bulkUpdateChatRooms', bulkUpdateChatRooms);
+        return () => {
+            newSocket.off('login');
+            newSocket.off('bulkUpdateChatRooms');
+            newSocket.close();
+        }
+        }
+    }, [isLoggedIn])
+
+    const screenSize = Dimensions.get('screen')
+        const inset = 60;
+        const screenHeight = screenSize.height;
+        const screenWidth = screenSize.width;
+        const initialDraggablePosition = {x: screenWidth-inset, y: inset}
+
+    const ChatHead = (props) => {
+        
+        const [draggablePosition, setDraggablePosition] = useState(initialDraggablePosition);
+
+        const onRelease = (_event, gestureState, _bounds) => {
+        console.log(gestureState)
+        const moveX = gestureState.moveX;
+        const moveY = gestureState.moveY;
+        const closestEdgeX = Math.round(moveX/screenWidth) * screenWidth;
+        const closestEdgeY = Math.round(moveY/screenHeight) * screenHeight;
+        const withInsetX = (value) => {
+            return value ? value - inset : value + 10;
+        }
+        const withInsetY = (value) => {
+            return value ? value - inset : value + inset;
+        }
+        let finalPosition;
+        if (Math.abs(closestEdgeX - moveX) > Math.abs(closestEdgeY - moveY)){
+            finalPosition = {
+            x: withInsetX(moveX),
+            y: withInsetY(closestEdgeY),
+            }
+        }
+        else{
+            finalPosition = {
+            x: withInsetX(closestEdgeX),
+            y: withInsetY(moveY),
+            }
+        }
+        console.log(finalPosition);
+        setDraggablePosition(finalPosition);
+        }
+
+        const onDraggablePress = () => {
+        dispatch(setChatBodyEnabled(true));
+        setDraggablePosition(initialDraggablePosition);
+        }
+
+        return(
+        <Draggable 
+            isCircle
+            renderSize={80} 
+            x={draggablePosition.x}
+            y={draggablePosition.y}
+            onShortPressRelease={onDraggablePress}
+            onDragRelease={onRelease}
+            shouldReverse
+            >
+            <Div p10 bgWhite rounded100 {...shadowProp} >
+            {props.children}
+            </Div>
+        </Draggable>
+        )
+    }
+
+    const ChatModalHead = (props) => {
+        const onPress = () => {
+        dispatch(setChatHeadEnabled(true));
+        }
+
+        return(
+        <Draggable 
+            isCircle
+            renderSize={80} 
+            x={initialDraggablePosition.x}
+            y={initialDraggablePosition.y}
+            onShortPressRelease={onPress}
+            shouldReverse
+            >
+            <Div p10 bgWhite rounded100 {...shadowProp} >
+            {props.children}
+            </Div>
+        </Draggable>
+        )
+    }
+
+    const receiveMessage = (receiveMessageParams) => {
+        dispatch(pushNewMessage(receiveMessageParams.messages))
+    }
+
+    useEffect(() => {
+        if(isLoggedIn && chatSocket){
+            chatSocket.on('receiveMessage', receiveMessage);
+            return () => {
+                chatSocket.off('receiveMessage');
+            }
+        }
+    }, [isLoggedIn, chatSocket])
+
+    const shadowProp = {shadowOffset: {height: 1, width: 1}, shadowColor: "gray", shadowOpacity: 0.5, shadowRadius: 3}
+
+
+    const onSend = useCallback((messages = []) => {
+        messages.forEach((message) => {
+            console.log(message);
+            console.log(metasunganUser);
+            sendSocketMessage('sendMessage', {chatRoomId: chatBody.enabledRoomId, text: message})
+        })
+        // setMessages(previousMessages => GiftedChat.append(previousMessages, messages))
+    }, [chatBody.enabledRoomId])
+
+    return(
+        <>
+            {chatHead.enabled && <ChatHead><MessageCircle height={30} width={30} ></MessageCircle></ChatHead>}
+            <Modal 
+                // presentationStyle="pageSheet" 
+                visible={chatBody.enabled} 
+                animationType={'slide'}
+                transparent={true} 
+                style={{ display: 'flex'}}
+                >
+                <Div h={HAS_NOTCH ? 44 : 20}/>
+                <Div h80>
+                </Div>
+                <Div rounded20 bgWhite flex={1} {...shadowProp}>
+                    <Div itemsCenter justifyCenter h50>
+                    <Span bold fontSize={20}>{chatRooms[chatBody.enabledRoomId]?.title || ''}</Span>
+                    </Div>
+                    <GiftedChat
+                    messages={chatRooms[chatBody.enabledRoomId]?.messages || []}
+                    onSend={messages => onSend(messages)}
+                    user={{
+                        _id: metasunganUser._id,
+                        name: metasunganUser.username,
+                        avatar: null,
+                    }}
+                    />
+                </Div>
+                <ChatModalHead><X height={30} width={30} ></X></ChatModalHead>
+            </Modal>
+        </>
+    )
+}
+
+export default ChatManager;

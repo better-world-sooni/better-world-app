@@ -29,4 +29,3 @@ const pathSlice = createSlice({
 export const pathReducer = pathSlice.reducer;
 export const { setUserSearchOrigin, setUserSearchDestination, setCurrentRouteIndex, confirmCurrentRoute } =
   pathSlice.actions;
-export const pathListSelector = state => state.path.selectedTutorList;
