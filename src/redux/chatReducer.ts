@@ -15,9 +15,7 @@ const chatSlice = createSlice({
     },
     reducers: {
         setSocket: (state, action) => {
-            if (action.payload) {
-                state.chatSocket = action.payload;
-            }
+            state.chatSocket = action.payload;
         },
         setChatRoom: (state, action) => {
             if (action.payload) {
@@ -25,7 +23,7 @@ const chatSlice = createSlice({
             }
         },
         pushNewMessage: (state, action) => {
-            state.chatRooms[action.payload.roomId].messages.push(action.payload.message);
+            state.chatRooms[action.payload.roomId].messages.unshift(action.payload.message);
         },
         setChatRooms: (state, action) => {
             if (action.payload) {

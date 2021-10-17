@@ -46,21 +46,23 @@ const ChatManager = () => {
 
     useEffect(() => {
         if(isLoggedIn){
-        const newSocket = manager.socket('/chat', {
-            auth: {
-                token: session.token,
-            },
-        });
-        dispatch(setSocket(newSocket));
-        newSocket.on('login', login);
-        newSocket.on('bulkUpdateChatRooms', bulkUpdateChatRooms);
-        return () => {
-            newSocket.off('login');
-            newSocket.off('bulkUpdateChatRooms');
-            newSocket.close();
+            const newSocket = manager.socket('/chat', {
+                auth: {
+                    token: session.token,
+                },
+            });
+            newSocket.on('login', login);
+            newSocket.on('bulkUpdateChatRooms', bulkUpdateChatRooms);
+            newSocket.on('receiveMessage', receiveMessage);
+            dispatch(setSocket(newSocket));
+            return () => {
+                newSocket.off('login');
+                newSocket.off('bulkUpdateChatRooms');
+                newSocket.off('receiveMessage');
+                newSocket.close();
+            }
         }
-        }
-    }, [isLoggedIn])
+    }, [setSocket])
 
     const screenSize = Dimensions.get('screen')
         const inset = 60;
@@ -123,7 +125,7 @@ const ChatManager = () => {
         )
     }
 
-    const ChatModalHead = (props) => {
+    const ChatModalHead = ({children, chatRoom, index, length}) => {
         const onPress = () => {
         dispatch(setChatHeadEnabled(true));
         }
@@ -132,42 +134,31 @@ const ChatManager = () => {
         <Draggable 
             isCircle
             renderSize={80} 
-            x={initialDraggablePosition.x}
+            x={initialDraggablePosition.x - (index * 5)}
             y={initialDraggablePosition.y}
             onShortPressRelease={onPress}
             shouldReverse
             >
             <Div p10 bgWhite rounded100 {...shadowProp} >
-            {props.children}
+            {children}
             </Div>
         </Draggable>
         )
     }
 
     const receiveMessage = (receiveMessageParams) => {
-        dispatch(pushNewMessage(receiveMessageParams.messages))
+        console.log('receiveMessageParams', receiveMessageParams);
+        dispatch(pushNewMessage(receiveMessageParams))
     }
-
-    useEffect(() => {
-        if(isLoggedIn && chatSocket){
-            chatSocket.on('receiveMessage', receiveMessage);
-            return () => {
-                chatSocket.off('receiveMessage');
-            }
-        }
-    }, [isLoggedIn, chatSocket])
 
     const shadowProp = {shadowOffset: {height: 1, width: 1}, shadowColor: "gray", shadowOpacity: 0.5, shadowRadius: 3}
 
 
-    const onSend = useCallback((messages = []) => {
+    const onSend = (messages = []) => {
         messages.forEach((message) => {
-            console.log(message);
-            console.log(metasunganUser);
-            sendSocketMessage('sendMessage', {chatRoomId: chatBody.enabledRoomId, text: message})
+            sendSocketMessage('sendMessage', {chatRoomId: chatBody.enabledRoomId, message: message})
         })
-        // setMessages(previousMessages => GiftedChat.append(previousMessages, messages))
-    }, [chatBody.enabledRoomId])
+    }
 
     return(
         <>
@@ -196,7 +187,11 @@ const ChatManager = () => {
                     }}
                     />
                 </Div>
-                <ChatModalHead><X height={30} width={30} ></X></ChatModalHead>
+                {Object.keys(chatRooms).map((key, index, array) => {
+                    return(
+                        <ChatModalHead chatRoom={chatRooms[key]} index={index} length={array} key={index}><X height={30} width={30} ></X></ChatModalHead>
+                    )
+                })}
             </Modal>
         </>
     )
