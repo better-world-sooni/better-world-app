@@ -16,30 +16,34 @@ import { useNavigation } from '@react-navigation/core';
 import EmojiSelector, { Categories } from 'react-native-emoji-selector'
 import { NAV_NAMES } from 'src/modules/navNames';
 import {launchImageLibrary} from 'react-native-image-picker';
+import { setCachedPreup } from 'src/redux/feedReducer';
   
 const SelectScreen = (props) => {
     const { origin, destination} = useSelector(
         (root: RootState) => (root.path.userSearch), shallowEqual
     );
+    const { cachedPreup } = useSelector(
+        (root: RootState) => (root.feed), shallowEqual
+    );
     const navigation = useNavigation()
   
     const goToPost = () => navigation.navigate(NAV_NAMES.Post)
+    const dispatch = useDispatch();
   
-    const [selected, setSelected] = useState({
-        type: "emoji",
-        object: "🚆"
-    })
+    const setSelected = (payload) => {
+        dispatch(setCachedPreup(payload))
+    }
 
     const SelectedMedia = () => {
-        if(selected.type){
-            if(selected.type == 'emoji'){
+        if(cachedPreup && cachedPreup.type){
+            if(cachedPreup.type == 'emoji'){
                 return(
-                    <Span fontSize={150}>{selected.object}</Span>
+                    <Span fontSize={150}>{cachedPreup.object}</Span>
                 )
             }
-            else if(selected.type == 'picture'){
+            else if(cachedPreup.type == 'image'){
                 return(
-                    <Img src={selected.object}></Img>
+                    <Img src={cachedPreup.object} h={400} w={400} ></Img>
                 )
             }
             else{
@@ -47,7 +51,6 @@ const SelectScreen = (props) => {
                     null
                 )
             }
-            
         }
         else{
             return(
@@ -74,20 +77,20 @@ const SelectScreen = (props) => {
             borderTopRightRadius={20}
             borderTopLeftRadius={20}
             >
-                <TopHeader headerBlack route={useNavigation} title={"새 게시물"} nextText={"다음"} onPressNext={goToPost}></TopHeader>
+                <TopHeader route={useNavigation} title={"새 게시물"} nextText={"다음"} onPressNext={goToPost}></TopHeader>
                 <Div px20 flex={1}>
                     <Row justifyCenter py10 auto>
                         <Col px10 py5 rounded20 bgWhite auto mx10 onPress={() => setSelected({type: 'emoji', object: "🚆"})}>
-                            <Span color={"gray"} bold {...(selected.type == "emoji" && {color: "black"})}>이모지</Span>
+                            <Span color={"gray"} bold {...((!cachedPreup || cachedPreup.type == "emoji" ) && {color: "black"})}>이모지</Span>
                         </Col>
-                        <Col px10 py5 rounded20 bgWhite auto mx10 
+                        {/* <Col px10 py5 rounded20 bgWhite auto mx10 
                         //@ts-ignore
-                        onPress={() => {setSelected({type: 'image', object: "🚆"}); launchImageLibrary(options(), callBack());}}>
-                            <Span color={"gray"} bold {...(selected.type == "image" && {color: "black"})}>사진</Span>
+                        onPress={() => {launchImageLibrary(options(), (callbackProps) => setSelected({type: 'image', object: callbackProps.assets[0].uri}));}}>
+                            <Span color={"gray"} bold {...(cachedPreup && cachedPreup.type == "image" && {color: "black"})}>사진</Span>
                         </Col>
                         <Col px10 py5 rounded20 bgWhite auto mx10>
-                            <Span color={"gray"} bold {...(selected.type == "video" && {color: "black"})}>동영상</Span>
-                        </Col>
+                            <Span color={"gray"} bold {...(cachedPreup && cachedPreup.type == "video" && {color: "black"})}>동영상</Span>
+                        </Col> */}
                         <Col></Col>
                     </Row>
                     <Row py10 itemsCenter justifyCenter flex={1}>

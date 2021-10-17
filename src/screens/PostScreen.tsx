@@ -14,6 +14,11 @@
   import { setUserSearchDestination, setUserSearchOrigin } from 'src/redux/pathReducer';
   import { shortenAddress } from 'src/modules/utils';
   import { RootState } from 'src/redux/rootReducer';
+import TopHeader from 'src/components/TopHeader';
+import { useNavigation } from '@react-navigation/core';
+import { Checkbox, Input, NativeBaseProvider } from 'native-base';
+import { GO_COLOR } from 'src/modules/constants';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
   
   const PostScreen = (props) => {
   
@@ -26,82 +31,88 @@
     return (
       
     <Div flex>
-      <Div flex
-      relative
-      borderTopRightRadius={20}
-      borderTopLeftRadius={20}
-      >
-    <ScrollView 
+      <TopHeader route={useNavigation} title={"새 게시물"} headerColor={'white'}></TopHeader>
+      <ScrollView 
       showsVerticalScrollIndicator={false}
       stickyHeaderIndices={[1]}
     >
-        <Div mx20 > 
-            <Row my5 >
+        <Div mx20> 
+        <NativeBaseProvider>
+            <Row rounded20 overflowHidden flex py5>
               <Col>
-              <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                <Div bgWhite rounded20 overflowHidden px20 py5 mr10>
-                  <Span bold>#순간인기</Span>
-                </Div>
-                <Div bgWhite rounded20 overflowHidden px20 py5 mr10>
-                  <Span bold>#유머</Span>
-                </Div>
-                <Div bgWhite rounded20 overflowHidden px20 py5 mr10>
-                  <Span bold>#뉴스</Span>
-                </Div>
-                <Div bgWhite rounded20 overflowHidden px20 py5 mr10>
-                  <Span bold>#빌런</Span>
-                </Div>
-                <Div bgWhite rounded20 overflowHidden px20 py5 mr10>
-                  <Span bold>#기타</Span>
-                </Div>
-              </ScrollView>
-              </Col>
-            </Row>
-            <Row rounded20 overflowHidden my10 bgWhite flex py5>
-              <Col>
-                <Row itemsCenter px20 py10>
-                  <Col auto rounded30 overflowHidden  mr10><Img source={IMAGES.example2} w30 h30 ></Img></Col>
-                  <Col auto>
-                    <Span medium fontSize={14}>irlglo</Span>
+                <Row py20 borderGray300 borderBottom>
+                  <Col auto rounded20 p20 bg={"rgb(255, 224, 222)"}>
+                    <Row justifyCenter><Span fontSize={50}>{"🚨"}</Span></Row>
+                    <Row justifyCenter><Span medium color={GO_COLOR} fontSize={10}>{"첨부파일 변경"}</Span></Row>
                   </Col>
+                  <Col px20>
+                      <Input 
+                      isFullWidth 
+                      flex={1}
+                      numberOfLines={5}
+                      placeholder={"불편 사항 입력"}
+                      paddingX={0}
+                      paddingY={0}
+                      borderWidth={0}></Input>
+                  </Col>
+                </Row>
+                <Row itemsCenter py20 borderGray300 borderBottom>
                   <Col>
-                  </Col>
-                  <Col auto rounded20 bg={"#0d3692"} px10 py5>
-                  <Span medium fontSize={14} white>1호선</Span>
-                  </Col>
-                </Row>
-                <Row itemsCenter>
-                  <Col></Col>
-                  <Col auto><Span fontSize={100}>{"🤭"}</Span></Col>
-                  <Col></Col>
-                </Row>
-                <Row itemsCenter px20 pt10 pb5 bgWhite>
-                  <Col justifyEnd auto ><Span medium color={'black'} bold>에바야...</Span></Col>
-                  <Col></Col>
-                  <Col auto>
-                    <Row>
-                      <Col auto px5><Send {...iconSettings}></Send></Col>
-                      <Col auto px5><MessageCircle {...iconSettings}></MessageCircle></Col>
-                      <Col auto px5><Heart {...iconSettings}></Heart></Col>
+                    <Row mb10>
+                      <Span color={'black'} medium>교통 수단</Span>
+                    </Row>
+                    <Row itemsCenter >
+                      <Col auto rounded20 bg={"black"} px10 py5 mr10>
+                        <Span medium fontSize={14} white><FontAwesomeIcon icon="subway" color={"white"}></FontAwesomeIcon> 지하철</Span>
+                      </Col>
+                      <Col auto rounded20 bg={"gray"} px10 py5 mr10>
+                        <Span medium fontSize={14} white><FontAwesomeIcon icon="bus" color={"white"}></FontAwesomeIcon> 버스</Span>
+                      </Col>
                     </Row>
                   </Col>
                 </Row>
-                <Row itemsCenter px20 pb10 pt5 bgWhite>
-                  <Span color={'black'}>ㅈㄴ 늦었다 진짜 와</Span><Span ml5 color={'gray'}>...더보기</Span>
+                <Row itemsCenter py20 borderGray300 borderBottom>
+                  <Col>
+                    <Row mb10>
+                      <Span color={'black'} medium>호선</Span>
+                    </Row>
+                    <Row itemsCenter>
+                      <Col auto rounded20 bg={"#0d3692"} px10 py5 mr10>
+                        <Span medium fontSize={14} white>1호선</Span>
+                      </Col>
+                      <Col auto rounded20 bg={"gray"} px10 py5 mr10>
+                        <Span medium fontSize={14} white>2호선</Span>
+                      </Col>
+                    </Row>
+                  </Col>
                 </Row>
-                <Row itemsCenter px20 py5 bgWhite>
-                  <Span color={'gray'}>50개 댓글 더보기</Span>
+                <Row itemsCenter py20 borderGray300 borderBottom>
+                  <Col>
+                    <Row mb10>
+                      <Span color={'black'} medium>차량번호</Span>
+                    </Row>
+                    <Row>
+                      <Input 
+                      paddingX={0}
+                      paddingY={0}
+                      placeholder={'칸이동 문 위에 있는 차량번호 입력'}
+                      borderWidth={0}></Input>
+                    </Row>
+                  </Col>
                 </Row>
-                <Row itemsCenter justifyCenter px20 pb10 pt5 bgWhite flex>
-                  <Col auto itemsCenter justifyCenter rounded20 overflowHidden><Img source={IMAGES.example2} w15 h15 ></Img></Col>
-                  <Col mx10 justifyCenter><Row><Span medium color={'black'}>irlyglo</Span><Span ml5 >그래서 어떻게 했어?</Span></Row></Col>
-                  <Col auto itemsCenter justifyCenter><Heart color={"black"} height={14}></Heart></Col>
+                <Row itemsCenter py20 borderGray300 borderBottom>
+                  <Col>
+                    <Row>
+                      <Checkbox value={"true"} aria-label={"공유하기"}></Checkbox><Span color={'black'} medium ml10>피드에 같이 올리기</Span>
+                    </Row>
+                  </Col>
                 </Row>
+                <Row></Row>
               </Col>
             </Row>
+            </NativeBaseProvider>
             </Div>
           </ScrollView>
-        </Div>
       </Div>
     
     )

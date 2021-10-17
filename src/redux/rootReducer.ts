@@ -5,6 +5,7 @@ import { pathReducer } from './pathReducer';
 import {userInfoReducer} from './userInfoReducer';
 import { metasunganReducer } from './metasunganReducer';
 import { chatReducer } from './chatReducer';
+import { feedReducer } from './feedReducer';
 
 export type RootState = {
   app: ReturnType<typeof appReducer>;
@@ -13,6 +14,7 @@ export type RootState = {
   userInfo: ReturnType<typeof asyncReducer>;
   metasungan: ReturnType<typeof metasunganReducer>;
   chat: ReturnType<typeof chatReducer>;
+  feed: ReturnType<typeof feedReducer>;
 };
 
 const rootReducer = combineReducers({
@@ -22,6 +24,7 @@ const rootReducer = combineReducers({
   userInfo: userInfoReducer,
   metasungan: metasunganReducer,
   chat: chatReducer,
+  feed: feedReducer,
 });
 
 export default rootReducer;

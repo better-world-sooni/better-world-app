@@ -130,8 +130,6 @@ export const AppContent = () => {
       component: PostScreen,
       options: props => ({
         header: topHeader({...props,  title: "새 게시물"}),
-        // cardStyle: { backgroundColor: 'white', presentation: 'modal' },
-        headerShown: true,
       }),
     },
     {
@@ -144,9 +142,7 @@ export const AppContent = () => {
       name: NAV_NAMES.Select,
       component: SelectScreen,
       options: props => ({
-        // header: topHeader({...props, title: "새 게시물", headerBlack: "true"}),
         cardStyle: { backgroundColor: 'black', presentation: 'screen' },
-        // headerShown: true,
       }),
     },
     {

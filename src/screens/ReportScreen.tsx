@@ -22,12 +22,6 @@ import { GO_COLOR } from 'src/modules/constants';
   
   const ReportScreen = (props) => {
   
-    const iconSettings = {
-      strokeWidth:2,
-      color: "black", 
-      height: 20,
-    }
-  
     return (
       
     <Div flex>
