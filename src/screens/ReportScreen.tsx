@@ -7,13 +7,7 @@
   import APIS from 'src/modules/apis';
   import { IMAGES } from 'src/modules/images';
   import { NAV_NAMES } from 'src/modules/navNames';
-  import { ScrollView, View } from 'src/modules/viewComponents';
-  import { useApiSelector, useReloadGET } from 'src/redux/asyncReducer';
-  import { shallowEqual, useDispatch, useSelector } from 'react-redux';
-  import { PlusSquare, Bell, MessageCircle, AlertCircle, Heart, Send, Search, ChevronLeft } from 'react-native-feather';
-  import { setUserSearchDestination, setUserSearchOrigin } from 'src/redux/pathReducer';
-  import { shortenAddress } from 'src/modules/utils';
-  import { RootState } from 'src/redux/rootReducer';
+  import {ScrollView, View} from 'src/modules/viewComponents';
 import {Checkbox, Input, NativeBaseProvider, TextArea} from 'native-base';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import TopHeader from 'src/components/TopHeader';

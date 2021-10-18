@@ -29,6 +29,7 @@ import {
   Search,
   ArrowRight,
   ChevronLeft,
+  Filter,
 } from 'react-native-feather';
 import RouteShelf from 'src/components/RouteShelf';
 import MapboxGL from '@react-native-mapbox-gl/maps';
@@ -36,6 +37,7 @@ import type {CameraSettings} from '@react-native-mapbox-gl/maps';
 import {HAS_NOTCH} from 'src/modules/constants';
 import LinearGradient from 'react-native-linear-gradient';
 import {
+  setCurrentRoute,
   setUserSearchDestination,
   setUserSearchOrigin,
 } from 'src/redux/routeReducer';
@@ -51,15 +53,18 @@ const HomeScreen = props => {
   const {data: starredResponse, isLoading: starredLoading} = useApiSelector(
     APIS.route.starred,
   );
+  const defaultRoute = starredResponse?.data?.[0];
+
   const {data: mainBeforeResponse, isLoading: postsBeforeLoading} =
     useApiSelector(APIS.post.main.before);
   const {data: mainAfterResponse, isLoading: postsAfterLoading} =
     useApiSelector(APIS.post.main.after);
-  const defaultRoute = starredResponse?.data?.[0];
-  const {origin, destination} = useSelector(
-    (root: RootState) => root.route.userSearch,
-    shallowEqual,
-  );
+
+  const {
+    userSearch: {origin, destination},
+    currentRoute,
+    currentVehicles,
+  } = useSelector((root: RootState) => root.route, shallowEqual);
   const {prevPosts, newPosts} = useSelector(
     (root: RootState) => root.feed,
     shallowEqual,
@@ -77,7 +82,6 @@ const HomeScreen = props => {
   const goToReport = () => navigation.navigate(NAV_NAMES.Report);
 
   const pullToRefresh = () => {
-    apiGET(APIS.route.starred());
     apiPOST(APIS.post.main.before(1), {
       vehicleName: '2호선',
       orderBy: 0,
@@ -92,9 +96,9 @@ const HomeScreen = props => {
       },
     );
   };
-  const [Route, setRoute] = useState(null);
 
   useEffect(() => {
+    apiGET(APIS.route.starred());
     pullToRefresh();
   }, []);
 
@@ -114,15 +118,14 @@ const HomeScreen = props => {
 
   useEffect(() => {
     if (defaultRoute) {
-      setRoute(defaultRoute.route);
+      dispatch(setCurrentRoute(defaultRoute.route));
       setOrigin(shortenAddress(defaultRoute.route.legs[0].start_address));
       setDestination(shortenAddress(defaultRoute.route.legs[0].end_address));
-      console.log('mainBeforeResponse', mainBeforeResponse);
     }
   }, [starredLoading]);
 
   const calculatInitialMapRegion = () => {
-    const bounds = Route?.bounds;
+    const bounds = currentRoute?.bounds;
     if (bounds) {
       return {
         ne: [bounds.northeast.lng, bounds.northeast.lat],
@@ -149,25 +152,19 @@ const HomeScreen = props => {
     shadowRadius: 3,
   };
 
+  const borderBottomProp = {
+    borderBottomColor: 'rbg(229, 229, 234, 0.3)',
+    borderBottomWidth: 0.5,
+  };
+
   return (
     <Div flex>
       <Div flex relative>
         <Div h={HAS_NOTCH ? 44 : 20} bgWhite />
-        <Row itemsCenter py10 px20 bgWhite>
-          <Col auto rounded30 overflowHidden mr10>
-            <Img source={IMAGES.example2} w30 h30></Img>
-          </Col>
-          <Col></Col>
-          <Col auto onPress={goToReport} px10>
-            <AlertCircle {...iconSettings} color={'red'}></AlertCircle>
-          </Col>
-          <Col auto onPress={goToPost} px10>
-            <PlusSquare {...iconSettings} color={'black'}></PlusSquare>
-          </Col>
-        </Row>
-        <Animated.ScrollView
+        <ScrollView
           showsVerticalScrollIndicator={false}
-          stickyHeaderIndices={[1]}
+          stickyHeaderIndices={[0]}
+          stickyHeaderHiddenOnScroll={true}
           // onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: animatedScrollYValue } } }], {useNativeDriver: true})}
           scrollEventThrottle={16}
           refreshControl={
@@ -177,33 +174,28 @@ const HomeScreen = props => {
             />
           }>
           <Div>
-            {/* <Row itemsCenter py10 px10 bgWhite onPress={goToMap}>
-              <Col flex={1} itemsCenter>
-                <Span
-                  bold
-                  fontSize={14}
-                  color={'black'}
-                  numberOfLines={1}
-                  ellipsizeMode="head">
-                  {origin}
-                </Span>
+            <Row itemsCenter py5 px20 bgWhite>
+              <Col auto rounded30 overflowHidden mr10>
+                <Img source={IMAGES.example2} w30 h30></Img>
               </Col>
-              <Col auto mx5>
-                <ArrowRight color={'black'} height={14}></ArrowRight>
+              <Col></Col>
+              <Col auto onPress={goToReport} px10>
+                <AlertCircle {...iconSettings} color={'red'}></AlertCircle>
               </Col>
-              <Col flex={1} itemsCenter>
-                <Span
-                  bold
-                  fontSize={14}
-                  color={'black'}
-                  numberOfLines={1}
-                  ellipsizeMode="head">
-                  {destination}
-                </Span>
+              <Col auto onPress={goToPost} px10>
+                <PlusSquare {...iconSettings} color={'black'}></PlusSquare>
               </Col>
-            </Row> */}
-            <Row py5 px10 bgWhite mt10>
-              <Col bg={'#f5f5f5'} rounded5 py5 px10 my5 mr5>
+            </Row>
+            <Row px10 bgWhite>
+              <Col
+                bg={'#f5f5f5'}
+                rounded5
+                py5
+                px10
+                my5
+                mr5
+                justifyCenter
+                itemsCenter>
                 <Span
                   bold
                   color={'black'}
@@ -217,7 +209,15 @@ const HomeScreen = props => {
                   <ArrowRight color={'black'} height={14}></ArrowRight>
                 </Span>
               </Col>
-              <Col bg={'#f5f5f5'} rounded5 py5 px10 my5 ml5>
+              <Col
+                bg={'#f5f5f5'}
+                rounded5
+                py5
+                px10
+                my5
+                ml5
+                justifyCenter
+                itemsCenter>
                 <Span
                   bold
                   color={'black'}
@@ -227,6 +227,36 @@ const HomeScreen = props => {
                 </Span>
               </Col>
             </Row>
+            <Row px10 bgWhite py5>
+              <Col auto rounded5 px10 bg={'#f5f5f5'}>
+                <Filter {...iconSettings}></Filter>
+              </Col>
+              <Col>
+                <ScrollView horizontal>
+                  {currentVehicles.map(vehicle => {
+                    return (
+                      <Div auto bg={vehicle.color} px10 py5 rounded5 ml10>
+                        <Span medium fontSize={14} white>
+                          {vehicle.shortName}
+                        </Span>
+                      </Div>
+                    );
+                  })}
+                  <Div auto bg={'rgb(255,59,48)'} px10 py5 rounded5 ml10>
+                    <Span medium fontSize={14} white>
+                      신고
+                    </Span>
+                  </Div>
+                  <Div auto bg={'rgb(44,44,46)'} px10 py5 rounded5 ml10>
+                    <Span medium fontSize={14} white>
+                      공지사항
+                    </Span>
+                  </Div>
+                </ScrollView>
+              </Col>
+            </Row>
+          </Div>
+          <Div>
             <Row h250 overflowHidden onPress={goToMap} mt10>
               <Col px20 py10 w={'50%'} bgWhite>
                 <Div p20 rounded5>
@@ -261,7 +291,7 @@ const HomeScreen = props => {
                     defaultSettings={{bounds: calculatInitialMapRegion()}}
                     bounds={calculatInitialMapRegion()}
                     zoomLevel={9}></MapboxGL.Camera>
-                  {Route && <MapViewDirections route={Route} />}
+                  {currentRoute && <MapViewDirections route={currentRoute} />}
                 </MapboxGL.MapView>
               </Col>
             </Row>
@@ -462,7 +492,7 @@ const HomeScreen = props => {
               </Col>
             </Row>
           </Div>
-        </Animated.ScrollView>
+        </ScrollView>
       </Div>
     </Div>
   );

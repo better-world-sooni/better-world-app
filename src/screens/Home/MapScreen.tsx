@@ -36,16 +36,18 @@ const MapScreen = ({route}) => {
     (root: RootState) => root.route.userSearch,
     shallowEqual,
   );
-  const CurrentRouteIndex = useSelector(
-    (root: RootState) => root.route.currentRouteIndex,
+  const {currentRoute} = useSelector(
+    (root: RootState) => root.route,
     shallowEqual,
   );
 
-	const Route = directions?.routes[CurrentRouteIndex] || defaultRoute?.route
+  const Route = currentRoute || defaultRoute?.route;
 
-	useEffect(() => {
-		setMapBounds(calculatInitialMapRegion())
-	}, [directions?.routes[CurrentRouteIndex]])
+  useEffect(() => {
+    setMapBounds(calculatInitialMapRegion());
+    console.log('console.log(currentRoute)');
+    console.log(currentRoute);
+  }, [currentRoute]);
 
 	const calculatInitialMapRegion = () => {
 		const bounds = Route?.bounds

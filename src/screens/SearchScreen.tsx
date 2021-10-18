@@ -13,7 +13,7 @@ import { shallowEqual } from 'react-redux';
 import {
   setUserSearchOrigin,
   setUserSearchDestination,
-  setCurrentRouteIndex,
+  setCurrentRoute,
 } from 'src/redux/routeReducer';
 import {Image} from 'react-native';
 import {ScrollView} from 'src/modules/viewComponents';
@@ -110,8 +110,8 @@ const SearchScreen = () => {
     pullToRefresh();
   }, [origin, destination, preferredTransit]);
 
-  const setCurrentRoute = index => {
-    dispatch(setCurrentRouteIndex(index));
+  const resetCurrentRoute = index => {
+    dispatch(setCurrentRoute(directions.routes[index]));
     setEditfocus(NONE);
     navigation.goBack();
   };
@@ -142,8 +142,6 @@ const SearchScreen = () => {
         sessiontoken: uuid,
       }),
     );
-    console.log('console.log(suggestions)');
-    console.log(suggestions);
   };
 
   const onAutoCompleteSelect = index => {
@@ -346,7 +344,7 @@ const SearchScreen = () => {
                       py20
                       px20
                       key={i}
-                      onPress={() => setCurrentRoute(i)}>
+                      onPress={() => resetCurrentRoute(i)}>
                       <Row my10>
                         <Col auto justifyCenter mr10>
                           <Span fontSize={23}>
