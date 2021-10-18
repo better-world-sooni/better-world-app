@@ -28,6 +28,7 @@ import {
   Send,
   Search,
   ArrowRight,
+  ChevronLeft,
 } from 'react-native-feather';
 import RouteShelf from 'src/components/RouteShelf';
 import MapboxGL from '@react-native-mapbox-gl/maps';
@@ -37,7 +38,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import {
   setUserSearchDestination,
   setUserSearchOrigin,
-} from 'src/redux/pathReducer';
+} from 'src/redux/routeReducer';
 import {shortenAddress} from 'src/modules/utils';
 import {RootState} from 'src/redux/rootReducer';
 import {setNewPosts, setPrevPosts} from 'src/redux/feedReducer';
@@ -56,7 +57,7 @@ const HomeScreen = props => {
     useApiSelector(APIS.post.main.after);
   const defaultRoute = starredResponse?.data?.[0];
   const {origin, destination} = useSelector(
-    (root: RootState) => root.path.userSearch,
+    (root: RootState) => root.route.userSearch,
     shallowEqual,
   );
   const {prevPosts, newPosts} = useSelector(
@@ -164,18 +165,6 @@ const HomeScreen = props => {
             <PlusSquare {...iconSettings} color={'black'}></PlusSquare>
           </Col>
         </Row>
-        <Div py10 px10 bgWhite>
-          <Div bg={'gray'} rounded5>
-            <Span bold color={'black'} numberOfLines={1} ellipsizeMode="head">
-              {origin}
-            </Span>
-          </Div>
-          <Div>
-            <Span bold color={'black'} numberOfLines={1} ellipsizeMode="head">
-              {destination}
-            </Span>
-          </Div>
-        </Div>
         <Animated.ScrollView
           showsVerticalScrollIndicator={false}
           stickyHeaderIndices={[1]}
@@ -187,7 +176,7 @@ const HomeScreen = props => {
               onRefresh={pullToRefresh}
             />
           }>
-          <Div pt10>
+          <Div>
             {/* <Row itemsCenter py10 px10 bgWhite onPress={goToMap}>
               <Col flex={1} itemsCenter>
                 <Span
@@ -213,7 +202,32 @@ const HomeScreen = props => {
                 </Span>
               </Col>
             </Row> */}
-            <Row h250 overflowHidden onPress={goToMap}>
+            <Row py5 px10 bgWhite mt10>
+              <Col bg={'#f5f5f5'} rounded5 py5 px10 my5 mr5>
+                <Span
+                  bold
+                  color={'black'}
+                  numberOfLines={1}
+                  ellipsizeMode="head">
+                  {shortenAddress(origin)}
+                </Span>
+              </Col>
+              <Col mx5 auto itemsCenter justifyCenter>
+                <Span>
+                  <ArrowRight color={'black'} height={14}></ArrowRight>
+                </Span>
+              </Col>
+              <Col bg={'#f5f5f5'} rounded5 py5 px10 my5 ml5>
+                <Span
+                  bold
+                  color={'black'}
+                  numberOfLines={1}
+                  ellipsizeMode="head">
+                  {shortenAddress(destination)}
+                </Span>
+              </Col>
+            </Row>
+            <Row h250 overflowHidden onPress={goToMap} mt10>
               <Col px20 py10 w={'50%'} bgWhite>
                 <Div p20 rounded5>
                   <Row>

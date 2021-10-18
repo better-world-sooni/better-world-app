@@ -17,13 +17,18 @@ import { NAV_NAMES } from 'src/modules/navNames';
 import { FlatList, ScrollView, View } from 'src/modules/viewComponents';
 import { useApiPOST, useApiSelector, useReloadGET } from 'src/redux/asyncReducer';
 import { useDispatch } from 'react-redux';
-import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
-import MapViewDirections from 'src/components/MapViewDirections';
-import { Dimensions } from 'react-native';
-import { ICONS } from 'src/modules/icons';
-import { confirmCurrentRoute } from 'src/redux/pathReducer';
-import { Map, PlusSquare, Menu, Plus, ChevronRight, ArrowRight, Code, ChevronDown, Bell, Info, Lock, Send, Folder, Edit, Rss, LogOut } from 'react-native-feather';
-import LinearGradient from 'react-native-linear-gradient';
+import {confirmCurrentRoute} from 'src/redux/routeReducer';
+import {
+  Map,
+  Bell,
+  Info,
+  Lock,
+  Send,
+  Folder,
+  Edit,
+  Rss,
+  LogOut,
+} from 'react-native-feather';
 import { HAS_NOTCH } from 'src/modules/constants';
 import { useLogout } from 'src/redux/appReducer';
 

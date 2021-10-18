@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-const pathSlice = createSlice({
-  name: 'path',
+const routeSlice = createSlice({
+  name: 'route',
   initialState: {
     userSearch: {
       origin: "",
@@ -26,6 +26,6 @@ const pathSlice = createSlice({
   },
 });
 
-export const pathReducer = pathSlice.reducer;
+export const routeReducer = routeSlice.reducer;
 export const { setUserSearchOrigin, setUserSearchDestination, setCurrentRouteIndex, confirmCurrentRoute } =
-  pathSlice.actions;
+  routeSlice.actions;

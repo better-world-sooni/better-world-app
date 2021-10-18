@@ -32,12 +32,14 @@ const MapScreen = ({route}) => {
 	const navigation = useNavigation();
 	const apiPOST = useApiPOST()
 
-	const { origin, destination} = useSelector(
-        (root: RootState) => (root.path.userSearch), shallowEqual
-    );
-	const CurrentRouteIndex = useSelector(
-        (root: RootState) => (root.path.currentRouteIndex), shallowEqual
-    );
+	const {origin, destination} = useSelector(
+    (root: RootState) => root.route.userSearch,
+    shallowEqual,
+  );
+  const CurrentRouteIndex = useSelector(
+    (root: RootState) => root.route.currentRouteIndex,
+    shallowEqual,
+  );
 
 	const Route = directions?.routes[CurrentRouteIndex] || defaultRoute?.route
 
