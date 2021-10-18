@@ -18,15 +18,12 @@ const TopHeader = props => {
 
   const onPressGoBack = useGoBack(onGoBack);
   return (
-    <Div >
-      <StatusBar animated={true} barStyle='light-content'/>
-      <Div h={HAS_NOTCH ? 44 : 20} bg={headerColor}/>
-      <Row
-        w="100%"
-        h54
-        bg={headerColor}>
+    <Div>
+      <StatusBar animated={true} barStyle="light-content" />
+      <Div h={HAS_NOTCH ? 44 : 20} bg={headerColor} />
+      <Row w="100%" h54 bg={headerColor}>
         <Col w50 auto pl20 justifyCenter onPress={onPressGoBack}>
-          {headerColor == "black" ? (
+          {headerColor == 'black' ? (
             <Img w7 h12 source={ICONS.icChveronLeftWhite100} />
           ) : (
             <Img w7 h12 source={ICONS.iconChevronLeftBold} />
@@ -38,13 +35,16 @@ const TopHeader = props => {
             numberOfLines={1}
             bold
             fontSize={14}
-            color={headerColor == "black" ? varStyle.white : varStyle.black}>
+            color={headerColor == 'black' ? varStyle.white : varStyle.black}>
             {title ? title : headerTitle}
           </Span>
         </Col>
-        <Col pr20 w50 auto onPress={onPressNext} justifyCenter itemsCenter><Span medium color={GO_COLOR}>{nextText}</Span></Col>
+        <Col pr20 w50 auto onPress={onPressNext} justifyCenter itemsCenter>
+          <Span medium color={GO_COLOR}>
+            {nextText}
+          </Span>
+        </Col>
       </Row>
-      
     </Div>
   );
 };

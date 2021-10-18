@@ -160,41 +160,51 @@ const ChatManager = () => {
         })
     }
 
-    return(
-        <>
-            {chatHead.enabled && <ChatHead><MessageCircle height={30} width={30} ></MessageCircle></ChatHead>}
-            <Modal 
-                // presentationStyle="pageSheet" 
-                visible={chatBody.enabled} 
-                animationType={'slide'}
-                transparent={true} 
-                style={{ display: 'flex'}}
-                >
-                <Div h={HAS_NOTCH ? 44 : 20}/>
-                <Div h80>
-                </Div>
-                <Div rounded20 bgWhite flex={1} {...shadowProp}>
-                    <Div itemsCenter justifyCenter h50>
-                    <Span bold fontSize={20}>{chatRooms[chatBody.enabledRoomId]?.title || ''}</Span>
-                    </Div>
-                    <GiftedChat
-                    messages={chatRooms[chatBody.enabledRoomId]?.messages || []}
-                    onSend={messages => onSend(messages)}
-                    user={{
-                        _id: metasunganUser._id,
-                        name: metasunganUser.username,
-                        avatar: null,
-                    }}
-                    />
-                </Div>
-                {Object.keys(chatRooms).map((key, index, array) => {
-                    return(
-                        <ChatModalHead chatRoom={chatRooms[key]} index={index} length={array} key={index}><X height={30} width={30} ></X></ChatModalHead>
-                    )
-                })}
-            </Modal>
-        </>
-    )
+    return (
+      <>
+        {chatHead.enabled && (
+          <ChatHead>
+            <MessageCircle height={30} width={30}></MessageCircle>
+          </ChatHead>
+        )}
+        <Modal
+          // presentationStyle="pageSheet"
+          visible={chatBody.enabled}
+          animationType={'slide'}
+          transparent={true}
+          style={{display: 'flex'}}>
+          <Div h={HAS_NOTCH ? 44 : 20} />
+          <Div h80></Div>
+          <Div rounded20 bgWhite flex={1} {...shadowProp}>
+            <Div itemsCenter justifyCenter h50>
+              <Span bold fontSize={20}>
+                {chatRooms[chatBody.enabledRoomId]?.title || ''}
+              </Span>
+            </Div>
+            <GiftedChat
+              messages={chatRooms[chatBody.enabledRoomId]?.messages || []}
+              onSend={messages => onSend(messages)}
+              user={{
+                _id: metasunganUser._id,
+                name: metasunganUser.username,
+                avatar: null,
+              }}
+            />
+          </Div>
+          {[Object.keys(chatRooms)[0]].map((key, index, array) => {
+            return (
+              <ChatModalHead
+                chatRoom={chatRooms[key]}
+                index={index}
+                length={array}
+                key={index}>
+                <X height={30} width={30}></X>
+              </ChatModalHead>
+            );
+          })}
+        </Modal>
+      </>
+    );
 }
 
 export default ChatManager;
