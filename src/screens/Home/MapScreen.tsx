@@ -84,10 +84,10 @@ const MapScreen = ({route}) => {
 	const goToSearch = () => navigation.navigate(NAV_NAMES.Search)
 
 	const postDefaultRoute = () => {
-		apiPOST({
-			main: false,
-			route: Route
-		})
+		apiPOST(APIS.route.starred(), {
+      main: false,
+      route: Route,
+    });
 	}
 
 	const iconSettings = {

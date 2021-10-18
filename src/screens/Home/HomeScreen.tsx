@@ -164,6 +164,18 @@ const HomeScreen = props => {
             <PlusSquare {...iconSettings} color={'black'}></PlusSquare>
           </Col>
         </Row>
+        <Div py10 px10 bgWhite>
+          <Div bg={'gray'} rounded5>
+            <Span bold color={'black'} numberOfLines={1} ellipsizeMode="head">
+              {origin}
+            </Span>
+          </Div>
+          <Div>
+            <Span bold color={'black'} numberOfLines={1} ellipsizeMode="head">
+              {destination}
+            </Span>
+          </Div>
+        </Div>
         <Animated.ScrollView
           showsVerticalScrollIndicator={false}
           stickyHeaderIndices={[1]}
