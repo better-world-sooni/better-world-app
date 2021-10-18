@@ -157,16 +157,27 @@ const HomeScreen = props => {
     borderBottomWidth: 0.5,
   };
 
+
   return (
     <Div flex>
+      <Div h={HAS_NOTCH ? 44 : 20} bgWhite />
       <Div flex relative>
-        <Div h={HAS_NOTCH ? 44 : 20} bgWhite />
+        <Row itemsCenter py5 px20 bgWhite>
+          <Col auto rounded30 overflowHidden mr10>
+            <Img source={IMAGES.example2} w30 h30></Img>
+          </Col>
+          <Col></Col>
+          <Col auto onPress={goToReport} px10>
+            <AlertCircle {...iconSettings} color={'red'}></AlertCircle>
+          </Col>
+          <Col auto onPress={goToPost} px10>
+            <PlusSquare {...iconSettings} color={'black'}></PlusSquare>
+          </Col>
+        </Row>
         <ScrollView
           showsVerticalScrollIndicator={false}
           stickyHeaderIndices={[0]}
           stickyHeaderHiddenOnScroll={true}
-          // onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: animatedScrollYValue } } }], {useNativeDriver: true})}
-          scrollEventThrottle={16}
           refreshControl={
             <RefreshControl
               refreshing={starredLoading}
@@ -174,18 +185,6 @@ const HomeScreen = props => {
             />
           }>
           <Div>
-            <Row itemsCenter py5 px20 bgWhite>
-              <Col auto rounded30 overflowHidden mr10>
-                <Img source={IMAGES.example2} w30 h30></Img>
-              </Col>
-              <Col></Col>
-              <Col auto onPress={goToReport} px10>
-                <AlertCircle {...iconSettings} color={'red'}></AlertCircle>
-              </Col>
-              <Col auto onPress={goToPost} px10>
-                <PlusSquare {...iconSettings} color={'black'}></PlusSquare>
-              </Col>
-            </Row>
             <Row px10 bgWhite>
               <Col
                 bg={'#f5f5f5'}
@@ -233,9 +232,16 @@ const HomeScreen = props => {
               </Col>
               <Col>
                 <ScrollView horizontal>
-                  {currentVehicles.map(vehicle => {
+                  {currentVehicles.map((vehicle, index) => {
                     return (
-                      <Div auto bg={vehicle.color} px10 py5 rounded5 ml10>
+                      <Div
+                        auto
+                        bg={vehicle.color}
+                        px10
+                        py5
+                        rounded5
+                        ml10
+                        key={index}>
                         <Span medium fontSize={14} white>
                           {vehicle.shortName}
                         </Span>
@@ -249,7 +255,7 @@ const HomeScreen = props => {
                   </Div>
                   <Div auto bg={'rgb(44,44,46)'} px10 py5 rounded5 ml10>
                     <Span medium fontSize={14} white>
-                      공지사항
+                      공지
                     </Span>
                   </Div>
                 </ScrollView>
@@ -319,10 +325,10 @@ const HomeScreen = props => {
                 </ScrollView>
               </Col>
             </Row> */}
-            {prevPosts.map(item => {
+            {prevPosts.map((item, index) => {
               const sungan = item.sungan;
               return (
-                <Row overflowHidden mt10 bgWhite flex py5>
+                <Row overflowHidden mt10 bgWhite flex py5 key={index}>
                   <Col>
                     <Row itemsCenter px20 py10>
                       <Col auto rounded30 overflowHidden mr10>
@@ -374,9 +380,10 @@ const HomeScreen = props => {
                         }개 댓글 더보기`}</Span>
                       </Row>
                     )}
-                    {sungan.comments.slice(0, 1).map(comment => {
+                    {sungan.comments.slice(0, 1).map((comment, index) => {
                       return (
                         <Row
+                          key={index}
                           itemsCenter
                           justifyCenter
                           px20
