@@ -32,7 +32,11 @@ export const Span = props => {
     style: StyleSheet.flatten(textStyles),
   });
   return (
-    <Text ref={innerRef} {...mergedProps} style={[{fontFamily: 'NotoSansKR-Regular'}, sheet.style]}>
+    //NotoSansKR-Regular
+    <Text
+      ref={innerRef}
+      {...mergedProps}
+      style={[{fontFamily: 'Helvetica Neue', fontSize: 13}, sheet.style]}>
       {props.children}
     </Text>
   );

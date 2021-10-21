@@ -30,6 +30,8 @@ import {
   ArrowRight,
   ChevronLeft,
   Filter,
+  RefreshCw,
+  Hash,
 } from 'react-native-feather';
 import RouteShelf from 'src/components/RouteShelf';
 import MapboxGL from '@react-native-mapbox-gl/maps';
@@ -44,6 +46,8 @@ import {
 import {shortenAddress} from 'src/modules/utils';
 import {RootState} from 'src/redux/rootReducer';
 import {setNewPosts, setPrevPosts} from 'src/redux/feedReducer';
+import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
+import {faSubway} from '@fortawesome/free-solid-svg-icons';
 
 const HomeScreen = props => {
   MapboxGL.setAccessToken(
@@ -77,7 +81,6 @@ const HomeScreen = props => {
   const setOrigin = origin => dispatch(setUserSearchOrigin(origin));
   const setDestination = destination =>
     dispatch(setUserSearchDestination(destination));
-  const goToMap = () => navigation.navigate(NAV_NAMES.Map);
   const goToPost = () => navigation.navigate(NAV_NAMES.Post);
   const goToReport = () => navigation.navigate(NAV_NAMES.Report);
 
@@ -142,27 +145,29 @@ const HomeScreen = props => {
   const iconSettings = {
     strokeWidth: 1.5,
     color: 'black',
-    height: 30,
+    height: 20,
   };
 
-  const shadowProp = {
-    shadowOffset: {height: 1, width: 1},
-    shadowColor: 'gray',
-    shadowOpacity: 0.5,
-    shadowRadius: 3,
+  const shadowProp = opacity => {
+    return {
+      shadowOffset: {height: 1, width: 1},
+      shadowColor: 'rgb(199,199,204)',
+      shadowOpacity: opacity,
+      shadowRadius: 10,
+    };
   };
 
-  const borderBottomProp = {
-    borderBottomColor: 'rbg(229, 229, 234, 0.3)',
-    borderBottomWidth: 0.5,
+  const textShadowProp = {
+    textShadowColor: 'rgb(199,199,204)',
+    textShadowOffset: {width: 1, height: 1},
+    textShadowRadius: 10,
   };
-
 
   return (
     <Div flex>
-      <Div h={HAS_NOTCH ? 44 : 20} bgWhite />
+      <Div h={HAS_NOTCH ? 44 : 20} bg={'rgba(255,255,255,.9)'} />
       <Div flex relative>
-        <Row itemsCenter py5 px20 bgWhite>
+        <Row itemsCenter py5 px20 bg={'rgba(255,255,255,.9)'}>
           <Col auto rounded30 overflowHidden mr10>
             <Img source={IMAGES.example2} w30 h30></Img>
           </Col>
@@ -184,8 +189,8 @@ const HomeScreen = props => {
               onRefresh={pullToRefresh}
             />
           }>
-          <Div>
-            <Row px10 bgWhite>
+          <Div bg={'rgba(255,255,255,.9)'}>
+            <Row px10>
               <Col
                 bg={'#f5f5f5'}
                 rounded5
@@ -205,7 +210,7 @@ const HomeScreen = props => {
               </Col>
               <Col mx5 auto itemsCenter justifyCenter>
                 <Span>
-                  <ArrowRight color={'black'} height={14}></ArrowRight>
+                  <RefreshCw color={'black'} height={14}></RefreshCw>
                 </Span>
               </Col>
               <Col
@@ -226,195 +231,255 @@ const HomeScreen = props => {
                 </Span>
               </Col>
             </Row>
-            <Row px10 bgWhite py5>
-              <Col auto rounded5 px10 bg={'#f5f5f5'}>
-                <Filter {...iconSettings}></Filter>
+            <Row px10 py5>
+              <Col
+                auto
+                rounded5
+                px10
+                bg={'rgba(255,255,255,.9)'}
+                mr10
+                justifyCenter
+                style={{borderWidth: 0.5, borderColor: 'rgb(199,199,204)'}}>
+                <Hash {...iconSettings}></Hash>
               </Col>
               <Col>
-                <ScrollView horizontal>
-                  {currentVehicles.map((vehicle, index) => {
-                    return (
-                      <Div
-                        auto
-                        bg={vehicle.color}
-                        px10
-                        py5
-                        rounded5
-                        ml10
-                        key={index}>
-                        <Span medium fontSize={14} white>
-                          {vehicle.shortName}
-                        </Span>
-                      </Div>
-                    );
-                  })}
-                  <Div auto bg={'rgb(255,59,48)'} px10 py5 rounded5 ml10>
-                    <Span medium fontSize={14} white>
-                      신고
+                <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                  <Div
+                    auto
+                    bg={'rgb(250, 196, 192)'}
+                    px10
+                    py5
+                    rounded5
+                    mr10
+                    justifyCenter>
+                    <Span medium color={'rgb(255,69,58)'}>
+                      민원
                     </Span>
                   </Div>
-                  <Div auto bg={'rgb(44,44,46)'} px10 py5 rounded5 ml10>
-                    <Span medium fontSize={14} white>
-                      공지
-                    </Span>
-                  </Div>
+                  {['핫플/맛집', '음악', '시사', '스포츠', '게임'].map(
+                    (item, index) => {
+                      return (
+                        <Div
+                          key={index}
+                          auto
+                          bg={'#f5f5f5'}
+                          px10
+                          py5
+                          rounded5
+                          mr10
+                          justifyCenter>
+                          <Span medium black>
+                            {item}
+                          </Span>
+                        </Div>
+                      );
+                    },
+                  )}
                 </ScrollView>
+              </Col>
+              <Col
+                bg={'#33a23d'}
+                auto
+                w50
+                itemsCenter
+                justifyCenter
+                rounded5
+                ml10>
+                <Span white>전역</Span>
               </Col>
             </Row>
           </Div>
-          <Div>
-            <Row h250 overflowHidden onPress={goToMap} mt10>
-              <Col px20 py10 w={'50%'} bgWhite>
-                <Div p20 rounded5>
-                  <Row>
-                    <Span fontSize={14}>예상 소요 시간</Span>
-                  </Row>
-                  <Row>
-                    <Span bold fontSize={30}>
-                      31분
-                    </Span>
-                  </Row>
-                </Div>
+          <Div mt10 bg={'rgba(255,255,255,.9)'} py20>
+            <Row px20>
+              <Col justifyCenter itemsCenter>
+                <Span medium numberOfLines={1} ellipsizeMode="head">
+                  성수역
+                </Span>
               </Col>
-              <Col w={'50%'}>
-                <MapboxGL.MapView
-                  style={{flex: 1}}
-                  styleURL={
-                    'mapbox://styles/nomacguffins/cktjvxy3m0sd017qwn660ct0g'
-                  }
-                  logoEnabled={false}
-                  compassEnabled={false}
-                  zoomEnabled={false}
-                  scrollEnabled={false}
-                  pitchEnabled={false}
-                  rotateEnabled={false}>
-                  <MapboxGL.UserLocation></MapboxGL.UserLocation>
-                  <MapboxGL.Camera
-                    maxBounds={{
-                      ne: [37.715133, 127.269311],
-                      sw: [37.413294, 126.734086],
-                    }}
-                    defaultSettings={{bounds: calculatInitialMapRegion()}}
-                    bounds={calculatInitialMapRegion()}
-                    zoomLevel={9}></MapboxGL.Camera>
-                  {currentRoute && <MapViewDirections route={currentRoute} />}
-                </MapboxGL.MapView>
+              <Col auto w150 itemsCenter py10>
+                <Span medium color={'rgb(255,69,58)'}>
+                  다음 열차까지 3:12
+                </Span>
+              </Col>
+              <Col justifyCenter itemsCenter>
+                <Span medium numberOfLines={1} ellipsizeMode="tail">
+                  동대문역사문화공원역
+                </Span>
               </Col>
             </Row>
-            {/* <Row my5>
-              <Col>
-                <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                  <Div bgWhite rounded20 overflowHidden py5 px10 mr10>
-                    <Search {...iconSettings}></Search>
-                  </Div>
-                  <Div bgWhite rounded20 overflowHidden px20 py5 mr10>
-                    <Span bold>#순간인기</Span>
-                  </Div>
-                  <Div bgWhite rounded20 overflowHidden px20 py5 mr10>
-                    <Span bold>#유머</Span>
-                  </Div>
-                  <Div bgWhite rounded20 overflowHidden px20 py5 mr10>
-                    <Span bold>#뉴스</Span>
-                  </Div>
-                  <Div bgWhite rounded20 overflowHidden px20 py5 mr10>
-                    <Span bold>#빌런</Span>
-                  </Div>
-                  <Div bgWhite rounded20 overflowHidden px20 py5 mr10>
-                    <Span bold>#기타</Span>
-                  </Div>
-                </ScrollView>
+            <Row pb10>
+              <Col justifyCenter>
+                <Div h10 bg={'#33a23d'}></Div>
               </Col>
-            </Row> */}
+              <Col
+                auto
+                w200
+                borderWidth={3}
+                borderColor={'#33a23d'}
+                rounded20
+                itemsCenter
+                py10
+                bgWhite>
+                <Span fontSize={23} bold>
+                  건대입구역
+                </Span>
+              </Col>
+              <Col justifyCenter flex>
+                <Row h10 bg={'#33a23d'}></Row>
+              </Col>
+            </Row>
+            <Row pt5>
+              {[
+                {state: 0},
+                {state: 0},
+                {state: 1, riding: false},
+                {state: 0},
+                {state: 0},
+              ].map(item => {
+                return (
+                  <Col justifyCenter itemsCenter>
+                    {item.state == 1 && (
+                      <Div itemsCenter>
+                        <Span
+                          medium
+                          fontSize={10}
+                          color={item.riding ? 'rgb(255,69,58)' : 'black'}
+                          style={{...textShadowProp}}>
+                          {item.riding ? '탑승중' : '탑승하기'}
+                        </Span>
+                        <FontAwesomeIcon
+                          icon={faSubway}
+                          color={'#33a23d'}
+                          size={18}></FontAwesomeIcon>
+                      </Div>
+                    )}
+                  </Col>
+                );
+              })}
+            </Row>
+            <Row pb5>
+              {[0, 1, 2, 3, 4].map(() => {
+                return (
+                  <Col justifyCenter itemsCenter bg={'#33a23d'} h10>
+                    <Div
+                      borderColor={'white'}
+                      borderWidth={2}
+                      rounded5
+                      w10
+                      h10
+                      bg={'white'}></Div>
+                  </Col>
+                );
+              })}
+            </Row>
+            <Row pt5>
+              {[
+                {name: 0},
+                {name: 0},
+                {name: 0},
+                {name: 1, current: true},
+                {name: 0},
+              ].map(item => {
+                return (
+                  <Col justifyCenter itemsCenter>
+                    <Div itemsCenter>
+                      <Span
+                        medium
+                        fontSize={10}
+                        style={{...textShadowProp}}
+                        color={item.current ? 'rgb(255,69,58)' : 'black'}>
+                        {item.name}
+                      </Span>
+                    </Div>
+                  </Col>
+                );
+              })}
+            </Row>
+          </Div>
+          <Div>
             {prevPosts.map((item, index) => {
               const sungan = item.sungan;
               return (
-                <Row overflowHidden mt10 bgWhite flex py5 key={index}>
-                  <Col>
-                    <Row itemsCenter px20 py10>
-                      <Col auto rounded30 overflowHidden mr10>
-                        <Img source={IMAGES.example2} w30 h30></Img>
+                <Div mt10 bg={'rgba(255,255,255,.9)'} py5 key={index}>
+                  <Row itemsCenter px20 py10>
+                    <Col auto rounded30 overflowHidden mr10>
+                      <Img source={IMAGES.example2} w25 h25></Img>
+                    </Col>
+                    <Col auto>
+                      <Span medium>irlglo</Span>
+                    </Col>
+                    <Col></Col>
+                    <Col auto px10 py5 rounded5>
+                      <Span medium>전체</Span>
+                    </Col>
+                  </Row>
+                  <Div px20 py10>
+                    <Row rounded20 bgWhite w={'100%'}>
+                      <Col auto justifyCenter itemsCenter px20>
+                        <Span fontSize={70}>{sungan.emoji}</Span>
                       </Col>
-                      <Col auto>
-                        <Span medium fontSize={14}>
-                          irlglo
+                      <Col justifyCenter>
+                        <Span color={'black'} bold>
+                          {sungan.text}
                         </Span>
                       </Col>
-                      <Col></Col>
-                      <Col auto bg={sungan.vehicle.colorCode} px10 py5 rounded5>
-                        <Span medium fontSize={14} white>
-                          {sungan.vehicle.name}
-                        </Span>
-                      </Col>
                     </Row>
-                    <Row itemsCenter>
-                      <Col></Col>
-                      <Col auto>
-                        <Span fontSize={100}>{sungan.emoji}</Span>
-                      </Col>
-                      <Col></Col>
-                    </Row>
-                    <Row itemsCenter px20 pt10 pb5 bgWhite>
-                      <Col></Col>
-                      <Col auto>
-                        <Row>
-                          <Col auto px5>
-                            <MessageCircle {...iconSettings}></MessageCircle>
-                          </Col>
-                          <Col auto px5>
-                            <Heart
-                              {...iconSettings}
-                              fill={sungan.isLiked && 'red'}></Heart>
-                          </Col>
-                        </Row>
-                      </Col>
-                    </Row>
-                    <Row itemsCenter px20 pb10 pt5 bgWhite>
-                      <Span color={'black'} bold>
-                        {sungan.text}
-                      </Span>
-                    </Row>
-                    {sungan.comments.length > 1 && (
-                      <Row itemsCenter px20 py5 bgWhite>
-                        <Span color={'gray'}>{`${
-                          sungan.comments.length - 1
-                        }개 댓글 더보기`}</Span>
+                  </Div>
+                  <Row itemsCenter px20 pt10 pb5>
+                    <Col></Col>
+                    <Col auto>
+                      <Row>
+                        <Col auto px5>
+                          <MessageCircle {...iconSettings}></MessageCircle>
+                        </Col>
+                        <Col auto px5>
+                          <Heart
+                            {...iconSettings}
+                            fill={sungan.isLiked && 'red'}></Heart>
+                        </Col>
                       </Row>
-                    )}
-                    {sungan.comments.slice(0, 1).map((comment, index) => {
-                      return (
-                        <Row
-                          key={index}
+                    </Col>
+                  </Row>
+                  {sungan.comments.length > 1 && (
+                    <Row itemsCenter px20 py5>
+                      <Span color={'gray'}>{`${
+                        sungan.comments.length - 1
+                      }개 댓글 더보기`}</Span>
+                    </Row>
+                  )}
+                  {sungan.comments.slice(0, 1).map((comment, index) => {
+                    return (
+                      <Row
+                        key={index}
+                        itemsCenter
+                        justifyCenter
+                        px20
+                        pb10
+                        pt5
+                        flex>
+                        <Col
+                          auto
                           itemsCenter
                           justifyCenter
-                          px20
-                          pb10
-                          pt5
-                          bgWhite
-                          flex>
-                          <Col
-                            auto
-                            itemsCenter
-                            justifyCenter
-                            rounded20
-                            overflowHidden>
-                            <Img source={IMAGES.example2} w15 h15></Img>
-                          </Col>
-                          <Col mx10 justifyCenter>
-                            <Row>
-                              <Span medium color={'black'}>
-                                irlyglo
-                              </Span>
-                              <Span ml5>{comment.content}</Span>
-                            </Row>
-                          </Col>
-                          <Col auto itemsCenter justifyCenter>
-                            <Heart color={'black'} height={14}></Heart>
-                          </Col>
-                        </Row>
-                      );
-                    })}
-                  </Col>
-                </Row>
+                          rounded20
+                          overflowHidden>
+                          <Img source={IMAGES.example2} w15 h15></Img>
+                        </Col>
+                        <Col mx10 justifyCenter>
+                          <Row>
+                            <Span medium color={'black'}>
+                              irlyglo
+                            </Span>
+                            <Span ml5>{comment.content}</Span>
+                          </Row>
+                        </Col>
+                        <Col auto itemsCenter justifyCenter>
+                          <Heart color={'black'} height={14}></Heart>
+                        </Col>
+                      </Row>
+                    );
+                  })}
+                </Div>
               );
             })}
             <Row

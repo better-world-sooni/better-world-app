@@ -6,9 +6,8 @@ import React from 'react';
 import BottomTabBar from 'src/components/BottomTabBar';
 import {NAV_NAMES} from 'src/modules/navNames';
 import HomeScreen from 'src/screens/Home/HomeScreen';
-import MapScreen from 'src/screens/Home/MapScreen';
 import SearchScreen from 'src/screens/SearchScreen';
-import { Grid, Home, Map, MessageCircle, User, X } from 'react-native-feather';
+import {Grid, Home, Map, MessageCircle, User, X} from 'react-native-feather';
 import CameraScreen from 'src/screens/CameraScreen';
 import ProfileScreen from 'src/screens/Home/ProfileScreen';
 import SplashScreen from 'src/screens/Common/SplashScreen';
@@ -18,8 +17,8 @@ import SelectScreen from 'src/screens/SelectScreen';
 import MetaSunganScreen from 'src/screens/Home/MetaverseScreen';
 import ReportScreen from 'src/screens/ReportScreen';
 import ChatManager from './ChatManager';
-import { shallowEqual, useSelector } from 'react-redux';
-import { RootState } from 'src/redux/rootReducer';
+import {shallowEqual, useSelector} from 'react-redux';
+import {RootState} from 'src/redux/rootReducer';
 
 const RootStack = createStackNavigator();
 
@@ -29,35 +28,38 @@ const tabBarFunc = props => <BottomTabBar {...props} />;
 
 const MainBottomTabs = () => {
   return (
-    <Tab.Navigator
-      tabBar={tabBarFunc}
-      initialRouteName={NAV_NAMES.Home}>
+    <Tab.Navigator tabBar={tabBarFunc} initialRouteName={NAV_NAMES.Home}>
       <Tab.Screen
         name={NAV_NAMES.Home}
         component={HomeScreen}
         options={{
-          tabBarIcon: (props) => <Home color={props.focused ? "black" : "gray"} strokeWidth={1.5}></Home>
+          tabBarIcon: props => (
+            <Home
+              color={props.focused ? 'black' : 'gray'}
+              strokeWidth={1.5}></Home>
+          ),
         }}
       />
       <Tab.Screen
         name={NAV_NAMES.Metaverse}
         component={MetaSunganScreen}
         options={{
-          tabBarIcon: (props) => <Grid color={props.focused ? "black" : "gray"} strokeWidth={1.5}></Grid>
-        }}
-      />
-      <Tab.Screen
-        name={NAV_NAMES.Map}
-        component={MapScreen}
-        options={{
-          tabBarIcon: (props) => <Map color={props.focused ? "black" : "gray"} strokeWidth={1.5}></Map>
+          tabBarIcon: props => (
+            <Grid
+              color={props.focused ? 'black' : 'gray'}
+              strokeWidth={1.5}></Grid>
+          ),
         }}
       />
       <Tab.Screen
         name={NAV_NAMES.Profile}
         component={ProfileScreen}
         options={{
-          tabBarIcon: (props) => <User color={props.focused ? "black" : "gray"} strokeWidth={1.5}></User>
+          tabBarIcon: props => (
+            <User
+              color={props.focused ? 'black' : 'gray'}
+              strokeWidth={1.5}></User>
+          ),
         }}
       />
     </Tab.Navigator>
@@ -75,7 +77,6 @@ export const AppContent = () => {
       component: SplashScreen,
       options: props => ({
         header: topHeader({...props, headerShown: false}),
-        
       }),
     },
     {
@@ -90,15 +91,7 @@ export const AppContent = () => {
       component: MainBottomTabs,
       options: props => ({
         header: topHeader({...props, headerShown: false}),
-        cardStyle: { backgroundColor: 'white', presentation: 'screen'},
-      }),
-    },
-    {
-      name: NAV_NAMES.Map,
-      component: MapScreen,
-      options: props => ({
-        header: topHeader({...props, headerShown: false}),
-        cardStyle: { backgroundColor: 'white', presentation: 'screen' },
+        cardStyle: {backgroundColor: 'white', presentation: 'screen'},
       }),
     },
     {
@@ -106,7 +99,7 @@ export const AppContent = () => {
       component: CameraScreen,
       options: props => ({
         header: topHeader({...props, headerShown: false}),
-        cardStyle: { backgroundColor: 'white', presentation: 'modal' },
+        cardStyle: {backgroundColor: 'white', presentation: 'modal'},
       }),
     },
     {
@@ -114,7 +107,7 @@ export const AppContent = () => {
       component: SearchScreen,
       options: props => ({
         header: topHeader({...props, headerShown: false}),
-        cardStyle: { backgroundColor: 'white', presentation: 'screen' },
+        cardStyle: {backgroundColor: 'white', presentation: 'screen'},
       }),
     },
     {
@@ -122,47 +115,46 @@ export const AppContent = () => {
       component: ProfileScreen,
       options: props => ({
         header: topHeader({...props, headerShown: false}),
-        cardStyle: { backgroundColor: 'transparent' }, 
+        cardStyle: {backgroundColor: 'transparent'},
       }),
     },
     {
       name: NAV_NAMES.Post,
       component: PostScreen,
       options: props => ({
-        header: topHeader({...props,  title: "새 게시물"}),
+        header: topHeader({...props, title: '새 게시물'}),
       }),
     },
     {
       name: NAV_NAMES.Report,
       component: ReportScreen,
-      options: props => ({
-      }),
+      options: props => ({}),
     },
     {
       name: NAV_NAMES.Select,
       component: SelectScreen,
       options: props => ({
-        cardStyle: { backgroundColor: 'black', presentation: 'screen' },
+        cardStyle: {backgroundColor: 'black', presentation: 'screen'},
       }),
     },
     {
       name: NAV_NAMES.Metaverse,
       component: MetaSunganScreen,
       options: props => ({
-        cardStyle: { backgroundColor: 'black', presentation: 'screen' },
+        cardStyle: {backgroundColor: 'black', presentation: 'screen'},
       }),
     },
   ];
 
-  const { isLoggedIn, session } = useSelector(
-    (root: RootState) => (root.app),
+  const {isLoggedIn, session} = useSelector(
+    (root: RootState) => root.app,
     shallowEqual,
-);
+  );
 
   return (
     <>
       <NavigationContainer>
-        <RootStack.Navigator screenOptions={{ headerShown: false }}>
+        <RootStack.Navigator screenOptions={{headerShown: false}}>
           {Navs.map((item, i) => (
             <RootStack.Screen
               key={i}

@@ -13,9 +13,26 @@ import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import TopHeader from 'src/components/TopHeader';
 import {useNavigation} from '@react-navigation/core';
 import {GO_COLOR} from 'src/modules/constants';
+import {Square} from 'react-native-feather';
 
 const ReportScreen = props => {
-  const scrollRef = useRef(null);
+  const borderProp = which => {
+    return which
+      ? {
+          borderBottomColor: 'gray',
+          borderBottomWidth: 1.5,
+        }
+      : {
+          borderBottomColor: 'rgb(199,199,204)',
+          borderBottomWidth: 1.5,
+        };
+  };
+
+  const iconSettings = {
+    strokeWidth: 1.5,
+    color: 'black',
+    height: 20,
+  };
 
   return (
     <Div flex>
@@ -26,9 +43,8 @@ const ReportScreen = props => {
           headerColor={'white'}
         />
         <ScrollView
-          ref={scrollRef}
           showsVerticalScrollIndicator={false}
-          style={{backgroundColor: 'white'}}>
+          style={{backgroundColor: 'rgba(255,255,255,.9)'}}>
           <Div>
             <Div py20 borderGray300>
               <Row justifyCenter>
@@ -41,91 +57,86 @@ const ReportScreen = props => {
               </Row>
             </Div>
             <Div px20>
-              <Row mb5 mt15>
-                <Span medium fontSize={20}>
-                  교통수단
-                </Span>
-              </Row>
-              <Row my5 itemsCenter>
-                <Col border h150 itemsCenter justifyCenter rounded5 mr5>
-                  <Span medium fontSize={14}>
-                    <FontAwesomeIcon
-                      icon="subway"
-                      color={'black'}></FontAwesomeIcon>{' '}
-                    지하철
+              <Row rounded20 mb10>
+                <Col itemsCenter py10 {...borderProp(true)}>
+                  <Span medium fontSize={15}>
+                    요청
                   </Span>
                 </Col>
-                <Col border h150 itemsCenter justifyCenter rounded5 ml5>
-                  <Span medium fontSize={14}>
-                    <FontAwesomeIcon
-                      icon="bus"
-                      color={'black'}></FontAwesomeIcon>{' '}
-                    버스
+                <Col itemsCenter py10>
+                  <Span medium fontSize={15} color={'rgb(199,199,204)'}>
+                    신고
                   </Span>
                 </Col>
               </Row>
-              <Row mb5 mt15>
-                <Span medium fontSize={20}>
-                  호선
-                </Span>
-              </Row>
-              <Row my5 itemsCenter>
-                <ScrollView horizontal>
-                  {[1, 2, 3, 4, 5, 6, 7].map(() => {
-                    return (
-                      <Div
-                        h100
-                        w100
-                        itemsCenter
-                        justifyCenter
-                        rounded5
-                        border
-                        mr10>
-                        <Span>1호선</Span>
-                      </Div>
-                    );
-                  })}
+              <Row mb20>
+                <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                  {['냉방/난방', '안내방송', '소음', '기타'].map(
+                    (item, index) => {
+                      return (
+                        <Div
+                          w100
+                          h100
+                          mr10
+                          rounded
+                          itemsCenter
+                          justifyCenter
+                          key={index}
+                          style={{
+                            borderWidth: 0.5,
+                            borderColor: 'rgb(199,199,204)',
+                          }}>
+                          <Span color={'rgb(199,199,204)'}>{item}</Span>
+                        </Div>
+                      );
+                    },
+                  )}
                 </ScrollView>
               </Row>
-              <Row mb5 mt15>
-                <Span medium fontSize={20}>
+              <Row mb10 mt15>
+                <Span medium fontSize={15}>
                   차량번호
                 </Span>
               </Row>
-              <Row my5 itemsCenter>
+              <Row my5 itemsCenter mb20>
                 <Input
-                  onFocus={event => {
-                    scrollRef.current.scrollTo({
-                      x: 0,
-                      y: 300,
-                      animated: true,
-                    });
-                  }}
                   w={'100%'}
-                  variant="underlined"
+                  // {...borderProp(false)}
+                  fontSize={13}
+                  variant="unstyled"
                   textContentType={'none'}
                   numberOfLines={1}
-                  placeholder={'1242323'}></Input>
+                  placeholder={'탑승중: 322391'}></Input>
               </Row>
-              <Row mb5 mt15>
-                <Span medium fontSize={20}>
+              <Row mb10 mt15>
+                <Span medium fontSize={15}>
                   내용
                 </Span>
               </Row>
-              <Row my5 itemsCenter>
-                <TextArea
-                  onFocus={event => {
-                    scrollRef.current.scrollTo({
-                      x: 0,
-                      y: 400,
-                      animated: true,
-                    });
-                  }}
-                  w={'100%'}
-                  h={300}
-                  textContentType={'none'}
-                  numberOfLines={20}
-                  placeholder={'1242323'}></TextArea>
+              <Row mb20 itemsCenter>
+                <Div
+                  // borderWidth={1.5}
+                  rounded
+                  borderColor={'rgb(199,199,204)'}
+                  w={'100%'}>
+                  <TextArea
+                    w={'100%'}
+                    fontSize={13}
+                    variant="unstyled"
+                    textContentType={'none'}
+                    numberOfLines={20}
+                    placeholder={'9번칸 너무 추워요'}></TextArea>
+                </Div>
+              </Row>
+              <Row mb5 mt15>
+                <Col auto>
+                  <Square {...iconSettings}></Square>
+                </Col>
+                <Col>
+                  <Span medium fontSize={15}>
+                    내용
+                  </Span>
+                </Col>
               </Row>
             </Div>
             <Div h200 />

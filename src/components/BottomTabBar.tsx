@@ -55,32 +55,36 @@ const BottomTabBar = ({state, descriptors, navigation}) => {
     };
   });
   return (
-    <Div h80 borderTopLeftRadius={10} borderTopRightRadius={10} overflowHidden >
+    <Div
+      h80
+      borderTopLeftRadius={10}
+      borderTopRightRadius={10}
+      overflowHidden
+      bgWhite>
       {/* <Row ><Col></Col><Col itemsCenter fontSize={15} bold><Span >나는 지금.. 역삼역!</Span></Col><Col></Col></Row> */}
-      <NativeBaseProvider >
-        <Box flex={1} safeAreaTop >
-          <Center flex={1}>
-          </Center>
-          <HStack bg="white" safeAreaBottom paddingTop={5} shadow={1}>
-          {list.map(item => {
-            return (
-              <Div
-                key={item.key}
-                onPress={item.onPress}
-                flex
-                itemsCenter
-                justifyCenter>
-                {item.image}
-                <Span
-                  sectionBody2
-                  styleComp={[
-                    item.isFocused ? <Style primary bold /> : <Style black />,
-                  ]}>
-                  {/* {item.label} */}
-                </Span>
-              </Div>
-            );
-          })}
+      <NativeBaseProvider>
+        <Box flex={1} safeAreaTop>
+          <Center flex={1}></Center>
+          <HStack bg={'white'} safeAreaBottom paddingTop={5} shadow={1}>
+            {list.map(item => {
+              return (
+                <Div
+                  key={item.key}
+                  onPress={item.onPress}
+                  flex
+                  itemsCenter
+                  justifyCenter>
+                  {item.image}
+                  <Span
+                    sectionBody2
+                    styleComp={[
+                      item.isFocused ? <Style primary bold /> : <Style black />,
+                    ]}>
+                    {/* {item.label} */}
+                  </Span>
+                </Div>
+              );
+            })}
           </HStack>
         </Box>
       </NativeBaseProvider>

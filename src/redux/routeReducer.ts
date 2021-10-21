@@ -20,15 +20,26 @@ const routeSlice = createSlice({
     },
     setCurrentRoute: (state, action) => {
       state.currentRoute = action.payload;
-      const newVehicles = action.payload.legs[0].steps.filter((step)=> {return step.transit_details}).map((step, ind) => {
-        const line = step.transit_details.line;
-        return {
-          type: line.vehicle.type,
-          name: line.name,
-          shortName: line.short_name,
-          color: line.color,
-          textColor: line.text_color,
-        };
+      const newVehicles = action.payload.legs[0].steps.map((step, ind) => {
+        const line = step?.transit_details?.line;
+        if(line){
+          return {
+            type: line.vehicle.type,
+            name: line.name,
+            shortName: line.short_name,
+            color: line.color,
+            textColor: line.text_color,
+            htmlInstructions: step.html_instructions,
+            departureStop: step.transit_details.departure_stop.name,
+            arrivalStop: step.transit_details.arrival_stop.name,
+          };
+        } else {
+          return {
+            type: "WALKING",
+            htmlInstructions: step.html_instructions,
+          };
+        }
+        
       })
       state.currentVehicles = newVehicles;
     },

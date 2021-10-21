@@ -8,8 +8,8 @@ export const IMAGES = {
   example3: require('assets/images/example3.webp'),
   rain: require('assets/images/rain.png'),
   sunWithRain: require('assets/images/sunWithRain.png'),
-  imageLogoApple:require('assets/images/imageLogoApple.png'),
-  imageLogoKakaotalk:require('assets/images/imageLogoKakaotalk.png'),
-  imageLogoGoogle:require('assets/images/imageLogoGoogle.png'),
-  imageLogoFacebook:require('assets/images/imageLogoFacebook.png'),
+  imageLogoApple: require('assets/images/imageLogoApple.png'),
+  imageLogoKakaotalk: require('assets/images/imageLogoKakaotalk.png'),
+  imageLogoGoogle: require('assets/images/imageLogoGoogle.png'),
+  imageLogoFacebook: require('assets/images/imageLogoFacebook.png'),
 };
