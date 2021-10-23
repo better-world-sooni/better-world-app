@@ -8,7 +8,6 @@ import {NAV_NAMES} from 'src/modules/navNames';
 import HomeScreen from 'src/screens/Home/HomeScreen';
 import SearchScreen from 'src/screens/SearchScreen';
 import {Grid, Home, Map, MessageCircle, User, X} from 'react-native-feather';
-import CameraScreen from 'src/screens/CameraScreen';
 import ProfileScreen from 'src/screens/Home/ProfileScreen';
 import SplashScreen from 'src/screens/Common/SplashScreen';
 import SignInScreen from 'src/screens/Auth/SignInScreen';
@@ -70,7 +69,7 @@ const topHeader = props => {
   return () => <TopHeader {...props} />;
 };
 
-export const AppContent = () => {
+export const AppContent = ({chatSocket}) => {
   const Navs = [
     {
       name: NAV_NAMES.Splash,
@@ -92,14 +91,6 @@ export const AppContent = () => {
       options: props => ({
         header: topHeader({...props, headerShown: false}),
         cardStyle: {backgroundColor: 'white', presentation: 'screen'},
-      }),
-    },
-    {
-      name: NAV_NAMES.Camera,
-      component: CameraScreen,
-      options: props => ({
-        header: topHeader({...props, headerShown: false}),
-        cardStyle: {backgroundColor: 'white', presentation: 'modal'},
       }),
     },
     {
@@ -165,7 +156,7 @@ export const AppContent = () => {
           ))}
         </RootStack.Navigator>
       </NavigationContainer>
-      {isLoggedIn && <ChatManager></ChatManager>}
+      {isLoggedIn && <ChatManager chatSocket={chatSocket}></ChatManager>}
     </>
   );
 };

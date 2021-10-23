@@ -23,6 +23,7 @@ const chatSlice = createSlice({
             }
         },
         pushNewMessage: (state, action) => {
+            console.log('pushNewMessage pushNewMessage', action.payload)
             state.chatRooms[action.payload.roomId].messages.unshift(action.payload.message);
         },
         setChatRooms: (state, action) => {

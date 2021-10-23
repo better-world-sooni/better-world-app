@@ -5,4 +5,5 @@ import { JWT_TOKEN } from 'src/modules/constants';
 const BACKEND_URL = 'http://localhost:8000/';
 export const manager = new Manager(BACKEND_URL, {
     reconnectionDelayMax: 5000,
+    forceNew: true,
 });

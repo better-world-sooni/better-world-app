@@ -57,22 +57,15 @@ const ProfileScreen = (props) => {
     }, [isLoading]);
 
     const onPressPNList = () => {
-        // initBadgeNum();
-        navigation.navigate(NAV_NAMES.Home);
+      // initBadgeNum();
+      navigation.navigate(NAV_NAMES.Home);
     };
-    const onPressMyRoute = () => {
-        navigation.navigate(NAV_NAMES.Map);
-    }
     // const onPressSunganCam = () => {
     //   navigation.navigate(NAV_NAMES.SunganCam);
     // }
     const expandSearchTab = () => {
-            dispatch(confirmCurrentRoute(false));
-        }
-    const onPressFind = () => {
-        navigation.navigate(NAV_NAMES.Map);
-        expandSearchTab()
-    }
+      dispatch(confirmCurrentRoute(false));
+    };
 
     return (
         <Div flex backgroundColor={"white"}>

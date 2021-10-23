@@ -2,7 +2,6 @@ export const NAV_NAMES = {
     SignIn: 'SignIn',
     SignUp: 'SignUp',
     Home: 'Home',
-    Camera: 'Camera',
     Search: 'Search',
     Mood: 'Mood',
     Villain: 'Villain',

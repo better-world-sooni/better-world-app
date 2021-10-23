@@ -35,7 +35,6 @@ import {
 } from 'react-native-feather';
 import RouteShelf from 'src/components/RouteShelf';
 import MapboxGL from '@react-native-mapbox-gl/maps';
-import type {CameraSettings} from '@react-native-mapbox-gl/maps';
 import {HAS_NOTCH} from 'src/modules/constants';
 import LinearGradient from 'react-native-linear-gradient';
 import {

@@ -1,5 +1,6 @@
 import { useCallback } from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
+import { Socket } from 'socket.io-client';
 import { RootState } from 'src/redux/rootReducer';
 
 export default function useSocketInput() {
@@ -7,13 +8,8 @@ export default function useSocketInput() {
         (root: RootState) => (root.app.session),
         shallowEqual,
     );
-    const { chatSocket } = useSelector(
-        (root: RootState) => (root.chat),
-        shallowEqual,
-    );
-
     const sendChatSocketMessage = useCallback(
-        (action: string, payload: any) => {
+        (chatSocket: Socket,  action: string, payload: any) => {
             if (currentUser.username && chatSocket) {
                 const withDefaultParams = {
                     ...payload,
@@ -25,7 +21,7 @@ export default function useSocketInput() {
                 throw Error('Network Error while sending socket message!');
             }
         },
-        [currentUser?.username, chatSocket]
+        [currentUser?.username]
     );
 
     return sendChatSocketMessage;
