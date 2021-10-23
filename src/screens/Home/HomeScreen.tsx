@@ -143,9 +143,9 @@ const HomeScreen = props => {
   };
 
   const iconSettings = {
-    strokeWidth: 1.5,
+    strokeWidth: 1.3,
     color: 'black',
-    height: 20,
+    height: 25,
   };
 
   const shadowProp = opacity => {
@@ -167,11 +167,18 @@ const HomeScreen = props => {
     <Div flex>
       <Div h={HAS_NOTCH ? 44 : 20} bg={'rgba(255,255,255,.9)'} />
       <Div flex relative>
-        <Row itemsCenter py5 px20 bg={'rgba(255,255,255,.9)'}>
-          <Col auto rounded30 overflowHidden mr10>
-            <Img source={IMAGES.example2} w30 h30></Img>
+        <Row itemsCenter py10 px20 bg={'rgba(255,255,255,.9)'}>
+          <Col auto onPress={goToReport} px10>
+            <Bell {...iconSettings} color={'black'}></Bell>
           </Col>
-          <Col></Col>
+          <Col auto px10>
+            <AlertCircle {...iconSettings} color={'white'}></AlertCircle>
+          </Col>
+          <Col itemsCenter justifyCenter>
+            <Span bold fontSize={15}>
+              출근길 😞
+            </Span>
+          </Col>
           <Col auto onPress={goToReport} px10>
             <AlertCircle {...iconSettings} color={'red'}></AlertCircle>
           </Col>
@@ -194,7 +201,7 @@ const HomeScreen = props => {
               <Col
                 bg={'#f5f5f5'}
                 rounded5
-                py5
+                py7s
                 px10
                 my5
                 mr5
@@ -216,7 +223,7 @@ const HomeScreen = props => {
               <Col
                 bg={'#f5f5f5'}
                 rounded5
-                py5
+                py7
                 px10
                 my5
                 ml5
@@ -231,65 +238,50 @@ const HomeScreen = props => {
                 </Span>
               </Col>
             </Row>
-            <Row px10 py5>
-              <Col
-                auto
-                rounded5
-                px10
-                bg={'rgba(255,255,255,.9)'}
-                mr10
-                justifyCenter
-                style={{borderWidth: 0.5, borderColor: 'rgb(199,199,204)'}}>
-                <Hash {...iconSettings}></Hash>
-              </Col>
-              <Col>
-                <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                  <Div
-                    auto
-                    bg={'rgb(250, 196, 192)'}
-                    px10
-                    py5
-                    rounded5
-                    mr10
-                    justifyCenter>
-                    <Span medium color={'rgb(255,69,58)'}>
-                      민원
-                    </Span>
-                  </Div>
-                  {['핫플/맛집', '음악', '시사', '스포츠', '게임'].map(
-                    (item, index) => {
-                      return (
-                        <Div
-                          key={index}
-                          auto
-                          bg={'#f5f5f5'}
-                          px10
-                          py5
-                          rounded5
-                          mr10
-                          justifyCenter>
-                          <Span medium black>
-                            {item}
-                          </Span>
-                        </Div>
-                      );
-                    },
-                  )}
-                </ScrollView>
-              </Col>
-              <Col
-                bg={'#33a23d'}
-                auto
-                w50
-                itemsCenter
-                justifyCenter
-                rounded5
-                ml10>
-                <Span white>전역</Span>
-              </Col>
+            <Row
+              px10
+              pt10
+              borderBottomColor={'rgb(199,199,204)'}
+              borderBottomWidth={0.5}>
+              <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                <Div
+                  auto
+                  px15
+                  py5
+                  mr10
+                  justifyCenter
+                  borderBottomColor={'black'}
+                  borderBottomWidth={1.5}>
+                  <Span medium color={'black'} fontSize={15}>
+                    전체
+                  </Span>
+                </Div>
+                <Div
+                  auto
+                  borderBottomColor={'rgb(255,69,58)'}
+                  px15
+                  py5
+                  mr10
+                  justifyCenter>
+                  <Span medium color={'rgb(250, 196, 192)'} fontSize={15}>
+                    민원
+                  </Span>
+                </Div>
+                {['전체', '핫플/맛집', '음악', '시사', '스포츠', '게임'].map(
+                  (item, index) => {
+                    return (
+                      <Div key={index} auto px15 py5 mr10 justifyCenter>
+                        <Span medium color={'rgb(199,199,204)'} fontSize={15}>
+                          {item}
+                        </Span>
+                      </Div>
+                    );
+                  },
+                )}
+              </ScrollView>
             </Row>
           </Div>
-          <Div mt10 bg={'rgba(255,255,255,.9)'} py20>
+          <Div bg={'rgba(255,255,255,.9)'} py20>
             <Row px20>
               <Col justifyCenter itemsCenter>
                 <Span medium numberOfLines={1} ellipsizeMode="head">
@@ -335,9 +327,9 @@ const HomeScreen = props => {
                 {state: 1, riding: false},
                 {state: 0},
                 {state: 0},
-              ].map(item => {
+              ].map((item, index) => {
                 return (
-                  <Col justifyCenter itemsCenter>
+                  <Col justifyCenter itemsCenter key={index}>
                     {item.state == 1 && (
                       <Div itemsCenter>
                         <Span
@@ -358,9 +350,9 @@ const HomeScreen = props => {
               })}
             </Row>
             <Row pb5>
-              {[0, 1, 2, 3, 4].map(() => {
+              {[0, 1, 2, 3, 4].map((item, index) => {
                 return (
-                  <Col justifyCenter itemsCenter bg={'#33a23d'} h10>
+                  <Col justifyCenter itemsCenter bg={'#33a23d'} h10 key={index}>
                     <Div
                       borderColor={'white'}
                       borderWidth={2}
@@ -379,9 +371,9 @@ const HomeScreen = props => {
                 {name: 0},
                 {name: 1, current: true},
                 {name: 0},
-              ].map(item => {
+              ].map((item, index) => {
                 return (
-                  <Col justifyCenter itemsCenter>
+                  <Col justifyCenter itemsCenter key={index}>
                     <Div itemsCenter>
                       <Span
                         medium
@@ -400,8 +392,12 @@ const HomeScreen = props => {
             {prevPosts.map((item, index) => {
               const sungan = item.sungan;
               return (
-                <Div mt10 bg={'rgba(255,255,255,.9)'} py5 key={index}>
-                  <Row itemsCenter px20 py10>
+                <Div bg={'rgba(255,255,255,.9)'} pb10 key={index} px20>
+                  <Row
+                    itemsCenter
+                    py20
+                    borderTopColor={'rgb(199,199,204)'}
+                    borderTopWidth={0.3}>
                     <Col auto rounded30 overflowHidden mr10>
                       <Img source={IMAGES.example2} w25 h25></Img>
                     </Col>
@@ -413,8 +409,8 @@ const HomeScreen = props => {
                       <Span medium>전체</Span>
                     </Col>
                   </Row>
-                  <Div px20 py10>
-                    <Row rounded20 bgWhite w={'100%'}>
+                  <Div py10>
+                    <Row rounded20 bgWhite w={'100%'} {...shadowProp(0.3)}>
                       <Col auto justifyCenter itemsCenter px20>
                         <Span fontSize={70}>{sungan.emoji}</Span>
                       </Col>
@@ -425,7 +421,12 @@ const HomeScreen = props => {
                       </Col>
                     </Row>
                   </Div>
-                  <Row itemsCenter px20 pt10 pb5>
+                  <Row itemsCenter pt10 pb5>
+                    <Col auto>
+                      <Row>
+                        <Span medium>순간 좋아요 0개</Span>
+                      </Row>
+                    </Col>
                     <Col></Col>
                     <Col auto>
                       <Row>
@@ -441,7 +442,7 @@ const HomeScreen = props => {
                     </Col>
                   </Row>
                   {sungan.comments.length > 1 && (
-                    <Row itemsCenter px20 py5>
+                    <Row itemsCenter py5>
                       <Span color={'gray'}>{`${
                         sungan.comments.length - 1
                       }개 댓글 더보기`}</Span>
@@ -449,14 +450,7 @@ const HomeScreen = props => {
                   )}
                   {sungan.comments.slice(0, 1).map((comment, index) => {
                     return (
-                      <Row
-                        key={index}
-                        itemsCenter
-                        justifyCenter
-                        px20
-                        pb10
-                        pt5
-                        flex>
+                      <Row key={index} itemsCenter justifyCenter pb10 pt5 flex>
                         <Col
                           auto
                           itemsCenter
