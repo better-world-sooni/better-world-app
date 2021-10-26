@@ -258,3 +258,10 @@ export const iconSettings = {
   color: 'black',
   height: 25,
 };
+
+export const shadowProp = {
+  shadowOffset: {height: 1, width: 1},
+  shadowColor: 'gray',
+  shadowOpacity: 0.5,
+  shadowRadius: 3,
+};

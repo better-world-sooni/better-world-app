@@ -9,11 +9,11 @@ import {shallowEqual, useDispatch, useSelector} from 'react-redux';
 import {RootState} from 'src/redux/rootReducer';
 import {setMetasunganUser} from 'src/redux/metasunganReducer';
 import {Manager} from 'socket.io-client';
+import {setChatSocket} from 'src/redux/chatReducer';
 
 library.add(faWalking, faBus, faSubway);
 
 const App = () => {
-  const [chatSocket, setChatSocket] = useState(null);
   const {isLoggedIn, session} = useSelector(
     (root: RootState) => root.app,
     shallowEqual,
@@ -52,17 +52,17 @@ const App = () => {
       },
     });
     newSocket.on('login', login);
-    newSocket.on('disconnnect', () => setChatSocket(null));
-    setChatSocket(newSocket);
+    newSocket.on('disconnnect', () => dispatch(setChatSocket(null)));
+    dispatch(setChatSocket(newSocket));
     return () => {
       newSocket.off('login');
       newSocket.off('disconnnect');
       newSocket.close();
-      setChatSocket(null);
+      dispatch(setChatSocket(null));
     };
   }, [session.token, isLoggedIn]);
 
-  return <AppContent chatSocket={chatSocket} />;
+  return <AppContent />;
 };
 
 const codePushOptions = {

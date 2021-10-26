@@ -23,8 +23,11 @@ import {RootState} from 'src/redux/rootReducer';
 import {setGlobalFilter} from 'src/redux/feedReducer';
 import {ScrollSelector} from 'src/components/ScrollSelector';
 import {Header} from 'src/components/Header';
+import {useNavigation} from '@react-navigation/core';
+import {NAV_NAMES} from 'src/modules/navNames';
+import {setCurrentChatRoomId} from 'src/redux/chatReducer';
 
-const ChatScreen = props => {
+const ChatScreen = () => {
   const {chatRooms} = useSelector((root: RootState) => root.chat, shallowEqual);
   const {globalFiter} = useSelector(
     (root: RootState) => root.feed,
@@ -35,12 +38,7 @@ const ChatScreen = props => {
     shallowEqual,
   );
   const dispatch = useDispatch();
-
-  const iconSettings = {
-    strokeWidth: 1.3,
-    color: 'black',
-    height: 25,
-  };
+  const navigation = useNavigation();
 
   const [selecting, setSelecting] = useState(Selecting.NONE);
   const selectGetterSetter = {
@@ -50,9 +48,13 @@ const ChatScreen = props => {
       options: [MAIN_LINE2, MY_ROUTE, ...stations],
     },
   };
+  const goToChatRoom = roomId => {
+    dispatch(setCurrentChatRoomId(roomId));
+    navigation.navigate(NAV_NAMES.ChatRoom);
+  };
 
   return (
-    <Div flex backgroundColor={'white'}>
+    <Div flex bg={'white'}>
       <Div h={HAS_NOTCH ? 44 : 20} />
       <Header
         bg={'rgba(255,255,255,0)'}
@@ -67,7 +69,11 @@ const ChatScreen = props => {
                 const lastMessage =
                   chatRoom.messages[chatRoom.messages.length - 1];
                 return (
-                  <Row py10 flex key={chatRoomId}>
+                  <Row
+                    py10
+                    flex
+                    key={chatRoomId}
+                    onPress={() => goToChatRoom(chatRoomId)}>
                     <Col auto mr5 relative>
                       <MessageCircle
                         color={'black'}

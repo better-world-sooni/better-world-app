@@ -12,5 +12,6 @@ export const NAV_NAMES = {
     Select: "Select",
     Metaverse: "Metaverse",
     Chat: "Chat",
+    ChatRoom: "ChatRoom",
 };
 

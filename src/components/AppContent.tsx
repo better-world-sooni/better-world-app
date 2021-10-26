@@ -18,6 +18,7 @@ import {shallowEqual, useSelector} from 'react-redux';
 import {RootState} from 'src/redux/rootReducer';
 import ChatScreen from 'src/screens/Home/ChatScreen';
 import {Div} from './common/Div';
+import ChatRoomScreen from 'src/screens/ChatRoomScreen';
 
 const RootStack = createStackNavigator();
 
@@ -80,7 +81,7 @@ const topHeader = props => {
   return () => <TopHeader {...props} />;
 };
 
-export const AppContent = ({chatSocket}) => {
+export const AppContent = () => {
   const Navs = [
     {
       name: NAV_NAMES.Splash,
@@ -138,6 +139,13 @@ export const AppContent = ({chatSocket}) => {
         cardStyle: {backgroundColor: 'black', presentation: 'screen'},
       }),
     },
+    {
+      name: NAV_NAMES.ChatRoom,
+      component: ChatRoomScreen,
+      options: props => ({
+        cardStyle: {backgroundColor: 'black', presentation: 'screen'},
+      }),
+    },
   ];
 
   const {isLoggedIn} = useSelector((root: RootState) => root.app, shallowEqual);
@@ -156,7 +164,7 @@ export const AppContent = ({chatSocket}) => {
           ))}
         </RootStack.Navigator>
       </NavigationContainer>
-      {isLoggedIn && <ChatManager chatSocket={chatSocket}></ChatManager>}
+      {isLoggedIn && <ChatManager></ChatManager>}
     </Div>
   );
 };

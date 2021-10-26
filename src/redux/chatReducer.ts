@@ -9,10 +9,13 @@ const chatSlice = createSlice({
         chatBody: {
             enabled: false,
             enabledRoomId: null
-        }
+        },
+        currentChatRoom: {
+            roomId: null
+        },
     },
     reducers: {
-        setSocket: (state, action) => {
+        setChatSocket: (state, action) => {
             state.chatSocket = action.payload;
         },
         setChatRoom: (state, action) => {
@@ -47,6 +50,9 @@ const chatSlice = createSlice({
             }
             state.chatBody = action.payload;
         },
+        setCurrentChatRoomId: (state, action) => {
+            state.currentChatRoom.roomId = action.payload;
+        },
         toggleChatHeadBodyEnabled: (state, action) => {
             state.chatBody.enabled = action.payload.chatBody;
             state.chatHeadEnabled = action.payload.chatHead;
@@ -59,6 +65,9 @@ const chatSlice = createSlice({
                 chatBody: {
                     enabled: false,
                     enabledRoomId: null
+                },
+                currentChatRoom: {
+                    roomId: null
                 }
             }
         },
@@ -67,13 +76,14 @@ const chatSlice = createSlice({
 
 export const chatReducer = chatSlice.reducer;
 export const {
-    setSocket,
+    setChatSocket,
     setChatRoom,
     setChatRooms,
     pushNewMessage,
     setChatHeadEnabled,
     setChatBodyEnabled,
     setChatBody,
+    setCurrentChatRoomId,
     toggleChatHeadBodyEnabled,
     chatLogout,
 } = chatSlice.actions;

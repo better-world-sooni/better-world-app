@@ -11,13 +11,13 @@ import {
   setChatRooms,
 } from 'src/redux/chatReducer';
 import {MessageCircle, X} from 'react-native-feather';
-import {HAS_NOTCH} from 'src/modules/constants';
+import {HAS_NOTCH, shadowProp} from 'src/modules/constants';
 import {Span} from './common/Span';
 import {Div} from 'src/components/common/Div';
 import useSocketInput from 'src/hooks/useSocketInput';
 
-const ChatManager = ({chatSocket}) => {
-  const {chatHeadEnabled, chatBody, chatRooms} = useSelector(
+const ChatManager = () => {
+  const {chatHeadEnabled, chatBody, chatRooms, chatSocket} = useSelector(
     (root: RootState) => root.chat,
     shallowEqual,
   );
@@ -138,13 +138,6 @@ const ChatManager = ({chatSocket}) => {
         </Div>
       </Draggable>
     );
-  };
-
-  const shadowProp = {
-    shadowOffset: {height: 1, width: 1},
-    shadowColor: 'gray',
-    shadowOpacity: 0.5,
-    shadowRadius: 3,
   };
 
   const onSend = (messages = []) => {

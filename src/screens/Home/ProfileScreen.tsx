@@ -14,164 +14,143 @@ import { Span } from 'src/components/common/Span';
 import APIS from 'src/modules/apis';
 import { IMAGES } from 'src/modules/images';
 import { NAV_NAMES } from 'src/modules/navNames';
-import { FlatList, ScrollView, View } from 'src/modules/viewComponents';
-import { useApiPOST, useApiSelector, useReloadGET } from 'src/redux/asyncReducer';
-import { useDispatch } from 'react-redux';
-import {confirmCurrentRoute} from 'src/redux/routeReducer';
+import {ScrollView} from 'src/modules/viewComponents';
+import {useReloadGET} from 'src/redux/asyncReducer';
+import {shallowEqual, useDispatch, useSelector} from 'react-redux';
+import {ChevronDown, Edit2, Info, Lock, LogOut} from 'react-native-feather';
 import {
-  Map,
-  Bell,
-  Info,
-  Lock,
-  Send,
-  Folder,
-  Edit,
-  Rss,
-  LogOut,
-} from 'react-native-feather';
-import { HAS_NOTCH } from 'src/modules/constants';
-import { useLogout } from 'src/redux/appReducer';
+  chevronDownSettings,
+  GO_COLOR,
+  HAS_NOTCH,
+  iconSettings,
+  MAIN_LINE2,
+  MY_ROUTE,
+  Selecting,
+} from 'src/modules/constants';
+import {useLogout} from 'src/redux/appReducer';
+import {Header} from 'src/components/Header';
+import {ScrollSelector} from 'src/components/ScrollSelector';
+import {setGlobalFilter} from 'src/redux/feedReducer';
+import {RootState} from 'src/redux/rootReducer';
 
-const ProfileScreen = (props) => {
-    const {data: starredResponse, isLoading} = useApiSelector(APIS.route.starred);
-    const defaultRoute = starredResponse?.[0]
-    const navigation = useNavigation();
-    const apiGET = useReloadGET();
-    const apiPOST = useApiPOST();
-    const dispatch = useDispatch()
-    const logout = useLogout(() => navigation.navigate(NAV_NAMES.SignIn))
+const ProfileScreen = props => {
+  const navigation = useNavigation();
+  const apiGET = useReloadGET();
+  const logout = useLogout(() => navigation.navigate(NAV_NAMES.SignIn));
+  const [selecting, setSelecting] = useState(Selecting.NONE);
+  const {stations} = useSelector(
+    (root: RootState) => root.route.route,
+    shallowEqual,
+  );
+  const {
+    route: {selectedTrain},
+    feed: {globalFiter},
+  } = useSelector((root: RootState) => root, shallowEqual);
+  const dispatch = useDispatch();
 
-    const pullToRefresh = () => {
-        apiGET(APIS.route.starred())
-    };
+  const selectGetterSetter = {
+    [Selecting.GLOBAL_FILTER]: {
+      get: globalFiter,
+      set: filt => dispatch(setGlobalFilter(filt)),
+      options: [MAIN_LINE2, MY_ROUTE, ...stations],
+    },
+  };
 
-    const [Route, setRoute] = useState(null)
+  const goToPost = () => navigation.navigate(NAV_NAMES.Post);
+  const goToReport = () => navigation.navigate(NAV_NAMES.Report);
 
-    useEffect(() => {
-        pullToRefresh();
-    }, []);
-    useEffect(() => {
-        if(defaultRoute){
-        setRoute(defaultRoute.route)
-        };
-    }, [isLoading]);
+  const pullToRefresh = () => {
+    apiGET(APIS.route.starred());
+  };
 
-    const onPressPNList = () => {
-      // initBadgeNum();
-      navigation.navigate(NAV_NAMES.Home);
-    };
-    // const onPressSunganCam = () => {
-    //   navigation.navigate(NAV_NAMES.SunganCam);
-    // }
-    const expandSearchTab = () => {
-      dispatch(confirmCurrentRoute(false));
-    };
+  useEffect(() => {
+    pullToRefresh();
+  }, []);
 
-    return (
-        <Div flex backgroundColor={"white"}>
-            <Div h={HAS_NOTCH ? 44 : 20} />
-            <ScrollView
-                flex={1}
-                showsVerticalScrollIndicator={false}
-                refreshControl={
-                <RefreshControl refreshing={isLoading} onRefresh={pullToRefresh} />
-                }>
-                <Div relative px20>
-                    <Row h40 itemsCenter >
-                        <Col ></Col>
-                        <Col auto ml5>
-                        <Div relative onPress={onPressPNList} >
-                            {true && (
-                            <Div absolute bgDanger w10 h10 rounded16 zIndex5 top={-3} right />
-                            )}
-                            <Bell stroke="#2e2e2e" fill="#fff" strokeWidth={1.5} ></Bell>
-                        </Div>
-                        </Col>
-                    </Row>
-                    <Row
-                    itemsCenter 
-                    mt10
-                    >
-                        <Col></Col>
-                        <Col auto>
-                            <Row rounded100 overflowHidden>
-                                <Img source={IMAGES.example2} h200 w200></Img>
-                            </Row>
-                            <Row py20>
-                                <Col></Col>
-                                <Col auto><Span bold fontSize={20}>irlyglo</Span></Col>
-                                <Col></Col>
-                            </Row>
-                        </Col>
-                        <Col></Col>
-                    </Row>
-                    <Row 
-                    itemsCenter 
-                    rounded20
-                    backgroundColor={'rgb(242, 242, 247)'}
-                    px20 
-                    my10
-                    py10
-                    >
-                        <Col>
-                            <Row py10>
-                                <Col auto mr5><Info color={"black"} strokeWidth={1.5}></Info></Col>
-                                <Col auto><Span fontSize={15}>개인정보</Span></Col>
-                                <Col></Col>
-                            </Row>
-                            <Row py10>
-                                <Col auto mr5><Lock color={"black"} strokeWidth={1.5}></Lock></Col>
-                                <Col auto><Span fontSize={15}>보안</Span></Col>
-                                <Col></Col>
-                            </Row>
-                            <Row py10 onPress={logout}>
-                                <Col auto mr5><LogOut color={"black"} strokeWidth={1.5}></LogOut></Col>
-                                <Col auto><Span fontSize={15}>로그아웃</Span></Col>
-                                <Col></Col>
-                            </Row>
-                        </Col>
-                    </Row>
-                    <Row 
-                    itemsCenter 
-                    rounded20
-                    backgroundColor={'rgb(242, 242, 247)'}
-                    px20 
-                    my10
-                    py10
-                    >
-                        <Col>
-                            <Row py10>
-                                <Col auto mr5><Map color={"black"} strokeWidth={1.5}></Map></Col>
-                                <Col auto><Span fontSize={15}>자주가는 길</Span></Col>
-                                <Col></Col>
-                            </Row>
-                        </Col>
-                    </Row>
-                    <Row 
-                    itemsCenter 
-                    rounded20
-                    backgroundColor={'rgb(242, 242, 247)'}
-                    px20 
-                    my10
-                    py10
-                    >
-                        <Col>
-                            <Row py10>
-                                <Col auto mr5><Edit color={"black"} strokeWidth={1.5}></Edit></Col>
-                                <Col auto><Span fontSize={15}>글</Span></Col>
-                                <Col></Col>
-                            </Row>
-                            <Row py10>
-                                <Col auto mr5><Rss color={"black"} strokeWidth={1.5}></Rss></Col>
-                                <Col auto><Span fontSize={15}>순간 드랍</Span></Col>
-                                <Col></Col>
-                            </Row>
-                        </Col>
-                    </Row>
-                </Div>
-            </ScrollView>
+  return (
+    <Div flex backgroundColor={'white'}>
+      <Div h={HAS_NOTCH ? 44 : 20} />
+      <Row itemsCenter py10 px20 bg={'rgba(255,255,255,0)'}>
+        <Col w80 auto>
+          <Row justifyCenter>
+            <Col justifyCenter>
+              <Span>
+                {selectedTrain ? selectedTrain.currentStation : '탑승전'}
+              </Span>
+            </Col>
+          </Row>
+        </Col>
+        <Col
+          rounded5
+          itemsCenter
+          justifyCenter
+          onPress={() => setSelecting(Selecting.GLOBAL_FILTER)}>
+          <Row>
+            <Col itemsCenter auto>
+              <Span
+                bold
+                textCenter
+                color={'black'}
+                fontSize={15}
+                numberOfLines={1}
+                ellipsizeMode="head">
+                {globalFiter}
+              </Span>
+            </Col>
+            <Col auto justifyCenter>
+              <ChevronDown {...chevronDownSettings}></ChevronDown>
+            </Col>
+          </Row>
+        </Col>
+        <Col w80 itemsEnd auto>
+          <Row itemsEnd>
+            <Col onPress={goToPost} itemsEnd>
+              <LogOut {...iconSettings} color={'black'}></LogOut>
+            </Col>
+          </Row>
+        </Col>
+      </Row>
+      <ScrollView flex={1} showsVerticalScrollIndicator={false}>
+        <Div relative px20>
+          <Row itemsCenter mt10>
+            <Col auto rounded100 overflowHidden>
+              <Img source={IMAGES.example2} h100 w100></Img>
+            </Col>
+            <Col px20 flex>
+              <Row itemsCenter flex={1}>
+                <Col auto>
+                  <Span bold fontSize={20}>
+                    irlyglo
+                  </Span>
+                </Col>
+              </Row>
+            </Col>
+          </Row>
+          <Row
+            itemsCenter
+            my10
+            py10
+            rounded5
+            borderWidth={0.5}
+            borderColor={'rgb(199,199,204)'}>
+            <Col></Col>
+            <Col auto>
+              <Span>프로필 편집</Span>
+            </Col>
+            <Col></Col>
+          </Row>
         </Div>
-    );
+      </ScrollView>
+      {selecting && (
+        <ScrollSelector
+          selectedValue={selectGetterSetter[selecting].get}
+          onValueChange={selectGetterSetter[selecting].set}
+          options={selectGetterSetter[selecting].options}
+          onClose={() => setSelecting(Selecting.NONE)}
+        />
+      )}
+    </Div>
+  );
 };
 
 export default ProfileScreen;
