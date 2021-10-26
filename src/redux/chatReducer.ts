@@ -5,9 +5,7 @@ const chatSlice = createSlice({
     initialState: {
         chatSocket: null,
         chatRooms: {},
-        chatHead: {
-            enabled: false,
-        },
+        chatHeadEnabled: false,
         chatBody: {
             enabled: false,
             enabledRoomId: null
@@ -35,31 +33,29 @@ const chatSlice = createSlice({
             if (action.payload) {
                 state.chatBody.enabled = false;
             }
-            state.chatHead.enabled = action.payload;
+            state.chatHeadEnabled = action.payload;
         },
         setChatBodyEnabled: (state, action) => {
             if (action.payload) {
-                state.chatHead.enabled = false;
+                state.chatHeadEnabled = false;
             }
             state.chatBody.enabled = action.payload;
         },
         setChatBody: (state, action) => {
             if (action.payload.enabled) {
-                state.chatHead.enabled = false;
+                state.chatHeadEnabled = false;
             }
             state.chatBody = action.payload;
         },
         toggleChatHeadBodyEnabled: (state, action) => {
             state.chatBody.enabled = action.payload.chatBody;
-            state.chatHead.enabled = action.payload.chatHead;
+            state.chatHeadEnabled = action.payload.chatHead;
         },
         chatLogout: (state) => {
             state = {
                 chatSocket: null,
                 chatRooms: {},
-                chatHead: {
-                    enabled: false,
-                },
+                chatHeadEnabled: false,
                 chatBody: {
                     enabled: false,
                     enabledRoomId: null

@@ -6,18 +6,18 @@ import React from 'react';
 import BottomTabBar from 'src/components/BottomTabBar';
 import {NAV_NAMES} from 'src/modules/navNames';
 import HomeScreen from 'src/screens/Home/HomeScreen';
-import SearchScreen from 'src/screens/SearchScreen';
 import {Grid, Home, Map, MessageCircle, User, X} from 'react-native-feather';
 import ProfileScreen from 'src/screens/Home/ProfileScreen';
 import SplashScreen from 'src/screens/Common/SplashScreen';
 import SignInScreen from 'src/screens/Auth/SignInScreen';
 import PostScreen from 'src/screens/PostScreen';
-import SelectScreen from 'src/screens/SelectScreen';
 import MetaSunganScreen from 'src/screens/Home/MetaverseScreen';
 import ReportScreen from 'src/screens/ReportScreen';
 import ChatManager from './ChatManager';
 import {shallowEqual, useSelector} from 'react-redux';
 import {RootState} from 'src/redux/rootReducer';
+import ChatScreen from 'src/screens/Home/ChatScreen';
+import {Div} from './common/Div';
 
 const RootStack = createStackNavigator();
 
@@ -47,6 +47,17 @@ const MainBottomTabs = () => {
             <Grid
               color={props.focused ? 'black' : 'gray'}
               strokeWidth={1.5}></Grid>
+          ),
+        }}
+      />
+      <Tab.Screen
+        name={NAV_NAMES.Chat}
+        component={ChatScreen}
+        options={{
+          tabBarIcon: props => (
+            <MessageCircle
+              color={props.focused ? 'black' : 'gray'}
+              strokeWidth={1.5}></MessageCircle>
           ),
         }}
       />
@@ -94,14 +105,6 @@ export const AppContent = ({chatSocket}) => {
       }),
     },
     {
-      name: NAV_NAMES.Search,
-      component: SearchScreen,
-      options: props => ({
-        header: topHeader({...props, headerShown: false}),
-        cardStyle: {backgroundColor: 'white', presentation: 'screen'},
-      }),
-    },
-    {
       name: NAV_NAMES.Profile,
       component: ProfileScreen,
       options: props => ({
@@ -122,28 +125,25 @@ export const AppContent = ({chatSocket}) => {
       options: props => ({}),
     },
     {
-      name: NAV_NAMES.Select,
-      component: SelectScreen,
-      options: props => ({
-        cardStyle: {backgroundColor: 'black', presentation: 'screen'},
-      }),
-    },
-    {
       name: NAV_NAMES.Metaverse,
       component: MetaSunganScreen,
       options: props => ({
         cardStyle: {backgroundColor: 'black', presentation: 'screen'},
       }),
     },
+    {
+      name: NAV_NAMES.Chat,
+      component: ChatScreen,
+      options: props => ({
+        cardStyle: {backgroundColor: 'black', presentation: 'screen'},
+      }),
+    },
   ];
 
-  const {isLoggedIn, session} = useSelector(
-    (root: RootState) => root.app,
-    shallowEqual,
-  );
+  const {isLoggedIn} = useSelector((root: RootState) => root.app, shallowEqual);
 
   return (
-    <>
+    <Div flex relative>
       <NavigationContainer>
         <RootStack.Navigator screenOptions={{headerShown: false}}>
           {Navs.map((item, i) => (
@@ -157,6 +157,6 @@ export const AppContent = ({chatSocket}) => {
         </RootStack.Navigator>
       </NavigationContainer>
       {isLoggedIn && <ChatManager chatSocket={chatSocket}></ChatManager>}
-    </>
+    </Div>
   );
 };

@@ -1,58 +1,54 @@
-import {
-  useNavigation
-} from '@react-navigation/native';
-import React, { useEffect, useState, useRef, useLayoutEffect } from 'react';
-import { RefreshControl, StyleSheet, Animated } from 'react-native';
-import firebase from '@react-native-firebase/app';
-import '@react-native-firebase/messaging';
-import '@react-native-firebase/auth';
-import { Col } from 'src/components/common/Col';
-import { Div } from 'src/components/common/Div';
-import { Img } from 'src/components/common/Img';
-import { Row } from 'src/components/common/Row';
-import { Span } from 'src/components/common/Span';
+import React, {useEffect, useState} from 'react';
+import {Dimensions, RefreshControl} from 'react-native';
+import {Col} from 'src/components/common/Col';
+import {Div} from 'src/components/common/Div';
+import {Img} from 'src/components/common/Img';
+import {Row} from 'src/components/common/Row';
+import {Span} from 'src/components/common/Span';
 import APIS from 'src/modules/apis';
-import { IMAGES } from 'src/modules/images';
-import { NAV_NAMES } from 'src/modules/navNames';
-import { ScrollView, View } from 'src/modules/viewComponents';
-import { useApiSelector, useReloadGET, useReloadPOST } from 'src/redux/asyncReducer';
-import { shallowEqual, useDispatch, useSelector } from 'react-redux';
-import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
-import MapViewDirections from 'src/components/MapViewDirections';
+import {IMAGES} from 'src/modules/images';
+import {ScrollView} from 'src/modules/viewComponents';
 import {
-  PlusSquare,
-  Bell,
+  useApiSelector,
+  useReloadGET,
+  useReloadPOST,
+} from 'src/redux/asyncReducer';
+import {shallowEqual, useDispatch, useSelector} from 'react-redux';
+import {
   MessageCircle,
-  AlertCircle,
   Heart,
-  Send,
-  Search,
-  ArrowRight,
-  ChevronLeft,
-  Filter,
   RefreshCw,
-  Hash,
+  ChevronDown,
 } from 'react-native-feather';
-import RouteShelf from 'src/components/RouteShelf';
-import MapboxGL from '@react-native-mapbox-gl/maps';
-import {HAS_NOTCH} from 'src/modules/constants';
-import LinearGradient from 'react-native-linear-gradient';
+import {
+  chevronDownSettings,
+  Direction,
+  HAS_NOTCH,
+  iconSettings,
+  LINE2_Linked_List,
+  MAIN_LINE2,
+  MY_ROUTE,
+  Selecting,
+} from 'src/modules/constants';
 import {
   setCurrentRoute,
-  setUserSearchDestination,
-  setUserSearchOrigin,
+  setDestination,
+  setOrigin,
+  setDirection,
 } from 'src/redux/routeReducer';
-import {shortenAddress} from 'src/modules/utils';
+import {shortenAddress, stationArr} from 'src/modules/utils';
 import {RootState} from 'src/redux/rootReducer';
-import {setNewPosts, setPrevPosts} from 'src/redux/feedReducer';
+import {
+  setGlobalFilter,
+  setNewPosts,
+  setPrevPosts,
+} from 'src/redux/feedReducer';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faSubway} from '@fortawesome/free-solid-svg-icons';
+import {Header} from 'src/components/Header';
+import {ScrollSelector} from 'src/components/ScrollSelector';
 
 const HomeScreen = props => {
-  MapboxGL.setAccessToken(
-    'pk.eyJ1Ijoibm9tYWNndWZmaW5zIiwiYSI6ImNrdGp2cHozYzBxZHAzMW1zcWZ3c2p2aXAifQ.NsgkwiPWRhtBN5RX4wwa5w',
-  );
-
   const {data: starredResponse, isLoading: starredLoading} = useApiSelector(
     APIS.route.starred,
   );
@@ -64,24 +60,17 @@ const HomeScreen = props => {
     useApiSelector(APIS.post.main.after);
 
   const {
-    userSearch: {origin, destination},
-    currentRoute,
-    currentVehicles,
+    route: {origin, destination, direction, stations},
+    currentStation,
   } = useSelector((root: RootState) => root.route, shallowEqual);
-  const {prevPosts, newPosts} = useSelector(
+  const {prevPosts, newPosts, globalFiter} = useSelector(
     (root: RootState) => root.feed,
     shallowEqual,
   );
 
-  const navigation = useNavigation();
   const apiGET = useReloadGET();
   const apiPOST = useReloadPOST();
   const dispatch = useDispatch();
-  const setOrigin = origin => dispatch(setUserSearchOrigin(origin));
-  const setDestination = destination =>
-    dispatch(setUserSearchDestination(destination));
-  const goToPost = () => navigation.navigate(NAV_NAMES.Post);
-  const goToReport = () => navigation.navigate(NAV_NAMES.Report);
 
   const pullToRefresh = () => {
     apiPOST(APIS.post.main.before(1), {
@@ -126,27 +115,6 @@ const HomeScreen = props => {
     }
   }, [starredLoading]);
 
-  const calculatInitialMapRegion = () => {
-    const bounds = currentRoute?.bounds;
-    if (bounds) {
-      return {
-        ne: [bounds.northeast.lng, bounds.northeast.lat],
-        sw: [bounds.southwest.lng, bounds.southwest.lat],
-      };
-    } else {
-      return {
-        ne: [37.715133, 127.269311],
-        sw: [37.413294, 126.734086],
-      };
-    }
-  };
-
-  const iconSettings = {
-    strokeWidth: 1.3,
-    color: 'black',
-    height: 25,
-  };
-
   const shadowProp = opacity => {
     return {
       shadowOffset: {height: 1, width: 1},
@@ -162,29 +130,46 @@ const HomeScreen = props => {
     textShadowRadius: 10,
   };
 
+  const displayedStation = currentStation || origin;
+  const previewStart = stationArr(
+    [],
+    origin,
+    origin,
+    direction === Direction.INNER ? Direction.OUTER : Direction.INNER,
+    4,
+  )[3];
+  const [selecting, setSelecting] = useState(Selecting.NONE);
+  const selectGetterSetter = {
+    [Selecting.ORIGIN]: {
+      get: origin,
+      set: ori => dispatch(setOrigin(ori)),
+      options: stationArr([], '시청', '충정로(경기대입구)', Direction.CW),
+    },
+    [Selecting.DESTINATION]: {
+      get: destination,
+      set: dest => dispatch(setDestination(dest)),
+      options: stationArr([], '시청', '충정로(경기대입구)', Direction.CW),
+    },
+    [Selecting.DIRECTION]: {
+      get: direction,
+      set: dir => dispatch(setDirection(dir)),
+      options: [Direction.INNER, Direction.OUTER],
+    },
+    [Selecting.GLOBAL_FILTER]: {
+      get: globalFiter,
+      set: filt => dispatch(setGlobalFilter(filt)),
+      options: [MAIN_LINE2, MY_ROUTE, ...stations],
+    },
+  };
+
   return (
     <Div flex>
       <Div h={HAS_NOTCH ? 44 : 20} bg={'rgba(255,255,255,.9)'} />
       <Div flex relative>
-        <Row itemsCenter py10 px20 bg={'rgba(255,255,255,.9)'}>
-          <Col auto onPress={goToReport} px10>
-            <Bell {...iconSettings} color={'black'}></Bell>
-          </Col>
-          <Col auto px10>
-            <AlertCircle {...iconSettings} color={'white'}></AlertCircle>
-          </Col>
-          <Col itemsCenter justifyCenter>
-            <Span bold fontSize={15}>
-              출근길 😞
-            </Span>
-          </Col>
-          <Col auto onPress={goToReport} px10>
-            <AlertCircle {...iconSettings} color={'red'}></AlertCircle>
-          </Col>
-          <Col auto onPress={goToPost} px10>
-            <PlusSquare {...iconSettings} color={'black'}></PlusSquare>
-          </Col>
-        </Row>
+        <Header
+          bg={'rgba(255,255,255,.9)'}
+          onSelect={() => setSelecting(Selecting.GLOBAL_FILTER)}
+        />
         <ScrollView
           showsVerticalScrollIndicator={false}
           stickyHeaderIndices={[0]}
@@ -198,21 +183,29 @@ const HomeScreen = props => {
           <Div bg={'rgba(255,255,255,.9)'}>
             <Row px10>
               <Col
-                bg={'#f5f5f5'}
+                bg={'rgb(242, 242, 247)'}
                 rounded5
-                py7s
-                px10
+                py7
                 my5
                 mr5
+                pl5
                 justifyCenter
-                itemsCenter>
-                <Span
-                  bold
-                  color={'black'}
-                  numberOfLines={1}
-                  ellipsizeMode="head">
-                  {shortenAddress(origin)}
-                </Span>
+                onPress={() => setSelecting(Selecting.ORIGIN)}>
+                <Row>
+                  <Col itemsCenter>
+                    <Span
+                      bold
+                      textCenter
+                      color={'black'}
+                      numberOfLines={1}
+                      ellipsizeMode="head">
+                      {origin}
+                    </Span>
+                  </Col>
+                  <Col auto justifyCenter>
+                    <ChevronDown {...chevronDownSettings}></ChevronDown>
+                  </Col>
+                </Row>
               </Col>
               <Col mx5 auto itemsCenter justifyCenter>
                 <Span>
@@ -220,21 +213,28 @@ const HomeScreen = props => {
                 </Span>
               </Col>
               <Col
-                bg={'#f5f5f5'}
+                bg={'rgb(242, 242, 247)'}
                 rounded5
                 py7
-                px10
                 my5
-                ml5
+                pl5
                 justifyCenter
-                itemsCenter>
-                <Span
-                  bold
-                  color={'black'}
-                  numberOfLines={1}
-                  ellipsizeMode="head">
-                  {shortenAddress(destination)}
-                </Span>
+                onPress={() => setSelecting(Selecting.DESTINATION)}>
+                <Row>
+                  <Col itemsCenter>
+                    <Span
+                      bold
+                      textCenter
+                      color={'black'}
+                      numberOfLines={1}
+                      ellipsizeMode="head">
+                      {destination}
+                    </Span>
+                  </Col>
+                  <Col auto justifyCenter>
+                    <ChevronDown {...chevronDownSettings}></ChevronDown>
+                  </Col>
+                </Row>
               </Col>
             </Row>
             <Row
@@ -266,7 +266,7 @@ const HomeScreen = props => {
                     민원
                   </Span>
                 </Div>
-                {['전체', '핫플/맛집', '음악', '시사', '스포츠', '게임'].map(
+                {['핫플/맛집', '음악', '시사', '스포츠', '게임'].map(
                   (item, index) => {
                     return (
                       <Div key={index} auto px15 py5 mr10 justifyCenter>
@@ -284,17 +284,48 @@ const HomeScreen = props => {
             <Row px20>
               <Col justifyCenter itemsCenter>
                 <Span medium numberOfLines={1} ellipsizeMode="head">
-                  성수역
+                  {displayedStation
+                    ? direction === Direction.INNER
+                      ? LINE2_Linked_List[displayedStation].prev
+                      : LINE2_Linked_List[displayedStation].next
+                    : '길 미설정'}
                 </Span>
               </Col>
-              <Col auto w150 itemsCenter py10>
-                <Span medium color={'rgb(255,69,58)'}>
-                  다음 열차까지 3:12
-                </Span>
+              <Col auto w150 itemsCenter pb10>
+                <Row
+                  rounded5
+                  auto
+                  mx20
+                  py5
+                  my5
+                  onPress={() => setSelecting(Selecting.DIRECTION)}>
+                  <Col auto>
+                    <Span
+                      bold
+                      textCenter
+                      color={'black'}
+                      numberOfLines={1}
+                      ellipsizeMode="head">
+                      {direction}
+                    </Span>
+                  </Col>
+                  <Col auto justifyCenter>
+                    <ChevronDown {...chevronDownSettings}></ChevronDown>
+                  </Col>
+                </Row>
+                <Row>
+                  <Span medium color={'rgb(255,69,58)'}>
+                    다음 열차까지 3:12
+                  </Span>
+                </Row>
               </Col>
               <Col justifyCenter itemsCenter>
                 <Span medium numberOfLines={1} ellipsizeMode="tail">
-                  동대문역사문화공원역
+                  {displayedStation
+                    ? direction === Direction.INNER
+                      ? LINE2_Linked_List[displayedStation].next
+                      : LINE2_Linked_List[displayedStation].prev
+                    : '길 미설정'}
                 </Span>
               </Col>
             </Row>
@@ -311,9 +342,17 @@ const HomeScreen = props => {
                 itemsCenter
                 py10
                 bgWhite>
-                <Span fontSize={23} bold>
-                  건대입구역
-                </Span>
+                {(displayedStation ? displayedStation : '출발지를 설정해주세요')
+                  .split('(')
+                  .join(' (')
+                  .split(' ')
+                  .map(word => {
+                    return (
+                      <Span fontSize={23} bold textCenter key={word}>
+                        {word}
+                      </Span>
+                    );
+                  })}
               </Col>
               <Col justifyCenter flex>
                 <Row h10 bg={'#33a23d'}></Row>
@@ -348,43 +387,53 @@ const HomeScreen = props => {
                 );
               })}
             </Row>
-            <Row pb5>
-              {[0, 1, 2, 3, 4].map((item, index) => {
-                return (
-                  <Col justifyCenter itemsCenter bg={'#33a23d'} h10 key={index}>
-                    <Div
-                      borderColor={'white'}
-                      borderWidth={2}
-                      rounded5
-                      w10
-                      h10
-                      bg={'white'}></Div>
-                  </Col>
-                );
-              })}
-            </Row>
             <Row pt5>
-              {[
-                {name: 0},
-                {name: 0},
-                {name: 0},
-                {name: 1, current: true},
-                {name: 0},
-              ].map((item, index) => {
-                return (
-                  <Col justifyCenter itemsCenter key={index}>
-                    <Div itemsCenter>
-                      <Span
-                        medium
-                        fontSize={10}
-                        style={{...textShadowProp}}
-                        color={item.current ? 'rgb(255,69,58)' : 'black'}>
-                        {item.name}
-                      </Span>
-                    </Div>
-                  </Col>
-                );
-              })}
+              <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                {(origin && destination
+                  ? stationArr([], previewStart, previewStart, direction)
+                  : stationArr(
+                      [],
+                      '시청',
+                      '충정로(경기대입구)',
+                      Direction.INNER,
+                    )
+                ).map((item, index) => {
+                  return (
+                    <Col key={index}>
+                      <Div
+                        mb10
+                        justifyCenter
+                        itemsCenter
+                        bg={'#33a23d'}
+                        h10
+                        w={Dimensions.get('window').width / 5}>
+                        <Div
+                          borderColor={'white'}
+                          borderWidth={2}
+                          rounded5
+                          w10
+                          h10
+                          bg={'white'}></Div>
+                      </Div>
+                      <Div
+                        justifyCenter
+                        itemsCenter
+                        w={Dimensions.get('window').width / 5}>
+                        <Div itemsCenter>
+                          <Span
+                            medium
+                            fontSize={10}
+                            color={
+                              item === origin ? 'rgb(255,69,58)' : 'black'
+                            }>
+                            {item}
+                          </Span>
+                        </Div>
+                      </Div>
+                    </Col>
+                  );
+                })}
+              </ScrollView>
             </Row>
           </Div>
           <Div>
@@ -475,92 +524,19 @@ const HomeScreen = props => {
                 </Div>
               );
             })}
-            <Row
-              rounded20
-              overflowHidden
-              my10
-              backgroundColor={'rgb(255, 224, 222)'}
-              flex
-              py5>
-              <Col>
-                <Row itemsCenter px20 py10>
-                  <Col auto rounded30 overflowHidden mr10>
-                    <Img source={IMAGES.example2} w30 h30></Img>
-                  </Col>
-                  <Col auto>
-                    <Span medium fontSize={14}>
-                      irlglo
-                    </Span>
-                  </Col>
-                  <Col></Col>
-                  <Col auto rounded20 bg={'#0d3692'} px10 py5>
-                    <Span medium fontSize={14} white>
-                      1호선
-                    </Span>
-                  </Col>
-                </Row>
-                <Row itemsCenter>
-                  <Col></Col>
-                  <Col auto>
-                    <Span fontSize={100}>{'🚨'}</Span>
-                  </Col>
-                  <Col></Col>
-                </Row>
-                <Row itemsCenter px20 pt10 pb5>
-                  <Col justifyEnd auto>
-                    <Span medium color={'black'} fontSize={14} bold>
-                      에바야...
-                    </Span>
-                  </Col>
-                  <Col></Col>
-                  <Col auto>
-                    <Row>
-                      <Col auto px5>
-                        <Send {...iconSettings}></Send>
-                      </Col>
-                      <Col auto px5>
-                        <MessageCircle {...iconSettings}></MessageCircle>
-                      </Col>
-                      <Col auto px5>
-                        <Heart {...iconSettings}></Heart>
-                      </Col>
-                    </Row>
-                  </Col>
-                </Row>
-                <Row itemsCenter px20 pb10 pt5>
-                  <Span color={'black'}>늦었다 진짜 와</Span>
-                  <Span ml5 color={'gray'}>
-                    ...더보기
-                  </Span>
-                </Row>
-                <Row itemsCenter px20 py5>
-                  <Span color={'gray'}>50개 댓글 더보기</Span>
-                </Row>
-                <Row itemsCenter justifyCenter px20 pb10 pt5 flex>
-                  <Col auto itemsCenter justifyCenter rounded20 overflowHidden>
-                    <Img source={IMAGES.example2} w15 h15></Img>
-                  </Col>
-                  <Col mx10 justifyCenter>
-                    <Row>
-                      <Span medium color={'black'} fontSize={14}>
-                        irlyglo
-                      </Span>
-                      <Span ml5 fontSize={14}>
-                        그래서 어떻게 했어?
-                      </Span>
-                    </Row>
-                  </Col>
-                  <Col auto itemsCenter justifyCenter>
-                    <Heart color={'black'} height={14}></Heart>
-                  </Col>
-                </Row>
-              </Col>
-            </Row>
           </Div>
         </ScrollView>
       </Div>
+      {selecting && (
+        <ScrollSelector
+          selectedValue={selectGetterSetter[selecting].get}
+          onValueChange={selectGetterSetter[selecting].set}
+          options={selectGetterSetter[selecting].options}
+          onClose={() => setSelecting(Selecting.NONE)}
+        />
+      )}
     </Div>
   );
 };
-        
+
 export default HomeScreen;

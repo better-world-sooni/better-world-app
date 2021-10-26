@@ -1,22 +1,71 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { Direction } from 'src/modules/constants';
+import { stationArr } from 'src/modules/utils';
 
 const routeSlice = createSlice({
   name: 'route',
   initialState: {
-    userSearch: {
-      origin: "",
-      destination: ""
+    route: {
+      origin: null,
+      destination: null,
+      direction: null,
+      stations: [],
     },
+    selectedTrain: null,
+    currentStation: null,
     currentRoute: null,
     currentVehicles: [],
     currentRouteConfirmed: true
   },
   reducers: {
-    setUserSearchOrigin: (state, action) => {
-      state.userSearch.origin = action.payload;
+    setOrigin: (state, action) => {
+      state.route.origin = action.payload;
+      if(state.route.origin && state.route.destination){
+        const innerCircle = stationArr([], state.route.origin, state.route.destination, Direction.INNER);
+        const outerCircle = stationArr([], state.route.origin, state.route.destination, Direction.OUTER);
+        if (innerCircle.length < outerCircle.length ){
+          state.route.direction = Direction.INNER;
+          state.route.stations = innerCircle;
+        }else {
+          state.route.direction = Direction.OUTER;
+          state.route.stations = outerCircle;
+        } 
+      } else{
+        state.route.stations = []
+        state.route.direction = null
+      }
     },
-    setUserSearchDestination: (state, action) => {
-      state.userSearch.destination = action.payload;
+    setDestination: (state, action) => {
+      state.route.destination = action.payload;
+      if(state.route.origin && state.route.destination){
+        const innerCircle = stationArr([], state.route.origin, state.route.destination, Direction.INNER);
+        const outerCircle = stationArr([], state.route.origin, state.route.destination, Direction.OUTER);
+        innerCircle.length < outerCircle.length ? (state.route.direction = Direction.INNER) : (state.route.direction = Direction.OUTER)
+        if (innerCircle.length < outerCircle.length ){
+          state.route.direction = Direction.INNER;
+          state.route.stations = innerCircle;
+        }else {
+          state.route.direction = Direction.OUTER;
+          state.route.stations = outerCircle;
+        } 
+      } else{
+        state.route.stations = [];
+        state.route.direction = null;
+      }
+    },
+    setDirection: (state, action) => {
+      state.route.direction = action.payload;
+      if (state.route.origin && state.route.destination && action.payload){
+        state.route.stations = stationArr([], state.route.origin, state.route.destination, action.payload);
+      } else{
+        state.route.stations = [];
+      }
+    },
+    setSelectedTrain: (state, action) => {
+      state.selectedTrain = action.payload
+      if(action.payload){
+        state.currentStation = action.payload.currentStation;
+      }
     },
     setCurrentRoute: (state, action) => {
       state.currentRoute = action.payload;
@@ -50,5 +99,5 @@ const routeSlice = createSlice({
 });
 
 export const routeReducer = routeSlice.reducer;
-export const { setUserSearchOrigin, setUserSearchDestination, setCurrentRoute, confirmCurrentRoute } =
+export const { setOrigin, setDestination, setDirection, setSelectedTrain, setCurrentRoute, confirmCurrentRoute } =
   routeSlice.actions;

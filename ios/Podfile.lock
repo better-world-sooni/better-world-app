@@ -385,14 +385,6 @@ PODS:
     - React-jsi (= 0.65.1)
     - React-perflogger (= 0.65.1)
   - React-jsinspector (0.65.1)
-  - react-native-camera (4.0.1):
-    - React-Core
-    - react-native-camera/RCT (= 4.0.1)
-    - react-native-camera/RN (= 4.0.1)
-  - react-native-camera/RCT (4.0.1):
-    - React-Core
-  - react-native-camera/RN (4.0.1):
-    - React-Core
   - react-native-get-random-values (1.7.0):
     - React-Core
   - react-native-google-maps (0.28.0):
@@ -487,6 +479,8 @@ PODS:
     - React-perflogger (= 0.65.1)
   - RNCAsyncStorage (1.15.9):
     - React-Core
+  - RNCPicker (1.6.0):
+    - React
   - RNDeviceInfo (8.4.1):
     - React-Core
   - RNFastImage (8.3.6):
@@ -568,7 +562,6 @@ DEPENDENCIES:
   - React-jsi (from `../node_modules/react-native/ReactCommon/jsi`)
   - React-jsiexecutor (from `../node_modules/react-native/ReactCommon/jsiexecutor`)
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
-  - react-native-camera (from `../node_modules/react-native-camera`)
   - react-native-get-random-values (from `../node_modules/react-native-get-random-values`)
   - react-native-google-maps (from `../node_modules/react-native-maps`)
   - react-native-image-picker (from `../node_modules/react-native-image-picker`)
@@ -589,6 +582,7 @@ DEPENDENCIES:
   - React-runtimeexecutor (from `../node_modules/react-native/ReactCommon/runtimeexecutor`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native/ReactCommon`)
   - "RNCAsyncStorage (from `../node_modules/@react-native-async-storage/async-storage`)"
+  - "RNCPicker (from `../node_modules/@react-native-community/picker`)"
   - RNDeviceInfo (from `../node_modules/react-native-device-info`)
   - RNFastImage (from `../node_modules/react-native-fast-image`)
   - "RNFBApp (from `../node_modules/@react-native-firebase/app`)"
@@ -678,8 +672,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/jsiexecutor"
   React-jsinspector:
     :path: "../node_modules/react-native/ReactCommon/jsinspector"
-  react-native-camera:
-    :path: "../node_modules/react-native-camera"
   react-native-get-random-values:
     :path: "../node_modules/react-native-get-random-values"
   react-native-google-maps:
@@ -720,6 +712,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon"
   RNCAsyncStorage:
     :path: "../node_modules/@react-native-async-storage/async-storage"
+  RNCPicker:
+    :path: "../node_modules/@react-native-community/picker"
   RNDeviceInfo:
     :path: "../node_modules/react-native-device-info"
   RNFastImage:
@@ -794,7 +788,6 @@ SPEC CHECKSUMS:
   React-jsi: 12913c841713a15f64eabf5c9ad98592c0ec5940
   React-jsiexecutor: 43f2542aed3c26e42175b339f8d37fe3dd683765
   React-jsinspector: 41e58e5b8e3e0bf061fdf725b03f2144014a8fb0
-  react-native-camera: 11166fe7e3a673493c152f52966e8ab1c5cdcacc
   react-native-get-random-values: 237bffb1c7e05fb142092681531810a29ba53015
   react-native-google-maps: 46dea4aa4acb7300beff508f64d9f8c84e9fb106
   react-native-image-picker: a6e56460d34905c849ada551db30897dc7f3d535
@@ -815,6 +808,7 @@ SPEC CHECKSUMS:
   React-runtimeexecutor: 85187f19dd9c47a7c102f9994f9d14e4dc2110de
   ReactCommon: eafed38eec7b591c31751bfa7494801618460459
   RNCAsyncStorage: 26f25150da507524a7815f2ada06ca0967f65633
+  RNCPicker: bab63e6fed69ac6122fcd9993209b6854de46d0b
   RNDeviceInfo: 55175b0bd852c1c5d70d76efc04ed77799cef638
   RNFastImage: 044259b52d726b183fa401f3521b2e5a864afc0a
   RNFBApp: 406bc9586c70ccf20504b4d3b54ac4341c98993f

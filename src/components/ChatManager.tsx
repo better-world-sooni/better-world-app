@@ -17,7 +17,7 @@ import {Div} from 'src/components/common/Div';
 import useSocketInput from 'src/hooks/useSocketInput';
 
 const ChatManager = ({chatSocket}) => {
-  const {chatHead, chatBody, chatRooms} = useSelector(
+  const {chatHeadEnabled, chatBody, chatRooms} = useSelector(
     (root: RootState) => root.chat,
     shallowEqual,
   );
@@ -46,12 +46,14 @@ const ChatManager = ({chatSocket}) => {
   };
 
   useEffect(() => {
-    chatSocket.on('bulkUpdateChatRooms', bulkUpdateChatRooms);
-    chatSocket.on('receiveMessage', receiveMessage);
-    return () => {
-      chatSocket.off('bulkUpdateChatRooms');
-      chatSocket.off('receiveMessage');
-    };
+    if (chatSocket) {
+      chatSocket.on('bulkUpdateChatRooms', bulkUpdateChatRooms);
+      chatSocket.on('receiveMessage', receiveMessage);
+      return () => {
+        chatSocket.off('bulkUpdateChatRooms');
+        chatSocket.off('receiveMessage');
+      };
+    }
   }, [chatSocket]);
 
   const screenSize = Dimensions.get('screen');
@@ -89,13 +91,16 @@ const ChatManager = ({chatSocket}) => {
           y: withInsetY(moveY),
         };
       }
-      console.log(finalPosition);
       setDraggablePosition(finalPosition);
     };
 
     const onDraggablePress = () => {
       dispatch(setChatBodyEnabled(true));
       setDraggablePosition(initialDraggablePosition);
+    };
+
+    const onLongPress = () => {
+      dispatch(setChatHeadEnabled(false));
     };
 
     return (
@@ -105,6 +110,7 @@ const ChatManager = ({chatSocket}) => {
         x={draggablePosition.x}
         y={draggablePosition.y}
         onShortPressRelease={onDraggablePress}
+        onLongPress={onLongPress}
         onDragRelease={onRelease}
         shouldReverse>
         <Div p10 bgWhite rounded100 {...shadowProp}>
@@ -114,7 +120,7 @@ const ChatManager = ({chatSocket}) => {
     );
   };
 
-  const ChatModalHead = ({children, chatRoom, index, length}) => {
+  const ChatModalHead = ({children, index}) => {
     const onPress = () => {
       dispatch(setChatHeadEnabled(true));
     };
@@ -152,7 +158,7 @@ const ChatManager = ({chatSocket}) => {
 
   return (
     <>
-      {chatHead.enabled && (
+      {chatHeadEnabled && (
         <ChatHead>
           <MessageCircle height={30} width={30}></MessageCircle>
         </ChatHead>
@@ -182,11 +188,7 @@ const ChatManager = ({chatSocket}) => {
         </Div>
         {[Object.keys(chatRooms)[0]].map((key, index, array) => {
           return (
-            <ChatModalHead
-              chatRoom={chatRooms[key]}
-              index={index}
-              length={array}
-              key={index}>
+            <ChatModalHead index={index} key={index}>
               <X height={30} width={30}></X>
             </ChatModalHead>
           );

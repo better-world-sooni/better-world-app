@@ -1,5 +1,6 @@
 /* eslint-disable no-bitwise */
 import querystring from 'query-string';
+import {Direction, LINE2_Linked_List} from './constants';
 
 export const urlWithQuery = (url, query) => {
   return query ? `${url}?${querystring.stringify(query)}` : url;
@@ -30,5 +31,50 @@ export const cyrb53 = function (str, seed = 0) {
 };
 
 export const shortenAddress = function (address) {
-  return address.replace("대한민국 서울특별시","");
-}
+  return address.replace('대한민국 서울특별시', '');
+};
+
+export const stationArr = (arr, start, end, direction, limit = null) => {
+  if (start && end) {
+    const curr = LINE2_Linked_List[start];
+    if (limit) {
+      if (direction === Direction.CW) {
+        if (curr.next === end || arr.length - 1 === limit) {
+          arr.push(start, end);
+          return arr;
+        } else {
+          arr.push(start);
+          return stationArr(arr, curr.next, end, direction);
+        }
+      } else {
+        if (curr.prev === end || arr.length - 1 === limit) {
+          arr.push(start, end);
+          return arr;
+        } else {
+          arr.push(start);
+          return stationArr(arr, curr.prev, end, direction);
+        }
+      }
+    } else {
+      if (direction === Direction.CW) {
+        if (curr.next === end) {
+          arr.push(start, end);
+          return arr;
+        } else {
+          arr.push(start);
+          return stationArr(arr, curr.next, end, direction);
+        }
+      } else {
+        if (curr.prev === end) {
+          arr.push(start, end);
+          return arr;
+        } else {
+          arr.push(start);
+          return stationArr(arr, curr.prev, end, direction);
+        }
+      }
+    }
+  } else {
+    return [];
+  }
+};
