@@ -31,10 +31,11 @@ import {
   Selecting,
 } from 'src/modules/constants';
 import {
-  setCurrentRoute,
+  setRoute,
   setDestination,
   setOrigin,
   setDirection,
+  setTrainPositions,
 } from 'src/redux/routeReducer';
 import {shortenAddress, stationArr} from 'src/modules/utils';
 import {RootState} from 'src/redux/rootReducer';
@@ -53,6 +54,24 @@ const HomeScreen = props => {
     APIS.route.starred,
   );
   const defaultRoute = starredResponse?.data?.[0];
+  const {data: positionResponse, isLoading: positionsLoading} = useApiSelector(
+    APIS.realtime.position,
+  );
+  const realtimePositionList = positionResponse?.data;
+  const filterLine2Response = response => {
+    const trainLocations = {};
+    if (response && response.errorMessage.status == 200) {
+      response.realtimePositionList.forEach(train => {
+        if (
+          train.subwayNm === '2호선' &&
+          train.updnLine == (direction === Direction.INNER ? 1 : 0)
+        ) {
+          trainLocations[train.statnNm] = train;
+        }
+      });
+    }
+    return trainLocations;
+  };
 
   const {data: mainBeforeResponse, isLoading: postsBeforeLoading} =
     useApiSelector(APIS.post.main.before);
@@ -61,6 +80,8 @@ const HomeScreen = props => {
 
   const {
     route: {origin, destination, direction, stations},
+    selectedTrain,
+    trainPositions,
     currentStation,
   } = useSelector((root: RootState) => root.route, shallowEqual);
   const {prevPosts, newPosts, globalFiter} = useSelector(
@@ -90,30 +111,33 @@ const HomeScreen = props => {
 
   useEffect(() => {
     apiGET(APIS.route.starred());
+    apiGET(APIS.realtime.position());
     pullToRefresh();
   }, []);
 
   useEffect(() => {
     if (mainBeforeResponse) {
-      console.log('mainBeforeResponse', mainBeforeResponse);
       dispatch(setPrevPosts(mainBeforeResponse.data));
     }
   }, [postsBeforeLoading]);
 
   useEffect(() => {
     if (mainAfterResponse) {
-      console.log('mainAfterResponse', mainAfterResponse);
       dispatch(setNewPosts(mainAfterResponse.data));
     }
   }, [postsAfterLoading]);
 
   useEffect(() => {
     if (defaultRoute) {
-      dispatch(setCurrentRoute(defaultRoute.route));
-      setOrigin(shortenAddress(defaultRoute.route.legs[0].start_address));
-      setDestination(shortenAddress(defaultRoute.route.legs[0].end_address));
+      dispatch(setRoute(defaultRoute.route));
     }
   }, [starredLoading]);
+
+  useEffect(() => {
+    if (defaultRoute) {
+      dispatch(setTrainPositions(filterLine2Response(realtimePositionList)));
+    }
+  }, [positionsLoading]);
 
   const shadowProp = opacity => {
     return {
@@ -163,7 +187,7 @@ const HomeScreen = props => {
   };
 
   return (
-    <Div flex>
+    <Div flex bgWhite>
       <Div h={HAS_NOTCH ? 44 : 20} bg={'rgba(255,255,255,.9)'} />
       <Div flex relative>
         <Header
@@ -359,35 +383,6 @@ const HomeScreen = props => {
               </Col>
             </Row>
             <Row pt5>
-              {[
-                {state: 0},
-                {state: 0},
-                {state: 1, riding: false},
-                {state: 0},
-                {state: 0},
-              ].map((item, index) => {
-                return (
-                  <Col justifyCenter itemsCenter key={index}>
-                    {item.state == 1 && (
-                      <Div itemsCenter>
-                        <Span
-                          medium
-                          fontSize={10}
-                          color={item.riding ? 'rgb(255,69,58)' : 'black'}
-                          style={{...textShadowProp}}>
-                          {item.riding ? '탑승중' : '탑승하기'}
-                        </Span>
-                        <FontAwesomeIcon
-                          icon={faSubway}
-                          color={'#33a23d'}
-                          size={18}></FontAwesomeIcon>
-                      </Div>
-                    )}
-                  </Col>
-                );
-              })}
-            </Row>
-            <Row pt5>
               <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                 {(origin && destination
                   ? stationArr([], previewStart, previewStart, direction)
@@ -400,6 +395,34 @@ const HomeScreen = props => {
                 ).map((item, index) => {
                   return (
                     <Col key={index}>
+                      <Div
+                        mb10
+                        justifyCenter
+                        itemsCenter
+                        h30
+                        w={Dimensions.get('window').width / 5}>
+                        {trainPositions?.[item.split('(')[0]] && (
+                          <>
+                            <Span
+                              medium
+                              fontSize={10}
+                              color={
+                                item.trainNo === selectedTrain
+                                  ? 'rgb(255,69,58)'
+                                  : 'black'
+                              }
+                              style={{...textShadowProp}}>
+                              {item.trainNo === selectedTrain
+                                ? '탑승중'
+                                : '탑승하기'}
+                            </Span>
+                            <FontAwesomeIcon
+                              icon={faSubway}
+                              color={'#33a23d'}
+                              size={18}></FontAwesomeIcon>
+                          </>
+                        )}
+                      </Div>
                       <Div
                         mb10
                         justifyCenter

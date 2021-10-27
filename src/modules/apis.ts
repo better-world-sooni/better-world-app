@@ -15,6 +15,10 @@ const APIS = {
   route: {
     starred: () => v1('/route/starred'),
   },
+  realtime: {
+    position: () => v1('/route/realtime/position?startIndex=0&endIndex=100&service=realtimePosition&subwayNm=2호선'),
+    arrival: (station) => v1(`/route/realtime/arrival?startIndex=0&endIndex=100&service=realtimeStationArrival&stationNm=${station}`),
+  },
   post: {
     main: {
       before: (firstId) => v1(`/post/main/before?firstId=${firstId}`),
