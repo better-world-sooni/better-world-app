@@ -13,6 +13,7 @@ const routeSlice = createSlice({
     },
     selectedTrain: null,
     trainPositions: null,
+    arrivalTrain: null,
     currentStation: null,
     currentRoute: null,
     currentVehicles: [],
@@ -68,6 +69,9 @@ const routeSlice = createSlice({
         state.currentStation = action.payload.currentStation;
       }
     },
+    setArrivalTrain: (state,action) => {
+      state.arrivalTrain = action.payload
+    },
     setRoute: (state, action) => {
       if(action.payload){
         state.route = action.payload
@@ -108,5 +112,5 @@ const routeSlice = createSlice({
 });
 
 export const routeReducer = routeSlice.reducer;
-export const { setOrigin, setDestination, setDirection, setRoute, setSelectedTrain, setTrainPositions, setCurrentRoute, confirmCurrentRoute } =
+export const { setOrigin, setDestination, setDirection, setRoute, setSelectedTrain, setTrainPositions, setArrivalTrain, setCurrentRoute, confirmCurrentRoute } =
   routeSlice.actions;

@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {Dimensions, RefreshControl} from 'react-native';
 import {Col} from 'src/components/common/Col';
 import {Div} from 'src/components/common/Div';
@@ -36,6 +36,7 @@ import {
   setOrigin,
   setDirection,
   setTrainPositions,
+  setArrivalTrain,
 } from 'src/redux/routeReducer';
 import {shortenAddress, stationArr} from 'src/modules/utils';
 import {RootState} from 'src/redux/rootReducer';
@@ -58,20 +59,10 @@ const HomeScreen = props => {
     APIS.realtime.position,
   );
   const realtimePositionList = positionResponse?.data;
-  const filterLine2Response = response => {
-    const trainLocations = {};
-    if (response && response.errorMessage.status == 200) {
-      response.realtimePositionList.forEach(train => {
-        if (
-          train.subwayNm === '2호선' &&
-          train.updnLine == (direction === Direction.INNER ? 1 : 0)
-        ) {
-          trainLocations[train.statnNm] = train;
-        }
-      });
-    }
-    return trainLocations;
-  };
+  const {data: arrivalResponse, isLoading: arrivalLoading} = useApiSelector(
+    APIS.realtime.arrival,
+  );
+  const realtimeArrivalList = arrivalResponse?.data;
 
   const {data: mainBeforeResponse, isLoading: postsBeforeLoading} =
     useApiSelector(APIS.post.main.before);
@@ -83,15 +74,59 @@ const HomeScreen = props => {
     selectedTrain,
     trainPositions,
     currentStation,
+    arrivalTrain,
   } = useSelector((root: RootState) => root.route, shallowEqual);
+  const displayedStation = currentStation || origin;
   const {prevPosts, newPosts, globalFiter} = useSelector(
     (root: RootState) => root.feed,
     shallowEqual,
   );
 
+  const [currentTime, setCurrentTime] = useState(new Date());
+
   const apiGET = useReloadGET();
   const apiPOST = useReloadPOST();
   const dispatch = useDispatch();
+
+  const filterPositionResponse = response => {
+    const trainLocations = {};
+    if (response && response.errorMessage.status === 200) {
+      response.realtimePositionList.forEach(train => {
+        if (
+          train.subwayNm === '2호선' &&
+          train.updnLine === (direction === Direction.INNER ? '1' : '0')
+        ) {
+          trainLocations[train.statnNm] = train;
+        }
+      });
+    }
+    console.log('trainLocations', trainLocations);
+    return trainLocations;
+  };
+
+  const filterArrivalResponse = response => {
+    let arrival = null;
+    if (response && response.errorMessage.status == 200) {
+      response.realtimeArrivalList.forEach(train => {
+        if (
+          train.subwayId === '1002' &&
+          train.updnLine === (direction === Direction.INNER ? '내선' : '외선')
+        ) {
+          console.log('im here');
+          if (!arrival) {
+            arrival = train;
+          } else if (
+            arrival &&
+            parseInt(arrival.ordkey.substring(0, 5)) >
+              parseInt(train.ordkey.substring(0, 5))
+          ) {
+            arrival = train;
+          }
+        }
+      });
+    }
+    return arrival;
+  };
 
   const pullToRefresh = () => {
     apiPOST(APIS.post.main.before(1), {
@@ -107,12 +142,45 @@ const HomeScreen = props => {
         size: 10,
       },
     );
+    apiGET(APIS.realtime.position());
+    displayedStation &&
+      apiGET(APIS.realtime.arrival(displayedStation.split('(')[0]));
   };
+
+  const calculateETADiff = useCallback(() => {
+    const eta = arrivalTrain?.arvlMsg2?.split(' ');
+    if (eta && eta[eta.length - 1] === '후') {
+      try {
+        const minutes = parseInt(eta[0].substring(0, eta[0].length - 1));
+        const seconds = parseInt(eta[1].substring(0, eta[1].length - 1));
+        const receptionDate = new Date(
+          arrivalTrain.recptnDt
+            .substring(0, arrivalTrain.recptnDt.length - 2)
+            .replace('-', '/')
+            .replace('-', '/'),
+        );
+        const ETA = new Date(
+          receptionDate.getTime() + minutes * 60000 + seconds * 1000,
+        );
+        const diff = ETA.getTime() - currentTime.getTime();
+        const diffMinutes = Math.floor(diff / 60000);
+        const diffSeconds = Math.floor((diff % 60000) / 1000);
+        return `${diffMinutes}분 ${diffSeconds}초 후`;
+      } catch (e) {
+        return arrivalTrain?.arvlMsg2;
+      }
+    } else {
+      return arrivalTrain?.arvlMsg2;
+    }
+  }, [arrivalTrain, currentTime]);
 
   useEffect(() => {
     apiGET(APIS.route.starred());
-    apiGET(APIS.realtime.position());
     pullToRefresh();
+    const interval = setInterval(() => setCurrentTime(new Date()), 1000);
+    return () => {
+      clearInterval(interval);
+    };
   }, []);
 
   useEffect(() => {
@@ -134,10 +202,12 @@ const HomeScreen = props => {
   }, [starredLoading]);
 
   useEffect(() => {
-    if (defaultRoute) {
-      dispatch(setTrainPositions(filterLine2Response(realtimePositionList)));
-    }
+    dispatch(setTrainPositions(filterPositionResponse(realtimePositionList)));
   }, [positionsLoading]);
+
+  useEffect(() => {
+    dispatch(setArrivalTrain(filterArrivalResponse(realtimeArrivalList)));
+  }, [arrivalLoading]);
 
   const shadowProp = opacity => {
     return {
@@ -153,8 +223,6 @@ const HomeScreen = props => {
     textShadowOffset: {width: 1, height: 1},
     textShadowRadius: 10,
   };
-
-  const displayedStation = currentStation || origin;
   const previewStart = stationArr(
     [],
     origin,
@@ -339,7 +407,7 @@ const HomeScreen = props => {
                 </Row>
                 <Row>
                   <Span medium color={'rgb(255,69,58)'}>
-                    다음 열차까지 3:12
+                    {calculateETADiff() || '정보 없음'}
                   </Span>
                 </Row>
               </Col>
