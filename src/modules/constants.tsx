@@ -17,6 +17,11 @@ export const LINE2_Linked_List = {
     next: '을지로3가',
     transfer: [],
   },
+  을지로입구: {
+    prev: '시청',
+    next: '을지로3가',
+    transfer: [],
+  },
   을지로3가: {
     prev: '을지로입구(IBK기업은행)',
     next: '을지로4가',
@@ -32,6 +37,11 @@ export const LINE2_Linked_List = {
     next: '신당',
     transfer: ['4호선', '5호선'],
   },
+  동대문역사문화공원: {
+    prev: '을지로4가',
+    next: '신당',
+    transfer: ['4호선', '5호선'],
+  },
   신당: {
     prev: '동대문역사문화공원(DDP)',
     next: '상왕십리',
@@ -43,6 +53,11 @@ export const LINE2_Linked_List = {
     transfer: [],
   },
   '왕십리(성동구청)': {
+    prev: '상왕십리',
+    next: '한양대',
+    transfer: ['경의·중앙선', '5호선', '수인·분당선'],
+  },
+  왕십리: {
     prev: '상왕십리',
     next: '한양대',
     transfer: ['경의·중앙선', '5호선', '수인·분당선'],
@@ -72,7 +87,17 @@ export const LINE2_Linked_List = {
     next: '강변(동서울터미널)',
     transfer: [],
   },
+  구의: {
+    prev: '건대입구',
+    next: '강변(동서울터미널)',
+    transfer: [],
+  },
   '강변(동서울터미널)': {
+    prev: '구의(광진구청)',
+    next: '잠실나루',
+    transfer: [],
+  },
+  강변: {
     prev: '구의(광진구청)',
     next: '잠실나루',
     transfer: [],
@@ -83,6 +108,11 @@ export const LINE2_Linked_List = {
     transfer: [],
   },
   '잠실(송파구청)': {
+    prev: '잠실나루',
+    next: '잠실새내',
+    transfer: ['8호선'],
+  },
+  잠실: {
     prev: '잠실나루',
     next: '잠실새내',
     transfer: ['8호선'],
@@ -98,6 +128,11 @@ export const LINE2_Linked_List = {
     transfer: ['9호선'],
   },
   '삼성(무역센터)': {
+    prev: '종합운동장',
+    next: '선릉',
+    transfer: ['8호선'],
+  },
+  삼성: {
     prev: '종합운동장',
     next: '선릉',
     transfer: ['8호선'],
@@ -122,6 +157,11 @@ export const LINE2_Linked_List = {
     next: '서초',
     transfer: ['3호선'],
   },
+  교대: {
+    prev: '강남',
+    next: '서초',
+    transfer: ['3호선'],
+  },
   서초: {
     prev: '교대(법원·검찰청)',
     next: '방배(백석예술대)',
@@ -132,7 +172,17 @@ export const LINE2_Linked_List = {
     next: '사당(대항병원)',
     transfer: [],
   },
+  방배: {
+    prev: '서초',
+    next: '사당(대항병원)',
+    transfer: [],
+  },
   '사당(대항병원)': {
+    prev: '방배(백석예술대)',
+    next: '낙성대(강감찬)',
+    transfer: ['4호선'],
+  },
+  사당: {
     prev: '방배(백석예술대)',
     next: '낙성대(강감찬)',
     transfer: ['4호선'],
@@ -142,7 +192,17 @@ export const LINE2_Linked_List = {
     next: '서울대입구(관악구청)',
     transfer: [],
   },
+  낙성대: {
+    prev: '사당(대항병원)',
+    next: '서울대입구(관악구청)',
+    transfer: [],
+  },
   '서울대입구(관악구청)': {
+    prev: '낙성대(강감찬)',
+    next: '봉천',
+    transfer: [],
+  },
+  서울대입구: {
     prev: '낙성대(강감찬)',
     next: '봉천',
     transfer: [],
@@ -153,6 +213,11 @@ export const LINE2_Linked_List = {
     transfer: [],
   },
   '신림(양지병원)': {
+    prev: '서초',
+    next: '신대방',
+    transfer: [],
+  },
+  신림: {
     prev: '서초',
     next: '신대방',
     transfer: [],
@@ -172,7 +237,17 @@ export const LINE2_Linked_List = {
     next: '대림(구로구청)',
     transfer: ['7호선'],
   },
+  구로디지털단지: {
+    prev: '난곡지선',
+    next: '대림(구로구청)',
+    transfer: ['7호선'],
+  },
   '대림(구로구청)': {
+    prev: '구로디지털단지(원광디지털대)',
+    next: '신도림',
+    transfer: ['7호선'],
+  },
+  대림: {
     prev: '구로디지털단지(원광디지털대)',
     next: '신도림',
     transfer: ['7호선'],
@@ -202,6 +277,11 @@ export const LINE2_Linked_List = {
     next: '홍대입구',
     transfer: ['6호선'],
   },
+  합정: {
+    prev: '당산',
+    next: '홍대입구',
+    transfer: ['6호선'],
+  },
   홍대입구: {
     prev: '합정(홀트아동복지회)',
     next: '신촌',
@@ -222,7 +302,17 @@ export const LINE2_Linked_List = {
     next: '충정로(경기대입구)',
     transfer: [],
   },
+  아현: {
+    prev: '이대',
+    next: '충정로(경기대입구)',
+    transfer: [],
+  },
   '충정로(경기대입구)': {
+    prev: '아현(추계예술대)',
+    next: '시청',
+    transfer: ['5호선'],
+  },
+  충정로: {
     prev: '아현(추계예술대)',
     next: '시청',
     transfer: ['5호선'],
@@ -265,3 +355,9 @@ export const shadowProp = {
   shadowOpacity: 0.5,
   shadowRadius: 3,
 };
+
+export const SEOUL_METRO_PHONE_1TO8 = '1577-1234';
+
+export const REPORT = 'REPORT';
+export const SUNGAN = 'SUNGAN';
+export const PLACE = 'PLACE';

@@ -28,7 +28,10 @@ import {
   LINE2_Linked_List,
   MAIN_LINE2,
   MY_ROUTE,
+  PLACE,
+  REPORT,
   Selecting,
+  SUNGAN,
 } from 'src/modules/constants';
 import {
   setRoute,
@@ -37,20 +40,31 @@ import {
   setDirection,
   setTrainPositions,
   setArrivalTrain,
+  setSelectedTrain,
 } from 'src/redux/routeReducer';
 import {shortenAddress, stationArr} from 'src/modules/utils';
 import {RootState} from 'src/redux/rootReducer';
-import {
-  setGlobalFilter,
-  setNewPosts,
-  setPrevPosts,
-} from 'src/redux/feedReducer';
+import {setGlobalFilter, setPosts} from 'src/redux/feedReducer';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faSubway} from '@fortawesome/free-solid-svg-icons';
 import {Header} from 'src/components/Header';
 import {ScrollSelector} from 'src/components/ScrollSelector';
 
+enum ChannelFilter {
+  ALL = 0,
+  MUSIC = 1,
+  EVENTS = 2,
+  SPORTS = 3,
+  GAME = 4,
+  REPORT = 5,
+  PLACE = 6,
+}
+
 const HomeScreen = props => {
+  const {data: mainResponse, isLoading: mainLoading} = useApiSelector(
+    APIS.post.main,
+  );
+  const mainFeed = mainResponse?.data;
   const {data: starredResponse, isLoading: starredLoading} = useApiSelector(
     APIS.route.starred,
   );
@@ -64,38 +78,91 @@ const HomeScreen = props => {
   );
   const realtimeArrivalList = arrivalResponse?.data;
 
-  const {data: mainBeforeResponse, isLoading: postsBeforeLoading} =
-    useApiSelector(APIS.post.main.before);
-  const {data: mainAfterResponse, isLoading: postsAfterLoading} =
-    useApiSelector(APIS.post.main.after);
-
   const {
     route: {origin, destination, direction, stations},
     selectedTrain,
     trainPositions,
-    currentStation,
     arrivalTrain,
   } = useSelector((root: RootState) => root.route, shallowEqual);
-  const displayedStation = currentStation || origin;
-  const {prevPosts, newPosts, globalFiter} = useSelector(
+  const displayedStation = selectedTrain?.statnNm || origin;
+  const {posts, globalFiter} = useSelector(
     (root: RootState) => root.feed,
     shallowEqual,
   );
 
   const [currentTime, setCurrentTime] = useState(new Date());
+  const [channelFilter, setChannelFilter] = useState(ChannelFilter.ALL);
+
+  const filterPostsByStation = post => {
+    if (post.type === REPORT) {
+      return filterPostsByChannel(post);
+    } else if (!post.post.station?.name) {
+      return filterPostsByChannel(post);
+    } else if (
+      globalFiter === MY_ROUTE &&
+      !MY_ROUTE.includes(post.post.station.name)
+    ) {
+      return false;
+    } else if (
+      globalFiter !== MAIN_LINE2 &&
+      globalFiter !== post.post.station.name
+    ) {
+      return false;
+    } else {
+      return filterPostsByChannel(post);
+    }
+  };
+
+  const filterPostsByChannel = post => {
+    if (channelFilter === ChannelFilter.ALL) {
+      return true;
+    } else if (channelFilter === ChannelFilter.REPORT && post.type === REPORT) {
+      return true;
+    } else if (
+      channelFilter === ChannelFilter.MUSIC &&
+      post.type === SUNGAN &&
+      post.post.channelId !== ChannelFilter.MUSIC
+    ) {
+      return true;
+    } else if (
+      channelFilter === ChannelFilter.EVENTS &&
+      post.type === SUNGAN &&
+      post.post.channelId !== ChannelFilter.EVENTS
+    ) {
+      return true;
+    } else if (
+      channelFilter === ChannelFilter.SPORTS &&
+      post.type === SUNGAN &&
+      post.post.channelId !== ChannelFilter.SPORTS
+    ) {
+      return true;
+    } else if (
+      channelFilter === ChannelFilter.GAME &&
+      post.type === SUNGAN &&
+      post.post.channelId !== ChannelFilter.GAME
+    ) {
+      return true;
+    } else if (channelFilter === ChannelFilter.PLACE && post.type === PLACE) {
+      return true;
+    } else {
+      return false;
+    }
+  };
 
   const apiGET = useReloadGET();
-  const apiPOST = useReloadPOST();
   const dispatch = useDispatch();
 
   const filterPositionResponse = response => {
     const trainLocations = {};
-    if (response && response.errorMessage.status === 200) {
+    if (response && response.errorMessage?.status === 200) {
       response.realtimePositionList.forEach(train => {
         if (
           train.subwayNm === '2호선' &&
           train.updnLine === (direction === Direction.INNER ? '1' : '0')
         ) {
+          if (train.trainNo === selectedTrain?.trainNo) {
+            dispatch(setSelectedTrain(train));
+          }
           trainLocations[train.statnNm] = train;
         }
       });
@@ -106,13 +173,12 @@ const HomeScreen = props => {
 
   const filterArrivalResponse = response => {
     let arrival = null;
-    if (response && response.errorMessage.status == 200) {
+    if (response && response.errorMessage?.status == 200) {
       response.realtimeArrivalList.forEach(train => {
         if (
           train.subwayId === '1002' &&
           train.updnLine === (direction === Direction.INNER ? '내선' : '외선')
         ) {
-          console.log('im here');
           if (!arrival) {
             arrival = train;
           } else if (
@@ -129,35 +195,27 @@ const HomeScreen = props => {
   };
 
   const pullToRefresh = () => {
-    apiPOST(APIS.post.main.before(1), {
-      vehicleName: '2호선',
-      orderBy: 0,
-      size: 100,
-    });
-    apiPOST(
-      APIS.post.main.after(newPosts.length > 0 ? newPosts[0].sungan.id : 1),
-      {
-        vehicleName: '2호선',
-        orderBy: 0,
-        size: 10,
-      },
-    );
+    apiGET(APIS.post.main());
     apiGET(APIS.realtime.position());
     displayedStation &&
       apiGET(APIS.realtime.arrival(displayedStation.split('(')[0]));
   };
 
-  const calculateETADiff = useCallback(() => {
+  const calculateETADiff = () => {
     const eta = arrivalTrain?.arvlMsg2?.split(' ');
     if (eta && eta[eta.length - 1] === '후') {
       try {
-        const minutes = parseInt(eta[0].substring(0, eta[0].length - 1));
-        const seconds = parseInt(eta[1].substring(0, eta[1].length - 1));
+        const hasMinutes = eta.length === 3;
+        const minutes = hasMinutes
+          ? parseInt(eta[0].substring(0, eta[0].length - 1))
+          : 0;
+        const seconds = hasMinutes
+          ? parseInt(eta[1].substring(0, eta[1].length - 1))
+          : parseInt(eta[0].substring(0, eta[0].length - 1));
         const receptionDate = new Date(
           arrivalTrain.recptnDt
             .substring(0, arrivalTrain.recptnDt.length - 2)
-            .replace('-', '/')
-            .replace('-', '/'),
+            .replaceAll('-', '/'),
         );
         const ETA = new Date(
           receptionDate.getTime() + minutes * 60000 + seconds * 1000,
@@ -165,6 +223,9 @@ const HomeScreen = props => {
         const diff = ETA.getTime() - currentTime.getTime();
         const diffMinutes = Math.floor(diff / 60000);
         const diffSeconds = Math.floor((diff % 60000) / 1000);
+        if (diff < 30000) {
+          return '곧 도착';
+        }
         return `${diffMinutes}분 ${diffSeconds}초 후`;
       } catch (e) {
         return arrivalTrain?.arvlMsg2;
@@ -172,28 +233,28 @@ const HomeScreen = props => {
     } else {
       return arrivalTrain?.arvlMsg2;
     }
-  }, [arrivalTrain, currentTime]);
+  };
 
   useEffect(() => {
     apiGET(APIS.route.starred());
     pullToRefresh();
-    const interval = setInterval(() => setCurrentTime(new Date()), 1000);
+    const everySecond = setInterval(() => setCurrentTime(new Date()), 1000);
+    const everyHalfMinute = setInterval(() => {
+      if (!positionsLoading && !arrivalLoading) {
+        apiGET(APIS.realtime.position());
+        displayedStation &&
+          apiGET(APIS.realtime.arrival(displayedStation.split('(')[0]));
+      }
+    }, 30000);
     return () => {
-      clearInterval(interval);
+      clearInterval(everySecond);
+      clearInterval(everyHalfMinute);
     };
   }, []);
 
   useEffect(() => {
-    if (mainBeforeResponse) {
-      dispatch(setPrevPosts(mainBeforeResponse.data));
-    }
-  }, [postsBeforeLoading]);
-
-  useEffect(() => {
-    if (mainAfterResponse) {
-      dispatch(setNewPosts(mainAfterResponse.data));
-    }
-  }, [postsAfterLoading]);
+    dispatch(setPosts(mainFeed));
+  }, [mainLoading]);
 
   useEffect(() => {
     if (defaultRoute) {
@@ -208,15 +269,6 @@ const HomeScreen = props => {
   useEffect(() => {
     dispatch(setArrivalTrain(filterArrivalResponse(realtimeArrivalList)));
   }, [arrivalLoading]);
-
-  const shadowProp = opacity => {
-    return {
-      shadowOffset: {height: 1, width: 1},
-      shadowColor: 'rgb(199,199,204)',
-      shadowOpacity: opacity,
-      shadowRadius: 10,
-    };
-  };
 
   const textShadowProp = {
     textShadowColor: 'rgb(199,199,204)',
@@ -252,6 +304,26 @@ const HomeScreen = props => {
       set: filt => dispatch(setGlobalFilter(filt)),
       options: [MAIN_LINE2, MY_ROUTE, ...stations],
     },
+  };
+  const blackBorderBottomProp = bool => {
+    if (bool) {
+      return {
+        borderBottomColor: 'black',
+        borderBottomWidth: 1,
+      };
+    } else {
+      return {};
+    }
+  };
+  const redBorderBottomProp = bool => {
+    if (bool) {
+      return {
+        borderBottomColor: 'red',
+        borderBottomWidth: 1,
+      };
+    } else {
+      return {};
+    }
   };
 
   return (
@@ -337,38 +409,86 @@ const HomeScreen = props => {
               <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                 <Div
                   auto
-                  px15
-                  py5
                   mr10
                   justifyCenter
-                  borderBottomColor={'black'}
-                  borderBottomWidth={1.5}>
-                  <Span medium color={'black'} fontSize={15}>
-                    전체
-                  </Span>
+                  {...blackBorderBottomProp(
+                    channelFilter === ChannelFilter.ALL,
+                  )}>
+                  <Div
+                    w={'100%'}
+                    py5
+                    px15
+                    onPress={() => setChannelFilter(ChannelFilter.ALL)}>
+                    <Span
+                      medium
+                      color={
+                        channelFilter === ChannelFilter.ALL
+                          ? 'black'
+                          : 'rgb(199,199,204)'
+                      }
+                      fontSize={15}>
+                      전체
+                    </Span>
+                  </Div>
                 </Div>
                 <Div
                   auto
                   borderBottomColor={'rgb(255,69,58)'}
-                  px15
-                  py5
                   mr10
-                  justifyCenter>
-                  <Span medium color={'rgb(250, 196, 192)'} fontSize={15}>
-                    민원
-                  </Span>
+                  justifyCenter
+                  {...redBorderBottomProp(
+                    channelFilter === ChannelFilter.REPORT,
+                  )}>
+                  <Div
+                    w={'100%'}
+                    py5
+                    px15
+                    onPress={() => setChannelFilter(ChannelFilter.REPORT)}>
+                    <Span
+                      medium
+                      color={
+                        channelFilter === ChannelFilter.REPORT
+                          ? 'red'
+                          : 'rgb(250, 196, 192)'
+                      }
+                      fontSize={15}>
+                      민원
+                    </Span>
+                  </Div>
                 </Div>
-                {['핫플/맛집', '음악', '시사', '스포츠', '게임'].map(
-                  (item, index) => {
-                    return (
-                      <Div key={index} auto px15 py5 mr10 justifyCenter>
-                        <Span medium color={'rgb(199,199,204)'} fontSize={15}>
-                          {item}
+                {[
+                  {name: '핫플/맛집', value: ChannelFilter.PLACE},
+                  {name: '음악', value: ChannelFilter.MUSIC},
+                  {name: '연애/시사', value: ChannelFilter.EVENTS},
+                  {name: '스포츠', value: ChannelFilter.SPORTS},
+                  {name: '게임', value: ChannelFilter.GAME},
+                ].map((item, index) => {
+                  return (
+                    <Div
+                      key={index}
+                      auto
+                      mr10
+                      justifyCenter
+                      {...blackBorderBottomProp(channelFilter === item.value)}>
+                      <Div
+                        w={'100%'}
+                        py5
+                        px15
+                        onPress={() => setChannelFilter(item.value)}>
+                        <Span
+                          medium
+                          color={
+                            channelFilter === item.value
+                              ? 'black'
+                              : 'rgb(199,199,204)'
+                          }
+                          fontSize={15}>
+                          {item.name}
                         </Span>
                       </Div>
-                    );
-                  },
-                )}
+                    </Div>
+                  );
+                })}
               </ScrollView>
             </Row>
           </Div>
@@ -407,7 +527,9 @@ const HomeScreen = props => {
                 </Row>
                 <Row>
                   <Span medium color={'rgb(255,69,58)'}>
-                    {calculateETADiff() || '정보 없음'}
+                    {selectedTrain
+                      ? '탑승중'
+                      : calculateETADiff() || '정보 없음'}
                   </Span>
                 </Row>
               </Col>
@@ -461,6 +583,7 @@ const HomeScreen = props => {
                       Direction.INNER,
                     )
                 ).map((item, index) => {
+                  const trainAtStation = trainPositions?.[item.split('(')[0]];
                   return (
                     <Col key={index}>
                       <Div
@@ -468,19 +591,25 @@ const HomeScreen = props => {
                         justifyCenter
                         itemsCenter
                         h30
+                        onPress={() =>
+                          trainAtStation &&
+                          dispatch(setSelectedTrain(trainAtStation))
+                        }
                         w={Dimensions.get('window').width / 5}>
-                        {trainPositions?.[item.split('(')[0]] && (
+                        {trainAtStation && (
                           <>
                             <Span
                               medium
                               fontSize={10}
                               color={
-                                item.trainNo === selectedTrain
+                                trainAtStation?.trainNo ===
+                                selectedTrain?.trainNo
                                   ? 'rgb(255,69,58)'
                                   : 'black'
                               }
                               style={{...textShadowProp}}>
-                              {item.trainNo === selectedTrain
+                              {trainAtStation?.trainNo ===
+                              selectedTrain?.trainNo
                                 ? '탑승중'
                                 : '탑승하기'}
                             </Span>
@@ -528,93 +657,20 @@ const HomeScreen = props => {
             </Row>
           </Div>
           <Div>
-            {prevPosts.map((item, index) => {
-              const sungan = item.sungan;
-              return (
-                <Div bg={'rgba(255,255,255,.9)'} pb10 key={index} px20>
-                  <Row
-                    itemsCenter
-                    py20
-                    borderTopColor={'rgb(199,199,204)'}
-                    borderTopWidth={0.3}>
-                    <Col auto rounded30 overflowHidden mr10>
-                      <Img source={IMAGES.example2} w25 h25></Img>
-                    </Col>
-                    <Col auto>
-                      <Span medium>irlglo</Span>
-                    </Col>
-                    <Col></Col>
-                    <Col auto px10 py5 rounded5>
-                      <Span medium>전체</Span>
-                    </Col>
-                  </Row>
-                  <Div py10>
-                    <Row rounded20 bgWhite w={'100%'} {...shadowProp(0.3)}>
-                      <Col auto justifyCenter itemsCenter px20>
-                        <Span fontSize={70}>{sungan.emoji}</Span>
-                      </Col>
-                      <Col justifyCenter>
-                        <Span color={'black'} bold>
-                          {sungan.text}
-                        </Span>
-                      </Col>
-                    </Row>
-                  </Div>
-                  <Row itemsCenter pt10 pb5>
-                    <Col auto>
-                      <Row>
-                        <Span medium>순간 좋아요 0개</Span>
-                      </Row>
-                    </Col>
-                    <Col></Col>
-                    <Col auto>
-                      <Row>
-                        <Col auto px5>
-                          <MessageCircle {...iconSettings}></MessageCircle>
-                        </Col>
-                        <Col auto px5>
-                          <Heart
-                            {...iconSettings}
-                            fill={sungan.isLiked && 'red'}></Heart>
-                        </Col>
-                      </Row>
-                    </Col>
-                  </Row>
-                  {sungan.comments.length > 1 && (
-                    <Row itemsCenter py5>
-                      <Span color={'gray'}>{`${
-                        sungan.comments.length - 1
-                      }개 댓글 더보기`}</Span>
-                    </Row>
-                  )}
-                  {sungan.comments.slice(0, 1).map((comment, index) => {
-                    return (
-                      <Row key={index} itemsCenter justifyCenter pb10 pt5 flex>
-                        <Col
-                          auto
-                          itemsCenter
-                          justifyCenter
-                          rounded20
-                          overflowHidden>
-                          <Img source={IMAGES.example2} w15 h15></Img>
-                        </Col>
-                        <Col mx10 justifyCenter>
-                          <Row>
-                            <Span medium color={'black'}>
-                              irlyglo
-                            </Span>
-                            <Span ml5>{comment.content}</Span>
-                          </Row>
-                        </Col>
-                        <Col auto itemsCenter justifyCenter>
-                          <Heart color={'black'} height={14}></Heart>
-                        </Col>
-                      </Row>
-                    );
-                  })}
-                </Div>
-              );
-            })}
+            {posts &&
+              posts
+                .filter(post => {
+                  return filterPostsByStation(post);
+                })
+                .map((post, index) => {
+                  if (post.type == SUNGAN) {
+                    return <Sungan post={post} key={index} />;
+                  } else if (post.type == REPORT) {
+                    return <Report post={post} key={index} />;
+                  } else {
+                    return <Place post={post} key={index} />;
+                  }
+                })}
           </Div>
         </ScrollView>
       </Div>
@@ -626,6 +682,286 @@ const HomeScreen = props => {
           onClose={() => setSelecting(Selecting.NONE)}
         />
       )}
+    </Div>
+  );
+};
+
+const Sungan = ({post}) => {
+  const sungan = post.post;
+  const shadowProp = opacity => {
+    return {
+      shadowOffset: {height: 1, width: 1},
+      shadowColor: 'rgb(199,199,204)',
+      shadowOpacity: opacity,
+      shadowRadius: 10,
+    };
+  };
+  return (
+    <Div bg={'rgba(255,255,255,.9)'} pb10 px20>
+      <Row
+        itemsCenter
+        py20
+        borderTopColor={'rgb(199,199,204)'}
+        borderTopWidth={0.3}>
+        <Col auto rounded30 overflowHidden mr10>
+          <Img source={IMAGES.example2} w25 h25></Img>
+        </Col>
+        <Col auto>
+          <Span medium>{sungan.userInfo.userName}</Span>
+        </Col>
+        <Col></Col>
+        <Col auto px10 py5 rounded5>
+          <Span medium>{sungan.station.name}</Span>
+        </Col>
+      </Row>
+      <Div py10>
+        <Row rounded20 bgWhite w={'100%'} {...shadowProp(0.3)}>
+          <Col auto justifyCenter itemsCenter px20>
+            <Span fontSize={70}>{sungan.emoji}</Span>
+          </Col>
+          <Col justifyCenter>
+            <Span color={'black'} medium>
+              {sungan.text}
+            </Span>
+          </Col>
+        </Row>
+      </Div>
+      <Row itemsCenter pt10 pb5>
+        <Col auto>
+          <Row>
+            <Span medium>{`좋아요 ${sungan.likeCnt}개`}</Span>
+          </Row>
+        </Col>
+        <Col></Col>
+        <Col auto>
+          <Row>
+            <Col auto px5>
+              <MessageCircle {...iconSettings}></MessageCircle>
+            </Col>
+            <Col auto px5>
+              <Heart
+                {...iconSettings}
+                fill={post.didLike ? 'red' : 'white'}></Heart>
+            </Col>
+          </Row>
+        </Col>
+      </Row>
+      {sungan.comments.length > 1 && (
+        <Row itemsCenter py5>
+          <Span color={'gray'}>{`${
+            sungan.comments.length - 1
+          }개 댓글 더보기`}</Span>
+        </Row>
+      )}
+      {sungan.comments.slice(0, 1).map((comment, index) => {
+        return (
+          <Row key={index} itemsCenter justifyCenter pb10 pt5 flex>
+            <Col auto itemsCenter justifyCenter rounded20 overflowHidden>
+              <Img source={IMAGES.example2} w15 h15></Img>
+            </Col>
+            <Col mx10 justifyCenter>
+              <Row>
+                <Span medium color={'black'}>
+                  irlyglo
+                </Span>
+                <Span ml5>{comment.content}</Span>
+              </Row>
+            </Col>
+            <Col auto itemsCenter justifyCenter>
+              <Heart color={'black'} height={14}></Heart>
+            </Col>
+          </Row>
+        );
+      })}
+    </Div>
+  );
+};
+
+const Report = ({post}) => {
+  const report = post.post;
+  const shadowProp = opacity => {
+    return {
+      shadowOffset: {height: 1, width: 1},
+      shadowColor: 'rgb(199,199,204)',
+      shadowOpacity: opacity,
+      shadowRadius: 10,
+    };
+  };
+  return (
+    <Div bg={'rgba(255,255,255,.9)'} pb10 px20>
+      <Row
+        itemsCenter
+        py20
+        borderTopColor={'rgb(199,199,204)'}
+        borderTopWidth={0.3}>
+        <Col auto rounded30 overflowHidden mr10>
+          <Img source={IMAGES.example2} w25 h25></Img>
+        </Col>
+        <Col auto>
+          <Span medium>{report.userInfo.userName}</Span>
+        </Col>
+        <Col></Col>
+        <Col auto px10 py5 rounded5>
+          <Span medium>{`차량번호: ${report.vehicleIdNum}`}</Span>
+        </Col>
+      </Row>
+      <Div py10>
+        <Row
+          rounded20
+          bg={'rgb(250, 196, 192)'}
+          w={'100%'}
+          {...shadowProp(0.5)}>
+          <Col auto justifyCenter itemsCenter px20>
+            <Span fontSize={70}>{'🚨'}</Span>
+          </Col>
+          <Col justifyCenter>
+            <Span color={'black'} medium>
+              {report.detail}
+            </Span>
+          </Col>
+        </Row>
+      </Div>
+      <Row itemsCenter pt10 pb5>
+        <Col auto>
+          <Row>
+            <Span medium>{`좋아요 ${report.likeCnt}개`}</Span>
+          </Row>
+        </Col>
+        <Col></Col>
+        <Col auto>
+          <Row>
+            <Col auto px5>
+              <MessageCircle {...iconSettings}></MessageCircle>
+            </Col>
+            <Col auto px5>
+              <Heart
+                {...iconSettings}
+                fill={post.didLike ? 'red' : 'white'}></Heart>
+            </Col>
+          </Row>
+        </Col>
+      </Row>
+      {report.comments && report.comments.length > 1 && (
+        <Row itemsCenter py5>
+          <Span color={'gray'}>{`${
+            report.comments.length - 1
+          }개 댓글 더보기`}</Span>
+        </Row>
+      )}
+      {report.comments &&
+        report.comments.slice(0, 1).map((comment, index) => {
+          return (
+            <Row key={index} itemsCenter justifyCenter pb10 pt5 flex>
+              <Col auto itemsCenter justifyCenter rounded20 overflowHidden>
+                <Img source={IMAGES.example2} w15 h15></Img>
+              </Col>
+              <Col mx10 justifyCenter>
+                <Row>
+                  <Span medium color={'black'}>
+                    irlyglo
+                  </Span>
+                  <Span ml5>{comment.content}</Span>
+                </Row>
+              </Col>
+              <Col auto itemsCenter justifyCenter>
+                <Heart color={'black'} height={14}></Heart>
+              </Col>
+            </Row>
+          );
+        })}
+    </Div>
+  );
+};
+const Place = ({post}) => {
+  const sungan = post.post;
+  const shadowProp = opacity => {
+    return {
+      shadowOffset: {height: 1, width: 1},
+      shadowColor: 'rgb(199,199,204)',
+      shadowOpacity: opacity,
+      shadowRadius: 10,
+    };
+  };
+  return (
+    <Div bg={'rgba(255,255,255,.9)'} pb10 px20>
+      <Row
+        itemsCenter
+        py20
+        borderTopColor={'rgb(199,199,204)'}
+        borderTopWidth={0.3}>
+        <Col auto rounded30 overflowHidden mr10>
+          <Img source={IMAGES.example2} w25 h25></Img>
+        </Col>
+        <Col auto>
+          <Span medium>{sungan.userInfo.userName}</Span>
+        </Col>
+        <Col></Col>
+        <Col auto px10 py5 rounded5>
+          <Span medium>{sungan.station.name}</Span>
+        </Col>
+      </Row>
+      <Div py10>
+        <Row rounded20 bgWhite w={'100%'} {...shadowProp(0.3)}>
+          <Col auto justifyCenter itemsCenter px20>
+            <Span fontSize={70}>{'🌄'}</Span>
+          </Col>
+          <Col justifyCenter>
+            <Span color={'black'} bold mb5>
+              {sungan.place}
+            </Span>
+            <Span color={'black'} medium>
+              {sungan.text}
+            </Span>
+          </Col>
+        </Row>
+      </Div>
+      <Row itemsCenter pt10 pb5>
+        <Col auto>
+          <Row>
+            <Span medium>{`좋아요 ${sungan.likeCnt}개`}</Span>
+          </Row>
+        </Col>
+        <Col></Col>
+        <Col auto>
+          <Row>
+            <Col auto px5>
+              <MessageCircle {...iconSettings}></MessageCircle>
+            </Col>
+            <Col auto px5>
+              <Heart
+                {...iconSettings}
+                fill={post.didLike ? 'red' : 'white'}></Heart>
+            </Col>
+          </Row>
+        </Col>
+      </Row>
+      {sungan.comments?.length > 1 && (
+        <Row itemsCenter py5>
+          <Span color={'gray'}>{`${
+            sungan.comments.length - 1
+          }개 댓글 더보기`}</Span>
+        </Row>
+      )}
+      {sungan.comments?.slice(0, 1).map((comment, index) => {
+        return (
+          <Row key={index} itemsCenter justifyCenter pb10 pt5 flex>
+            <Col auto itemsCenter justifyCenter rounded20 overflowHidden>
+              <Img source={IMAGES.example2} w15 h15></Img>
+            </Col>
+            <Col mx10 justifyCenter>
+              <Row>
+                <Span medium color={'black'}>
+                  irlyglo
+                </Span>
+                <Span ml5>{comment.content}</Span>
+              </Row>
+            </Col>
+            <Col auto itemsCenter justifyCenter>
+              <Heart color={'black'} height={14}></Heart>
+            </Col>
+          </Row>
+        );
+      })}
     </Div>
   );
 };

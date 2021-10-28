@@ -1,151 +1,404 @@
   import React, { useEffect, useState, useRef, useLayoutEffect } from 'react';
   import { Col } from 'src/components/common/Col';
-  import { Div } from 'src/components/common/Div';
-  import { Img } from 'src/components/common/Img';
-  import { Row } from 'src/components/common/Row';
-  import { Span } from 'src/components/common/Span';
+  import {Div} from 'src/components/common/Div';
+  import {Row} from 'src/components/common/Row';
+  import {Span} from 'src/components/common/Span';
+  import {ScrollView} from 'src/modules/viewComponents';
+  import {Input, NativeBaseProvider, TextArea} from 'native-base';
+  import TopHeader from 'src/components/TopHeader';
+  import {useNavigation} from '@react-navigation/core';
+  import {shallowEqual, useSelector} from 'react-redux';
+  import {RootState} from 'src/redux/rootReducer';
+  import SendSMS from 'react-native-sms';
+  import {SEOUL_METRO_PHONE_1TO8} from 'src/modules/constants';
+  import {postPromiseFn} from 'src/redux/asyncReducer';
   import APIS from 'src/modules/apis';
-  import { IMAGES } from 'src/modules/images';
-  import { NAV_NAMES } from 'src/modules/navNames';
-  import {ScrollView, View} from 'src/modules/viewComponents';
-import {Checkbox, Input, NativeBaseProvider, TextArea} from 'native-base';
-import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
-import TopHeader from 'src/components/TopHeader';
-import {useNavigation} from '@react-navigation/core';
-import {GO_COLOR} from 'src/modules/constants';
-import {Square} from 'react-native-feather';
+  import {Alert} from 'react-native';
 
-const ReportScreen = props => {
-  const borderProp = which => {
-    return which
-      ? {
-          borderBottomColor: 'gray',
-          borderBottomWidth: 1.5,
-        }
-      : {
+  enum Validity {
+    NULL = null,
+    ZERO = 0,
+    VALID = 1,
+    INVALID = 2,
+  }
+
+  const ReportScreen = props => {
+    const {selectedTrain} = useSelector(
+      (root: RootState) => root.route,
+      shallowEqual,
+    );
+    const {currentUser, token} = useSelector(
+      (root: RootState) => root.app.session,
+      shallowEqual,
+    );
+    const navigation = useNavigation();
+    const [report, setReport] = useState({
+      reportType: 0,
+      subject: null,
+      vehicleIdNum: selectedTrain?.trainNo,
+      carNum: null,
+      detail: null,
+      userName: currentUser.username,
+      userProfileImgUrl: null,
+      shouldBeUploaded: true,
+    });
+    const isNotBlank = str => {
+      return str && str.length !== 0;
+    };
+    const isValidVehicleId = str => {
+      if (!isNotBlank(str)) {
+        return Validity.NULL;
+      }
+      const num = +str;
+      if (isNaN(num) || num < 2000 || num > 2999) {
+        return Validity.INVALID;
+      }
+      return Validity.VALID;
+    };
+    const isValidCarNum = str => {
+      if (!isNotBlank(str)) {
+        return Validity.NULL;
+      }
+      const num = +str;
+      if (isNaN(num) || num < 1 || num > 100) {
+        return Validity.INVALID;
+      }
+      return Validity.VALID;
+    };
+    const isValidDetail = str => {
+      if (str === null) {
+        return Validity.NULL;
+      }
+      if (str.length === 0) {
+        return Validity.INVALID;
+      }
+      return Validity.VALID;
+    };
+    const borderBottomProp = bool => {
+      if (!bool || bool === Validity.NULL || bool === Validity.ZERO) {
+        return {
           borderBottomColor: 'rgb(199,199,204)',
-          borderBottomWidth: 1.5,
+          borderBottomWidth: 1,
         };
-  };
+      } else {
+        return {
+          borderBottomColor: 'black',
+          borderBottomWidth: 1,
+        };
+      }
+    };
+    const borderProp = bool => {
+      if (!bool || bool === Validity.NULL || bool === Validity.ZERO) {
+        return {
+          borderColor: 'rgb(199,199,204)',
+          borderWidth: 1,
+        };
+      } else if (bool === Validity.INVALID) {
+        return {
+          borderColor: 'red',
+          borderWidth: 1,
+        };
+      } else {
+        return {
+          borderColor: 'black',
+          borderWidth: 1,
+        };
+      }
+    };
+    const colorProp = bool => {
+      return bool
+        ? {
+            color: 'black',
+          }
+        : {
+            color: 'rgb(199,199,204)',
+          };
+    };
+    const setType = type => {
+      const {reportType, subject, ...other} = report;
+      setReport({reportType: type, subject: null, ...other});
+    };
+    const setSubect = reportSubject => {
+      const {subject, ...other} = report;
+      setReport({subject: reportSubject, ...other});
+    };
+    const setVehicleIdNum = reportVehicleIdNum => {
+      const {vehicleIdNum, ...other} = report;
+      setReport({vehicleIdNum: reportVehicleIdNum, ...other});
+    };
+    const setCarNum = reportCarNum => {
+      const {carNum, ...other} = report;
+      setReport({carNum: reportCarNum, ...other});
+    };
+    const setDetail = reportDetail => {
+      const {detail, ...other} = report;
+      setReport({detail: reportDetail, ...other});
+    };
+    const setShouldBeUploaded = reportShouldBeUploaded => {
+      const {shouldBeUploaded, ...other} = report;
+      setReport({shouldBeUploaded: reportShouldBeUploaded, ...other});
+    };
+    const handleSendSMSCallback = async (completed, cancelled, error) => {
+      if (completed && report.shouldBeUploaded) {
+        try {
+          const response = await postPromiseFn({
+            url: APIS.post.report().url,
+            body: report,
+            token: token,
+          });
+          if (response.data.statusCode === 200) {
+            Alert.alert(`업로드가 완료 되었습니다.`);
+            navigation.goBack();
+          } else {
+            Alert.alert(`업로드중 문제가 발생하였습니다.`);
+          }
+        } catch (e) {
+          Alert.alert(`피드에 업로드 중 에러가 발생하였습니다: ${e}`);
+        }
+      } else if (cancelled) {
+        Alert.alert(`유저가 취소하였습니다: ${cancelled}`);
+      } else if (error) {
+        Alert.alert(`에러가 발생하여 취소되었습니다: ${error}`);
+      }
+    };
+    const sendSMS = async () => {
+      if (
+        report.subject &&
+        isValidVehicleId(report.vehicleIdNum) &&
+        isValidCarNum(report.carNum) &&
+        isValidDetail(report.detail)
+      ) {
+        const textObject = {
+          body: `[${report.reportType}: ${report.subject}] \n
+        2호선 ${report.vehicleIdNum}번 열차 ${report.carNum}번 칸 \n
+        ${report.detail}`,
+          recipients: [SEOUL_METRO_PHONE_1TO8],
+          successTypes: ['sent'],
+          allowAndroidSendWithoutReadPermission: true,
+        };
+        // @ts-ignore
+        SendSMS.send(textObject, handleSendSMSCallback);
+      } else if (!report.subject) {
+        Alert.alert('주제를 선택해 주세요.');
+      } else if (!isValidVehicleId(report.vehicleIdNum)) {
+        Alert.alert(
+          '차량번호가 유효하지 않습니다. 2호선 차량번호는 칸 출입구 위에 쓰여 있는 2000번대 숫자입니다.\n예) 2516⑧ 일때 2516입니다.',
+        );
+      } else if (!isValidCarNum(report.carNum)) {
+        Alert.alert(
+          '칸번호가 유효하지 않습니다. 칸번호는 칸 출입구 위에 쓰여 있습니다.\n예) 2516⑧ 일때 8입니다.',
+        );
+      } else if (!isValidDetail(report.detail)) {
+        Alert.alert('민원 내용을 적어주세요.');
+      }
+    };
 
-  const iconSettings = {
-    strokeWidth: 1.5,
-    color: 'black',
-    height: 20,
-  };
-
-  return (
-    <Div flex>
-      <NativeBaseProvider>
-        <TopHeader
-          route={useNavigation}
-          title={'새 게시물'}
-          headerColor={'white'}
-        />
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          style={{backgroundColor: 'rgba(255,255,255,.9)'}}>
-          <Div>
-            <Div py20 borderGray300>
-              <Row justifyCenter>
-                <Span fontSize={100}>{'🚨'}</Span>
-              </Row>
-              <Row justifyCenter>
-                <Span medium color={GO_COLOR} fontSize={10}>
-                  {'첨부파일 변경'}
-                </Span>
-              </Row>
-            </Div>
-            <Div px20>
-              <Row rounded20 mb10>
-                <Col itemsCenter py10 {...borderProp(true)}>
-                  <Span medium fontSize={15}>
-                    요청
-                  </Span>
-                </Col>
-                <Col itemsCenter py10>
-                  <Span medium fontSize={15} color={'rgb(199,199,204)'}>
-                    신고
-                  </Span>
-                </Col>
-              </Row>
-              <Row mb20>
-                <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                  {['냉방/난방', '안내방송', '소음', '기타'].map(
-                    (item, index) => {
+    return (
+      <Div flex>
+        <NativeBaseProvider>
+          <TopHeader
+            route={useNavigation}
+            title={'새 민원'}
+            headerColor={'white'}
+            nextText={'전송'}
+            onPressNext={sendSMS}
+          />
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            style={{backgroundColor: 'rgba(255,255,255,.9)'}}>
+            <Div>
+              <Div py20 borderGray300>
+                <Row justifyCenter>
+                  <Span fontSize={100}>{'🚨'}</Span>
+                </Row>
+              </Div>
+              <Div px20>
+                <Row rounded20 mb10>
+                  <Col py10 {...borderBottomProp(report.reportType === 0)}>
+                    <Div onPress={() => setType(0)} w={'100%'} itemsCenter>
+                      <Span
+                        medium
+                        fontSize={15}
+                        {...colorProp(report.reportType === 0)}>
+                        요청
+                      </Span>
+                    </Div>
+                  </Col>
+                  <Col py10 {...borderBottomProp(report.reportType === 1)}>
+                    <Div onPress={() => setType(1)} w={'100%'} itemsCenter>
+                      <Span
+                        medium
+                        fontSize={15}
+                        {...colorProp(report.reportType === 1)}>
+                        신고
+                      </Span>
+                    </Div>
+                  </Col>
+                </Row>
+                <Row mb20>
+                  <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                    {(report.reportType === 0
+                      ? ['냉방/난방', '안내방송', '소음', '요청사항']
+                      : ['취객', '추행', '몰카', '소란', '행상인', '신고사항']
+                    ).map((item, index) => {
                       return (
                         <Div
-                          w100
-                          h100
                           mr10
                           rounded
-                          itemsCenter
-                          justifyCenter
                           key={index}
-                          style={{
-                            borderWidth: 0.5,
-                            borderColor: 'rgb(199,199,204)',
-                          }}>
-                          <Span color={'rgb(199,199,204)'}>{item}</Span>
+                          {...borderProp(report.subject === item)}>
+                          <Div
+                            onPress={() => setSubect(item)}
+                            px20
+                            py10
+                            w={'100%'}
+                            itemsCenter
+                            justifyCenter>
+                            <Span {...colorProp(report.subject === item)}>
+                              {item}
+                            </Span>
+                          </Div>
                         </Div>
                       );
-                    },
-                  )}
-                </ScrollView>
-              </Row>
-              <Row mb10 mt15>
-                <Span medium fontSize={15}>
-                  차량번호
-                </Span>
-              </Row>
-              <Row my5 itemsCenter mb20>
-                <Input
-                  w={'100%'}
-                  // {...borderProp(false)}
-                  fontSize={13}
-                  variant="unstyled"
-                  textContentType={'none'}
-                  numberOfLines={1}
-                  placeholder={'탑승중: 322391'}></Input>
-              </Row>
-              <Row mb10 mt15>
-                <Span medium fontSize={15}>
-                  내용
-                </Span>
-              </Row>
-              <Row mb20 itemsCenter>
-                <Div
-                  // borderWidth={1.5}
-                  rounded
-                  borderColor={'rgb(199,199,204)'}
-                  w={'100%'}>
-                  <TextArea
-                    w={'100%'}
-                    fontSize={13}
-                    variant="unstyled"
-                    textContentType={'none'}
-                    numberOfLines={20}
-                    placeholder={'9번칸 너무 추워요'}></TextArea>
-                </Div>
-              </Row>
-              <Row mb5 mt15>
-                <Col auto>
-                  <Square {...iconSettings}></Square>
-                </Col>
-                <Col>
+                    })}
+                  </ScrollView>
+                </Row>
+                <Row mb10 mt15>
+                  <Span medium fontSize={15}>
+                    열차번호
+                  </Span>
+                </Row>
+                <Row mb20>
+                  <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                    {selectedTrain && (
+                      <Div
+                        mr10
+                        rounded
+                        {...borderProp(
+                          selectedTrain.trainNo === report.vehicleIdNum,
+                        )}>
+                        <Div
+                          px20
+                          py10
+                          w={'100%'}
+                          onPress={() =>
+                            setVehicleIdNum(selectedTrain.trainNo)
+                          }>
+                          <Span
+                            {...colorProp(
+                              report.vehicleIdNum === selectedTrain.trainNo,
+                            )}>
+                            {selectedTrain.trainNo}
+                          </Span>
+                        </Div>
+                      </Div>
+                    )}
+                    <Div
+                      mr10
+                      rounded
+                      {...borderProp(
+                        selectedTrain?.trainNo !== report.vehicleIdNum &&
+                          isValidVehicleId(report.vehicleIdNum),
+                      )}>
+                      <Div px20 py10 w={'100%'}>
+                        <Input
+                          w={'100%'}
+                          padding={0}
+                          fontSize={13}
+                          onChangeText={change => setVehicleIdNum(change)}
+                          variant="unstyled"
+                          textContentType={'none'}
+                          numberOfLines={1}
+                          placeholder={'직접입력'}></Input>
+                      </Div>
+                    </Div>
+                  </ScrollView>
+                </Row>
+                <Row mb10 mt15>
+                  <Span medium fontSize={15}>
+                    칸번호
+                  </Span>
+                </Row>
+                <Row mb20>
+                  <Div
+                    mr10
+                    rounded
+                    {...borderProp(isValidCarNum(report.carNum))}>
+                    <Div px20 py10 w={'100%'}>
+                      <Input
+                        w={'100%'}
+                        padding={0}
+                        fontSize={13}
+                        onChangeText={change => setCarNum(change)}
+                        variant="unstyled"
+                        textContentType={'none'}
+                        numberOfLines={1}
+                        placeholder={'직접입력'}></Input>
+                    </Div>
+                  </Div>
+                </Row>
+                <Row mb10 mt15>
                   <Span medium fontSize={15}>
                     내용
                   </Span>
-                </Col>
-              </Row>
+                </Row>
+                <Row mb20 itemsCenter>
+                  <Div
+                    rounded
+                    {...borderProp(isValidDetail(report.detail))}
+                    w={'100%'}>
+                    <Div px20 py10 w={'100%'}>
+                      <TextArea
+                        w={'100%'}
+                        onChangeText={setDetail}
+                        padding={0}
+                        fontSize={13}
+                        variant="unstyled"
+                        textContentType={'none'}
+                        numberOfLines={20}
+                        placeholder={'너무 추워요'}></TextArea>
+                    </Div>
+                  </Div>
+                </Row>
+                <Row mb10 mt15>
+                  <Span medium fontSize={15}>
+                    신고 옵션
+                  </Span>
+                </Row>
+                <Row mb20>
+                  <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                    <Div mr10 rounded {...borderProp(report.shouldBeUploaded)}>
+                      <Div
+                        px20
+                        py10
+                        w={'100%'}
+                        onPress={() => setShouldBeUploaded(true)}>
+                        <Span {...colorProp(report.shouldBeUploaded)}>
+                          피드에도 공유
+                        </Span>
+                      </Div>
+                    </Div>
+                    <Div mr10 rounded {...borderProp(!report.shouldBeUploaded)}>
+                      <Div
+                        px20
+                        py10
+                        w={'100%'}
+                        onPress={() => setShouldBeUploaded(false)}>
+                        <Span {...colorProp(!report.shouldBeUploaded)}>
+                          민원만
+                        </Span>
+                      </Div>
+                    </Div>
+                  </ScrollView>
+                </Row>
+              </Div>
+              <Div h200 />
             </Div>
-            <Div h200 />
-          </Div>
-        </ScrollView>
-      </NativeBaseProvider>
-    </Div>
-  );
-};
+          </ScrollView>
+        </NativeBaseProvider>
+      </Div>
+    );
+  };
           
   export default ReportScreen;
   

@@ -3,20 +3,15 @@ import { createSlice } from '@reduxjs/toolkit';
 const feedSlice = createSlice({
     name: 'feed',
     initialState: {
-        prevPosts: [],
-        newPosts: [],
+        posts: [],
         cachedPreup: null,
         globalFiter: '2호선 본선',
     },
     reducers: {
-        setPrevPosts: (state, action) => {
-            if (action.payload) {
-                state.prevPosts = [...action.payload].reverse();
-            }
-        },
-        setNewPosts: (state, action) => {
+        setPosts: (state, action) => {
             if (action.payload && action.payload.length > 0) {
-                state.newPosts = [...action.payload].reverse();
+                // state.posts = [...action.payload].reverse();
+                state.posts = action.payload;
             }
         },
         setCachedPreup: (state, action) => {
@@ -30,8 +25,7 @@ const feedSlice = createSlice({
 
 export const feedReducer = feedSlice.reducer;
 export const {
-    setPrevPosts,
-    setNewPosts,
+    setPosts,
     setCachedPreup,
     setGlobalFilter,
 } = feedSlice.actions;

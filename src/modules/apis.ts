@@ -20,10 +20,10 @@ const APIS = {
     arrival: (station) => v1(`/route/realtime/arrival?startIndex=0&endIndex=100&service=realtimeStationArrival&stationNm=${station}`),
   },
   post: {
-    main: {
-      before: (firstId) => v1(`/post/main/before?firstId=${firstId}`),
-      after: (lastId) => v1(`/post/main/after?lastId=${lastId}`),
-    }
+    main: () => v1('/post/main'),
+    sungan: () => v1('/post/sungan'),
+    report: () => v1('/post/report'),
+    place: () => v1('/post/place'),
   },
   auth: {
     signIn: () => v1('/auth/log-in'),

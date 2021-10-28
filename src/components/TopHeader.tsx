@@ -15,11 +15,18 @@ const TopHeader = props => {
 
   const {params = {}} = route;
   const {headerTitle, onGoBack} = params;
+  const borderBottomProp = {
+    borderBottomColor: 'rgb(199,199,204)',
+    borderBottomWidth: 1,
+  };
 
   const onPressGoBack = useGoBack(onGoBack);
   return (
     <Div>
-      <StatusBar animated={true} barStyle="light-content" />
+      <StatusBar
+        animated={true}
+        barStyle={headerColor === 'white' ? 'dark-content' : 'light-content'}
+      />
       <Div h={HAS_NOTCH ? 44 : 20} bg={headerColor} />
       <Row w="100%" h54 bg={headerColor}>
         <Col w50 auto pl20 justifyCenter onPress={onPressGoBack}>

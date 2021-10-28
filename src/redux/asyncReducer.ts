@@ -5,7 +5,7 @@ import {shallowEqual, useDispatch, useSelector} from 'react-redux';
 import {RootState} from 'src/redux/rootReducer';
 import {asyncThunk} from './asyncThunk';
 
-const getPromiseFn = async args => {
+export const getPromiseFn = async args => {
   const {url, token} = args;
   const res = await fetch(url, {
     method: 'GET',
@@ -18,10 +18,8 @@ const getPromiseFn = async args => {
   return {ok: res.ok, data: json, status: res.status};
 };
 
-const postPromiseFn = async args => {
+export const postPromiseFn = async args => {
   const {url, body, token} = args;
-  console.log("https://console.aws.amazon.com/billing/home?region=ap-northeast-2#/paymentsoverview/transactions")
-  console.log(url)
   const res = await fetch(url, {
     method: 'POST',
     headers: {

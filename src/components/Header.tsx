@@ -26,9 +26,7 @@ export const Header = ({bg, onSelect}) => {
       <Col w80 auto>
         <Row justifyCenter>
           <Col justifyCenter>
-            <Span>
-              {selectedTrain ? selectedTrain.currentStation : '탑승전'}
-            </Span>
+            <Span>{selectedTrain ? selectedTrain.statnNm : '탑승전'}</Span>
           </Col>
         </Row>
       </Col>

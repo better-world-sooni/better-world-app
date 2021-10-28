@@ -14,7 +14,6 @@ const routeSlice = createSlice({
     selectedTrain: null,
     trainPositions: null,
     arrivalTrain: null,
-    currentStation: null,
     currentRoute: null,
     currentVehicles: [],
     currentRouteConfirmed: true
@@ -65,9 +64,6 @@ const routeSlice = createSlice({
     },
     setSelectedTrain: (state, action) => {
       state.selectedTrain = action.payload
-      if(action.payload){
-        state.currentStation = action.payload.currentStation;
-      }
     },
     setArrivalTrain: (state,action) => {
       state.arrivalTrain = action.payload
