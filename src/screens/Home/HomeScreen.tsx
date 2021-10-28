@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useState} from 'react';
-import {Dimensions, RefreshControl} from 'react-native';
+import {Alert, Dimensions, RefreshControl} from 'react-native';
 import {Col} from 'src/components/common/Col';
 import {Div} from 'src/components/common/Div';
 import {Img} from 'src/components/common/Img';
@@ -41,6 +41,7 @@ import {
   setTrainPositions,
   setArrivalTrain,
   setSelectedTrain,
+  exchangeOriginDestination,
 } from 'src/redux/routeReducer';
 import {shortenAddress, stationArr} from 'src/modules/utils';
 import {RootState} from 'src/redux/rootReducer';
@@ -52,10 +53,9 @@ import {ScrollSelector} from 'src/components/ScrollSelector';
 
 enum ChannelFilter {
   ALL = 0,
-  MUSIC = 1,
-  EVENTS = 2,
-  SPORTS = 3,
-  GAME = 4,
+  EVENTS = 1,
+  MUSIC = 3,
+  TALK = 4,
   REPORT = 5,
   PLACE = 6,
 }
@@ -131,15 +131,9 @@ const HomeScreen = props => {
     ) {
       return true;
     } else if (
-      channelFilter === ChannelFilter.SPORTS &&
+      channelFilter === ChannelFilter.TALK &&
       post.type === SUNGAN &&
-      post.post.channelId !== ChannelFilter.SPORTS
-    ) {
-      return true;
-    } else if (
-      channelFilter === ChannelFilter.GAME &&
-      post.type === SUNGAN &&
-      post.post.channelId !== ChannelFilter.GAME
+      post.post.channelId !== ChannelFilter.TALK
     ) {
       return true;
     } else if (channelFilter === ChannelFilter.PLACE && post.type === PLACE) {
@@ -325,6 +319,13 @@ const HomeScreen = props => {
       return {};
     }
   };
+  const exchangeOD = () => {
+    if (origin && destination) {
+      dispatch(exchangeOriginDestination());
+    } else {
+      Alert.alert('출발지와 도착지를 먼저 설정해주세요.');
+    }
+  };
 
   return (
     <Div flex bgWhite>
@@ -371,7 +372,7 @@ const HomeScreen = props => {
                   </Col>
                 </Row>
               </Col>
-              <Col mx5 auto itemsCenter justifyCenter>
+              <Col mx5 auto itemsCenter justifyCenter onPress={exchangeOD}>
                 <Span>
                   <RefreshCw color={'black'} height={14}></RefreshCw>
                 </Span>
@@ -458,10 +459,9 @@ const HomeScreen = props => {
                 </Div>
                 {[
                   {name: '핫플/맛집', value: ChannelFilter.PLACE},
-                  {name: '음악', value: ChannelFilter.MUSIC},
+                  {name: '잡담', value: ChannelFilter.TALK},
                   {name: '연애/시사', value: ChannelFilter.EVENTS},
-                  {name: '스포츠', value: ChannelFilter.SPORTS},
-                  {name: '게임', value: ChannelFilter.GAME},
+                  {name: '음악', value: ChannelFilter.MUSIC},
                 ].map((item, index) => {
                   return (
                     <Div

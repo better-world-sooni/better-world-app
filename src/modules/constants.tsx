@@ -341,6 +341,7 @@ export const chevronDownSettings = {
   strokeWidth: 2,
   color: 'black',
   height: 15,
+  width: 15,
 };
 
 export const iconSettings = {

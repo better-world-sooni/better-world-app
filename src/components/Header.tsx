@@ -2,11 +2,7 @@ import React from 'react';
 import {useNavigation} from '@react-navigation/core';
 import {AlertCircle, ChevronDown, PlusSquare} from 'react-native-feather';
 import {shallowEqual, useSelector} from 'react-redux';
-import {
-  chevronDownSettings,
-  iconSettings,
-  Selecting,
-} from 'src/modules/constants';
+import {chevronDownSettings, iconSettings} from 'src/modules/constants';
 import {NAV_NAMES} from 'src/modules/navNames';
 import {RootState} from 'src/redux/rootReducer';
 import {Col} from './common/Col';
@@ -28,10 +24,11 @@ export const Header = ({bg, onSelect}) => {
           <Col justifyCenter>
             <Span>{selectedTrain ? selectedTrain.statnNm : '탑승전'}</Span>
           </Col>
+          <Col></Col>
         </Row>
       </Col>
-      <Col rounded5 itemsCenter justifyCenter onPress={() => onSelect()}>
-        <Row>
+      <Col itemsCenter justifyCenter onPress={() => onSelect()}>
+        <Row itemsCenter>
           <Col itemsCenter auto>
             <Span
               bold

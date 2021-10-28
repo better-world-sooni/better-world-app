@@ -32,8 +32,7 @@ enum Validity {
 const channelNameToChannelId = {
   음악: 1,
   시사: 2,
-  스포츠: 3,
-  게임: 4,
+  잡담: 3,
 };
 
 const PostScreen = props => {
@@ -186,7 +185,7 @@ const PostScreen = props => {
     }
   };
 
-  const channels = ['핫플', '음악', '시사', '스포츠', '게임'];
+  const channels = ['핫플', '잡담', '시사', '음악'];
   return (
     <Div flex bgWhite>
       <Div flex={3}>

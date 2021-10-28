@@ -14,6 +14,7 @@ const routeSlice = createSlice({
     selectedTrain: null,
     trainPositions: null,
     arrivalTrain: null,
+    receiveStationPush: false,
     currentRoute: null,
     currentVehicles: [],
     currentRouteConfirmed: true
@@ -62,6 +63,18 @@ const routeSlice = createSlice({
         state.route.stations = [];
       }
     },
+    exchangeOriginDestination: (state) => {
+      if(state.route.origin && state.route.destination){
+        const prevOrigin= state.route.origin;
+        const prevDestination= state.route.destination;
+        const nextDirection = state.route.direction == Direction.INNER ? Direction.OUTER : Direction.INNER;
+        const stations = stationArr([], prevDestination, prevOrigin, nextDirection);
+        state.route.origin = prevDestination;
+        state.route.destination = prevOrigin;
+        state.route.direction = nextDirection;
+        state.route.stations = stations;
+      } 
+    },
     setSelectedTrain: (state, action) => {
       state.selectedTrain = action.payload
     },
@@ -72,6 +85,9 @@ const routeSlice = createSlice({
       if(action.payload){
         state.route = action.payload
       }
+    },
+    toggleReceiveStationPush: (state) => {
+      state.receiveStationPush = !state.receiveStationPush
     },
     setTrainPositions: (state, action) => {
       state.trainPositions = action.payload
@@ -108,5 +124,5 @@ const routeSlice = createSlice({
 });
 
 export const routeReducer = routeSlice.reducer;
-export const { setOrigin, setDestination, setDirection, setRoute, setSelectedTrain, setTrainPositions, setArrivalTrain, setCurrentRoute, confirmCurrentRoute } =
+export const { setOrigin, setDestination, setDirection, setRoute, setSelectedTrain, setTrainPositions, exchangeOriginDestination, toggleReceiveStationPush, setArrivalTrain, setCurrentRoute, confirmCurrentRoute } =
   routeSlice.actions;

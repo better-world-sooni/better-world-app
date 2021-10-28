@@ -1,26 +1,23 @@
 import {
 useNavigation
 } from '@react-navigation/native';
-import React, { useEffect, useState } from 'react';
-import { RefreshControl, StyleSheet } from 'react-native';
-import firebase from '@react-native-firebase/app';
+import React, {useEffect, useState} from 'react';
 import '@react-native-firebase/messaging';
 import '@react-native-firebase/auth';
-import { Col } from 'src/components/common/Col';
-import { Div } from 'src/components/common/Div';
-import { Img } from 'src/components/common/Img';
-import { Row } from 'src/components/common/Row';
-import { Span } from 'src/components/common/Span';
+import {Col} from 'src/components/common/Col';
+import {Div} from 'src/components/common/Div';
+import {Img} from 'src/components/common/Img';
+import {Row} from 'src/components/common/Row';
+import {Span} from 'src/components/common/Span';
 import APIS from 'src/modules/apis';
-import { IMAGES } from 'src/modules/images';
-import { NAV_NAMES } from 'src/modules/navNames';
+import {IMAGES} from 'src/modules/images';
+import {NAV_NAMES} from 'src/modules/navNames';
 import {ScrollView} from 'src/modules/viewComponents';
 import {useReloadGET} from 'src/redux/asyncReducer';
 import {shallowEqual, useDispatch, useSelector} from 'react-redux';
-import {ChevronDown, Edit2, Info, Lock, LogOut} from 'react-native-feather';
+import {ChevronDown, LogOut} from 'react-native-feather';
 import {
   chevronDownSettings,
-  GO_COLOR,
   HAS_NOTCH,
   iconSettings,
   MAIN_LINE2,
@@ -28,10 +25,11 @@ import {
   Selecting,
 } from 'src/modules/constants';
 import {useLogout} from 'src/redux/appReducer';
-import {Header} from 'src/components/Header';
 import {ScrollSelector} from 'src/components/ScrollSelector';
 import {setGlobalFilter} from 'src/redux/feedReducer';
 import {RootState} from 'src/redux/rootReducer';
+import {toggleReceiveStationPush} from 'src/redux/routeReducer';
+import {Switch} from 'react-native';
 
 const ProfileScreen = props => {
   const navigation = useNavigation();
@@ -43,10 +41,13 @@ const ProfileScreen = props => {
     shallowEqual,
   );
   const {
-    route: {selectedTrain},
+    route: {receiveStationPush},
     feed: {globalFiter},
   } = useSelector((root: RootState) => root, shallowEqual);
   const dispatch = useDispatch();
+  const toggleStationPush = () => {
+    dispatch(toggleReceiveStationPush());
+  };
 
   const selectGetterSetter = {
     [Selecting.GLOBAL_FILTER]: {
@@ -71,22 +72,30 @@ const ProfileScreen = props => {
     <Div flex backgroundColor={'white'}>
       <Div h={HAS_NOTCH ? 44 : 20} />
       <Row itemsCenter py10 px20 bg={'rgba(255,255,255,0)'}>
-        <Col w80 auto>
-          <Row justifyCenter>
-            <Col justifyCenter>
-              <Span>
-                {selectedTrain ? selectedTrain.currentStation : '탑승전'}
-              </Span>
+        <Col justifyCenter>
+          <Row>
+            <Col auto justifyCenter>
+              <Span>{receiveStationPush ? '역알림 킴' : '역알림 끔'}</Span>
             </Col>
+            <Col auto justifyCenter>
+              <Switch
+                style={{
+                  transform: [{scaleX: 0.5}, {scaleY: 0.5}],
+                }}
+                ios_backgroundColor="#3e3e3e"
+                onValueChange={toggleStationPush}
+                value={receiveStationPush}
+              />
+            </Col>
+            <Col />
           </Row>
         </Col>
         <Col
-          rounded5
           itemsCenter
           justifyCenter
           onPress={() => setSelecting(Selecting.GLOBAL_FILTER)}>
-          <Row>
-            <Col itemsCenter auto>
+          <Row itemsCenter>
+            <Col auto>
               <Span
                 bold
                 textCenter
@@ -102,7 +111,7 @@ const ProfileScreen = props => {
             </Col>
           </Row>
         </Col>
-        <Col w80 itemsEnd auto>
+        <Col itemsEnd>
           <Row itemsEnd>
             <Col onPress={goToPost} itemsEnd>
               <LogOut {...iconSettings} color={'black'}></LogOut>
