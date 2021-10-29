@@ -12,7 +12,12 @@ import {Span} from 'src/components/common/Span';
 import TopHeader from 'src/components/TopHeader';
 import {useNavigation} from '@react-navigation/core';
 import {Input, NativeBaseProvider, TextArea} from 'native-base';
-import {Direction, GO_COLOR, HAS_NOTCH} from 'src/modules/constants';
+import {
+  Direction,
+  GO_COLOR,
+  GRAY_COLOR,
+  HAS_NOTCH,
+} from 'src/modules/constants';
 import {Alert, ScrollView} from 'react-native';
 import {shallowEqual, useSelector} from 'react-redux';
 import {RootState} from 'src/redux/rootReducer';
@@ -67,7 +72,7 @@ const PostScreen = props => {
   const borderProp = bool => {
     if (!bool || bool === Validity.NULL || bool === Validity.ZERO) {
       return {
-        borderColor: 'rgb(199,199,204)',
+        borderColor: GRAY_COLOR,
         borderWidth: 1,
       };
     } else if (bool === Validity.INVALID) {
@@ -88,7 +93,7 @@ const PostScreen = props => {
           color: 'black',
         }
       : {
-          color: 'rgb(199,199,204)',
+          color: GRAY_COLOR,
         };
   };
   const setEmoji = sunganEmoji => {
@@ -126,7 +131,7 @@ const PostScreen = props => {
           ...other,
         };
         const response = await postPromiseFn({
-          url: APIS.post.sungan().url,
+          url: APIS.post.sungan.main().url,
           body: correctedSungan,
           token: token,
         });
@@ -161,7 +166,7 @@ const PostScreen = props => {
           ...other,
         };
         const response = await postPromiseFn({
-          url: APIS.post.place().url,
+          url: APIS.post.place.main().url,
           body: correctedSungan,
           token: token,
         });
@@ -343,7 +348,7 @@ const PostScreen = props => {
         </NativeBaseProvider>
       </Div>
       {editting && (
-        <Div flex={2} borderTopColor={'rgb(199,199,204)'} borderTopWidth={0.5}>
+        <Div flex={2} borderTopColor={GRAY_COLOR} borderTopWidth={0.5}>
           <EmojiSelector
             category={Categories.all}
             showSearchBar={true}

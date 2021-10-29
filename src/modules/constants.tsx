@@ -319,6 +319,7 @@ export const LINE2_Linked_List = {
   },
 };
 
+export const GRAY_COLOR = 'rgb(199,199,204)';
 export const MAIN_LINE2 = '2호선 본선';
 export const MY_ROUTE = '내 길';
 

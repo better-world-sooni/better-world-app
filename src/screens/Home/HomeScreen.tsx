@@ -25,6 +25,7 @@ import {
 import {
   chevronDownSettings,
   Direction,
+  GRAY_COLOR,
   HAS_NOTCH,
   iconSettings,
   LINE2_Linked_List,
@@ -274,7 +275,7 @@ const HomeScreen = props => {
   }, [arrivalLoading]);
 
   const textShadowProp = {
-    textShadowColor: 'rgb(199,199,204)',
+    textShadowColor: GRAY_COLOR,
     textShadowOffset: {width: 1, height: 1},
     textShadowRadius: 10,
   };
@@ -411,10 +412,7 @@ const HomeScreen = props => {
                 </Row>
               </Col>
             </Row>
-            <Row
-              pt10
-              borderBottomColor={'rgb(199,199,204)'}
-              borderBottomWidth={0.5}>
+            <Row pt10 borderBottomColor={GRAY_COLOR} borderBottomWidth={0.5}>
               <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                 <Div
                   auto
@@ -432,7 +430,7 @@ const HomeScreen = props => {
                       color={
                         channelFilter === ChannelFilter.ALL
                           ? 'black'
-                          : 'rgb(199,199,204)'
+                          : GRAY_COLOR
                       }
                       fontSize={15}>
                       전체
@@ -483,9 +481,7 @@ const HomeScreen = props => {
                         <Span
                           medium
                           color={
-                            channelFilter === item.value
-                              ? 'black'
-                              : 'rgb(199,199,204)'
+                            channelFilter === item.value ? 'black' : GRAY_COLOR
                           }
                           fontSize={15}>
                           {item.name}
@@ -721,7 +717,7 @@ const Sungan = ({post, dispatch, navigation, token}) => {
   const shadowProp = opacity => {
     return {
       shadowOffset: {height: 1, width: 1},
-      shadowColor: 'rgb(199,199,204)',
+      shadowColor: GRAY_COLOR,
       shadowOpacity: opacity,
       shadowRadius: 10,
     };
@@ -730,14 +726,14 @@ const Sungan = ({post, dispatch, navigation, token}) => {
   const like = async () => {
     if (isLiked) {
       const res = await deletePromiseFn({
-        url: APIS.post.sunganLike(sungan.id).url,
+        url: APIS.post.sungan.like(sungan.id).url,
         body: {},
         token: token,
       });
       res.status == 200 && setIsLiked(false);
     } else {
       const res = await postPromiseFn({
-        url: APIS.post.sunganLike(sungan.id).url,
+        url: APIS.post.sungan.like(sungan.id).url,
         body: {},
         token: token,
       });
@@ -751,11 +747,7 @@ const Sungan = ({post, dispatch, navigation, token}) => {
 
   return (
     <Div bg={'rgba(255,255,255,.9)'} pb10 px20>
-      <Row
-        itemsCenter
-        py20
-        borderTopColor={'rgb(199,199,204)'}
-        borderTopWidth={0.3}>
+      <Row itemsCenter py20 borderTopColor={GRAY_COLOR} borderTopWidth={0.3}>
         <Col auto rounded30 overflowHidden mr10>
           <Img source={IMAGES.example2} w25 h25></Img>
         </Col>
@@ -782,13 +774,17 @@ const Sungan = ({post, dispatch, navigation, token}) => {
       <Row itemsCenter pt10 pb5>
         <Col auto>
           <Row>
-            <Span medium>{`좋아요 ${sungan.likeCnt}개`}</Span>
+            <Span medium>{`좋아요 ${
+              sungan.likeCnt +
+              (!post.didLike && isLiked ? 1 : 0) -
+              (post.didLike && !isLiked ? 1 : 0)
+            }개`}</Span>
           </Row>
         </Col>
         <Col></Col>
         <Col auto>
           <Row>
-            <Col auto px5>
+            <Col auto px5 onPress={goToPostDetail}>
               <MessageCircle {...iconSettings}></MessageCircle>
             </Col>
             <Col auto px5 onPress={like}>
@@ -832,7 +828,7 @@ const Report = ({post, dispatch, navigation, token}) => {
   const shadowProp = opacity => {
     return {
       shadowOffset: {height: 1, width: 1},
-      shadowColor: 'rgb(199,199,204)',
+      shadowColor: GRAY_COLOR,
       shadowOpacity: opacity,
       shadowRadius: 10,
     };
@@ -841,14 +837,14 @@ const Report = ({post, dispatch, navigation, token}) => {
   const like = async () => {
     if (isLiked) {
       const res = await deletePromiseFn({
-        url: APIS.post.reportLike(report.id).url,
+        url: APIS.post.report.like(report.id).url,
         body: {},
         token: token,
       });
       res.status == 200 && setIsLiked(false);
     } else {
       const res = await postPromiseFn({
-        url: APIS.post.reportLike(report.id).url,
+        url: APIS.post.report.like(report.id).url,
         body: {},
         token: token,
       });
@@ -861,11 +857,7 @@ const Report = ({post, dispatch, navigation, token}) => {
   };
   return (
     <Div bg={'rgba(255,255,255,.9)'} pb10 px20>
-      <Row
-        itemsCenter
-        py20
-        borderTopColor={'rgb(199,199,204)'}
-        borderTopWidth={0.3}>
+      <Row itemsCenter py20 borderTopColor={GRAY_COLOR} borderTopWidth={0.3}>
         <Col auto rounded30 overflowHidden mr10>
           <Img source={IMAGES.example2} w25 h25></Img>
         </Col>
@@ -896,13 +888,17 @@ const Report = ({post, dispatch, navigation, token}) => {
       <Row itemsCenter pt10 pb5>
         <Col auto>
           <Row>
-            <Span medium>{`좋아요 ${report.likeCnt}개`}</Span>
+            <Span medium>{`좋아요 ${
+              report.likeCnt +
+              (!post.didLike && isLiked ? 1 : 0) -
+              (post.didLike && !isLiked ? 1 : 0)
+            }개`}</Span>
           </Row>
         </Col>
         <Col></Col>
         <Col auto>
           <Row>
-            <Col auto px5>
+            <Col auto px5 onPress={goToPostDetail}>
               <MessageCircle {...iconSettings}></MessageCircle>
             </Col>
             <Col auto px5 onPress={like}>
@@ -944,7 +940,7 @@ const Place = ({post, dispatch, navigation, token}) => {
   const shadowProp = opacity => {
     return {
       shadowOffset: {height: 1, width: 1},
-      shadowColor: 'rgb(199,199,204)',
+      shadowColor: GRAY_COLOR,
       shadowOpacity: opacity,
       shadowRadius: 10,
     };
@@ -954,14 +950,14 @@ const Place = ({post, dispatch, navigation, token}) => {
   const like = async () => {
     if (isLiked) {
       const res = await deletePromiseFn({
-        url: APIS.post.placeLike(sungan.id).url,
+        url: APIS.post.place.like(sungan.id).url,
         body: {},
         token: token,
       });
       res.status == 200 && setIsLiked(false);
     } else {
       const res = await postPromiseFn({
-        url: APIS.post.placeLike(sungan.id).url,
+        url: APIS.post.place.like(sungan.id).url,
         body: {},
         token: token,
       });
@@ -974,11 +970,7 @@ const Place = ({post, dispatch, navigation, token}) => {
   };
   return (
     <Div bg={'rgba(255,255,255,.9)'} pb10 px20>
-      <Row
-        itemsCenter
-        py20
-        borderTopColor={'rgb(199,199,204)'}
-        borderTopWidth={0.3}>
+      <Row itemsCenter py20 borderTopColor={GRAY_COLOR} borderTopWidth={0.3}>
         <Col auto rounded30 overflowHidden mr10>
           <Img source={IMAGES.example2} w25 h25></Img>
         </Col>
@@ -1008,13 +1000,17 @@ const Place = ({post, dispatch, navigation, token}) => {
       <Row itemsCenter pt10 pb5>
         <Col auto>
           <Row>
-            <Span medium>{`좋아요 ${sungan.likeCnt}개`}</Span>
+            <Span medium>{`좋아요 ${
+              sungan.likeCnt +
+              (!post.didLike && isLiked ? 1 : 0) -
+              (post.didLike && !isLiked ? 1 : 0)
+            }개`}</Span>
           </Row>
         </Col>
         <Col></Col>
         <Col auto>
           <Row>
-            <Col auto px5>
+            <Col auto px5 onPress={goToPostDetail}>
               <MessageCircle {...iconSettings}></MessageCircle>
             </Col>
             <Col auto px5 onPress={like}>

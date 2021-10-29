@@ -18,6 +18,7 @@ import {shallowEqual, useDispatch, useSelector} from 'react-redux';
 import {ChevronDown, LogOut} from 'react-native-feather';
 import {
   chevronDownSettings,
+  GRAY_COLOR,
   HAS_NOTCH,
   iconSettings,
   MAIN_LINE2,
@@ -141,7 +142,7 @@ const ProfileScreen = props => {
             py10
             rounded5
             borderWidth={0.5}
-            borderColor={'rgb(199,199,204)'}>
+            borderColor={GRAY_COLOR}>
             <Col></Col>
             <Col auto>
               <Span>프로필 편집</Span>

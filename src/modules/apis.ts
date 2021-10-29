@@ -21,18 +21,36 @@ const APIS = {
   },
   post: {
     main: () => v1('/post/main'),
-    sungan: () => v1('/post/sungan'),
-    report: () => v1('/post/report'),
-    place: () => v1('/post/place'),
-    placeComments: (id) => v1(`/post/place/${id}/comments`),
-    sunganComments: (id) => v1(`/post/sungan/${id}/comments`),
-    reportComments: (id) => v1(`/post/report/${id}/comments`),
-    placeComment: () => v1(`/post/place/comment`),
-    sunganComment: () => v1(`/post/sungan/comment`),
-    reportComment: () => v1(`/post/report/comment`),
-    placeLike: (id) => v1(`/post/place/${id}/like`),
-    sunganLike: (id) => v1(`/post/sungan/${id}/like`),
-    reportLike: (id) => v1(`/post/report/${id}/like`),
+    sungan: {
+      main: () => v1('/post/sungan'),
+      comments: (id) => v1(`/post/sungan/${id}/comments`),
+      comment: {
+        main: () => v1(`/post/sungan/comment`),
+        like: (id) => v1(`/post/sungan/comment/${id}/like`),
+        reply: () => v1(`/post/sungan/comment/reply`),
+      },
+      like: (id) => v1(`/post/sungan/${id}/like`),
+    },
+    report: {
+      main: () => v1('/post/report'),
+      comments: (id) => v1(`/post/report/${id}/comments`),
+      comment: {
+        main: () => v1(`/post/report/comment`),
+        like: (id) => v1(`/post/report/comment/${id}/like`),
+        reply: () => v1(`/post/report/comment/reply`),
+      },
+      like: (id) => v1(`/post/report/${id}/like`),
+    },
+    place: {
+      main: () => v1('/post/place'),
+      comments: (id) => v1(`/post/place/${id}/comments`),
+      comment: {
+        main: () => v1(`/post/place/comment`),
+        like: (id) => v1(`/post/place/comment/${id}/like`),
+        reply: () => v1(`/post/place/comment/reply`),
+      },
+      like: (id) => v1(`/post/place/${id}/like`),
+    },
   },
   auth: {
     signIn: () => v1('/auth/log-in'),

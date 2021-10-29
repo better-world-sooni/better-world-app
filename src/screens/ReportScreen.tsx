@@ -10,7 +10,7 @@
   import {shallowEqual, useSelector} from 'react-redux';
   import {RootState} from 'src/redux/rootReducer';
   import SendSMS from 'react-native-sms';
-  import {SEOUL_METRO_PHONE_1TO8} from 'src/modules/constants';
+  import {GRAY_COLOR, SEOUL_METRO_PHONE_1TO8} from 'src/modules/constants';
   import {postPromiseFn} from 'src/redux/asyncReducer';
   import APIS from 'src/modules/apis';
   import {Alert} from 'react-native';
@@ -77,7 +77,7 @@
     const borderBottomProp = bool => {
       if (!bool || bool === Validity.NULL || bool === Validity.ZERO) {
         return {
-          borderBottomColor: 'rgb(199,199,204)',
+          borderBottomColor: GRAY_COLOR,
           borderBottomWidth: 1,
         };
       } else {
@@ -90,7 +90,7 @@
     const borderProp = bool => {
       if (!bool || bool === Validity.NULL || bool === Validity.ZERO) {
         return {
-          borderColor: 'rgb(199,199,204)',
+          borderColor: GRAY_COLOR,
           borderWidth: 1,
         };
       } else if (bool === Validity.INVALID) {
@@ -111,7 +111,7 @@
             color: 'black',
           }
         : {
-            color: 'rgb(199,199,204)',
+            color: GRAY_COLOR,
           };
     };
     const setType = type => {
@@ -142,7 +142,7 @@
       if (completed && report.shouldBeUploaded) {
         try {
           const response = await postPromiseFn({
-            url: APIS.post.report().url,
+            url: APIS.post.report.main().url,
             body: report,
             token: token,
           });

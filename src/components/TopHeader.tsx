@@ -6,19 +6,15 @@ import {Div} from './common/Div';
 import {Img} from './common/Img';
 import {Row} from './common/Row';
 import {Span} from './common/Span';
-import {GO_COLOR, HAS_NOTCH} from 'src/modules/constants';
+import {GO_COLOR, GRAY_COLOR, HAS_NOTCH} from 'src/modules/constants';
 import {useGoBack} from 'src/modules/useCustomHooks';
-import { StatusBar } from 'native-base';
+import {StatusBar} from 'native-base';
 
 const TopHeader = props => {
-  const { route, title, headerColor, nextText, onPressNext } = props;
+  const {route, title, headerColor, nextText, onPressNext} = props;
 
   const {params = {}} = route;
   const {headerTitle, onGoBack} = params;
-  const borderBottomProp = {
-    borderBottomColor: 'rgb(199,199,204)',
-    borderBottomWidth: 1,
-  };
 
   const onPressGoBack = useGoBack(onGoBack);
   return (

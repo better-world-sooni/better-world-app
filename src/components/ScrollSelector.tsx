@@ -4,7 +4,7 @@ import {Col} from './common/Col';
 import {Div} from './common/Div';
 import {Row} from './common/Row';
 import {Span} from './common/Span';
-import {GO_COLOR} from 'src/modules/constants';
+import {GO_COLOR, GRAY_COLOR} from 'src/modules/constants';
 
 export const ScrollSelector = ({
   selectedValue,
@@ -13,7 +13,7 @@ export const ScrollSelector = ({
   onClose,
 }) => {
   return (
-    <Div borderTopColor={'rgb(199,199,204)'} borderTopWidth={0.5}>
+    <Div borderTopColor={GRAY_COLOR} borderTopWidth={0.5}>
       <Row bg={'white'}>
         <Col></Col>
         <Col auto px20 py10 onPress={() => onClose()}>
