@@ -6,6 +6,7 @@ const feedSlice = createSlice({
         posts: [],
         cachedPreup: null,
         globalFiter: '2호선 본선',
+        currentPost: null,
     },
     reducers: {
         setPosts: (state, action) => {
@@ -19,6 +20,9 @@ const feedSlice = createSlice({
         },
         setGlobalFilter: (state, action) => {
             state.globalFiter = action.payload;
+        },
+        setCurrentPost: (state, action) => {
+            state.currentPost = action.payload;
         }
     },
 });
@@ -28,4 +32,5 @@ export const {
     setPosts,
     setCachedPreup,
     setGlobalFilter,
+    setCurrentPost,
 } = feedSlice.actions;

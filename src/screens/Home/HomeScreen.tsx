@@ -9,6 +9,8 @@ import APIS from 'src/modules/apis';
 import {IMAGES} from 'src/modules/images';
 import {ScrollView} from 'src/modules/viewComponents';
 import {
+  deletePromiseFn,
+  postPromiseFn,
   useApiSelector,
   useReloadGET,
   useReloadPOST,
@@ -45,11 +47,13 @@ import {
 } from 'src/redux/routeReducer';
 import {shortenAddress, stationArr} from 'src/modules/utils';
 import {RootState} from 'src/redux/rootReducer';
-import {setGlobalFilter, setPosts} from 'src/redux/feedReducer';
+import {setCurrentPost, setGlobalFilter, setPosts} from 'src/redux/feedReducer';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faSubway} from '@fortawesome/free-solid-svg-icons';
 import {Header} from 'src/components/Header';
 import {ScrollSelector} from 'src/components/ScrollSelector';
+import {useNavigation} from '@react-navigation/core';
+import {NAV_NAMES} from 'src/modules/navNames';
 
 enum ChannelFilter {
   ALL = 0,
@@ -84,6 +88,10 @@ const HomeScreen = props => {
     trainPositions,
     arrivalTrain,
   } = useSelector((root: RootState) => root.route, shallowEqual);
+  const {token} = useSelector(
+    (root: RootState) => root.app.session,
+    shallowEqual,
+  );
   const displayedStation = selectedTrain?.statnNm || origin;
   const {posts, globalFiter} = useSelector(
     (root: RootState) => root.feed,
@@ -145,6 +153,7 @@ const HomeScreen = props => {
 
   const apiGET = useReloadGET();
   const dispatch = useDispatch();
+  const navigation = useNavigation();
 
   const filterPositionResponse = response => {
     const trainLocations = {};
@@ -403,14 +412,12 @@ const HomeScreen = props => {
               </Col>
             </Row>
             <Row
-              px10
               pt10
               borderBottomColor={'rgb(199,199,204)'}
               borderBottomWidth={0.5}>
               <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                 <Div
                   auto
-                  mr10
                   justifyCenter
                   {...blackBorderBottomProp(
                     channelFilter === ChannelFilter.ALL,
@@ -418,7 +425,7 @@ const HomeScreen = props => {
                   <Div
                     w={'100%'}
                     py5
-                    px15
+                    px20
                     onPress={() => setChannelFilter(ChannelFilter.ALL)}>
                     <Span
                       medium
@@ -435,7 +442,6 @@ const HomeScreen = props => {
                 <Div
                   auto
                   borderBottomColor={'rgb(255,69,58)'}
-                  mr10
                   justifyCenter
                   {...redBorderBottomProp(
                     channelFilter === ChannelFilter.REPORT,
@@ -443,7 +449,7 @@ const HomeScreen = props => {
                   <Div
                     w={'100%'}
                     py5
-                    px15
+                    px20
                     onPress={() => setChannelFilter(ChannelFilter.REPORT)}>
                     <Span
                       medium
@@ -460,20 +466,19 @@ const HomeScreen = props => {
                 {[
                   {name: '핫플/맛집', value: ChannelFilter.PLACE},
                   {name: '잡담', value: ChannelFilter.TALK},
-                  {name: '연애/시사', value: ChannelFilter.EVENTS},
+                  {name: '연예/시사', value: ChannelFilter.EVENTS},
                   {name: '음악', value: ChannelFilter.MUSIC},
                 ].map((item, index) => {
                   return (
                     <Div
                       key={index}
                       auto
-                      mr10
                       justifyCenter
                       {...blackBorderBottomProp(channelFilter === item.value)}>
                       <Div
                         w={'100%'}
                         py5
-                        px15
+                        px20
                         onPress={() => setChannelFilter(item.value)}>
                         <Span
                           medium
@@ -664,11 +669,35 @@ const HomeScreen = props => {
                 })
                 .map((post, index) => {
                   if (post.type == SUNGAN) {
-                    return <Sungan post={post} key={index} />;
+                    return (
+                      <Sungan
+                        post={post}
+                        dispatch={dispatch}
+                        navigation={navigation}
+                        token={token}
+                        key={index}
+                      />
+                    );
                   } else if (post.type == REPORT) {
-                    return <Report post={post} key={index} />;
+                    return (
+                      <Report
+                        post={post}
+                        dispatch={dispatch}
+                        navigation={navigation}
+                        token={token}
+                        key={index}
+                      />
+                    );
                   } else {
-                    return <Place post={post} key={index} />;
+                    return (
+                      <Place
+                        post={post}
+                        dispatch={dispatch}
+                        navigation={navigation}
+                        token={token}
+                        key={index}
+                      />
+                    );
                   }
                 })}
           </Div>
@@ -686,8 +715,9 @@ const HomeScreen = props => {
   );
 };
 
-const Sungan = ({post}) => {
+const Sungan = ({post, dispatch, navigation, token}) => {
   const sungan = post.post;
+  const bestComment = post.bestComment;
   const shadowProp = opacity => {
     return {
       shadowOffset: {height: 1, width: 1},
@@ -696,6 +726,29 @@ const Sungan = ({post}) => {
       shadowRadius: 10,
     };
   };
+  const [isLiked, setIsLiked] = useState(post.didLike);
+  const like = async () => {
+    if (isLiked) {
+      const res = await deletePromiseFn({
+        url: APIS.post.sunganLike(sungan.id).url,
+        body: {},
+        token: token,
+      });
+      res.status == 200 && setIsLiked(false);
+    } else {
+      const res = await postPromiseFn({
+        url: APIS.post.sunganLike(sungan.id).url,
+        body: {},
+        token: token,
+      });
+      res.status == 200 && setIsLiked(true);
+    }
+  };
+  const goToPostDetail = () => {
+    dispatch(setCurrentPost(post));
+    navigation.navigate(NAV_NAMES.PostDetail);
+  };
+
   return (
     <Div bg={'rgba(255,255,255,.9)'} pb10 px20>
       <Row
@@ -714,7 +767,7 @@ const Sungan = ({post}) => {
           <Span medium>{sungan.station.name}</Span>
         </Col>
       </Row>
-      <Div py10>
+      <Div py10 onPress={goToPostDetail}>
         <Row rounded20 bgWhite w={'100%'} {...shadowProp(0.3)}>
           <Col auto justifyCenter itemsCenter px20>
             <Span fontSize={70}>{sungan.emoji}</Span>
@@ -738,10 +791,8 @@ const Sungan = ({post}) => {
             <Col auto px5>
               <MessageCircle {...iconSettings}></MessageCircle>
             </Col>
-            <Col auto px5>
-              <Heart
-                {...iconSettings}
-                fill={post.didLike ? 'red' : 'white'}></Heart>
+            <Col auto px5 onPress={like}>
+              <Heart {...iconSettings} fill={isLiked ? 'red' : 'white'}></Heart>
             </Col>
           </Row>
         </Col>
@@ -753,32 +804,31 @@ const Sungan = ({post}) => {
           }개 댓글 더보기`}</Span>
         </Row>
       )}
-      {sungan.comments.slice(0, 1).map((comment, index) => {
-        return (
-          <Row key={index} itemsCenter justifyCenter pb10 pt5 flex>
-            <Col auto itemsCenter justifyCenter rounded20 overflowHidden>
-              <Img source={IMAGES.example2} w15 h15></Img>
-            </Col>
-            <Col mx10 justifyCenter>
-              <Row>
-                <Span medium color={'black'}>
-                  irlyglo
-                </Span>
-                <Span ml5>{comment.content}</Span>
-              </Row>
-            </Col>
-            <Col auto itemsCenter justifyCenter>
-              <Heart color={'black'} height={14}></Heart>
-            </Col>
-          </Row>
-        );
-      })}
+      {bestComment && (
+        <Row itemsCenter justifyCenter pb10 pt5 flex>
+          <Col auto itemsCenter justifyCenter rounded20 overflowHidden>
+            <Img source={IMAGES.example2} w15 h15></Img>
+          </Col>
+          <Col mx10 justifyCenter>
+            <Row>
+              <Span medium color={'black'}>
+                irlyglo
+              </Span>
+              <Span ml5>{bestComment.content}</Span>
+            </Row>
+          </Col>
+          <Col auto itemsCenter justifyCenter>
+            <Heart color={'black'} height={14}></Heart>
+          </Col>
+        </Row>
+      )}
     </Div>
   );
 };
 
-const Report = ({post}) => {
+const Report = ({post, dispatch, navigation, token}) => {
   const report = post.post;
+  const bestComment = post.bestComment;
   const shadowProp = opacity => {
     return {
       shadowOffset: {height: 1, width: 1},
@@ -786,6 +836,28 @@ const Report = ({post}) => {
       shadowOpacity: opacity,
       shadowRadius: 10,
     };
+  };
+  const [isLiked, setIsLiked] = useState(post.didLike);
+  const like = async () => {
+    if (isLiked) {
+      const res = await deletePromiseFn({
+        url: APIS.post.reportLike(report.id).url,
+        body: {},
+        token: token,
+      });
+      res.status == 200 && setIsLiked(false);
+    } else {
+      const res = await postPromiseFn({
+        url: APIS.post.reportLike(report.id).url,
+        body: {},
+        token: token,
+      });
+      res.status == 200 && setIsLiked(true);
+    }
+  };
+  const goToPostDetail = () => {
+    dispatch(setCurrentPost(post));
+    navigation.navigate(NAV_NAMES.PostDetail);
   };
   return (
     <Div bg={'rgba(255,255,255,.9)'} pb10 px20>
@@ -805,7 +877,7 @@ const Report = ({post}) => {
           <Span medium>{`차량번호: ${report.vehicleIdNum}`}</Span>
         </Col>
       </Row>
-      <Div py10>
+      <Div py10 onPress={goToPostDetail}>
         <Row
           rounded20
           bg={'rgb(250, 196, 192)'}
@@ -833,10 +905,8 @@ const Report = ({post}) => {
             <Col auto px5>
               <MessageCircle {...iconSettings}></MessageCircle>
             </Col>
-            <Col auto px5>
-              <Heart
-                {...iconSettings}
-                fill={post.didLike ? 'red' : 'white'}></Heart>
+            <Col auto px5 onPress={like}>
+              <Heart {...iconSettings} fill={isLiked ? 'red' : 'white'}></Heart>
             </Col>
           </Row>
         </Col>
@@ -848,31 +918,28 @@ const Report = ({post}) => {
           }개 댓글 더보기`}</Span>
         </Row>
       )}
-      {report.comments &&
-        report.comments.slice(0, 1).map((comment, index) => {
-          return (
-            <Row key={index} itemsCenter justifyCenter pb10 pt5 flex>
-              <Col auto itemsCenter justifyCenter rounded20 overflowHidden>
-                <Img source={IMAGES.example2} w15 h15></Img>
-              </Col>
-              <Col mx10 justifyCenter>
-                <Row>
-                  <Span medium color={'black'}>
-                    irlyglo
-                  </Span>
-                  <Span ml5>{comment.content}</Span>
-                </Row>
-              </Col>
-              <Col auto itemsCenter justifyCenter>
-                <Heart color={'black'} height={14}></Heart>
-              </Col>
+      {bestComment && (
+        <Row itemsCenter justifyCenter pb10 pt5 flex>
+          <Col auto itemsCenter justifyCenter rounded20 overflowHidden>
+            <Img source={IMAGES.example2} w15 h15></Img>
+          </Col>
+          <Col mx10 justifyCenter>
+            <Row>
+              <Span medium color={'black'}>
+                irlyglo
+              </Span>
+              <Span ml5>{bestComment.content}</Span>
             </Row>
-          );
-        })}
+          </Col>
+          <Col auto itemsCenter justifyCenter>
+            <Heart color={'black'} height={14}></Heart>
+          </Col>
+        </Row>
+      )}
     </Div>
   );
 };
-const Place = ({post}) => {
+const Place = ({post, dispatch, navigation, token}) => {
   const sungan = post.post;
   const shadowProp = opacity => {
     return {
@@ -881,6 +948,29 @@ const Place = ({post}) => {
       shadowOpacity: opacity,
       shadowRadius: 10,
     };
+  };
+  const bestComment = post.bestComment;
+  const [isLiked, setIsLiked] = useState(post.didLike);
+  const like = async () => {
+    if (isLiked) {
+      const res = await deletePromiseFn({
+        url: APIS.post.placeLike(sungan.id).url,
+        body: {},
+        token: token,
+      });
+      res.status == 200 && setIsLiked(false);
+    } else {
+      const res = await postPromiseFn({
+        url: APIS.post.placeLike(sungan.id).url,
+        body: {},
+        token: token,
+      });
+      res.status == 200 && setIsLiked(true);
+    }
+  };
+  const goToPostDetail = () => {
+    dispatch(setCurrentPost(post));
+    navigation.navigate(NAV_NAMES.PostDetail);
   };
   return (
     <Div bg={'rgba(255,255,255,.9)'} pb10 px20>
@@ -900,10 +990,10 @@ const Place = ({post}) => {
           <Span medium>{sungan.station.name}</Span>
         </Col>
       </Row>
-      <Div py10>
+      <Div py10 onPress={goToPostDetail}>
         <Row rounded20 bgWhite w={'100%'} {...shadowProp(0.3)}>
           <Col auto justifyCenter itemsCenter px20>
-            <Span fontSize={70}>{'🌄'}</Span>
+            <Span fontSize={70}>{sungan.emoji}</Span>
           </Col>
           <Col justifyCenter>
             <Span color={'black'} bold mb5>
@@ -927,10 +1017,8 @@ const Place = ({post}) => {
             <Col auto px5>
               <MessageCircle {...iconSettings}></MessageCircle>
             </Col>
-            <Col auto px5>
-              <Heart
-                {...iconSettings}
-                fill={post.didLike ? 'red' : 'white'}></Heart>
+            <Col auto px5 onPress={like}>
+              <Heart {...iconSettings} fill={isLiked ? 'red' : 'white'}></Heart>
             </Col>
           </Row>
         </Col>
@@ -942,26 +1030,24 @@ const Place = ({post}) => {
           }개 댓글 더보기`}</Span>
         </Row>
       )}
-      {sungan.comments?.slice(0, 1).map((comment, index) => {
-        return (
-          <Row key={index} itemsCenter justifyCenter pb10 pt5 flex>
-            <Col auto itemsCenter justifyCenter rounded20 overflowHidden>
-              <Img source={IMAGES.example2} w15 h15></Img>
-            </Col>
-            <Col mx10 justifyCenter>
-              <Row>
-                <Span medium color={'black'}>
-                  irlyglo
-                </Span>
-                <Span ml5>{comment.content}</Span>
-              </Row>
-            </Col>
-            <Col auto itemsCenter justifyCenter>
-              <Heart color={'black'} height={14}></Heart>
-            </Col>
-          </Row>
-        );
-      })}
+      {bestComment && (
+        <Row itemsCenter justifyCenter pb10 pt5 flex>
+          <Col auto itemsCenter justifyCenter rounded20 overflowHidden>
+            <Img source={IMAGES.example2} w15 h15></Img>
+          </Col>
+          <Col mx10 justifyCenter>
+            <Row>
+              <Span medium color={'black'}>
+                irlyglo
+              </Span>
+              <Span ml5>{bestComment.content}</Span>
+            </Row>
+          </Col>
+          <Col auto itemsCenter justifyCenter>
+            <Heart color={'black'} height={14}></Heart>
+          </Col>
+        </Row>
+      )}
     </Div>
   );
 };

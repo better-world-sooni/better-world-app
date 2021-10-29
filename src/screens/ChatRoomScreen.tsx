@@ -38,7 +38,7 @@ const ChatRoomScreen = () => {
   return (
     <Div flex bg={'white'}>
       <Div h={HAS_NOTCH ? 44 : 20} />
-      <Div rounded20 bgWhite flex={1}>
+      <Div bgWhite flex={1}>
         <Row justifyCenter py20>
           <Col auto px10 onPress={() => navigation.goBack()}>
             <ChevronLeft {...iconSettings}></ChevronLeft>
@@ -53,7 +53,9 @@ const ChatRoomScreen = () => {
           </Col>
         </Row>
         <GiftedChat
-          messages={chatRooms[currentChatRoom.roomId]?.messages || []}
+          messages={
+            [...chatRooms[currentChatRoom.roomId]?.messages].reverse() || []
+          }
           onSend={messages => onSend(messages)}
           user={{
             _id: metasunganUser._id,

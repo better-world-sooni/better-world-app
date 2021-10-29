@@ -19,6 +19,7 @@ import {RootState} from 'src/redux/rootReducer';
 import ChatScreen from 'src/screens/Home/ChatScreen';
 import {Div} from './common/Div';
 import ChatRoomScreen from 'src/screens/ChatRoomScreen';
+import PostDetailScreen from 'src/screens/PostDetailScreen';
 
 const RootStack = createStackNavigator();
 
@@ -142,6 +143,13 @@ export const AppContent = () => {
     {
       name: NAV_NAMES.ChatRoom,
       component: ChatRoomScreen,
+      options: props => ({
+        cardStyle: {backgroundColor: 'black', presentation: 'screen'},
+      }),
+    },
+    {
+      name: NAV_NAMES.PostDetail,
+      component: PostDetailScreen,
       options: props => ({
         cardStyle: {backgroundColor: 'black', presentation: 'screen'},
       }),

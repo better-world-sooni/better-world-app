@@ -34,6 +34,22 @@ export const postPromiseFn = async args => {
   return {ok: res.ok, data: json, status: res.status};
 };
 
+export const deletePromiseFn = async args => {
+  const {url, body, token} = args;
+  const res = await fetch(url, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+      ...(token && {Authorization: 'Bearer ' + token}),
+    },
+    ...(body && {body: JSON.stringify(body)}),
+  });
+  const json = await res.json();
+
+
+  return {ok: res.ok, data: json, status: res.status};
+};
+
 const keyWithScope = (key, scope?) => {
   return scope ? `${scope}/${key}` : key;
 };

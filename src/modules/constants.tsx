@@ -143,7 +143,7 @@ export const LINE2_Linked_List = {
     transfer: ['수인·분당선'],
   },
   역삼: {
-    prev: '삼성(무역센터)',
+    prev: '선릉',
     next: '강남',
     transfer: ['수인·분당선'],
   },
