@@ -21,7 +21,7 @@ export const Header = ({bg, onSelect}) => {
     <Row itemsCenter py10 px20 bg={bg}>
       <Col w80 auto>
         <Row justifyCenter>
-          <Col justifyCenter>
+          <Col justifyCenter auto>
             <Span>{selectedTrain ? selectedTrain.statnNm : '탑승전'}</Span>
           </Col>
           <Col></Col>

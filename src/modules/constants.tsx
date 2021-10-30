@@ -322,6 +322,8 @@ export const LINE2_Linked_List = {
 export const GRAY_COLOR = 'rgb(199,199,204)';
 export const MAIN_LINE2 = '2호선 본선';
 export const MY_ROUTE = '내 길';
+export const LINE2_COLOR = 'rgb(51, 162, 60)';
+export const LINE2_COLOR_LIGHT = 'rgba(51, 162, 60, 0.5)';
 
 export enum Direction {
   CW = '내선순환',
@@ -363,3 +365,8 @@ export const SEOUL_METRO_PHONE_1TO8 = '1577-1234';
 export const REPORT = 'REPORT';
 export const SUNGAN = 'SUNGAN';
 export const PLACE = 'PLACE';
+
+export const TRAIN_STATE = {
+  '0': '진입',
+  '1': '도착',
+};

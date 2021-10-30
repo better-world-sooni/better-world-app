@@ -1,6 +1,6 @@
 import {useNavigation} from '@react-navigation/core';
 import React, {useEffect, useState} from 'react';
-import {Heart, X} from 'react-native-feather';
+import {CheckCircle, Heart, X} from 'react-native-feather';
 import {shallowEqual, useSelector} from 'react-redux';
 import {Col} from 'src/components/common/Col';
 import {Div} from 'src/components/common/Div';
@@ -20,6 +20,7 @@ import {
 } from 'src/modules/constants';
 import {IMAGES} from 'src/modules/images';
 import {
+  deletePromiseFn,
   postPromiseFn,
   useApiSelector,
   useReloadGET,
@@ -69,11 +70,16 @@ const PostDetailScreen = () => {
     pullToRefresh();
   }, [currentPost]);
 
-  const commentOn = async url => {
-    return postPromiseFn({
+  const commentOn = async (url, idName) => {
+    console.log({
+      [idName]: currentPost.post.id,
+      content: text,
+      userName: currentUser.username,
+    });
+    return await postPromiseFn({
       url,
       body: {
-        hotplaceId: currentPost.post.id,
+        [idName]: currentPost.post.id,
         content: text,
         userName: currentUser.username,
       },
@@ -82,6 +88,13 @@ const PostDetailScreen = () => {
   };
   const likeOn = async (api, commentId) => {
     return await postPromiseFn({
+      url: api(commentId).url,
+      body: {},
+      token,
+    });
+  };
+  const unlikeOn = async (api, commentId) => {
+    return await deletePromiseFn({
       url: api(commentId).url,
       body: {},
       token,
@@ -98,31 +111,38 @@ const PostDetailScreen = () => {
       token,
     });
   };
-
   const post = {
     [REPORT]: {
       comments: reportComments?.data.comments,
       emoji: '🚨',
       text: currentPost.post.text,
       likeCnt: currentPost.post.likeCnt,
-      isLiked: currentPost.post.didLike,
+      isLiked: currentPost.didLike,
       isLoading: reportCommentsLoading,
-      postComment: () => commentOn(APIS.post.report.comment.main().url),
+      like: APIS.post.report.like,
+      postComment: () =>
+        commentOn(APIS.post.report.comment.main().url, 'reportId'),
       likeOnComment: commentId =>
         likeOn(APIS.post.report.comment.like, commentId),
+      unlikeOnComment: commentId =>
+        unlikeOn(APIS.post.sungan.comment.like, commentId),
       replyOnComment: commentId =>
         replyOn(APIS.post.report.comment.reply().url, commentId),
     },
     [SUNGAN]: {
       comments: sunganComments?.data,
       emoji: currentPost.post.emoji,
-      text: currentPost.post.detail,
+      text: currentPost.post.text,
       likeCnt: currentPost.post.likeCnt,
-      isLiked: currentPost.post.didLike,
+      isLiked: currentPost.didLike,
       isLoading: sunganCommentsLoading,
-      postComment: () => commentOn(APIS.post.sungan.comment.main().url),
+      like: APIS.post.sungan.like,
+      postComment: () =>
+        commentOn(APIS.post.sungan.comment.main().url, 'sunganId'),
       likeOnComment: commentId =>
         likeOn(APIS.post.sungan.comment.like, commentId),
+      unlikeOnComment: commentId =>
+        unlikeOn(APIS.post.sungan.comment.like, commentId),
       replyOnComment: commentId =>
         replyOn(APIS.post.sungan.comment.reply().url, commentId),
     },
@@ -132,26 +152,45 @@ const PostDetailScreen = () => {
       text: currentPost.post.text,
       place: currentPost.post.place,
       likeCnt: currentPost.post.likeCnt,
-      isLiked: currentPost.post.didLike,
+      isLiked: currentPost.didLike,
       isLoading: placeCommentsLoading,
-      postComment: () => commentOn(APIS.post.place.comment.main().url),
+      like: APIS.post.place.like,
+      postComment: () =>
+        commentOn(APIS.post.place.comment.main().url, 'hotplaceId'),
       likeOnComment: commentId =>
         likeOn(APIS.post.place.comment.like, commentId),
+      unlikeOnComment: commentId =>
+        unlikeOn(APIS.post.sungan.comment.like, commentId),
       replyOnComment: commentId =>
         replyOn(APIS.post.place.comment.reply().url, commentId),
     },
   };
-  const handleLike = () => {
+  const handleLike = async () => {
     if (isLiked) {
-      setIsLiked(false);
+      const res = await deletePromiseFn({
+        url: post[currentPost.type].like(currentPost.post.id).url,
+        body: {},
+        token: token,
+      });
+      res.status === 200 && setIsLiked(false);
     } else {
-      setIsLiked(true);
+      const res = await postPromiseFn({
+        url: post[currentPost.type].like(currentPost.post.id).url,
+        body: {},
+        token: token,
+      });
+      res.status === 200 && setIsLiked(true);
     }
   };
   const handleSend = () => {
     if (text.length > 0) {
       if (textType === TextType.COMMENT) {
-        post[currentPost.type].postComment();
+        const response = post[currentPost.type].postComment();
+        console.log(
+          'const response = post[currentPost.type].postComment();',
+          response,
+          currentPost.post.id,
+        );
         setText('');
         pullToRefresh();
       } else {
@@ -161,11 +200,11 @@ const PostDetailScreen = () => {
       }
     }
   };
-  const handleLikeOnComment = commentId => {
-    if (text.length > 0) {
-      post[currentPost.type].likeOnComment(commentId);
-      pullToRefresh();
-    }
+  const handleLikeOnComment = (commentId, prevLiked) => {
+    prevLiked
+      ? post[currentPost.type].unlikeOnComment(commentId)
+      : post[currentPost.type].likeOnComment(commentId);
+    pullToRefresh();
   };
   const handleReplyOnComment = comment => {
     setTextType(comment);
@@ -212,8 +251,8 @@ const PostDetailScreen = () => {
                     <Row>
                       <Span medium>{`좋아요 ${
                         post[currentPost.type].likeCnt +
-                        (!post[currentPost.type].didLike && isLiked ? 1 : 0) -
-                        (post[currentPost.type].didLike && !isLiked ? 1 : 0)
+                        (!post[currentPost.type].isLiked && isLiked ? 1 : 0) -
+                        (post[currentPost.type].isLiked && !isLiked ? 1 : 0)
                       }개`}</Span>
                     </Row>
                   </Col>
@@ -228,7 +267,7 @@ const PostDetailScreen = () => {
                     </Row>
                   </Col>
                 </Row>
-                {(post[currentPost.type].comments &&
+                {post[currentPost.type].comments &&
                   post[currentPost.type].comments.map((comment, index) => {
                     return (
                       <Comment
@@ -238,11 +277,14 @@ const PostDetailScreen = () => {
                         key={index}
                       />
                     );
-                  })) || (
-                  <Div px20>
-                    <Span color={GRAY_COLOR}>댓글 없음</Span>
-                  </Div>
-                )}
+                  })}
+                <Row py10>
+                  <Col></Col>
+                  <Col auto>
+                    <Span color={GRAY_COLOR}>댓글을 모두 확인했습니다.</Span>
+                  </Col>
+                  <Col></Col>
+                </Row>
               </Div>
             </ScrollView>
             <SafeAreaView>
@@ -314,7 +356,7 @@ const Comment = ({comment, handleLikeOnComment, handleReplyOnComment}) => {
             </Col>
           </Row>
           <Row pl10>
-            {comment.likeCnt && comment.likeCnt > 0 && (
+            {comment.likeCnt > 0 && (
               <Col mr10 auto>
                 <Span color={GRAY_COLOR}>{`좋아요 ${comment.likeCnt}개`}</Span>
               </Col>
@@ -329,18 +371,18 @@ const Comment = ({comment, handleLikeOnComment, handleReplyOnComment}) => {
           auto
           itemsCenter
           justifyCenter
-          onPress={() => handleLikeOnComment(comment.id)}>
+          onPress={() => handleLikeOnComment(comment.id, comment.isLiked)}>
           <Heart
-            fill={comment.didLike ? 'red' : 'white'}
+            fill={comment.isLiked ? 'red' : 'white'}
             color={'black'}
             height={14}></Heart>
         </Col>
       </Row>
       {comment.nestedComments.map((nestedComment, index) => {
         return (
-          <Row itemsCenter justifyCenter flex ml20 pt10 key={index}>
+          <Row itemsCenter justifyCenter flex ml30 pt10 key={index} pl10>
             <Col auto itemsCenter justifyCenter rounded20 overflowHidden>
-              <Img source={IMAGES.example2} w30 h30></Img>
+              <Img source={IMAGES.example2} w20 h20></Img>
             </Col>
             <Col>
               <Row mb5 pl10>

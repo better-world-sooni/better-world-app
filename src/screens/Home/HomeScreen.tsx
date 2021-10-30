@@ -21,6 +21,7 @@ import {
   Heart,
   RefreshCw,
   ChevronDown,
+  CheckCircle,
 } from 'react-native-feather';
 import {
   chevronDownSettings,
@@ -28,6 +29,8 @@ import {
   GRAY_COLOR,
   HAS_NOTCH,
   iconSettings,
+  LINE2_COLOR,
+  LINE2_COLOR_LIGHT,
   LINE2_Linked_List,
   MAIN_LINE2,
   MY_ROUTE,
@@ -35,6 +38,7 @@ import {
   REPORT,
   Selecting,
   SUNGAN,
+  TRAIN_STATE,
 } from 'src/modules/constants';
 import {
   setRoute,
@@ -54,7 +58,9 @@ import {faSubway} from '@fortawesome/free-solid-svg-icons';
 import {Header} from 'src/components/Header';
 import {ScrollSelector} from 'src/components/ScrollSelector';
 import {useNavigation} from '@react-navigation/core';
-import {NAV_NAMES} from 'src/modules/navNames';
+import {Report} from 'src/components/Report';
+import {Place} from 'src/components/Place';
+import {Sungan} from 'src/components/Sungan';
 
 enum ChannelFilter {
   ALL = 0,
@@ -162,6 +168,7 @@ const HomeScreen = props => {
       response.realtimePositionList.forEach(train => {
         if (
           train.subwayNm === '2호선' &&
+          train.trainNo.startsWith('2') &&
           train.updnLine === (direction === Direction.INNER ? '1' : '0')
         ) {
           if (train.trainNo === selectedTrain?.trainNo) {
@@ -171,29 +178,40 @@ const HomeScreen = props => {
         }
       });
     }
-    console.log('trainLocations', trainLocations);
     return trainLocations;
   };
 
   const filterArrivalResponse = response => {
     let arrival = null;
+    let arvlCd = null;
     if (response && response.errorMessage?.status == 200) {
-      response.realtimeArrivalList.forEach(train => {
+      for (const train of response.realtimeArrivalList) {
         if (
           train.subwayId === '1002' &&
           train.updnLine === (direction === Direction.INNER ? '내선' : '외선')
         ) {
-          if (!arrival) {
+          let currentArvlCd = null;
+          if (train.arvlCd == '4') {
+            currentArvlCd = 5;
+          } else if (train.arvlCd == 5) {
+            currentArvlCd = 4;
+          } else {
+            currentArvlCd = parseInt(train.arvlCd);
+          }
+          if (!arvlCd) {
             arrival = train;
+            arvlCd = currentArvlCd;
+          } else if (arvlCd < currentArvlCd) {
+            break;
           } else if (
-            arrival &&
+            currentArvlCd === '99' &&
             parseInt(arrival.ordkey.substring(0, 5)) >
               parseInt(train.ordkey.substring(0, 5))
           ) {
             arrival = train;
           }
         }
-      });
+      }
     }
     return arrival;
   };
@@ -201,8 +219,7 @@ const HomeScreen = props => {
   const pullToRefresh = () => {
     apiGET(APIS.post.main());
     apiGET(APIS.realtime.position());
-    displayedStation &&
-      apiGET(APIS.realtime.arrival(displayedStation.split('(')[0]));
+    origin && apiGET(APIS.realtime.arrival(origin.split('(')[0]));
   };
 
   const calculateETADiff = () => {
@@ -246,15 +263,14 @@ const HomeScreen = props => {
     const everyHalfMinute = setInterval(() => {
       if (!positionsLoading && !arrivalLoading) {
         apiGET(APIS.realtime.position());
-        displayedStation &&
-          apiGET(APIS.realtime.arrival(displayedStation.split('(')[0]));
+        origin && apiGET(APIS.realtime.arrival(origin.split('(')[0]));
       }
-    }, 30000);
+    }, 10000);
     return () => {
       clearInterval(everySecond);
       clearInterval(everyHalfMinute);
     };
-  }, []);
+  }, [origin]);
 
   useEffect(() => {
     dispatch(setPosts(mainFeed));
@@ -267,11 +283,13 @@ const HomeScreen = props => {
   }, [starredLoading]);
 
   useEffect(() => {
-    dispatch(setTrainPositions(filterPositionResponse(realtimePositionList)));
+    !positionsLoading &&
+      dispatch(setTrainPositions(filterPositionResponse(realtimePositionList)));
   }, [positionsLoading]);
 
   useEffect(() => {
-    dispatch(setArrivalTrain(filterArrivalResponse(realtimeArrivalList)));
+    !arrivalLoading &&
+      dispatch(setArrivalTrain(filterArrivalResponse(realtimeArrivalList)));
   }, [arrivalLoading]);
 
   const textShadowProp = {
@@ -546,13 +564,13 @@ const HomeScreen = props => {
             </Row>
             <Row pb10>
               <Col justifyCenter>
-                <Div h10 bg={'#33a23d'}></Div>
+                <Div h10 bg={LINE2_COLOR}></Div>
               </Col>
               <Col
                 auto
                 w200
                 borderWidth={3}
-                borderColor={'#33a23d'}
+                borderColor={LINE2_COLOR}
                 rounded20
                 itemsCenter
                 py10
@@ -570,7 +588,7 @@ const HomeScreen = props => {
                   })}
               </Col>
               <Col justifyCenter flex>
-                <Row h10 bg={'#33a23d'}></Row>
+                <Row h10 bg={LINE2_COLOR}></Row>
               </Col>
             </Row>
             <Row pt5>
@@ -585,6 +603,30 @@ const HomeScreen = props => {
                     )
                 ).map((item, index) => {
                   const trainAtStation = trainPositions?.[item.split('(')[0]];
+                  const isRiding =
+                    trainAtStation?.trainNo === selectedTrain?.trainNo;
+                  const isOrigin = origin === item;
+                  const isDestination = destination === item;
+                  const leftHalfBg = () => {
+                    if (stations.length > 0) {
+                      if (isOrigin) return GRAY_COLOR;
+                      else if (isDestination) return LINE2_COLOR;
+                      else if (stations.includes(item)) return LINE2_COLOR;
+                      else return GRAY_COLOR;
+                    } else {
+                      return LINE2_COLOR_LIGHT;
+                    }
+                  };
+                  const rightHalfBg = () => {
+                    if (stations.length > 0) {
+                      if (isOrigin) return LINE2_COLOR;
+                      else if (isDestination) return GRAY_COLOR;
+                      else if (stations.includes(item)) return LINE2_COLOR;
+                      else return GRAY_COLOR;
+                    } else {
+                      return LINE2_COLOR_LIGHT;
+                    }
+                  };
                   return (
                     <Col key={index}>
                       <Div
@@ -592,42 +634,63 @@ const HomeScreen = props => {
                         justifyCenter
                         itemsCenter
                         h30
-                        onPress={() =>
-                          trainAtStation &&
-                          dispatch(setSelectedTrain(trainAtStation))
-                        }
+                        onPress={() => {
+                          if (trainAtStation) {
+                            isRiding
+                              ? dispatch(setSelectedTrain(null))
+                              : dispatch(setSelectedTrain(trainAtStation));
+                          }
+                        }}
                         w={Dimensions.get('window').width / 5}>
                         {trainAtStation && (
                           <>
                             <Span
                               medium
                               fontSize={10}
-                              color={
-                                trainAtStation?.trainNo ===
-                                selectedTrain?.trainNo
-                                  ? 'rgb(255,69,58)'
-                                  : 'black'
-                              }
+                              color={isRiding ? 'rgb(255,69,58)' : 'black'}
                               style={{...textShadowProp}}>
-                              {trainAtStation?.trainNo ===
-                              selectedTrain?.trainNo
-                                ? '탑승중'
-                                : '탑승하기'}
+                              {isRiding ? '탑승중' : '탑승하기'}
                             </Span>
-                            <FontAwesomeIcon
-                              icon={faSubway}
-                              color={'#33a23d'}
-                              size={18}></FontAwesomeIcon>
+                            <Row justifyCenter itemsCenter>
+                              <Col auto>
+                                <FontAwesomeIcon
+                                  icon={faSubway}
+                                  color={
+                                    isRiding ? LINE2_COLOR : LINE2_COLOR_LIGHT
+                                  }
+                                  size={18}></FontAwesomeIcon>
+                              </Col>
+                              <Col auto ml5>
+                                <Span
+                                  fontSize={10}
+                                  color={
+                                    isRiding ? LINE2_COLOR : LINE2_COLOR_LIGHT
+                                  }>
+                                  {`${
+                                    TRAIN_STATE[trainAtStation.trainSttus] ||
+                                    '출발'
+                                  }(${
+                                    trainAtStation.updnLine == '1'
+                                      ? '내선'
+                                      : '외선'
+                                  })`}
+                                </Span>
+                              </Col>
+                            </Row>
                           </>
                         )}
                       </Div>
                       <Div
+                        relative
                         mb10
                         justifyCenter
                         itemsCenter
-                        bg={'#33a23d'}
                         h10
                         w={Dimensions.get('window').width / 5}>
+                        <Row absolute w={'100%'} h={'100%'}>
+                          <Col bg={leftHalfBg()}></Col>
+                          <Col bg={rightHalfBg()}></Col>
+                        </Row>
                         <Div
                           borderColor={'white'}
                           borderWidth={2}
@@ -645,7 +708,11 @@ const HomeScreen = props => {
                             medium
                             fontSize={10}
                             color={
-                              item === origin ? 'rgb(255,69,58)' : 'black'
+                              isOrigin
+                                ? 'rgb(255,69,58)'
+                                : isDestination
+                                ? 'blue'
+                                : 'black'
                             }>
                             {item}
                           </Span>
@@ -697,6 +764,24 @@ const HomeScreen = props => {
                   }
                 })}
           </Div>
+          <Row itemsCenter justifyCenter pt20 pb10>
+            <Col h2 bg={GRAY_COLOR} />
+            <Col auto>
+              <CheckCircle
+                height={100}
+                width={100}
+                strokeWidth={0.7}
+                color={GRAY_COLOR}></CheckCircle>
+            </Col>
+            <Col h2 bg={GRAY_COLOR}></Col>
+          </Row>
+          <Row pb20>
+            <Col></Col>
+            <Col auto>
+              <Span color={GRAY_COLOR}>오늘의 피드를 모두 확인했습니다.</Span>
+            </Col>
+            <Col></Col>
+          </Row>
         </ScrollView>
       </Div>
       {selecting && (
@@ -706,343 +791,6 @@ const HomeScreen = props => {
           options={selectGetterSetter[selecting].options}
           onClose={() => setSelecting(Selecting.NONE)}
         />
-      )}
-    </Div>
-  );
-};
-
-const Sungan = ({post, dispatch, navigation, token}) => {
-  const sungan = post.post;
-  const bestComment = post.bestComment;
-  const shadowProp = opacity => {
-    return {
-      shadowOffset: {height: 1, width: 1},
-      shadowColor: GRAY_COLOR,
-      shadowOpacity: opacity,
-      shadowRadius: 10,
-    };
-  };
-  const [isLiked, setIsLiked] = useState(post.didLike);
-  const like = async () => {
-    if (isLiked) {
-      const res = await deletePromiseFn({
-        url: APIS.post.sungan.like(sungan.id).url,
-        body: {},
-        token: token,
-      });
-      res.status == 200 && setIsLiked(false);
-    } else {
-      const res = await postPromiseFn({
-        url: APIS.post.sungan.like(sungan.id).url,
-        body: {},
-        token: token,
-      });
-      res.status == 200 && setIsLiked(true);
-    }
-  };
-  const goToPostDetail = () => {
-    dispatch(setCurrentPost(post));
-    navigation.navigate(NAV_NAMES.PostDetail);
-  };
-
-  return (
-    <Div bg={'rgba(255,255,255,.9)'} pb10 px20>
-      <Row itemsCenter py20 borderTopColor={GRAY_COLOR} borderTopWidth={0.3}>
-        <Col auto rounded30 overflowHidden mr10>
-          <Img source={IMAGES.example2} w25 h25></Img>
-        </Col>
-        <Col auto>
-          <Span medium>{sungan.userInfo.userName}</Span>
-        </Col>
-        <Col></Col>
-        <Col auto px10 py5 rounded5>
-          <Span medium>{sungan.station.name}</Span>
-        </Col>
-      </Row>
-      <Div py10 onPress={goToPostDetail}>
-        <Row rounded20 bgWhite w={'100%'} {...shadowProp(0.3)}>
-          <Col auto justifyCenter itemsCenter px20>
-            <Span fontSize={70}>{sungan.emoji}</Span>
-          </Col>
-          <Col justifyCenter>
-            <Span color={'black'} medium>
-              {sungan.text}
-            </Span>
-          </Col>
-        </Row>
-      </Div>
-      <Row itemsCenter pt10 pb5>
-        <Col auto>
-          <Row>
-            <Span medium>{`좋아요 ${
-              sungan.likeCnt +
-              (!post.didLike && isLiked ? 1 : 0) -
-              (post.didLike && !isLiked ? 1 : 0)
-            }개`}</Span>
-          </Row>
-        </Col>
-        <Col></Col>
-        <Col auto>
-          <Row>
-            <Col auto px5 onPress={goToPostDetail}>
-              <MessageCircle {...iconSettings}></MessageCircle>
-            </Col>
-            <Col auto px5 onPress={like}>
-              <Heart {...iconSettings} fill={isLiked ? 'red' : 'white'}></Heart>
-            </Col>
-          </Row>
-        </Col>
-      </Row>
-      {sungan.comments.length > 1 && (
-        <Row itemsCenter py5>
-          <Span color={'gray'}>{`${
-            sungan.comments.length - 1
-          }개 댓글 더보기`}</Span>
-        </Row>
-      )}
-      {bestComment && (
-        <Row itemsCenter justifyCenter pb10 pt5 flex>
-          <Col auto itemsCenter justifyCenter rounded20 overflowHidden>
-            <Img source={IMAGES.example2} w15 h15></Img>
-          </Col>
-          <Col mx10 justifyCenter>
-            <Row>
-              <Span medium color={'black'}>
-                irlyglo
-              </Span>
-              <Span ml5>{bestComment.content}</Span>
-            </Row>
-          </Col>
-          <Col auto itemsCenter justifyCenter>
-            <Heart color={'black'} height={14}></Heart>
-          </Col>
-        </Row>
-      )}
-    </Div>
-  );
-};
-
-const Report = ({post, dispatch, navigation, token}) => {
-  const report = post.post;
-  const bestComment = post.bestComment;
-  const shadowProp = opacity => {
-    return {
-      shadowOffset: {height: 1, width: 1},
-      shadowColor: GRAY_COLOR,
-      shadowOpacity: opacity,
-      shadowRadius: 10,
-    };
-  };
-  const [isLiked, setIsLiked] = useState(post.didLike);
-  const like = async () => {
-    if (isLiked) {
-      const res = await deletePromiseFn({
-        url: APIS.post.report.like(report.id).url,
-        body: {},
-        token: token,
-      });
-      res.status == 200 && setIsLiked(false);
-    } else {
-      const res = await postPromiseFn({
-        url: APIS.post.report.like(report.id).url,
-        body: {},
-        token: token,
-      });
-      res.status == 200 && setIsLiked(true);
-    }
-  };
-  const goToPostDetail = () => {
-    dispatch(setCurrentPost(post));
-    navigation.navigate(NAV_NAMES.PostDetail);
-  };
-  return (
-    <Div bg={'rgba(255,255,255,.9)'} pb10 px20>
-      <Row itemsCenter py20 borderTopColor={GRAY_COLOR} borderTopWidth={0.3}>
-        <Col auto rounded30 overflowHidden mr10>
-          <Img source={IMAGES.example2} w25 h25></Img>
-        </Col>
-        <Col auto>
-          <Span medium>{report.userInfo.userName}</Span>
-        </Col>
-        <Col></Col>
-        <Col auto px10 py5 rounded5>
-          <Span medium>{`차량번호: ${report.vehicleIdNum}`}</Span>
-        </Col>
-      </Row>
-      <Div py10 onPress={goToPostDetail}>
-        <Row
-          rounded20
-          bg={'rgb(250, 196, 192)'}
-          w={'100%'}
-          {...shadowProp(0.5)}>
-          <Col auto justifyCenter itemsCenter px20>
-            <Span fontSize={70}>{'🚨'}</Span>
-          </Col>
-          <Col justifyCenter>
-            <Span color={'black'} medium>
-              {report.detail}
-            </Span>
-          </Col>
-        </Row>
-      </Div>
-      <Row itemsCenter pt10 pb5>
-        <Col auto>
-          <Row>
-            <Span medium>{`좋아요 ${
-              report.likeCnt +
-              (!post.didLike && isLiked ? 1 : 0) -
-              (post.didLike && !isLiked ? 1 : 0)
-            }개`}</Span>
-          </Row>
-        </Col>
-        <Col></Col>
-        <Col auto>
-          <Row>
-            <Col auto px5 onPress={goToPostDetail}>
-              <MessageCircle {...iconSettings}></MessageCircle>
-            </Col>
-            <Col auto px5 onPress={like}>
-              <Heart {...iconSettings} fill={isLiked ? 'red' : 'white'}></Heart>
-            </Col>
-          </Row>
-        </Col>
-      </Row>
-      {report.comments && report.comments.length > 1 && (
-        <Row itemsCenter py5>
-          <Span color={'gray'}>{`${
-            report.comments.length - 1
-          }개 댓글 더보기`}</Span>
-        </Row>
-      )}
-      {bestComment && (
-        <Row itemsCenter justifyCenter pb10 pt5 flex>
-          <Col auto itemsCenter justifyCenter rounded20 overflowHidden>
-            <Img source={IMAGES.example2} w15 h15></Img>
-          </Col>
-          <Col mx10 justifyCenter>
-            <Row>
-              <Span medium color={'black'}>
-                irlyglo
-              </Span>
-              <Span ml5>{bestComment.content}</Span>
-            </Row>
-          </Col>
-          <Col auto itemsCenter justifyCenter>
-            <Heart color={'black'} height={14}></Heart>
-          </Col>
-        </Row>
-      )}
-    </Div>
-  );
-};
-const Place = ({post, dispatch, navigation, token}) => {
-  const sungan = post.post;
-  const shadowProp = opacity => {
-    return {
-      shadowOffset: {height: 1, width: 1},
-      shadowColor: GRAY_COLOR,
-      shadowOpacity: opacity,
-      shadowRadius: 10,
-    };
-  };
-  const bestComment = post.bestComment;
-  const [isLiked, setIsLiked] = useState(post.didLike);
-  const like = async () => {
-    if (isLiked) {
-      const res = await deletePromiseFn({
-        url: APIS.post.place.like(sungan.id).url,
-        body: {},
-        token: token,
-      });
-      res.status == 200 && setIsLiked(false);
-    } else {
-      const res = await postPromiseFn({
-        url: APIS.post.place.like(sungan.id).url,
-        body: {},
-        token: token,
-      });
-      res.status == 200 && setIsLiked(true);
-    }
-  };
-  const goToPostDetail = () => {
-    dispatch(setCurrentPost(post));
-    navigation.navigate(NAV_NAMES.PostDetail);
-  };
-  return (
-    <Div bg={'rgba(255,255,255,.9)'} pb10 px20>
-      <Row itemsCenter py20 borderTopColor={GRAY_COLOR} borderTopWidth={0.3}>
-        <Col auto rounded30 overflowHidden mr10>
-          <Img source={IMAGES.example2} w25 h25></Img>
-        </Col>
-        <Col auto>
-          <Span medium>{sungan.userInfo.userName}</Span>
-        </Col>
-        <Col></Col>
-        <Col auto px10 py5 rounded5>
-          <Span medium>{sungan.station.name}</Span>
-        </Col>
-      </Row>
-      <Div py10 onPress={goToPostDetail}>
-        <Row rounded20 bgWhite w={'100%'} {...shadowProp(0.3)}>
-          <Col auto justifyCenter itemsCenter px20>
-            <Span fontSize={70}>{sungan.emoji}</Span>
-          </Col>
-          <Col justifyCenter>
-            <Span color={'black'} bold mb5>
-              {sungan.place}
-            </Span>
-            <Span color={'black'} medium>
-              {sungan.text}
-            </Span>
-          </Col>
-        </Row>
-      </Div>
-      <Row itemsCenter pt10 pb5>
-        <Col auto>
-          <Row>
-            <Span medium>{`좋아요 ${
-              sungan.likeCnt +
-              (!post.didLike && isLiked ? 1 : 0) -
-              (post.didLike && !isLiked ? 1 : 0)
-            }개`}</Span>
-          </Row>
-        </Col>
-        <Col></Col>
-        <Col auto>
-          <Row>
-            <Col auto px5 onPress={goToPostDetail}>
-              <MessageCircle {...iconSettings}></MessageCircle>
-            </Col>
-            <Col auto px5 onPress={like}>
-              <Heart {...iconSettings} fill={isLiked ? 'red' : 'white'}></Heart>
-            </Col>
-          </Row>
-        </Col>
-      </Row>
-      {sungan.comments?.length > 1 && (
-        <Row itemsCenter py5>
-          <Span color={'gray'}>{`${
-            sungan.comments.length - 1
-          }개 댓글 더보기`}</Span>
-        </Row>
-      )}
-      {bestComment && (
-        <Row itemsCenter justifyCenter pb10 pt5 flex>
-          <Col auto itemsCenter justifyCenter rounded20 overflowHidden>
-            <Img source={IMAGES.example2} w15 h15></Img>
-          </Col>
-          <Col mx10 justifyCenter>
-            <Row>
-              <Span medium color={'black'}>
-                irlyglo
-              </Span>
-              <Span ml5>{bestComment.content}</Span>
-            </Row>
-          </Col>
-          <Col auto itemsCenter justifyCenter>
-            <Heart color={'black'} height={14}></Heart>
-          </Col>
-        </Row>
       )}
     </Div>
   );

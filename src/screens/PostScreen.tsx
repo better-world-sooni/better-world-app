@@ -5,7 +5,6 @@ import React, {
   useLayoutEffect,
   Component,
 } from 'react';
-import {Col} from 'src/components/common/Col';
 import {Div} from 'src/components/common/Div';
 import {Row} from 'src/components/common/Row';
 import {Span} from 'src/components/common/Span';

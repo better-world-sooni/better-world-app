@@ -23,13 +23,14 @@ const APIS = {
     main: () => v1('/post/main'),
     sungan: {
       main: () => v1('/post/sungan'),
+      my: () => v1('/post/sungan/my'),
       comments: (id) => v1(`/post/sungan/${id}/comments`),
       comment: {
-        main: () => v1(`/post/sungan/comment`),
-        like: (id) => v1(`/post/sungan/comment/${id}/like`),
-        reply: () => v1(`/post/sungan/comment/reply`),
+        main: () => v1(`/post/sungancomment`),
+        like: (id) => v1(`/post/comment/${id}/like`),
+        reply: () => v1(`/post/comment/reply`),
       },
-      like: (id) => v1(`/post/sungan/${id}/like`),
+      like: (id) => v1(`/post/likes/${id}`),
     },
     report: {
       main: () => v1('/post/report'),

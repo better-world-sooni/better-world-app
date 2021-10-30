@@ -13,7 +13,7 @@ import APIS from 'src/modules/apis';
 import {IMAGES} from 'src/modules/images';
 import {NAV_NAMES} from 'src/modules/navNames';
 import {ScrollView} from 'src/modules/viewComponents';
-import {useReloadGET} from 'src/redux/asyncReducer';
+import {useApiSelector, useReloadGET} from 'src/redux/asyncReducer';
 import {shallowEqual, useDispatch, useSelector} from 'react-redux';
 import {ChevronDown, LogOut} from 'react-native-feather';
 import {
@@ -23,7 +23,9 @@ import {
   iconSettings,
   MAIN_LINE2,
   MY_ROUTE,
+  REPORT,
   Selecting,
+  SUNGAN,
 } from 'src/modules/constants';
 import {useLogout} from 'src/redux/appReducer';
 import {ScrollSelector} from 'src/components/ScrollSelector';
@@ -31,12 +33,19 @@ import {setGlobalFilter} from 'src/redux/feedReducer';
 import {RootState} from 'src/redux/rootReducer';
 import {toggleReceiveStationPush} from 'src/redux/routeReducer';
 import {Switch} from 'react-native';
+import {Sungan} from 'src/components/Sungan';
+import {Report} from 'src/components/Report';
+import {Place} from 'src/components/Place';
 
 const ProfileScreen = props => {
   const navigation = useNavigation();
   const apiGET = useReloadGET();
   const logout = useLogout(() => navigation.navigate(NAV_NAMES.SignIn));
-  const [selecting, setSelecting] = useState(Selecting.NONE);
+  const {data: mySunganResponse, isLoading: mySunganLoading} = useApiSelector(
+    APIS.post.sungan.my,
+  );
+  const mySungans = mySunganResponse?.data;
+
   const {stations} = useSelector(
     (root: RootState) => root.route.route,
     shallowEqual,
@@ -45,10 +54,12 @@ const ProfileScreen = props => {
     route: {receiveStationPush},
     feed: {globalFiter},
   } = useSelector((root: RootState) => root, shallowEqual);
+  const {token} = useSelector(
+    (root: RootState) => root.app.session,
+    shallowEqual,
+  );
+  const [selecting, setSelecting] = useState(Selecting.NONE);
   const dispatch = useDispatch();
-  const toggleStationPush = () => {
-    dispatch(toggleReceiveStationPush());
-  };
 
   const selectGetterSetter = {
     [Selecting.GLOBAL_FILTER]: {
@@ -59,10 +70,33 @@ const ProfileScreen = props => {
   };
 
   const goToPost = () => navigation.navigate(NAV_NAMES.Post);
-  const goToReport = () => navigation.navigate(NAV_NAMES.Report);
 
+  const toggleStationPush = () => {
+    dispatch(toggleReceiveStationPush());
+  };
   const pullToRefresh = () => {
     apiGET(APIS.route.starred());
+    apiGET(APIS.post.sungan.my());
+  };
+
+  const filterPostsByStation = post => {
+    if (post.type === REPORT) {
+      return true;
+    } else if (!post.station?.name) {
+      return true;
+    } else if (
+      globalFiter === MY_ROUTE &&
+      !MY_ROUTE.includes(post.station.name)
+    ) {
+      return false;
+    } else if (
+      globalFiter !== MAIN_LINE2 &&
+      globalFiter !== post.station.name
+    ) {
+      return false;
+    } else {
+      return true;
+    }
   };
 
   useEffect(() => {
@@ -114,7 +148,7 @@ const ProfileScreen = props => {
         </Col>
         <Col itemsEnd>
           <Row itemsEnd>
-            <Col onPress={goToPost} itemsEnd>
+            <Col itemsEnd onPress={logout}>
               <LogOut {...iconSettings} color={'black'}></LogOut>
             </Col>
           </Row>
@@ -136,7 +170,7 @@ const ProfileScreen = props => {
               </Row>
             </Col>
           </Row>
-          <Row
+          {/* <Row
             itemsCenter
             my10
             py10
@@ -148,7 +182,50 @@ const ProfileScreen = props => {
               <Span>프로필 편집</Span>
             </Col>
             <Col></Col>
-          </Row>
+          </Row> */}
+        </Div>
+        <Div mt10>
+          {mySungans &&
+            mySungans
+              .filter(post => {
+                return filterPostsByStation(post);
+              })
+              .map((post, index) => {
+                if (post.type == SUNGAN) {
+                  return (
+                    <Sungan
+                      post={post}
+                      dispatch={dispatch}
+                      navigation={navigation}
+                      token={token}
+                      key={index}
+                      mine
+                    />
+                  );
+                } else if (post.type == REPORT) {
+                  return (
+                    <Report
+                      post={post}
+                      dispatch={dispatch}
+                      navigation={navigation}
+                      token={token}
+                      key={index}
+                      mine
+                    />
+                  );
+                } else {
+                  return (
+                    <Place
+                      post={post}
+                      dispatch={dispatch}
+                      navigation={navigation}
+                      token={token}
+                      key={index}
+                      mine
+                    />
+                  );
+                }
+              })}
         </Div>
       </ScrollView>
       {selecting && (
