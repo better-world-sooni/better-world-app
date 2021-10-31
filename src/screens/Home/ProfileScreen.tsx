@@ -32,7 +32,7 @@ import {ScrollSelector} from 'src/components/ScrollSelector';
 import {setGlobalFilter} from 'src/redux/feedReducer';
 import {RootState} from 'src/redux/rootReducer';
 import {toggleReceiveStationPush} from 'src/redux/routeReducer';
-import {Switch} from 'react-native';
+import {RefreshControl, Switch} from 'react-native';
 import {Sungan} from 'src/components/Sungan';
 import {Report} from 'src/components/Report';
 import {Place} from 'src/components/Place';
@@ -45,6 +45,7 @@ const ProfileScreen = props => {
     APIS.post.sungan.my,
   );
   const mySungans = mySunganResponse?.data;
+  console.log('mySungans', mySungans);
 
   const {stations} = useSelector(
     (root: RootState) => root.route.route,
@@ -154,7 +155,15 @@ const ProfileScreen = props => {
           </Row>
         </Col>
       </Row>
-      <ScrollView flex={1} showsVerticalScrollIndicator={false}>
+      <ScrollView
+        flex={1}
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            refreshing={mySunganLoading}
+            onRefresh={pullToRefresh}
+          />
+        }>
         <Div relative px20>
           <Row itemsCenter mt10>
             <Col auto rounded100 overflowHidden>

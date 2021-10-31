@@ -35,8 +35,8 @@ enum Validity {
 
 const channelNameToChannelId = {
   음악: 1,
-  시사: 2,
-  잡담: 3,
+  이슈: 2,
+  일상: 3,
 };
 
 const PostScreen = props => {
@@ -189,16 +189,16 @@ const PostScreen = props => {
     }
   };
 
-  const channels = ['핫플', '잡담', '시사', '음악'];
+  const channels = ['핫플', '일상', '이슈', '음악'];
   return (
     <Div flex bgWhite>
       <Div flex={3}>
         <NativeBaseProvider>
           <TopHeader
             route={useNavigation}
-            title={'새 민원'}
+            title={'새 게시물'}
             headerColor={'white'}
-            nextText={'전송'}
+            nextText={'게시'}
             onPressNext={() => {
               if (sungan.channelId === '핫플') {
                 postPlace();
@@ -286,6 +286,19 @@ const PostScreen = props => {
                 </Row>
                 <Row mb20>
                   <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                    <Div mr10 rounded {...borderProp(!sungan.stationName)}>
+                      <Div
+                        onPress={() => setStationName(null)}
+                        px20
+                        py10
+                        w={'100%'}
+                        itemsCenter
+                        justifyCenter>
+                        <Span {...colorProp(!sungan.stationName)}>
+                          {'전체'}
+                        </Span>
+                      </Div>
+                    </Div>
                     {(stations?.length === 0
                       ? stationArr(
                           [],
@@ -336,7 +349,7 @@ const PostScreen = props => {
                         variant="unstyled"
                         textContentType={'none'}
                         numberOfLines={20}
-                        placeholder={'너무 추워요'}></TextArea>
+                        placeholder={'순간을 공유해보세요!'}></TextArea>
                     </Div>
                   </Div>
                 </Row>

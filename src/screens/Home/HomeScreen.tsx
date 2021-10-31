@@ -283,13 +283,11 @@ const HomeScreen = props => {
   }, [starredLoading]);
 
   useEffect(() => {
-    !positionsLoading &&
-      dispatch(setTrainPositions(filterPositionResponse(realtimePositionList)));
+    dispatch(setTrainPositions(filterPositionResponse(realtimePositionList)));
   }, [positionsLoading]);
 
   useEffect(() => {
-    !arrivalLoading &&
-      dispatch(setArrivalTrain(filterArrivalResponse(realtimeArrivalList)));
+    dispatch(setArrivalTrain(filterArrivalResponse(realtimeArrivalList)));
   }, [arrivalLoading]);
 
   const textShadowProp = {
@@ -480,9 +478,9 @@ const HomeScreen = props => {
                   </Div>
                 </Div>
                 {[
-                  {name: '핫플/맛집', value: ChannelFilter.PLACE},
-                  {name: '잡담', value: ChannelFilter.TALK},
-                  {name: '연예/시사', value: ChannelFilter.EVENTS},
+                  {name: '핫플', value: ChannelFilter.PLACE},
+                  {name: '일상', value: ChannelFilter.TALK},
+                  {name: '이슈', value: ChannelFilter.EVENTS},
                   {name: '음악', value: ChannelFilter.MUSIC},
                 ].map((item, index) => {
                   return (

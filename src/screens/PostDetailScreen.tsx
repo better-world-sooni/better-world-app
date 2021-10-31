@@ -71,11 +71,6 @@ const PostDetailScreen = () => {
   }, [currentPost]);
 
   const commentOn = async (url, idName) => {
-    console.log({
-      [idName]: currentPost.post.id,
-      content: text,
-      userName: currentUser.username,
-    });
     return await postPromiseFn({
       url,
       body: {
@@ -97,6 +92,15 @@ const PostDetailScreen = () => {
     return await deletePromiseFn({
       url: api(commentId).url,
       body: {},
+      token,
+    });
+  };
+  const likeOnSunganComment = async (api, commentId) => {
+    return await postPromiseFn({
+      url: api().url,
+      body: {
+        commentId,
+      },
       token,
     });
   };
@@ -125,7 +129,7 @@ const PostDetailScreen = () => {
       likeOnComment: commentId =>
         likeOn(APIS.post.report.comment.like, commentId),
       unlikeOnComment: commentId =>
-        unlikeOn(APIS.post.sungan.comment.like, commentId),
+        unlikeOn(APIS.post.report.comment.like, commentId),
       replyOnComment: commentId =>
         replyOn(APIS.post.report.comment.reply().url, commentId),
     },
@@ -140,9 +144,9 @@ const PostDetailScreen = () => {
       postComment: () =>
         commentOn(APIS.post.sungan.comment.main().url, 'sunganId'),
       likeOnComment: commentId =>
-        likeOn(APIS.post.sungan.comment.like, commentId),
+        likeOnSunganComment(APIS.post.sungan.comment.like, commentId),
       unlikeOnComment: commentId =>
-        unlikeOn(APIS.post.sungan.comment.like, commentId),
+        unlikeOn(APIS.post.sungan.comment.unlike, commentId),
       replyOnComment: commentId =>
         replyOn(APIS.post.sungan.comment.reply().url, commentId),
     },
@@ -160,7 +164,7 @@ const PostDetailScreen = () => {
       likeOnComment: commentId =>
         likeOn(APIS.post.place.comment.like, commentId),
       unlikeOnComment: commentId =>
-        unlikeOn(APIS.post.sungan.comment.like, commentId),
+        unlikeOn(APIS.post.place.comment.like, commentId),
       replyOnComment: commentId =>
         replyOn(APIS.post.place.comment.reply().url, commentId),
     },
@@ -201,9 +205,11 @@ const PostDetailScreen = () => {
     }
   };
   const handleLikeOnComment = (commentId, prevLiked) => {
-    prevLiked
-      ? post[currentPost.type].unlikeOnComment(commentId)
-      : post[currentPost.type].likeOnComment(commentId);
+    if (prevLiked) {
+      post[currentPost.type].unlikeOnComment(commentId);
+    } else {
+      post[currentPost.type].likeOnComment(commentId);
+    }
     pullToRefresh();
   };
   const handleReplyOnComment = comment => {
@@ -414,9 +420,11 @@ const Comment = ({comment, handleLikeOnComment, handleReplyOnComment}) => {
               auto
               itemsCenter
               justifyCenter
-              onPress={() => handleLikeOnComment(nestedComment.id)}>
+              onPress={() =>
+                handleLikeOnComment(nestedComment.id, nestedComment.didLike)
+              }>
               <Heart
-                fill={nestedComment.didLike ? 'red' : 'white'}
+                fill={nestedComment.isLiked ? 'red' : 'white'}
                 color={'black'}
                 height={14}></Heart>
             </Col>

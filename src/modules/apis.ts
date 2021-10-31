@@ -26,8 +26,9 @@ const APIS = {
       my: () => v1('/post/sungan/my'),
       comments: (id) => v1(`/post/sungan/${id}/comments`),
       comment: {
-        main: () => v1(`/post/sungancomment`),
-        like: (id) => v1(`/post/comment/${id}/like`),
+        main: () => v1(`/post/sungan/comment`),
+        like: () => v1(`/post/comment/like`),
+        unlike: (id) => v1(`/post/comment/like/${id}`),
         reply: () => v1(`/post/comment/reply`),
       },
       like: (id) => v1(`/post/likes/${id}`),

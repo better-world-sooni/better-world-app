@@ -34,7 +34,7 @@
     const navigation = useNavigation();
     const [report, setReport] = useState({
       reportType: 0,
-      subject: null,
+      label: null,
       vehicleIdNum: selectedTrain?.trainNo,
       carNum: null,
       detail: null,
@@ -115,12 +115,12 @@
           };
     };
     const setType = type => {
-      const {reportType, subject, ...other} = report;
-      setReport({reportType: type, subject: null, ...other});
+      const {reportType, label, ...other} = report;
+      setReport({reportType: type, label: null, ...other});
     };
     const setSubect = reportSubject => {
-      const {subject, ...other} = report;
-      setReport({subject: reportSubject, ...other});
+      const {label, ...other} = report;
+      setReport({label: reportSubject, ...other});
     };
     const setVehicleIdNum = reportVehicleIdNum => {
       const {vehicleIdNum, ...other} = report;
@@ -156,20 +156,20 @@
           Alert.alert(`피드에 업로드 중 에러가 발생하였습니다: ${e}`);
         }
       } else if (cancelled) {
-        Alert.alert(`유저가 취소하였습니다: ${cancelled}`);
+        Alert.alert(`유저가 취소하였습니다.`);
       } else if (error) {
-        Alert.alert(`에러가 발생하여 취소되었습니다: ${error}`);
+        Alert.alert(`에러가 발생하여 취소되었습니다.`);
       }
     };
     const sendSMS = async () => {
       if (
-        report.subject &&
+        report.label &&
         isValidVehicleId(report.vehicleIdNum) &&
         isValidCarNum(report.carNum) &&
         isValidDetail(report.detail)
       ) {
         const textObject = {
-          body: `[${report.reportType}: ${report.subject}] \n
+          body: `[${report.reportType}: ${report.label}] \n
         2호선 ${report.vehicleIdNum}번 열차 ${report.carNum}번 칸 \n
         ${report.detail}`,
           recipients: [SEOUL_METRO_PHONE_1TO8],
@@ -178,7 +178,7 @@
         };
         // @ts-ignore
         SendSMS.send(textObject, handleSendSMSCallback);
-      } else if (!report.subject) {
+      } else if (!report.label) {
         Alert.alert('주제를 선택해 주세요.');
       } else if (!isValidVehicleId(report.vehicleIdNum)) {
         Alert.alert(
@@ -201,7 +201,7 @@
             title={'새 민원'}
             headerColor={'white'}
             nextText={'전송'}
-            onPressNext={sendSMS}
+            onPressNext={handleSendSMSCallback}
           />
           <ScrollView
             showsVerticalScrollIndicator={false}
@@ -246,7 +246,7 @@
                           mr10
                           rounded
                           key={index}
-                          {...borderProp(report.subject === item)}>
+                          {...borderProp(report.label === item)}>
                           <Div
                             onPress={() => setSubect(item)}
                             px20
@@ -254,7 +254,7 @@
                             w={'100%'}
                             itemsCenter
                             justifyCenter>
-                            <Span {...colorProp(report.subject === item)}>
+                            <Span {...colorProp(report.label === item)}>
                               {item}
                             </Span>
                           </Div>
