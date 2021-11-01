@@ -5,7 +5,7 @@ import APIS from 'src/modules/apis';
 import {GRAY_COLOR, iconSettings} from 'src/modules/constants';
 import {IMAGES} from 'src/modules/images';
 import {NAV_NAMES} from 'src/modules/navNames';
-import {postKey} from 'src/modules/utils';
+import {isOkay, postKey} from 'src/modules/utils';
 import {deletePromiseFn, postPromiseFn} from 'src/redux/asyncReducer';
 import {setCurrentPostId, setPost} from 'src/redux/feedReducer';
 import {RootState} from 'src/redux/rootReducer';
@@ -34,7 +34,7 @@ export const Sungan = ({post, dispatch, navigation, token, mine = null}) => {
         body: {},
         token: token,
       });
-      if (res.data.statusCode == 200) {
+      if (isOkay(res)) {
         const {
           didLike,
           post: {likeCnt, ...otherProps},
@@ -54,7 +54,7 @@ export const Sungan = ({post, dispatch, navigation, token, mine = null}) => {
         body: {},
         token: token,
       });
-      if (res.data.statusCode == 200) {
+      if (isOkay(res)) {
         const {
           didLike,
           post: {likeCnt, ...otherProps},

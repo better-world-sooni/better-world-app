@@ -82,3 +82,7 @@ export const stationArr = (arr, start, end, direction, limit = null) => {
 export const postKey = post => {
   return `${post.type}-${post.post.id}`;
 };
+
+export const isOkay = res => {
+  return res.data.statusCode == 200;
+};

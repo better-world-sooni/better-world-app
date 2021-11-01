@@ -4,7 +4,7 @@ import APIS from 'src/modules/apis';
 import {GRAY_COLOR, iconSettings} from 'src/modules/constants';
 import {IMAGES} from 'src/modules/images';
 import {NAV_NAMES} from 'src/modules/navNames';
-import {postKey} from 'src/modules/utils';
+import {isOkay, postKey} from 'src/modules/utils';
 import {deletePromiseFn, postPromiseFn} from 'src/redux/asyncReducer';
 import {setCurrentPostId, setPost} from 'src/redux/feedReducer';
 import {Col} from './common/Col';
@@ -27,11 +27,11 @@ export const Place = ({post, dispatch, navigation, token, mine = null}) => {
   const like = async () => {
     if (post.didLike) {
       const res = await deletePromiseFn({
-        url: APIS.post.sungan.like(sungan.id).url,
+        url: APIS.post.place.like(sungan.id).url,
         body: {},
         token: token,
       });
-      if (res.data.statusCode == 200) {
+      if (isOkay(res)) {
         const {
           didLike,
           post: {likeCnt, ...otherProps},
@@ -47,11 +47,11 @@ export const Place = ({post, dispatch, navigation, token, mine = null}) => {
       }
     } else {
       const res = await postPromiseFn({
-        url: APIS.post.sungan.like(sungan.id).url,
+        url: APIS.post.place.like(sungan.id).url,
         body: {},
         token: token,
       });
-      if (res.data.statusCode == 200) {
+      if (isOkay(res)) {
         const {
           didLike,
           post: {likeCnt, ...otherProps},

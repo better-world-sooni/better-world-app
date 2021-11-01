@@ -28,6 +28,7 @@ import {RootState} from 'src/redux/rootReducer';
 import {Input, KeyboardAvoidingView, NativeBaseProvider} from 'native-base';
 import {Platform, RefreshControl, SafeAreaView, ScrollView} from 'react-native';
 import {setPost} from 'src/redux/feedReducer';
+import {isOkay} from 'src/modules/utils';
 
 enum TextType {
   COMMENT = 0,
@@ -67,9 +68,6 @@ const PostDetailScreen = () => {
       apiGET(APIS.post.place.comments(currentPost.post.id));
     }
   };
-  useEffect(() => {
-    pullToRefresh();
-  }, [currentPost]);
   const commentOn = async (url, idName) => {
     return await postPromiseFn({
       url,
@@ -125,14 +123,18 @@ const PostDetailScreen = () => {
       likeUrl: id => {
         return APIS.post.report.like(id).url;
       },
-      postComment: () =>
-        commentOn(APIS.post.report.comment.main().url, 'reportId'),
-      likeOnComment: commentId =>
-        likeOn(APIS.post.report.comment.like, commentId),
-      unlikeOnComment: commentId =>
-        unlikeOn(APIS.post.report.comment.like, commentId),
-      replyOnComment: commentId =>
-        replyOn(APIS.post.report.comment.reply().url, commentId),
+      postComment: async () => {
+        return await commentOn(APIS.post.report.comment.main().url, 'reportId');
+      },
+      likeOnComment: async commentId => {
+        return await likeOn(APIS.post.report.comment.like, commentId);
+      },
+      unlikeOnComment: async commentId => {
+        return await unlikeOn(APIS.post.report.comment.like, commentId);
+      },
+      replyOnComment: async commentId => {
+        return await replyOn(APIS.post.report.comment.reply().url, commentId);
+      },
     },
     [SUNGAN]: {
       comments: sunganComments?.data,
@@ -143,14 +145,18 @@ const PostDetailScreen = () => {
       likeUrl: id => {
         return APIS.post.sungan.like(id).url;
       },
-      postComment: () =>
-        commentOn(APIS.post.sungan.comment.main().url, 'sunganId'),
-      likeOnComment: commentId =>
-        likeOnSunganComment(APIS.post.sungan.comment.like, commentId),
-      unlikeOnComment: commentId =>
-        unlikeOn(APIS.post.sungan.comment.unlike, commentId),
-      replyOnComment: commentId =>
-        replyOn(APIS.post.sungan.comment.reply().url, commentId),
+      postComment: async () => {
+        return await commentOn(APIS.post.sungan.comment.main().url, 'sunganId');
+      },
+      likeOnComment: async commentId => {
+        return likeOnSunganComment(APIS.post.sungan.comment.like, commentId);
+      },
+      unlikeOnComment: async commentId => {
+        return await unlikeOn(APIS.post.sungan.comment.unlike, commentId);
+      },
+      replyOnComment: async commentId => {
+        return await replyOn(APIS.post.sungan.comment.reply().url, commentId);
+      },
     },
     [PLACE]: {
       comments: placeComments?.data,
@@ -162,14 +168,21 @@ const PostDetailScreen = () => {
       likeUrl: id => {
         return APIS.post.place.like(id).url;
       },
-      postComment: () =>
-        commentOn(APIS.post.place.comment.main().url, 'hotplaceId'),
-      likeOnComment: commentId =>
-        likeOn(APIS.post.place.comment.like, commentId),
-      unlikeOnComment: commentId =>
-        unlikeOn(APIS.post.place.comment.like, commentId),
-      replyOnComment: commentId =>
-        replyOn(APIS.post.place.comment.reply().url, commentId),
+      postComment: async () => {
+        return await commentOn(
+          APIS.post.place.comment.main().url,
+          'hotplaceId',
+        );
+      },
+      likeOnComment: async commentId => {
+        return await likeOn(APIS.post.place.comment.like, commentId);
+      },
+      unlikeOnComment: async commentId => {
+        return await unlikeOn(APIS.post.place.comment.like, commentId);
+      },
+      replyOnComment: async commentId => {
+        return await replyOn(APIS.post.place.comment.reply().url, commentId);
+      },
     },
   };
   const handleLike = async () => {
@@ -179,8 +192,7 @@ const PostDetailScreen = () => {
         body: {},
         token: token,
       });
-      console.log('console.log(res);', res);
-      if (res.data.statusCode == 200) {
+      if (isOkay(res)) {
         const {
           didLike,
           post: {likeCnt, ...otherProps},
@@ -200,8 +212,7 @@ const PostDetailScreen = () => {
         body: {},
         token: token,
       });
-      console.log('console.log(res);', res);
-      if (res.data.statusCode == 200) {
+      if (isOkay(res)) {
         const {
           didLike,
           post: {likeCnt, ...otherProps},
@@ -217,26 +228,38 @@ const PostDetailScreen = () => {
       }
     }
   };
-  const handleSend = () => {
+  const handleSend = async () => {
     if (text.length > 0) {
       if (textType === TextType.COMMENT) {
-        const response = post[currentPost.type].postComment();
-        setText('');
-        pullToRefresh();
+        const res = await post[currentPost.type].postComment();
+        if (isOkay(res)) {
+          setText('');
+          pullToRefresh();
+        }
       } else {
-        post[currentPost.type].replyOnComment(textType.id);
-        setText('');
-        pullToRefresh();
+        const res = await post[currentPost.type].replyOnComment(textType.id);
+        if (isOkay(res)) {
+          setText('');
+          pullToRefresh();
+        }
       }
     }
   };
-  const handleLikeOnComment = (commentId, prevLiked) => {
+  const handleLikeOnComment = async (commentId, prevLiked) => {
+    console.log(commentId, prevLiked);
     if (prevLiked) {
-      post[currentPost.type].unlikeOnComment(commentId);
+      const res = await post[currentPost.type].unlikeOnComment(commentId);
+      console.log('const res = await post[currentPost.type]', res);
+      if (isOkay(res)) {
+        pullToRefresh();
+      }
     } else {
-      post[currentPost.type].likeOnComment(commentId);
+      const res = await post[currentPost.type].likeOnComment(commentId);
+      console.log('const res = await post[currentPost.type]', res);
+      if (isOkay(res)) {
+        pullToRefresh();
+      }
     }
-    pullToRefresh();
   };
   const handleReplyOnComment = comment => {
     setTextType(comment);
@@ -245,6 +268,10 @@ const PostDetailScreen = () => {
     borderBottomColor: GRAY_COLOR,
     borderBottomWidth: 0.3,
   };
+
+  useEffect(() => {
+    pullToRefresh();
+  }, []);
 
   return (
     <NativeBaseProvider>
@@ -408,7 +435,7 @@ const Comment = ({comment, handleLikeOnComment, handleReplyOnComment}) => {
             height={14}></Heart>
         </Col>
       </Row>
-      {comment.nestedComments.map((nestedComment, index) => {
+      {[...comment.nestedComments].reverse().map((nestedComment, index) => {
         return (
           <Row itemsCenter justifyCenter flex ml30 pt10 key={index} pl10>
             <Col auto itemsCenter justifyCenter rounded20 overflowHidden>
