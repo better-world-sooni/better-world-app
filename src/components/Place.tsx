@@ -124,13 +124,13 @@ export const Place = ({post, dispatch, navigation, token, mine = null}) => {
               </Row>
             </Col>
           </Row>
-          {sungan.comments?.length > 1 && (
+          {/* {sungan.comments?.length > 1 && (
             <Row itemsCenter py5>
               <Span color={'gray'}>{`${
                 sungan.comments.length - 1
               }개 댓글 더보기`}</Span>
             </Row>
-          )}
+          )} */}
           {bestComment && (
             <Row itemsCenter justifyCenter pb10 pt5 flex>
               <Col auto itemsCenter justifyCenter rounded20 overflowHidden>

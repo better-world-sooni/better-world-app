@@ -154,11 +154,11 @@ const HomeScreen = props => {
     if (response && response.errorMessage?.status === 200) {
       response.realtimePositionList.forEach(train => {
         if (
-          train.subwayNm === '2호선' &&
+          train.subwayNm == '2호선' &&
           train.trainNo.startsWith('2') &&
-          train.updnLine === (direction === Direction.INNER ? '1' : '0')
+          train.updnLine == (direction == Direction.INNER ? '0' : '1')
         ) {
-          if (train.trainNo === selectedTrain?.trainNo) {
+          if (train.trainNo == selectedTrain?.trainNo) {
             dispatch(setSelectedTrain(train));
           }
           trainLocations[train.statnNm] = train;
@@ -174,8 +174,8 @@ const HomeScreen = props => {
     if (response && response.errorMessage?.status == 200) {
       for (const train of response.realtimeArrivalList) {
         if (
-          train.subwayId === '1002' &&
-          train.updnLine === (direction === Direction.INNER ? '내선' : '외선')
+          train.subwayId == '1002' &&
+          train.updnLine == (direction == Direction.INNER ? '내선' : '외선')
         ) {
           let currentArvlCd = null;
           if (train.arvlCd == '4') {
@@ -657,11 +657,7 @@ const HomeScreen = props => {
                                   {`${
                                     TRAIN_STATE[trainAtStation.trainSttus] ||
                                     '출발'
-                                  }(${
-                                    trainAtStation.updnLine == '1'
-                                      ? '내선'
-                                      : '외선'
-                                  })`}
+                                  }(${trainAtStation.statnTnm})`}
                                 </Span>
                               </Col>
                             </Row>

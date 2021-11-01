@@ -125,14 +125,13 @@ export const Report = ({post, dispatch, navigation, token, mine = null}) => {
               </Row>
             </Col>
           </Row>
-
-          {report.comments && report.comments.length > 1 && (
+          {/* {report.comments && report.comments.length > 1 && (
             <Row itemsCenter py5>
               <Span color={'gray'}>{`${
                 report.comments.length - 1
               }개 댓글 더보기`}</Span>
             </Row>
-          )}
+          )} */}
           {bestComment && (
             <Row itemsCenter justifyCenter pb10 pt5 flex>
               <Col auto itemsCenter justifyCenter rounded20 overflowHidden>
