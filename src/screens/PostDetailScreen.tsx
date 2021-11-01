@@ -1,7 +1,7 @@
 import {useNavigation} from '@react-navigation/core';
 import React, {useEffect, useState} from 'react';
-import {CheckCircle, Heart, X} from 'react-native-feather';
-import {shallowEqual, useSelector} from 'react-redux';
+import {Heart, X} from 'react-native-feather';
+import {shallowEqual, useDispatch, useSelector} from 'react-redux';
 import {Col} from 'src/components/common/Col';
 import {Div} from 'src/components/common/Div';
 import {Img} from 'src/components/common/Img';
@@ -12,7 +12,6 @@ import APIS from 'src/modules/apis';
 import {
   GO_COLOR,
   GRAY_COLOR,
-  HAS_NOTCH,
   iconSettings,
   PLACE,
   REPORT,
@@ -24,22 +23,24 @@ import {
   postPromiseFn,
   useApiSelector,
   useReloadGET,
-  useReloadPOST,
 } from 'src/redux/asyncReducer';
 import {RootState} from 'src/redux/rootReducer';
 import {Input, KeyboardAvoidingView, NativeBaseProvider} from 'native-base';
 import {Platform, RefreshControl, SafeAreaView, ScrollView} from 'react-native';
+import {setPost} from 'src/redux/feedReducer';
 
 enum TextType {
   COMMENT = 0,
 }
 const PostDetailScreen = () => {
   const {
-    feed: {currentPost},
+    feed: {currentPostId, mainPosts},
     app: {
       session: {token, currentUser},
     },
   } = useSelector((root: RootState) => root, shallowEqual);
+  const currentPost = mainPosts[currentPostId];
+  const innerPost = currentPost.post;
 
   const {data: reportComments, isLoading: reportCommentsLoading} =
     useApiSelector(APIS.post.report.comments);
@@ -52,10 +53,10 @@ const PostDetailScreen = () => {
   );
 
   const apiGET = useReloadGET();
+  const dispatch = useDispatch();
 
   const [text, setText] = useState('');
   const [textType, setTextType] = useState<any>(TextType.COMMENT);
-  const [isLiked, setIsLiked] = useState(currentPost.didLike);
 
   const pullToRefresh = () => {
     if (currentPost.type === REPORT) {
@@ -69,7 +70,6 @@ const PostDetailScreen = () => {
   useEffect(() => {
     pullToRefresh();
   }, [currentPost]);
-
   const commentOn = async (url, idName) => {
     return await postPromiseFn({
       url,
@@ -117,13 +117,14 @@ const PostDetailScreen = () => {
   };
   const post = {
     [REPORT]: {
-      comments: reportComments?.data.comments,
+      comments: reportComments?.data,
       emoji: '🚨',
       text: currentPost.post.text,
       likeCnt: currentPost.post.likeCnt,
-      isLiked: currentPost.didLike,
       isLoading: reportCommentsLoading,
-      like: APIS.post.report.like,
+      likeUrl: id => {
+        return APIS.post.report.like(id).url;
+      },
       postComment: () =>
         commentOn(APIS.post.report.comment.main().url, 'reportId'),
       likeOnComment: commentId =>
@@ -138,9 +139,10 @@ const PostDetailScreen = () => {
       emoji: currentPost.post.emoji,
       text: currentPost.post.text,
       likeCnt: currentPost.post.likeCnt,
-      isLiked: currentPost.didLike,
       isLoading: sunganCommentsLoading,
-      like: APIS.post.sungan.like,
+      likeUrl: id => {
+        return APIS.post.sungan.like(id).url;
+      },
       postComment: () =>
         commentOn(APIS.post.sungan.comment.main().url, 'sunganId'),
       likeOnComment: commentId =>
@@ -156,9 +158,10 @@ const PostDetailScreen = () => {
       text: currentPost.post.text,
       place: currentPost.post.place,
       likeCnt: currentPost.post.likeCnt,
-      isLiked: currentPost.didLike,
       isLoading: placeCommentsLoading,
-      like: APIS.post.place.like,
+      likeUrl: id => {
+        return APIS.post.place.like(id).url;
+      },
       postComment: () =>
         commentOn(APIS.post.place.comment.main().url, 'hotplaceId'),
       likeOnComment: commentId =>
@@ -170,31 +173,54 @@ const PostDetailScreen = () => {
     },
   };
   const handleLike = async () => {
-    if (isLiked) {
+    if (currentPost.didLike) {
       const res = await deletePromiseFn({
-        url: post[currentPost.type].like(currentPost.post.id).url,
+        url: post[currentPost.type].likeUrl(innerPost.id),
         body: {},
         token: token,
       });
-      res.status === 200 && setIsLiked(false);
+      console.log('console.log(res);', res);
+      if (res.data.statusCode == 200) {
+        const {
+          didLike,
+          post: {likeCnt, ...otherProps},
+          ...other
+        } = currentPost;
+        dispatch(
+          setPost({
+            didLike: false,
+            post: {likeCnt: likeCnt - 1, ...otherProps},
+            ...other,
+          }),
+        );
+      }
     } else {
       const res = await postPromiseFn({
-        url: post[currentPost.type].like(currentPost.post.id).url,
+        url: post[currentPost.type].likeUrl(innerPost.id),
         body: {},
         token: token,
       });
-      res.status === 200 && setIsLiked(true);
+      console.log('console.log(res);', res);
+      if (res.data.statusCode == 200) {
+        const {
+          didLike,
+          post: {likeCnt, ...otherProps},
+          ...other
+        } = currentPost;
+        dispatch(
+          setPost({
+            didLike: true,
+            post: {likeCnt: likeCnt + 1, ...otherProps},
+            ...other,
+          }),
+        );
+      }
     }
   };
   const handleSend = () => {
     if (text.length > 0) {
       if (textType === TextType.COMMENT) {
         const response = post[currentPost.type].postComment();
-        console.log(
-          'const response = post[currentPost.type].postComment();',
-          response,
-          currentPost.post.id,
-        );
         setText('');
         pullToRefresh();
       } else {
@@ -256,9 +282,7 @@ const PostDetailScreen = () => {
                   <Col auto>
                     <Row>
                       <Span medium>{`좋아요 ${
-                        post[currentPost.type].likeCnt +
-                        (!post[currentPost.type].isLiked && isLiked ? 1 : 0) -
-                        (post[currentPost.type].isLiked && !isLiked ? 1 : 0)
+                        post[currentPost.type].likeCnt
                       }개`}</Span>
                     </Row>
                   </Col>
@@ -268,7 +292,7 @@ const PostDetailScreen = () => {
                       <Col auto px5 onPress={handleLike}>
                         <Heart
                           {...iconSettings}
-                          fill={isLiked ? 'red' : 'white'}></Heart>
+                          fill={currentPost.didLike ? 'red' : 'white'}></Heart>
                       </Col>
                     </Row>
                   </Col>

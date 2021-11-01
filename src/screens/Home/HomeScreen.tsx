@@ -8,27 +8,14 @@ import {Span} from 'src/components/common/Span';
 import APIS from 'src/modules/apis';
 import {IMAGES} from 'src/modules/images';
 import {ScrollView} from 'src/modules/viewComponents';
-import {
-  deletePromiseFn,
-  postPromiseFn,
-  useApiSelector,
-  useReloadGET,
-  useReloadPOST,
-} from 'src/redux/asyncReducer';
+import {useApiSelector, useReloadGET} from 'src/redux/asyncReducer';
 import {shallowEqual, useDispatch, useSelector} from 'react-redux';
-import {
-  MessageCircle,
-  Heart,
-  RefreshCw,
-  ChevronDown,
-  CheckCircle,
-} from 'react-native-feather';
+import {RefreshCw, ChevronDown, CheckCircle} from 'react-native-feather';
 import {
   chevronDownSettings,
   Direction,
   GRAY_COLOR,
   HAS_NOTCH,
-  iconSettings,
   LINE2_COLOR,
   LINE2_COLOR_LIGHT,
   LINE2_Linked_List,
@@ -50,9 +37,9 @@ import {
   setSelectedTrain,
   exchangeOriginDestination,
 } from 'src/redux/routeReducer';
-import {shortenAddress, stationArr} from 'src/modules/utils';
+import {postKey, stationArr} from 'src/modules/utils';
 import {RootState} from 'src/redux/rootReducer';
-import {setCurrentPost, setGlobalFilter, setPosts} from 'src/redux/feedReducer';
+import {setGlobalFilter, setMainPosts} from 'src/redux/feedReducer';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
 import {faSubway} from '@fortawesome/free-solid-svg-icons';
 import {Header} from 'src/components/Header';
@@ -100,7 +87,7 @@ const HomeScreen = props => {
     shallowEqual,
   );
   const displayedStation = selectedTrain?.statnNm || origin;
-  const {posts, globalFiter} = useSelector(
+  const {mainPosts, globalFiter} = useSelector(
     (root: RootState) => root.feed,
     shallowEqual,
   );
@@ -257,15 +244,15 @@ const HomeScreen = props => {
   };
 
   useEffect(() => {
-    apiGET(APIS.route.starred());
     pullToRefresh();
+    apiGET(APIS.route.starred());
     const everySecond = setInterval(() => setCurrentTime(new Date()), 1000);
     const everyHalfMinute = setInterval(() => {
       if (!positionsLoading && !arrivalLoading) {
         apiGET(APIS.realtime.position());
         origin && apiGET(APIS.realtime.arrival(origin.split('(')[0]));
       }
-    }, 10000);
+    }, 15000);
     return () => {
       clearInterval(everySecond);
       clearInterval(everyHalfMinute);
@@ -273,7 +260,13 @@ const HomeScreen = props => {
   }, [origin]);
 
   useEffect(() => {
-    dispatch(setPosts(mainFeed));
+    if (mainFeed) {
+      const mainPosts = {};
+      mainFeed.forEach(post => {
+        mainPosts[postKey(post)] = post;
+      });
+      dispatch(setMainPosts(mainPosts));
+    }
   }, [mainLoading]);
 
   useEffect(() => {
@@ -283,11 +276,13 @@ const HomeScreen = props => {
   }, [starredLoading]);
 
   useEffect(() => {
-    dispatch(setTrainPositions(filterPositionResponse(realtimePositionList)));
+    !positionsLoading &&
+      dispatch(setTrainPositions(filterPositionResponse(realtimePositionList)));
   }, [positionsLoading]);
 
   useEffect(() => {
-    dispatch(setArrivalTrain(filterArrivalResponse(realtimeArrivalList)));
+    !arrivalLoading &&
+      dispatch(setArrivalTrain(filterArrivalResponse(realtimeArrivalList)));
   }, [arrivalLoading]);
 
   const textShadowProp = {
@@ -593,12 +588,7 @@ const HomeScreen = props => {
               <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                 {(origin && destination
                   ? stationArr([], previewStart, previewStart, direction)
-                  : stationArr(
-                      [],
-                      '시청',
-                      '충정로(경기대입구)',
-                      Direction.INNER,
-                    )
+                  : stationArr([], origin, destination, Direction.INNER)
                 ).map((item, index) => {
                   const trainAtStation = trainPositions?.[item.split('(')[0]];
                   const isRiding =
@@ -723,10 +713,19 @@ const HomeScreen = props => {
             </Row>
           </Div>
           <Div>
-            {posts &&
-              posts
+            {mainPosts &&
+              Object.keys(mainPosts)
+                .map(key => {
+                  return mainPosts[key];
+                })
                 .filter(post => {
                   return filterPostsByStation(post);
+                })
+                .sort((a, b) => {
+                  return (
+                    new Date(b.post.createdAt).getTime() -
+                    new Date(a.post.createdAt).getTime()
+                  );
                 })
                 .map((post, index) => {
                   if (post.type == SUNGAN) {

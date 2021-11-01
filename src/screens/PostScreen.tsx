@@ -142,8 +142,6 @@ const PostScreen = props => {
       } catch (e) {
         Alert.alert(`피드에 업로드 중 에러가 발생하였습니다: ${e}`);
       }
-    } else if (!sungan.stationName) {
-      Alert.alert('역을 선택해 주세요.');
     } else if (!sungan.channelId) {
       Alert.alert('채널을 선택해 주세요');
     } else if (!isValidTextOrPlace(sungan.text)) {
@@ -178,8 +176,6 @@ const PostScreen = props => {
       } catch (e) {
         Alert.alert(`피드에 업로드 중 에러가 발생하였습니다: ${e}`);
       }
-    } else if (!sungan.stationName) {
-      Alert.alert('역을 선택해 주세요.');
     } else if (!isValidTextOrPlace(sungan.place)) {
       Alert.alert('핫플의 이름을 적어주세요.');
     } else if (!sungan.channelId) {

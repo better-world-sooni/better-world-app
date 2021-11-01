@@ -1,19 +1,25 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { postKey } from 'src/modules/utils';
 
 const feedSlice = createSlice({
     name: 'feed',
     initialState: {
-        posts: [],
+        mainPosts: null,
         cachedPreup: null,
         globalFiter: '2호선 본선',
-        currentPost: null,
+        currentPostId: null,
     },
     reducers: {
-        setPosts: (state, action) => {
-            if (action.payload && action.payload.length > 0) {
+        setMainPosts: (state, action) => {
+            if (action.payload) {
                 // state.posts = [...action.payload].reverse();
-                state.posts = action.payload;
+                state.mainPosts = action.payload;
             }
+        },
+        setPost: (state, action) => {
+            const key = postKey(action.payload);
+            const {[key]: currentPost, ...other} = state.mainPosts;
+            state.mainPosts = {[key]: action.payload, ...other};
         },
         setCachedPreup: (state, action) => {
             state.cachedPreup = action.payload;
@@ -21,16 +27,17 @@ const feedSlice = createSlice({
         setGlobalFilter: (state, action) => {
             state.globalFiter = action.payload;
         },
-        setCurrentPost: (state, action) => {
-            state.currentPost = action.payload;
+        setCurrentPostId: (state, action) => {
+            state.currentPostId = action.payload;
         }
     },
 });
 
 export const feedReducer = feedSlice.reducer;
 export const {
-    setPosts,
+    setMainPosts,
+    setPost,
     setCachedPreup,
     setGlobalFilter,
-    setCurrentPost,
+    setCurrentPostId,
 } = feedSlice.actions;

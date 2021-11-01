@@ -4,8 +4,9 @@ import APIS from 'src/modules/apis';
 import {GRAY_COLOR, iconSettings} from 'src/modules/constants';
 import {IMAGES} from 'src/modules/images';
 import {NAV_NAMES} from 'src/modules/navNames';
+import {postKey} from 'src/modules/utils';
 import {deletePromiseFn, postPromiseFn} from 'src/redux/asyncReducer';
-import {setCurrentPost} from 'src/redux/feedReducer';
+import {setCurrentPostId, setPost} from 'src/redux/feedReducer';
 import {Col} from './common/Col';
 import {Div} from './common/Div';
 import {Img} from './common/Img';
@@ -23,26 +24,51 @@ export const Place = ({post, dispatch, navigation, token, mine = null}) => {
     };
   };
   const bestComment = post.bestComment;
-  const [isLiked, setIsLiked] = useState(post.didLike);
   const like = async () => {
-    if (isLiked) {
+    if (post.didLike) {
       const res = await deletePromiseFn({
-        url: APIS.post.place.like(sungan.id).url,
+        url: APIS.post.sungan.like(sungan.id).url,
         body: {},
         token: token,
       });
-      res.status == 200 && setIsLiked(false);
+      if (res.data.statusCode == 200) {
+        const {
+          didLike,
+          post: {likeCnt, ...otherProps},
+          ...other
+        } = post;
+        dispatch(
+          setPost({
+            didLike: false,
+            post: {likeCnt: likeCnt - 1, ...otherProps},
+            ...other,
+          }),
+        );
+      }
     } else {
       const res = await postPromiseFn({
-        url: APIS.post.place.like(sungan.id).url,
+        url: APIS.post.sungan.like(sungan.id).url,
         body: {},
         token: token,
       });
-      res.status == 200 && setIsLiked(true);
+      if (res.data.statusCode == 200) {
+        const {
+          didLike,
+          post: {likeCnt, ...otherProps},
+          ...other
+        } = post;
+        dispatch(
+          setPost({
+            didLike: true,
+            post: {likeCnt: likeCnt + 1, ...otherProps},
+            ...other,
+          }),
+        );
+      }
     }
   };
   const goToPostDetail = () => {
-    dispatch(setCurrentPost(post));
+    dispatch(setCurrentPostId(postKey(post)));
     navigation.navigate(NAV_NAMES.PostDetail);
   };
   return (
@@ -81,11 +107,7 @@ export const Place = ({post, dispatch, navigation, token, mine = null}) => {
           <Row itemsCenter pt10 pb5>
             <Col auto>
               <Row>
-                <Span medium>{`좋아요 ${
-                  sungan.likeCnt +
-                  (!post.didLike && isLiked ? 1 : 0) -
-                  (post.didLike && !isLiked ? 1 : 0)
-                }개`}</Span>
+                <Span medium>{`좋아요 ${sungan.likeCnt}개`}</Span>
               </Row>
             </Col>
             <Col></Col>
@@ -97,7 +119,7 @@ export const Place = ({post, dispatch, navigation, token, mine = null}) => {
                 <Col auto px5 onPress={like}>
                   <Heart
                     {...iconSettings}
-                    fill={isLiked ? 'red' : 'white'}></Heart>
+                    fill={post.didLike ? 'red' : 'white'}></Heart>
                 </Col>
               </Row>
             </Col>

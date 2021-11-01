@@ -78,3 +78,7 @@ export const stationArr = (arr, start, end, direction, limit = null) => {
     return [];
   }
 };
+
+export const postKey = post => {
+  return `${post.type}-${post.post.id}`;
+};

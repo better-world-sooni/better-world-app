@@ -68,7 +68,7 @@ const MetaSunganScreen = () => {
 
   // functions
   const metasunganUrl = token => {
-    return `http://localhost:3000/?jwtToken=${token}`;
+    return `https://metasgid.com/api/v1/meta/?jwtToken=${token}`;
   };
   const reload = () => {
     webViewRef && webViewRef.current.reload();
