@@ -20,6 +20,7 @@ import ChatScreen from 'src/screens/Home/ChatScreen';
 import {Div} from './common/Div';
 import ChatRoomScreen from 'src/screens/ChatRoomScreen';
 import PostDetailScreen from 'src/screens/PostDetailScreen';
+import SignUpSceen from 'src/screens/Auth/SignUpScreen';
 
 const RootStack = createStackNavigator();
 
@@ -91,6 +92,13 @@ export const AppContent = () => {
         header: topHeader({...props, headerShown: false}),
       }),
     },
+    {
+      name: NAV_NAMES.SignUp,
+      component: SignUpSceen,
+      options: props => ({
+        header: topHeader({...props, headerShown: false}),
+      }),
+    } as any,
     {
       name: NAV_NAMES.SignIn,
       component: SignInScreen,

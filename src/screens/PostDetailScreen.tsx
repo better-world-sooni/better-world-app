@@ -358,7 +358,14 @@ const PostDetailScreen = () => {
                 )}
                 <Row itemsCenter px20 py10>
                   <Col auto itemsCenter justifyCenter rounded20 overflowHidden>
-                    <Img source={IMAGES.example2} w30 h30></Img>
+                    <Img
+                      source={
+                        IMAGES.characters[
+                          currentPost.userInfo.userProfileImgUrl
+                        ]
+                      }
+                      w30
+                      h30></Img>
                   </Col>
                   <Col
                     ml10
@@ -399,7 +406,10 @@ const Comment = ({comment, handleLikeOnComment, handleReplyOnComment}) => {
     <Div pt20 px20>
       <Row itemsCenter justifyCenter flex>
         <Col auto itemsCenter justifyCenter rounded20 overflowHidden>
-          <Img source={IMAGES.example2} w30 h30></Img>
+          <Img
+            source={IMAGES.characters[comment.userInfo.userProfileImgUrl]}
+            w30
+            h30></Img>
         </Col>
         <Col>
           <Row mb5 pl10>
@@ -439,7 +449,12 @@ const Comment = ({comment, handleLikeOnComment, handleReplyOnComment}) => {
         return (
           <Row itemsCenter justifyCenter flex ml30 pt10 key={index} pl10>
             <Col auto itemsCenter justifyCenter rounded20 overflowHidden>
-              <Img source={IMAGES.example2} w20 h20></Img>
+              <Img
+                source={
+                  IMAGES.characters[nestedComment.userInfo.userProfileImgUrl]
+                }
+                w20
+                h20></Img>
             </Col>
             <Col>
               <Row mb5 pl10>

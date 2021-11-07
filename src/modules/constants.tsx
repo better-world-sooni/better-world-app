@@ -1,4 +1,6 @@
+import React from 'react';
 import {hasNotch} from 'react-native-device-info';
+import {Span} from 'src/components/common/Span';
 export const IOS_APP_VERSION = '6.0.5';
 export const ANDROID_APP_VERSION = '6.0.5';
 export const IOS_CODE_PUSH_VERSION = '117';
@@ -370,3 +372,245 @@ export const TRAIN_STATE = {
   '0': '진입',
   '1': '도착',
 };
+
+export const characterDesc = {
+  alien: {
+    span: (
+      <>
+        <Span>방사능 마니아 </Span>
+        <Span bold>애일리언</Span>
+      </>
+    ),
+  },
+  blue: {
+    span: (
+      <>
+        <Span>파란색 분장 </Span>
+        <Span bold>블루</Span>
+      </>
+    ),
+  },
+  brother: {
+    span: (
+      <>
+        <Span>콜 미 </Span>
+        <Span bold>브라더</Span>
+      </>
+    ),
+  },
+  clown: {
+    span: (
+      <>
+        <Span>무서운척 하는 쫄보 </Span>
+        <Span bold>클라운</Span>
+      </>
+    ),
+  },
+  dark: {
+    span: (
+      <>
+        <Span>내 옷장은 오직 검은색 </Span>
+        <Span bold>다크</Span>
+      </>
+    ),
+  },
+  enchantress: {
+    span: (
+      <>
+        <Span>마술에 푹 빠진 </Span>
+        <Span bold>인챈트리스</Span>
+      </>
+    ),
+  },
+  footballer: {
+    span: (
+      <>
+        <Span>한국 최강 쿼터백 </Span>
+        <Span bold>풋볼러</Span>
+      </>
+    ),
+  },
+  fromTheFuture: {
+    span: (
+      <>
+        <Span>다음 로또 번호 물어봐라 </Span>
+        <Span bold>프럼 더 퓨쳐</Span>
+      </>
+    ),
+  },
+  geek: {
+    span: (
+      <>
+        <Span>(INTP) 자발적 외톨이 </Span>
+        <Span bold>긱</Span>
+      </>
+    ),
+  },
+  guy: {
+    span: (
+      <>
+        <Span>후 이즈 댓 </Span>
+        <Span bold>가이</Span>
+      </>
+    ),
+  },
+  irishMan: {
+    span: (
+      <>
+        <Span>싸움 좀 치는 </Span>
+        <Span bold>아이리쉬맨</Span>
+      </>
+    ),
+  },
+  kev: {
+    span: (
+      <>
+        <Span>지디와 맞먹는 패셔니스타 (본인피셜) </Span>
+        <Span bold>케브</Span>
+      </>
+    ),
+  },
+  kimono: {
+    span: (
+      <>
+        <Span>옷은 별로지만 만화 덕후 </Span>
+        <Span bold>키모노</Span>
+      </>
+    ),
+  },
+  madScientist: {
+    span: (
+      <>
+        <Span>지식에 미쳐버린 </Span>
+        <Span bold>매드 사이언티스트</Span>
+      </>
+    ),
+  },
+  naked: {
+    span: (
+      <>
+        <Span>내추럴리스트 </Span>
+        <Span bold>네이키드</Span>
+      </>
+    ),
+  },
+  oldMan: {
+    span: (
+      <>
+        <Span>125세 갑부 </Span>
+        <Span bold>올드맨</Span>
+      </>
+    ),
+  },
+  pineappleHead: {
+    span: (
+      <>
+        <Span>한국 토종 원주민 </Span>
+        <Span bold>파인애플해드</Span>
+      </>
+    ),
+  },
+  playboyGirl: {
+    span: (
+      <>
+        <Span>핫핫! </Span>
+        <Span bold>플래이보이걸</Span>
+      </>
+    ),
+  },
+  princess: {
+    span: (
+      <>
+        <Span>레드카펫 어딨어?! </Span>
+        <Span bold>프린세스</Span>
+      </>
+    ),
+  },
+  q: {
+    span: (
+      <>
+        <Span>도라에몽급 가젯 마스터 </Span>
+        <Span bold>큐</Span>
+      </>
+    ),
+  },
+  statueOfLiberty: {
+    span: (
+      <>
+        <Span>뉴욕 피자만 먹는 </Span>
+        <Span bold>자유의 여신상</Span>
+      </>
+    ),
+  },
+  telekinesis: {
+    span: (
+      <>
+        <Span>? </Span>
+        <Span bold>텔레키네시스</Span>
+      </>
+    ),
+  },
+  vampire: {
+    span: (
+      <>
+        <Span>선지가 좋아 </Span>
+        <Span bold>뱀파이어</Span>
+      </>
+    ),
+  },
+  zAfro: {
+    span: (
+      <>
+        <Span>왕년에 헤어스타일스트 했던 좀비 </Span>
+        <Span bold>Z Afro</Span>
+      </>
+    ),
+  },
+  zBangs: {
+    span: (
+      <>
+        <Span>이모 좀비 </Span>
+        <Span bold>Z Bangs</Span>
+      </>
+    ),
+  },
+  zBloodyLeftHead: {
+    span: (
+      <>
+        <Span>왼쪽 머리 외상 좀비 </Span>
+        <Span bold>Z Bloody Left Head</Span>
+      </>
+    ),
+  },
+  zBloodyMouth: {
+    span: (
+      <>
+        <Span>좀비병 말기 </Span>
+        <Span bold>Z Bloody Mouth</Span>
+      </>
+    ),
+  },
+  zBloodyRightHead: {
+    span: (
+      <>
+        <Span>오른쪽 머리 외상 좀비 </Span>
+        <Span bold>Z Bloody Right Head</Span>
+      </>
+    ),
+  },
+  zNormal: {
+    span: (
+      <>
+        <Span>좀비 영화 엑스트라 </Span>
+        <Span bold>Z Normal</Span>
+      </>
+    ),
+  },
+};
+
+export enum Validity {
+  NULL = null,
+  ZERO = 0,
+  VALID = 1,
+  INVALID = 2,
+}

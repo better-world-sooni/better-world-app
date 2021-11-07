@@ -76,7 +76,10 @@ export const Report = ({post, dispatch, navigation, token, mine = null}) => {
       {!mine && (
         <Row itemsCenter py20 borderTopColor={GRAY_COLOR} borderTopWidth={0.3}>
           <Col auto rounded30 overflowHidden mr10>
-            <Img source={IMAGES.example2} w25 h25></Img>
+            <Img
+              source={IMAGES.characters[report.userInfo.userProfileImgUrl]}
+              w25
+              h25></Img>
           </Col>
           <Col auto>
             <Span medium>{report.userInfo.userName}</Span>
@@ -135,7 +138,12 @@ export const Report = ({post, dispatch, navigation, token, mine = null}) => {
           {bestComment && (
             <Row itemsCenter justifyCenter pb10 pt5 flex>
               <Col auto itemsCenter justifyCenter rounded20 overflowHidden>
-                <Img source={IMAGES.example2} w15 h15></Img>
+                <Img
+                  source={
+                    IMAGES.characters[bestComment.userInfo.userProfileImgUrl]
+                  }
+                  w15
+                  h15></Img>
               </Col>
               <Col mx10 justifyCenter>
                 <Row>

@@ -13,9 +13,13 @@ import APIS from 'src/modules/apis';
 import {IMAGES} from 'src/modules/images';
 import {NAV_NAMES} from 'src/modules/navNames';
 import {ScrollView} from 'src/modules/viewComponents';
-import {useApiSelector, useReloadGET} from 'src/redux/asyncReducer';
+import {
+  postPromiseFn,
+  useApiSelector,
+  useReloadGET,
+} from 'src/redux/asyncReducer';
 import {shallowEqual, useDispatch, useSelector} from 'react-redux';
-import {ChevronDown, LogOut} from 'react-native-feather';
+import {ChevronDown, LogOut, PlusSquare} from 'react-native-feather';
 import {
   chevronDownSettings,
   GRAY_COLOR,
@@ -27,15 +31,17 @@ import {
   Selecting,
   SUNGAN,
 } from 'src/modules/constants';
-import {useLogout} from 'src/redux/appReducer';
+import {appActions, useLogout} from 'src/redux/appReducer';
 import {ScrollSelector} from 'src/components/ScrollSelector';
 import {setGlobalFilter} from 'src/redux/feedReducer';
 import {RootState} from 'src/redux/rootReducer';
 import {toggleReceiveStationPush} from 'src/redux/routeReducer';
-import {RefreshControl, Switch} from 'react-native';
+import {Alert, RefreshControl, Switch} from 'react-native';
 import {Sungan} from 'src/components/Sungan';
 import {Report} from 'src/components/Report';
 import {Place} from 'src/components/Place';
+import AvatarSelect from 'src/components/AvatarSelect';
+import {setUserInfo} from 'src/redux/userInfoReducer';
 
 const ProfileScreen = props => {
   const navigation = useNavigation();
@@ -45,7 +51,6 @@ const ProfileScreen = props => {
     APIS.post.sungan.my,
   );
   const mySungans = mySunganResponse?.data;
-  console.log('mySungans', mySungans);
 
   const {stations} = useSelector(
     (root: RootState) => root.route.route,
@@ -55,12 +60,15 @@ const ProfileScreen = props => {
     route: {receiveStationPush},
     feed: {globalFiter},
   } = useSelector((root: RootState) => root, shallowEqual);
-  const {token} = useSelector(
+  const {currentUser, token} = useSelector(
     (root: RootState) => root.app.session,
     shallowEqual,
   );
   const [selecting, setSelecting] = useState(Selecting.NONE);
+  const [character, setCharacter] = useState(null);
   const dispatch = useDispatch();
+
+  const [selectingAvatar, setSelectingAvatar] = useState(false);
 
   const selectGetterSetter = {
     [Selecting.GLOBAL_FILTER]: {
@@ -69,8 +77,6 @@ const ProfileScreen = props => {
       options: [MAIN_LINE2, MY_ROUTE, ...stations],
     },
   };
-
-  const goToPost = () => navigation.navigate(NAV_NAMES.Post);
 
   const toggleStationPush = () => {
     dispatch(toggleReceiveStationPush());
@@ -98,6 +104,27 @@ const ProfileScreen = props => {
     } else {
       return true;
     }
+  };
+
+  const handleReturnSelectAvatar = async () => {
+    if (character) {
+      const res = await postPromiseFn({
+        url: APIS.auth.avatar().url,
+        body: {
+          jwtToken: token,
+          avatar: character,
+        },
+        token: '',
+      });
+      if (res.status == 200) {
+        const {id, username, avatar} = res.data;
+        dispatch(appActions.updateUserAvatar(avatar));
+        Alert.alert('아바타를 성공적으로 바꾸었습니다.');
+      } else {
+        Alert.alert('아바타를 바꾸는 도중 문제가 생겼습니다.');
+      }
+    }
+    setSelectingAvatar(false);
   };
 
   useEffect(() => {
@@ -167,31 +194,36 @@ const ProfileScreen = props => {
         <Div relative px20>
           <Row itemsCenter mt10>
             <Col auto rounded100 overflowHidden>
-              <Img source={IMAGES.example2} h100 w100></Img>
+              <Img
+                source={IMAGES.characters[currentUser.avatar]}
+                h100
+                w100></Img>
             </Col>
             <Col px20 flex>
               <Row itemsCenter flex={1}>
                 <Col auto>
                   <Span bold fontSize={20}>
-                    irlyglo
+                    {currentUser.username}
                   </Span>
                 </Col>
               </Row>
             </Col>
           </Row>
-          {/* <Row
-            itemsCenter
-            my10
-            py10
-            rounded5
-            borderWidth={0.5}
-            borderColor={GRAY_COLOR}>
-            <Col></Col>
-            <Col auto>
-              <Span>프로필 편집</Span>
-            </Col>
-            <Col></Col>
-          </Row> */}
+          <Div onPress={() => setSelectingAvatar(true)}>
+            <Row
+              itemsCenter
+              my10
+              py10
+              rounded5
+              borderWidth={0.5}
+              borderColor={GRAY_COLOR}>
+              <Col></Col>
+              <Col auto>
+                <Span>아바타 바꾸기</Span>
+              </Col>
+              <Col></Col>
+            </Row>
+          </Div>
         </Div>
         <Div mt10>
           {mySungans &&
@@ -236,6 +268,33 @@ const ProfileScreen = props => {
                 }
               })}
         </Div>
+        {(!mySungans || mySungans.length == 0) && (
+          <>
+            <Row
+              itemsCenter
+              justifyCenter
+              pt20
+              pb10
+              onPress={() => navigation.navigate(NAV_NAMES.Post)}>
+              <Col h2 />
+              <Col auto>
+                <PlusSquare
+                  height={50}
+                  width={50}
+                  strokeWidth={0.7}
+                  color={GRAY_COLOR}></PlusSquare>
+              </Col>
+              <Col h2 ></Col>
+            </Row>
+            <Row pb20>
+              <Col></Col>
+              <Col auto>
+                <Span color={GRAY_COLOR}>게시물을 올려보세요!</Span>
+              </Col>
+              <Col></Col>
+            </Row>
+          </>
+        )}
       </ScrollView>
       {selecting && (
         <ScrollSelector
@@ -245,6 +304,12 @@ const ProfileScreen = props => {
           onClose={() => setSelecting(Selecting.NONE)}
         />
       )}
+      <AvatarSelect
+        visible={selectingAvatar}
+        onPressReturn={() => handleReturnSelectAvatar()}
+        character={character}
+        setCharacter={setCharacter}
+      />
     </Div>
   );
 };

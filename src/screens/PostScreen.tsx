@@ -55,7 +55,7 @@ const PostScreen = props => {
     place: null,
     text: null,
     userName: currentUser.username,
-    userProfileImgUrl: null,
+    userProfileImgUrl: currentUser.avatar,
   });
   const navigation = useNavigation();
   const [editting, setEditting] = useState(false);

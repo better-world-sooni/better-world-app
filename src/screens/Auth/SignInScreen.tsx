@@ -16,18 +16,24 @@ import { Span } from 'src/components/common/Span';
 import { TextField } from 'src/components/TextField';
 import { ICONS } from 'src/modules/icons';
 import { NAV_NAMES } from 'src/modules/navNames';
-import { IOS_APP_VERSION, IOS_CODE_PUSH_VERSION, ANDROID_APP_VERSION, ANDROID_CODE_PUSH_VERSION } from 'src/modules/constants';
-import { ScrollView } from 'src/modules/viewComponents';
-import { useLogin, useSocialLogin } from 'src/redux/appReducer';
-import { IMAGES } from 'src/modules/images';
+import {
+  IOS_APP_VERSION,
+  IOS_CODE_PUSH_VERSION,
+  ANDROID_APP_VERSION,
+  ANDROID_CODE_PUSH_VERSION,
+  GRAY_COLOR,
+} from 'src/modules/constants';
+import {ScrollView} from 'src/modules/viewComponents';
+import {useLogin, useSocialLogin} from 'src/redux/appReducer';
+import {IMAGES} from 'src/modules/images';
 
 declare enum KAKAO_AUTH_TYPES {
   Talk = 2,
   Story = 4,
-  Account = 8
+  Account = 8,
 }
 
-const SignInScreen = ({ navigation }) => {
+const SignInScreen = ({navigation}) => {
   const [email, setEmail] = useState('');
   const [errEmail, setErrEmail] = useState(false);
   const [password, setPassword] = useState('');
@@ -48,9 +54,9 @@ const SignInScreen = ({ navigation }) => {
     // });
   }, []);
 
-  const isEmail = (str) => {
-    return  /.+\@.+\..+/.test(str)
-  }
+  const isEmail = str => {
+    return /.+\@.+\..+/.test(str);
+  };
 
   const goToHome = () => {
     // CookieManager.clearAll().then((success) => {
@@ -59,30 +65,30 @@ const SignInScreen = ({ navigation }) => {
     navigation.dispatch(
       CommonActions.reset({
         index: 0,
-        routes: [{ name: NAV_NAMES.Home }],
+        routes: [{name: NAV_NAMES.Home}],
       }),
     );
-  }
+  };
   const emailSignIn = () => {
     if (email === '') {
-      Alert.alert('Error', "이메일을 입력해 주세요", [{ text: "네" }]);
+      Alert.alert('Error', '이메일을 입력해 주세요', [{text: '네'}]);
       return;
     }
     if (password === '') {
-      Alert.alert('Error', "비밀번호를 입력해 주세요", [{ text: "네" }]);
+      Alert.alert('Error', '비밀번호를 입력해 주세요', [{text: '네'}]);
       return;
     }
     setLoading(true);
     login(
       email,
       password,
-      (props) => {
+      props => {
         setLoading(false);
-        goToHome()
+        goToHome();
       },
-      (props) => {
+      props => {
         setLoading(false);
-        Alert.alert('Error', props.error.message, [{ text: "네" }]);
+        Alert.alert('Error', props.error.message, [{text: '네'}]);
       },
     );
     // goToHome()
@@ -270,110 +276,91 @@ const SignInScreen = ({ navigation }) => {
   //     })
   //   }
   // }
+
   return (
-    <>
-      <ScrollView flex={1} >
+    <Div bgWhite flex justifyCenter>
+      <ScrollView>
         <Div h100>
           <Row>
             <Col></Col>
-            <Col auto>
-            </Col>
+            <Col auto></Col>
           </Row>
         </Div>
-        <Div flex justifyCenter itemsCenter mx20 bgWhite rounded20 overflowHidden>
-          <Row py20 px20>
-            <Col auto>
-              <Span bold fontSize={30}>사인인</Span>
+        <Div flex justifyCenter itemsCenter bgWhite px20>
+          <Row py20 justifyCenter itemsCenter>
+            <Col auto justifyCenter>
+              <Span bold fontSize={30}>
+                로그인
+              </Span>
             </Col>
             <Col></Col>
-            <Col auto><Img w50 h50 source={IMAGES.mainLogo} /></Col>
+            <Col auto>
+              <Img w50 h50 source={IMAGES.mainLogo} />
+            </Col>
           </Row>
-          <Div rounded20  overflowHidden>
-              <Row px20>
-                <TextField
-                label={'이메일'}
-                placeholder={''}
-                onChangeText={(text) => setEmail(text)}
-                onBlur={() => setErrEmail(!isEmail(email))}
-                error={errEmail && "이메일이 정확한지 확인해 주세요"}
-                value={email}
-                autoCapitalize="none"
-              />
-              </Row>
-              <Row px20>
-                <TextField
-                  label={"비밀번호"}
-                  placeholder={'p@ssword'}
-                  onChangeText={(text) => setPassword(text)}
-                  value={password}
-                  password
-                />
-              </Row>
-              <Div backgroundColor={"black"} mt32>
-                <Row py20 px20 onPress={() => emailSignIn()}>
-                  <Col></Col>
-                  <Col auto >
-                    <Span white>{loading ? "" : "로그인"}</Span>
-                  </Col>
-                  <Col></Col>
-                </Row>
-              </Div>
-          </Div>
-          {/* <Div
-            itemsCenter
-            mt20
-            p20
-            onPress={() => {
-              // navigation.navigate(NAV_NAMES.ForgotPassword);
-            }}>
-            <Span sectionBody gray600>
-              {"비밀번호 되찾기"}
-            </Span>
-          </Div> */}
-          {/* <Div mt32 itemsCenter w="100%">
-            <Span sectionBody gray500>
-              {"로그인 방식"}
-            </Span>
-            <Row mt16 w="100%" justifyCenter>
-              <Col auto mr16 onPress={facebookSignIn}>
-                <Img w42 h42 source={IMAGES.imageLogoFacebook} />
+          <Row>
+            <TextField
+              label={'이메일'}
+              onChangeText={text => setEmail(text)}
+              onBlur={() => setErrEmail(!isEmail(email))}
+              error={errEmail && '이메일이 정확한지 확인해 주세요'}
+              value={email}
+              autoCapitalize="none"
+            />
+          </Row>
+          <Row>
+            <TextField
+              label={'비밀번호'}
+              onChangeText={text => setPassword(text)}
+              value={password}
+              password
+            />
+          </Row>
+          <Div bg={'black'} w={'100%'} rounded5 mt20>
+            <Row py15 px20 onPress={() => emailSignIn()}>
+              <Col></Col>
+              <Col auto>
+                <Span white>{loading ? '' : '로그인'}</Span>
               </Col>
-              <Col auto mr16 onPress={googleSignIn}>
-                <Img w42 h42 source={IMAGES.imageLogoGoogle} />
-              </Col>
-              <Col auto mr={Platform.OS === 'ios' && 16} onPress={kakaoSignIn}>
-                <Img w42 h42 source={IMAGES.imageLogoKakaotalk} />
-              </Col>
-              {Platform.OS === 'ios' && (
-                <Col auto onPress={appleSignIn}>
-                  <Img w42 h42 source={IMAGES.imageLogoApple} />
-                </Col>
-              )}
+              <Col></Col>
             </Row>
-          </Div> */}
+          </Div>
+          {/* <Row mt100 w="100%" justifyCenter>
+            <Col auto mr16>
+              <Img w42 h42 source={IMAGES.imageLogoFacebook} />
+            </Col>
+            <Col auto mr16>
+              <Img w42 h42 source={IMAGES.imageLogoGoogle} />
+            </Col>
+            <Col auto mr={Platform.OS === 'ios' && 16}>
+              <Img w42 h42 source={IMAGES.imageLogoKakaotalk} />
+            </Col>
+            {Platform.OS === 'ios' && (
+              <Col auto>
+                <Img w42 h42 source={IMAGES.imageLogoApple} />
+              </Col>
+            )}
+          </Row> */}
         </Div>
         <Div
-            px20
-            mt32
-            itemsCenter
-            w="100%"
-            onPress={() => navigation.navigate(NAV_NAMES.SignUp)}>
-            <Row>
-              <Span sectionBody gray600>
-                {"처음이신 가요?"}
-              </Span>
-            </Row>
-            <Row py8 px25>
-              <Span header4 primary black>
-                {"사인업"}
-              </Span>
-            </Row>
-          </Div>
-        {/* <Span mt50 mb150 alignCenter header6 gray600>
-          {appVersion}
-        </Span> */}
+          px20
+          mt32
+          itemsCenter
+          w="100%"
+          onPress={() => navigation.navigate(NAV_NAMES.SignUp)}>
+          <Row>
+            <Span sectionBody gray600>
+              {'처음이신 가요?'}
+            </Span>
+          </Row>
+          <Row py8 px25>
+            <Span header4 primary black>
+              {'사인업'}
+            </Span>
+          </Row>
+        </Div>
       </ScrollView>
-    </>
+    </Div>
   );
 };
 export default SignInScreen;

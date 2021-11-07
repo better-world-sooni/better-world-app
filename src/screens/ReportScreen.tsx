@@ -39,7 +39,7 @@
       carNum: null,
       detail: null,
       userName: currentUser.username,
-      userProfileImgUrl: null,
+      userProfileImgUrl: currentUser.avatar,
       shouldBeUploaded: true,
     });
     const isNotBlank = str => {

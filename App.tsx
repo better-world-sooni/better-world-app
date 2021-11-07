@@ -40,8 +40,7 @@ const App = () => {
   }, []);
 
   useEffect(() => {
-    console.log('isLoggedIn, session', session.token, isLoggedIn);
-    const BACKEND_URL = 'https://metasgid.com:5000/';
+    const BACKEND_URL = 'https://ws.metasgid.com';
     const manager = new Manager(BACKEND_URL, {
       reconnectionDelayMax: 5000,
       forceNew: true,

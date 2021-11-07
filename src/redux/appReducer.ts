@@ -132,10 +132,11 @@ const appSlice = createSlice({
       // state.session.user = null;
       state.session.token = null;
     },
-    // updateUser(state, action) {
-    //   const {user} = action.payload;
-    //   state.session.user = user;
-    // },
+    updateUserAvatar(state, action) {
+      const {avatar, ...rest} = state.session.currentUser;
+      const newUser = {avatar: action.payload, ...rest}
+      state.session.currentUser = newUser;
+    },
   },
 });
 

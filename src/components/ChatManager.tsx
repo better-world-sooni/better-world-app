@@ -30,7 +30,6 @@ const ChatManager = () => {
 
   const bulkUpdateChatRooms = useCallback(
     bulkUpdateChatRoomsParams => {
-      console.log('chatRooms', bulkUpdateChatRoomsParams.chatRooms);
       const newRooms = {};
       bulkUpdateChatRoomsParams.chatRooms.forEach(item => {
         newRooms[item._id] = item;
@@ -41,7 +40,6 @@ const ChatManager = () => {
   );
 
   const receiveMessage = receiveMessageParams => {
-    console.log('receiveMessageParams', receiveMessageParams);
     dispatch(pushNewMessage(receiveMessageParams));
   };
 

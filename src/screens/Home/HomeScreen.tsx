@@ -2,7 +2,6 @@ import React, {useCallback, useEffect, useState} from 'react';
 import {Alert, Dimensions, RefreshControl} from 'react-native';
 import {Col} from 'src/components/common/Col';
 import {Div} from 'src/components/common/Div';
-import {Img} from 'src/components/common/Img';
 import {Row} from 'src/components/common/Row';
 import {Span} from 'src/components/common/Span';
 import APIS from 'src/modules/apis';
@@ -155,7 +154,6 @@ const HomeScreen = props => {
       response.realtimePositionList.forEach(train => {
         if (
           train.subwayNm == '2호선' &&
-          train.trainNo.startsWith('2') &&
           train.updnLine == (direction == Direction.INNER ? '0' : '1')
         ) {
           if (train.trainNo == selectedTrain?.trainNo) {
@@ -257,7 +255,7 @@ const HomeScreen = props => {
       clearInterval(everySecond);
       clearInterval(everyHalfMinute);
     };
-  }, [origin]);
+  }, [origin, direction]);
 
   useEffect(() => {
     if (mainFeed) {
@@ -588,7 +586,7 @@ const HomeScreen = props => {
               <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                 {(origin && destination
                   ? stationArr([], previewStart, previewStart, direction)
-                  : stationArr([], origin, destination, Direction.INNER)
+                  : stationArr([], '시청', '시청', Direction.INNER)
                 ).map((item, index) => {
                   const trainAtStation = trainPositions?.[item.split('(')[0]];
                   const isRiding =
@@ -761,8 +759,8 @@ const HomeScreen = props => {
             <Col h2 bg={GRAY_COLOR} />
             <Col auto>
               <CheckCircle
-                height={100}
-                width={100}
+                height={50}
+                width={50}
                 strokeWidth={0.7}
                 color={GRAY_COLOR}></CheckCircle>
             </Col>

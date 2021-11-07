@@ -68,7 +68,7 @@ const MetaSunganScreen = () => {
 
   // functions
   const metasunganUrl = token => {
-    return `https://metasgid.com/api/v1/meta/?jwtToken=${token}`;
+    return `https://metaverse.metasgid.com/?jwtToken=${token}`;
   };
   const reload = () => {
     webViewRef && webViewRef.current.reload();
