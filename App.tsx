@@ -37,6 +37,8 @@ const App = () => {
     LogBox.ignoreLogs([
       'Remote debugger is in a background tab which may cause apps to perform slowly.',
     ]);
+    LogBox.ignoreAllLogs();
+    LogBox.ignoreLogs(['Warning: ...']);
   }, []);
 
   useEffect(() => {

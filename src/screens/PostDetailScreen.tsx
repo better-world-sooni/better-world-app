@@ -75,6 +75,7 @@ const PostDetailScreen = () => {
         [idName]: currentPost.post.id,
         content: text,
         userName: currentUser.username,
+        userProfileImgUrl: currentUser.avatar,
       },
       token,
     });
@@ -246,16 +247,13 @@ const PostDetailScreen = () => {
     }
   };
   const handleLikeOnComment = async (commentId, prevLiked) => {
-    console.log(commentId, prevLiked);
     if (prevLiked) {
       const res = await post[currentPost.type].unlikeOnComment(commentId);
-      console.log('const res = await post[currentPost.type]', res);
       if (isOkay(res)) {
         pullToRefresh();
       }
     } else {
       const res = await post[currentPost.type].likeOnComment(commentId);
-      console.log('const res = await post[currentPost.type]', res);
       if (isOkay(res)) {
         pullToRefresh();
       }
@@ -360,9 +358,8 @@ const PostDetailScreen = () => {
                   <Col auto itemsCenter justifyCenter rounded20 overflowHidden>
                     <Img
                       source={
-                        IMAGES.characters[
-                          currentPost.userInfo.userProfileImgUrl
-                        ]
+                        IMAGES.characters[currentUser.avatar] ||
+                        IMAGES.imageProfileNull
                       }
                       w30
                       h30></Img>
@@ -407,7 +404,10 @@ const Comment = ({comment, handleLikeOnComment, handleReplyOnComment}) => {
       <Row itemsCenter justifyCenter flex>
         <Col auto itemsCenter justifyCenter rounded20 overflowHidden>
           <Img
-            source={IMAGES.characters[comment.userInfo.userProfileImgUrl]}
+            source={
+              IMAGES.characters[comment.userInfo.userProfileImgUrl] ||
+              IMAGES.imageProfileNull
+            }
             w30
             h30></Img>
         </Col>
@@ -451,7 +451,8 @@ const Comment = ({comment, handleLikeOnComment, handleReplyOnComment}) => {
             <Col auto itemsCenter justifyCenter rounded20 overflowHidden>
               <Img
                 source={
-                  IMAGES.characters[nestedComment.userInfo.userProfileImgUrl]
+                  IMAGES.characters[nestedComment.userInfo.userProfileImgUrl] ||
+                  IMAGES.imageProfileNull
                 }
                 w20
                 h20></Img>

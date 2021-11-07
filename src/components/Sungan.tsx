@@ -74,6 +74,7 @@ export const Sungan = ({post, dispatch, navigation, token, mine = null}) => {
     dispatch(setCurrentPostId(postKey(post)));
     navigation.navigate(NAV_NAMES.PostDetail);
   };
+  
 
   return (
     <Div bg={'rgba(255,255,255,.9)'} pb10 px20>
@@ -81,7 +82,10 @@ export const Sungan = ({post, dispatch, navigation, token, mine = null}) => {
         <Row itemsCenter py20 borderTopColor={GRAY_COLOR} borderTopWidth={0.3}>
           <Col auto rounded30 overflowHidden mr10>
             <Img
-              source={IMAGES.characters[sungan.userInfo.userProfileImgUrl]}
+              source={
+                IMAGES.characters[sungan.userInfo.userProfileImgUrl] ||
+                IMAGES.imageProfileNull
+              }
               w25
               h25></Img>
           </Col>
@@ -140,7 +144,8 @@ export const Sungan = ({post, dispatch, navigation, token, mine = null}) => {
               <Col auto itemsCenter justifyCenter rounded20 overflowHidden>
                 <Img
                   source={
-                    IMAGES.characters[bestComment.userInfo.userProfileImgUrl]
+                    IMAGES.characters[bestComment.userInfo.userProfileImgUrl] ||
+                    IMAGES.imageProfileNull
                   }
                   w15
                   h15></Img>
@@ -153,9 +158,9 @@ export const Sungan = ({post, dispatch, navigation, token, mine = null}) => {
                   <Span ml5>{bestComment.content}</Span>
                 </Row>
               </Col>
-              <Col auto itemsCenter justifyCenter>
+              {/* <Col auto itemsCenter justifyCenter>
                 <Heart color={'black'} height={14}></Heart>
-              </Col>
+              </Col> */}
             </Row>
           )}
         </>

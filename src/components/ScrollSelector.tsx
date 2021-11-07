@@ -1,5 +1,6 @@
 import React from 'react';
-import {Picker} from '@react-native-picker/picker';
+import { Picker } from 'react-native'
+// import {Picker} from '@react-native-picker/picker';
 import {Col} from './common/Col';
 import {Div} from './common/Div';
 import {Row} from './common/Row';

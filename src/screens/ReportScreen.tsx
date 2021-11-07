@@ -50,7 +50,7 @@
         return Validity.NULL;
       }
       const num = +str;
-      if (isNaN(num) || num < 2000 || num > 2999) {
+      if (isNaN(num)) {
         return Validity.INVALID;
       }
       return Validity.VALID;
@@ -201,7 +201,7 @@
             title={'새 민원'}
             headerColor={'white'}
             nextText={'전송'}
-            onPressNext={handleSendSMSCallback}
+            onPressNext={sendSMS}
           />
           <ScrollView
             showsVerticalScrollIndicator={false}

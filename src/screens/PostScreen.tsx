@@ -57,6 +57,7 @@ const PostScreen = props => {
     userName: currentUser.username,
     userProfileImgUrl: currentUser.avatar,
   });
+  const [isLoading, setIsLoading] = useState(false);
   const navigation = useNavigation();
   const [editting, setEditting] = useState(false);
   const isValidTextOrPlace = str => {
@@ -118,6 +119,7 @@ const PostScreen = props => {
   };
 
   const postSungan = async () => {
+    setIsLoading(true);
     if (
       sungan.stationName &&
       sungan.channelId &&
@@ -136,6 +138,7 @@ const PostScreen = props => {
         });
         if (response.data.statusCode === 200) {
           Alert.alert(`업로드가 완료 되었습니다.`);
+          navigation.goBack();
         } else {
           Alert.alert(`업로드중 문제가 발생하였습니다.`);
         }
@@ -147,6 +150,7 @@ const PostScreen = props => {
     } else if (!isValidTextOrPlace(sungan.text)) {
       Alert.alert('내용을 적어주세요.');
     }
+    setIsLoading(false);
   };
 
   const postPlace = async () => {
@@ -194,8 +198,11 @@ const PostScreen = props => {
             route={useNavigation}
             title={'새 게시물'}
             headerColor={'white'}
-            nextText={'게시'}
+            nextText={isLoading ? '게시중...' : '게시'}
             onPressNext={() => {
+              if (isLoading) {
+                return;
+              }
               if (sungan.channelId === '핫플') {
                 postPlace();
               } else {
