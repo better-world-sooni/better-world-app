@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "390936318985",
+    "project_id": "sungan-7570a",
+    "storage_bucket": "sungan-7570a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:390936318985:android:a14b613e104db81a7194d8",
+        "android_client_info": {
+          "package_name": "com.sungan"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "390936318985-qth3olbc8aa3r2imts17dlit6hd8si6q.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC_zAOy3LFlR4Mvh7mcaf9slJa21LkbDkc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "390936318985-qth3olbc8aa3r2imts17dlit6hd8si6q.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "390936318985-u66pubg8r0dqml9nq4n03hlvh920r32r.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "org.reactjs.native.app.sungan"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

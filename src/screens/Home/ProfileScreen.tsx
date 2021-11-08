@@ -2,8 +2,8 @@ import {
 useNavigation
 } from '@react-navigation/native';
 import React, {useEffect, useState} from 'react';
-import '@react-native-firebase/messaging';
-import '@react-native-firebase/auth';
+// import '@react-native-firebase/messaging';
+// import '@react-native-firebase/auth';
 import {Col} from 'src/components/common/Col';
 import {Div} from 'src/components/common/Div';
 import {Img} from 'src/components/common/Img';

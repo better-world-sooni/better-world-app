@@ -10,6 +10,7 @@ import {RootState} from 'src/redux/rootReducer';
 import {setMetasunganUser} from 'src/redux/metasunganReducer';
 import {Manager} from 'socket.io-client';
 import {setChatSocket} from 'src/redux/chatReducer';
+import messaging from '@react-native-firebase/messaging';
 
 library.add(faWalking, faBus, faSubway);
 
@@ -19,7 +20,6 @@ const App = () => {
     shallowEqual,
   );
   const dispatch = useDispatch();
-
   const login = useCallback(
     loginParams => {
       console.log('login metasunganUser', loginParams);
@@ -27,6 +27,22 @@ const App = () => {
     },
     [dispatch],
   );
+
+  const getFcmToken = async () => {
+    const fcmToken = await messaging().getToken();
+    return fcmToken;
+  };
+
+  const requestUserPermission = async () => {
+    const authStatus = await messaging().requestPermission();
+    const enabled =
+      authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+      authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+    if (enabled) {
+      console.log('Fcm token is:', await getFcmToken());
+      console.log('Authorization status:', authStatus);
+    }
+  };
 
   useEffect(() => {
     LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
@@ -37,8 +53,9 @@ const App = () => {
     LogBox.ignoreLogs([
       'Remote debugger is in a background tab which may cause apps to perform slowly.',
     ]);
-    LogBox.ignoreAllLogs();
-    LogBox.ignoreLogs(['Warning: ...']);
+    requestUserPermission();
+    // LogBox.ignoreAllLogs();
+    // LogBox.ignoreLogs(['Warning: ...']);
   }, []);
 
   useEffect(() => {

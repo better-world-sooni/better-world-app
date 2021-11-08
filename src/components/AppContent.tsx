@@ -2,7 +2,7 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import TopHeader from 'src/components/TopHeader';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import BottomTabBar from 'src/components/BottomTabBar';
 import {NAV_NAMES} from 'src/modules/navNames';
 import HomeScreen from 'src/screens/Home/HomeScreen';
@@ -21,6 +21,8 @@ import {Div} from './common/Div';
 import ChatRoomScreen from 'src/screens/ChatRoomScreen';
 import PostDetailScreen from 'src/screens/PostDetailScreen';
 import SignUpSceen from 'src/screens/Auth/SignUpScreen';
+import messaging from '@react-native-firebase/messaging';
+import {useNavigation} from '@react-navigation/core';
 
 const RootStack = createStackNavigator();
 
@@ -84,6 +86,11 @@ const topHeader = props => {
 };
 
 export const AppContent = () => {
+  const {isLoggedIn} = useSelector((root: RootState) => root.app, shallowEqual);
+  const [initialRoute, setInitialRoute] = useState(NAV_NAMES.Home);
+  // const navigation = useNavigation();
+  const [loading, setLoading] = useState(true);
+
   const Navs = [
     {
       name: NAV_NAMES.Splash,
@@ -164,7 +171,31 @@ export const AppContent = () => {
     },
   ];
 
-  const {isLoggedIn} = useSelector((root: RootState) => root.app, shallowEqual);
+  useEffect(() => {
+    messaging().onNotificationOpenedApp(remoteMessage => {
+      console.log(
+        'Notification caused app to open from background state:',
+        remoteMessage.notification,
+      );
+      // navigation.navigate(remoteMessage.data.type);
+    });
+    messaging()
+      .getInitialNotification()
+      .then(remoteMessage => {
+        if (remoteMessage) {
+          console.log(
+            'Notification caused app to open from quit state:',
+            remoteMessage.notification,
+          );
+          setInitialRoute(remoteMessage.data.type); // e.g. "Settings"
+        }
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) {
+    return null;
+  }
 
   return (
     <Div flex relative>

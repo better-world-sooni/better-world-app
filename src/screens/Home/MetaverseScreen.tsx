@@ -89,7 +89,6 @@ const MetaSunganScreen = () => {
     }
   };
   const handleMetasunganWindowMessage = (message: MetasunganWindowMessage) => {
-    console.log(message.payload);
     if (message.action == MetasunganAction.ENTER_CHAT_ROOM) {
       dispatch(setChatRoom(message.payload.chatRoom));
       dispatch(
@@ -134,8 +133,6 @@ const MetaSunganScreen = () => {
         source={{
           uri: metasunganUrl(token),
         }}
-        thirdPartyCookiesEnabled={true}
-        sharedCookiesEnabled={true}
         injectedJavaScript={injectedJavascript}
         onMessage={handleMessage}
       />

@@ -157,6 +157,7 @@ const SignUpSceen = ({navigation}) => {
           Alert.alert('Error', '사인업이 완료되었습니다. 로그인 해주세요.', [
             {text: '네', onPress: () => navigation.navigate(NAV_NAMES.SignIn)},
           ]);
+          navigation.navigate(NAV_NAMES.SignIn);
           return;
         }
       }
@@ -165,9 +166,11 @@ const SignUpSceen = ({navigation}) => {
         'Error',
         `${e}: 사인업 도중 문재가 발생하였습니다. 고객 전화번호로 문의 부탁드립니다. `,
       );
+      setLoading(false);
       return;
     }
     Alert.alert('Error', `사인업 도중 문재가 발생하였습니다.`);
+    setLoading(false);
   };
   const borderProp = bool => {
     if (!bool || bool === Validity.NULL || bool === Validity.ZERO) {
