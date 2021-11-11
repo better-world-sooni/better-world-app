@@ -177,7 +177,7 @@ export const AppContent = () => {
         'Notification caused app to open from background state:',
         remoteMessage.notification,
       );
-      // navigation.navigate(remoteMessage.data.type);
+      setInitialRoute(remoteMessage.data.goTo);
     });
     messaging()
       .getInitialNotification()
@@ -187,7 +187,7 @@ export const AppContent = () => {
             'Notification caused app to open from quit state:',
             remoteMessage.notification,
           );
-          setInitialRoute(remoteMessage.data.type); // e.g. "Settings"
+          setInitialRoute(remoteMessage.data.goTo); // e.g. "Settings"
         }
         setLoading(false);
       });

@@ -88,7 +88,7 @@ const SignInScreen = ({navigation}) => {
       },
       props => {
         setLoading(false);
-        Alert.alert('Error', props.error.message, [{text: '네'}]);
+        Alert.alert('Error', "아이디, 비밀번호를 확인해 주세요.", [{text: '네'}]);
       },
     );
     // goToHome()

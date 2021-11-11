@@ -43,8 +43,9 @@ export const asyncThunk =
         }
       } else {
         const err = new Error();
-        err.data = data;
-        err.status = status;
+        console.log("Error HEREE")
+        err.message = data;
+        err.name = status;
         throw err;
       }
     } catch (error) {
@@ -52,16 +53,16 @@ export const asyncThunk =
       dispatch(
         asyncActions.error({
           key: key,
-          error: error.data,
-          status: error.status,
+          error: error.message,
+          status: error.name,
           elapsedTime: elapsedTime,
         }),
       );
       if (errHandler) {
         await errHandler({
           success: false,
-          error: error.data,
-          status: error.status,
+          error: error.message,
+          status: error.name,
           data: null,
           navigation,
           dispatch,
