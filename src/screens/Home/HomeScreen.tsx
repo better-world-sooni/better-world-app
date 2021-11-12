@@ -7,7 +7,7 @@ import {Span} from 'src/components/common/Span';
 import APIS from 'src/modules/apis';
 import {IMAGES} from 'src/modules/images';
 import {ScrollView} from 'src/modules/viewComponents';
-import {useApiSelector, useReloadGET} from 'src/redux/asyncReducer';
+import {deletePromiseFn, postPromiseFn, useApiSelector, useReloadGET} from 'src/redux/asyncReducer';
 import {shallowEqual, useDispatch, useSelector} from 'react-redux';
 import {RefreshCw, ChevronDown, CheckCircle} from 'react-native-feather';
 import {
@@ -36,7 +36,7 @@ import {
   setSelectedTrain,
   exchangeOriginDestination,
 } from 'src/redux/routeReducer';
-import {postKey, stationArr} from 'src/modules/utils';
+import {isOkay, postKey, stationArr} from 'src/modules/utils';
 import {RootState} from 'src/redux/rootReducer';
 import {setGlobalFilter, setMainPosts} from 'src/redux/feedReducer';
 import {FontAwesomeIcon} from '@fortawesome/react-native-fontawesome';
@@ -80,6 +80,7 @@ const HomeScreen = props => {
     selectedTrain,
     trainPositions,
     arrivalTrain,
+    receiveStationPush,
   } = useSelector((root: RootState) => root.route, shallowEqual);
   const {token} = useSelector(
     (root: RootState) => root.app.session,
@@ -147,17 +148,31 @@ const HomeScreen = props => {
   const apiGET = useReloadGET();
   const dispatch = useDispatch();
   const navigation = useNavigation();
+  const shortenedStations = (arr) => {
+    return arr.map(station => {return station.split('(')[0]})
+  }
 
-  const filterPositionResponse = response => {
+  const filterPositionResponse = (response) => {
     const trainLocations = {};
     if (response && response.errorMessage?.status === 200) {
-      response.realtimePositionList.forEach(train => {
+      response.realtimePositionList.forEach( async (train) => {
         if (
           train.subwayNm == '2호선' &&
           train.updnLine == (direction == Direction.INNER ? '0' : '1')
         ) {
           if (train.trainNo == selectedTrain?.trainNo) {
             dispatch(setSelectedTrain(train));
+            if(!shortenedStations(stations).includes(train.statnNm) && stationArr([], train.statnNm, origin, direction).length > 4){
+              dispatch(setSelectedTrain(null));
+              const res = await deletePromiseFn({
+                url: APIS.route.notification().url,
+                body: {},
+                token: token,
+              });
+              if (isOkay(res)) {
+                Alert.alert('Success', '도착 하셨습니다.')
+              }
+            }
           }
           trainLocations[train.statnNm] = train;
         }
@@ -345,6 +360,41 @@ const HomeScreen = props => {
       Alert.alert('출발지와 도착지를 먼저 설정해주세요.');
     }
   };
+
+  const handlePressRide = async (trainAtStation, isRiding) => {
+    if (trainAtStation) {
+      if(isRiding){
+        dispatch(setSelectedTrain(null))
+        const res = await deletePromiseFn({
+          url: APIS.route.notification().url,
+          body: {},
+          token: token,
+        });
+        if (isOkay(res)) {
+          Alert.alert('Success', '역알림이 취소 되었습니다.')
+        } else {
+          Alert.alert('Error', '역알림이 취소중 문제가 발생하였습니다.')
+        }
+      } else {
+        dispatch(setSelectedTrain(trainAtStation))
+        if(receiveStationPush){
+          const res = await postPromiseFn({
+            url: APIS.route.notification().url,
+            body: {
+              trainNo: trainAtStation?.trainNo,
+              stations: stationArr([], LINE2_Linked_List[trainAtStation.statnNm].next, stations[stations.length-1], direction).map((item) => {return item.split('(')[0]})
+            },
+            token: token,
+          });
+          if (isOkay(res)) {
+            Alert.alert('Success', '역알림이 설정 되었습니다.')
+          } else {
+            Alert.alert('Error', '역알림이 설정중 문제가 발생하였습니다.')
+          }
+        }
+      }
+    }
+  }
 
   return (
     <Div flex bgWhite>
@@ -537,7 +587,7 @@ const HomeScreen = props => {
                 </Row>
                 <Row>
                   <Span medium color={'rgb(255,69,58)'}>
-                    {selectedTrain
+                    {stations?.map((item)=> {return item.split('(')[0]}).includes(selectedTrain?.statnNm)
                       ? '탑승중'
                       : calculateETADiff() || '정보 없음'}
                   </Span>
@@ -591,6 +641,9 @@ const HomeScreen = props => {
                   const trainAtStation = trainPositions?.[item.split('(')[0]];
                   const isRiding =
                     trainAtStation?.trainNo === selectedTrain?.trainNo;
+                    const ridingStatus = (ifNotRiding, ifIsRiding, ifIsWaiting) => {
+                      return isRiding ? (stations.map((item)=> {return item.split('(')[0]}).includes(selectedTrain.statnNm) ? ifIsRiding : ifIsWaiting) : ifNotRiding
+                    }
                   const isOrigin = origin === item;
                   const isDestination = destination === item;
                   const leftHalfBg = () => {
@@ -620,22 +673,16 @@ const HomeScreen = props => {
                         justifyCenter
                         itemsCenter
                         h30
-                        onPress={() => {
-                          if (trainAtStation) {
-                            isRiding
-                              ? dispatch(setSelectedTrain(null))
-                              : dispatch(setSelectedTrain(trainAtStation));
-                          }
-                        }}
+                        onPress={() => handlePressRide(trainAtStation, isRiding)}
                         w={Dimensions.get('window').width / 5}>
                         {trainAtStation && (
                           <>
                             <Span
                               medium
                               fontSize={10}
-                              color={isRiding ? 'rgb(255,69,58)' : 'black'}
+                              color={ridingStatus('black', 'rgb(255,69,58)', 'blue')}
                               style={{...textShadowProp}}>
-                              {isRiding ? '탑승중' : '탑승하기'}
+                              {ridingStatus( '탑승하기', '탑승중', '도착시 탑승')}
                             </Span>
                             <Row justifyCenter itemsCenter>
                               <Col auto>

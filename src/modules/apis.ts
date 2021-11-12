@@ -1,6 +1,7 @@
 import urljoin from 'url-join';
 
-const BASE_URL = 'http://localhost:80';
+const BASE_URL = 'https://metasgid.com';
+// const BASE_URL = 'http://localhost:80';
 const toUrl = (...args) => ({url: urljoin(...args)});
 const base = path => toUrl(BASE_URL, path);
 const v1 = path => toUrl(BASE_URL, '/api/v1', path);
@@ -14,6 +15,7 @@ const APIS = {
   },
   route: {
     starred: () => v1('/route/starred'),
+    notification: () => v1('/route/notification')
   },
   realtime: {
     position: () => v1('/route/realtime/position?startIndex=0&endIndex=100&service=realtimePosition&subwayNm=2호선'),
@@ -63,6 +65,9 @@ const APIS = {
   profile: {
     get: () => v1('/auth'),
   },
+  push: {
+    registrationToken: () => v1('/push/registration-token'),
+  }
 };
 
 const mapFunctionToPath = (data, path = []) => {

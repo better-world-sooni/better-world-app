@@ -14,6 +14,7 @@ import {IMAGES} from 'src/modules/images';
 import {NAV_NAMES} from 'src/modules/navNames';
 import {ScrollView} from 'src/modules/viewComponents';
 import {
+  deletePromiseFn,
   postPromiseFn,
   useApiSelector,
   useReloadGET,
@@ -42,6 +43,7 @@ import {Report} from 'src/components/Report';
 import {Place} from 'src/components/Place';
 import AvatarSelect from 'src/components/AvatarSelect';
 import {setUserInfo} from 'src/redux/userInfoReducer';
+import { isOkay, stationArr } from 'src/modules/utils';
 
 const ProfileScreen = props => {
   const navigation = useNavigation();
@@ -51,13 +53,8 @@ const ProfileScreen = props => {
     APIS.post.sungan.my,
   );
   const mySungans = mySunganResponse?.data;
-
-  const {stations} = useSelector(
-    (root: RootState) => root.route.route,
-    shallowEqual,
-  );
   const {
-    route: {receiveStationPush},
+    route: {receiveStationPush, route: {stations, direction}, selectedTrain},
     feed: {globalFiter},
   } = useSelector((root: RootState) => root, shallowEqual);
   const {currentUser, token} = useSelector(
@@ -78,9 +75,39 @@ const ProfileScreen = props => {
     },
   };
 
-  const toggleStationPush = () => {
-    dispatch(toggleReceiveStationPush());
-  };
+  const toggleStationPush = async () => {
+      if(receiveStationPush){
+        dispatch(toggleReceiveStationPush());
+        const res = await deletePromiseFn({
+          url: APIS.route.notification().url,
+          body: {},
+          token: token,
+        });
+        if (isOkay(res)) {
+          Alert.alert('Success', '역알림이 취소 되었습니다.')
+        } else {
+          Alert.alert('Error', '역알림이 취소중 문제가 발생하였습니다.')
+        }
+      } else {
+        dispatch(toggleReceiveStationPush());
+        if(selectedTrain){
+          const res = await postPromiseFn({
+            url: APIS.route.notification().url,
+            body: {
+              trainNo: selectedTrain?.trainNo,
+              stations: stationArr([], selectedTrain.statnNm, stations[stations.length-1], direction).map((item) => {return item.split('(')[0]})
+            },
+            token: token,
+          });
+          if (isOkay(res)) {
+            Alert.alert('Success', '역알림이 설정 되었습니다.')
+          } else {
+            Alert.alert('Error', '역알림이 설정중 문제가 발생하였습니다.')
+          }
+        }
+        
+    }
+  }
   const pullToRefresh = () => {
     apiGET(APIS.route.starred());
     apiGET(APIS.post.sungan.my());

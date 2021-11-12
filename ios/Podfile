@@ -6,12 +6,12 @@ platform :ios, '11.0'
 target 'sungan' do
   config = use_native_modules!
 
-  rn_maps_path = '../node_modules/react-native-maps'
+  # rn_maps_path = '../node_modules/react-native-maps'
 
   pod 'YogaKit'
-  pod 'react-native-google-maps', path: rn_maps_path # enable google maps in ios environment
-  pod 'GoogleMaps' # enable google maps in ios environment
-  pod 'Google-Maps-iOS-Utils' # enable google maps in ios environment
+  # pod 'react-native-google-maps', path: rn_maps_path # enable google maps in ios environment
+  # pod 'GoogleMaps' # enable google maps in ios environment
+  # pod 'Google-Maps-iOS-Utils' # enable google maps in ios environment
 
   use_react_native!(
     :path => config[:reactNativePath],
@@ -30,12 +30,12 @@ target 'sungan' do
   # you should disable the next line.
   use_flipper!({ 'Flipper-Folly' => '2.5.3', 'Flipper' => '0.87.0', 'Flipper-RSocket' => '1.3.1' })
 
-  pre_install do |installer|
-    $RNMBGL.pre_install(installer)
-  end
+  # pre_install do |installer|
+  #   $RNMBGL.pre_install(installer)
+  # end
 
   post_install do |installer|
-    $RNMBGL.post_install(installer)
+    # $RNMBGL.post_install(installer)
     react_native_post_install(installer)
   end
 end

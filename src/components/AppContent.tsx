@@ -23,6 +23,8 @@ import PostDetailScreen from 'src/screens/PostDetailScreen';
 import SignUpSceen from 'src/screens/Auth/SignUpScreen';
 import messaging from '@react-native-firebase/messaging';
 import {useNavigation} from '@react-navigation/core';
+import { postPromiseFn } from 'src/redux/asyncReducer';
+import APIS from 'src/modules/apis';
 
 const RootStack = createStackNavigator();
 
@@ -86,7 +88,7 @@ const topHeader = props => {
 };
 
 export const AppContent = () => {
-  const {isLoggedIn} = useSelector((root: RootState) => root.app, shallowEqual);
+  const {isLoggedIn, session: {token}} = useSelector((root: RootState) => root.app, shallowEqual);
   const [initialRoute, setInitialRoute] = useState(NAV_NAMES.Home);
   // const navigation = useNavigation();
   const [loading, setLoading] = useState(true);
@@ -171,27 +173,70 @@ export const AppContent = () => {
     },
   ];
 
+  const getToken = async () => {
+    try {
+      const token = await messaging().getToken();
+      if (token) return token;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  
+  const setFCMToken = async () => {
+    try {
+      const authorized = await messaging().hasPermission();
+      if (authorized) {
+        const fcmToken = await getToken();
+        const res = await postPromiseFn({
+          url: APIS.push.registrationToken().url,
+          body: {
+            token: fcmToken
+          },
+          token: token,
+        });
+        console.log('console.log(fcmToken)', fcmToken)
+      } else {
+        const fcmToken = await getToken();
+        await messaging().requestPermission();
+        const res = await postPromiseFn({
+          url: APIS.push.registrationToken().url,
+          body: {
+            token: fcmToken
+          },
+          token: token,
+        });
+        console.log('console.log(fcmToken)', fcmToken)
+      }
+      
+    } catch (error) {
+      console.log(`Error while saving fcm token: ${error}`);
+    }
+  };
+
   useEffect(() => {
-    messaging().onNotificationOpenedApp(remoteMessage => {
-      console.log(
-        'Notification caused app to open from background state:',
-        remoteMessage.notification,
-      );
-      setInitialRoute(remoteMessage.data.goTo);
-    });
-    messaging()
-      .getInitialNotification()
-      .then(remoteMessage => {
-        if (remoteMessage) {
-          console.log(
-            'Notification caused app to open from quit state:',
-            remoteMessage.notification,
-          );
-          setInitialRoute(remoteMessage.data.goTo); // e.g. "Settings"
-        }
-        setLoading(false);
+    if(isLoggedIn){
+      setFCMToken();
+      messaging().onNotificationOpenedApp(remoteMessage => {
+        console.log(
+          'Notification caused app to open from background state:',
+          remoteMessage.notification,
+        );
+        setInitialRoute(remoteMessage.data.goTo);
       });
-  }, []);
+      messaging()
+        .getInitialNotification()
+        .then(remoteMessage => {
+          if (remoteMessage) {
+            console.log(
+              'Notification caused app to open from quit state:',
+              remoteMessage.notification,
+            );
+            setInitialRoute(remoteMessage.data.goTo); // e.g. "Settings"
+          }
+        });
+    }
+    setLoading(false);
+  }, [isLoggedIn]);
 
   if (loading) {
     return null;
