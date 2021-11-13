@@ -8,15 +8,23 @@ import {RootState} from 'src/redux/rootReducer';
 import {Col} from './common/Col';
 import {Row} from './common/Row';
 import {Span} from './common/Span';
+import { Alert } from 'react-native';
 
 export const Header = ({bg, onSelect}) => {
-  const navigation = useNavigation();
-  const goToPost = () => navigation.navigate(NAV_NAMES.Post);
-  const goToReport = () => navigation.navigate(NAV_NAMES.Report);
   const {
     route: {selectedTrain},
     feed: {globalFiter},
   } = useSelector((root: RootState) => root, shallowEqual);
+  const navigation = useNavigation();
+  const goToPost = () => navigation.navigate(NAV_NAMES.Post);
+  const goToReport = () => {
+    if(selectedTrain) {
+      navigation.navigate(NAV_NAMES.Report)
+    } else {
+      Alert.alert('탑승하신 열차를 먼저 선택해 주세요!')
+    }
+  };
+  
   return (
     <Row itemsCenter py10 px20 bg={bg}>
       <Col w80 auto>

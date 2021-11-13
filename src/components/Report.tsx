@@ -89,7 +89,9 @@ export const Report = ({post, dispatch, navigation, token, mine = null}) => {
           </Col>
           <Col></Col>
           <Col auto px10 py5 rounded5>
-            <Span medium>{`차량번호: ${report.vehicleIdNum}`}</Span>
+            <Span medium>{`${new Date(
+                                report.createdAt,
+                              ).toLocaleDateString('ko-KR')}`}</Span>
           </Col>
         </Row>
       )}
