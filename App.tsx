@@ -26,8 +26,6 @@ const App = () => {
     },
     [dispatch],
   );
-
-
   useEffect(() => {
     LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
     LogBox.ignoreLogs(['Animated: `useNativeDriver`']);
@@ -53,11 +51,11 @@ const App = () => {
       },
     });
     newSocket.on('login', login);
-    newSocket.on('disconnnect', () => dispatch(setChatSocket(null)));
+    // newSocket.on('disconnnect', () => dispatch(setChatSocket(null)));
     dispatch(setChatSocket(newSocket));
     return () => {
       newSocket.off('login');
-      newSocket.off('disconnnect');
+      // newSocket.off('disconnnect');
       newSocket.close();
       dispatch(setChatSocket(null));
     };

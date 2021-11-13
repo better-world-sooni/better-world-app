@@ -154,7 +154,7 @@ const SignUpSceen = ({navigation}) => {
           token: jwtToken,
         });
         if (defaultRouteResponse.status == 200) {
-          Alert.alert('Error', '사인업이 완료되었습니다. 로그인 해주세요.', [
+          Alert.alert('Success', '사인업이 완료되었습니다. 로그인 해주세요.', [
             {text: '네', onPress: () => navigation.navigate(NAV_NAMES.SignIn)},
           ]);
           navigation.navigate(NAV_NAMES.SignIn);

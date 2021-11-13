@@ -41,17 +41,14 @@ import { Info } from 'react-native-feather';
       userProfileImgUrl: currentUser.avatar,
       shouldBeUploaded: true,
     });
-    const isNotBlank = str => {
-      return str && str.length !== 0;
-    };
     const isValidVehicleId = str => {
-      if (!isNotBlank(str)) {
-        return Validity.NULL;
+      if (str === null) {
+        return Validity.VALID;
       }
-      // const num = +str;
-      // if (isNaN(num)) {
-      //   return Validity.INVALID;
-      // }
+      const num = +str;
+      if (isNaN(num)) {
+        return Validity.INVALID;
+      }
       return Validity.VALID;
     };
     const isValidDetail = str => {
@@ -153,7 +150,7 @@ import { Info } from 'react-native-feather';
         isValidDetail(report.detail)
       ) {
         const textObject = {
-          body: `[${report.reportType}: ${report.label}]\n2호선 ${report.vehicleIdNum}`,
+          body: `[${report.reportType == 0 ? "요청" : "신고"}: ${report.label}]\n2호선 ${report.vehicleIdNum ? `${report.vehicleIdNum}번 차량` : `${selectedTrain.statnTnm}행 현재 ${selectedTrain.statnNm}역 (열차번호: ${selectedTrain.trainNo})`}\n ${report.detail}`,
           recipients: [SEOUL_METRO_PHONE_1TO8],
           successTypes: ['sent'],
           allowAndroidSendWithoutReadPermission: true,
@@ -170,7 +167,13 @@ import { Info } from 'react-native-feather';
         Alert.alert('민원 내용을 적어주세요.');
       }
     };
-
+    const handleChangeText = (change) => {
+      if(change.length == 0) return setVehicleIdNum(change)
+      return setVehicleIdNum(change)
+    }
+    const handlePressInfo = () => {
+      Alert.alert('열차 출입문 상단 또는 통로 상단을 보면 4~6자리 차량번호가 적혀있어요! 차량번호를 입력할 경우 훨씬 더 빠른 대처가 가능합니다.')
+    }
     return (
       <Div flex>
         <NativeBaseProvider>
@@ -242,9 +245,10 @@ import { Info } from 'react-native-feather';
                   </ScrollView>
                 </Row>
                 <Row mb10 mt15>
-                <Span medium fontSize={15}>
+                  <Col auto mr5><Span medium fontSize={15}>
                     차량번호
-                  </Span>
+                  </Span></Col>
+                  <Col onPress={handlePressInfo}><Info color={'black'} height={15} width={15}></Info></Col>
                 </Row>
                 <Row mb20>
                   <ScrollView horizontal showsHorizontalScrollIndicator={false}>
@@ -258,11 +262,11 @@ import { Info } from 'react-native-feather';
                           padding={0}
                           fontSize={13}
                           value={report.vehicleIdNum}
-                          onChangeText={change => setVehicleIdNum(change)}
+                          onChangeText={handleChangeText}
                           variant="unstyled"
                           textContentType={'none'}
                           numberOfLines={1}
-                          placeholder={'직접입력'}></Input>
+                          placeholder={'입력 권장'}></Input>
                       </Div>
                     </Div>
                   </ScrollView>

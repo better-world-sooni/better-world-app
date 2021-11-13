@@ -1,11 +1,10 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Alert, Dimensions, RefreshControl} from 'react-native';
 import {Col} from 'src/components/common/Col';
 import {Div} from 'src/components/common/Div';
 import {Row} from 'src/components/common/Row';
 import {Span} from 'src/components/common/Span';
 import APIS from 'src/modules/apis';
-import {IMAGES} from 'src/modules/images';
 import {ScrollView} from 'src/modules/viewComponents';
 import {deletePromiseFn, postPromiseFn, useApiSelector, useReloadGET} from 'src/redux/asyncReducer';
 import {shallowEqual, useDispatch, useSelector} from 'react-redux';
@@ -74,7 +73,6 @@ const HomeScreen = props => {
     APIS.realtime.arrival,
   );
   const realtimeArrivalList = arrivalResponse?.data;
-
   const {
     route: {origin, destination, direction, stations},
     selectedTrain,
