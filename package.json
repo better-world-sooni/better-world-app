@@ -6,6 +6,7 @@
     "postinstall": "patch-package && cd ios && pod install",
     "android": "react-native run-android",
     "ios": "react-native run-ios",
+    "iosProd": "react-native run-ios --dev=false",
     "start": "react-native start --reset-cache",
     "test": "jest",
     "lint": "eslint .",

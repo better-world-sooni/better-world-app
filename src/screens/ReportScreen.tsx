@@ -1,4 +1,4 @@
-  import React, { useEffect, useState, useRef, useLayoutEffect } from 'react';
+  import React, { useState } from 'react';
   import { Col } from 'src/components/common/Col';
   import {Div} from 'src/components/common/Div';
   import {Row} from 'src/components/common/Row';
@@ -10,10 +10,11 @@
   import {shallowEqual, useSelector} from 'react-redux';
   import {RootState} from 'src/redux/rootReducer';
   import SendSMS from 'react-native-sms';
-  import {GRAY_COLOR, SEOUL_METRO_PHONE_1TO8} from 'src/modules/constants';
+  import {GO_COLOR, GRAY_COLOR, iconSettings, SEOUL_METRO_PHONE_1TO8} from 'src/modules/constants';
   import {postPromiseFn} from 'src/redux/asyncReducer';
   import APIS from 'src/modules/apis';
   import {Alert} from 'react-native';
+import { Info } from 'react-native-feather';
 
   enum Validity {
     NULL = null,
@@ -23,10 +24,9 @@
   }
 
   const ReportScreen = props => {
-    const {selectedTrain} = useSelector(
-      (root: RootState) => root.route,
-      shallowEqual,
-    );
+    const {
+      selectedTrain,
+    } = useSelector((root: RootState) => root.route, shallowEqual);
     const {currentUser, token} = useSelector(
       (root: RootState) => root.app.session,
       shallowEqual,
@@ -35,8 +35,7 @@
     const [report, setReport] = useState({
       reportType: 0,
       label: null,
-      vehicleIdNum: selectedTrain?.trainNo,
-      carNum: null,
+      vehicleIdNum: selectedTrain ?`${selectedTrain.statnTnm}행 현재 ${selectedTrain.statnNm}역 (열차번호: ${selectedTrain.trainNo})`: null,
       detail: null,
       userName: currentUser.username,
       userProfileImgUrl: currentUser.avatar,
@@ -49,20 +48,10 @@
       if (!isNotBlank(str)) {
         return Validity.NULL;
       }
-      const num = +str;
-      if (isNaN(num)) {
-        return Validity.INVALID;
-      }
-      return Validity.VALID;
-    };
-    const isValidCarNum = str => {
-      if (!isNotBlank(str)) {
-        return Validity.NULL;
-      }
-      const num = +str;
-      if (isNaN(num) || num < 1 || num > 100) {
-        return Validity.INVALID;
-      }
+      // const num = +str;
+      // if (isNaN(num)) {
+      //   return Validity.INVALID;
+      // }
       return Validity.VALID;
     };
     const isValidDetail = str => {
@@ -126,10 +115,6 @@
       const {vehicleIdNum, ...other} = report;
       setReport({vehicleIdNum: reportVehicleIdNum, ...other});
     };
-    const setCarNum = reportCarNum => {
-      const {carNum, ...other} = report;
-      setReport({carNum: reportCarNum, ...other});
-    };
     const setDetail = reportDetail => {
       const {detail, ...other} = report;
       setReport({detail: reportDetail, ...other});
@@ -165,13 +150,10 @@
       if (
         report.label &&
         isValidVehicleId(report.vehicleIdNum) &&
-        isValidCarNum(report.carNum) &&
         isValidDetail(report.detail)
       ) {
         const textObject = {
-          body: `[${report.reportType}: ${report.label}] \n
-        2호선 ${report.vehicleIdNum}번 열차 ${report.carNum}번 칸 \n
-        ${report.detail}`,
+          body: `[${report.reportType}: ${report.label}]\n2호선 ${report.vehicleIdNum}`,
           recipients: [SEOUL_METRO_PHONE_1TO8],
           successTypes: ['sent'],
           allowAndroidSendWithoutReadPermission: true,
@@ -182,11 +164,7 @@
         Alert.alert('주제를 선택해 주세요.');
       } else if (!isValidVehicleId(report.vehicleIdNum)) {
         Alert.alert(
-          '차량번호가 유효하지 않습니다. 2호선 차량번호는 칸 출입구 위에 쓰여 있는 2000번대 숫자입니다.\n예) 2516⑧ 일때 2516입니다.',
-        );
-      } else if (!isValidCarNum(report.carNum)) {
-        Alert.alert(
-          '칸번호가 유효하지 않습니다. 칸번호는 칸 출입구 위에 쓰여 있습니다.\n예) 2516⑧ 일때 8입니다.',
+          '차량번호가 유효하지 않습니다. 2호선 차량번호는 2000번대 숫자입니다.',
         );
       } else if (!isValidDetail(report.detail)) {
         Alert.alert('민원 내용을 적어주세요.');
@@ -264,47 +242,22 @@
                   </ScrollView>
                 </Row>
                 <Row mb10 mt15>
-                  <Span medium fontSize={15}>
-                    열차번호
+                <Span medium fontSize={15}>
+                    차량번호
                   </Span>
                 </Row>
                 <Row mb20>
                   <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                    {selectedTrain && (
-                      <Div
-                        mr10
-                        rounded
-                        {...borderProp(
-                          selectedTrain.trainNo === report.vehicleIdNum,
-                        )}>
-                        <Div
-                          px20
-                          py10
-                          w={'100%'}
-                          onPress={() =>
-                            setVehicleIdNum(selectedTrain.trainNo)
-                          }>
-                          <Span
-                            {...colorProp(
-                              report.vehicleIdNum === selectedTrain.trainNo,
-                            )}>
-                            {selectedTrain.trainNo}
-                          </Span>
-                        </Div>
-                      </Div>
-                    )}
                     <Div
-                      mr10
                       rounded
-                      {...borderProp(
-                        selectedTrain?.trainNo !== report.vehicleIdNum &&
-                          isValidVehicleId(report.vehicleIdNum),
+                      {...borderProp(isValidVehicleId(report.vehicleIdNum)
                       )}>
                       <Div px20 py10 w={'100%'}>
                         <Input
                           w={'100%'}
                           padding={0}
                           fontSize={13}
+                          value={report.vehicleIdNum}
                           onChangeText={change => setVehicleIdNum(change)}
                           variant="unstyled"
                           textContentType={'none'}
@@ -313,29 +266,6 @@
                       </Div>
                     </Div>
                   </ScrollView>
-                </Row>
-                <Row mb10 mt15>
-                  <Span medium fontSize={15}>
-                    칸번호
-                  </Span>
-                </Row>
-                <Row mb20>
-                  <Div
-                    mr10
-                    rounded
-                    {...borderProp(isValidCarNum(report.carNum))}>
-                    <Div px20 py10 w={'100%'}>
-                      <Input
-                        w={'100%'}
-                        padding={0}
-                        fontSize={13}
-                        onChangeText={change => setCarNum(change)}
-                        variant="unstyled"
-                        textContentType={'none'}
-                        numberOfLines={1}
-                        placeholder={'직접입력'}></Input>
-                    </Div>
-                  </Div>
                 </Row>
                 <Row mb10 mt15>
                   <Span medium fontSize={15}>
