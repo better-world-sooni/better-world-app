@@ -1,9 +1,7 @@
 import {
 useNavigation
 } from '@react-navigation/native';
-import React, {useEffect, useState} from 'react';
-// import '@react-native-firebase/messaging';
-// import '@react-native-firebase/auth';
+import React, {useCallback, useEffect, useState} from 'react';
 import {Col} from 'src/components/common/Col';
 import {Div} from 'src/components/common/Div';
 import {Img} from 'src/components/common/Img';
@@ -30,6 +28,7 @@ import {
   MY_ROUTE,
   REPORT,
   Selecting,
+  shortenStations,
   SUNGAN,
 } from 'src/modules/constants';
 import {appActions, useLogout} from 'src/redux/appReducer';
@@ -42,8 +41,7 @@ import {Sungan} from 'src/components/Sungan';
 import {Report} from 'src/components/Report';
 import {Place} from 'src/components/Place';
 import AvatarSelect from 'src/components/AvatarSelect';
-import {setUserInfo} from 'src/redux/userInfoReducer';
-import { isOkay, stationArr } from 'src/modules/utils';
+import {isOkay, stationArr} from 'src/modules/utils';
 
 const ProfileScreen = props => {
   const navigation = useNavigation();
@@ -54,7 +52,11 @@ const ProfileScreen = props => {
   );
   const mySungans = mySunganResponse?.data;
   const {
-    route: {receiveStationPush, route: {stations, direction}, selectedTrain},
+    route: {
+      receiveStationPush,
+      route: {stations, direction},
+      selectedTrain,
+    },
     feed: {globalFiter},
   } = useSelector((root: RootState) => root, shallowEqual);
   const {currentUser, token} = useSelector(
@@ -64,9 +66,7 @@ const ProfileScreen = props => {
   const [selecting, setSelecting] = useState(Selecting.NONE);
   const [character, setCharacter] = useState(null);
   const dispatch = useDispatch();
-
   const [selectingAvatar, setSelectingAvatar] = useState(false);
-
   const selectGetterSetter = {
     [Selecting.GLOBAL_FILTER]: {
       get: globalFiter,
@@ -74,66 +74,79 @@ const ProfileScreen = props => {
       options: [MAIN_LINE2, MY_ROUTE, ...stations],
     },
   };
-
-  const toggleStationPush = async () => {
-      if(receiveStationPush){
-        dispatch(toggleReceiveStationPush());
-        const res = await deletePromiseFn({
+  const toggleStationPush = useCallback(async () => {
+    if (receiveStationPush) {
+      dispatch(toggleReceiveStationPush());
+      const res = await deletePromiseFn({
+        url: APIS.route.notification().url,
+        body: {},
+        token: token,
+      });
+      if (isOkay(res)) {
+        Alert.alert('Success', '역알림이 취소 되었습니다.');
+      } else {
+        Alert.alert('Error', '역알림이 취소중 문제가 발생하였습니다.');
+      }
+    } else {
+      dispatch(toggleReceiveStationPush());
+      if (selectedTrain) {
+        const res = await postPromiseFn({
           url: APIS.route.notification().url,
-          body: {},
+          body: {
+            trainNo: selectedTrain?.trainNo,
+            stations: shortenStations(
+              stationArr(
+                [],
+                selectedTrain.statnNm,
+                stations[stations.length - 1],
+                direction,
+              ),
+            ),
+          },
           token: token,
         });
         if (isOkay(res)) {
-          Alert.alert('Success', '역알림이 취소 되었습니다.')
+          Alert.alert('Success', '역알림이 설정 되었습니다.');
         } else {
-          Alert.alert('Error', '역알림이 취소중 문제가 발생하였습니다.')
+          Alert.alert('Error', '역알림이 설정중 문제가 발생하였습니다.');
         }
-      } else {
-        dispatch(toggleReceiveStationPush());
-        if(selectedTrain){
-          const res = await postPromiseFn({
-            url: APIS.route.notification().url,
-            body: {
-              trainNo: selectedTrain?.trainNo,
-              stations: stationArr([], selectedTrain.statnNm, stations[stations.length-1], direction).map((item) => {return item.split('(')[0]})
-            },
-            token: token,
-          });
-          if (isOkay(res)) {
-            Alert.alert('Success', '역알림이 설정 되었습니다.')
-          } else {
-            Alert.alert('Error', '역알림이 설정중 문제가 발생하였습니다.')
-          }
-        }
-        
+      }
     }
-  }
-  const pullToRefresh = () => {
+  }, [
+    receiveStationPush,
+    toggleReceiveStationPush,
+    selectedTrain,
+    stations,
+    direction,
+  ]);
+  const pullToRefresh = useCallback(() => {
     apiGET(APIS.route.starred());
     apiGET(APIS.post.sungan.my());
-  };
-
-  const filterPostsByStation = post => {
-    if (post.type === REPORT) {
-      return true;
-    } else if (!post.station?.name) {
-      return true;
-    } else if (
-      globalFiter === MY_ROUTE &&
-      !MY_ROUTE.includes(post.station.name)
-    ) {
-      return false;
-    } else if (
-      globalFiter !== MAIN_LINE2 &&
-      globalFiter !== post.station.name
-    ) {
-      return false;
-    } else {
-      return true;
-    }
-  };
-
-  const handleReturnSelectAvatar = async () => {
+  }, [apiGET]);
+  const filterPostsByStation = useCallback(
+    post => {
+      if (post.type === REPORT) {
+        return true;
+      } else if (!post.station?.name) {
+        return true;
+      } else if (
+        globalFiter === MY_ROUTE &&
+        !MY_ROUTE.includes(post.station.name)
+      ) {
+        return false;
+      } else if (
+        globalFiter !== MAIN_LINE2 &&
+        globalFiter !== post.station.name
+      ) {
+        return false;
+      } else {
+        return true;
+      }
+    },
+    [globalFiter],
+  );
+  const handleReturnSelectAvatar = useCallback(async () => {
+    setSelectingAvatar(false);
     if (character) {
       const res = await postPromiseFn({
         url: APIS.auth.avatar().url,
@@ -144,19 +157,63 @@ const ProfileScreen = props => {
         token: '',
       });
       if (res.status == 200) {
-        const {id, username, avatar} = res.data;
+        const {avatar} = res.data;
         dispatch(appActions.updateUserAvatar(avatar));
         Alert.alert('아바타를 성공적으로 바꾸었습니다.');
       } else {
         Alert.alert('아바타를 바꾸는 도중 문제가 생겼습니다.');
       }
     }
-    setSelectingAvatar(false);
-  };
-
-  useEffect(() => {
-    pullToRefresh();
-  }, []);
+  }, [character, token, appActions]);
+  const MySunganMap = useCallback(
+    (post, index) => {
+      if (post.type == SUNGAN) {
+        return (
+          <Sungan
+            post={post}
+            dispatch={dispatch}
+            navigation={navigation}
+            token={token}
+            key={index}
+            mine
+          />
+        );
+      } else if (post.type == REPORT) {
+        return (
+          <Report
+            post={post}
+            dispatch={dispatch}
+            navigation={navigation}
+            token={token}
+            key={index}
+            mine
+          />
+        );
+      } else {
+        return (
+          <Place
+            post={post}
+            dispatch={dispatch}
+            navigation={navigation}
+            token={token}
+            key={index}
+            mine
+          />
+        );
+      }
+    },
+    [navigation, token],
+  );
+  const handleSelectGlobalFilter = useCallback(
+    () => setSelecting(Selecting.GLOBAL_FILTER),
+    [],
+  );
+  const handleSelectDone = useCallback(() => setSelecting(Selecting.NONE), []);
+  const handleSelectAvatar = useCallback(() => setSelectingAvatar(true), []);
+  const handleGotoPost = useCallback(
+    () => navigation.navigate(NAV_NAMES.Post),
+    [],
+  );
 
   return (
     <Div flex backgroundColor={'white'}>
@@ -180,10 +237,7 @@ const ProfileScreen = props => {
             <Col />
           </Row>
         </Col>
-        <Col
-          itemsCenter
-          justifyCenter
-          onPress={() => setSelecting(Selecting.GLOBAL_FILTER)}>
+        <Col itemsCenter justifyCenter onPress={handleSelectGlobalFilter}>
           <Row itemsCenter>
             <Col auto>
               <Span
@@ -236,7 +290,7 @@ const ProfileScreen = props => {
               </Row>
             </Col>
           </Row>
-          <Div onPress={() => setSelectingAvatar(true)}>
+          <Div onPress={handleSelectAvatar}>
             <Row
               itemsCenter
               my10
@@ -253,56 +307,11 @@ const ProfileScreen = props => {
           </Div>
         </Div>
         <Div mt10>
-          {mySungans &&
-            mySungans
-              .filter(post => {
-                return filterPostsByStation(post);
-              })
-              .map((post, index) => {
-                if (post.type == SUNGAN) {
-                  return (
-                    <Sungan
-                      post={post}
-                      dispatch={dispatch}
-                      navigation={navigation}
-                      token={token}
-                      key={index}
-                      mine
-                    />
-                  );
-                } else if (post.type == REPORT) {
-                  return (
-                    <Report
-                      post={post}
-                      dispatch={dispatch}
-                      navigation={navigation}
-                      token={token}
-                      key={index}
-                      mine
-                    />
-                  );
-                } else {
-                  return (
-                    <Place
-                      post={post}
-                      dispatch={dispatch}
-                      navigation={navigation}
-                      token={token}
-                      key={index}
-                      mine
-                    />
-                  );
-                }
-              })}
+          {mySungans && mySungans.filter(filterPostsByStation).map(MySunganMap)}
         </Div>
         {(!mySungans || mySungans.length == 0) && (
           <>
-            <Row
-              itemsCenter
-              justifyCenter
-              pt20
-              pb10
-              onPress={() => navigation.navigate(NAV_NAMES.Post)}>
+            <Row itemsCenter justifyCenter pt20 pb10 onPress={handleGotoPost}>
               <Col h2 />
               <Col auto>
                 <PlusSquare
@@ -311,7 +320,7 @@ const ProfileScreen = props => {
                   strokeWidth={0.7}
                   color={GRAY_COLOR}></PlusSquare>
               </Col>
-              <Col h2 ></Col>
+              <Col h2></Col>
             </Row>
             <Row pb20>
               <Col></Col>
@@ -328,12 +337,12 @@ const ProfileScreen = props => {
           selectedValue={selectGetterSetter[selecting].get}
           onValueChange={selectGetterSetter[selecting].set}
           options={selectGetterSetter[selecting].options}
-          onClose={() => setSelecting(Selecting.NONE)}
+          onClose={handleSelectDone}
         />
       )}
       <AvatarSelect
         visible={selectingAvatar}
-        onPressReturn={() => handleReturnSelectAvatar()}
+        onPressReturn={handleReturnSelectAvatar}
         character={character}
         setCharacter={setCharacter}
       />

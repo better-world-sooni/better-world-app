@@ -1,7 +1,7 @@
-import React, {useState} from 'react';
+import React, {useCallback, useState} from 'react';
 import {Heart, MessageCircle} from 'react-native-feather';
 import APIS from 'src/modules/apis';
-import {GRAY_COLOR, iconSettings} from 'src/modules/constants';
+import {GRAY_COLOR, iconSettings, postShadowProp} from 'src/modules/constants';
 import {IMAGES} from 'src/modules/images';
 import {NAV_NAMES} from 'src/modules/navNames';
 import {isOkay, postKey} from 'src/modules/utils';
@@ -16,15 +16,7 @@ import {Span} from './common/Span';
 export const Report = ({post, dispatch, navigation, token, mine = null}) => {
   const report = post.post;
   const bestComment = post.bestComment;
-  const shadowProp = opacity => {
-    return {
-      shadowOffset: {height: 1, width: 1},
-      shadowColor: GRAY_COLOR,
-      shadowOpacity: opacity,
-      shadowRadius: 10,
-    };
-  };
-  const like = async () => {
+  const like = useCallback(async () => {
     if (post.didLike) {
       const res = await deletePromiseFn({
         url: APIS.post.report.like(report.id).url,
@@ -66,11 +58,11 @@ export const Report = ({post, dispatch, navigation, token, mine = null}) => {
         );
       }
     }
-  };
-  const goToPostDetail = () => {
-    dispatch(setCurrentPostId(postKey(post)));
+  }, [report]);
+  const goToPostDetail = useCallback(() => {
     navigation.navigate(NAV_NAMES.PostDetail);
-  };
+    dispatch(setCurrentPostId(postKey(post)));
+  }, []);
   return (
     <Div bg={'rgba(255,255,255,.9)'} pb10 px20>
       {!mine && (
@@ -89,9 +81,9 @@ export const Report = ({post, dispatch, navigation, token, mine = null}) => {
           </Col>
           <Col></Col>
           <Col auto px10 py5 rounded5>
-            <Span medium>{`${new Date(
-                                report.createdAt,
-                              ).toLocaleDateString('ko-KR')}`}</Span>
+            <Span medium>{`${new Date(report.createdAt).toLocaleDateString(
+              'ko-KR',
+            )}`}</Span>
           </Col>
         </Row>
       )}
@@ -100,11 +92,11 @@ export const Report = ({post, dispatch, navigation, token, mine = null}) => {
           rounded20
           bg={'rgb(250, 196, 192)'}
           w={'100%'}
-          {...shadowProp(0.5)}>
+          {...postShadowProp(0.5)}>
           <Col auto justifyCenter itemsCenter px20>
             <Span fontSize={70}>{'🚨'}</Span>
           </Col>
-          <Col justifyCenter>
+          <Col justifyCenter pr20>
             <Span color={'black'} medium>
               {report.detail}
             </Span>
@@ -141,7 +133,13 @@ export const Report = ({post, dispatch, navigation, token, mine = null}) => {
             </Row>
           )} */}
           {bestComment && (
-            <Row itemsCenter justifyCenter pb10 pt5 flex>
+            <Row
+              itemsCenter
+              justifyCenter
+              pb10
+              pt5
+              flex
+              onPress={goToPostDetail}>
               <Col auto itemsCenter justifyCenter rounded20 overflowHidden>
                 <Img
                   source={
@@ -154,7 +152,7 @@ export const Report = ({post, dispatch, navigation, token, mine = null}) => {
               <Col mx10 justifyCenter>
                 <Row>
                   <Span medium color={'black'}>
-                    irlyglo
+                    {bestComment.userInfo.userName}
                   </Span>
                   <Span ml5>{bestComment.content}</Span>
                 </Row>

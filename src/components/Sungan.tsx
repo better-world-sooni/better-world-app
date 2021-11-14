@@ -1,14 +1,12 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {Heart, MessageCircle} from 'react-native-feather';
-import {shallowEqual, useSelector} from 'react-redux';
 import APIS from 'src/modules/apis';
-import {GRAY_COLOR, iconSettings} from 'src/modules/constants';
+import {GRAY_COLOR, iconSettings, postShadowProp} from 'src/modules/constants';
 import {IMAGES} from 'src/modules/images';
 import {NAV_NAMES} from 'src/modules/navNames';
 import {isOkay, postKey} from 'src/modules/utils';
 import {deletePromiseFn, postPromiseFn} from 'src/redux/asyncReducer';
 import {setCurrentPostId, setPost} from 'src/redux/feedReducer';
-import {RootState} from 'src/redux/rootReducer';
 import {Col} from './common/Col';
 import {Div} from './common/Div';
 import {Img} from './common/Img';
@@ -16,17 +14,8 @@ import {Row} from './common/Row';
 import {Span} from './common/Span';
 
 export const Sungan = ({post, dispatch, navigation, token, mine = null}) => {
-  const {mainPosts} = useSelector((root: RootState) => root.feed, shallowEqual);
   const sungan = post.post;
   const bestComment = post.bestComment;
-  const shadowProp = opacity => {
-    return {
-      shadowOffset: {height: 1, width: 1},
-      shadowColor: GRAY_COLOR,
-      shadowOpacity: opacity,
-      shadowRadius: 10,
-    };
-  };
   const like = async () => {
     if (post.didLike) {
       const res = await deletePromiseFn({
@@ -71,10 +60,9 @@ export const Sungan = ({post, dispatch, navigation, token, mine = null}) => {
     }
   };
   const goToPostDetail = () => {
-    dispatch(setCurrentPostId(postKey(post)));
     navigation.navigate(NAV_NAMES.PostDetail);
+    dispatch(setCurrentPostId(postKey(post)));
   };
-  
 
   return (
     <Div bg={'rgba(255,255,255,.9)'} pb10 px20>
@@ -99,11 +87,11 @@ export const Sungan = ({post, dispatch, navigation, token, mine = null}) => {
         </Row>
       )}
       <Div py10 onPress={goToPostDetail}>
-        <Row rounded20 bgWhite w={'100%'} {...shadowProp(0.3)}>
+        <Row rounded20 bgWhite w={'100%'} {...postShadowProp(0.3)}>
           <Col auto justifyCenter itemsCenter px20>
             <Span fontSize={70}>{sungan.emoji}</Span>
           </Col>
-          <Col justifyCenter>
+          <Col justifyCenter pr20>
             <Span color={'black'} medium>
               {sungan.text}
             </Span>
@@ -153,7 +141,7 @@ export const Sungan = ({post, dispatch, navigation, token, mine = null}) => {
               <Col mx10 justifyCenter>
                 <Row>
                   <Span medium color={'black'}>
-                    irlyglo
+                    {bestComment.userInfo.userName}
                   </Span>
                   <Span ml5>{bestComment.content}</Span>
                 </Row>

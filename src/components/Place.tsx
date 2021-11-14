@@ -1,7 +1,7 @@
-import React, {useState} from 'react';
+import React, {useCallback, useState} from 'react';
 import {Heart, MessageCircle} from 'react-native-feather';
 import APIS from 'src/modules/apis';
-import {GRAY_COLOR, iconSettings} from 'src/modules/constants';
+import {GRAY_COLOR, iconSettings, postShadowProp} from 'src/modules/constants';
 import {IMAGES} from 'src/modules/images';
 import {NAV_NAMES} from 'src/modules/navNames';
 import {isOkay, postKey} from 'src/modules/utils';
@@ -15,16 +15,8 @@ import {Span} from './common/Span';
 
 export const Place = ({post, dispatch, navigation, token, mine = null}) => {
   const sungan = post.post;
-  const shadowProp = opacity => {
-    return {
-      shadowOffset: {height: 1, width: 1},
-      shadowColor: GRAY_COLOR,
-      shadowOpacity: opacity,
-      shadowRadius: 10,
-    };
-  };
   const bestComment = post.bestComment;
-  const like = async () => {
+  const like = useCallback(async () => {
     if (post.didLike) {
       const res = await deletePromiseFn({
         url: APIS.post.place.like(sungan.id).url,
@@ -66,11 +58,11 @@ export const Place = ({post, dispatch, navigation, token, mine = null}) => {
         );
       }
     }
-  };
-  const goToPostDetail = () => {
-    dispatch(setCurrentPostId(postKey(post)));
+  }, [sungan]);
+  const goToPostDetail = useCallback(() => {
     navigation.navigate(NAV_NAMES.PostDetail);
-  };
+    dispatch(setCurrentPostId(postKey(post)));
+  }, []);
   return (
     <Div bg={'rgba(255,255,255,.9)'} pb10 px20>
       {!mine && (
@@ -94,11 +86,11 @@ export const Place = ({post, dispatch, navigation, token, mine = null}) => {
         </Row>
       )}
       <Div py10 onPress={goToPostDetail}>
-        <Row rounded20 bgWhite w={'100%'} {...shadowProp(0.3)}>
+        <Row rounded20 bgWhite w={'100%'} {...postShadowProp(0.3)}>
           <Col auto justifyCenter itemsCenter px20>
             <Span fontSize={70}>{sungan.emoji}</Span>
           </Col>
-          <Col justifyCenter>
+          <Col justifyCenter pr20>
             <Span color={'black'} bold mb5>
               {sungan.place}
             </Span>
@@ -151,7 +143,7 @@ export const Place = ({post, dispatch, navigation, token, mine = null}) => {
               <Col mx10 justifyCenter>
                 <Row>
                   <Span medium color={'black'}>
-                    irlyglo
+                    {bestComment.userInfo.userName}
                   </Span>
                   <Span ml5>{bestComment.content}</Span>
                 </Row>

@@ -5,6 +5,7 @@ import APIS from 'src/modules/apis';
 import { JWT_TOKEN } from 'src/modules/constants';
 import {
   asyncActions,
+  useApiGET,
   useApiGETWithToken,
   useApiPOST,
 } from 'src/redux/asyncReducer';
@@ -65,17 +66,16 @@ export const useSocialLogin = () => {
 
 export const useAutoLogin = () => {
   const dispatch = useDispatch();
-  const apiGETWithToken = useApiGETWithToken();
+  const apiGET = useApiGET();
   return (token, successHandler?, errHandler?) => {
-    apiGETWithToken(
-      APIS.profile.get(),
-      token,
+    apiGET(
+      APIS.auth.user(token),
       props => {
         dispatch(async () => {
           await AsyncStorage.setItem(JWT_TOKEN, token);
           const payload = {
-            ...props.data,
-            jwt_token: token,
+            user: props.data,
+            jwtToken: token,
           };
           dispatch(appActions.login(payload));
           if (successHandler) {

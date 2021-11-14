@@ -25,6 +25,7 @@ import messaging from '@react-native-firebase/messaging';
 import {useNavigation} from '@react-navigation/core';
 import { postPromiseFn } from 'src/redux/asyncReducer';
 import APIS from 'src/modules/apis';
+import {LINE2_COLOR} from 'src/modules/constants';
 
 const RootStack = createStackNavigator();
 
@@ -39,9 +40,10 @@ const MainBottomTabs = () => {
         name={NAV_NAMES.Home}
         component={HomeScreen}
         options={{
+          tabBarLabel: '홈',
           tabBarIcon: props => (
             <Home
-              color={props.focused ? 'black' : 'gray'}
+              color={props.focused ? LINE2_COLOR : 'gray'}
               strokeWidth={1.5}></Home>
           ),
         }}
@@ -50,9 +52,10 @@ const MainBottomTabs = () => {
         name={NAV_NAMES.Metaverse}
         component={MetaSunganScreen}
         options={{
+          tabBarLabel: '메타순간',
           tabBarIcon: props => (
             <Grid
-              color={props.focused ? 'black' : 'gray'}
+              color={props.focused ? LINE2_COLOR : 'gray'}
               strokeWidth={1.5}></Grid>
           ),
         }}
@@ -61,9 +64,10 @@ const MainBottomTabs = () => {
         name={NAV_NAMES.Chat}
         component={ChatScreen}
         options={{
+          tabBarLabel: '채팅',
           tabBarIcon: props => (
             <MessageCircle
-              color={props.focused ? 'black' : 'gray'}
+              color={props.focused ? LINE2_COLOR : 'gray'}
               strokeWidth={1.5}></MessageCircle>
           ),
         }}
@@ -72,9 +76,10 @@ const MainBottomTabs = () => {
         name={NAV_NAMES.Profile}
         component={ProfileScreen}
         options={{
+          tabBarLabel: '프로필',
           tabBarIcon: props => (
             <User
-              color={props.focused ? 'black' : 'gray'}
+              color={props.focused ? LINE2_COLOR : 'gray'}
               strokeWidth={1.5}></User>
           ),
         }}
@@ -88,10 +93,12 @@ const topHeader = props => {
 };
 
 export const AppContent = () => {
-  const {isLoggedIn, session: {token}} = useSelector((root: RootState) => root.app, shallowEqual);
+  const {
+    isLoggedIn,
+    session: {token},
+  } = useSelector((root: RootState) => root.app, shallowEqual);
   const [initialRoute, setInitialRoute] = useState(NAV_NAMES.Home);
   // const navigation = useNavigation();
-  const [loading, setLoading] = useState(true);
 
   const Navs = [
     {
@@ -181,7 +188,7 @@ export const AppContent = () => {
       console.log(error);
     }
   };
-  
+
   const setFCMToken = async () => {
     try {
       const authorized = await messaging().hasPermission();
@@ -190,31 +197,30 @@ export const AppContent = () => {
         const res = await postPromiseFn({
           url: APIS.push.registrationToken().url,
           body: {
-            token: fcmToken
+            token: fcmToken,
           },
           token: token,
         });
-        console.log('console.log(fcmToken)', fcmToken)
+        console.log('console.log(fcmToken)', fcmToken);
       } else {
         const fcmToken = await getToken();
         await messaging().requestPermission();
         const res = await postPromiseFn({
           url: APIS.push.registrationToken().url,
           body: {
-            token: fcmToken
+            token: fcmToken,
           },
           token: token,
         });
-        console.log('console.log(fcmToken)', fcmToken)
+        console.log('console.log(fcmToken)', fcmToken);
       }
-      
     } catch (error) {
       console.log(`Error while saving fcm token: ${error}`);
     }
   };
 
   useEffect(() => {
-    if(isLoggedIn){
+    if (isLoggedIn) {
       setFCMToken();
       messaging().onNotificationOpenedApp(remoteMessage => {
         console.log(
@@ -235,13 +241,7 @@ export const AppContent = () => {
           }
         });
     }
-    setLoading(false);
   }, [isLoggedIn]);
-
-  if (loading) {
-    return null;
-  }
-
   return (
     <Div flex relative>
       <NavigationContainer>
@@ -256,7 +256,7 @@ export const AppContent = () => {
           ))}
         </RootStack.Navigator>
       </NavigationContainer>
-      {isLoggedIn && <ChatManager></ChatManager>}
+      {/* {isLoggedIn && <ChatManager></ChatManager>} */}
     </Div>
   );
 };

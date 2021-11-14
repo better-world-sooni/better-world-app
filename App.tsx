@@ -1,6 +1,6 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {LogBox} from 'react-native';
-import codePush from 'react-native-code-push';
+// import codePush from 'react-native-code-push';
 import {withRootReducer} from './src/redux/withRootReducer';
 import {AppContent} from 'src/components/AppContent';
 import {library} from '@fortawesome/fontawesome-svg-core';
@@ -64,8 +64,9 @@ const App = () => {
   return <AppContent />;
 };
 
-const codePushOptions = {
-  checkFrequency: codePush.CheckFrequency.ON_APP_RESUME,
-};
+// const codePushOptions = {
+//   checkFrequency: codePush.CheckFrequency.ON_APP_RESUME,
+// };
 
-export default codePush(codePushOptions)(withRootReducer(App));
+export default withRootReducer(App);
+// export default codePush(codePushOptions)(withRootReducer(App));

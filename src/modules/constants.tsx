@@ -614,3 +614,18 @@ export enum Validity {
   VALID = 1,
   INVALID = 2,
 }
+
+export const shortenStations = arr => {
+  return arr.map(station => {
+    return station.split('(')[0];
+  });
+};
+
+export const postShadowProp = opacity => {
+  return {
+    shadowOffset: {height: 1, width: 1},
+    shadowColor: GRAY_COLOR,
+    shadowOpacity: opacity,
+    shadowRadius: 10,
+  };
+};

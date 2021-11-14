@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import {Modal} from 'react-native';
 import {
   characterDesc,
@@ -14,25 +14,51 @@ import {Img} from './common/Img';
 import {Row} from './common/Row';
 import {Span} from './common/Span';
 
+const characterKeys = Object.keys(IMAGES.characters)
+
 const AvatarSelect = ({visible, onPressReturn, character, setCharacter}) => {
-  const borderProp = bool => {
-    if (!bool || bool === Validity.NULL || bool === Validity.ZERO) {
-      return {
-        borderColor: GRAY_COLOR,
-        borderWidth: 1,
-      };
-    } else if (bool === Validity.INVALID) {
-      return {
-        borderColor: 'red',
-        borderWidth: 1,
-      };
-    } else {
-      return {
-        borderColor: 'black',
-        borderWidth: 1,
-      };
-    }
-  };
+  const borderProp = useCallback(
+    bool => {
+      if (!bool || bool === Validity.NULL || bool === Validity.ZERO) {
+        return {
+          borderColor: GRAY_COLOR,
+          borderWidth: 1,
+        };
+      } else if (bool === Validity.INVALID) {
+        return {
+          borderColor: 'red',
+          borderWidth: 1,
+        };
+      } else {
+        return {
+          borderColor: 'black',
+          borderWidth: 1,
+        };
+      }
+    },
+    [],
+  );
+
+  const Characters = useCallback((key, index) => {
+    return (
+      <Div key={index} flexBasis={'50%'}>
+        <Div
+          rounded5
+          m5
+          p5
+          {...borderProp(key == character ? true : null)}>
+          <Row onPress={() => setCharacter(key)}>
+            <Col>
+              <Img source={IMAGES.characters[key]} w100 h100></Img>
+            </Col>
+            <Col justifyCenter itemsCenter px10>
+              {characterDesc[key].span}
+            </Col>
+          </Row>
+        </Div>
+      </Div>
+    );
+  }, [character])
 
   return (
     <Modal
@@ -55,26 +81,7 @@ const AvatarSelect = ({visible, onPressReturn, character, setCharacter}) => {
             </Col>
           </Row>
           <Div flexDirection={'row'} flexWrap={'wrap'}>
-            {Object.keys(IMAGES.characters).map((key, index) => {
-              return (
-                <Div key={index} flexBasis={'50%'}>
-                  <Div
-                    rounded5
-                    m5
-                    p5
-                    {...borderProp(key == character ? true : null)}>
-                    <Row onPress={() => setCharacter(key)}>
-                      <Col>
-                        <Img source={IMAGES.characters[key]} w100 h100></Img>
-                      </Col>
-                      <Col justifyCenter itemsCenter px10>
-                        {characterDesc[key].span}
-                      </Col>
-                    </Row>
-                  </Div>
-                </Div>
-              );
-            })}
+            {characterKeys.map(Characters)}
           </Div>
         </ScrollView>
       </Div>

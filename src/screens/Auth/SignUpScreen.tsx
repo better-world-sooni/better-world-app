@@ -1,5 +1,5 @@
 import {CommonActions} from '@react-navigation/native';
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {Alert, Image, Modal, Platform} from 'react-native';
 import {Col} from 'src/components/common/Col';
 import {Div} from 'src/components/common/Div';
@@ -43,7 +43,6 @@ const SignUpSceen = ({navigation}) => {
   const {
     route: {origin, destination, direction, stations},
   } = useSelector((root: RootState) => root.route, shallowEqual);
-
   const [username, setUsername] = useState('');
   const [errId, setErrId] = useState<any>(false);
   const [email, setEmail] = useState('');
@@ -53,59 +52,35 @@ const SignUpSceen = ({navigation}) => {
   const [character, setCharacter] = useState(null);
   const [selectingAvatar, setSelectingAvatar] = useState(false);
   const [selecting, setSelecting] = useState(Selecting.NONE);
-
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
-
   useEffect(() => {
     setLoading(false);
   }, []);
 
-  const exchangeOD = () => {
-    if (origin && destination) {
-      dispatch(exchangeOriginDestination());
-    } else {
-      Alert.alert('출발지와 도착지를 먼저 설정해주세요.');
-    }
-  };
+  const exchangeOD = useCallback(
+    () => {
+      if (origin && destination) {
+        dispatch(exchangeOriginDestination());
+      } else {
+        Alert.alert('출발지와 도착지를 먼저 설정해주세요.');
+      }
+    },
+    [origin, destination, exchangeOriginDestination],
+  )
 
-  const isUsername = str => {
+  const isUsername = useCallback(str => {
     return (
       str && str.length > 5 && str.length < 12 && /^[a-zA-Z0-9._]+$/.test(str)
     );
-  };
-  const isEmail = str => {
+  }, []);
+  const isEmail = useCallback(str => {
     return /.+\@.+\..+/.test(str);
-  };
-  const isPassword = str => {
+  }, []);
+  const isPassword = useCallback(str => {
     return /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/.test(str);
-  };
-  const goToHome = () => {
-    navigation.dispatch(
-      CommonActions.reset({
-        index: 0,
-        routes: [{name: NAV_NAMES.Home}],
-      }),
-    );
-  };
-  const handleIdChange = async id => {
-    setUsername(id);
-    const res = await getPromiseFn({
-      url: APIS.auth.usernameValidity(id).url,
-      body: {},
-      token: null,
-    });
-    if (isUsername(id)) {
-      if (res.status == 200 && res.data.valid) {
-        setErrId(false);
-      } else {
-        setErrId('이미 존재하는 아이디 입니다.');
-      }
-    } else {
-      setErrId('다른 아이디를 시도해주세요.');
-    }
-  };
-  const emailSignUp = async () => {
+  }, []);
+  const emailSignUp = useCallback(async () => {
     if (username === '' || !isUsername(username)) {
       Alert.alert('Error', '아이디를 확인해 주세요', [{text: '네'}]);
       setUsername('');
@@ -171,8 +146,8 @@ const SignUpSceen = ({navigation}) => {
     }
     Alert.alert('Error', `사인업 도중 문재가 발생하였습니다.`);
     setLoading(false);
-  };
-  const borderProp = bool => {
+  }, [username, email, password, character, passwordError]);
+  const borderProp = useCallback(bool => {
     if (!bool || bool === Validity.NULL || bool === Validity.ZERO) {
       return {
         borderColor: GRAY_COLOR,
@@ -189,8 +164,7 @@ const SignUpSceen = ({navigation}) => {
         borderWidth: 1,
       };
     }
-  };
-
+  }, []);
   const selectGetterSetter = {
     [Selecting.ORIGIN]: {
       get: origin,
@@ -208,7 +182,35 @@ const SignUpSceen = ({navigation}) => {
       options: [Direction.INNER, Direction.OUTER],
     },
   };
-
+  const handleEmailChange = useCallback(text => setEmail(text), [])
+  const handleEmailBlur = useCallback(() => setErrEmail(!isEmail(email)), [])
+  const handlePasswordChange = useCallback(text => setPassword(text), [])
+  const handlePasswordBlur = useCallback(() => setErrPassword(!isPassword(password)), [])
+  const handleIdChange = useCallback(async id => {
+    setUsername(id);
+    const res = await getPromiseFn({
+      url: APIS.auth.usernameValidity(id).url,
+      body: {},
+      token: null,
+    });
+    if (isUsername(id)) {
+      if (res.status == 200 && res.data.valid) {
+        setErrId(false);
+      } else {
+        setErrId('이미 존재하는 아이디 입니다.');
+      }
+    } else {
+      setErrId('다른 아이디를 시도해주세요.');
+    }
+  }, []);
+  const handleSelectAvatar = useCallback(() => setSelectingAvatar(true), [])
+  const handleDoneSelectAvatar = useCallback(() => setSelectingAvatar(false), [])
+  const handleSelectDirection = useCallback(() => setSelecting(Selecting.DIRECTION), [])
+  const handleSelectOrigin = useCallback(() => setSelecting(Selecting.ORIGIN), [])
+  const handleSelectDestination = useCallback(() => setSelecting(Selecting.DESTINATION), [])
+  const handleDoneSelecting = useCallback(() => setSelecting(Selecting.NONE), [])
+  const handlePressSignUp = useCallback(() => emailSignUp(), [])
+  const handlePressSignIn = useCallback(() => navigation.navigate(NAV_NAMES.SignIn), [])
   return (
     <Div bgWhite flex justifyCenter>
       <ScrollView>
@@ -233,8 +235,8 @@ const SignUpSceen = ({navigation}) => {
           <Row>
             <TextField
               label={'이메일'}
-              onChangeText={text => setEmail(text)}
-              onBlur={() => setErrEmail(!isEmail(email))}
+              onChangeText={handleEmailChange}
+              onBlur={handleEmailBlur}
               error={errEmail && '이메일이 정확한지 확인해 주세요'}
               value={email}
               autoCapitalize="none"
@@ -243,9 +245,9 @@ const SignUpSceen = ({navigation}) => {
           <Row>
             <TextField
               label={'비밀번호'}
-              onChangeText={text => setPassword(text)}
+              onChangeText={handlePasswordChange}
               value={password}
-              onBlur={() => setErrPassword(!isPassword(password))}
+              onBlur={handlePasswordBlur}
               error={errPassword && passwordError}
               password
             />
@@ -253,7 +255,7 @@ const SignUpSceen = ({navigation}) => {
           <Row>
             <TextField
               label={'아이디'}
-              onChangeText={text => handleIdChange(text)}
+              onChangeText={handleIdChange}
               error={errId}
               value={username}
               autoCapitalize="none"
@@ -261,7 +263,7 @@ const SignUpSceen = ({navigation}) => {
           </Row>
           <Div w={'100%'} rounded5 mt20 {...borderProp(null)}>
             {!character ? (
-              <Row py15 px20 onPress={() => setSelectingAvatar(true)}>
+              <Row py15 px20 onPress={handleSelectAvatar}>
                 <Col auto>
                   <Img source={IMAGES.imageProfileNull} w100 h100></Img>
                 </Col>
@@ -270,7 +272,7 @@ const SignUpSceen = ({navigation}) => {
                 </Col>
               </Row>
             ) : (
-              <Row p5 onPress={() => setSelectingAvatar(true)}>
+              <Row p5 onPress={handleSelectAvatar}>
                 <Col auto px20>
                   <Row justifyCenter itemsCenter>
                     <Img source={IMAGES.characters[character]} w100 h100></Img>
@@ -303,7 +305,7 @@ const SignUpSceen = ({navigation}) => {
               mx20
               py5
               my5
-              onPress={() => setSelecting(Selecting.DIRECTION)}>
+              onPress={handleSelectDirection}>
               <Col auto>
                 <Span
                   bold
@@ -327,7 +329,7 @@ const SignUpSceen = ({navigation}) => {
                 mr5
                 pl5
                 justifyCenter
-                onPress={() => setSelecting(Selecting.ORIGIN)}>
+                onPress={handleSelectOrigin}>
                 <Row>
                   <Col itemsCenter>
                     <Span
@@ -356,7 +358,7 @@ const SignUpSceen = ({navigation}) => {
                 my5
                 pl5
                 justifyCenter
-                onPress={() => setSelecting(Selecting.DESTINATION)}>
+                onPress={handleSelectDestination}>
                 <Row>
                   <Col itemsCenter>
                     <Span
@@ -376,7 +378,7 @@ const SignUpSceen = ({navigation}) => {
             </Row>
           </Div>
           <Div bg={'black'} w={'100%'} rounded5 mt20>
-            <Row py15 px20 onPress={() => emailSignUp()}>
+            <Row py15 px20 onPress={handlePressSignUp}>
               <Col></Col>
               <Col auto>
                 <Span white>{loading ? '' : '회원가입'}</Span>
@@ -390,7 +392,7 @@ const SignUpSceen = ({navigation}) => {
           mt32
           itemsCenter
           w="100%"
-          onPress={() => navigation.navigate(NAV_NAMES.SignIn)}>
+          onPress={handlePressSignIn}>
           <Row>
             <Span sectionBody gray600>
               {'이미 가입하셨나요?'}
@@ -406,7 +408,7 @@ const SignUpSceen = ({navigation}) => {
       </ScrollView>
       <AvatarSelect
         visible={selectingAvatar}
-        onPressReturn={() => setSelectingAvatar(false)}
+        onPressReturn={handleDoneSelectAvatar}
         character={character}
         setCharacter={setCharacter}
       />
@@ -415,7 +417,7 @@ const SignUpSceen = ({navigation}) => {
           selectedValue={selectGetterSetter[selecting].get}
           onValueChange={selectGetterSetter[selecting].set}
           options={selectGetterSetter[selecting].options}
-          onClose={() => setSelecting(Selecting.NONE)}
+          onClose={handleDoneSelecting}
         />
       )}
     </Div>

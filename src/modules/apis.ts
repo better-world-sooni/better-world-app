@@ -61,9 +61,7 @@ const APIS = {
     signIn: () => v1('/auth/log-in'),
     signUp: () => v1('/auth/sign-up'),
     avatar: () => v1('/auth/avatar'),
-  },
-  profile: {
-    get: () => v1('/auth'),
+    user: (token) => v1(`/auth/user?jwtToken=${token}`),
   },
   push: {
     registrationToken: () => v1('/push/registration-token'),
