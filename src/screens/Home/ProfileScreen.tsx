@@ -120,7 +120,6 @@ const ProfileScreen = props => {
     direction,
   ]);
   const pullToRefresh = useCallback(() => {
-    apiGET(APIS.route.starred());
     apiGET(APIS.post.sungan.my());
   }, [apiGET]);
   const filterPostsByStation = useCallback(
@@ -214,6 +213,10 @@ const ProfileScreen = props => {
     () => navigation.navigate(NAV_NAMES.Post),
     [],
   );
+
+  useEffect(() => {
+    pullToRefresh();
+  }, []);
 
   return (
     <Div flex backgroundColor={'white'}>

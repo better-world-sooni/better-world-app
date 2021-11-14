@@ -2,13 +2,19 @@ import React from 'react';
 import {useNavigation} from '@react-navigation/core';
 import {AlertCircle, ChevronDown, PlusSquare} from 'react-native-feather';
 import {shallowEqual, useSelector} from 'react-redux';
-import {chevronDownSettings, iconSettings} from 'src/modules/constants';
+import {
+  chevronDownSettings,
+  GRAY_COLOR,
+  iconSettings,
+  LINE2_COLOR,
+  LINE2_COLOR_LIGHT,
+} from 'src/modules/constants';
 import {NAV_NAMES} from 'src/modules/navNames';
 import {RootState} from 'src/redux/rootReducer';
 import {Col} from './common/Col';
 import {Row} from './common/Row';
 import {Span} from './common/Span';
-import { Alert } from 'react-native';
+import {Alert} from 'react-native';
 
 export const Header = ({bg, onSelect}) => {
   const {
@@ -18,19 +24,26 @@ export const Header = ({bg, onSelect}) => {
   const navigation = useNavigation();
   const goToPost = () => navigation.navigate(NAV_NAMES.Post);
   const goToReport = () => {
-    if(selectedTrain) {
-      navigation.navigate(NAV_NAMES.Report)
+    if (selectedTrain) {
+      navigation.navigate(NAV_NAMES.Report);
     } else {
-      Alert.alert('탑승하신 열차를 먼저 선택해 주세요!')
+      Alert.alert('탑승하신 열차를 먼저 선택해 주세요!');
     }
   };
-  
+
   return (
     <Row itemsCenter py10 px20 bg={bg}>
       <Col w80 auto>
         <Row justifyCenter>
-          <Col justifyCenter auto>
-            <Span>{selectedTrain ? selectedTrain.statnNm : '탑승전'}</Span>
+          <Col
+            justifyCenter
+            auto
+            rounded5
+            bg={selectedTrain ? LINE2_COLOR_LIGHT : GRAY_COLOR}
+            p5>
+            <Span color={selectedTrain ? 'white' : 'black'}>
+              {selectedTrain ? selectedTrain.statnNm : '탑승전'}
+            </Span>
           </Col>
           <Col></Col>
         </Row>

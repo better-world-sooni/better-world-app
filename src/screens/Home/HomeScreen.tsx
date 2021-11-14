@@ -231,6 +231,7 @@ const HomeScreen = props => {
   }, [origin]);
 
   useEffect(() => {
+    apiGET(APIS.post.main());
     apiGET(APIS.route.starred());
     const everyQuarterMinute = setInterval(() => {
       if (!positionsLoading && !arrivalLoading) {

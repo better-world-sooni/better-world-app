@@ -1,8 +1,7 @@
 export const IMAGES = {
-  mainLogo: require('assets/images/imgSunganLogo.png'),
+  mainLogo: require('assets/images/imgSunganLogo1024.png'),
   blueMapMarker: require('assets/images/blueMapMarker.png'),
   redMapMarker: require('assets/images/redMapMarker.png'),
-  example2: require('assets/images/example2.jpeg'),
   imageLogoApple: require('assets/images/imageLogoApple.png'),
   imageLogoKakaotalk: require('assets/images/imageLogoKakaotalk.png'),
   imageLogoGoogle: require('assets/images/imageLogoGoogle.png'),
