@@ -15,6 +15,12 @@
   import APIS from 'src/modules/apis';
   import {Alert} from 'react-native';
 import { Info } from 'react-native-feather';
+import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
+
+const options = {
+  enableVibrateFallback: true,
+  ignoreAndroidSystemSettings: false,
+};
 
   enum Validity {
     NULL = null,
@@ -35,7 +41,7 @@ import { Info } from 'react-native-feather';
     const [report, setReport] = useState({
       reportType: 0,
       label: null,
-      vehicleIdNum: selectedTrain ?`${selectedTrain.statnTnm}행 현재 ${selectedTrain.statnNm}역 (열차번호: ${selectedTrain.trainNo})`: null,
+      vehicleIdNum: null,
       detail: null,
       userName: currentUser.username,
       userProfileImgUrl: currentUser.avatar,
@@ -121,6 +127,7 @@ import { Info } from 'react-native-feather';
       setReport({shouldBeUploaded: reportShouldBeUploaded, ...other});
     };
     const handleSendSMSCallback = async (completed, cancelled, error) => {
+      ReactNativeHapticFeedback.trigger('impactMedium', options);
       if (completed && report.shouldBeUploaded) {
         try {
           const response = await postPromiseFn({
@@ -150,7 +157,13 @@ import { Info } from 'react-native-feather';
         isValidDetail(report.detail)
       ) {
         const textObject = {
-          body: `[${report.reportType == 0 ? "요청" : "신고"}: ${report.label}]\n2호선 ${report.vehicleIdNum ? `${report.vehicleIdNum}번 차량` : `${selectedTrain.statnTnm}행 현재 ${selectedTrain.statnNm}역 (열차번호: ${selectedTrain.trainNo})`}\n ${report.detail}`,
+          body: `[${report.reportType == 0 ? '요청' : '신고'}: ${
+            report.label
+          }]\n2호선 ${
+            report.vehicleIdNum
+              ? `${report.vehicleIdNum}번 차량`
+              : `${selectedTrain.statnTnm}행 현재 ${selectedTrain.statnNm}역 (열차번호: ${selectedTrain.trainNo})`
+          }\n ${report.detail}`,
           recipients: [SEOUL_METRO_PHONE_1TO8],
           successTypes: ['sent'],
           allowAndroidSendWithoutReadPermission: true,
@@ -167,13 +180,15 @@ import { Info } from 'react-native-feather';
         Alert.alert('민원 내용을 적어주세요.');
       }
     };
-    const handleChangeText = (change) => {
-      if(change.length == 0) return setVehicleIdNum(change)
-      return setVehicleIdNum(change)
-    }
+    const handleChangeText = change => {
+      if (change.length == 0) return setVehicleIdNum(change);
+      return setVehicleIdNum(change);
+    };
     const handlePressInfo = () => {
-      Alert.alert('열차 출입문 상단 또는 통로 상단을 보면 4~6자리 차량번호가 적혀있어요! 차량번호를 입력할 경우 훨씬 더 빠른 대처가 가능합니다.')
-    }
+      Alert.alert(
+        '열차 출입문 상단 또는 통로 상단을 보면 4~6자리 차량번호가 적혀있어요! 차량번호를 입력할 경우 훨씬 더 빠른 대처가 가능합니다.',
+      );
+    };
     return (
       <Div flex>
         <NativeBaseProvider>
@@ -245,17 +260,20 @@ import { Info } from 'react-native-feather';
                   </ScrollView>
                 </Row>
                 <Row mb10 mt15>
-                  <Col auto mr5><Span medium fontSize={15}>
-                    차량번호
-                  </Span></Col>
-                  <Col onPress={handlePressInfo}><Info color={'black'} height={15} width={15}></Info></Col>
+                  <Col auto mr5>
+                    <Span medium fontSize={15}>
+                      차량번호
+                    </Span>
+                  </Col>
+                  <Col onPress={handlePressInfo}>
+                    <Info color={'black'} height={15} width={15}></Info>
+                  </Col>
                 </Row>
                 <Row mb20>
                   <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                     <Div
                       rounded
-                      {...borderProp(isValidVehicleId(report.vehicleIdNum)
-                      )}>
+                      {...borderProp(isValidVehicleId(report.vehicleIdNum))}>
                       <Div px20 py10 w={'100%'}>
                         <Input
                           w={'100%'}
@@ -326,7 +344,7 @@ import { Info } from 'react-native-feather';
                   </ScrollView>
                 </Row>
               </Div>
-              <Div h200 />
+              <Div h300 />
             </Div>
           </ScrollView>
         </NativeBaseProvider>

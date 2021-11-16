@@ -27,20 +27,26 @@ import {
 import {RootState} from 'src/redux/rootReducer';
 import {Input, KeyboardAvoidingView, NativeBaseProvider} from 'native-base';
 import {Platform, RefreshControl, SafeAreaView, ScrollView} from 'react-native';
-import {setPost} from 'src/redux/feedReducer';
+import {setMainPost} from 'src/redux/feedReducer';
 import {isOkay} from 'src/modules/utils';
+import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
+
+const options = {
+  enableVibrateFallback: true,
+  ignoreAndroidSystemSettings: false,
+};
 
 enum TextType {
   COMMENT = 0,
 }
 const PostDetailScreen = () => {
   const {
-    feed: {currentPostId, mainPosts},
+    feed: {currentPostId, mainPosts, myPosts},
     app: {
       session: {token, currentUser},
     },
   } = useSelector((root: RootState) => root, shallowEqual);
-  const currentPost = mainPosts[currentPostId];
+  const currentPost = mainPosts[currentPostId] || myPosts[currentPostId];
   const innerPost = currentPost.post;
 
   const {data: reportComments, isLoading: reportCommentsLoading} =
@@ -81,6 +87,7 @@ const PostDetailScreen = () => {
     });
   };
   const likeOn = async (api, commentId) => {
+    ReactNativeHapticFeedback.trigger('impactLight', options);
     return await postPromiseFn({
       url: api(commentId).url,
       body: {},
@@ -88,6 +95,7 @@ const PostDetailScreen = () => {
     });
   };
   const unlikeOn = async (api, commentId) => {
+    ReactNativeHapticFeedback.trigger('impactLight', options);
     return await deletePromiseFn({
       url: api(commentId).url,
       body: {},
@@ -95,6 +103,7 @@ const PostDetailScreen = () => {
     });
   };
   const likeOnSunganComment = async (api, commentId) => {
+    ReactNativeHapticFeedback.trigger('impactLight', options);
     return await postPromiseFn({
       url: api().url,
       body: {
@@ -186,47 +195,45 @@ const PostDetailScreen = () => {
       },
     },
   };
-  const handleLike = async () => {
+  const handleLike = () => {
     if (currentPost.didLike) {
-      const res = await deletePromiseFn({
+      const {
+        didLike,
+        post: {likeCnt, ...otherProps},
+        ...other
+      } = currentPost;
+      ReactNativeHapticFeedback.trigger('impactLight', options);
+      dispatch(
+        setMainPost({
+          didLike: false,
+          post: {likeCnt: likeCnt - 1, ...otherProps},
+          ...other,
+        }),
+      );
+      deletePromiseFn({
         url: post[currentPost.type].likeUrl(innerPost.id),
         body: {},
         token: token,
       });
-      if (isOkay(res)) {
-        const {
-          didLike,
-          post: {likeCnt, ...otherProps},
-          ...other
-        } = currentPost;
-        dispatch(
-          setPost({
-            didLike: false,
-            post: {likeCnt: likeCnt - 1, ...otherProps},
-            ...other,
-          }),
-        );
-      }
     } else {
-      const res = await postPromiseFn({
+      const {
+        didLike,
+        post: {likeCnt, ...otherProps},
+        ...other
+      } = currentPost;
+      ReactNativeHapticFeedback.trigger('impactLight', options);
+      dispatch(
+        setMainPost({
+          didLike: true,
+          post: {likeCnt: likeCnt + 1, ...otherProps},
+          ...other,
+        }),
+      );
+      postPromiseFn({
         url: post[currentPost.type].likeUrl(innerPost.id),
         body: {},
         token: token,
       });
-      if (isOkay(res)) {
-        const {
-          didLike,
-          post: {likeCnt, ...otherProps},
-          ...other
-        } = currentPost;
-        dispatch(
-          setPost({
-            didLike: true,
-            post: {likeCnt: likeCnt + 1, ...otherProps},
-            ...other,
-          }),
-        );
-      }
     }
   };
   const handleSend = async () => {
@@ -244,6 +251,7 @@ const PostDetailScreen = () => {
           pullToRefresh();
         }
       }
+      ReactNativeHapticFeedback.trigger('impactMedium', options);
     }
   };
   const handleLikeOnComment = async (commentId, prevLiked) => {
@@ -258,6 +266,7 @@ const PostDetailScreen = () => {
         pullToRefresh();
       }
     }
+    ReactNativeHapticFeedback.trigger('impactLight', options);
   };
   const handleReplyOnComment = comment => {
     setTextType(comment);

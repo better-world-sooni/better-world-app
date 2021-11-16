@@ -24,7 +24,12 @@ import {postPromiseFn} from 'src/redux/asyncReducer';
 import APIS from 'src/modules/apis';
 import {stationArr} from 'src/modules/utils';
 import EmojiSelector, {Categories} from 'react-native-emoji-selector';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
+
+const options = {
+  enableVibrateFallback: true,
+  ignoreAndroidSystemSettings: false,
+};
 
 enum Validity {
   NULL = null,
@@ -120,6 +125,7 @@ const PostScreen = props => {
 
   const postSungan = async () => {
     setIsLoading(true);
+    ReactNativeHapticFeedback.trigger('impactMedium', options);
     if (
       sungan.stationName &&
       sungan.channelId &&
@@ -357,7 +363,7 @@ const PostScreen = props => {
                   </Div>
                 </Row>
               </Div>
-              <Div h200 />
+              <Div h300 />
             </Div>
           </ScrollView>
         </NativeBaseProvider>

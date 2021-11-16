@@ -5,6 +5,7 @@ const feedSlice = createSlice({
     name: 'feed',
     initialState: {
         mainPosts: null,
+        myPosts: null,
         cachedPreup: null,
         globalFiter: '2호선 본선',
         currentPostId: null,
@@ -12,14 +13,21 @@ const feedSlice = createSlice({
     reducers: {
         setMainPosts: (state, action) => {
             if (action.payload) {
-                // state.posts = [...action.payload].reverse();
                 state.mainPosts = action.payload;
             }
         },
-        setPost: (state, action) => {
+        setMyPosts: (state, action) => {
+            if (action.payload) {
+                state.myPosts = action.payload;
+            }
+        },
+        setMainPost: (state, action) => {
             const key = postKey(action.payload);
-            const {[key]: currentPost, ...other} = state.mainPosts;
-            state.mainPosts = {[key]: action.payload, ...other};
+            state.mainPosts[key] = action.payload;
+        },
+        setMyPost: (state, action) => {
+            const key = postKey(action.payload);
+            state.myPosts[key] = action.payload;
         },
         setCachedPreup: (state, action) => {
             state.cachedPreup = action.payload;
@@ -36,7 +44,8 @@ const feedSlice = createSlice({
 export const feedReducer = feedSlice.reducer;
 export const {
     setMainPosts,
-    setPost,
+    setMyPosts,
+    setMainPost,
     setCachedPreup,
     setGlobalFilter,
     setCurrentPostId,

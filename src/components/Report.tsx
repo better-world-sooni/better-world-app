@@ -1,62 +1,76 @@
+import {useNavigation} from '@react-navigation/core';
 import React, {useCallback, useState} from 'react';
 import {Heart, MessageCircle} from 'react-native-feather';
+import {shallowEqual, useDispatch, useSelector} from 'react-redux';
 import APIS from 'src/modules/apis';
 import {GRAY_COLOR, iconSettings, postShadowProp} from 'src/modules/constants';
 import {IMAGES} from 'src/modules/images';
 import {NAV_NAMES} from 'src/modules/navNames';
 import {isOkay, postKey} from 'src/modules/utils';
 import {deletePromiseFn, postPromiseFn} from 'src/redux/asyncReducer';
-import {setCurrentPostId, setPost} from 'src/redux/feedReducer';
+import {setCurrentPostId, setMainPost} from 'src/redux/feedReducer';
+import {RootState} from 'src/redux/rootReducer';
 import {Col} from './common/Col';
 import {Div} from './common/Div';
 import {Img} from './common/Img';
 import {Row} from './common/Row';
 import {Span} from './common/Span';
+import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 
-export const Report = ({post, dispatch, navigation, token, mine = null}) => {
+const options = {
+  enableVibrateFallback: true,
+  ignoreAndroidSystemSettings: false,
+};
+
+export const Report = ({post, mine = null}) => {
+  const {
+    app: {
+      session: {token},
+    },
+  } = useSelector((root: RootState) => root, shallowEqual);
+  const dispatch = useDispatch();
+  const navigation = useNavigation();
   const report = post.post;
   const bestComment = post.bestComment;
-  const like = useCallback(async () => {
+  const like = useCallback(() => {
     if (post.didLike) {
-      const res = await deletePromiseFn({
+      const {
+        didLike,
+        post: {likeCnt, ...otherProps},
+        ...other
+      } = post;
+      ReactNativeHapticFeedback.trigger('impactLight', options);
+      dispatch(
+        setMainPost({
+          didLike: false,
+          post: {likeCnt: likeCnt - 1, ...otherProps},
+          ...other,
+        }),
+      );
+      deletePromiseFn({
         url: APIS.post.report.like(report.id).url,
         body: {},
         token: token,
       });
-      if (isOkay(res)) {
-        const {
-          didLike,
-          post: {likeCnt, ...otherProps},
-          ...other
-        } = post;
-        dispatch(
-          setPost({
-            didLike: false,
-            post: {likeCnt: likeCnt - 1, ...otherProps},
-            ...other,
-          }),
-        );
-      }
     } else {
-      const res = await postPromiseFn({
+      const {
+        didLike,
+        post: {likeCnt, ...otherProps},
+        ...other
+      } = post;
+      ReactNativeHapticFeedback.trigger('impactLight', options);
+      dispatch(
+        setMainPost({
+          didLike: true,
+          post: {likeCnt: likeCnt + 1, ...otherProps},
+          ...other,
+        }),
+      );
+      postPromiseFn({
         url: APIS.post.report.like(report.id).url,
         body: {},
         token: token,
       });
-      if (isOkay(res)) {
-        const {
-          didLike,
-          post: {likeCnt, ...otherProps},
-          ...other
-        } = post;
-        dispatch(
-          setPost({
-            didLike: true,
-            post: {likeCnt: likeCnt + 1, ...otherProps},
-            ...other,
-          }),
-        );
-      }
     }
   }, [report]);
   const goToPostDetail = useCallback(() => {
@@ -125,13 +139,6 @@ export const Report = ({post, dispatch, navigation, token, mine = null}) => {
               </Row>
             </Col>
           </Row>
-          {/* {report.comments && report.comments.length > 1 && (
-            <Row itemsCenter py5>
-              <Span color={'gray'}>{`${
-                report.comments.length - 1
-              }개 댓글 더보기`}</Span>
-            </Row>
-          )} */}
           {bestComment && (
             <Row
               itemsCenter
@@ -157,9 +164,6 @@ export const Report = ({post, dispatch, navigation, token, mine = null}) => {
                   <Span ml5>{bestComment.content}</Span>
                 </Row>
               </Col>
-              {/* <Col auto itemsCenter justifyCenter>
-                <Heart color={'black'} height={14}></Heart>
-              </Col> */}
             </Row>
           )}
         </>
@@ -167,3 +171,5 @@ export const Report = ({post, dispatch, navigation, token, mine = null}) => {
     </Div>
   );
 };
+
+export default React.memo(Report);

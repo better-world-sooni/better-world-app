@@ -33,15 +33,15 @@ import {
 } from 'src/modules/constants';
 import {appActions, useLogout} from 'src/redux/appReducer';
 import {ScrollSelector} from 'src/components/ScrollSelector';
-import {setGlobalFilter} from 'src/redux/feedReducer';
+import {setGlobalFilter, setMyPosts} from 'src/redux/feedReducer';
 import {RootState} from 'src/redux/rootReducer';
 import {toggleReceiveStationPush} from 'src/redux/routeReducer';
 import {Alert, RefreshControl, Switch} from 'react-native';
-import {Sungan} from 'src/components/Sungan';
-import {Report} from 'src/components/Report';
-import {Place} from 'src/components/Place';
+import Sungan from 'src/components/Sungan';
+import Report from 'src/components/Report';
+import Place from 'src/components/Place';
 import AvatarSelect from 'src/components/AvatarSelect';
-import {isOkay, stationArr} from 'src/modules/utils';
+import {isOkay, postKey, stationArr} from 'src/modules/utils';
 
 const ProfileScreen = props => {
   const navigation = useNavigation();
@@ -57,7 +57,7 @@ const ProfileScreen = props => {
       route: {stations, direction},
       selectedTrain,
     },
-    feed: {globalFiter},
+    feed: {globalFiter, myPosts},
   } = useSelector((root: RootState) => root, shallowEqual);
   const {currentUser, token} = useSelector(
     (root: RootState) => root.app.session,
@@ -124,7 +124,8 @@ const ProfileScreen = props => {
     apiGET(APIS.post.sungan.my());
   }, [apiGET]);
   const filterPostsByStation = useCallback(
-    post => {
+    key => {
+      const post = myPosts[key];
       if (post.type === REPORT) {
         return true;
       } else if (!post.station?.name) {
@@ -165,40 +166,14 @@ const ProfileScreen = props => {
       }
     }
   }, [character, token, appActions]);
-  const MySunganMap = ({post, index}) => {
+  const MySungans = ({postKey, index}) => {
+    const post = myPosts[postKey];
     if (post.type == SUNGAN) {
-      return (
-        <Sungan
-          post={post}
-          dispatch={dispatch}
-          navigation={navigation}
-          token={token}
-          key={index}
-          mine
-        />
-      );
+      return <Sungan post={post} key={index} mine />;
     } else if (post.type == REPORT) {
-      return (
-        <Report
-          post={post}
-          dispatch={dispatch}
-          navigation={navigation}
-          token={token}
-          key={index}
-          mine
-        />
-      );
+      return <Report post={post} key={index} mine />;
     } else {
-      return (
-        <Place
-          post={post}
-          dispatch={dispatch}
-          navigation={navigation}
-          token={token}
-          key={index}
-          mine
-        />
-      );
+      return <Place post={post} key={index} mine />;
     }
   };
   const handleSelectGlobalFilter = useCallback(
@@ -212,8 +187,20 @@ const ProfileScreen = props => {
     [],
   );
 
+  useEffect(() => {
+    if (!mySunganLoading) {
+      const myPosts = {};
+      mySungans.forEach(post => {
+        myPosts[postKey(post)] = post;
+      });
+      dispatch(setMyPosts(myPosts));
+    }
+  }, [mySunganLoading]);
+
   useLayoutEffect(() => {
-    pullToRefresh();
+    if (!myPosts) {
+      pullToRefresh();
+    }
     setLoading(false);
   }, []);
 
@@ -311,9 +298,9 @@ const ProfileScreen = props => {
             </Div>
           </Div>
         }
-        data={mySungans && mySungans.filter(filterPostsByStation)}
+        data={myPosts && Object.keys(myPosts).filter(filterPostsByStation)}
         renderItem={({item, index}) => {
-          return <MySunganMap post={item} index={index} />;
+          return <MySungans postKey={item} index={index} />;
         }}
         ListFooterComponent={
           (!mySungans || mySungans.length == 0) && (

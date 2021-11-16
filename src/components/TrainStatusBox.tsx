@@ -17,6 +17,7 @@ import {
   LINE2_Linked_List,
   shortenStations,
 } from 'src/modules/constants';
+import {IMAGES} from 'src/modules/images';
 import {isOkay, stationArr} from 'src/modules/utils';
 import {
   deletePromiseFn,
@@ -27,6 +28,7 @@ import {RootState} from 'src/redux/rootReducer';
 import {setSelectedTrain} from 'src/redux/routeReducer';
 import {Col} from './common/Col';
 import {Div} from './common/Div';
+import {Img} from './common/Img';
 import {Row} from './common/Row';
 import {Span} from './common/Span';
 import HorizontalStations from './HorizontalStations';
@@ -39,7 +41,8 @@ const TrainStatusBox = ({
   if (!trainPositions || !arrivalTrain) {
     return (
       <Div h250 justifyCenter itemsCenter>
-        <Span>정보 가져오는중</Span>
+        <Img w50 h50 source={IMAGES.imageIosLoading} />
+        <Span mt10>정보 가져오는중</Span>
       </Div>
     );
   }

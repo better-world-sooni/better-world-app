@@ -45,12 +45,10 @@ import {faSubway} from '@fortawesome/free-solid-svg-icons';
 import {Header} from 'src/components/Header';
 import {ScrollSelector} from 'src/components/ScrollSelector';
 import {useNavigation} from '@react-navigation/core';
-import {Report} from 'src/components/Report';
-import {Place} from 'src/components/Place';
-import {Sungan} from 'src/components/Sungan';
 import TrainStatusBox from 'src/components/TrainStatusBox';
 import OD from 'src/components/OD';
 import FeedChecked from 'src/components/FeedChecked';
+import MainPosts from 'src/components/MainPosts';
 
 enum ChannelFilter {
   ALL = 0,
@@ -332,57 +330,6 @@ const HomeScreen = props => {
     [],
   );
 
-  const MainPosts = useCallback(
-    mainPosts =>
-      Object.keys(mainPosts)
-        .map(key => {
-          return mainPosts[key];
-        })
-        .filter(post => {
-          return filterPostsByStation(post);
-        })
-        .sort((a, b) => {
-          return (
-            new Date(b.post.createdAt).getTime() -
-            new Date(a.post.createdAt).getTime()
-          );
-        })
-        .map((post, index) => {
-          if (post.type == SUNGAN) {
-            return (
-              <Sungan
-                post={post}
-                dispatch={dispatch}
-                navigation={navigation}
-                token={token}
-                key={index}
-              />
-            );
-          } else if (post.type == REPORT) {
-            return (
-              <Report
-                post={post}
-                dispatch={dispatch}
-                navigation={navigation}
-                token={token}
-                key={index}
-              />
-            );
-          } else {
-            return (
-              <Place
-                post={post}
-                dispatch={dispatch}
-                navigation={navigation}
-                token={token}
-                key={index}
-              />
-            );
-          }
-        }),
-    [navigation, token],
-  );
-
   return (
     <Div flex bgWhite>
       <Div h={HAS_NOTCH ? 44 : 20} bg={'rgba(255,255,255,.9)'} />
@@ -491,7 +438,14 @@ const HomeScreen = props => {
             trainPositions={filterPositionResponse(realtimePositionList)}
             arrivalTrain={filterArrivalResponse(realtimeArrivalList)}
           />
-          {/* <Div>{mainPosts && MainPosts(mainPosts)}</Div> */}
+          <Div>
+            {mainPosts && (
+              <MainPosts
+                mainPostsKeys={Object.keys(mainPosts)}
+                filterPostsByStation={filterPostsByStation}
+              />
+            )}
+          </Div>
           <Row itemsCenter justifyCenter pt20 pb10>
             <Col h2 bg={GRAY_COLOR} />
             <Col auto>

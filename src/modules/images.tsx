@@ -7,6 +7,7 @@ export const IMAGES = {
   imageLogoGoogle: require('assets/images/imageLogoGoogle.png'),
   imageLogoFacebook: require('assets/images/imageLogoFacebook.png'),
   imageProfileNull: require('assets/images/imagePersonRectangle.png'),
+  imageIosLoading: require('assets/images/imageIosLoading.gif'),
   characters: {
     alien: require('assets/images/characters/alien.png'),
     blue: require('assets/images/characters/blue.png'),
