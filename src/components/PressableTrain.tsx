@@ -34,10 +34,10 @@ const PressableTrain = ({width, trainAtStation, isRiding, handlePressRide}) => {
   );
   return (
     <Div
-      mb10
       justifyCenter
       itemsCenter
-      h30
+      h50
+      px10
       onPress={() => handlePressRide(trainAtStation, isRiding)}
       w={width}>
       {trainAtStation && (
@@ -69,4 +69,4 @@ const PressableTrain = ({width, trainAtStation, isRiding, handlePressRide}) => {
   );
 };
 
-export default PressableTrain;
+export default React.memo(PressableTrain);

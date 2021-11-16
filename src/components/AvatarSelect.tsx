@@ -42,17 +42,13 @@ const AvatarSelect = ({visible, onPressReturn, character, setCharacter}) => {
   const Characters = useCallback((key, index) => {
     return (
       <Div key={index} flexBasis={'50%'}>
-        <Div
-          rounded5
-          m5
-          p5
-          {...borderProp(key == character ? true : null)}>
+        <Div rounded5 m5 p5 {...borderProp(key == character ? true : null)}>
           <Row onPress={() => setCharacter(key)}>
             <Col>
               <Img source={IMAGES.characters[key]} w100 h100></Img>
             </Col>
             <Col justifyCenter itemsCenter px10>
-              {characterDesc[key].span}
+              {characterDesc.get(key).span}
             </Col>
           </Row>
         </Div>

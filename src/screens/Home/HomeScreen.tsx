@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useLayoutEffect, useState} from 'react';
 import {Alert, Dimensions, RefreshControl} from 'react-native';
 import {Col} from 'src/components/common/Col';
 import {Div} from 'src/components/common/Div';
@@ -19,9 +19,6 @@ import {
   Direction,
   GRAY_COLOR,
   HAS_NOTCH,
-  LINE2_COLOR,
-  LINE2_COLOR_LIGHT,
-  LINE2_Linked_List,
   MAIN_LINE2,
   MY_ROUTE,
   PLACE,
@@ -29,7 +26,6 @@ import {
   Selecting,
   shortenStations,
   SUNGAN,
-  TRAIN_STATE,
 } from 'src/modules/constants';
 import {
   setRoute,
@@ -75,11 +71,11 @@ const HomeScreen = props => {
   const {data: positionResponse, isLoading: positionsLoading} = useApiSelector(
     APIS.realtime.position,
   );
-  const realtimePositionList = positionResponse?.data;
   const {data: arrivalResponse, isLoading: arrivalLoading} = useApiSelector(
     APIS.realtime.arrival,
   );
-  const realtimeArrivalList = arrivalResponse?.data;
+  const [realtimePositionList, setRealtimePositionList] = useState(null);
+  const [realtimeArrivalList, setRealtimeArrivalList] = useState(null);
   const {
     route: {origin, destination, direction, stations},
     selectedTrain,
@@ -182,6 +178,8 @@ const HomeScreen = props => {
             trainLocations[train.statnNm] = train;
           }
         });
+      } else {
+        return null;
       }
       return trainLocations;
     },
@@ -231,44 +229,35 @@ const HomeScreen = props => {
   }, [origin]);
 
   useEffect(() => {
-    apiGET(APIS.post.main());
-    apiGET(APIS.route.starred());
-    const everyQuarterMinute = setInterval(() => {
-      if (!positionsLoading && !arrivalLoading) {
-        apiGET(APIS.realtime.position());
-        origin && apiGET(APIS.realtime.arrival(origin.split('(')[0]));
-      }
-    }, 15000);
-    return () => {
-      clearInterval(everyQuarterMinute);
-    };
-  }, [origin, direction]);
-
-  useEffect(() => {
-    if (mainFeed) {
-      const mainPosts = {};
-      mainFeed.forEach(post => {
-        mainPosts[postKey(post)] = post;
-      });
-      dispatch(setMainPosts(mainPosts));
+    if (!origin || !destination) {
+      apiGET(APIS.route.starred());
     }
-  }, [mainLoading]);
+    if (!mainPosts) {
+      apiGET(APIS.post.main());
+    }
+  }, []);
+  useLayoutEffect(() => {
+    setTimeout(() => {
+      setRealtimePositionList(positionResponse?.data);
+      setRealtimeArrivalList(arrivalResponse?.data);
+    }, 1);
+  }, []);
+  // useEffect(() => {
+  //   if (mainFeed) {
+  //     const mainPosts = {};
+  //     mainFeed.forEach(post => {
+  //       mainPosts[postKey(post)] = post;
+  //     });
+  //     dispatch(setMainPosts(mainPosts));
+  //   }
+  // }, [mainLoading]);
 
   useEffect(() => {
-    if (defaultRoute) {
+    if (defaultRoute && !starredLoading) {
       dispatch(setRoute(defaultRoute.route));
     }
   }, [starredLoading]);
 
-  useEffect(() => {
-    !positionsLoading &&
-      dispatch(setTrainPositions(filterPositionResponse(realtimePositionList)));
-  }, [positionsLoading]);
-
-  useEffect(() => {
-    !arrivalLoading &&
-      dispatch(setArrivalTrain(filterArrivalResponse(realtimeArrivalList)));
-  }, [arrivalLoading]);
   const [selecting, setSelecting] = useState(Selecting.NONE);
   const selectGetterSetter = {
     [Selecting.ORIGIN]: {
@@ -396,6 +385,7 @@ const HomeScreen = props => {
         }),
     [navigation, token],
   );
+  console.log('HomeScreen');
 
   return (
     <Div flex bgWhite>
@@ -552,8 +542,12 @@ const HomeScreen = props => {
               </ScrollView>
             </Row>
           </Div>
-          <TrainStatusBox handleSelectDirection={handleSelectDirection} />
-          <Div>{mainPosts && MainPosts(mainPosts)}</Div>
+          <TrainStatusBox
+            handleSelectDirection={handleSelectDirection}
+            trainPositions={filterPositionResponse(realtimePositionList)}
+            arrivalTrain={filterArrivalResponse(realtimeArrivalList)}
+          />
+          {/* <Div>{mainPosts && MainPosts(mainPosts)}</Div> */}
           <Row itemsCenter justifyCenter pt20 pb10>
             <Col h2 bg={GRAY_COLOR} />
             <Col auto>

@@ -36,7 +36,7 @@ export const shortenAddress = function (address) {
 
 export const stationArr = (arr, start, end, direction, limit = null) => {
   if (start && end) {
-    const curr = LINE2_Linked_List[start];
+    const curr = LINE2_Linked_List.get(start);
     if (limit) {
       if (direction === Direction.CW) {
         if (curr.next === end || arr.length - 1 === limit) {

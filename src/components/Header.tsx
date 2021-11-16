@@ -39,7 +39,7 @@ export const Header = ({bg, onSelect}) => {
             justifyCenter
             auto
             rounded5
-            bg={selectedTrain ? LINE2_COLOR_LIGHT : GRAY_COLOR}
+            bg={selectedTrain ? LINE2_COLOR : GRAY_COLOR}
             p5>
             <Span color={selectedTrain ? 'white' : 'black'}>
               {selectedTrain ? selectedTrain.statnNm : '탑승전'}

@@ -11,6 +11,7 @@ import { NAV_NAMES } from 'src/modules/navNames';
 import {ScrollView} from 'src/modules/viewComponents';
 import {useLogin} from 'src/redux/appReducer';
 import {IMAGES} from 'src/modules/images';
+import LinearGradient from 'react-native-linear-gradient';
 
 const SignInScreen = ({navigation}) => {
   const [email, setEmail] = useState('');
@@ -23,12 +24,9 @@ const SignInScreen = ({navigation}) => {
     setLoading(false);
   }, []);
 
-  const isEmail = useCallback(
-    str => {
-      return /.+\@.+\..+/.test(str);
-    },
-    [],
-  )
+  const isEmail = useCallback(str => {
+    return /.+\@.+\..+/.test(str);
+  }, []);
   const goToHome = useCallback(() => {
     navigation.dispatch(
       CommonActions.reset({
@@ -56,16 +54,24 @@ const SignInScreen = ({navigation}) => {
       },
       props => {
         setLoading(false);
-        Alert.alert('Error', "아이디, 비밀번호를 확인해 주세요.", [{text: '네'}]);
+        Alert.alert('Error', '아이디, 비밀번호를 확인해 주세요.', [
+          {text: '네'},
+        ]);
       },
     );
   }, [email, password]);
 
-  const handleChangeEmail = useCallback(text => setEmail(text),[])
-  const handleErrEmail = useCallback(() => setErrEmail(!isEmail(email)), [email])
-  const handleChangePassword = useCallback(text => setPassword(text), [])
-  const handlePressSignUp = useCallback(() => navigation.navigate(NAV_NAMES.SignUp), [])
-  
+  const handleChangeEmail = useCallback(text => setEmail(text), []);
+  const handleErrEmail = useCallback(
+    () => setErrEmail(!isEmail(email)),
+    [email],
+  );
+  const handleChangePassword = useCallback(text => setPassword(text), []);
+  const handlePressSignUp = useCallback(
+    () => navigation.navigate(NAV_NAMES.SignUp),
+    [],
+  );
+
   return (
     <Div bgWhite flex justifyCenter>
       <ScrollView>
@@ -105,15 +111,19 @@ const SignInScreen = ({navigation}) => {
               password
             />
           </Row>
-          <Div bg={'black'} w={'100%'} rounded5 mt20>
-            <Row py15 px20 onPress={handleEmailSignIn}>
+          <LinearGradient
+            colors={['#25e2bc', '#45c01c']}
+            style={{width: '100%', borderRadius: 5, marginTop: 20, padding: 2}}>
+            <Row py15 px20 onPress={handleEmailSignIn} bgWhite rounded5>
               <Col></Col>
               <Col auto>
-                <Span white>{loading ? '' : '로그인'}</Span>
+                <Span black bold>
+                  {loading ? '' : '로그인'}
+                </Span>
               </Col>
               <Col></Col>
             </Row>
-          </Div>
+          </LinearGradient>
           {/* <Row mt100 w="100%" justifyCenter>
             <Col auto mr16>
               <Img w42 h42 source={IMAGES.imageLogoFacebook} />
@@ -131,12 +141,7 @@ const SignInScreen = ({navigation}) => {
             )}
           </Row> */}
         </Div>
-        <Div
-          px20
-          mt32
-          itemsCenter
-          w="100%"
-          onPress={handlePressSignUp}>
+        <Div px20 mt32 itemsCenter w="100%" onPress={handlePressSignUp}>
           <Row>
             <Span sectionBody gray600>
               {'처음이신 가요?'}

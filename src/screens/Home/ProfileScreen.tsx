@@ -1,7 +1,7 @@
 import {
 useNavigation
 } from '@react-navigation/native';
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useLayoutEffect, useState} from 'react';
 import {Col} from 'src/components/common/Col';
 import {Div} from 'src/components/common/Div';
 import {Img} from 'src/components/common/Img';
@@ -10,7 +10,7 @@ import {Span} from 'src/components/common/Span';
 import APIS from 'src/modules/apis';
 import {IMAGES} from 'src/modules/images';
 import {NAV_NAMES} from 'src/modules/navNames';
-import {ScrollView} from 'src/modules/viewComponents';
+import {FlatList, ScrollView} from 'src/modules/viewComponents';
 import {
   deletePromiseFn,
   postPromiseFn,
@@ -65,6 +65,7 @@ const ProfileScreen = props => {
   );
   const [selecting, setSelecting] = useState(Selecting.NONE);
   const [character, setCharacter] = useState(null);
+  const [loading, setLoading] = useState(true);
   const dispatch = useDispatch();
   const [selectingAvatar, setSelectingAvatar] = useState(false);
   const selectGetterSetter = {
@@ -164,45 +165,42 @@ const ProfileScreen = props => {
       }
     }
   }, [character, token, appActions]);
-  const MySunganMap = useCallback(
-    (post, index) => {
-      if (post.type == SUNGAN) {
-        return (
-          <Sungan
-            post={post}
-            dispatch={dispatch}
-            navigation={navigation}
-            token={token}
-            key={index}
-            mine
-          />
-        );
-      } else if (post.type == REPORT) {
-        return (
-          <Report
-            post={post}
-            dispatch={dispatch}
-            navigation={navigation}
-            token={token}
-            key={index}
-            mine
-          />
-        );
-      } else {
-        return (
-          <Place
-            post={post}
-            dispatch={dispatch}
-            navigation={navigation}
-            token={token}
-            key={index}
-            mine
-          />
-        );
-      }
-    },
-    [navigation, token],
-  );
+  const MySunganMap = ({post, index}) => {
+    if (post.type == SUNGAN) {
+      return (
+        <Sungan
+          post={post}
+          dispatch={dispatch}
+          navigation={navigation}
+          token={token}
+          key={index}
+          mine
+        />
+      );
+    } else if (post.type == REPORT) {
+      return (
+        <Report
+          post={post}
+          dispatch={dispatch}
+          navigation={navigation}
+          token={token}
+          key={index}
+          mine
+        />
+      );
+    } else {
+      return (
+        <Place
+          post={post}
+          dispatch={dispatch}
+          navigation={navigation}
+          token={token}
+          key={index}
+          mine
+        />
+      );
+    }
+  };
   const handleSelectGlobalFilter = useCallback(
     () => setSelecting(Selecting.GLOBAL_FILTER),
     [],
@@ -214,9 +212,17 @@ const ProfileScreen = props => {
     [],
   );
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     pullToRefresh();
+    setLoading(false);
   }, []);
+
+  if (loading)
+    return (
+      <Div flex itemsCenter justifyCenter>
+        <Span>로딩...</Span>
+      </Div>
+    );
 
   return (
     <Div flex backgroundColor={'white'}>
@@ -266,75 +272,79 @@ const ProfileScreen = props => {
           </Row>
         </Col>
       </Row>
-      <ScrollView
+      <FlatList
         flex={1}
         showsVerticalScrollIndicator={false}
+        ListHeaderComponent={
+          <Div relative px20>
+            <Row itemsCenter mt10>
+              <Col auto rounded100 overflowHidden>
+                <Img
+                  source={IMAGES.characters[currentUser.avatar]}
+                  h100
+                  w100></Img>
+              </Col>
+              <Col px20 flex>
+                <Row itemsCenter flex={1}>
+                  <Col auto>
+                    <Span bold fontSize={20}>
+                      {currentUser.username}
+                    </Span>
+                  </Col>
+                </Row>
+              </Col>
+            </Row>
+            <Div onPress={handleSelectAvatar}>
+              <Row
+                itemsCenter
+                my10
+                py10
+                rounded5
+                borderWidth={0.5}
+                borderColor={GRAY_COLOR}>
+                <Col></Col>
+                <Col auto>
+                  <Span>아바타 바꾸기</Span>
+                </Col>
+                <Col></Col>
+              </Row>
+            </Div>
+          </Div>
+        }
+        data={mySungans && mySungans.filter(filterPostsByStation)}
+        renderItem={({item, index}) => {
+          return <MySunganMap post={item} index={index} />;
+        }}
+        ListFooterComponent={
+          (!mySungans || mySungans.length == 0) && (
+            <>
+              <Row itemsCenter justifyCenter pt20 pb10 onPress={handleGotoPost}>
+                <Col h2 />
+                <Col auto>
+                  <PlusSquare
+                    height={50}
+                    width={50}
+                    strokeWidth={0.7}
+                    color={GRAY_COLOR}></PlusSquare>
+                </Col>
+                <Col h2></Col>
+              </Row>
+              <Row pb20>
+                <Col></Col>
+                <Col auto>
+                  <Span color={GRAY_COLOR}>게시물을 올려보세요!</Span>
+                </Col>
+                <Col></Col>
+              </Row>
+            </>
+          )
+        }
         refreshControl={
           <RefreshControl
             refreshing={mySunganLoading}
             onRefresh={pullToRefresh}
           />
-        }>
-        <Div relative px20>
-          <Row itemsCenter mt10>
-            <Col auto rounded100 overflowHidden>
-              <Img
-                source={IMAGES.characters[currentUser.avatar]}
-                h100
-                w100></Img>
-            </Col>
-            <Col px20 flex>
-              <Row itemsCenter flex={1}>
-                <Col auto>
-                  <Span bold fontSize={20}>
-                    {currentUser.username}
-                  </Span>
-                </Col>
-              </Row>
-            </Col>
-          </Row>
-          <Div onPress={handleSelectAvatar}>
-            <Row
-              itemsCenter
-              my10
-              py10
-              rounded5
-              borderWidth={0.5}
-              borderColor={GRAY_COLOR}>
-              <Col></Col>
-              <Col auto>
-                <Span>아바타 바꾸기</Span>
-              </Col>
-              <Col></Col>
-            </Row>
-          </Div>
-        </Div>
-        <Div mt10>
-          {mySungans && mySungans.filter(filterPostsByStation).map(MySunganMap)}
-        </Div>
-        {(!mySungans || mySungans.length == 0) && (
-          <>
-            <Row itemsCenter justifyCenter pt20 pb10 onPress={handleGotoPost}>
-              <Col h2 />
-              <Col auto>
-                <PlusSquare
-                  height={50}
-                  width={50}
-                  strokeWidth={0.7}
-                  color={GRAY_COLOR}></PlusSquare>
-              </Col>
-              <Col h2></Col>
-            </Row>
-            <Row pb20>
-              <Col></Col>
-              <Col auto>
-                <Span color={GRAY_COLOR}>게시물을 올려보세요!</Span>
-              </Col>
-              <Col></Col>
-            </Row>
-          </>
-        )}
-      </ScrollView>
+        }></FlatList>
       {selecting && (
         <ScrollSelector
           selectedValue={selectGetterSetter[selecting].get}

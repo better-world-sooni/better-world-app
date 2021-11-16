@@ -61,4 +61,4 @@ const ColoredTrainPath = ({width, stationName, isOrigin, isDestination}) => {
   );
 };
 
-export default ColoredTrainPath;
+export default React.memo(ColoredTrainPath);

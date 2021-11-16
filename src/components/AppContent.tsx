@@ -35,12 +35,16 @@ const tabBarFunc = props => <BottomTabBar {...props} />;
 
 const MainBottomTabs = () => {
   return (
-    <Tab.Navigator tabBar={tabBarFunc} initialRouteName={NAV_NAMES.Home}>
+    <Tab.Navigator
+      tabBar={tabBarFunc}
+      initialRouteName={NAV_NAMES.Home}
+      detachInactiveScreens={true}>
       <Tab.Screen
         name={NAV_NAMES.Home}
         component={HomeScreen}
         options={{
           tabBarLabel: '홈',
+          unmountOnBlur: true,
           tabBarIcon: props => (
             <Home
               color={props.focused ? LINE2_COLOR : 'gray'}
@@ -53,6 +57,7 @@ const MainBottomTabs = () => {
         component={MetaSunganScreen}
         options={{
           tabBarLabel: '메타순간',
+          unmountOnBlur: true,
           tabBarIcon: props => (
             <Grid
               color={props.focused ? LINE2_COLOR : 'gray'}
@@ -65,6 +70,7 @@ const MainBottomTabs = () => {
         component={ChatScreen}
         options={{
           tabBarLabel: '채팅',
+          unmountOnBlur: true,
           tabBarIcon: props => (
             <MessageCircle
               color={props.focused ? LINE2_COLOR : 'gray'}
@@ -77,6 +83,7 @@ const MainBottomTabs = () => {
         component={ProfileScreen}
         options={{
           tabBarLabel: '프로필',
+          unmountOnBlur: true,
           tabBarIcon: props => (
             <User
               color={props.focused ? LINE2_COLOR : 'gray'}
@@ -97,8 +104,6 @@ export const AppContent = () => {
     isLoggedIn,
     session: {token},
   } = useSelector((root: RootState) => root.app, shallowEqual);
-  const [initialRoute, setInitialRoute] = useState(NAV_NAMES.Home);
-  // const navigation = useNavigation();
 
   const Navs = [
     {
@@ -180,68 +185,6 @@ export const AppContent = () => {
     },
   ];
 
-  const getToken = async () => {
-    try {
-      const token = await messaging().getToken();
-      if (token) return token;
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const setFCMToken = async () => {
-    try {
-      const authorized = await messaging().hasPermission();
-      if (authorized) {
-        const fcmToken = await getToken();
-        const res = await postPromiseFn({
-          url: APIS.push.registrationToken().url,
-          body: {
-            token: fcmToken,
-          },
-          token: token,
-        });
-        console.log('console.log(fcmToken)', fcmToken);
-      } else {
-        const fcmToken = await getToken();
-        await messaging().requestPermission();
-        const res = await postPromiseFn({
-          url: APIS.push.registrationToken().url,
-          body: {
-            token: fcmToken,
-          },
-          token: token,
-        });
-        console.log('console.log(fcmToken)', fcmToken);
-      }
-    } catch (error) {
-      console.log(`Error while saving fcm token: ${error}`);
-    }
-  };
-
-  useEffect(() => {
-    if (isLoggedIn) {
-      setFCMToken();
-      messaging().onNotificationOpenedApp(remoteMessage => {
-        console.log(
-          'Notification caused app to open from background state:',
-          remoteMessage.notification,
-        );
-        setInitialRoute(remoteMessage.data.goTo);
-      });
-      messaging()
-        .getInitialNotification()
-        .then(remoteMessage => {
-          if (remoteMessage) {
-            console.log(
-              'Notification caused app to open from quit state:',
-              remoteMessage.notification,
-            );
-            setInitialRoute(remoteMessage.data.goTo); // e.g. "Settings"
-          }
-        });
-    }
-  }, [isLoggedIn]);
   return (
     <Div flex relative>
       <NavigationContainer>
@@ -256,7 +199,7 @@ export const AppContent = () => {
           ))}
         </RootStack.Navigator>
       </NavigationContainer>
-      {/* {isLoggedIn && <ChatManager></ChatManager>} */}
+      {isLoggedIn && <ChatManager></ChatManager>}
     </Div>
   );
 };

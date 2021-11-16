@@ -35,6 +35,7 @@ import {stationArr} from 'src/modules/utils';
 import {Header} from 'src/components/Header';
 import {ChevronDown, RefreshCw} from 'react-native-feather';
 import AvatarSelect from 'src/components/AvatarSelect';
+import LinearGradient from 'react-native-linear-gradient';
 
 const passwordError =
   '비밀번호는 영어 대문자, 소문자, 숫자를 포함하는 8자 이상의 단어입니다.';
@@ -58,16 +59,13 @@ const SignUpSceen = ({navigation}) => {
     setLoading(false);
   }, []);
 
-  const exchangeOD = useCallback(
-    () => {
-      if (origin && destination) {
-        dispatch(exchangeOriginDestination());
-      } else {
-        Alert.alert('출발지와 도착지를 먼저 설정해주세요.');
-      }
-    },
-    [origin, destination, exchangeOriginDestination],
-  )
+  const exchangeOD = useCallback(() => {
+    if (origin && destination) {
+      dispatch(exchangeOriginDestination());
+    } else {
+      Alert.alert('출발지와 도착지를 먼저 설정해주세요.');
+    }
+  }, [origin, destination, exchangeOriginDestination]);
 
   const isUsername = useCallback(str => {
     return (
@@ -182,10 +180,16 @@ const SignUpSceen = ({navigation}) => {
       options: [Direction.INNER, Direction.OUTER],
     },
   };
-  const handleEmailChange = useCallback(text => setEmail(text), [])
-  const handleEmailBlur = useCallback(() => setErrEmail(!isEmail(email)), [])
-  const handlePasswordChange = useCallback(text => setPassword(text), [])
-  const handlePasswordBlur = useCallback(() => setErrPassword(!isPassword(password)), [])
+  const handleEmailChange = useCallback(text => setEmail(text), []);
+  const handleEmailBlur = useCallback(
+    () => setErrEmail(!isEmail(email)),
+    [email],
+  );
+  const handlePasswordChange = useCallback(text => setPassword(text), []);
+  const handlePasswordBlur = useCallback(
+    () => setErrPassword(!isPassword(password)),
+    [password],
+  );
   const handleIdChange = useCallback(async id => {
     setUsername(id);
     const res = await getPromiseFn({
@@ -203,14 +207,32 @@ const SignUpSceen = ({navigation}) => {
       setErrId('다른 아이디를 시도해주세요.');
     }
   }, []);
-  const handleSelectAvatar = useCallback(() => setSelectingAvatar(true), [])
-  const handleDoneSelectAvatar = useCallback(() => setSelectingAvatar(false), [])
-  const handleSelectDirection = useCallback(() => setSelecting(Selecting.DIRECTION), [])
-  const handleSelectOrigin = useCallback(() => setSelecting(Selecting.ORIGIN), [])
-  const handleSelectDestination = useCallback(() => setSelecting(Selecting.DESTINATION), [])
-  const handleDoneSelecting = useCallback(() => setSelecting(Selecting.NONE), [])
-  const handlePressSignUp = useCallback(() => emailSignUp(), [])
-  const handlePressSignIn = useCallback(() => navigation.navigate(NAV_NAMES.SignIn), [])
+  const handleSelectAvatar = useCallback(() => setSelectingAvatar(true), []);
+  const handleDoneSelectAvatar = useCallback(
+    () => setSelectingAvatar(false),
+    [],
+  );
+  const handleSelectDirection = useCallback(
+    () => setSelecting(Selecting.DIRECTION),
+    [],
+  );
+  const handleSelectOrigin = useCallback(
+    () => setSelecting(Selecting.ORIGIN),
+    [],
+  );
+  const handleSelectDestination = useCallback(
+    () => setSelecting(Selecting.DESTINATION),
+    [],
+  );
+  const handleDoneSelecting = useCallback(
+    () => setSelecting(Selecting.NONE),
+    [],
+  );
+  const handlePressSignUp = useCallback(() => emailSignUp(), []);
+  const handlePressSignIn = useCallback(
+    () => navigation.navigate(NAV_NAMES.SignIn),
+    [],
+  );
   return (
     <Div bgWhite flex justifyCenter>
       <ScrollView>
@@ -284,7 +306,7 @@ const SignUpSceen = ({navigation}) => {
                   </Row>
                 </Col>
                 <Col itemsCenter justifyCenter>
-                  {characterDesc[character].span}
+                  {characterDesc.get(character).span}
                 </Col>
               </Row>
             )}
@@ -377,22 +399,21 @@ const SignUpSceen = ({navigation}) => {
               </Col>
             </Row>
           </Div>
-          <Div bg={'black'} w={'100%'} rounded5 mt20>
-            <Row py15 px20 onPress={handlePressSignUp}>
+          <LinearGradient
+            colors={['#25e2bc', '#45c01c']}
+            style={{width: '100%', borderRadius: 5, marginTop: 20, padding: 2}}>
+            <Row py15 px20 onPress={handlePressSignUp} rounded5 bgWhite>
               <Col></Col>
               <Col auto>
-                <Span white>{loading ? '' : '회원가입'}</Span>
+                <Span black bold>
+                  {loading ? '' : '회원가입'}
+                </Span>
               </Col>
               <Col></Col>
             </Row>
-          </Div>
+          </LinearGradient>
         </Div>
-        <Div
-          px20
-          mt32
-          itemsCenter
-          w="100%"
-          onPress={handlePressSignIn}>
+        <Div px20 mt32 itemsCenter w="100%" onPress={handlePressSignIn}>
           <Row>
             <Span sectionBody gray600>
               {'이미 가입하셨나요?'}

@@ -11,14 +11,16 @@ import {setMetasunganUser} from 'src/redux/metasunganReducer';
 import {Manager} from 'socket.io-client';
 import {setChatSocket} from 'src/redux/chatReducer';
 import messaging from '@react-native-firebase/messaging';
+import {postPromiseFn} from 'src/redux/asyncReducer';
+import APIS from 'src/modules/apis';
 
 library.add(faWalking, faBus, faSubway);
 
 const App = () => {
-  const {isLoggedIn, session} = useSelector(
-    (root: RootState) => root.app,
-    shallowEqual,
-  );
+  const {
+    isLoggedIn,
+    session: {token},
+  } = useSelector((root: RootState) => root.app, shallowEqual);
   const dispatch = useDispatch();
   const login = useCallback(
     loginParams => {
@@ -47,7 +49,7 @@ const App = () => {
     });
     const newSocket = manager.socket('/chat', {
       auth: {
-        token: session.token,
+        token: token,
       },
     });
     newSocket.on('login', login);
@@ -59,7 +61,70 @@ const App = () => {
       newSocket.close();
       dispatch(setChatSocket(null));
     };
-  }, [session.token, isLoggedIn]);
+  }, [token, isLoggedIn]);
+
+  const getToken = async () => {
+    try {
+      const token = await messaging().getToken();
+      if (token) return token;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const setFCMToken = async () => {
+    try {
+      const authorized = await messaging().hasPermission();
+      if (authorized) {
+        const fcmToken = await getToken();
+        const res = await postPromiseFn({
+          url: APIS.push.registrationToken().url,
+          body: {
+            token: fcmToken,
+          },
+          token: token,
+        });
+        console.log('console.log(fcmToken)', fcmToken);
+      } else {
+        const fcmToken = await getToken();
+        await messaging().requestPermission();
+        const res = await postPromiseFn({
+          url: APIS.push.registrationToken().url,
+          body: {
+            token: fcmToken,
+          },
+          token: token,
+        });
+        console.log('console.log(fcmToken)', fcmToken);
+      }
+    } catch (error) {
+      console.log(`Error while saving fcm token: ${error}`);
+    }
+  };
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      setFCMToken();
+      messaging().onNotificationOpenedApp(remoteMessage => {
+        console.log(
+          'Notification caused app to open from background state:',
+          remoteMessage.notification,
+        );
+        // setInitialRoute(remoteMessage.data.goTo);
+      });
+      messaging()
+        .getInitialNotification()
+        .then(remoteMessage => {
+          if (remoteMessage) {
+            console.log(
+              'Notification caused app to open from quit state:',
+              remoteMessage.notification,
+            );
+            // setInitialRoute(remoteMessage.data.goTo); // e.g. "Settings"
+          }
+        });
+    }
+  }, [isLoggedIn]);
 
   return <AppContent />;
 };
