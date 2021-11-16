@@ -37,6 +37,7 @@ const options = {
       (root: RootState) => root.app.session,
       shallowEqual,
     );
+    const [loading, setLoading] = useState(false);
     const navigation = useNavigation();
     const [report, setReport] = useState({
       reportType: 0,
@@ -127,7 +128,7 @@ const options = {
       setReport({shouldBeUploaded: reportShouldBeUploaded, ...other});
     };
     const handleSendSMSCallback = async (completed, cancelled, error) => {
-      ReactNativeHapticFeedback.trigger('impactMedium', options);
+      setLoading(true);
       if (completed && report.shouldBeUploaded) {
         try {
           const response = await postPromiseFn({
@@ -149,8 +150,11 @@ const options = {
       } else if (error) {
         Alert.alert(`에러가 발생하여 취소되었습니다.`);
       }
+      setLoading(false);
     };
     const sendSMS = async () => {
+      if (loading) return;
+      ReactNativeHapticFeedback.trigger('impactMedium', options);
       if (
         report.label &&
         isValidVehicleId(report.vehicleIdNum) &&
@@ -194,7 +198,7 @@ const options = {
         <NativeBaseProvider>
           <TopHeader
             route={useNavigation}
-            title={'새 민원'}
+            title={loading ? '게시중...' : '새 민원'}
             headerColor={'white'}
             nextText={'전송'}
             onPressNext={sendSMS}

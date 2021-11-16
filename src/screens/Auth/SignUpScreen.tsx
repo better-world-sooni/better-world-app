@@ -98,6 +98,14 @@ const SignUpSceen = ({navigation}) => {
       Alert.alert('Error', '아바타를 선택해 주세요', [{text: '네'}]);
       return;
     }
+    if (!origin) {
+      Alert.alert('Error', '출발지를 설정해 주세요!');
+      return;
+    }
+    if (!destination) {
+      Alert.alert('Error', '출발지를 설정해 주세요!');
+      return;
+    }
     setLoading(true);
     try {
       const newUserResponse = await postPromiseFn({
@@ -112,7 +120,7 @@ const SignUpSceen = ({navigation}) => {
       });
 
       if (newUserResponse.status == 200) {
-        const {user, jwtToken} = newUserResponse.data;
+        const {jwtToken} = newUserResponse.data;
         const defaultRouteResponse = await postPromiseFn({
           url: APIS.route.starred().url,
           body: {
@@ -315,7 +323,7 @@ const SignUpSceen = ({navigation}) => {
             <Row px20>
               <Col></Col>
               <Col auto>
-                <Span>자주 다니는 길 설정</Span>
+                <Span>내 기본길 설정</Span>
               </Col>
               <Col></Col>
             </Row>

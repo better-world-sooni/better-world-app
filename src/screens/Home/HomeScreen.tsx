@@ -1,4 +1,10 @@
-import React, {useCallback, useEffect, useLayoutEffect, useState} from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useState,
+} from 'react';
 import {Alert, Dimensions, RefreshControl} from 'react-native';
 import {Col} from 'src/components/common/Col';
 import {Div} from 'src/components/common/Div';
@@ -227,6 +233,13 @@ const HomeScreen = props => {
     apiGET(APIS.realtime.position());
     origin && apiGET(APIS.realtime.arrival(origin.split('(')[0]));
   }, [origin]);
+  const exchangeOD = useCallback(() => {
+    if (origin && destination) {
+      dispatch(exchangeOriginDestination());
+    } else {
+      Alert.alert('출발지와 도착지를 먼저 설정해주세요.');
+    }
+  }, [origin, destination]);
 
   useEffect(() => {
     if (!origin || !destination) {
@@ -261,16 +274,19 @@ const HomeScreen = props => {
   }, [starredLoading]);
 
   const [selecting, setSelecting] = useState(Selecting.NONE);
+  const fullStations = useMemo(() => {
+    return stationArr([], '시청', '충정로(경기대입구)', Direction.CW);
+  }, []);
   const selectGetterSetter = {
     [Selecting.ORIGIN]: {
       get: origin,
       set: ori => dispatch(setOrigin(ori)),
-      options: stationArr([], '시청', '충정로(경기대입구)', Direction.CW),
+      options: fullStations,
     },
     [Selecting.DESTINATION]: {
       get: destination,
       set: dest => dispatch(setDestination(dest)),
-      options: stationArr([], '시청', '충정로(경기대입구)', Direction.CW),
+      options: fullStations,
     },
     [Selecting.DIRECTION]: {
       get: direction,
@@ -350,8 +366,11 @@ const HomeScreen = props => {
           }>
           <Div bg={'rgba(255,255,255,.9)'}>
             <OD
+              origin={origin}
+              destination={destination}
               handleSelectDestination={handleSelectDestination}
               handleSelectOrigin={handleSelectOrigin}
+              exchangeOD={exchangeOD}
             />
             <Row borderBottomColor={GRAY_COLOR} borderBottomWidth={0.5}>
               <ScrollView horizontal showsHorizontalScrollIndicator={false}>

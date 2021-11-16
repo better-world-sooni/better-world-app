@@ -16,46 +16,46 @@ import {Span} from './common/Span';
 
 const characterKeys = Object.keys(IMAGES.characters)
 
-const AvatarSelect = ({visible, onPressReturn, character, setCharacter}) => {
-  const borderProp = useCallback(
-    bool => {
-      if (!bool || bool === Validity.NULL || bool === Validity.ZERO) {
-        return {
-          borderColor: GRAY_COLOR,
-          borderWidth: 1,
-        };
-      } else if (bool === Validity.INVALID) {
-        return {
-          borderColor: 'red',
-          borderWidth: 1,
-        };
-      } else {
-        return {
-          borderColor: 'black',
-          borderWidth: 1,
-        };
-      }
-    },
-    [],
-  );
-
-  const Characters = useCallback((key, index) => {
-    return (
-      <Div key={index} flexBasis={'50%'}>
-        <Div rounded5 m5 p5 {...borderProp(key == character ? true : null)}>
-          <Row onPress={() => setCharacter(key)}>
-            <Col>
-              <Img source={IMAGES.characters[key]} w100 h100></Img>
-            </Col>
-            <Col justifyCenter itemsCenter px10>
-              {characterDesc.get(key).span}
-            </Col>
-          </Row>
-        </Div>
+const Character = ({characterKey, currentCharacter, setCharacter}) => {
+  const borderProp = useCallback(bool => {
+    if (!bool || bool === Validity.NULL || bool === Validity.ZERO) {
+      return {
+        borderColor: GRAY_COLOR,
+        borderWidth: 1,
+      };
+    } else if (bool === Validity.INVALID) {
+      return {
+        borderColor: 'red',
+        borderWidth: 1,
+      };
+    } else {
+      return {
+        borderColor: 'black',
+        borderWidth: 1,
+      };
+    }
+  }, []);
+  return (
+    <Div flexBasis={'50%'}>
+      <Div
+        rounded5
+        m5
+        p5
+        {...borderProp(characterKey == currentCharacter ? true : null)}>
+        <Row onPress={() => setCharacter(characterKey)}>
+          <Col>
+            <Img source={IMAGES.characters[characterKey]} w100 h100></Img>
+          </Col>
+          <Col justifyCenter itemsCenter px10>
+            {characterDesc.get(characterKey).span}
+          </Col>
+        </Row>
       </Div>
-    );
-  }, [character])
+    </Div>
+  );
+};
 
+const AvatarSelect = ({visible, onPressReturn, character, setCharacter}) => {
   return (
     <Modal
       visible={visible}
@@ -77,7 +77,16 @@ const AvatarSelect = ({visible, onPressReturn, character, setCharacter}) => {
             </Col>
           </Row>
           <Div flexDirection={'row'} flexWrap={'wrap'}>
-            {characterKeys.map(Characters)}
+            {characterKeys.map(characterKey => {
+              return (
+                <Character
+                  key={characterKey}
+                  characterKey={characterKey}
+                  currentCharacter={character}
+                  setCharacter={setCharacter}
+                />
+              );
+            })}
           </Div>
         </ScrollView>
       </Div>

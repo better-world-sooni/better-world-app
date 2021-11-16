@@ -42,6 +42,7 @@ import Report from 'src/components/Report';
 import Place from 'src/components/Place';
 import AvatarSelect from 'src/components/AvatarSelect';
 import {isOkay, postKey, stationArr} from 'src/modules/utils';
+import ODSelect from 'src/components/ODSelect';
 
 const ProfileScreen = props => {
   const navigation = useNavigation();
@@ -68,6 +69,7 @@ const ProfileScreen = props => {
   const [loading, setLoading] = useState(true);
   const dispatch = useDispatch();
   const [selectingAvatar, setSelectingAvatar] = useState(false);
+  const [selectingOD, setSelectingOD] = useState(false);
   const selectGetterSetter = {
     [Selecting.GLOBAL_FILTER]: {
       get: globalFiter,
@@ -144,7 +146,7 @@ const ProfileScreen = props => {
         return true;
       }
     },
-    [globalFiter],
+    [globalFiter, myPosts],
   );
   const handleReturnSelectAvatar = useCallback(async () => {
     setSelectingAvatar(false);
@@ -166,6 +168,9 @@ const ProfileScreen = props => {
       }
     }
   }, [character, token, appActions]);
+  const handleReturnSelectOD = () => {
+    setSelectingOD(false);
+  };
   const MySungans = ({postKey, index}) => {
     const post = myPosts[postKey];
     if (post.type == SUNGAN) {
@@ -182,13 +187,15 @@ const ProfileScreen = props => {
   );
   const handleSelectDone = useCallback(() => setSelecting(Selecting.NONE), []);
   const handleSelectAvatar = useCallback(() => setSelectingAvatar(true), []);
+  const handleSelectOD = useCallback(() => setSelectingOD(true), []);
   const handleGotoPost = useCallback(
     () => navigation.navigate(NAV_NAMES.Post),
     [],
   );
 
   useEffect(() => {
-    if (!mySunganLoading) {
+    console.log('mySungans', mySungans);
+    if (!mySunganLoading && mySungans) {
       const myPosts = {};
       mySungans.forEach(post => {
         myPosts[postKey(post)] = post;
@@ -284,7 +291,8 @@ const ProfileScreen = props => {
             <Div onPress={handleSelectAvatar}>
               <Row
                 itemsCenter
-                my10
+                mt10
+                mb5
                 py10
                 rounded5
                 borderWidth={0.5}
@@ -292,6 +300,22 @@ const ProfileScreen = props => {
                 <Col></Col>
                 <Col auto>
                   <Span>아바타 바꾸기</Span>
+                </Col>
+                <Col></Col>
+              </Row>
+            </Div>
+            <Div onPress={handleSelectOD}>
+              <Row
+                itemsCenter
+                mt5
+                mb10
+                py10
+                rounded5
+                borderWidth={0.5}
+                borderColor={GRAY_COLOR}>
+                <Col></Col>
+                <Col auto>
+                  <Span>기본길 바꾸기</Span>
                 </Col>
                 <Col></Col>
               </Row>
@@ -346,6 +370,7 @@ const ProfileScreen = props => {
         character={character}
         setCharacter={setCharacter}
       />
+      <ODSelect visible={selectingOD} onPressReturn={handleReturnSelectOD} />
     </Div>
   );
 };

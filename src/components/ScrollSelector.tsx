@@ -11,15 +11,17 @@ export const ScrollSelector = ({
   selectedValue,
   onValueChange,
   options,
-  onClose,
+  onClose = null,
 }) => {
   return (
     <Div borderTopColor={GRAY_COLOR} borderTopWidth={0.5}>
       <Row bg={'white'}>
         <Col></Col>
-        <Col auto px20 py10 onPress={() => onClose()}>
-          <Span color={GO_COLOR}>완료</Span>
-        </Col>
+        {onClose && (
+          <Col auto px20 py10 onPress={() => onClose()}>
+            <Span color={GO_COLOR}>완료</Span>
+          </Col>
+        )}
       </Row>
       <Picker
         selectedValue={selectedValue}

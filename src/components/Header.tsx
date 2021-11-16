@@ -16,7 +16,7 @@ import {Row} from './common/Row';
 import {Span} from './common/Span';
 import {Alert} from 'react-native';
 
-export const Header = ({bg, onSelect}) => {
+export const Header = ({bg, onSelect, noFilter = null}) => {
   const {
     route: {selectedTrain},
     feed: {globalFiter},
@@ -48,24 +48,28 @@ export const Header = ({bg, onSelect}) => {
           <Col></Col>
         </Row>
       </Col>
-      <Col itemsCenter justifyCenter onPress={() => onSelect()}>
-        <Row itemsCenter>
-          <Col itemsCenter auto>
-            <Span
-              bold
-              textCenter
-              color={'black'}
-              fontSize={15}
-              numberOfLines={1}
-              ellipsizeMode="head">
-              {globalFiter}
-            </Span>
-          </Col>
-          <Col auto justifyCenter>
-            <ChevronDown {...chevronDownSettings}></ChevronDown>
-          </Col>
-        </Row>
-      </Col>
+      {!noFilter ? (
+        <Col itemsCenter justifyCenter onPress={() => onSelect()}>
+          <Row itemsCenter>
+            <Col itemsCenter auto>
+              <Span
+                bold
+                textCenter
+                color={'black'}
+                fontSize={15}
+                numberOfLines={1}
+                ellipsizeMode="head">
+                {globalFiter}
+              </Span>
+            </Col>
+            <Col auto justifyCenter>
+              <ChevronDown {...chevronDownSettings}></ChevronDown>
+            </Col>
+          </Row>
+        </Col>
+      ) : (
+        <Col itemsCenter justifyCenter></Col>
+      )}
       <Col w80 itemsEnd auto>
         <Row itemsEnd>
           <Col onPress={goToReport} itemsEnd>

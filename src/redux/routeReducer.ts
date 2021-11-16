@@ -42,7 +42,6 @@ const routeSlice = createSlice({
       if(state.route.origin && state.route.destination){
         const innerCircle = stationArr([], state.route.origin, state.route.destination, Direction.INNER);
         const outerCircle = stationArr([], state.route.origin, state.route.destination, Direction.OUTER);
-        innerCircle.length < outerCircle.length ? (state.route.direction = Direction.INNER) : (state.route.direction = Direction.OUTER)
         if (innerCircle.length < outerCircle.length ){
           state.route.direction = Direction.INNER;
           state.route.stations = innerCircle;

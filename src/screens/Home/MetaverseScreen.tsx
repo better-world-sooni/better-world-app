@@ -124,6 +124,7 @@ const MetaSunganScreen = () => {
       <Div bg={'rgba(255,255,255,.3)'} absolute top width={'100%'} zIndex5>
         <Div h={HAS_NOTCH ? 44 : 20} />
         <Header
+          noFilter={true}
           bg={'rgba(255,255,255,0)'}
           onSelect={() => setSelecting(Selecting.GLOBAL_FILTER)}
         />

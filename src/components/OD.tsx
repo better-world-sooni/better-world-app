@@ -9,18 +9,13 @@ import {Col} from './common/Col';
 import {Row} from './common/Row';
 import {Span} from './common/Span';
 
-const OD = ({handleSelectOrigin, handleSelectDestination}) => {
-  const {
-    route: {origin, destination},
-  } = useSelector((root: RootState) => root.route, shallowEqual);
-  const dispatch = useDispatch();
-  const exchangeOD = useCallback(() => {
-    if (origin && destination) {
-      dispatch(exchangeOriginDestination());
-    } else {
-      Alert.alert('출발지와 도착지를 먼저 설정해주세요.');
-    }
-  }, [origin, destination]);
+const OD = ({
+  handleSelectOrigin,
+  handleSelectDestination,
+  exchangeOD,
+  origin,
+  destination,
+}) => {
   return (
     <Row px10>
       <Col

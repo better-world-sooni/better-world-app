@@ -325,7 +325,7 @@ export const LINE2_Linked_List = new Map(
 
 export const GRAY_COLOR = 'rgb(199,199,204)';
 export const MAIN_LINE2 = '2호선 본선';
-export const MY_ROUTE = '내 길';
+export const MY_ROUTE = '설정된 길';
 export const LINE2_COLOR = 'rgb(51, 162, 60)';
 export const LINE2_COLOR_LIGHT = 'rgba(51, 162, 60, 0.5)';
 
