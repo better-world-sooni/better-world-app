@@ -49,6 +49,8 @@ import {Report} from 'src/components/Report';
 import {Place} from 'src/components/Place';
 import {Sungan} from 'src/components/Sungan';
 import TrainStatusBox from 'src/components/TrainStatusBox';
+import OD from 'src/components/OD';
+import FeedChecked from 'src/components/FeedChecked';
 
 enum ChannelFilter {
   ALL = 0,
@@ -236,21 +238,23 @@ const HomeScreen = props => {
       apiGET(APIS.post.main());
     }
   }, []);
-  useLayoutEffect(() => {
-    setTimeout(() => {
-      setRealtimePositionList(positionResponse?.data);
-      setRealtimeArrivalList(arrivalResponse?.data);
-    }, 1);
-  }, []);
-  // useEffect(() => {
-  //   if (mainFeed) {
-  //     const mainPosts = {};
-  //     mainFeed.forEach(post => {
-  //       mainPosts[postKey(post)] = post;
-  //     });
-  //     dispatch(setMainPosts(mainPosts));
-  //   }
-  // }, [mainLoading]);
+  useEffect(() => {
+    if (!positionsLoading && !arrivalLoading) {
+      setTimeout(() => {
+        setRealtimePositionList(positionResponse?.data);
+        setRealtimeArrivalList(arrivalResponse?.data);
+      }, 1);
+    }
+  }, [positionsLoading, arrivalLoading]);
+  useEffect(() => {
+    if (mainFeed) {
+      const mainPosts = {};
+      mainFeed.forEach(post => {
+        mainPosts[postKey(post)] = post;
+      });
+      dispatch(setMainPosts(mainPosts));
+    }
+  }, [mainLoading]);
 
   useEffect(() => {
     if (defaultRoute && !starredLoading) {
@@ -301,13 +305,6 @@ const HomeScreen = props => {
       return {};
     }
   }, []);
-  const exchangeOD = useCallback(() => {
-    if (origin && destination) {
-      dispatch(exchangeOriginDestination());
-    } else {
-      Alert.alert('출발지와 도착지를 먼저 설정해주세요.');
-    }
-  }, [origin, destination]);
 
   const handleSelectGlobalFilter = useCallback(
     () => setSelecting(Selecting.GLOBAL_FILTER),
@@ -385,7 +382,6 @@ const HomeScreen = props => {
         }),
     [navigation, token],
   );
-  console.log('HomeScreen');
 
   return (
     <Div flex bgWhite>
@@ -401,67 +397,15 @@ const HomeScreen = props => {
           stickyHeaderHiddenOnScroll={true}
           refreshControl={
             <RefreshControl
-              refreshing={starredLoading}
+              refreshing={mainLoading || positionsLoading || arrivalLoading}
               onRefresh={pullToRefresh}
             />
           }>
           <Div bg={'rgba(255,255,255,.9)'}>
-            <Row px10>
-              <Col
-                bg={'rgb(242, 242, 247)'}
-                rounded5
-                py7
-                my5
-                mr5
-                pl5
-                justifyCenter
-                onPress={handleSelectOrigin}>
-                <Row>
-                  <Col itemsCenter>
-                    <Span
-                      bold
-                      textCenter
-                      color={'black'}
-                      numberOfLines={1}
-                      ellipsizeMode="head">
-                      {origin}
-                    </Span>
-                  </Col>
-                  <Col auto justifyCenter>
-                    <ChevronDown {...chevronDownSettings}></ChevronDown>
-                  </Col>
-                </Row>
-              </Col>
-              <Col mx5 auto itemsCenter justifyCenter onPress={exchangeOD}>
-                <Span>
-                  <RefreshCw color={'black'} height={14}></RefreshCw>
-                </Span>
-              </Col>
-              <Col
-                bg={'rgb(242, 242, 247)'}
-                rounded5
-                py7
-                my5
-                pl5
-                justifyCenter
-                onPress={handleSelectDestination}>
-                <Row>
-                  <Col itemsCenter>
-                    <Span
-                      bold
-                      textCenter
-                      color={'black'}
-                      numberOfLines={1}
-                      ellipsizeMode="head">
-                      {destination}
-                    </Span>
-                  </Col>
-                  <Col auto justifyCenter>
-                    <ChevronDown {...chevronDownSettings}></ChevronDown>
-                  </Col>
-                </Row>
-              </Col>
-            </Row>
+            <OD
+              handleSelectDestination={handleSelectDestination}
+              handleSelectOrigin={handleSelectOrigin}
+            />
             <Row borderBottomColor={GRAY_COLOR} borderBottomWidth={0.5}>
               <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                 <Div
@@ -559,13 +503,7 @@ const HomeScreen = props => {
             </Col>
             <Col h2 bg={GRAY_COLOR}></Col>
           </Row>
-          <Row pb20>
-            <Col></Col>
-            <Col auto>
-              <Span color={GRAY_COLOR}>오늘의 피드를 모두 확인했습니다.</Span>
-            </Col>
-            <Col></Col>
-          </Row>
+          <FeedChecked />
         </ScrollView>
       </Div>
       {selecting && (

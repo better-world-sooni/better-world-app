@@ -45,10 +45,10 @@ import { Info } from 'react-native-feather';
       if (str === null) {
         return Validity.VALID;
       }
-      const num = +str;
-      if (isNaN(num)) {
-        return Validity.INVALID;
-      }
+      // const num = +str;
+      // if (isNaN(num)) {
+      //   return Validity.INVALID;
+      // }
       return Validity.VALID;
     };
     const isValidDetail = str => {
