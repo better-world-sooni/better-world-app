@@ -161,12 +161,14 @@ const HomeScreen = props => {
     response => {
       const trainLocations = {};
       if (response && response.errorMessage?.status === 200) {
+        let trainEnded = true;
         response.realtimePositionList.forEach(async train => {
           if (
             train.subwayNm == '2호선' &&
             train.updnLine == (direction == Direction.INNER ? '0' : '1')
           ) {
             if (train.trainNo == selectedTrain?.trainNo) {
+              trainEnded = false;
               dispatch(setSelectedTrain(train));
               if (
                 !shortenStations(stations).includes(train.statnNm) &&
@@ -179,16 +181,26 @@ const HomeScreen = props => {
                   token: token,
                 });
                 if (isOkay(res)) {
-                  Alert.alert('Success', '도착 하셨습니다.');
+                  Alert.alert('도착 하셨습니다.');
                 }
               }
             }
             trainLocations[train.statnNm] = train;
           }
         });
+        if (trainEnded && selectedTrain) {
+          dispatch(setSelectedTrain(null));
+          deletePromiseFn({
+            url: APIS.route.notification().url,
+            body: {},
+            token: token,
+          });
+          Alert.alert('탑승하신 열차의 2호선 운행이 끝났습니다.');
+        }
       } else {
         return null;
       }
+      
       return trainLocations;
     },
     [selectedTrain, setSelectedTrain, stations, origin, direction, token],

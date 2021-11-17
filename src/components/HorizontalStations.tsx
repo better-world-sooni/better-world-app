@@ -64,7 +64,7 @@ const HorzontalStations = ({horizontalStations, trainPositions}) => {
             },
             token: token,
           });
-          Alert.alert('Success', '역알림이 설정 되었습니다.');
+          Alert.alert('역알림이 설정 되었습니다.');
         }
       }
     }

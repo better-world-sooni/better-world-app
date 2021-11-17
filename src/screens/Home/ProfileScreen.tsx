@@ -86,7 +86,7 @@ const ProfileScreen = props => {
         token: token,
       });
       if (isOkay(res)) {
-        Alert.alert('Success', '역알림이 취소 되었습니다.');
+        Alert.alert('역알림이 취소 되었습니다.');
       } else {
         Alert.alert('Error', '역알림이 취소중 문제가 발생하였습니다.');
       }
@@ -109,7 +109,7 @@ const ProfileScreen = props => {
           token: token,
         });
         if (isOkay(res)) {
-          Alert.alert('Success', '역알림이 설정 되었습니다.');
+          Alert.alert('역알림이 설정 되었습니다.');
         } else {
           Alert.alert('Error', '역알림이 설정중 문제가 발생하였습니다.');
         }
