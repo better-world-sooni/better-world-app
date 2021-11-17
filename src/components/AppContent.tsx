@@ -21,10 +21,6 @@ import {Div} from './common/Div';
 import ChatRoomScreen from 'src/screens/ChatRoomScreen';
 import PostDetailScreen from 'src/screens/PostDetailScreen';
 import SignUpSceen from 'src/screens/Auth/SignUpScreen';
-import messaging from '@react-native-firebase/messaging';
-import {useNavigation} from '@react-navigation/core';
-import { postPromiseFn } from 'src/redux/asyncReducer';
-import APIS from 'src/modules/apis';
 import {LINE2_COLOR} from 'src/modules/constants';
 
 const RootStack = createStackNavigator();

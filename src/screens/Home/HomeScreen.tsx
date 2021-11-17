@@ -55,6 +55,8 @@ import TrainStatusBox from 'src/components/TrainStatusBox';
 import OD from 'src/components/OD';
 import FeedChecked from 'src/components/FeedChecked';
 import MainPosts from 'src/components/MainPosts';
+import PushNotificationIOS from '@react-native-community/push-notification-ios';
+import PushNotification from 'react-native-push-notification';
 
 enum ChannelFilter {
   ALL = 0,
@@ -257,6 +259,7 @@ const HomeScreen = props => {
       }, 1);
     }
   }, [positionsLoading, arrivalLoading]);
+
   useEffect(() => {
     if (mainFeed) {
       const mainPosts = {};
@@ -360,7 +363,7 @@ const HomeScreen = props => {
           stickyHeaderHiddenOnScroll={true}
           refreshControl={
             <RefreshControl
-              refreshing={mainLoading || positionsLoading || arrivalLoading}
+              refreshing={positionsLoading}
               onRefresh={pullToRefresh}
             />
           }>

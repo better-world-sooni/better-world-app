@@ -461,6 +461,8 @@ PODS:
     - React-Core
   - RNCPicker (2.1.0):
     - React-Core
+  - RNCPushNotificationIOS (1.10.1):
+    - React-Core
   - RNDeviceInfo (8.4.1):
     - React-Core
   - RNFastImage (8.3.6):
@@ -560,6 +562,7 @@ DEPENDENCIES:
   - ReactNativeNavigation (from `../node_modules/react-native-navigation`)
   - "RNCAsyncStorage (from `../node_modules/@react-native-async-storage/async-storage`)"
   - "RNCPicker (from `../node_modules/@react-native-picker/picker`)"
+  - "RNCPushNotificationIOS (from `../node_modules/@react-native-community/push-notification-ios`)"
   - RNDeviceInfo (from `../node_modules/react-native-device-info`)
   - RNFastImage (from `../node_modules/react-native-fast-image`)
   - "RNFBApp (from `../node_modules/@react-native-firebase/app`)"
@@ -686,6 +689,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-async-storage/async-storage"
   RNCPicker:
     :path: "../node_modules/@react-native-picker/picker"
+  RNCPushNotificationIOS:
+    :path: "../node_modules/@react-native-community/push-notification-ios"
   RNDeviceInfo:
     :path: "../node_modules/react-native-device-info"
   RNFastImage:
@@ -777,6 +782,7 @@ SPEC CHECKSUMS:
   ReactNativeNavigation: f73f769091fc132e9b502f1c92f54cd4a1ece484
   RNCAsyncStorage: 26f25150da507524a7815f2ada06ca0967f65633
   RNCPicker: f7a40b21b915b7a187624d52f52b7bc2f73ea413
+  RNCPushNotificationIOS: 87b8d16d3ede4532745e05b03c42cff33a36cc45
   RNDeviceInfo: 55175b0bd852c1c5d70d76efc04ed77799cef638
   RNFastImage: 044259b52d726b183fa401f3521b2e5a864afc0a
   RNFBApp: dda844e7084b590eb3d9bec1b2115cabbe4bc40e

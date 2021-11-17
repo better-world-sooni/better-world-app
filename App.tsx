@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useState} from 'react';
-import {LogBox} from 'react-native';
+import {Alert, LogBox} from 'react-native';
 // import codePush from 'react-native-code-push';
 import {withRootReducer} from './src/redux/withRootReducer';
 import {AppContent} from 'src/components/AppContent';
@@ -13,6 +13,7 @@ import {setChatSocket} from 'src/redux/chatReducer';
 import messaging from '@react-native-firebase/messaging';
 import {postPromiseFn} from 'src/redux/asyncReducer';
 import APIS from 'src/modules/apis';
+import PushNotification from 'react-native-push-notification';
 
 library.add(faWalking, faBus, faSubway);
 
@@ -122,6 +123,18 @@ const App = () => {
           }
         });
     }
+    const unsubscribe = messaging().onMessage(async remoteMessage => {
+      const notification = {
+        foreground: true, // BOOLEAN: If the notification was received in foreground or not
+        userInteraction: false, // BOOLEAN: If the notification was opened by the user from the notification area or not
+        message: remoteMessage.notification.body, // STRING: The notification message
+        title: remoteMessage.notification.title, // STRING: The notification title
+        data: remoteMessage.data, // OBJECT: The push data or the defined userInfo in local notifications
+      };
+      PushNotification.localNotification(notification);
+    });
+
+    return unsubscribe;
   }, [isLoggedIn]);
 
   return <AppContent />;
