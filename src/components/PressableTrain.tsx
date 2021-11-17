@@ -57,9 +57,11 @@ const PressableTrain = ({width, trainAtStation, isRiding, handlePressRide}) => {
             </Col>
             <Col auto ml5>
               <Span
-                fontSize={10}
+                fontSize={8}
                 color={isRiding ? LINE2_COLOR : LINE2_COLOR_LIGHT}>
-                {TRAIN_STATE[trainAtStation.trainSttus] || '출발'}
+                {`${TRAIN_STATE[trainAtStation.trainSttus] || '출발'}(${
+                  trainAtStation.statnTnm
+                })`}
               </Span>
             </Col>
           </Row>
