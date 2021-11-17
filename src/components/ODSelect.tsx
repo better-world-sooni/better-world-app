@@ -33,7 +33,7 @@ const ODSelect = ({visible, onPressReturn}) => {
   const [destination, setDestination] = useState(null);
   const [direction, setDirection] = useState(null);
   const [stations, setStations] = useState([]);
-  const [selecting, setSelecting] = useState(Selecting.ORIGIN);
+  const [selecting, setSelecting] = useState(null);
   const fullStations = useMemo(() => {
     return stationArr([], '시청', '충정로(경기대입구)', Direction.CW);
   }, []);
@@ -42,7 +42,8 @@ const ODSelect = ({visible, onPressReturn}) => {
   const handleSelectDirection = () => setSelecting(Selecting.DIRECTION);
   const handleSetOrigin = ori => {
     setOrigin(ori);
-    if (origin && destination) {
+    console.log(origin, destination);
+    if (destination) {
       const innerCircle = stationArr([], origin, destination, Direction.INNER);
       const outerCircle = stationArr([], origin, destination, Direction.OUTER);
       if (innerCircle.length < outerCircle.length) {
@@ -59,7 +60,8 @@ const ODSelect = ({visible, onPressReturn}) => {
   };
   const handleSetDestination = ori => {
     setDestination(ori);
-    if (origin && destination) {
+    console.log(origin, destination);
+    if (origin) {
       const innerCircle = stationArr([], origin, destination, Direction.INNER);
       const outerCircle = stationArr([], origin, destination, Direction.OUTER);
       if (innerCircle.length < outerCircle.length) {
@@ -165,7 +167,6 @@ const ODSelect = ({visible, onPressReturn}) => {
       },
       token: token,
     });
-    console.log('defaultRouteResponse', token);
     if (defaultRouteResponse.status == 200) {
       Alert.alert('Success', '내 길 재설정이 완료 되었습니다.');
     } else {
@@ -274,11 +275,13 @@ const ODSelect = ({visible, onPressReturn}) => {
           </Row>
         </Div>
         <Div flex={1} justifyCenter></Div>
-        <ScrollSelector
-          selectedValue={selectGetterSetter[selecting].get}
-          onValueChange={selectGetterSetter[selecting].set}
-          options={selectGetterSetter[selecting].options}
-        />
+        {selecting && (
+          <ScrollSelector
+            selectedValue={selectGetterSetter[selecting].get}
+            onValueChange={selectGetterSetter[selecting].set}
+            options={selectGetterSetter[selecting].options}
+          />
+        )}
       </Div>
     </Modal>
   );

@@ -41,8 +41,8 @@ const TrainStatusBox = ({
   if (!trainPositions || !arrivalTrain) {
     return (
       <Div h250 justifyCenter itemsCenter>
-        <Img w50 h50 source={IMAGES.imageIosLoading} />
-        <Span mt10>정보 가져오는중</Span>
+        <Img w30 h30 source={IMAGES.imageIosLoading} />
+        <Span mt20>정보 가져오는중</Span>
       </Div>
     );
   }

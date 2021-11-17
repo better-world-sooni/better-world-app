@@ -99,7 +99,6 @@ export const useLogout = (callback?) => {
       dispatch(asyncActions.reset());
       dispatch(chatLogout())
       if (callback) {
-        console.log("bhansdofnoiaskdjnfjkasd")
         await callback();
       }
     });

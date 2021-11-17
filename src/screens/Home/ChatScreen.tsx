@@ -83,6 +83,7 @@ const ChatScreen = () => {
       <Header
         bg={'rgba(255,255,255,0)'}
         onSelect={() => setSelecting(Selecting.GLOBAL_FILTER)}
+        noFilter={true}
       />
       <ScrollView flex={1} showsVerticalScrollIndicator={false}>
         <NativeBaseProvider>
@@ -175,14 +176,6 @@ const ChatScreen = () => {
           </Div>
         </NativeBaseProvider>
       </ScrollView>
-      {selecting && (
-        <ScrollSelector
-          selectedValue={selectGetterSetter[selecting].get}
-          onValueChange={selectGetterSetter[selecting].set}
-          options={selectGetterSetter[selecting].options}
-          onClose={() => setSelecting(Selecting.NONE)}
-        />
-      )}
     </Div>
   );
 };

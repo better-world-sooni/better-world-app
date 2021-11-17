@@ -55,7 +55,7 @@ const PostScreen = props => {
   );
   const [sungan, setSungan] = useState({
     emoji: '🚆',
-    stationName: selectedTrain?.statnNm || origin,
+    stationName: null,
     channelId: null,
     place: null,
     text: null,
@@ -125,12 +125,7 @@ const PostScreen = props => {
 
   const postSungan = async () => {
     setIsLoading(true);
-    ReactNativeHapticFeedback.trigger('impactMedium', options);
-    if (
-      sungan.stationName &&
-      sungan.channelId &&
-      isValidTextOrPlace(sungan.text)
-    ) {
+    if (sungan.channelId && isValidTextOrPlace(sungan.text)) {
       try {
         const {channelId, ...other} = sungan;
         const correctedSungan = {

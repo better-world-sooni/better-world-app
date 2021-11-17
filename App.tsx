@@ -67,9 +67,7 @@ const App = () => {
     try {
       const token = await messaging().getToken();
       if (token) return token;
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   };
 
   const setFCMToken = async () => {

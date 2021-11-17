@@ -194,7 +194,6 @@ const ProfileScreen = props => {
   );
 
   useEffect(() => {
-    console.log('mySungans', mySungans);
     if (!mySunganLoading && mySungans) {
       const myPosts = {};
       mySungans.forEach(post => {

@@ -66,7 +66,6 @@ const ChatManager = () => {
     );
 
     const onRelease = (_event, gestureState, _bounds) => {
-      console.log(gestureState);
       const moveX = gestureState.moveX;
       const moveY = gestureState.moveY;
       const closestEdgeX = Math.round(moveX / screenWidth) * screenWidth;

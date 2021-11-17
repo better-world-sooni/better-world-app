@@ -1,7 +1,7 @@
 import urljoin from 'url-join';
 
-const BASE_URL = 'https://metasgid.com';
-// const BASE_URL = 'http://localhost:80';
+// const BASE_URL = 'https://api.metasgid.com';
+const BASE_URL = 'http://localhost:80';
 const toUrl = (...args) => ({url: urljoin(...args)});
 const base = path => toUrl(BASE_URL, path);
 const v1 = path => toUrl(BASE_URL, '/api/v1', path);

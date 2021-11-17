@@ -43,7 +43,6 @@ export const asyncThunk =
         }
       } else {
         const err = new Error();
-        console.log("Error HEREE")
         err.message = data;
         err.name = status;
         throw err;

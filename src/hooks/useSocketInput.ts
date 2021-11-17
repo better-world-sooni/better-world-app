@@ -15,7 +15,6 @@ export default function useSocketInput() {
                     ...payload,
                     username: currentUser.username,
                 };
-                console.log(withDefaultParams)
                 chatSocket.emit(action, withDefaultParams);
             } else {
                 throw Error('Network Error while sending socket message!');
