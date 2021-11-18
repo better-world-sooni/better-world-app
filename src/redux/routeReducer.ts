@@ -14,7 +14,7 @@ const routeSlice = createSlice({
     selectedTrain: null,
     trainPositions: null,
     arrivalTrain: null,
-    receiveStationPush: false,
+    receiveStationPush: true,
     currentRoute: null,
     currentVehicles: [],
     currentRouteConfirmed: true

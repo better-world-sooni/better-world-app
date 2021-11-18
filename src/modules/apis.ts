@@ -31,7 +31,7 @@ const APIS = {
         main: () => v1(`/post/comment`),
         like: () => v1(`/post/comment/like`),
         unlike: (id) => v1(`/post/comment/like/${id}`),
-        reply: () => v1(`/post/comment/reply`),
+        reply: (id) => v1(`/post/comment/${id}/reply`),
       },
       like: (id) => v1(`/post/likes/${id}`),
     },

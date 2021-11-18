@@ -140,7 +140,7 @@ const ODSelect = ({visible, onPressReturn}) => {
   const postOD = async () => {
     if (!origin) {
       Alert.alert(
-        'Error',
+        '잠시만요!',
         '출발지를 설정하지 않으셨습니다. 내 길 재설정을 취소하시겠습니까?',
         [{text: '네', onPress: onPressReturn}, {text: '아니요'}],
       );
@@ -148,7 +148,7 @@ const ODSelect = ({visible, onPressReturn}) => {
     }
     if (!destination) {
       Alert.alert(
-        'Error',
+        '잠시만요!',
         '도착지를 설정하지 않으셨습니다. 내 길 재설정을 취소하시겠습니까?',
         [{text: '네', onPress: onPressReturn}, {text: '아니요'}],
       );
@@ -168,7 +168,7 @@ const ODSelect = ({visible, onPressReturn}) => {
       token: token,
     });
     if (defaultRouteResponse.status == 200) {
-      Alert.alert('Success', '내 길 재설정이 완료 되었습니다.');
+      Alert.alert('성공', '내 길 재설정이 완료 되었습니다.');
     } else {
       Alert.alert('Error', '내 길 설정중 문재가 발생하였습니다.');
     }

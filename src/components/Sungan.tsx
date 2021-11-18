@@ -75,8 +75,8 @@ const Sungan = ({post, mine = null}) => {
     }
   };
   const goToPostDetail = () => {
-    navigation.navigate(NAV_NAMES.PostDetail);
     dispatch(setCurrentPostId(postKey(post)));
+    navigation.navigate(NAV_NAMES.PostDetail);
   };
 
   return (
@@ -97,7 +97,7 @@ const Sungan = ({post, mine = null}) => {
           </Col>
           <Col></Col>
           <Col auto px10 py5 rounded5>
-            <Span medium>{sungan.station.name}</Span>
+            <Span medium>{sungan.station?.name || '전체'}</Span>
           </Col>
         </Row>
       )}
@@ -136,7 +136,13 @@ const Sungan = ({post, mine = null}) => {
             </Col>
           </Row>
           {bestComment && (
-            <Row itemsCenter justifyCenter pb10 pt5 flex>
+            <Row
+              itemsCenter
+              justifyCenter
+              pb10
+              pt5
+              flex
+              onPress={goToPostDetail}>
               <Col auto itemsCenter justifyCenter rounded20 overflowHidden>
                 <Img
                   source={

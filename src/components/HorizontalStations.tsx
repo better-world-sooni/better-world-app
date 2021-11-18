@@ -1,4 +1,4 @@
-import React, {useCallback} from 'react';
+import React, {useCallback, useRef, useEffect} from 'react';
 import {Alert, Dimensions, ScrollView} from 'react-native';
 import {shallowEqual, useDispatch, useSelector} from 'react-redux';
 import APIS from 'src/modules/apis';
@@ -23,6 +23,7 @@ const HorzontalStations = ({horizontalStations, trainPositions}) => {
     (root: RootState) => root.app.session,
     shallowEqual,
   );
+  const scrollRef = useRef(null);
   const dispatch = useDispatch();
   const getTrainAtStation = useCallback(
     item => {
@@ -69,8 +70,28 @@ const HorzontalStations = ({horizontalStations, trainPositions}) => {
       }
     }
   };
+  useEffect(() => {
+    if (selectedTrain) {
+      horizontalStations.map((item, index) => {
+        const trainAtStation = getTrainAtStation(item);
+        const isRiding = getIsRiding(trainAtStation);
+        if (isRiding) {
+          const ridingOffset = index * fifthOfWindow;
+          console.log('ridingOffset', ridingOffset);
+          scrollRef.current.scrollTo({
+            x: ridingOffset,
+            y: ridingOffset,
+            animated: true,
+          });
+        }
+      });
+    }
+  }, []);
   return (
-    <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+    <ScrollView
+      horizontal
+      showsHorizontalScrollIndicator={false}
+      ref={scrollRef}>
       {horizontalStations.map((item, index) => {
         const trainAtStation = getTrainAtStation(item);
         const isRiding = getIsRiding(trainAtStation);

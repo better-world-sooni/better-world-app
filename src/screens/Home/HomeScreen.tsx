@@ -87,6 +87,7 @@ const HomeScreen = props => {
   const {
     route: {origin, destination, direction, stations},
     selectedTrain,
+    receiveStationPush,
   } = useSelector((root: RootState) => root.route, shallowEqual);
   const {token} = useSelector(
     (root: RootState) => root.app.session,
@@ -200,7 +201,7 @@ const HomeScreen = props => {
       } else {
         return null;
       }
-      
+
       return trainLocations;
     },
     [selectedTrain, setSelectedTrain, stations, origin, direction, token],
@@ -283,7 +284,7 @@ const HomeScreen = props => {
   }, [mainLoading]);
 
   useEffect(() => {
-    if (defaultRoute && !starredLoading) {
+    if (defaultRoute && !starredLoading && (!origin || !destination)) {
       dispatch(setRoute(defaultRoute.route));
     }
   }, [starredLoading]);
@@ -292,20 +293,52 @@ const HomeScreen = props => {
   const fullStations = useMemo(() => {
     return stationArr([], '시청', '충정로(경기대입구)', Direction.CW);
   }, []);
+  const setStationNotification = useCallback(() => {
+    if (receiveStationPush && selectedTrain) {
+      postPromiseFn({
+        url: APIS.route.notification().url,
+        body: {
+          trainNo: selectedTrain?.trainNo,
+          stations: shortenStations(
+            stationArr(
+              [],
+              selectedTrain.statnNm,
+              stations[stations.length - 1],
+              direction,
+            ),
+          ),
+        },
+        token: token,
+      });
+      Alert.alert('역알림이 설정 되었습니다.');
+    }
+  }, [receiveStationPush, selectedTrain?.trainNo, stations, direction]);
+  const handleSetOrigin = ori => {
+    dispatch(setOrigin(ori));
+    setStationNotification();
+  };
+  const handleSetDestination = dest => {
+    dispatch(setDestination(dest));
+    setStationNotification();
+  };
+  const handleSetDirection = dir => {
+    dispatch(setDirection(dir));
+    setStationNotification();
+  };
   const selectGetterSetter = {
     [Selecting.ORIGIN]: {
       get: origin,
-      set: ori => dispatch(setOrigin(ori)),
+      set: handleSetOrigin,
       options: fullStations,
     },
     [Selecting.DESTINATION]: {
       get: destination,
-      set: dest => dispatch(setDestination(dest)),
+      set: handleSetDestination,
       options: fullStations,
     },
     [Selecting.DIRECTION]: {
       get: direction,
-      set: dir => dispatch(setDirection(dir)),
+      set: handleSetDirection,
       options: [Direction.INNER, Direction.OUTER],
     },
     [Selecting.GLOBAL_FILTER]: {

@@ -28,5 +28,6 @@
         "ostream": "cpp",
         "array": "cpp",
         "utility": "cpp"
-    }
+    },
+    "java.configuration.updateBuildConfiguration": "interactive"
 }

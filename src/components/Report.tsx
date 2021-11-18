@@ -74,8 +74,8 @@ export const Report = ({post, mine = null}) => {
     }
   }, [report]);
   const goToPostDetail = useCallback(() => {
-    navigation.navigate(NAV_NAMES.PostDetail);
     dispatch(setCurrentPostId(postKey(post)));
+    navigation.navigate(NAV_NAMES.PostDetail);
   }, []);
   return (
     <Div bg={'rgba(255,255,255,.9)'} pb10 px20>
@@ -95,9 +95,7 @@ export const Report = ({post, mine = null}) => {
           </Col>
           <Col></Col>
           <Col auto px10 py5 rounded5>
-            <Span medium>{`${new Date(report.createdAt).toLocaleDateString(
-              'ko-KR',
-            )}`}</Span>
+            <Span medium>{report.vehicleIdNum}</Span>
           </Col>
         </Row>
       )}

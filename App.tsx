@@ -29,51 +29,16 @@ const App = () => {
     },
     [dispatch],
   );
-  useEffect(() => {
-    LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
-    LogBox.ignoreLogs(['Animated: `useNativeDriver`']);
-    LogBox.ignoreLogs([
-      'Sending `onAnimatedValueUpdate` with no listeners registered',
-    ]);
-    LogBox.ignoreLogs([
-      'Remote debugger is in a background tab which may cause apps to perform slowly.',
-    ]);
-    // LogBox.ignoreAllLogs();
-    // LogBox.ignoreLogs(['Warning: ...']);
-  }, []);
-
-  useEffect(() => {
-    const BACKEND_URL = 'https://ws.metasgid.com';
-    const manager = new Manager(BACKEND_URL, {
-      reconnectionDelayMax: 5000,
-      forceNew: true,
-    });
-    const newSocket = manager.socket('/chat', {
-      auth: {
-        token: token,
-      },
-    });
-    newSocket.on('login', login);
-    // newSocket.on('disconnnect', () => dispatch(setChatSocket(null)));
-    dispatch(setChatSocket(newSocket));
-    return () => {
-      newSocket.off('login');
-      // newSocket.off('disconnnect');
-      newSocket.close();
-      dispatch(setChatSocket(null));
-    };
-  }, [token, isLoggedIn]);
-
-  const getToken = async () => {
+  const firebaseMessaging = messaging();
+  const getToken = useCallback(async () => {
     try {
-      const token = await messaging().getToken();
+      const token = await firebaseMessaging.getToken();
       if (token) return token;
     } catch (error) {}
-  };
-
-  const setFCMToken = async () => {
+  }, [token]);
+  const setFCMToken = useCallback(async () => {
     try {
-      const authorized = await messaging().hasPermission();
+      const authorized = await firebaseMessaging.hasPermission();
       if (authorized) {
         const fcmToken = await getToken();
         const res = await postPromiseFn({
@@ -86,7 +51,7 @@ const App = () => {
         console.log('console.log(fcmToken)', fcmToken);
       } else {
         const fcmToken = await getToken();
-        await messaging().requestPermission();
+        await firebaseMessaging.requestPermission();
         const res = await postPromiseFn({
           url: APIS.push.registrationToken().url,
           body: {
@@ -99,42 +64,52 @@ const App = () => {
     } catch (error) {
       console.log(`Error while saving fcm token: ${error}`);
     }
-  };
-
+  }, [token]);
+  useEffect(() => {
+    // LogBox.ignoreAllLogs();
+    // LogBox.ignoreLogs(['Warning: ...']);
+  }, []);
+  useEffect(() => {
+    if (isLoggedIn) {
+      const BACKEND_URL = 'https://ws.metasgid.com';
+      const manager = new Manager(BACKEND_URL, {
+        reconnectionDelayMax: 5000,
+        forceNew: true,
+      });
+      const newSocket = manager.socket('/chat', {
+        auth: {
+          token: token,
+        },
+      });
+      newSocket.on('login', login);
+      newSocket.on('disconnnect', () => dispatch(setChatSocket(null)));
+      dispatch(setChatSocket(newSocket));
+      return () => {
+        newSocket.off('login');
+        newSocket.off('disconnnect');
+        newSocket.close();
+        dispatch(setChatSocket(null));
+      };
+    }
+  }, [isLoggedIn]);
   useEffect(() => {
     if (isLoggedIn) {
       setFCMToken();
-      messaging().onNotificationOpenedApp(remoteMessage => {
-        console.log(
-          'Notification caused app to open from background state:',
-          remoteMessage.notification,
-        );
-        // setInitialRoute(remoteMessage.data.goTo);
+      firebaseMessaging.onNotificationOpenedApp(remoteMessage => {});
+      firebaseMessaging.getInitialNotification().then(remoteMessage => {});
+      const unsubscribe = firebaseMessaging.onMessage(async remoteMessage => {
+        const notification = {
+          foreground: true, // BOOLEAN: If the notification was received in foreground or not
+          userInteraction: false, // BOOLEAN: If the notification was opened by the user from the notification area or not
+          message: remoteMessage.notification.body, // STRING: The notification message
+          title: remoteMessage.notification.title, // STRING: The notification title
+          data: remoteMessage.data, // OBJECT: The push data or the defined userInfo in local notifications
+        };
+        PushNotification.localNotification(notification);
       });
-      messaging()
-        .getInitialNotification()
-        .then(remoteMessage => {
-          if (remoteMessage) {
-            console.log(
-              'Notification caused app to open from quit state:',
-              remoteMessage.notification,
-            );
-            // setInitialRoute(remoteMessage.data.goTo); // e.g. "Settings"
-          }
-        });
-    }
-    const unsubscribe = messaging().onMessage(async remoteMessage => {
-      const notification = {
-        foreground: true, // BOOLEAN: If the notification was received in foreground or not
-        userInteraction: false, // BOOLEAN: If the notification was opened by the user from the notification area or not
-        message: remoteMessage.notification.body, // STRING: The notification message
-        title: remoteMessage.notification.title, // STRING: The notification title
-        data: remoteMessage.data, // OBJECT: The push data or the defined userInfo in local notifications
-      };
-      PushNotification.localNotification(notification);
-    });
 
-    return unsubscribe;
+      return unsubscribe;
+    }
   }, [isLoggedIn]);
 
   return <AppContent />;
@@ -144,4 +119,5 @@ const codePushOptions = {
   checkFrequency: codePush.CheckFrequency.ON_APP_RESUME,
 };
 
-export default codePush(codePushOptions)(withRootReducer(App));
+// export default codePush(codePushOptions)(withRootReducer(App));
+export default withRootReducer(App);

@@ -1,5 +1,5 @@
 import {useNavigation} from '@react-navigation/core';
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {Heart, X} from 'react-native-feather';
 import {shallowEqual, useDispatch, useSelector} from 'react-redux';
 import {Col} from 'src/components/common/Col';
@@ -12,6 +12,7 @@ import APIS from 'src/modules/apis';
 import {
   GO_COLOR,
   GRAY_COLOR,
+  HAS_NOTCH,
   iconSettings,
   PLACE,
   REPORT,
@@ -20,6 +21,7 @@ import {
 import {IMAGES} from 'src/modules/images';
 import {
   deletePromiseFn,
+  getPromiseFn,
   postPromiseFn,
   useApiSelector,
   useReloadGET,
@@ -28,17 +30,128 @@ import {RootState} from 'src/redux/rootReducer';
 import {Input, KeyboardAvoidingView, NativeBaseProvider} from 'native-base';
 import {Platform, RefreshControl, SafeAreaView, ScrollView} from 'react-native';
 import {setMainPost} from 'src/redux/feedReducer';
-import {isOkay} from 'src/modules/utils';
+import {isOkay, postKey} from 'src/modules/utils';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
+import PostDetailHeader from 'src/components/PostDetailHeader';
+import Comment from 'src/components/Comment';
+import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
+import {View} from 'src/modules/viewComponents';
 
 const options = {
   enableVibrateFallback: true,
   ignoreAndroidSystemSettings: false,
 };
-
 enum TextType {
   COMMENT = 0,
 }
+const PostPlaceholder = () => {
+  return (
+    <Div bg={'white'} flex px20 py20>
+      <Div h={HAS_NOTCH ? 44 : 20} bg={'rgba(255,255,255,.9)'} />
+      <Div flex={1}>
+        <SkeletonPlaceholder>
+          <View
+            style={{
+              flexDirection: 'column',
+              alignItems: 'center',
+              paddingTop: 10,
+              paddingBottom: 50,
+            }}>
+            <View
+              style={{
+                width: 100,
+                height: 100,
+                borderRadius: 10,
+                marginTop: 10,
+                marginBottom: 10,
+              }}
+            />
+            <View
+              style={{
+                width: 400,
+                height: 20,
+                borderRadius: 5,
+                marginTop: 10,
+                marginBottom: 10,
+              }}
+            />
+            <View
+              style={{
+                width: 300,
+                height: 20,
+                borderRadius: 5,
+                marginTop: 10,
+                marginBottom: 10,
+              }}
+            />
+          </View>
+          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <View
+              style={{
+                width: 30,
+                height: 30,
+                borderRadius: 50,
+                marginTop: 10,
+                marginBottom: 10,
+              }}
+            />
+            <View style={{marginLeft: 20}}>
+              <View
+                style={{
+                  width: 120,
+                  height: 11,
+                  borderRadius: 4,
+                  marginTop: 2,
+                  marginBottom: 2,
+                }}
+              />
+              <View
+                style={{
+                  width: 80,
+                  height: 11,
+                  borderRadius: 4,
+                  marginTop: 2,
+                  marginBottom: 2,
+                }}
+              />
+            </View>
+          </View>
+          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <View
+              style={{
+                width: 30,
+                height: 30,
+                borderRadius: 50,
+                marginTop: 10,
+                marginBottom: 10,
+              }}
+            />
+            <View style={{marginLeft: 20}}>
+              <View
+                style={{
+                  width: 120,
+                  height: 11,
+                  borderRadius: 4,
+                  marginTop: 2,
+                  marginBottom: 2,
+                }}
+              />
+              <View
+                style={{
+                  width: 80,
+                  height: 11,
+                  borderRadius: 4,
+                  marginTop: 2,
+                  marginBottom: 2,
+                }}
+              />
+            </View>
+          </View>
+        </SkeletonPlaceholder>
+      </Div>
+    </Div>
+  );
+};
 const PostDetailScreen = () => {
   const {
     feed: {currentPostId, mainPosts, myPosts},
@@ -47,155 +160,193 @@ const PostDetailScreen = () => {
     },
   } = useSelector((root: RootState) => root, shallowEqual);
   const currentPost = mainPosts[currentPostId] || myPosts[currentPostId];
-  const innerPost = currentPost.post;
-
-  const {data: reportComments, isLoading: reportCommentsLoading} =
-    useApiSelector(APIS.post.report.comments);
-
-  const {data: sunganComments, isLoading: sunganCommentsLoading} =
-    useApiSelector(APIS.post.sungan.comments);
-
-  const {data: placeComments, isLoading: placeCommentsLoading} = useApiSelector(
-    APIS.post.place.comments,
-  );
-
-  const apiGET = useReloadGET();
-  const dispatch = useDispatch();
-
   const [text, setText] = useState('');
   const [textType, setTextType] = useState<any>(TextType.COMMENT);
+  const [comments, setComments] = useState([]);
+  const [commentsLoading, setCommentsLoading] = useState(true);
 
-  const pullToRefresh = () => {
+  const pullToRefresh = async () => {
+    setCommentsLoading(true);
+    console.log('tpoken', token);
+    let res;
     if (currentPost.type === REPORT) {
-      apiGET(APIS.post.report.comments(currentPost.post.id));
+      res = await getPromiseFn({
+        url: APIS.post.report.comments(currentPost.post.id).url,
+        token,
+      });
     } else if (currentPost.type === SUNGAN) {
-      apiGET(APIS.post.sungan.comments(currentPost.post.id));
+      res = await getPromiseFn({
+        url: APIS.post.sungan.comments(currentPost.post.id).url,
+        token,
+      });
     } else if (currentPost.type === PLACE) {
-      apiGET(APIS.post.place.comments(currentPost.post.id));
+      res = await getPromiseFn({
+        url: APIS.post.place.comments(currentPost.post.id).url,
+        token,
+      });
     }
+    console.log(res);
+    if (isOkay(res.data)) {
+      setComments(res.data.data);
+    }
+    setCommentsLoading(false);
   };
-  const commentOn = async (url, idName) => {
-    return await postPromiseFn({
-      url,
-      body: {
-        [idName]: currentPost.post.id,
-        content: text,
-        userName: currentUser.username,
-        userProfileImgUrl: currentUser.avatar,
-      },
-      token,
-    });
-  };
-  const likeOn = async (api, commentId) => {
-    ReactNativeHapticFeedback.trigger('impactLight', options);
-    return await postPromiseFn({
-      url: api(commentId).url,
-      body: {},
-      token,
-    });
-  };
-  const unlikeOn = async (api, commentId) => {
-    ReactNativeHapticFeedback.trigger('impactLight', options);
-    return await deletePromiseFn({
-      url: api(commentId).url,
-      body: {},
-      token,
-    });
-  };
-  const likeOnSunganComment = async (api, commentId) => {
-    ReactNativeHapticFeedback.trigger('impactLight', options);
-    return await postPromiseFn({
-      url: api().url,
-      body: {
-        commentId,
-      },
-      token,
-    });
-  };
-  const replyOn = async (url, commentId) => {
-    return await postPromiseFn({
-      url: url,
-      body: {
-        commentId: commentId,
-        content: text,
-        userName: currentUser.username,
-      },
-      token,
-    });
-  };
+
+  useEffect(() => {
+    pullToRefresh();
+  }, []);
+
+  const innerPost = currentPost.post;
+
+  const dispatch = useDispatch();
+
+  const commentOn = useCallback(
+    (url, idName) => {
+      postPromiseFn({
+        url,
+        body: {
+          [idName]: currentPost.post.id,
+          content: text,
+          userName: currentUser.username,
+          userProfileImgUrl: currentUser.avatar,
+        },
+        token,
+      });
+    },
+    [currentPostId, text],
+  );
+  const likeOn = useCallback(
+    (api, commentId) => {
+      ReactNativeHapticFeedback.trigger('impactLight', options);
+      postPromiseFn({
+        url: api(commentId).url,
+        body: {},
+        token,
+      });
+    },
+    [token],
+  );
+  const unlikeOn = useCallback(
+    (api, commentId) => {
+      ReactNativeHapticFeedback.trigger('impactLight', options);
+      deletePromiseFn({
+        url: api(commentId).url,
+        body: {},
+        token,
+      });
+    },
+    [token],
+  );
+  const likeOnSunganComment = useCallback(
+    (api, commentId) => {
+      ReactNativeHapticFeedback.trigger('impactLight', options);
+      postPromiseFn({
+        url: api().url,
+        body: {
+          commentId,
+        },
+        token,
+      });
+    },
+    [token],
+  );
+  const replyOnSunganComment = useCallback(
+    url => {
+      postPromiseFn({
+        url: url,
+        body: {
+          content: text,
+          userName: currentUser.username,
+          userProfileImgUrl: currentUser.avatar,
+        },
+        token,
+      });
+    },
+    [token],
+  );
+  const replyOn = useCallback(
+    (url, commentId) => {
+      postPromiseFn({
+        url: url,
+        body: {
+          commentId: commentId,
+          content: text,
+          userName: currentUser.username,
+          userProfileImgUrl: currentUser.avatar,
+        },
+        token,
+      });
+    },
+    [token],
+  );
+  const handlePressReplyOnComment = useCallback(comment => {
+    setTextType(comment);
+  }, []);
   const post = {
     [REPORT]: {
-      comments: reportComments?.data,
       emoji: '🚨',
       text: currentPost.post.text,
       likeCnt: currentPost.post.likeCnt,
-      isLoading: reportCommentsLoading,
       likeUrl: id => {
         return APIS.post.report.like(id).url;
       },
-      postComment: async () => {
-        return await commentOn(APIS.post.report.comment.main().url, 'reportId');
+      postComment: () => {
+        commentOn(APIS.post.report.comment.main().url, 'reportId');
       },
-      likeOnComment: async commentId => {
-        return await likeOn(APIS.post.report.comment.like, commentId);
+      likeOnComment: commentId => {
+        likeOn(APIS.post.report.comment.like, commentId);
       },
-      unlikeOnComment: async commentId => {
-        return await unlikeOn(APIS.post.report.comment.like, commentId);
+      unlikeOnComment: commentId => {
+        unlikeOn(APIS.post.report.comment.like, commentId);
       },
-      replyOnComment: async commentId => {
-        return await replyOn(APIS.post.report.comment.reply().url, commentId);
+      replyOnComment: commentId => {
+        replyOn(APIS.post.report.comment.reply().url, commentId);
       },
     },
     [SUNGAN]: {
-      comments: sunganComments?.data,
       emoji: currentPost.post.emoji,
       text: currentPost.post.text,
       likeCnt: currentPost.post.likeCnt,
-      isLoading: sunganCommentsLoading,
       likeUrl: id => {
         return APIS.post.sungan.like(id).url;
       },
-      postComment: async () => {
-        return await commentOn(APIS.post.sungan.comment.main().url, 'sunganId');
+      postComment: () => {
+        commentOn(APIS.post.sungan.comment.main().url, 'sunganId');
       },
-      likeOnComment: async commentId => {
-        return likeOnSunganComment(APIS.post.sungan.comment.like, commentId);
+      likeOnComment: commentId => {
+        likeOnSunganComment(APIS.post.sungan.comment.like, commentId);
       },
-      unlikeOnComment: async commentId => {
-        return await unlikeOn(APIS.post.sungan.comment.unlike, commentId);
+      unlikeOnComment: commentId => {
+        unlikeOn(APIS.post.sungan.comment.unlike, commentId);
       },
-      replyOnComment: async commentId => {
-        return await replyOn(APIS.post.sungan.comment.reply().url, commentId);
+      replyOnComment: commentId => {
+        replyOnSunganComment(APIS.post.sungan.comment.reply(commentId).url);
       },
     },
     [PLACE]: {
-      comments: placeComments?.data,
       emoji: currentPost.post.emoji,
       text: currentPost.post.text,
       place: currentPost.post.place,
       likeCnt: currentPost.post.likeCnt,
-      isLoading: placeCommentsLoading,
       likeUrl: id => {
         return APIS.post.place.like(id).url;
       },
-      postComment: async () => {
-        return await commentOn(
-          APIS.post.place.comment.main().url,
-          'hotplaceId',
-        );
+      postComment: () => {
+        commentOn(APIS.post.place.comment.main().url, 'hotplaceId');
       },
-      likeOnComment: async commentId => {
-        return await likeOn(APIS.post.place.comment.like, commentId);
+      likeOnComment: commentId => {
+        likeOn(APIS.post.place.comment.like, commentId);
       },
-      unlikeOnComment: async commentId => {
-        return await unlikeOn(APIS.post.place.comment.like, commentId);
+      unlikeOnComment: commentId => {
+        unlikeOn(APIS.post.place.comment.like, commentId);
       },
-      replyOnComment: async commentId => {
-        return await replyOn(APIS.post.place.comment.reply().url, commentId);
+      replyOnComment: commentId => {
+        replyOn(APIS.post.place.comment.reply().url, commentId);
       },
     },
   };
-  const handleLike = () => {
+
+  const handleLike = useCallback(() => {
     if (currentPost.didLike) {
       const {
         didLike,
@@ -235,50 +386,34 @@ const PostDetailScreen = () => {
         token: token,
       });
     }
-  };
-  const handleSend = async () => {
+  }, [token, currentPost.didLike, currentPost.post.likeCnt, currentPostId]);
+  const handleSend = useCallback(() => {
     if (text.length > 0) {
       if (textType === TextType.COMMENT) {
-        const res = await post[currentPost.type].postComment();
-        if (isOkay(res)) {
-          setText('');
-          pullToRefresh();
-        }
+        setText('');
+        post[currentPost.type].postComment();
       } else {
-        const res = await post[currentPost.type].replyOnComment(textType.id);
-        if (isOkay(res)) {
-          setText('');
-          pullToRefresh();
-        }
+        setText('');
+        post[currentPost.type].replyOnComment(textType.id);
       }
       ReactNativeHapticFeedback.trigger('impactMedium', options);
     }
-  };
-  const handleLikeOnComment = async (commentId, prevLiked) => {
-    if (prevLiked) {
-      const res = await post[currentPost.type].unlikeOnComment(commentId);
-      if (isOkay(res)) {
-        pullToRefresh();
+  }, [text, textType, currentPostId]);
+  const handleLikeOnComment = useCallback(
+    (commentId, prevLiked) => {
+      if (prevLiked) {
+        post[currentPost.type].unlikeOnComment(commentId);
+      } else {
+        post[currentPost.type].likeOnComment(commentId);
       }
-    } else {
-      const res = await post[currentPost.type].likeOnComment(commentId);
-      if (isOkay(res)) {
-        pullToRefresh();
-      }
-    }
-    ReactNativeHapticFeedback.trigger('impactLight', options);
-  };
-  const handleReplyOnComment = comment => {
-    setTextType(comment);
-  };
-  const borderBottomProp = {
-    borderBottomColor: GRAY_COLOR,
-    borderBottomWidth: 0.3,
-  };
+      ReactNativeHapticFeedback.trigger('impactLight', options);
+    },
+    [currentPostId],
+  );
 
-  useEffect(() => {
-    pullToRefresh();
-  }, []);
+  if (commentsLoading) {
+    return <PostPlaceholder />;
+  }
 
   return (
     <NativeBaseProvider>
@@ -296,67 +431,43 @@ const PostDetailScreen = () => {
               showsVerticalScrollIndicator={false}
               refreshControl={
                 <RefreshControl
-                  refreshing={post[currentPost.type].isLoading}
+                  refreshing={commentsLoading}
                   onRefresh={pullToRefresh}
                 />
               }>
-              <Div itemsCenter justifyCenter>
-                <Span fontSize={100}>{post[currentPost.type].emoji}</Span>
-              </Div>
-              {post[currentPost.type].place && (
-                <Div itemsCenter justifyCenter px20 py10>
-                  <Span bold>{post[currentPost.type].place}</Span>
-                </Div>
-              )}
-              <Div itemsCenter justifyCenter px20>
-                <Span>{post[currentPost.type].text}</Span>
-              </Div>
+              <PostDetailHeader
+                emoji={post[currentPost.type].emoji}
+                place={post[currentPost.type].place}
+                text={post[currentPost.type].text}
+                likeCnt={post[currentPost.type].likeCnt}
+                didLike={currentPost.didLike}
+                handleLike={handleLike}
+              />
               <Div>
-                <Row itemsCenter pt10 pb10 px20 {...borderBottomProp}>
-                  <Col auto>
-                    <Row>
-                      <Span medium>{`좋아요 ${
-                        post[currentPost.type].likeCnt
-                      }개`}</Span>
-                    </Row>
-                  </Col>
-                  <Col></Col>
-                  <Col auto>
-                    <Row>
-                      <Col auto px5 onPress={handleLike}>
-                        <Heart
-                          {...iconSettings}
-                          fill={currentPost.didLike ? 'red' : 'white'}></Heart>
-                      </Col>
-                    </Row>
-                  </Col>
-                </Row>
-                {post[currentPost.type].comments &&
-                  post[currentPost.type].comments.map((comment, index) => {
-                    return (
-                      <Comment
-                        comment={comment}
-                        handleLikeOnComment={handleLikeOnComment}
-                        handleReplyOnComment={handleReplyOnComment}
-                        key={index}
-                      />
-                    );
-                  })}
-                <Row py10>
-                  <Col></Col>
-                  <Col auto>
-                    <Span color={GRAY_COLOR}>댓글을 모두 확인했습니다.</Span>
-                  </Col>
-                  <Col></Col>
-                </Row>
+                {comments.map((comment, index) => {
+                  return (
+                    <Comment
+                      commentId={comment.id}
+                      userName={comment.userName}
+                      content={comment.content}
+                      userProfileImgUrl={comment.userInfo.userProfileImgUrl}
+                      likeCnt={comment.likeCnt}
+                      isLiked={comment.isLiked}
+                      handleLikeOnComment={handleLikeOnComment}
+                      handleReplyOnComment={handlePressReplyOnComment}
+                      key={index}
+                    />
+                  );
+                })}
               </Div>
+              <AllCommentsRead />
             </ScrollView>
             <SafeAreaView>
               <Div borderTopColor={GRAY_COLOR} borderTopWidth={0.3}>
                 {textType !== TextType.COMMENT && (
                   <Row px20 py10 bg={GRAY_COLOR}>
                     <Col mr10>
-                      <Span>{`${textType.userInfo.userName}에게 댓글 다는중`}</Span>
+                      <Span>{`${textType.userName}에게 댓글 다는중`}</Span>
                     </Col>
                     <Col auto onPress={() => setTextType(TextType.COMMENT)}>
                       <X height={15} width={15} color={'black'}></X>
@@ -406,108 +517,15 @@ const PostDetailScreen = () => {
   );
 };
 
-const Comment = ({comment, handleLikeOnComment, handleReplyOnComment}) => {
-  const [expand, setExpand] = useState(false);
+const AllCommentsRead = () => {
   return (
-    <Div pt20 px20>
-      <Row itemsCenter justifyCenter flex>
-        <Col auto itemsCenter justifyCenter rounded20 overflowHidden>
-          <Img
-            source={
-              IMAGES.characters[comment.userInfo.userProfileImgUrl] ||
-              IMAGES.imageProfileNull
-            }
-            w30
-            h30></Img>
-        </Col>
-        <Col>
-          <Row mb5 pl10>
-            <Col mr10 justifyCenter>
-              <Row>
-                <Span medium color={'black'}>
-                  {comment.userInfo.userName}
-                </Span>
-                <Span ml5>{comment.content}</Span>
-              </Row>
-            </Col>
-          </Row>
-          <Row pl10>
-            {comment.likeCnt > 0 && (
-              <Col mr10 auto>
-                <Span color={GRAY_COLOR}>{`좋아요 ${comment.likeCnt}개`}</Span>
-              </Col>
-            )}
-            <Col auto onPress={() => handleReplyOnComment(comment)}>
-              <Span color={GRAY_COLOR}>답글 달기</Span>
-            </Col>
-            <Col></Col>
-          </Row>
-        </Col>
-        <Col
-          auto
-          itemsCenter
-          justifyCenter
-          onPress={() => handleLikeOnComment(comment.id, comment.isLiked)}>
-          <Heart
-            fill={comment.isLiked ? 'red' : 'white'}
-            color={'black'}
-            height={14}></Heart>
-        </Col>
-      </Row>
-      {[...comment.nestedComments].reverse().map((nestedComment, index) => {
-        return (
-          <Row itemsCenter justifyCenter flex ml30 pt10 key={index} pl10>
-            <Col auto itemsCenter justifyCenter rounded20 overflowHidden>
-              <Img
-                source={
-                  IMAGES.characters[nestedComment.userInfo.userProfileImgUrl] ||
-                  IMAGES.imageProfileNull
-                }
-                w20
-                h20></Img>
-            </Col>
-            <Col>
-              <Row mb5 pl10>
-                <Col mr10 justifyCenter>
-                  <Row>
-                    <Span medium color={'black'}>
-                      {nestedComment.userInfo.userName}
-                    </Span>
-                    <Span ml5>{nestedComment.content}</Span>
-                  </Row>
-                </Col>
-              </Row>
-              <Row pl10>
-                {nestedComment.likeCnt && nestedComment.likeCnt > 0 && (
-                  <Col mr10 auto>
-                    <Span
-                      color={
-                        GRAY_COLOR
-                      }>{`좋아요 ${nestedComment.likeCnt}개`}</Span>
-                  </Col>
-                )}
-                <Col auto onPress={() => handleReplyOnComment(comment)}>
-                  <Span color={GRAY_COLOR}>답글 달기</Span>
-                </Col>
-                <Col></Col>
-              </Row>
-            </Col>
-            <Col
-              auto
-              itemsCenter
-              justifyCenter
-              onPress={() =>
-                handleLikeOnComment(nestedComment.id, nestedComment.didLike)
-              }>
-              <Heart
-                fill={nestedComment.isLiked ? 'red' : 'white'}
-                color={'black'}
-                height={14}></Heart>
-            </Col>
-          </Row>
-        );
-      })}
-    </Div>
+    <Row py10>
+      <Col></Col>
+      <Col auto>
+        <Span color={GRAY_COLOR}>댓글을 모두 확인했습니다.</Span>
+      </Col>
+      <Col></Col>
+    </Row>
   );
 };
 

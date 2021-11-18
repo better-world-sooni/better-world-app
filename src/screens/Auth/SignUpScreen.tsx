@@ -66,7 +66,6 @@ const SignUpSceen = ({navigation}) => {
       Alert.alert('출발지와 도착지를 먼저 설정해주세요.');
     }
   }, [origin, destination, exchangeOriginDestination]);
-
   const isUsername = useCallback(str => {
     return (
       str && str.length > 5 && str.length < 12 && /^[a-zA-Z0-9._]+$/.test(str)
@@ -78,12 +77,7 @@ const SignUpSceen = ({navigation}) => {
   const isPassword = useCallback(str => {
     return /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,}$/.test(str);
   }, []);
-  const emailSignUp = useCallback(async () => {
-    if (username === '' || !isUsername(username)) {
-      Alert.alert('Error', '아이디를 확인해 주세요', [{text: '네'}]);
-      setUsername('');
-      return;
-    }
+  const emailSignUp = async () => {
     if (email === '' || !isEmail(email)) {
       Alert.alert('Error', '이메일을 확인해 주세요', [{text: '네'}]);
       setEmail('');
@@ -92,6 +86,12 @@ const SignUpSceen = ({navigation}) => {
     if (password === '' || !isPassword(password)) {
       Alert.alert('Error', passwordError, [{text: '네'}]);
       setPassword('');
+      return;
+    }
+    if (username === '' || !isUsername(username)) {
+      console.log('Username', username);
+      Alert.alert('Error', '아이디를 확인해 주세요', [{text: '네'}]);
+      setUsername('');
       return;
     }
     if (!character) {
@@ -103,7 +103,7 @@ const SignUpSceen = ({navigation}) => {
       return;
     }
     if (!destination) {
-      Alert.alert('Error', '출발지를 설정해 주세요!');
+      Alert.alert('Error', '도착지를 설정해 주세요!');
       return;
     }
     setLoading(true);
@@ -135,7 +135,7 @@ const SignUpSceen = ({navigation}) => {
           token: jwtToken,
         });
         if (defaultRouteResponse.status == 200) {
-          Alert.alert('Success', '사인업이 완료되었습니다. 로그인 해주세요.', [
+          Alert.alert('성공', '사인업이 완료되었습니다. 로그인 해주세요.', [
             {text: '네', onPress: () => navigation.navigate(NAV_NAMES.SignIn)},
           ]);
           navigation.navigate(NAV_NAMES.SignIn);
@@ -152,7 +152,7 @@ const SignUpSceen = ({navigation}) => {
     }
     Alert.alert('Error', `사인업 도중 문재가 발생하였습니다.`);
     setLoading(false);
-  }, [username, email, password, character, passwordError]);
+  };
   const borderProp = useCallback(bool => {
     if (!bool || bool === Validity.NULL || bool === Validity.ZERO) {
       return {
@@ -198,7 +198,7 @@ const SignUpSceen = ({navigation}) => {
     () => setErrPassword(!isPassword(password)),
     [password],
   );
-  const handleIdChange = useCallback(async id => {
+  const handleIdChange = async id => {
     setUsername(id);
     const res = await getPromiseFn({
       url: APIS.auth.usernameValidity(id).url,
@@ -214,7 +214,7 @@ const SignUpSceen = ({navigation}) => {
     } else {
       setErrId('다른 아이디를 시도해주세요.');
     }
-  }, []);
+  };
   const handleSelectAvatar = useCallback(() => setSelectingAvatar(true), []);
   const handleDoneSelectAvatar = useCallback(
     () => setSelectingAvatar(false),
@@ -236,7 +236,6 @@ const SignUpSceen = ({navigation}) => {
     () => setSelecting(Selecting.NONE),
     [],
   );
-  const handlePressSignUp = useCallback(() => emailSignUp(), []);
   const handlePressSignIn = useCallback(
     () => navigation.navigate(NAV_NAMES.SignIn),
     [],
@@ -410,7 +409,7 @@ const SignUpSceen = ({navigation}) => {
           <LinearGradient
             colors={['#25e2bc', '#45c01c']}
             style={{width: '100%', borderRadius: 5, marginTop: 20, padding: 2}}>
-            <Row py15 px20 onPress={handlePressSignUp} rounded5 bgWhite>
+            <Row py15 px20 onPress={() => emailSignUp()} rounded5 bgWhite>
               <Col></Col>
               <Col auto>
                 <Span black bold>
