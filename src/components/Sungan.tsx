@@ -75,8 +75,7 @@ const Sungan = ({post, mine = null}) => {
     }
   };
   const goToPostDetail = () => {
-    dispatch(setCurrentPostId(postKey(post)));
-    navigation.navigate(NAV_NAMES.PostDetail);
+    navigation.navigate(NAV_NAMES.PostDetail, {currentPostId: postKey(post)});
   };
 
   return (

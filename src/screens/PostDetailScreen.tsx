@@ -152,22 +152,22 @@ const PostPlaceholder = () => {
     </Div>
   );
 };
-const PostDetailScreen = () => {
+const PostDetailScreen = props => {
   const {
-    feed: {currentPostId, mainPosts, myPosts},
+    feed: {mainPosts, myPosts},
     app: {
       session: {token, currentUser},
     },
   } = useSelector((root: RootState) => root, shallowEqual);
-  const currentPost = mainPosts[currentPostId] || myPosts[currentPostId];
   const [text, setText] = useState('');
   const [textType, setTextType] = useState<any>(TextType.COMMENT);
   const [comments, setComments] = useState([]);
   const [commentsLoading, setCommentsLoading] = useState(true);
+  const currentPostId = props.route.params.currentPostId;
+  const currentPost = mainPosts[currentPostId] || myPosts[currentPostId];
 
   const pullToRefresh = async () => {
     setCommentsLoading(true);
-    console.log('tpoken', token);
     let res;
     if (currentPost.type === REPORT) {
       res = await getPromiseFn({
@@ -185,7 +185,7 @@ const PostDetailScreen = () => {
         token,
       });
     }
-    console.log(res);
+    console.log('tpoken', res);
     if (isOkay(res.data)) {
       setComments(res.data.data);
     }
@@ -193,7 +193,7 @@ const PostDetailScreen = () => {
   };
 
   useEffect(() => {
-    pullToRefresh();
+    setTimeout(pullToRefresh, 1);
   }, []);
 
   const innerPost = currentPost.post;
@@ -411,7 +411,7 @@ const PostDetailScreen = () => {
     [currentPostId],
   );
 
-  if (commentsLoading) {
+  if (commentsLoading || !currentPost) {
     return <PostPlaceholder />;
   }
 

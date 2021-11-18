@@ -74,8 +74,7 @@ export const Place = ({post, mine = null}) => {
     }
   }, [sungan]);
   const goToPostDetail = useCallback(() => {
-    dispatch(setCurrentPostId(postKey(post)));
-    navigation.navigate(NAV_NAMES.PostDetail);
+    navigation.navigate(NAV_NAMES.PostDetail, {currentPostId: postKey(post)});
   }, []);
   return (
     <Div bg={'rgba(255,255,255,.9)'} pb10 px20>
