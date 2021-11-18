@@ -119,5 +119,5 @@ const codePushOptions = {
   checkFrequency: codePush.CheckFrequency.ON_APP_RESUME,
 };
 
-// export default codePush(codePushOptions)(withRootReducer(App));
-export default withRootReducer(App);
+export default codePush(codePushOptions)(withRootReducer(App));
+// export default withRootReducer(App);

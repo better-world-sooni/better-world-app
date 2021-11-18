@@ -17,8 +17,8 @@ const Comment = ({
   isLiked,
   handleLikeOnComment,
   handleReplyOnComment,
+  children = null,
 }) => {
-  console.log('Comment');
   return (
     <Div pt20 px20>
       <Row itemsCenter justifyCenter flex>
@@ -61,61 +61,8 @@ const Comment = ({
             height={14}></Heart>
         </Col>
       </Row>
-      {/* {[...comment.nestedComments].reverse().map((nestedComment, index) => {
-          return (
-            <Row itemsCenter justifyCenter flex ml30 pt10 key={index} pl10>
-              <Col auto itemsCenter justifyCenter rounded20 overflowHidden>
-                <Img
-                  source={
-                    IMAGES.characters[nestedComment.userInfo.userProfileImgUrl] ||
-                    IMAGES.imageProfileNull
-                  }
-                  w20
-                  h20></Img>
-              </Col>
-              <Col>
-                <Row mb5 pl10>
-                  <Col mr10 justifyCenter>
-                    <Row>
-                      <Span medium color={'black'}>
-                        {nestedComment.userInfo.userName}
-                      </Span>
-                      <Span ml5>{nestedComment.content}</Span>
-                    </Row>
-                  </Col>
-                </Row>
-                <Row pl10>
-                  {nestedComment.likeCnt && nestedComment.likeCnt > 0 && (
-                    <Col mr10 auto>
-                      <Span
-                        color={
-                          GRAY_COLOR
-                        }>{`좋아요 ${nestedComment.likeCnt}개`}</Span>
-                    </Col>
-                  )}
-                  <Col auto onPress={() => handleReplyOnComment(comment)}>
-                    <Span color={GRAY_COLOR}>답글 달기</Span>
-                  </Col>
-                  <Col></Col>
-                </Row>
-              </Col>
-              <Col
-                auto
-                itemsCenter
-                justifyCenter
-                onPress={() =>
-                  handleLikeOnComment(nestedComment.id, nestedComment.didLike)
-                }>
-                <Heart
-                  fill={nestedComment.isLiked ? 'red' : 'white'}
-                  color={'black'}
-                  height={14}></Heart>
-              </Col>
-            </Row>
-          );
-        })} */}
+      {children}
     </Div>
   );
 };
-
 export default React.memo(Comment);

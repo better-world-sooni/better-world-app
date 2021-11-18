@@ -8,7 +8,7 @@ import {IMAGES} from 'src/modules/images';
 import {NAV_NAMES} from 'src/modules/navNames';
 import {isOkay, postKey} from 'src/modules/utils';
 import {deletePromiseFn, postPromiseFn} from 'src/redux/asyncReducer';
-import {setCurrentPostId, setMainPost} from 'src/redux/feedReducer';
+import {setMainPost} from 'src/redux/feedReducer';
 import {RootState} from 'src/redux/rootReducer';
 import {Col} from './common/Col';
 import {Div} from './common/Div';

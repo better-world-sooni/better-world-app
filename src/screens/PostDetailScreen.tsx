@@ -162,12 +162,13 @@ const PostDetailScreen = props => {
   const [text, setText] = useState('');
   const [textType, setTextType] = useState<any>(TextType.COMMENT);
   const [comments, setComments] = useState([]);
-  const [commentsLoading, setCommentsLoading] = useState(true);
   const currentPostId = props.route.params.currentPostId;
   const currentPost = mainPosts[currentPostId] || myPosts[currentPostId];
+  const innerPost = currentPost.post;
+  const dispatch = useDispatch();
+  const [postLoading, setPostLoading] = useState(true);
 
-  const pullToRefresh = async () => {
-    setCommentsLoading(true);
+  const refreshComments = async () => {
     let res;
     if (currentPost.type === REPORT) {
       res = await getPromiseFn({
@@ -185,24 +186,24 @@ const PostDetailScreen = props => {
         token,
       });
     }
-    console.log('tpoken', res);
-    if (isOkay(res.data)) {
+    if (isOkay(res)) {
       setComments(res.data.data);
     }
-    setCommentsLoading(false);
+  };
+  const pullToRefresh = async () => {
+    setPostLoading(true);
+    refreshComments();
+    setPostLoading(false);
   };
 
   useEffect(() => {
-    setTimeout(pullToRefresh, 1);
+    refreshComments();
+    setPostLoading(false);
   }, []);
 
-  const innerPost = currentPost.post;
-
-  const dispatch = useDispatch();
-
   const commentOn = useCallback(
-    (url, idName) => {
-      postPromiseFn({
+    async (url, idName) => {
+      await postPromiseFn({
         url,
         body: {
           [idName]: currentPost.post.id,
@@ -216,9 +217,9 @@ const PostDetailScreen = props => {
     [currentPostId, text],
   );
   const likeOn = useCallback(
-    (api, commentId) => {
+    async (api, commentId) => {
       ReactNativeHapticFeedback.trigger('impactLight', options);
-      postPromiseFn({
+      await postPromiseFn({
         url: api(commentId).url,
         body: {},
         token,
@@ -227,9 +228,9 @@ const PostDetailScreen = props => {
     [token],
   );
   const unlikeOn = useCallback(
-    (api, commentId) => {
+    async (api, commentId) => {
       ReactNativeHapticFeedback.trigger('impactLight', options);
-      deletePromiseFn({
+      await deletePromiseFn({
         url: api(commentId).url,
         body: {},
         token,
@@ -238,21 +239,22 @@ const PostDetailScreen = props => {
     [token],
   );
   const likeOnSunganComment = useCallback(
-    (api, commentId) => {
+    async (api, commentId) => {
       ReactNativeHapticFeedback.trigger('impactLight', options);
-      postPromiseFn({
+      await postPromiseFn({
         url: api().url,
         body: {
           commentId,
         },
         token,
       });
+      refreshComments();
     },
     [token],
   );
   const replyOnSunganComment = useCallback(
-    url => {
-      postPromiseFn({
+    async url => {
+      await postPromiseFn({
         url: url,
         body: {
           content: text,
@@ -261,12 +263,13 @@ const PostDetailScreen = props => {
         },
         token,
       });
+      refreshComments();
     },
     [token],
   );
   const replyOn = useCallback(
-    (url, commentId) => {
-      postPromiseFn({
+    async (url, commentId) => {
+      await postPromiseFn({
         url: url,
         body: {
           commentId: commentId,
@@ -276,6 +279,7 @@ const PostDetailScreen = props => {
         },
         token,
       });
+      refreshComments();
     },
     [token],
   );
@@ -290,17 +294,17 @@ const PostDetailScreen = props => {
       likeUrl: id => {
         return APIS.post.report.like(id).url;
       },
-      postComment: () => {
-        commentOn(APIS.post.report.comment.main().url, 'reportId');
+      postComment: async () => {
+        await commentOn(APIS.post.report.comment.main().url, 'reportId');
       },
-      likeOnComment: commentId => {
-        likeOn(APIS.post.report.comment.like, commentId);
+      likeOnComment: async commentId => {
+        await likeOn(APIS.post.report.comment.like, commentId);
       },
-      unlikeOnComment: commentId => {
-        unlikeOn(APIS.post.report.comment.like, commentId);
+      unlikeOnComment: async commentId => {
+        await unlikeOn(APIS.post.report.comment.like, commentId);
       },
-      replyOnComment: commentId => {
-        replyOn(APIS.post.report.comment.reply().url, commentId);
+      replyOnComment: async commentId => {
+        await replyOn(APIS.post.report.comment.reply().url, commentId);
       },
     },
     [SUNGAN]: {
@@ -310,17 +314,19 @@ const PostDetailScreen = props => {
       likeUrl: id => {
         return APIS.post.sungan.like(id).url;
       },
-      postComment: () => {
-        commentOn(APIS.post.sungan.comment.main().url, 'sunganId');
+      postComment: async () => {
+        await commentOn(APIS.post.sungan.comment.main().url, 'sunganId');
       },
-      likeOnComment: commentId => {
-        likeOnSunganComment(APIS.post.sungan.comment.like, commentId);
+      likeOnComment: async commentId => {
+        await likeOnSunganComment(APIS.post.sungan.comment.like, commentId);
       },
-      unlikeOnComment: commentId => {
-        unlikeOn(APIS.post.sungan.comment.unlike, commentId);
+      unlikeOnComment: async commentId => {
+        await unlikeOn(APIS.post.sungan.comment.unlike, commentId);
       },
-      replyOnComment: commentId => {
-        replyOnSunganComment(APIS.post.sungan.comment.reply(commentId).url);
+      replyOnComment: async commentId => {
+        await replyOnSunganComment(
+          APIS.post.sungan.comment.reply(commentId).url,
+        );
       },
     },
     [PLACE]: {
@@ -331,17 +337,17 @@ const PostDetailScreen = props => {
       likeUrl: id => {
         return APIS.post.place.like(id).url;
       },
-      postComment: () => {
-        commentOn(APIS.post.place.comment.main().url, 'hotplaceId');
+      postComment: async () => {
+        await commentOn(APIS.post.place.comment.main().url, 'hotplaceId');
       },
-      likeOnComment: commentId => {
-        likeOn(APIS.post.place.comment.like, commentId);
+      likeOnComment: async commentId => {
+        await likeOn(APIS.post.place.comment.like, commentId);
       },
-      unlikeOnComment: commentId => {
-        unlikeOn(APIS.post.place.comment.like, commentId);
+      unlikeOnComment: async commentId => {
+        await unlikeOn(APIS.post.place.comment.like, commentId);
       },
-      replyOnComment: commentId => {
-        replyOn(APIS.post.place.comment.reply().url, commentId);
+      replyOnComment: async commentId => {
+        await replyOn(APIS.post.place.comment.reply().url, commentId);
       },
     },
   };
@@ -387,31 +393,33 @@ const PostDetailScreen = props => {
       });
     }
   }, [token, currentPost.didLike, currentPost.post.likeCnt, currentPostId]);
-  const handleSend = useCallback(() => {
+  const handleSend = useCallback(async () => {
+    ReactNativeHapticFeedback.trigger('impactMedium', options);
     if (text.length > 0) {
       if (textType === TextType.COMMENT) {
         setText('');
-        post[currentPost.type].postComment();
+        await post[currentPost.type].postComment();
       } else {
         setText('');
-        post[currentPost.type].replyOnComment(textType.id);
+        await post[currentPost.type].replyOnComment(textType.id);
       }
-      ReactNativeHapticFeedback.trigger('impactMedium', options);
+      refreshComments();
     }
   }, [text, textType, currentPostId]);
   const handleLikeOnComment = useCallback(
-    (commentId, prevLiked) => {
-      if (prevLiked) {
-        post[currentPost.type].unlikeOnComment(commentId);
-      } else {
-        post[currentPost.type].likeOnComment(commentId);
-      }
+    async (commentId, prevLiked) => {
       ReactNativeHapticFeedback.trigger('impactLight', options);
+      if (prevLiked) {
+        await post[currentPost.type].unlikeOnComment(commentId);
+      } else {
+        await post[currentPost.type].likeOnComment(commentId);
+      }
+      refreshComments();
     },
     [currentPostId],
   );
 
-  if (commentsLoading || !currentPost) {
+  if (postLoading) {
     return <PostPlaceholder />;
   }
 
@@ -431,7 +439,7 @@ const PostDetailScreen = props => {
               showsVerticalScrollIndicator={false}
               refreshControl={
                 <RefreshControl
-                  refreshing={commentsLoading}
+                  refreshing={postLoading}
                   onRefresh={pullToRefresh}
                 />
               }>
@@ -448,15 +456,96 @@ const PostDetailScreen = props => {
                   return (
                     <Comment
                       commentId={comment.id}
-                      userName={comment.userName}
+                      userName={comment.userInfo.userName}
                       content={comment.content}
                       userProfileImgUrl={comment.userInfo.userProfileImgUrl}
                       likeCnt={comment.likeCnt}
                       isLiked={comment.isLiked}
                       handleLikeOnComment={handleLikeOnComment}
                       handleReplyOnComment={handlePressReplyOnComment}
-                      key={index}
-                    />
+                      key={index}>
+                      {comment.nestedComments.length > 0 &&
+                        [...comment.nestedComments]
+                          .reverse()
+                          .map((nestedComment, index) => {
+                            return (
+                              <Row
+                                itemsCenter
+                                justifyCenter
+                                flex
+                                ml30
+                                pt10
+                                key={index}
+                                pl10>
+                                <Col
+                                  auto
+                                  itemsCenter
+                                  justifyCenter
+                                  rounded20
+                                  overflowHidden>
+                                  <Img
+                                    source={
+                                      IMAGES.characters[
+                                        nestedComment.userInfo.userProfileImgUrl
+                                      ] || IMAGES.imageProfileNull
+                                    }
+                                    w20
+                                    h20></Img>
+                                </Col>
+                                <Col>
+                                  <Row mb5 pl10>
+                                    <Col mr10 justifyCenter>
+                                      <Row>
+                                        <Span medium color={'black'}>
+                                          {nestedComment.userInfo.userName}
+                                        </Span>
+                                        <Span ml5>{nestedComment.content}</Span>
+                                      </Row>
+                                    </Col>
+                                  </Row>
+                                  <Row pl10>
+                                    {nestedComment.likeCnt &&
+                                      nestedComment.likeCnt > 0 && (
+                                        <Col mr10 auto>
+                                          <Span
+                                            color={
+                                              GRAY_COLOR
+                                            }>{`좋아요 ${nestedComment.likeCnt}개`}</Span>
+                                        </Col>
+                                      )}
+                                    <Col
+                                      auto
+                                      onPress={() =>
+                                        handlePressReplyOnComment(
+                                          nestedComment.id,
+                                        )
+                                      }>
+                                      <Span color={GRAY_COLOR}>답글 달기</Span>
+                                    </Col>
+                                    <Col></Col>
+                                  </Row>
+                                </Col>
+                                <Col
+                                  auto
+                                  itemsCenter
+                                  justifyCenter
+                                  onPress={() =>
+                                    handleLikeOnComment(
+                                      nestedComment.id,
+                                      nestedComment.didLike,
+                                    )
+                                  }>
+                                  <Heart
+                                    fill={
+                                      nestedComment.isLiked ? 'red' : 'white'
+                                    }
+                                    color={'black'}
+                                    height={14}></Heart>
+                                </Col>
+                              </Row>
+                            );
+                          })}
+                    </Comment>
                   );
                 })}
               </Div>

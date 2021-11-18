@@ -18,7 +18,6 @@ const PostDetailHeader = ({
   didLike,
   handleLike,
 }) => {
-  console.log('PostDetailHeader');
   return (
     <>
       <Div itemsCenter justifyCenter>

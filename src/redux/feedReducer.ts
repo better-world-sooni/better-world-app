@@ -35,9 +35,6 @@ const feedSlice = createSlice({
         setGlobalFilter: (state, action) => {
             state.globalFiter = action.payload;
         },
-        setCurrentPostId: (state, action) => {
-            state.currentPostId = action.payload;
-        }
     },
 });
 
@@ -48,5 +45,4 @@ export const {
     setMainPost,
     setCachedPreup,
     setGlobalFilter,
-    setCurrentPostId,
 } = feedSlice.actions;
