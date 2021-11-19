@@ -16,6 +16,9 @@ import {Img} from './common/Img';
 import {Row} from './common/Row';
 import {Span} from './common/Span';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
+import moment from 'moment';
+import 'moment/locale/ko';
+moment.locale('ko');
 
 const options = {
   enableVibrateFallback: true,
@@ -160,6 +163,11 @@ const Sungan = ({post, mine = null}) => {
               </Col>
             </Row>
           )}
+          <Row py5>
+            <Span color={GRAY_COLOR} fontSize={12}>
+              {moment(sungan.createdAt).calendar()}
+            </Span>
+          </Row>
         </>
       )}
     </Div>

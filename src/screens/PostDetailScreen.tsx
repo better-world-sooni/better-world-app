@@ -36,6 +36,9 @@ import PostDetailHeader from 'src/components/PostDetailHeader';
 import Comment from 'src/components/Comment';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import {View} from 'src/modules/viewComponents';
+import moment from 'moment';
+import 'moment/locale/ko';
+moment.locale('ko');
 
 const options = {
   enableVibrateFallback: true,
@@ -461,6 +464,7 @@ const PostDetailScreen = props => {
                   return (
                     <Comment
                       commentId={comment.id}
+                      createdAt={comment.createdAt}
                       userName={comment.userInfo.userName}
                       content={comment.content}
                       userProfileImgUrl={comment.userInfo.userProfileImgUrl}
@@ -509,7 +513,7 @@ const PostDetailScreen = props => {
                                     </Col>
                                   </Row>
                                   <Row pl10>
-                                    {nestedComment.likeCnt &&
+                                    {/* {nestedComment.likeCnt &&
                                       nestedComment.likeCnt > 0 && (
                                         <Col mr10 auto>
                                           <Span
@@ -526,6 +530,13 @@ const PostDetailScreen = props => {
                                         )
                                       }>
                                       <Span color={GRAY_COLOR}>답글 달기</Span>
+                                    </Col> */}
+                                    <Col auto mr10>
+                                      <Span color={GRAY_COLOR} fontSize={12}>
+                                        {moment(
+                                          nestedComment.createdAt,
+                                        ).calendar()}
+                                      </Span>
                                     </Col>
                                     <Col></Col>
                                   </Row>

@@ -7,8 +7,12 @@ import {Div} from './common/Div';
 import {Img} from './common/Img';
 import {Row} from './common/Row';
 import {Span} from './common/Span';
+import moment from 'moment';
+import 'moment/locale/ko';
+moment.locale('ko');
 
 const Comment = ({
+  createdAt,
   commentId,
   userName,
   content,
@@ -37,6 +41,9 @@ const Comment = ({
             </Span>
           </Row>
           <Row pl10>
+            <Col mr10 auto>
+              <Span color={GRAY_COLOR}>{moment(createdAt).calendar()}</Span>
+            </Col>
             {likeCnt > 0 && (
               <Col mr10 auto>
                 <Span color={GRAY_COLOR}>{`좋아요 ${likeCnt}개`}</Span>

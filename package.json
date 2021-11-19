@@ -41,6 +41,7 @@
     "code-push-cli": "^3.0.0",
     "immer": "^9.0.5",
     "module-resolver": "^1.0.0",
+    "moment": "^2.29.1",
     "native-base": "^3.0.3",
     "patch-package": "^6.4.7",
     "react": "17.0.1",
