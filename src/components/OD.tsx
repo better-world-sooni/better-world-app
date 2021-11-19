@@ -1,8 +1,8 @@
 import React, {useCallback} from 'react';
 import {Alert} from 'react-native';
-import {ChevronDown, RefreshCw} from 'react-native-feather';
+import {ChevronDown, RefreshCw, Star} from 'react-native-feather';
 import {shallowEqual, useDispatch, useSelector} from 'react-redux';
-import {chevronDownSettings} from 'src/modules/constants';
+import {chevronDownSettings, GO_COLOR} from 'src/modules/constants';
 import {RootState} from 'src/redux/rootReducer';
 import {exchangeOriginDestination} from 'src/redux/routeReducer';
 import {Col} from './common/Col';

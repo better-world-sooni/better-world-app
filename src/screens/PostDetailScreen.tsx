@@ -167,6 +167,7 @@ const PostDetailScreen = props => {
   const innerPost = currentPost.post;
   const dispatch = useDispatch();
   const [postLoading, setPostLoading] = useState(true);
+  const [sendLoading, setSendLoading] = useState(false);
 
   const refreshComments = async () => {
     let res;
@@ -265,7 +266,7 @@ const PostDetailScreen = props => {
       });
       refreshComments();
     },
-    [token],
+    [token, text, currentUser],
   );
   const replyOn = useCallback(
     async (url, commentId) => {
@@ -281,7 +282,7 @@ const PostDetailScreen = props => {
       });
       refreshComments();
     },
-    [token],
+    [token, text, currentUser],
   );
   const handlePressReplyOnComment = useCallback(comment => {
     setTextType(comment);
@@ -394,16 +395,20 @@ const PostDetailScreen = props => {
     }
   }, [token, currentPost.didLike, currentPost.post.likeCnt, currentPostId]);
   const handleSend = useCallback(async () => {
-    ReactNativeHapticFeedback.trigger('impactMedium', options);
-    if (text.length > 0) {
-      if (textType === TextType.COMMENT) {
-        setText('');
-        await post[currentPost.type].postComment();
-      } else {
-        setText('');
-        await post[currentPost.type].replyOnComment(textType.id);
+    if (!sendLoading) {
+      ReactNativeHapticFeedback.trigger('impactMedium', options);
+      setSendLoading(true);
+      if (text.length > 0) {
+        if (textType === TextType.COMMENT) {
+          await post[currentPost.type].postComment();
+          setText('');
+        } else {
+          await post[currentPost.type].replyOnComment(textType.id);
+          setText('');
+        }
+        refreshComments();
       }
-      refreshComments();
+      setSendLoading(false);
     }
   }, [text, textType, currentPostId]);
   const handleLikeOnComment = useCallback(
@@ -525,7 +530,7 @@ const PostDetailScreen = props => {
                                     <Col></Col>
                                   </Row>
                                 </Col>
-                                <Col
+                                {/* <Col
                                   auto
                                   itemsCenter
                                   justifyCenter
@@ -541,7 +546,7 @@ const PostDetailScreen = props => {
                                     }
                                     color={'black'}
                                     height={14}></Heart>
-                                </Col>
+                                </Col> */}
                               </Row>
                             );
                           })}
@@ -591,7 +596,7 @@ const PostDetailScreen = props => {
                       onSubmitEditing={handleSend}
                       InputRightElement={
                         <Span color={GO_COLOR} px15 onPress={handleSend}>
-                          게시
+                          {sendLoading ? '게시중..' : '게시'}
                         </Span>
                       }
                       placeholder={'댓글 달기'}></Input>

@@ -8,21 +8,40 @@ import {Span} from './common/Span';
 import {GO_COLOR, GRAY_COLOR} from 'src/modules/constants';
 
 export const ScrollSelector = ({
+  loading = null,
   selectedValue,
   onValueChange,
   options,
   onClose = null,
+  onPressCenter = null,
 }) => {
   return (
     <Div borderTopColor={GRAY_COLOR} borderTopWidth={0.5}>
-      <Row bg={'white'}>
-        <Col></Col>
-        {onClose && (
-          <Col auto px20 py10 onPress={() => onClose()}>
-            <Span color={GO_COLOR}>완료</Span>
+      {!loading ? (
+        <Row bg={'white'}>
+          {onPressCenter && (
+            <Col auto onPress={onPressCenter} px20 py10>
+              <Span color={GO_COLOR}>기본길 가져오기</Span>
+            </Col>
+          )}
+          <Col></Col>
+          {onClose ? (
+            <Col itemsEnd px20 py10 onPress={onClose}>
+              <Span color={GO_COLOR}>완료</Span>
+            </Col>
+          ) : (
+            <Col></Col>
+          )}
+        </Row>
+      ) : (
+        <Row>
+          <Col />
+          <Col auto px20 py10>
+            <Span color={GO_COLOR}>로딩...</Span>
           </Col>
-        )}
-      </Row>
+          <Col />
+        </Row>
+      )}
       <Picker
         selectedValue={selectedValue}
         onValueChange={itemValue => onValueChange(itemValue)}>

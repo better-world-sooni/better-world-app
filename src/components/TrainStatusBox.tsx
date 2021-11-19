@@ -5,8 +5,9 @@ import React, {
   useMemo,
   useState,
 } from 'react';
-import {Alert, Dimensions} from 'react-native';
+import {Alert, Dimensions, View} from 'react-native';
 import {ChevronDown} from 'react-native-feather';
+import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import {shallowEqual, useDispatch, useSelector} from 'react-redux';
 import APIS from 'src/modules/apis';
 import {
@@ -33,18 +34,65 @@ import {Row} from './common/Row';
 import {Span} from './common/Span';
 import HorizontalStations from './HorizontalStations';
 
+const TrainStatusBoxPlaceholder = () => {
+  return (
+    <Div bg={'white'} flex py40>
+      <SkeletonPlaceholder>
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+          <View
+            style={{
+              height: 20,
+              width: 100,
+              marginTop: 10,
+              marginBottom: 10,
+            }}
+          />
+          <View
+            style={{
+              width: 200,
+              borderRadius: 20,
+              height: 80,
+              marginTop: 10,
+              marginBottom: 10,
+            }}
+          />
+          <View
+            style={{
+              height: 20,
+              width: 100,
+              marginTop: 10,
+              marginBottom: 10,
+            }}
+          />
+        </View>
+        <View
+          style={{
+            marginTop: 30,
+            flexDirection: 'column',
+          }}>
+          <View
+            style={{
+              height: 20,
+            }}
+          />
+        </View>
+      </SkeletonPlaceholder>
+    </Div>
+  );
+};
+
 const TrainStatusBox = ({
   handleSelectDirection,
   trainPositions,
   arrivalTrain,
 }) => {
   if (!trainPositions || !arrivalTrain) {
-    return (
-      <Div h250 justifyCenter itemsCenter>
-        <Img w30 h30 source={IMAGES.imageIosLoading} />
-        <Span mt20>정보 가져오는중</Span>
-      </Div>
-    );
+    return <TrainStatusBoxPlaceholder />;
   }
   const [currentTime, setCurrentTime] = useState(new Date());
   const {

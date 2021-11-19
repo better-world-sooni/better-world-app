@@ -155,9 +155,8 @@ export const Place = ({post, mine = null}) => {
               <Col mx10 justifyCenter>
                 <Row>
                   <Span medium color={'black'}>
-                    {bestComment.userInfo.userName}
+                    {`${bestComment.userInfo.userName}  ${bestComment.content}`}
                   </Span>
-                  <Span ml5>{bestComment.content}</Span>
                 </Row>
               </Col>
             </Row>

@@ -14,6 +14,7 @@ import APIS from 'src/modules/apis';
 import {ScrollView} from 'src/modules/viewComponents';
 import {
   deletePromiseFn,
+  getPromiseFn,
   postPromiseFn,
   useApiSelector,
   useReloadGET,
@@ -98,9 +99,9 @@ const HomeScreen = props => {
     shallowEqual,
   );
   const [channelFilter, setChannelFilter] = useState(ChannelFilter.ALL);
+  const [selectorLoading, setSelectorLoading] = useState(false);
   const apiGET = useReloadGET();
   const dispatch = useDispatch();
-  const navigation = useNavigation();
   const filterPostsByChannel = useCallback(
     post => {
       if (channelFilter === ChannelFilter.ALL) {
@@ -244,6 +245,7 @@ const HomeScreen = props => {
     [direction],
   );
   const pullToRefresh = useCallback(() => {
+    setRealtimePositionList(null);
     apiGET(APIS.post.main());
     apiGET(APIS.realtime.position());
     origin && apiGET(APIS.realtime.arrival(origin.split('(')[0]));
@@ -263,13 +265,15 @@ const HomeScreen = props => {
     if (!mainPosts) {
       apiGET(APIS.post.main());
     }
+    if (!realtimeArrivalList && !realtimePositionList) {
+      apiGET(APIS.realtime.position());
+      origin && apiGET(APIS.realtime.arrival(origin.split('(')[0]));
+    }
   }, []);
   useEffect(() => {
     if (!positionsLoading && !arrivalLoading) {
-      setTimeout(() => {
-        setRealtimePositionList(positionResponse?.data);
-        setRealtimeArrivalList(arrivalResponse?.data);
-      }, 1);
+      setRealtimePositionList(positionResponse?.data);
+      setRealtimeArrivalList(arrivalResponse?.data);
     }
   }, [positionsLoading, arrivalLoading]);
 
@@ -393,6 +397,16 @@ const HomeScreen = props => {
     () => setChannelFilter(ChannelFilter.REPORT),
     [],
   );
+  const handlePressCenter = async () => {
+    setSelectorLoading(true);
+    const res = await getPromiseFn({url: APIS.route.starred().url, token});
+    if (isOkay(res)) {
+      dispatch(setRoute(res?.data?.data?.[0].route));
+      console.log(res?.data?.data?.[0].route);
+    }
+    setSelectorLoading(false);
+    setSelecting(Selecting.NONE);
+  };
 
   return (
     <Div flex bgWhite>
@@ -529,10 +543,16 @@ const HomeScreen = props => {
       </Div>
       {selecting && (
         <ScrollSelector
+          loading={selectorLoading}
           selectedValue={selectGetterSetter[selecting].get}
           onValueChange={selectGetterSetter[selecting].set}
           options={selectGetterSetter[selecting].options}
           onClose={handleSelectDone}
+          onPressCenter={
+            selecting == Selecting.DESTINATION || selecting == Selecting.ORIGIN
+              ? handlePressCenter
+              : null
+          }
         />
       )}
     </Div>

@@ -42,10 +42,9 @@ const ODSelect = ({visible, onPressReturn}) => {
   const handleSelectDirection = () => setSelecting(Selecting.DIRECTION);
   const handleSetOrigin = ori => {
     setOrigin(ori);
-    console.log(origin, destination);
     if (destination) {
-      const innerCircle = stationArr([], origin, destination, Direction.INNER);
-      const outerCircle = stationArr([], origin, destination, Direction.OUTER);
+      const innerCircle = stationArr([], ori, destination, Direction.INNER);
+      const outerCircle = stationArr([], ori, destination, Direction.OUTER);
       if (innerCircle.length < outerCircle.length) {
         setDirection(Direction.INNER);
         setStations(innerCircle);
@@ -58,12 +57,11 @@ const ODSelect = ({visible, onPressReturn}) => {
       setDirection(null);
     }
   };
-  const handleSetDestination = ori => {
-    setDestination(ori);
-    console.log(origin, destination);
+  const handleSetDestination = dest => {
+    setDestination(dest);
     if (origin) {
-      const innerCircle = stationArr([], origin, destination, Direction.INNER);
-      const outerCircle = stationArr([], origin, destination, Direction.OUTER);
+      const innerCircle = stationArr([], origin, dest, Direction.INNER);
+      const outerCircle = stationArr([], origin, dest, Direction.OUTER);
       if (innerCircle.length < outerCircle.length) {
         setDirection(Direction.INNER);
         setStations(innerCircle);
