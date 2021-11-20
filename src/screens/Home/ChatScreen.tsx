@@ -13,59 +13,57 @@ import {
   MY_ROUTE,
   Selecting,
 } from 'src/modules/constants';
-import {
-  AlertCircle,
-  Bell,
-  Grid,
-  MessageCircle,
-  PlusSquare,
-} from 'react-native-feather';
+import {Grid, MessageCircle} from 'react-native-feather';
 import {Input, NativeBaseProvider} from 'native-base';
 import {RootState} from 'src/redux/rootReducer';
 import {setGlobalFilter} from 'src/redux/feedReducer';
-import {ScrollSelector} from 'src/components/ScrollSelector';
 import {Header} from 'src/components/Header';
 import {useNavigation} from '@react-navigation/core';
 import {NAV_NAMES} from 'src/modules/navNames';
 import {setCurrentChatRoomId} from 'src/redux/chatReducer';
-import GestureRecognizer from 'react-native-swipe-gestures';
 import {Swipeable} from 'react-native-gesture-handler';
 import useSocketInput from 'src/hooks/useSocketInput';
+import {getPromiseFn} from 'src/redux/asyncReducer';
+import APIS from 'src/modules/apis';
 
 const ChatScreen = () => {
-  const {chatRooms, chatSocket} = useSelector(
-    (root: RootState) => root.chat,
+  const {
+    chat: {chatSocket},
+  } = useSelector((root: RootState) => root, shallowEqual);
+  const {currentUser, token} = useSelector(
+    (root: RootState) => root.app.session,
     shallowEqual,
   );
-  const {globalFiter} = useSelector(
-    (root: RootState) => root.feed,
-    shallowEqual,
-  );
-  const {stations} = useSelector(
-    (root: RootState) => root.route.route,
-    shallowEqual,
-  );
-  const dispatch = useDispatch();
+  const [chatRooms, setChatRooms] = useState([]);
+  const [loading, setLoading] = useState(false);
   const navigation = useNavigation();
   const sendSocketMessage = useSocketInput();
 
-  const [selecting, setSelecting] = useState(Selecting.NONE);
-  const selectGetterSetter = {
-    [Selecting.GLOBAL_FILTER]: {
-      get: globalFiter,
-      set: filt => dispatch(setGlobalFilter(filt)),
-      options: [MAIN_LINE2, MY_ROUTE, ...stations],
-    },
-  };
   const goToChatRoom = roomId => {
-    dispatch(setCurrentChatRoomId(roomId));
-    navigation.navigate(NAV_NAMES.ChatRoom);
+    navigation.navigate(NAV_NAMES.ChatRoom, {currentChatRoomId: roomId});
   };
   const exitChatRoom = roomId => {
     sendSocketMessage(chatSocket, 'exitChatRoom', {
       chatRoomId: roomId,
     });
   };
+
+  const fetchNewRoom = async () => {
+    setLoading(true);
+    const res = await getPromiseFn({
+      url: APIS.chat.chatRoom(currentUser.id).url,
+      token,
+    });
+    if (res?.data) {
+      const {chatRooms} = res.data;
+      setChatRooms(chatRooms);
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchNewRoom();
+  }, []);
 
   const RightSwipeActions = () => {
     return (
@@ -80,29 +78,22 @@ const ChatScreen = () => {
   return (
     <Div flex bg={'white'}>
       <Div h={HAS_NOTCH ? 44 : 20} />
-      <Header
-        bg={'rgba(255,255,255,0)'}
-        onSelect={() => setSelecting(Selecting.GLOBAL_FILTER)}
-        noFilter={true}
-      />
+      <Header bg={'rgba(255,255,255,0)'} noFilter={true} />
       <ScrollView flex={1} showsVerticalScrollIndicator={false}>
         <NativeBaseProvider>
           <Div relative>
             <Div pb10>
-              {Object.keys(chatRooms).map(chatRoomId => {
-                const chatRoom = chatRooms[chatRoomId];
-                const lastMessage =
-                  chatRoom.messages[chatRoom.messages.length - 1];
+              {chatRooms.map(chatRoom => {
                 return (
                   <Swipeable
-                    key={chatRoomId}
+                    key={chatRoom.id}
                     renderRightActions={RightSwipeActions}
-                    onSwipeableRightOpen={() => exitChatRoom(chatRoomId)}>
+                    onSwipeableRightOpen={() => exitChatRoom(chatRoom.id)}>
                     <Row
                       px20
                       py10
                       flex
-                      onPress={() => goToChatRoom(chatRoomId)}
+                      onPress={() => goToChatRoom(chatRoom.id)}
                       bgWhite>
                       <Col auto mr5 relative>
                         <MessageCircle
@@ -116,7 +107,7 @@ const ChatScreen = () => {
                           h={'100%'}
                           itemsCenter
                           justifyCenter>
-                          <Span bold>{`${chatRoom.usernames.length}명`}</Span>
+                          <Span bold>{`${chatRoom.userIds.length}명`}</Span>
                         </Div>
                       </Col>
                       <Col justifyCenter ml10>
@@ -127,13 +118,15 @@ const ChatScreen = () => {
                         </Row>
                         <Row w={'100%'}>
                           <Col auto>
-                            <Span fontSize={15}>{lastMessage?.text}</Span>
+                            <Span fontSize={15}>
+                              {chatRoom.lastMessage?.text}
+                            </Span>
                           </Col>
                           <Col />
                           <Col auto>
                             <Span fontSize={13} light>
                               {new Date(
-                                lastMessage.createdAt,
+                                chatRoom.lastMessage.createdAt,
                               ).toLocaleDateString('ko-KR')}
                             </Span>
                           </Col>
@@ -143,7 +136,7 @@ const ChatScreen = () => {
                   </Swipeable>
                 );
               })}
-              {Object.keys(chatRooms).length == 0 && (
+              {chatRooms.length == 0 && (
                 <>
                   <Row
                     itemsCenter

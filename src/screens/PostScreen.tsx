@@ -1,22 +1,11 @@
-import React, {
-  useEffect,
-  useState,
-  useRef,
-  useLayoutEffect,
-  Component,
-} from 'react';
+import React, {useState} from 'react';
 import {Div} from 'src/components/common/Div';
 import {Row} from 'src/components/common/Row';
 import {Span} from 'src/components/common/Span';
 import TopHeader from 'src/components/TopHeader';
 import {useNavigation} from '@react-navigation/core';
 import {Input, NativeBaseProvider, TextArea} from 'native-base';
-import {
-  Direction,
-  GO_COLOR,
-  GRAY_COLOR,
-  HAS_NOTCH,
-} from 'src/modules/constants';
+import {Direction, GO_COLOR, GRAY_COLOR} from 'src/modules/constants';
 import {Alert, ScrollView} from 'react-native';
 import {shallowEqual, useSelector} from 'react-redux';
 import {RootState} from 'src/redux/rootReducer';
@@ -24,12 +13,6 @@ import {postPromiseFn} from 'src/redux/asyncReducer';
 import APIS from 'src/modules/apis';
 import {stationArr} from 'src/modules/utils';
 import EmojiSelector, {Categories} from 'react-native-emoji-selector';
-import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
-
-const options = {
-  enableVibrateFallback: true,
-  ignoreAndroidSystemSettings: false,
-};
 
 enum Validity {
   NULL = null,
@@ -46,8 +29,7 @@ const channelNameToChannelId = {
 
 const PostScreen = props => {
   const {
-    selectedTrain,
-    route: {origin, stations},
+    route: {stations},
   } = useSelector((root: RootState) => root.route, shallowEqual);
   const {currentUser, token} = useSelector(
     (root: RootState) => root.app.session,

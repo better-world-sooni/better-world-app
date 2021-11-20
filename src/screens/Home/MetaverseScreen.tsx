@@ -19,21 +19,6 @@ interface MetasunganWindowMessage {
   payload: any;
   action: MetasunganAction;
 }
-interface ChatRoom {
-  chatRoom: {
-    __v: number;
-    _id: string;
-    chatBubbleId: string;
-    createdAt: string;
-    messages: Array<Record<string, any>>;
-    title: string;
-    updatedAt: string;
-    usernames: Array<string>;
-  };
-}
-interface ChatRoomId {
-  chatRoomId: string;
-}
 
 enum MetasunganAction {
   ENTER_CHAT_ROOM = 'enterChatRoom',
@@ -69,6 +54,7 @@ const MetaSunganScreen = () => {
   // functions
   const metasunganUrl = token => {
     return `https://metaverse.metasgid.com/?jwtToken=${token}`;
+    // return `http://localhost:3000/?jwtToken=${token}`;
   };
   const reload = () => {
     webViewRef && webViewRef.current.reload();
@@ -90,16 +76,11 @@ const MetaSunganScreen = () => {
   };
   const handleMetasunganWindowMessage = (message: MetasunganWindowMessage) => {
     if (message.action == MetasunganAction.ENTER_CHAT_ROOM) {
-      dispatch(setChatRoom(message.payload.chatRoom));
       dispatch(
         setChatBody({
           enabled: true,
-          enabledRoomId: message.payload.chatRoom._id,
+          enabledRoomId: message.payload.chatRoomId,
         }),
-      );
-    } else if (message.action == MetasunganAction.OPEN_CHAT_ROOM) {
-      dispatch(
-        setChatBody({enabled: true, enabledRoomId: message.payload.chatRoomId}),
       );
     }
   };

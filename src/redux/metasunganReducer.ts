@@ -15,6 +15,7 @@ const metasunganSlice = createSlice({
             chatBubble: null,
             updatedAt: null,
             chatRoomIds: [],
+            avatar: null,
         },
     },
     reducers: {

@@ -61,9 +61,9 @@ import PushNotification from 'react-native-push-notification';
 
 enum ChannelFilter {
   ALL = 0,
-  EVENTS = 1,
-  MUSIC = 3,
-  TALK = 4,
+  EVENTS = 2,
+  MUSIC = 1,
+  TALK = 3,
   REPORT = 5,
   PLACE = 6,
 }
@@ -114,19 +114,19 @@ const HomeScreen = props => {
       } else if (
         channelFilter === ChannelFilter.MUSIC &&
         post.type === SUNGAN &&
-        post.post.channelId !== ChannelFilter.MUSIC
+        post.post.channel.id == ChannelFilter.MUSIC
       ) {
         return true;
       } else if (
         channelFilter === ChannelFilter.EVENTS &&
         post.type === SUNGAN &&
-        post.post.channelId !== ChannelFilter.EVENTS
+        post.post.channel.id == ChannelFilter.EVENTS
       ) {
         return true;
       } else if (
         channelFilter === ChannelFilter.TALK &&
         post.type === SUNGAN &&
-        post.post.channelId !== ChannelFilter.TALK
+        post.post.channel.id == ChannelFilter.TALK
       ) {
         return true;
       } else if (channelFilter === ChannelFilter.PLACE && post.type === PLACE) {

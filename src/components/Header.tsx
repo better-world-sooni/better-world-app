@@ -16,7 +16,7 @@ import {Row} from './common/Row';
 import {Span} from './common/Span';
 import {Alert} from 'react-native';
 
-export const Header = ({bg, onSelect, noFilter = null}) => {
+export const Header = ({bg, onSelect = null, noFilter = null}) => {
   const {
     route: {selectedTrain},
     feed: {globalFiter},

@@ -1,3 +1,24 @@
+diff --git a/node_modules/react-native-gifted-chat/lib/GiftedAvatar.js b/node_modules/react-native-gifted-chat/lib/GiftedAvatar.js
+index 266857c..f33830b 100644
+--- a/node_modules/react-native-gifted-chat/lib/GiftedAvatar.js
++++ b/node_modules/react-native-gifted-chat/lib/GiftedAvatar.js
+@@ -3,6 +3,7 @@ import React from 'react';
+ import { Image, Text, TouchableOpacity, View, StyleSheet, } from 'react-native';
+ import Color from './Color';
+ import { StylePropType } from './utils';
++import {IMAGES} from 'src/modules/images';
+ const { carrot, emerald, peterRiver, wisteria, alizarin, turquoise, midnightBlue, } = Color;
+ const styles = StyleSheet.create({
+     avatarStyle: {
+@@ -71,7 +72,7 @@ export default class GiftedAvatar extends React.Component {
+                 return user.avatar([styles.avatarStyle, this.props.avatarStyle]);
+             }
+             else if (typeof user.avatar === 'string') {
+-                return (<Image source={{ uri: user.avatar }} style={[styles.avatarStyle, this.props.avatarStyle]}/>);
++                return (<Image source={IMAGES.characters[user.avatar]} style={[styles.avatarStyle, this.props.avatarStyle]}/>);
+             }
+             else if (typeof user.avatar === 'number') {
+                 return (<Image source={user.avatar} style={[styles.avatarStyle, this.props.avatarStyle]}/>);
 diff --git a/node_modules/react-native-gifted-chat/lib/MessageContainer.js b/node_modules/react-native-gifted-chat/lib/MessageContainer.js
 index 193772a..4e80378 100644
 --- a/node_modules/react-native-gifted-chat/lib/MessageContainer.js

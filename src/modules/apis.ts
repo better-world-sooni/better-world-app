@@ -65,6 +65,10 @@ const APIS = {
   },
   push: {
     registrationToken: () => v1('/push/registration-token'),
+  },
+  chat: {
+    chat: (roomId) => v1(`/chat/chat/${roomId}`),
+    chatRoom: (userId) => v1(`/chat/chatRoom/${userId}`),
   }
 };
 

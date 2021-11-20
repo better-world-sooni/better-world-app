@@ -1,35 +1,77 @@
 import {useNavigation} from '@react-navigation/core';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {ChevronLeft, ChevronsRight} from 'react-native-feather';
 import {GiftedChat} from 'react-native-gifted-chat';
-import {shallowEqual, useSelector} from 'react-redux';
+import {shallowEqual, useDispatch, useSelector} from 'react-redux';
 import {Col} from 'src/components/common/Col';
 import {Div} from 'src/components/common/Div';
 import {Row} from 'src/components/common/Row';
 import {Span} from 'src/components/common/Span';
 import useSocketInput from 'src/hooks/useSocketInput';
+import APIS from 'src/modules/apis';
 import {HAS_NOTCH, iconSettings} from 'src/modules/constants';
+import {getPromiseFn} from 'src/redux/asyncReducer';
 import {RootState} from 'src/redux/rootReducer';
 
-const ChatRoomScreen = () => {
-  const {chatRooms, currentChatRoom, chatSocket} = useSelector(
+const ChatRoomScreen = props => {
+  const currentChatRoomId = props.route.params.currentChatRoomId;
+  const {chatSocket} = useSelector(
     (root: RootState) => root.chat,
     shallowEqual,
   );
-
+  const {token} = useSelector(
+    (root: RootState) => root.app.session,
+    shallowEqual,
+  );
   const {metasunganUser} = useSelector(
     (root: RootState) => root.metasungan,
     shallowEqual,
   );
-
-  const navigation = useNavigation();
-
+  const dispatch = useDispatch();
   const sendSocketMessage = useSocketInput();
+  const navigation = useNavigation();
+  const [loading, setLoading] = useState(false);
+  const [title, setTitle] = useState(null);
+  const [messages, setMessages] = useState([]);
+  const [users, setUsers] = useState([]);
+
+  const receiveMessage = receiveMessageParams => {
+    setMessages([receiveMessageParams.message, ...messages]);
+  };
+
+  const fetchRoom = async () => {
+    setLoading(true);
+    const res = await getPromiseFn({
+      url: APIS.chat.chat(currentChatRoomId).url,
+      token,
+    });
+    console.log('console.log(fetchRoom)', currentChatRoomId);
+    if (res?.data?.data) {
+      const {title, messages, userIds} = res.data.data;
+      setTitle(title);
+      setMessages(messages);
+      setUsers(userIds);
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    if (chatSocket) {
+      chatSocket.on('receiveMessage', receiveMessage);
+      return () => {
+        chatSocket.off('receiveMessage');
+      };
+    }
+  }, [chatSocket, messages]);
+
+  useEffect(() => {
+    fetchRoom();
+  }, [currentChatRoomId]);
 
   const onSend = (messages = []) => {
     messages.forEach(message => {
       sendSocketMessage(chatSocket, 'sendMessage', {
-        chatRoomId: currentChatRoom.roomId,
+        chatRoomId: currentChatRoomId,
         message: message,
       });
     });
@@ -45,7 +87,7 @@ const ChatRoomScreen = () => {
           </Col>
           <Col itemsCenter>
             <Span bold fontSize={20}>
-              {chatRooms[currentChatRoom.roomId]?.title || ''}
+              {title}
             </Span>
           </Col>
           <Col auto px10>
@@ -53,9 +95,7 @@ const ChatRoomScreen = () => {
           </Col>
         </Row>
         <GiftedChat
-          messages={
-            [...chatRooms[currentChatRoom.roomId]?.messages].reverse() || []
-          }
+          messages={messages}
           onSend={messages => onSend(messages)}
           user={{
             _id: metasunganUser._id,

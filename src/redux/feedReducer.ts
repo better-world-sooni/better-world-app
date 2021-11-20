@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { MAIN_LINE2 } from 'src/modules/constants';
 import { postKey } from 'src/modules/utils';
 
 const feedSlice = createSlice({
@@ -7,7 +8,7 @@ const feedSlice = createSlice({
         mainPosts: null,
         myPosts: null,
         cachedPreup: null,
-        globalFiter: '2호선 본선',
+        globalFiter: MAIN_LINE2,
         currentPostId: null,
     },
     reducers: {
