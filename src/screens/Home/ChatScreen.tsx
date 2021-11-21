@@ -30,6 +30,39 @@ import {
 } from 'src/redux/asyncReducer';
 import APIS from 'src/modules/apis';
 
+const NoChatRooms = () => {
+  const navigation = useNavigation();
+  return (
+    <>
+      <Row
+        itemsCenter
+        justifyCenter
+        pt20
+        pb10
+        onPress={() => navigation.navigate(NAV_NAMES.Metaverse)}>
+        <Col h2 />
+        <Col auto>
+          <Grid
+            height={50}
+            width={50}
+            strokeWidth={0.7}
+            color={GRAY_COLOR}></Grid>
+        </Col>
+        <Col h2></Col>
+      </Row>
+      <Row pb20>
+        <Col></Col>
+        <Col auto>
+          <Span color={GRAY_COLOR}>
+            메타순간 탭에 들어가서 말풍선이 있는 유저를 눌러 보세요!
+          </Span>
+        </Col>
+        <Col></Col>
+      </Row>
+    </>
+  );
+};
+
 const ChatScreen = () => {
   const {
     chat: {chatSocket},
@@ -148,35 +181,7 @@ const ChatScreen = () => {
                   </Swipeable>
                 );
               })}
-              {chatRooms.length == 0 && (
-                <>
-                  <Row
-                    itemsCenter
-                    justifyCenter
-                    pt20
-                    pb10
-                    onPress={() => navigation.navigate(NAV_NAMES.Metaverse)}>
-                    <Col h2 />
-                    <Col auto>
-                      <Grid
-                        height={50}
-                        width={50}
-                        strokeWidth={0.7}
-                        color={GRAY_COLOR}></Grid>
-                    </Col>
-                    <Col h2></Col>
-                  </Row>
-                  <Row pb20>
-                    <Col></Col>
-                    <Col auto>
-                      <Span color={GRAY_COLOR}>
-                        메타순간 탭에 들어가서 말풍선이 있는 유저를 눌러 보세요!
-                      </Span>
-                    </Col>
-                    <Col></Col>
-                  </Row>
-                </>
-              )}
+              {chatRooms.length == 0 && <NoChatRooms />}
             </Div>
           </Div>
         </NativeBaseProvider>

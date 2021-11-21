@@ -31,7 +31,11 @@ const SplashScreen = ({route}) => {
             );
           },
           (props) => {
-            Alert.alert('Message', props.error.message, [{text: "ok"}]);
+            Alert.alert(
+              '현재 서비스를 이용할 수 없습니다',
+              props.error.message,
+              [{text: '네'}],
+            );
           },
         );
       } else {

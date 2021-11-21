@@ -94,6 +94,8 @@ const ChatRoomScreen = props => {
           </Col>
         </Row>
         <GiftedChat
+          renderAvatarOnTop
+          renderUsernameOnMessage
           messages={messages}
           onSend={messages => onSend(messages)}
           user={{
