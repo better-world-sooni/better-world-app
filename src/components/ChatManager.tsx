@@ -1,22 +1,18 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import Draggable from 'react-native-draggable';
-import { Dimensions, Modal } from 'react-native';
-import { shallowEqual, useDispatch, useSelector } from 'react-redux';
-import { RootState } from 'src/redux/rootReducer';
-import { GiftedChat } from 'react-native-gifted-chat';
-import {
-  pushNewMessage,
-  setChatBodyEnabled,
-  setChatHeadEnabled,
-  setChatRooms,
-} from 'src/redux/chatReducer';
+import {Alert, Dimensions, Modal} from 'react-native';
+import {shallowEqual, useDispatch, useSelector} from 'react-redux';
+import {RootState} from 'src/redux/rootReducer';
+import {GiftedChat} from 'react-native-gifted-chat';
+import {setChatBodyEnabled, setChatHeadEnabled} from 'src/redux/chatReducer';
 import {MessageCircle, X} from 'react-native-feather';
-import {HAS_NOTCH, shadowProp} from 'src/modules/constants';
+import {HAS_NOTCH, shadowProp, WS_URL} from 'src/modules/constants';
 import {Span} from './common/Span';
 import {Div} from 'src/components/common/Div';
 import useSocketInput from 'src/hooks/useSocketInput';
 import {getPromiseFn} from 'src/redux/asyncReducer';
 import APIS from 'src/modules/apis';
+import {Manager} from 'socket.io-client';
 
 const screenSize = Dimensions.get('screen');
 const inset = 60;
@@ -103,7 +99,7 @@ const ChatModalHead = ({children}) => {
 };
 
 const ChatManager = () => {
-  const {chatHeadEnabled, chatBody, chatSocket} = useSelector(
+  const {chatHeadEnabled, chatBody} = useSelector(
     (root: RootState) => root.chat,
     shallowEqual,
   );
@@ -111,23 +107,35 @@ const ChatManager = () => {
     (root: RootState) => root.app.session,
     shallowEqual,
   );
-  const {metasunganUser} = useSelector(
-    (root: RootState) => root.metasungan,
-    shallowEqual,
-  );
   const dispatch = useDispatch();
   const sendSocketMessage = useSocketInput();
-  const [loading, setLoading] = useState(false);
   const [title, setTitle] = useState(null);
   const [messages, setMessages] = useState([]);
   const [users, setUsers] = useState([]);
-
+  const [chatSocket, setChatSocket] = useState(null);
+  const [metasunganUser, setMetasunganUser] = useState({
+    _id: null,
+    metaSid: null,
+    chatSid: null,
+    username: null,
+    posOnNewScene: {
+      x: null,
+      y: null,
+    },
+    chatBubble: null,
+    updatedAt: null,
+    chatRoomIds: [],
+    avatar: null,
+  });
+  console.log(metasunganUser._id);
+  const login = useCallback(loginParams => {
+    setMetasunganUser(loginParams.user);
+  }, []);
   const receiveMessage = receiveMessageParams => {
     setMessages([receiveMessageParams.message, ...messages]);
   };
 
   const fetchNewRoom = async () => {
-    setLoading(true);
     const res = await getPromiseFn({
       url: APIS.chat.chat(chatBody.enabledRoomId).url,
       token,
@@ -138,9 +146,48 @@ const ChatManager = () => {
       setMessages(messages);
       setUsers(userIds);
     }
-    setLoading(false);
   };
 
+  const onSend = (messages = []) => {
+    if (chatSocket) {
+      messages.forEach(message => {
+        sendSocketMessage(chatSocket, 'sendMessage', {
+          chatRoomId: chatBody.enabledRoomId,
+          message: message,
+        });
+      });
+    } else {
+      Alert.alert('네트워크가 불안정하여 메세지를 보내지 못했습니다');
+    }
+  };
+
+  useEffect(() => {
+    if (chatBody.enabledRoomId) {
+      fetchNewRoom();
+      const manager = new Manager(WS_URL, {
+        reconnectionDelayMax: 5000,
+        forceNew: true,
+      });
+      const newSocket = manager.socket('/chat', {
+        auth: {
+          token: token,
+        },
+      });
+      sendSocketMessage(newSocket, 'enterChatRoom', {
+        chatRoomId: chatBody.enabledRoomId,
+      });
+      newSocket.on('login', login);
+      newSocket.on('disconnect', () => setChatSocket(null));
+
+      setChatSocket(newSocket);
+      return () => {
+        newSocket.off('login');
+        newSocket.off('disconnect');
+        newSocket.close();
+        setChatSocket(null);
+      };
+    }
+  }, [chatBody.enabledRoomId, chatBody.enabled]);
   useEffect(() => {
     if (chatSocket) {
       chatSocket.on('receiveMessage', receiveMessage);
@@ -149,21 +196,6 @@ const ChatManager = () => {
       };
     }
   }, [chatSocket, messages]);
-
-  useEffect(() => {
-    if (chatBody.enabled && chatBody.enabledRoomId) {
-      fetchNewRoom();
-    }
-  }, [chatBody.enabled, chatBody.enabledRoomId]);
-
-  const onSend = (messages = []) => {
-    messages.forEach(message => {
-      sendSocketMessage(chatSocket, 'sendMessage', {
-        chatRoomId: chatBody.enabledRoomId,
-        message: message,
-      });
-    });
-  };
 
   return (
     <>
@@ -185,17 +217,19 @@ const ChatManager = () => {
               {title}
             </Span>
           </Div>
-          <GiftedChat
-            renderAvatarOnTop
-            renderUsernameOnMessage
-            messages={messages}
-            onSend={messages => onSend(messages)}
-            user={{
-              _id: metasunganUser._id,
-              name: metasunganUser.username,
-              avatar: metasunganUser.avatar,
-            }}
-          />
+          {metasunganUser._id && (
+            <GiftedChat
+              renderAvatarOnTop
+              renderUsernameOnMessage
+              messages={messages}
+              onSend={messages => onSend(messages)}
+              user={{
+                _id: metasunganUser._id,
+                name: metasunganUser.username,
+                avatar: metasunganUser.avatar,
+              }}
+            />
+          )}
         </Div>
         <ChatModalHead>
           <X height={30} width={30}></X>

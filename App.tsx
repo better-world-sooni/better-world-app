@@ -7,9 +7,6 @@ import {library} from '@fortawesome/fontawesome-svg-core';
 import {faWalking, faBus, faSubway} from '@fortawesome/free-solid-svg-icons';
 import {shallowEqual, useDispatch, useSelector} from 'react-redux';
 import {RootState} from 'src/redux/rootReducer';
-import {setMetasunganUser} from 'src/redux/metasunganReducer';
-import {Manager} from 'socket.io-client';
-import {setChatSocket} from 'src/redux/chatReducer';
 import messaging from '@react-native-firebase/messaging';
 import {postPromiseFn} from 'src/redux/asyncReducer';
 import APIS from 'src/modules/apis';
@@ -25,12 +22,6 @@ const App = () => {
     badge,
   } = useSelector((root: RootState) => root.app, shallowEqual);
   const dispatch = useDispatch();
-  const login = useCallback(
-    loginParams => {
-      dispatch(setMetasunganUser(loginParams.user));
-    },
-    [dispatch],
-  );
   const firebaseMessaging = messaging();
   const getToken = useCallback(async () => {
     try {
@@ -67,61 +58,23 @@ const App = () => {
       console.log(`Error while saving fcm token: ${error}`);
     }
   }, [token, isLoggedIn]);
-  useEffect(() => {
-    // LogBox.ignoreAllLogs();
-    // LogBox.ignoreLogs(['Warning: ...']);
-  }, []);
-  useEffect(() => {
-    if (isLoggedIn) {
-      const BACKEND_URL = 'https://ws.metasgid.com';
-      const manager = new Manager(BACKEND_URL, {
-        reconnectionDelayMax: 5000,
-        forceNew: true,
-      });
-      const newSocket = manager.socket('/chat', {
-        auth: {
-          token: token,
-        },
-      });
-      newSocket.on('login', login);
-      newSocket.on('disconnnect', () => dispatch(setChatSocket(null)));
-      dispatch(setChatSocket(newSocket));
-      return () => {
-        newSocket.off('login');
-        newSocket.off('disconnnect');
-        newSocket.close();
-        dispatch(setChatSocket(null));
-      };
-    }
-  }, [isLoggedIn]);
+
   useEffect(() => {
     if (isLoggedIn) {
       setFCMToken();
       firebaseMessaging.onNotificationOpenedApp(remoteMessage => {
-        const newBadge = 0;
-        PushNotification.setApplicationIconBadgeNumber(newBadge);
-        dispatch(appActions.setBadge(newBadge));
+        PushNotification.setApplicationIconBadgeNumber(0);
       });
-      firebaseMessaging.getInitialNotification().then(remoteMessage => {
-        const newBadge = 0;
-        PushNotification.setApplicationIconBadgeNumber(newBadge);
-        dispatch(appActions.setBadge(newBadge));
-      });
-      firebaseMessaging.setBackgroundMessageHandler(async remoteMessage => {
-        const newBadge = badge + 1;
-        PushNotification.setApplicationIconBadgeNumber(newBadge);
-        dispatch(appActions.setBadge(newBadge));
-      });
+      firebaseMessaging.getInitialNotification().then(remoteMessage => {});
       const unsubscribe = firebaseMessaging.onMessage(async remoteMessage => {
-        const newBadge = 0;
-        PushNotification.setApplicationIconBadgeNumber(newBadge);
-        dispatch(appActions.setBadge(newBadge));
+        PushNotification.setApplicationIconBadgeNumber(0);
         const notification = {
           foreground: true, // BOOLEAN: If the notification was received in foreground or not
           userInteraction: false, // BOOLEAN: If the notification was opened by the user from the notification area or not
           message: remoteMessage.notification.body, // STRING: The notification message
           title: remoteMessage.notification.title, // STRING: The notification title
           data: remoteMessage.data, // OBJECT: The push data or the defined userInfo in local notifications
+          vibrate: false,
         };
         PushNotification.localNotification(notification);
       });

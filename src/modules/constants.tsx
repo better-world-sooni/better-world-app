@@ -633,3 +633,6 @@ export const postShadowProp = opacity => {
     shadowRadius: 10,
   };
 };
+
+export const WS_URL = 'https://ws.metasgid.com';
+// export const WS_URL = 'http://localhost:8000';

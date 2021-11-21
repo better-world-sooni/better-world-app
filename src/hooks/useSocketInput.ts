@@ -10,17 +10,17 @@ export default function useSocketInput() {
     );
     const sendChatSocketMessage = useCallback(
         (chatSocket: Socket,  action: string, payload: any) => {
-            if (currentUser.username && chatSocket) {
+            if (currentUser.id && chatSocket) {
                 const withDefaultParams = {
                     ...payload,
-                    username: currentUser.username,
+                    externalId: currentUser.id,
                 };
                 chatSocket.emit(action, withDefaultParams);
             } else {
                 throw Error('Network Error while sending socket message!');
             }
         },
-        [currentUser?.username]
+        [currentUser?.id]
     );
 
     return sendChatSocketMessage;

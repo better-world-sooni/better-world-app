@@ -3,8 +3,6 @@ import { createSlice } from '@reduxjs/toolkit';
 const chatSlice = createSlice({
     name: 'chat',
     initialState: {
-        chatSocket: null,
-        chatRooms: {},
         chatHeadEnabled: false,
         chatBody: {
             enabled: false,
@@ -15,22 +13,6 @@ const chatSlice = createSlice({
         },
     },
     reducers: {
-        setChatSocket: (state, action) => {
-            state.chatSocket = action.payload;
-        },
-        setChatRoom: (state, action) => {
-            if (action.payload) {
-                state.chatRooms[action.payload._id] = action.payload;
-            }
-        },
-        pushNewMessage: (state, action) => {
-            state.chatRooms[action.payload.roomId].messages.push(action.payload.message);
-        },
-        setChatRooms: (state, action) => {
-            if (action.payload) {
-                state.chatRooms = action.payload;
-            }
-        },
         setChatHeadEnabled: (state, action) => {
             if (action.payload) {
                 state.chatBody.enabled = false;
@@ -58,8 +40,6 @@ const chatSlice = createSlice({
         },
         chatLogout: (state) => {
             state = {
-                chatSocket: null,
-                chatRooms: {},
                 chatHeadEnabled: false,
                 chatBody: {
                     enabled: false,
@@ -75,10 +55,6 @@ const chatSlice = createSlice({
 
 export const chatReducer = chatSlice.reducer;
 export const {
-    setChatSocket,
-    setChatRoom,
-    setChatRooms,
-    pushNewMessage,
     setChatHeadEnabled,
     setChatBodyEnabled,
     setChatBody,

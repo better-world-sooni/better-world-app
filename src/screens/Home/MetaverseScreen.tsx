@@ -3,7 +3,7 @@ import {WebView} from 'react-native-webview';
 import {shallowEqual, useDispatch, useSelector} from 'react-redux';
 import {RootState} from 'src/redux/rootReducer';
 import {useFocusEffect} from '@react-navigation/core';
-import {setChatBody, setChatRoom} from 'src/redux/chatReducer';
+import {setChatBody} from 'src/redux/chatReducer';
 import {Div} from 'src/components/common/Div';
 import {
   HAS_NOTCH,

@@ -4,7 +4,7 @@ import {Div} from 'src/components/common/Div';
 import {Img} from 'src/components/common/Img';
 import {Row} from 'src/components/common/Row';
 import {Span} from 'src/components/common/Span';
-import {ScrollView} from 'src/modules/viewComponents';
+import {ScrollView, View} from 'src/modules/viewComponents';
 import {shallowEqual, useDispatch, useSelector} from 'react-redux';
 import {
   GRAY_COLOR,
@@ -18,7 +18,7 @@ import {Input, NativeBaseProvider} from 'native-base';
 import {RootState} from 'src/redux/rootReducer';
 import {setGlobalFilter} from 'src/redux/feedReducer';
 import {Header} from 'src/components/Header';
-import {useNavigation} from '@react-navigation/core';
+import {useFocusEffect, useNavigation} from '@react-navigation/core';
 import {NAV_NAMES} from 'src/modules/navNames';
 import {setCurrentChatRoomId} from 'src/redux/chatReducer';
 import {Swipeable} from 'react-native-gesture-handler';
@@ -29,11 +29,81 @@ import {
   postPromiseFn,
 } from 'src/redux/asyncReducer';
 import APIS from 'src/modules/apis';
+import moment from 'moment';
+import 'moment/locale/ko';
+import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
+moment.locale('ko');
 
 const NoChatRooms = () => {
   const navigation = useNavigation();
   return (
     <>
+      <Row px20>
+        <SkeletonPlaceholder>
+          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <View
+              style={{
+                width: 50,
+                height: 50,
+                borderRadius: 50,
+                marginTop: 10,
+                marginBottom: 10,
+              }}
+            />
+            <View style={{marginLeft: 20}}>
+              <View
+                style={{
+                  width: 80,
+                  height: 15,
+                  borderRadius: 4,
+                  marginTop: 2,
+                  marginBottom: 2,
+                }}
+              />
+              <View
+                style={{
+                  width: 200,
+                  height: 15,
+                  borderRadius: 4,
+                  marginTop: 2,
+                  marginBottom: 2,
+                }}
+              />
+            </View>
+          </View>
+          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <View
+              style={{
+                width: 50,
+                height: 50,
+                borderRadius: 50,
+                marginTop: 10,
+                marginBottom: 10,
+              }}
+            />
+            <View style={{marginLeft: 20}}>
+              <View
+                style={{
+                  width: 80,
+                  height: 15,
+                  borderRadius: 4,
+                  marginTop: 2,
+                  marginBottom: 2,
+                }}
+              />
+              <View
+                style={{
+                  width: 200,
+                  height: 15,
+                  borderRadius: 4,
+                  marginTop: 2,
+                  marginBottom: 2,
+                }}
+              />
+            </View>
+          </View>
+        </SkeletonPlaceholder>
+      </Row>
       <Row
         itemsCenter
         justifyCenter
@@ -73,9 +143,6 @@ const RightSwipeActions = () => {
 };
 
 const ChatScreen = () => {
-  const {
-    chat: {chatSocket},
-  } = useSelector((root: RootState) => root, shallowEqual);
   const {currentUser, token} = useSelector(
     (root: RootState) => root.app.session,
     shallowEqual,
@@ -83,7 +150,6 @@ const ChatScreen = () => {
   const [chatRooms, setChatRooms] = useState([]);
   const [loading, setLoading] = useState(false);
   const navigation = useNavigation();
-  const sendSocketMessage = useSocketInput();
 
   const goToChatRoom = roomId => {
     navigation.navigate(NAV_NAMES.ChatRoom, {currentChatRoomId: roomId});
@@ -103,7 +169,6 @@ const ChatScreen = () => {
   };
 
   const fetchNewRoom = async () => {
-    setLoading(true);
     const res = await getPromiseFn({
       url: APIS.chat.chatRoom.main(currentUser.id).url,
       token,
@@ -112,12 +177,11 @@ const ChatScreen = () => {
       const {chatRooms} = res.data;
       setChatRooms(chatRooms);
     }
-    setLoading(false);
   };
 
-  useEffect(() => {
+  useFocusEffect(() => {
     fetchNewRoom();
-  }, []);
+  });
 
   return (
     <Div flex bg={'white'}>
@@ -144,7 +208,7 @@ const ChatScreen = () => {
                           color={'black'}
                           height={50}
                           width={50}
-                          strokeWidth={1.5}></MessageCircle>
+                          strokeWidth={1}></MessageCircle>
                       </Col>
                       <Col justifyCenter ml10>
                         <Row>
@@ -169,9 +233,9 @@ const ChatScreen = () => {
                           <Col />
                           <Col auto>
                             <Span fontSize={13} light>
-                              {new Date(
-                                chatRoom.lastMessage.createdAt,
-                              ).toLocaleDateString('ko-KR')}
+                              {moment(
+                                chatRoom.lastMessage?.createdAt,
+                              ).calendar()}
                             </Span>
                           </Col>
                         </Row>
