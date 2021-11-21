@@ -62,6 +62,15 @@ const NoChatRooms = () => {
     </>
   );
 };
+const RightSwipeActions = () => {
+  return (
+    <Div flex={1} bg={'red'} justifyCenter itemsEnd>
+      <Span color={'#40394a'} px={20} medium>
+        채팅방 나가기
+      </Span>
+    </Div>
+  );
+};
 
 const ChatScreen = () => {
   const {
@@ -110,16 +119,6 @@ const ChatScreen = () => {
     fetchNewRoom();
   }, []);
 
-  const RightSwipeActions = () => {
-    return (
-      <Div flex={1} bg={'red'} justifyCenter itemsEnd>
-        <Span color={'#40394a'} px={20} medium>
-          채팅방 나가기
-        </Span>
-      </Div>
-    );
-  };
-
   return (
     <Div flex bg={'white'}>
       <Div h={HAS_NOTCH ? 44 : 20} />
@@ -146,20 +145,20 @@ const ChatScreen = () => {
                           height={50}
                           width={50}
                           strokeWidth={1.5}></MessageCircle>
-                        <Div
-                          absolute
-                          w={'100%'}
-                          h={'100%'}
-                          itemsCenter
-                          justifyCenter>
-                          <Span bold>{`${chatRoom.userIds.length}명`}</Span>
-                        </Div>
                       </Col>
                       <Col justifyCenter ml10>
                         <Row>
-                          <Span fontSize={15} bold>
-                            {chatRoom.title}
-                          </Span>
+                          <Col auto pr10>
+                            <Span fontSize={15} bold>
+                              {chatRoom.title}
+                            </Span>
+                          </Col>
+                          <Col auto>
+                            <Span
+                              color={
+                                GRAY_COLOR
+                              }>{`${chatRoom.userIds.length}명`}</Span>
+                          </Col>
                         </Row>
                         <Row w={'100%'}>
                           <Col auto>

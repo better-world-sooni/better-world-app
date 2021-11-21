@@ -34,9 +34,16 @@ import {Row} from './common/Row';
 import {Span} from './common/Span';
 import HorizontalStations from './HorizontalStations';
 
-const TrainStatusBoxPlaceholder = () => {
+const TrainStatusBoxPlaceholder = ({message = null}) => {
   return (
     <Div bg={'white'} flex py40>
+      <Row py10>
+        <Col />
+        <Col>
+          <Span>{message}</Span>
+        </Col>
+        <Col />
+      </Row>
       <SkeletonPlaceholder>
         <View
           style={{
@@ -91,8 +98,8 @@ const TrainStatusBox = ({
   trainPositions,
   arrivalTrain,
 }) => {
-  if (!trainPositions || !arrivalTrain) {
-    return <TrainStatusBoxPlaceholder />;
+  if (!trainPositions || !arrivalTrain || typeof trainPositions == 'string') {
+    return <TrainStatusBoxPlaceholder message={trainPositions} />;
   }
   const [currentTime, setCurrentTime] = useState(new Date());
   const {

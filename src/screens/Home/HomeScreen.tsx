@@ -197,6 +197,8 @@ const HomeScreen = props => {
           });
           Alert.alert('탑승하신 열차의 2호선 운행이 끝났습니다.');
         }
+      } else if(response && response.errorMessage?.status === 201) {
+        return response.errorMessage.message
       } else {
         return null;
       }
