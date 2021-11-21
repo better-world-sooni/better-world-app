@@ -14,6 +14,7 @@ import messaging from '@react-native-firebase/messaging';
 import {postPromiseFn} from 'src/redux/asyncReducer';
 import APIS from 'src/modules/apis';
 import PushNotification from 'react-native-push-notification';
+import {appActions} from 'src/redux/appReducer';
 
 library.add(faWalking, faBus, faSubway);
 
@@ -21,6 +22,7 @@ const App = () => {
   const {
     isLoggedIn,
     session: {token},
+    badge,
   } = useSelector((root: RootState) => root.app, shallowEqual);
   const dispatch = useDispatch();
   const login = useCallback(
@@ -95,9 +97,25 @@ const App = () => {
   useEffect(() => {
     if (isLoggedIn) {
       setFCMToken();
-      firebaseMessaging.onNotificationOpenedApp(remoteMessage => {});
-      firebaseMessaging.getInitialNotification().then(remoteMessage => {});
+      firebaseMessaging.onNotificationOpenedApp(remoteMessage => {
+        const newBadge = 0;
+        PushNotification.setApplicationIconBadgeNumber(newBadge);
+        dispatch(appActions.setBadge(newBadge));
+      });
+      firebaseMessaging.getInitialNotification().then(remoteMessage => {
+        const newBadge = 0;
+        PushNotification.setApplicationIconBadgeNumber(newBadge);
+        dispatch(appActions.setBadge(newBadge));
+      });
+      firebaseMessaging.setBackgroundMessageHandler(async remoteMessage => {
+        const newBadge = badge + 1;
+        PushNotification.setApplicationIconBadgeNumber(newBadge);
+        dispatch(appActions.setBadge(newBadge));
+      });
       const unsubscribe = firebaseMessaging.onMessage(async remoteMessage => {
+        const newBadge = 0;
+        PushNotification.setApplicationIconBadgeNumber(newBadge);
+        dispatch(appActions.setBadge(newBadge));
         const notification = {
           foreground: true, // BOOLEAN: If the notification was received in foreground or not
           userInteraction: false, // BOOLEAN: If the notification was opened by the user from the notification area or not

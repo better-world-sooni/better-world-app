@@ -314,7 +314,7 @@ const ProfileScreen = props => {
                 borderColor={GRAY_COLOR}>
                 <Col></Col>
                 <Col auto>
-                  <Span>기본길 바꾸기</Span>
+                  <Span>자주가는 길 설정</Span>
                 </Col>
                 <Col></Col>
               </Row>

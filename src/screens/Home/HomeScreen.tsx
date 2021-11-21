@@ -141,16 +141,14 @@ const HomeScreen = props => {
     post => {
       if (post.type === REPORT) {
         return filterPostsByChannel(post);
-      } else if (!post.post.station?.name) {
-        return filterPostsByChannel(post);
       } else if (
         globalFiter === MY_ROUTE &&
-        !MY_ROUTE.includes(post.post.station.name)
+        !MY_ROUTE.includes(post.post.station?.name)
       ) {
         return false;
       } else if (
         globalFiter !== MAIN_LINE2 &&
-        globalFiter !== post.post.station.name
+        globalFiter !== post.post.station?.name
       ) {
         return false;
       } else {
@@ -183,7 +181,7 @@ const HomeScreen = props => {
                   token: token,
                 });
                 if (isOkay(res)) {
-                  Alert.alert('도착 하셨습니다.');
+                  Alert.alert('도착하셨습니다.');
                 }
               }
             }
@@ -270,6 +268,13 @@ const HomeScreen = props => {
       origin && apiGET(APIS.realtime.arrival(origin.split('(')[0]));
     }
   }, []);
+
+  useEffect(() => {
+    setRealtimePositionList(null);
+    setRealtimeArrivalList(null);
+    apiGET(APIS.realtime.position());
+    origin && apiGET(APIS.realtime.arrival(origin.split('(')[0]));
+  }, [selectedTrain?.trainNo]);
   useEffect(() => {
     if (!positionsLoading && !arrivalLoading) {
       setRealtimePositionList(positionResponse?.data);
@@ -402,7 +407,6 @@ const HomeScreen = props => {
     const res = await getPromiseFn({url: APIS.route.starred().url, token});
     if (isOkay(res)) {
       dispatch(setRoute(res?.data?.data?.[0].route));
-      console.log(res?.data?.data?.[0].route);
     }
     setSelectorLoading(false);
     setSelecting(Selecting.NONE);

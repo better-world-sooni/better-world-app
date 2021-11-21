@@ -216,12 +216,12 @@ export const LINE2_Linked_List = new Map(
       transfer: [],
     },
     '신림(양지병원)': {
-      prev: '서초',
+      prev: '봉천',
       next: '신대방',
       transfer: [],
     },
     신림: {
-      prev: '서초',
+      prev: '봉천',
       next: '신대방',
       transfer: [],
     },

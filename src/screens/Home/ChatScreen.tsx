@@ -23,7 +23,11 @@ import {NAV_NAMES} from 'src/modules/navNames';
 import {setCurrentChatRoomId} from 'src/redux/chatReducer';
 import {Swipeable} from 'react-native-gesture-handler';
 import useSocketInput from 'src/hooks/useSocketInput';
-import {getPromiseFn} from 'src/redux/asyncReducer';
+import {
+  getPromiseFn,
+  patchPromiseFn,
+  postPromiseFn,
+} from 'src/redux/asyncReducer';
 import APIS from 'src/modules/apis';
 
 const ChatScreen = () => {
@@ -42,16 +46,24 @@ const ChatScreen = () => {
   const goToChatRoom = roomId => {
     navigation.navigate(NAV_NAMES.ChatRoom, {currentChatRoomId: roomId});
   };
-  const exitChatRoom = roomId => {
-    sendSocketMessage(chatSocket, 'exitChatRoom', {
-      chatRoomId: roomId,
+  const exitChatRoom = async roomId => {
+    const res = await patchPromiseFn({
+      url: APIS.chat.chatRoom.user().url,
+      body: {
+        userId: currentUser.id,
+        chatRoomId: roomId,
+      },
+      token,
     });
+    if (res.ok && res.data?.chatRooms) {
+      setChatRooms(res.data.chatRooms);
+    }
   };
 
   const fetchNewRoom = async () => {
     setLoading(true);
     const res = await getPromiseFn({
-      url: APIS.chat.chatRoom(currentUser.id).url,
+      url: APIS.chat.chatRoom.main(currentUser.id).url,
       token,
     });
     if (res?.data) {
@@ -69,7 +81,7 @@ const ChatScreen = () => {
     return (
       <Div flex={1} bg={'red'} justifyCenter itemsEnd>
         <Span color={'#40394a'} px={20} medium>
-          톡방 나가기
+          채팅방 나가기
         </Span>
       </Div>
     );

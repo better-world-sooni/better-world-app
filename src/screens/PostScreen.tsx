@@ -141,7 +141,8 @@ const PostScreen = props => {
       sungan.stationName &&
       sungan.channelId &&
       isValidTextOrPlace(sungan.place) &&
-      isValidTextOrPlace(sungan.text)
+      isValidTextOrPlace(sungan.text) &&
+      isValidTextOrPlace(sungan.stationName)
     ) {
       try {
         const {channelId, ...other} = sungan;
@@ -163,6 +164,8 @@ const PostScreen = props => {
       } catch (e) {
         Alert.alert(`피드에 업로드 중 에러가 발생하였습니다: ${e}`);
       }
+    } else if (!isValidTextOrPlace(sungan.stationName)) {
+      Alert.alert('핫플의 역을 선택해주세요.');
     } else if (!isValidTextOrPlace(sungan.place)) {
       Alert.alert('핫플의 이름을 적어주세요.');
     } else if (!sungan.channelId) {
@@ -272,19 +275,22 @@ const PostScreen = props => {
                 </Row>
                 <Row mb20>
                   <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                    <Div mr10 rounded {...borderProp(!sungan.stationName)}>
-                      <Div
-                        onPress={() => setStationName(null)}
-                        px20
-                        py10
-                        w={'100%'}
-                        itemsCenter
-                        justifyCenter>
-                        <Span {...colorProp(!sungan.stationName)}>
-                          {'전체'}
-                        </Span>
+                    {sungan.channelId !== '핫플' && (
+                      <Div mr10 rounded {...borderProp(!sungan.stationName)}>
+                        <Div
+                          onPress={() => setStationName(null)}
+                          px20
+                          py10
+                          w={'100%'}
+                          itemsCenter
+                          justifyCenter>
+                          <Span {...colorProp(!sungan.stationName)}>
+                            {'전체'}
+                          </Span>
+                        </Div>
                       </Div>
-                    </Div>
+                    )}
+
                     {(stations?.length === 0
                       ? stationArr(
                           [],

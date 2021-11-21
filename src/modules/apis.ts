@@ -68,7 +68,10 @@ const APIS = {
   },
   chat: {
     chat: (roomId) => v1(`/chat/chat/${roomId}`),
-    chatRoom: (userId) => v1(`/chat/chatRoom/${userId}`),
+    chatRoom: {
+      main: (userId) => v1(`/chat/chatRoom/${userId}`),
+      user: () => v1(`/chat/chatRoom/user`),
+    }
   }
 };
 

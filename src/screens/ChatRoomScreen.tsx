@@ -45,7 +45,6 @@ const ChatRoomScreen = props => {
       url: APIS.chat.chat(currentChatRoomId).url,
       token,
     });
-    console.log('console.log(fetchRoom)', currentChatRoomId);
     if (res?.data?.data) {
       const {title, messages, userIds} = res.data.data;
       setTitle(title);

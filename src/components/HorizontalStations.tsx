@@ -77,7 +77,6 @@ const HorzontalStations = ({horizontalStations, trainPositions}) => {
         const isRiding = getIsRiding(trainAtStation);
         if (isRiding) {
           const ridingOffset = index * fifthOfWindow;
-          console.log('ridingOffset', ridingOffset);
           scrollRef.current.scrollTo({
             x: ridingOffset,
             y: ridingOffset,

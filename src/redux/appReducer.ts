@@ -113,10 +113,11 @@ const appSlice = createSlice({
       currentUser: null,
       token: null,
     },
+    badge: 0,
   },
   reducers: {
-    setTempLocale(state, action) {
-      const { locale } = action.payload;
+    setBadge(state, action){
+      state.badge = action.payload;
     },
     login(state, action) {
       const { jwtToken, user } = action.payload;

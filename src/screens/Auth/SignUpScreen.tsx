@@ -89,7 +89,6 @@ const SignUpSceen = ({navigation}) => {
       return;
     }
     if (username === '' || !isUsername(username)) {
-      console.log('Username', username);
       Alert.alert('Error', '아이디를 확인해 주세요', [{text: '네'}]);
       setUsername('');
       return;
@@ -283,7 +282,7 @@ const SignUpSceen = ({navigation}) => {
           </Row>
           <Row>
             <TextField
-              label={'아이디'}
+              label={'닉네임'}
               onChangeText={handleIdChange}
               error={errId}
               value={username}
