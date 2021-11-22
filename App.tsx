@@ -58,6 +58,10 @@ const App = () => {
       console.log(`Error while saving fcm token: ${error}`);
     }
   }, [token, isLoggedIn]);
+  
+  useEffect(() => {
+    LogBox.ignoreAllLogs();
+  });
 
   useEffect(() => {
     if (isLoggedIn) {

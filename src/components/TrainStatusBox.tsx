@@ -1,3 +1,4 @@
+import moment from 'moment';
 import React, {
   useCallback,
   useEffect,
@@ -18,15 +19,8 @@ import {
   LINE2_Linked_List,
   shortenStations,
 } from 'src/modules/constants';
-import {IMAGES} from 'src/modules/images';
-import {isOkay, stationArr} from 'src/modules/utils';
-import {
-  deletePromiseFn,
-  postPromiseFn,
-  useReloadGET,
-} from 'src/redux/asyncReducer';
+import {stationArr} from 'src/modules/utils';
 import {RootState} from 'src/redux/rootReducer';
-import {setSelectedTrain} from 'src/redux/routeReducer';
 import {Col} from './common/Col';
 import {Div} from './common/Div';
 import {Img} from './common/Img';
@@ -98,7 +92,10 @@ const TrainStatusBox = ({
   trainPositions,
   arrivalTrain,
 }) => {
-  if (!trainPositions || !arrivalTrain || typeof trainPositions == 'string') {
+  if (!trainPositions || !arrivalTrain) {
+    return <TrainStatusBoxPlaceholder />;
+  }
+  if (typeof trainPositions == 'string') {
     return <TrainStatusBoxPlaceholder message={trainPositions} />;
   }
   const [currentTime, setCurrentTime] = useState(new Date());
@@ -131,16 +128,12 @@ const TrainStatusBox = ({
         const seconds = hasMinutes
           ? parseInt(eta[1].substring(0, eta[1].length - 1))
           : parseInt(eta[0].substring(0, eta[0].length - 1));
-        const receptionDate = new Date(
+        const ETA = moment(
           arrivalTrain.recptnDt.substring(0, arrivalTrain.recptnDt.length - 2),
-        );
-        const ETA = new Date(
-          receptionDate.getTime() +
-            minutes * 60000 +
-            seconds * 1000 -
-            9 * 60000 * 60,
-        );
-        const diff = ETA.getTime() - currentTime.getTime();
+        )
+          .add(minutes, 'minutes')
+          .add(seconds, 'seconds');
+        const diff = ETA.diff(currentTime);
         const diffMinutes = Math.floor(diff / 60000);
         const diffSeconds = Math.floor((diff % 60000) / 1000);
         if (diff < 30000) {
