@@ -28,17 +28,15 @@ export const TextField = (props) => {
         {label}
       </Span>
       <Row itemsCenter mt4>
-        {leftComp &&
-          <Col auto>
-            {leftComp}
-          </Col>
-        }
+        {leftComp && <Col auto>{leftComp}</Col>}
         <Col>
           <TextInput
             autoCorrect={false}
             h52
-            border borderGray400
+            border
+            borderGray400
             rounded4
+            color={'black'}
             p16
             {...others}
             styleComp={[
@@ -52,22 +50,19 @@ export const TextField = (props) => {
             value={value}
           />
         </Col>
-        {rightComp &&
-          <Col auto>
-            {rightComp}
-          </Col>
-        }
+        {rightComp && <Col auto>{rightComp}</Col>}
       </Row>
-      {error ?
+      {error ? (
         <Span noticeDetail danger mt2>
           {error}
         </Span>
-        : (note &&
+      ) : (
+        note && (
           <Span noticeDetail gray600 mt2>
             {note}
           </Span>
         )
-      }
+      )}
     </Div>
-  )
+  );
 }

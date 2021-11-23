@@ -525,25 +525,12 @@ const HomeScreen = props => {
             trainPositions={filterPositionResponse(realtimePositionList)}
             arrivalTrain={filterArrivalResponse(realtimeArrivalList)}
           />
-          <Div>
-            {mainPosts && (
-              <MainPosts
-                mainPostsKeys={Object.keys(mainPosts)}
-                filterPostsByStation={filterPostsByStation}
-              />
-            )}
-          </Div>
-          <Row itemsCenter justifyCenter pt20 pb10>
-            <Col h2 bg={GRAY_COLOR} />
-            <Col auto>
-              <CheckCircle
-                height={50}
-                width={50}
-                strokeWidth={0.7}
-                color={GRAY_COLOR}></CheckCircle>
-            </Col>
-            <Col h2 bg={GRAY_COLOR}></Col>
-          </Row>
+          {mainPosts && (
+            <MainPosts
+              mainPostsKeys={Object.keys(mainPosts)}
+              filterPostsByStation={filterPostsByStation}
+            />
+          )}
           <FeedChecked />
         </ScrollView>
       </Div>
