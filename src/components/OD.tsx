@@ -1,8 +1,8 @@
 import React, {useCallback} from 'react';
 import {Alert} from 'react-native';
-import {ChevronDown, RefreshCw, Star} from 'react-native-feather';
+import {ChevronDown, RefreshCw, Shuffle, Star} from 'react-native-feather';
 import {shallowEqual, useDispatch, useSelector} from 'react-redux';
-import {chevronDownSettings, GO_COLOR} from 'src/modules/constants';
+import {chevronDownSettings, GO_COLOR, GRAY_COLOR} from 'src/modules/constants';
 import {RootState} from 'src/redux/rootReducer';
 import {exchangeOriginDestination} from 'src/redux/routeReducer';
 import {Col} from './common/Col';
@@ -38,14 +38,14 @@ const OD = ({
               {origin}
             </Span>
           </Col>
-          <Col auto justifyCenter>
+          <Col auto justifyCenter px5>
             <ChevronDown {...chevronDownSettings}></ChevronDown>
           </Col>
         </Row>
       </Col>
       <Col mx5 auto itemsCenter justifyCenter onPress={exchangeOD}>
         <Span>
-          <RefreshCw color={'black'} height={14}></RefreshCw>
+          <Shuffle color={'black'} height={14}></Shuffle>
         </Span>
       </Col>
       <Col
@@ -67,7 +67,7 @@ const OD = ({
               {destination}
             </Span>
           </Col>
-          <Col auto justifyCenter>
+          <Col auto justifyCenter px5>
             <ChevronDown {...chevronDownSettings}></ChevronDown>
           </Col>
         </Row>

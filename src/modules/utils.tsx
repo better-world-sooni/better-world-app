@@ -84,5 +84,5 @@ export const postKey = post => {
 };
 
 export const isOkay = res => {
-  return res.data.statusCode == 200;
+  return res?.data?.statusCode == 200;
 };

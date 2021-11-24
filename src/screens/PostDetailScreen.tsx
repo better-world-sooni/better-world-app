@@ -157,36 +157,33 @@ const PostPlaceholder = () => {
 };
 const PostDetailScreen = props => {
   const {
-    feed: {mainPosts, myPosts},
     app: {
       session: {token, currentUser},
     },
   } = useSelector((root: RootState) => root, shallowEqual);
   const [text, setText] = useState('');
   const [textType, setTextType] = useState<any>(TextType.COMMENT);
+  const currentPost = props.route.params.currentPost;
+  const [liked, setLiked] = useState(currentPost.liked);
+  const [likeCount, setLikeCount] = useState(currentPost.likeCount);
   const [comments, setComments] = useState([]);
-  const currentPostId = props.route.params.currentPostId;
-  const currentPost = mainPosts[currentPostId] || myPosts[currentPostId];
-  const innerPost = currentPost.post;
-  const dispatch = useDispatch();
   const [postLoading, setPostLoading] = useState(true);
   const [sendLoading, setSendLoading] = useState(false);
-
   const refreshComments = async () => {
     let res;
     if (currentPost.type === REPORT) {
       res = await getPromiseFn({
-        url: APIS.post.report.comments(currentPost.post.id).url,
+        url: APIS.post.report.comments(currentPost.postId).url,
         token,
       });
     } else if (currentPost.type === SUNGAN) {
       res = await getPromiseFn({
-        url: APIS.post.sungan.comments(currentPost.post.id).url,
+        url: APIS.post.sungan.comments(currentPost.postId).url,
         token,
       });
     } else if (currentPost.type === PLACE) {
       res = await getPromiseFn({
-        url: APIS.post.place.comments(currentPost.post.id).url,
+        url: APIS.post.place.comments(currentPost.postId).url,
         token,
       });
     }
@@ -210,7 +207,7 @@ const PostDetailScreen = props => {
       await postPromiseFn({
         url,
         body: {
-          [idName]: currentPost.post.id,
+          [idName]: currentPost.postId,
           content: text,
           userName: currentUser.username,
           userProfileImgUrl: currentUser.avatar,
@@ -218,7 +215,7 @@ const PostDetailScreen = props => {
         token,
       });
     },
-    [currentPostId, text],
+    [currentPost.postId, text],
   );
   const likeOn = useCallback(
     async (api, commentId) => {
@@ -293,8 +290,8 @@ const PostDetailScreen = props => {
   const post = {
     [REPORT]: {
       emoji: '🚨',
-      text: currentPost.post.text,
-      likeCnt: currentPost.post.likeCnt,
+      text: currentPost.text,
+      likeCnt: likeCount,
       likeUrl: id => {
         return APIS.post.report.like(id).url;
       },
@@ -312,9 +309,9 @@ const PostDetailScreen = props => {
       },
     },
     [SUNGAN]: {
-      emoji: currentPost.post.emoji,
-      text: currentPost.post.text,
-      likeCnt: currentPost.post.likeCnt,
+      emoji: currentPost.emoji,
+      text: currentPost.text,
+      likeCnt: likeCount,
       likeUrl: id => {
         return APIS.post.sungan.like(id).url;
       },
@@ -334,10 +331,10 @@ const PostDetailScreen = props => {
       },
     },
     [PLACE]: {
-      emoji: currentPost.post.emoji,
-      text: currentPost.post.text,
-      place: currentPost.post.place,
-      likeCnt: currentPost.post.likeCnt,
+      emoji: currentPost.emoji,
+      text: currentPost.text,
+      place: currentPost.place,
+      likeCnt: likeCount,
       likeUrl: id => {
         return APIS.post.place.like(id).url;
       },
@@ -357,46 +354,30 @@ const PostDetailScreen = props => {
   };
 
   const handleLike = useCallback(() => {
-    if (currentPost.didLike) {
-      const {
-        didLike,
-        post: {likeCnt, ...otherProps},
-        ...other
-      } = currentPost;
+    if (liked) {
       ReactNativeHapticFeedback.trigger('impactLight', options);
-      dispatch(
-        setMainPost({
-          didLike: false,
-          post: {likeCnt: likeCnt - 1, ...otherProps},
-          ...other,
-        }),
-      );
+      setLiked(false);
+      currentPost.setLiked(false);
+      setLikeCount(likeCount - 1);
+      currentPost.setLikeCount(likeCount - 1);
       deletePromiseFn({
-        url: post[currentPost.type].likeUrl(innerPost.id),
+        url: post[currentPost.type].likeUrl(currentPost.postId),
         body: {},
         token: token,
       });
     } else {
-      const {
-        didLike,
-        post: {likeCnt, ...otherProps},
-        ...other
-      } = currentPost;
       ReactNativeHapticFeedback.trigger('impactLight', options);
-      dispatch(
-        setMainPost({
-          didLike: true,
-          post: {likeCnt: likeCnt + 1, ...otherProps},
-          ...other,
-        }),
-      );
+      setLiked(true);
+      currentPost.setLiked(true);
+      setLikeCount(likeCount + 1);
+      currentPost.setLikeCount(likeCount + 1);
       postPromiseFn({
-        url: post[currentPost.type].likeUrl(innerPost.id),
+        url: post[currentPost.type].likeUrl(currentPost.postId),
         body: {},
         token: token,
       });
     }
-  }, [token, currentPost.didLike, currentPost.post.likeCnt, currentPostId]);
+  }, [token, liked, likeCount, currentPost.postId]);
   const handleSend = useCallback(async () => {
     if (!sendLoading) {
       ReactNativeHapticFeedback.trigger('impactMedium', options);
@@ -413,7 +394,7 @@ const PostDetailScreen = props => {
       }
       setSendLoading(false);
     }
-  }, [text, textType, currentPostId]);
+  }, [text, textType, currentPost.postId]);
   const handleLikeOnComment = useCallback(
     async (commentId, prevLiked) => {
       ReactNativeHapticFeedback.trigger('impactLight', options);
@@ -424,7 +405,7 @@ const PostDetailScreen = props => {
       }
       refreshComments();
     },
-    [currentPostId],
+    [currentPost.postId],
   );
 
   if (postLoading) {
@@ -456,7 +437,7 @@ const PostDetailScreen = props => {
                 place={post[currentPost.type].place}
                 text={post[currentPost.type].text}
                 likeCnt={post[currentPost.type].likeCnt}
-                didLike={currentPost.didLike}
+                didLike={liked}
                 handleLike={handleLike}
               />
               <Div>

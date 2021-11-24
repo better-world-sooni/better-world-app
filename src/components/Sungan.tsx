@@ -1,9 +1,14 @@
 import {useNavigation} from '@react-navigation/core';
-import React from 'react';
+import React, {useState} from 'react';
 import {Heart, MessageCircle} from 'react-native-feather';
 import {shallowEqual, useDispatch, useSelector} from 'react-redux';
 import APIS from 'src/modules/apis';
-import {GRAY_COLOR, iconSettings, postShadowProp} from 'src/modules/constants';
+import {
+  GRAY_COLOR,
+  iconSettings,
+  postShadowProp,
+  SUNGAN,
+} from 'src/modules/constants';
 import {IMAGES} from 'src/modules/images';
 import {NAV_NAMES} from 'src/modules/navNames';
 import {isOkay, postKey} from 'src/modules/utils';
@@ -18,6 +23,7 @@ import {Span} from './common/Span';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 import moment from 'moment';
 import 'moment/locale/ko';
+import BestComment from './BestComment';
 moment.locale('ko');
 
 const options = {
@@ -25,60 +31,64 @@ const options = {
   ignoreAndroidSystemSettings: false,
 };
 
-const Sungan = ({post, mine = null}) => {
+const Sungan = props => {
   const {
     app: {
       session: {token},
     },
   } = useSelector((root: RootState) => root, shallowEqual);
-  const dispatch = useDispatch();
+  const {
+    didLike,
+    postId,
+    stationName,
+    emoji,
+    userName,
+    userProfileImgUrl,
+    createdAt,
+    likeCnt,
+    text,
+    mine = null,
+    userNameBC,
+    userProfileImgUrlBC,
+    contentBC,
+  } = props;
   const navigation = useNavigation();
-  const sungan = post.post;
-  const bestComment = post.bestComment;
+  const [liked, setLiked] = useState(didLike);
+  const [likeCount, setLikeCount] = useState(likeCnt);
 
   const like = () => {
-    if (post.didLike) {
-      const {
-        didLike,
-        post: {likeCnt, ...otherProps},
-        ...other
-      } = post;
+    if (liked) {
       ReactNativeHapticFeedback.trigger('impactLight', options);
-      dispatch(
-        setMainPost({
-          didLike: false,
-          post: {likeCnt: likeCnt - 1, ...otherProps},
-          ...other,
-        }),
-      );
+      setLiked(false);
+      setLikeCount(likeCount - 1);
       deletePromiseFn({
-        url: APIS.post.sungan.like(sungan.id).url,
+        url: APIS.post.sungan.like(postId).url,
         body: {},
         token: token,
       });
     } else {
-      const {
-        didLike,
-        post: {likeCnt, ...otherProps},
-        ...other
-      } = post;
       ReactNativeHapticFeedback.trigger('impactLight', options);
-      dispatch(
-        setMainPost({
-          didLike: true,
-          post: {likeCnt: likeCnt + 1, ...otherProps},
-          ...other,
-        }),
-      );
+      setLiked(true);
+      setLikeCount(likeCount + 1);
       postPromiseFn({
-        url: APIS.post.sungan.like(sungan.id).url,
+        url: APIS.post.sungan.like(postId).url,
         body: {},
         token: token,
       });
     }
   };
   const goToPostDetail = () => {
-    navigation.navigate(NAV_NAMES.PostDetail, {currentPostId: postKey(post)});
+    const {didLike, ...currentPost} = props;
+    navigation.navigate(NAV_NAMES.PostDetail, {
+      currentPost: {
+        liked,
+        setLiked,
+        likeCount,
+        setLikeCount,
+        type: SUNGAN,
+        ...currentPost,
+      },
+    });
   };
 
   return (
@@ -88,29 +98,33 @@ const Sungan = ({post, mine = null}) => {
           <Col auto rounded30 overflowHidden mr10>
             <Img
               source={
-                IMAGES.characters[sungan.userInfo.userProfileImgUrl] ||
-                IMAGES.imageProfileNull
+                IMAGES.characters[userProfileImgUrl] || IMAGES.imageProfileNull
               }
               w25
               h25></Img>
           </Col>
           <Col auto>
-            <Span medium>{sungan.userInfo.userName}</Span>
+            <Span medium>{userName}</Span>
           </Col>
           <Col></Col>
           <Col auto px10 py5 rounded5>
-            <Span medium>{sungan.station?.name || '전체'}</Span>
+            <Span medium>{stationName || '전체'}</Span>
           </Col>
         </Row>
       )}
-      <Div py10 onPress={goToPostDetail}>
-        <Row rounded20 bgWhite w={'100%'} {...postShadowProp(0.3)}>
+      <Div py10>
+        <Row
+          rounded20
+          bgWhite
+          w={'100%'}
+          {...postShadowProp(0.3)}
+          onPress={goToPostDetail}>
           <Col auto justifyCenter itemsCenter px20>
-            <Span fontSize={70}>{sungan.emoji}</Span>
+            <Span fontSize={70}>{emoji}</Span>
           </Col>
           <Col justifyCenter pr20>
             <Span color={'black'} medium>
-              {sungan.text}
+              {text}
             </Span>
           </Col>
         </Row>
@@ -120,7 +134,7 @@ const Sungan = ({post, mine = null}) => {
           <Row itemsCenter pt10 pb5>
             <Col auto>
               <Row>
-                <Span medium>{`좋아요 ${sungan.likeCnt}개`}</Span>
+                <Span medium>{`좋아요 ${likeCount}개`}</Span>
               </Row>
             </Col>
             <Col></Col>
@@ -132,40 +146,22 @@ const Sungan = ({post, mine = null}) => {
                 <Col auto px5 onPress={like}>
                   <Heart
                     {...iconSettings}
-                    fill={post.didLike ? 'red' : 'white'}></Heart>
+                    fill={liked ? 'red' : 'white'}></Heart>
                 </Col>
               </Row>
             </Col>
           </Row>
-          {bestComment && (
-            <Row
-              itemsCenter
-              justifyCenter
-              pb10
-              pt5
-              flex
-              onPress={goToPostDetail}>
-              <Col auto itemsCenter justifyCenter rounded20 overflowHidden>
-                <Img
-                  source={
-                    IMAGES.characters[bestComment.userInfo.userProfileImgUrl] ||
-                    IMAGES.imageProfileNull
-                  }
-                  w15
-                  h15></Img>
-              </Col>
-              <Col mx10 justifyCenter>
-                <Row>
-                  <Span medium color={'black'}>
-                    {`${bestComment.userInfo.userName}  ${bestComment.content}`}
-                  </Span>
-                </Row>
-              </Col>
-            </Row>
+          {userNameBC && (
+            <BestComment
+              userName={userNameBC}
+              userProfileImgUrl={userProfileImgUrlBC}
+              content={contentBC}
+              onPress={goToPostDetail}
+            />
           )}
           <Row py5>
             <Span color={GRAY_COLOR} fontSize={12}>
-              {moment(sungan.createdAt).calendar()}
+              {moment(createdAt).calendar()}
             </Span>
           </Row>
         </>

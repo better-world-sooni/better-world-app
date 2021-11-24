@@ -43,6 +43,7 @@ import Place from 'src/components/Place';
 import AvatarSelect from 'src/components/AvatarSelect';
 import {isOkay, postKey, stationArr} from 'src/modules/utils';
 import ODSelect from 'src/components/ODSelect';
+import Post from 'src/components/Post';
 
 const ProfileScreen = props => {
   const navigation = useNavigation();
@@ -58,12 +59,13 @@ const ProfileScreen = props => {
       route: {stations, direction},
       selectedTrain,
     },
-    feed: {globalFiter, myPosts},
+    feed: {globalFiter},
   } = useSelector((root: RootState) => root, shallowEqual);
   const {currentUser, token} = useSelector(
     (root: RootState) => root.app.session,
     shallowEqual,
   );
+  const [myPosts, setMyPosts] = useState([]);
   const [selecting, setSelecting] = useState(Selecting.NONE);
   const [character, setCharacter] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -171,16 +173,6 @@ const ProfileScreen = props => {
   const handleReturnSelectOD = () => {
     setSelectingOD(false);
   };
-  const MySungans = ({postKey, index}) => {
-    const post = myPosts[postKey];
-    if (post.type == SUNGAN) {
-      return <Sungan post={post} key={index} mine />;
-    } else if (post.type == REPORT) {
-      return <Report post={post} key={index} mine />;
-    } else {
-      return <Place post={post} key={index} mine />;
-    }
-  };
   const handleSelectGlobalFilter = useCallback(
     () => setSelecting(Selecting.GLOBAL_FILTER),
     [],
@@ -194,15 +186,10 @@ const ProfileScreen = props => {
   );
 
   useEffect(() => {
-    if (!mySunganLoading && mySungans) {
-      const myPosts = {};
-      mySungans.forEach(post => {
-        myPosts[postKey(post)] = post;
-      });
-      dispatch(setMyPosts(myPosts));
+    if ((!mySunganLoading && mySungans) || myPosts.length == 0) {
+      setMyPosts(mySungans);
     }
   }, [mySunganLoading]);
-
   useLayoutEffect(() => {
     if (!myPosts) {
       pullToRefresh();
@@ -321,9 +308,38 @@ const ProfileScreen = props => {
             </Div>
           </Div>
         }
-        data={myPosts && Object.keys(myPosts).filter(filterPostsByStation)}
+        data={myPosts}
         renderItem={({item, index}) => {
-          return <MySungans postKey={item} index={index} />;
+          const type = item.type;
+          const didLike = item.didLike;
+          const postId = item.post.id;
+          const stationName = item.post.station?.name;
+          const emoji = item.post.emoji;
+          const userName = item.post.userInfo.userName;
+          const userProfileImgUrl = item.post.userInfo.userProfileImgUrl;
+          const createdAt = item.post.createdAt;
+          const likeCnt = item.post.likeCnt;
+          const text = item.post.text;
+          const place = item.post.place;
+          const vehicleIdNum = item.post.vehicleIdNum;
+          return (
+            <Post
+              type={type}
+              vehicleIdNum={vehicleIdNum}
+              didLike={didLike}
+              postId={postId}
+              stationName={stationName}
+              emoji={emoji}
+              userName={userName}
+              userProfileImgUrl={userProfileImgUrl}
+              createdAt={createdAt}
+              likeCnt={likeCnt}
+              text={text}
+              place={place}
+              mine={true}
+              key={index}
+            />
+          );
         }}
         ListFooterComponent={
           (!mySungans || mySungans.length == 0) && (

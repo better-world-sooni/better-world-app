@@ -40,7 +40,6 @@ const MainBottomTabs = () => {
         component={HomeScreen}
         options={{
           tabBarLabel: '홈',
-          unmountOnBlur: true,
           tabBarIcon: props => (
             <Home
               color={props.focused ? LINE2_COLOR : 'gray'}
@@ -53,7 +52,6 @@ const MainBottomTabs = () => {
         component={MetaSunganScreen}
         options={{
           tabBarLabel: '메타순간',
-          unmountOnBlur: true,
           tabBarIcon: props => (
             <Grid
               color={props.focused ? LINE2_COLOR : 'gray'}
@@ -66,7 +64,6 @@ const MainBottomTabs = () => {
         component={ChatScreen}
         options={{
           tabBarLabel: '채팅',
-          unmountOnBlur: true,
           tabBarIcon: props => (
             <MessageCircle
               color={props.focused ? LINE2_COLOR : 'gray'}
@@ -79,7 +76,6 @@ const MainBottomTabs = () => {
         component={ProfileScreen}
         options={{
           tabBarLabel: '프로필',
-          unmountOnBlur: true,
           tabBarIcon: props => (
             <User
               color={props.focused ? LINE2_COLOR : 'gray'}

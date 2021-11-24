@@ -345,7 +345,7 @@ export enum Selecting {
 }
 
 export const chevronDownSettings = {
-  strokeWidth: 2,
+  strokeWidth: 3,
   color: 'black',
   height: 15,
   width: 15,
@@ -354,7 +354,7 @@ export const chevronDownSettings = {
 export const iconSettings = {
   strokeWidth: 1.3,
   color: 'black',
-  height: 25,
+  height: 24,
 };
 
 export const shadowProp = {
@@ -636,3 +636,12 @@ export const postShadowProp = opacity => {
 
 export const WS_URL = 'https://ws.metasgid.com';
 // export const WS_URL = 'http://localhost:8000';
+
+export enum ChannelFilter {
+  ALL = 0,
+  EVENTS = 2,
+  MUSIC = 1,
+  TALK = 3,
+  REPORT = 5,
+  PLACE = 6,
+}
