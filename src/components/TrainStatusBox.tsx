@@ -243,17 +243,6 @@ const TrainStatusBox = ({handleSelectDirection}) => {
     }
   };
 
-  useEffect(() => {
-    const everySecond = setInterval(() => setCurrentTime(new Date()), 1000);
-    return () => {
-      clearInterval(everySecond);
-    };
-  }, [origin, direction]);
-
-  useEffect(() => {
-    refresh();
-  }, [selectedTrain?.trainNo, origin, destination]);
-
   const refresh = async () => {
     setTrainPositions(null);
     setArrivalTrain(null);
@@ -271,6 +260,17 @@ const TrainStatusBox = ({handleSelectDirection}) => {
       setLastUpdate(moment().calendar());
     }
   };
+
+  useEffect(() => {
+    const everySecond = setInterval(() => setCurrentTime(new Date()), 1000);
+    return () => {
+      clearInterval(everySecond);
+    };
+  }, [origin, direction]);
+
+  useEffect(() => {
+    origin && destination && refresh();
+  }, [selectedTrain?.trainNo, origin, destination]);
 
   const prevStation = useMemo(() => {
     return displayedStation

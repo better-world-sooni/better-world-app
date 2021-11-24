@@ -1,8 +1,7 @@
-import React, {useCallback, useEffect, useMemo, useState} from 'react';
-import {Alert, RefreshControl} from 'react-native';
+import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import {Alert, FlatList, RefreshControl} from 'react-native';
 import {Div} from 'src/components/common/Div';
 import APIS from 'src/modules/apis';
-import {FlatList, ScrollView} from 'src/modules/viewComponents';
 import {
   getPromiseFn,
   postPromiseFn,
@@ -34,6 +33,8 @@ import TrainStatusBox from 'src/components/TrainStatusBox';
 import OD from 'src/components/OD';
 import FeedChecked from 'src/components/FeedChecked';
 import Post from 'src/components/Post';
+import {useNavigation} from '@react-navigation/core';
+import {useScrollToTop} from '@react-navigation/native';
 
 const HomeScreen = props => {
   const {data: mainResponse, isLoading: mainLoading} = useApiSelector(
@@ -65,6 +66,7 @@ const HomeScreen = props => {
   }, []);
   const apiGET = useReloadGET();
   const dispatch = useDispatch();
+  const scrollRef = useRef(null);
   const pullToRefresh = useCallback(() => {
     apiGET(APIS.post.main());
   }, [origin]);
@@ -95,6 +97,7 @@ const HomeScreen = props => {
       setPosts(mainFeed);
     }
   }, [mainLoading]);
+  useScrollToTop(scrollRef);
   const setStationNotification = useCallback(() => {
     if (receiveStationPush && selectedTrain) {
       postPromiseFn({
@@ -186,6 +189,7 @@ const HomeScreen = props => {
           onSelect={handleSelectGlobalFilter}
         />
         <FlatList
+          ref={scrollRef}
           showsVerticalScrollIndicator={false}
           ListHeaderComponent={
             <>

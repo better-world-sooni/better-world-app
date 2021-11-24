@@ -33,7 +33,7 @@ import {
 } from 'src/modules/constants';
 import {appActions, useLogout} from 'src/redux/appReducer';
 import {ScrollSelector} from 'src/components/ScrollSelector';
-import {setGlobalFilter, setMyPosts} from 'src/redux/feedReducer';
+import {setGlobalFilter} from 'src/redux/feedReducer';
 import {RootState} from 'src/redux/rootReducer';
 import {toggleReceiveStationPush} from 'src/redux/routeReducer';
 import {Alert, RefreshControl, Switch} from 'react-native';
@@ -186,12 +186,12 @@ const ProfileScreen = props => {
   );
 
   useEffect(() => {
-    if ((!mySunganLoading && mySungans) || myPosts.length == 0) {
+    if (!mySunganLoading && mySungans) {
       setMyPosts(mySungans);
     }
   }, [mySunganLoading]);
   useLayoutEffect(() => {
-    if (!myPosts) {
+    if (myPosts.length == 0) {
       pullToRefresh();
     }
     setLoading(false);
@@ -322,6 +322,10 @@ const ProfileScreen = props => {
           const text = item.post.text;
           const place = item.post.place;
           const vehicleIdNum = item.post.vehicleIdNum;
+          const userNameBC = item.bestComment?.userInfo.userName;
+          const userProfileImgUrlBC =
+            item.bestComment?.userInfo.userProfileImgUrl;
+          const contentBC = item.bestComment?.content;
           return (
             <Post
               type={type}
@@ -337,33 +341,34 @@ const ProfileScreen = props => {
               text={text}
               place={place}
               mine={true}
+              userNameBC={userNameBC}
+              userProfileImgUrlBC={userProfileImgUrlBC}
+              contentBC={contentBC}
               key={index}
             />
           );
         }}
-        ListFooterComponent={
-          (!mySungans || mySungans.length == 0) && (
-            <>
-              <Row itemsCenter justifyCenter pt20 pb10 onPress={handleGotoPost}>
-                <Col h2 />
-                <Col auto>
-                  <PlusSquare
-                    height={50}
-                    width={50}
-                    strokeWidth={0.7}
-                    color={GRAY_COLOR}></PlusSquare>
-                </Col>
-                <Col h2></Col>
-              </Row>
-              <Row pb20>
-                <Col></Col>
-                <Col auto>
-                  <Span color={GRAY_COLOR}>게시물을 올려보세요!</Span>
-                </Col>
-                <Col></Col>
-              </Row>
-            </>
-          )
+        ListEmptyComponent={
+          <>
+            <Row itemsCenter justifyCenter pt20 pb10 onPress={handleGotoPost}>
+              <Col h2 />
+              <Col auto>
+                <PlusSquare
+                  height={50}
+                  width={50}
+                  strokeWidth={0.7}
+                  color={GRAY_COLOR}></PlusSquare>
+              </Col>
+              <Col h2></Col>
+            </Row>
+            <Row pb20>
+              <Col></Col>
+              <Col auto>
+                <Span color={GRAY_COLOR}>게시물을 올려보세요!</Span>
+              </Col>
+              <Col></Col>
+            </Row>
+          </>
         }
         refreshControl={
           <RefreshControl
