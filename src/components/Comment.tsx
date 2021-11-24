@@ -1,6 +1,6 @@
 import React from 'react';
 import {Heart} from 'react-native-feather';
-import {GRAY_COLOR} from 'src/modules/constants';
+import {GRAY_COLOR, HEART_COLOR} from 'src/modules/constants';
 import {IMAGES} from 'src/modules/images';
 import {Col} from './common/Col';
 import {Div} from './common/Div';
@@ -61,7 +61,8 @@ const Comment = ({
           justifyCenter
           onPress={() => handleLikeOnComment(commentId, isLiked)}>
           <Heart
-            fill={isLiked ? 'red' : 'white'}
+            strokeWidth={isLiked ? 0 : 1.3}
+            fill={isLiked ? HEART_COLOR : 'white'}
             color={'black'}
             height={14}></Heart>
         </Col>

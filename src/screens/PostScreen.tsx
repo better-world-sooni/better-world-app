@@ -38,7 +38,7 @@ const PostScreen = props => {
   const [sungan, setSungan] = useState({
     emoji: '🚆',
     stationName: null,
-    channelId: null,
+    channelId: '일상',
     place: null,
     text: null,
     userName: currentUser.username,
@@ -175,7 +175,7 @@ const PostScreen = props => {
     }
   };
 
-  const channels = ['핫플', '일상', '이슈', '음악'];
+  const channels = ['핫플', '일상'];
   return (
     <Div flex bgWhite>
       <Div flex={3}>
