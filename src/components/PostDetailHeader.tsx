@@ -1,6 +1,6 @@
 import React from 'react';
 import {Heart} from 'react-native-feather';
-import {GRAY_COLOR, iconSettings} from 'src/modules/constants';
+import {GRAY_COLOR, HEART_COLOR, iconSettings} from 'src/modules/constants';
 import {Col} from './common/Col';
 import {Div} from './common/Div';
 import {Row} from './common/Row';
@@ -41,7 +41,10 @@ const PostDetailHeader = ({
         <Col auto>
           <Row>
             <Col auto px5 onPress={handleLike}>
-              <Heart {...iconSettings} fill={didLike ? 'red' : 'white'}></Heart>
+              <Heart
+                {...iconSettings}
+                strokeWidth={didLike ? 0 : 1.3}
+                fill={didLike ? HEART_COLOR : 'white'}></Heart>
             </Col>
           </Row>
         </Col>

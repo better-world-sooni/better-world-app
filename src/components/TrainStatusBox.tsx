@@ -321,7 +321,7 @@ const TrainStatusBox = ({handleSelectDirection}) => {
     return <TrainStatusBoxPlaceholder message={trainPositions} />;
   }
   return (
-    <Div py20>
+    <Div pb20 pt10>
       <Row px20>
         <Col justifyCenter itemsCenter>
           <Span medium numberOfLines={1} ellipsizeMode="head">

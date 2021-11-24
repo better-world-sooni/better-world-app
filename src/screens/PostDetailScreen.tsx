@@ -1,6 +1,6 @@
 import {useNavigation} from '@react-navigation/core';
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
-import {Heart, X} from 'react-native-feather';
+import {X} from 'react-native-feather';
 import {shallowEqual, useDispatch, useSelector} from 'react-redux';
 import {Col} from 'src/components/common/Col';
 import {Div} from 'src/components/common/Div';

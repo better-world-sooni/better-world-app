@@ -5,6 +5,7 @@ import {shallowEqual, useDispatch, useSelector} from 'react-redux';
 import APIS from 'src/modules/apis';
 import {
   GRAY_COLOR,
+  HEART_COLOR,
   iconSettings,
   NUM_OF_LINES_ON_POST,
   postShadowProp,
@@ -122,7 +123,11 @@ export const Report = props => {
           <Span fontSize={70}>{'🚨'}</Span>
         </Col>
         <Col justifyCenter pr20 py10>
-          <Span color={'black'} medium numberOfLines={NUM_OF_LINES_ON_POST} ellipsizeMode={'tail'}>
+          <Span
+            color={'black'}
+            medium
+            numberOfLines={NUM_OF_LINES_ON_POST}
+            ellipsizeMode={'tail'}>
             {text}
           </Span>
         </Col>
@@ -144,7 +149,8 @@ export const Report = props => {
                 <Col auto px5 onPress={like}>
                   <Heart
                     {...iconSettings}
-                    fill={liked ? 'red' : 'white'}></Heart>
+                    strokeWidth={liked ? 0 : 1.3}
+                    fill={liked ? HEART_COLOR : 'white'}></Heart>
                 </Col>
               </Row>
             </Col>

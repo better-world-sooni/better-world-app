@@ -36,7 +36,6 @@ export const TextField = (props) => {
             border
             borderGray400
             rounded4
-            color={'black'}
             p16
             {...others}
             styleComp={[
