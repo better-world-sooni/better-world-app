@@ -132,6 +132,7 @@ const NoChatRooms = () => {
     </>
   );
 };
+
 const RightSwipeActions = () => {
   return (
     <Div flex={1} bg={'red'} justifyCenter itemsEnd>
@@ -148,7 +149,6 @@ const ChatScreen = () => {
     shallowEqual,
   );
   const [chatRooms, setChatRooms] = useState([]);
-  const [loading, setLoading] = useState(false);
   const navigation = useNavigation();
 
   const goToChatRoom = roomId => {
@@ -186,7 +186,7 @@ const ChatScreen = () => {
   return (
     <Div flex bg={'white'}>
       <Div h={HAS_NOTCH ? 44 : 20} />
-      <Header bg={'rgba(255,255,255,0)'} noFilter={true} />
+      <Header bg={'rgba(255,255,255,0)'} />
       <ScrollView flex={1} showsVerticalScrollIndicator={false}>
         <NativeBaseProvider>
           <Div relative>

@@ -6,6 +6,7 @@ import APIS from 'src/modules/apis';
 import {
   GRAY_COLOR,
   iconSettings,
+  NUM_OF_LINES_ON_POST,
   postShadowProp,
   REPORT,
 } from 'src/modules/constants';
@@ -110,23 +111,22 @@ export const Report = props => {
           </Col>
         </Row>
       )}
-      <Div py10>
-        <Row
-          onPress={goToPostDetail}
-          rounded20
-          bg={'rgb(250, 196, 192)'}
-          w={'100%'}
-          {...postShadowProp(0.5)}>
-          <Col auto justifyCenter itemsCenter px20>
-            <Span fontSize={70}>{'🚨'}</Span>
-          </Col>
-          <Col justifyCenter pr20>
-            <Span color={'black'} medium>
-              {text}
-            </Span>
-          </Col>
-        </Row>
-      </Div>
+      <Row
+        py10
+        onPress={goToPostDetail}
+        rounded20
+        bg={'rgb(250, 196, 192)'}
+        w={'100%'}
+        {...postShadowProp(0.5)}>
+        <Col auto justifyCenter itemsCenter px20>
+          <Span fontSize={70}>{'🚨'}</Span>
+        </Col>
+        <Col justifyCenter pr20 py10>
+          <Span color={'black'} medium numberOfLines={NUM_OF_LINES_ON_POST} ellipsizeMode={'tail'}>
+            {text}
+          </Span>
+        </Col>
+      </Row>
       {!mine && (
         <>
           <Row itemsCenter pt10 pb5>

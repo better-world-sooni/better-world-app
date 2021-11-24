@@ -36,9 +36,7 @@ const Comment = ({
         </Col>
         <Col>
           <Row mb5 pl10>
-            <Span medium color={'black'}>
-              {`${userName}  ${content}`}
-            </Span>
+            <Span medium>{`${userName}  ${content}`}</Span>
           </Row>
           <Row pl10>
             <Col mr10 auto>

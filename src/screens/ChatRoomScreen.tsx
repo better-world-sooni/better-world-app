@@ -130,6 +130,7 @@ const ChatRoomScreen = props => {
         </Row>
         {metasunganUser._id && (
           <GiftedChat
+            placeholder={'메세지를 입력하세요'}
             renderAvatarOnTop
             renderUsernameOnMessage
             messages={messages}

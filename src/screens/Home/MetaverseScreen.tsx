@@ -2,7 +2,7 @@ import React, {useCallback, useRef, useState} from 'react';
 import {WebView} from 'react-native-webview';
 import {shallowEqual, useDispatch, useSelector} from 'react-redux';
 import {RootState} from 'src/redux/rootReducer';
-import {useFocusEffect} from '@react-navigation/core';
+import {useFocusEffect, useNavigation} from '@react-navigation/core';
 import {setChatBody} from 'src/redux/chatReducer';
 import {Div} from 'src/components/common/Div';
 import {
@@ -14,6 +14,7 @@ import {
 import {setGlobalFilter} from 'src/redux/feedReducer';
 import {ScrollSelector} from 'src/components/ScrollSelector';
 import {Header} from 'src/components/Header';
+import {NAV_NAMES} from 'src/modules/navNames';
 
 interface MetasunganWindowMessage {
   payload: any;
@@ -48,8 +49,9 @@ const MetaSunganScreen = () => {
   );
   const dispatch = useDispatch();
 
-  // state and ref
+  // hooks
   const webViewRef = useRef(null);
+  const navigation = useNavigation();
 
   // functions
   const metasunganUrl = token => {
@@ -74,14 +76,12 @@ const MetaSunganScreen = () => {
       handleMetasunganWindowMessage(message.metasunganWindowMessage);
     }
   };
+  const goToChatRoom = roomId => {
+    navigation.navigate(NAV_NAMES.ChatRoom, {currentChatRoomId: roomId});
+  };
   const handleMetasunganWindowMessage = (message: MetasunganWindowMessage) => {
     if (message.action == MetasunganAction.ENTER_CHAT_ROOM) {
-      dispatch(
-        setChatBody({
-          enabled: true,
-          enabledRoomId: message.payload.chatRoomId,
-        }),
-      );
+      goToChatRoom(message.payload.chatRoomId);
     }
   };
 
@@ -90,7 +90,6 @@ const MetaSunganScreen = () => {
       reload();
     }, []),
   );
-
   const [selecting, setSelecting] = useState(Selecting.NONE);
   const selectGetterSetter = {
     [Selecting.GLOBAL_FILTER]: {
@@ -105,7 +104,6 @@ const MetaSunganScreen = () => {
       <Div bg={'rgba(255,255,255,.3)'} absolute top width={'100%'} zIndex5>
         <Div h={HAS_NOTCH ? 44 : 20} />
         <Header
-          noFilter={true}
           bg={'rgba(255,255,255,0)'}
           onSelect={() => setSelecting(Selecting.GLOBAL_FILTER)}
         />

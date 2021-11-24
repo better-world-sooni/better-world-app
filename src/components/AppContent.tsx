@@ -191,7 +191,6 @@ export const AppContent = () => {
           ))}
         </RootStack.Navigator>
       </NavigationContainer>
-      {isLoggedIn && <ChatManager></ChatManager>}
     </Div>
   );
 };

@@ -6,6 +6,7 @@ import APIS from 'src/modules/apis';
 import {
   GRAY_COLOR,
   iconSettings,
+  NUM_OF_LINES_ON_POST,
   PLACE,
   postShadowProp,
 } from 'src/modules/constants';
@@ -31,7 +32,7 @@ const options = {
   ignoreAndroidSystemSettings: false,
 };
 
-export const Place = (props) => {
+export const Place = props => {
   const {
     app: {
       session: {token},
@@ -53,15 +54,15 @@ export const Place = (props) => {
     userNameBC,
     userProfileImgUrlBC,
     contentBC,
-  } = props
+  } = props;
   const navigation = useNavigation();
   const [liked, setLiked] = useState(didLike);
-  const [likeCount, setLikeCount] = useState(likeCnt)
+  const [likeCount, setLikeCount] = useState(likeCnt);
   const like = () => {
     if (liked) {
       ReactNativeHapticFeedback.trigger('impactLight', options);
       setLiked(false);
-      setLikeCount(likeCount - 1)
+      setLikeCount(likeCount - 1);
       deletePromiseFn({
         url: APIS.post.place.like(postId).url,
         body: {},
@@ -70,7 +71,7 @@ export const Place = (props) => {
     } else {
       ReactNativeHapticFeedback.trigger('impactLight', options);
       setLiked(true);
-      setLikeCount(likeCount - 1)
+      setLikeCount(likeCount - 1);
       postPromiseFn({
         url: APIS.post.place.like(postId).url,
         body: {},
@@ -79,8 +80,17 @@ export const Place = (props) => {
     }
   };
   const goToPostDetail = () => {
-    const {didLike, ...currentPost} = props
-    navigation.navigate(NAV_NAMES.PostDetail, {currentPost:  {liked, setLiked, likeCount, setLikeCount, type: PLACE, ...currentPost}});
+    const {didLike, ...currentPost} = props;
+    navigation.navigate(NAV_NAMES.PostDetail, {
+      currentPost: {
+        liked,
+        setLiked,
+        likeCount,
+        setLikeCount,
+        type: PLACE,
+        ...currentPost,
+      },
+    });
   };
   return (
     <Div bg={'rgba(255,255,255,.9)'} pb10 px20>
@@ -103,26 +113,25 @@ export const Place = (props) => {
           </Col>
         </Row>
       )}
-      <Div py10>
-        <Row
-          rounded20
-          bgWhite
-          w={'100%'}
-          {...postShadowProp(0.3)}
-          onPress={goToPostDetail}>
-          <Col auto justifyCenter itemsCenter px20>
-            <Span fontSize={70}>{emoji}</Span>
-          </Col>
-          <Col justifyCenter pr20>
-            <Span color={'black'} bold mb5>
-              {place}
-            </Span>
-            <Span color={'black'} medium>
-              {text}
-            </Span>
-          </Col>
-        </Row>
-      </Div>
+      <Row
+        py10
+        rounded20
+        bgWhite
+        w={'100%'}
+        {...postShadowProp(0.3)}
+        onPress={goToPostDetail}>
+        <Col auto justifyCenter itemsCenter px20>
+          <Span fontSize={70}>{emoji}</Span>
+        </Col>
+        <Col justifyCenter pr20 py10>
+          <Span color={'black'} bold mb5>
+            {place}
+          </Span>
+          <Span color={'black'} medium numberOfLines={NUM_OF_LINES_ON_POST} ellipsizeMode={'tail'}>
+            {text}
+          </Span>
+        </Col>
+      </Row>
       {!mine && (
         <>
           <Row itemsCenter pt10 pb5>
@@ -145,12 +154,14 @@ export const Place = (props) => {
               </Row>
             </Col>
           </Row>
-          {userNameBC && <BestComment
-            userName={userNameBC}
-            userProfileImgUrl={userProfileImgUrlBC}
-            content={contentBC}
-            onPress={goToPostDetail}
-          />}
+          {userNameBC && (
+            <BestComment
+              userName={userNameBC}
+              userProfileImgUrl={userProfileImgUrlBC}
+              content={contentBC}
+              onPress={goToPostDetail}
+            />
+          )}
           <Row py10>
             <Span color={GRAY_COLOR} fontSize={12}>
               {moment(createdAt).calendar()}

@@ -14,14 +14,14 @@ import {RootState} from 'src/redux/rootReducer';
 import {Col} from './common/Col';
 import {Row} from './common/Row';
 import {Span} from './common/Span';
-import {Alert} from 'react-native';
 
-export const Header = ({bg, onSelect = null, noFilter = null}) => {
+export const Header = ({bg, onSelect = null}) => {
   const {
     feed: {globalFiter},
   } = useSelector((root: RootState) => root, shallowEqual);
   const navigation = useNavigation();
   const goToPost = () => navigation.navigate(NAV_NAMES.Post);
+  const goToReport = () => navigation.navigate(NAV_NAMES.Report);
 
   return (
     <Row itemsCenter py10 px20 bg={bg}>
@@ -48,10 +48,10 @@ export const Header = ({bg, onSelect = null, noFilter = null}) => {
         <Col itemsCenter justifyCenter></Col>
       )}
       <Col></Col>
-      <Col auto pl15>
+      <Col auto pl15 onPress={goToReport}>
         <AlertCircle {...iconSettings} color={'red'}></AlertCircle>
       </Col>
-      <Col auto pl15>
+      <Col auto pl15 onPress={goToPost}>
         <PlusSquare {...iconSettings} color={'black'}></PlusSquare>
       </Col>
       <Col auto pl15>

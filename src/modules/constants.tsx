@@ -645,3 +645,5 @@ export enum ChannelFilter {
   REPORT = 5,
   PLACE = 6,
 }
+
+export const NUM_OF_LINES_ON_POST = 5;

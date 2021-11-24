@@ -38,6 +38,7 @@ import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import {View} from 'src/modules/viewComponents';
 import moment from 'moment';
 import 'moment/locale/ko';
+import NestedComment from 'src/components/NestedComment';
 moment.locale('ko');
 
 const options = {
@@ -459,87 +460,15 @@ const PostDetailScreen = props => {
                           .reverse()
                           .map((nestedComment, index) => {
                             return (
-                              <Row
-                                itemsCenter
-                                justifyCenter
-                                flex
-                                ml30
-                                pt10
+                              <NestedComment
                                 key={index}
-                                pl10>
-                                <Col
-                                  auto
-                                  itemsCenter
-                                  justifyCenter
-                                  rounded20
-                                  overflowHidden>
-                                  <Img
-                                    source={
-                                      IMAGES.characters[
-                                        nestedComment.userInfo.userProfileImgUrl
-                                      ] || IMAGES.imageProfileNull
-                                    }
-                                    w20
-                                    h20></Img>
-                                </Col>
-                                <Col>
-                                  <Row mb5 pl10>
-                                    <Col mr10 justifyCenter>
-                                      <Row>
-                                        <Span medium color={'black'}>
-                                          {nestedComment.userInfo.userName}
-                                        </Span>
-                                        <Span ml5>{nestedComment.content}</Span>
-                                      </Row>
-                                    </Col>
-                                  </Row>
-                                  <Row pl10>
-                                    {/* {nestedComment.likeCnt &&
-                                      nestedComment.likeCnt > 0 && (
-                                        <Col mr10 auto>
-                                          <Span
-                                            color={
-                                              GRAY_COLOR
-                                            }>{`좋아요 ${nestedComment.likeCnt}개`}</Span>
-                                        </Col>
-                                      )}
-                                    <Col
-                                      auto
-                                      onPress={() =>
-                                        handlePressReplyOnComment(
-                                          nestedComment.id,
-                                        )
-                                      }>
-                                      <Span color={GRAY_COLOR}>답글 달기</Span>
-                                    </Col> */}
-                                    <Col auto mr10>
-                                      <Span color={GRAY_COLOR} fontSize={12}>
-                                        {moment(
-                                          nestedComment.createdAt,
-                                        ).calendar()}
-                                      </Span>
-                                    </Col>
-                                    <Col></Col>
-                                  </Row>
-                                </Col>
-                                {/* <Col
-                                  auto
-                                  itemsCenter
-                                  justifyCenter
-                                  onPress={() =>
-                                    handleLikeOnComment(
-                                      nestedComment.id,
-                                      nestedComment.didLike,
-                                    )
-                                  }>
-                                  <Heart
-                                    fill={
-                                      nestedComment.isLiked ? 'red' : 'white'
-                                    }
-                                    color={'black'}
-                                    height={14}></Heart>
-                                </Col> */}
-                              </Row>
+                                userProfileImgUrl={
+                                  nestedComment.userInfo?.userProfileImgUrl
+                                }
+                                userName={nestedComment.userInfo?.userName}
+                                content={nestedComment.content}
+                                createdAt={nestedComment.createdAt}
+                              />
                             );
                           })}
                     </Comment>
