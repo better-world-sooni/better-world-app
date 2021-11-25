@@ -327,13 +327,13 @@ const TrainStatusBox = ({handleSelectDirection}) => {
   }
   return (
     <Div pb20 pt10>
-      <Row px20>
+      <Row px20 pb10>
         <Col justifyCenter itemsCenter>
           <Span medium numberOfLines={1} ellipsizeMode="head">
             {prevStation}
           </Span>
         </Col>
-        <Col auto w150 itemsCenter pb10>
+        <Col auto w150 itemsCenter>
           <Row rounded5 auto mx20 py5 my5 onPress={handleSelectDirection}>
             <Col auto>
               <Span
@@ -386,7 +386,7 @@ const TrainStatusBox = ({handleSelectDirection}) => {
           <Row h10 bg={LINE2_COLOR}></Row>
         </Col>
       </Row>
-      <Row pt5 justifyCenter>
+      <Row justifyCenter>
         <HorizontalStations
           horizontalStations={horizontalStations}
           trainPositions={trainPositions}

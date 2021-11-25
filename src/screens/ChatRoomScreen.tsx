@@ -23,7 +23,6 @@ const ChatRoomScreen = props => {
     (root: RootState) => root.app.session,
     shallowEqual,
   );
-  const dispatch = useDispatch();
   const sendSocketMessage = useSocketInput();
   const navigation = useNavigation();
   const [title, setTitle] = useState(null);
