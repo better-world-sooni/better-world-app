@@ -2,8 +2,8 @@ import React, {useCallback} from 'react';
 import {Alert} from 'react-native';
 import {shallowEqual, useSelector} from 'react-redux';
 import APIS from 'src/modules/apis';
-import {REPORT, SUNGAN} from 'src/modules/constants';
-import {isOkay} from 'src/modules/utils';
+import {MAIN_LINE2, MY_ROUTE, REPORT, SUNGAN} from 'src/modules/constants';
+import {isOkay, stationArr} from 'src/modules/utils';
 import {deletePromiseFn, useReloadGET} from 'src/redux/asyncReducer';
 import {RootState} from 'src/redux/rootReducer';
 import Place from './Place';
@@ -30,6 +30,13 @@ const Post = ({
 }) => {
   const {token} = useSelector(
     (root: RootState) => root.app.session,
+    shallowEqual,
+  );
+  const {
+    feed: {globalFiter},
+  } = useSelector((root: RootState) => root, shallowEqual);
+  const {stations} = useSelector(
+    (root: RootState) => root.route.route,
     shallowEqual,
   );
   const apiGET = useReloadGET();
@@ -72,6 +79,36 @@ const Post = ({
       Alert.alert('포스트를 지우는데 문제가 발생하였습니다.');
     }
   }, [postId, type]);
+
+  if (type == REPORT) {
+    return (
+      <Report
+        vehicleIdNum={vehicleIdNum}
+        didLike={didLike}
+        postId={postId}
+        userName={userName}
+        userProfileImgUrl={userProfileImgUrl}
+        createdAt={createdAt}
+        likeCnt={likeCnt}
+        text={text}
+        mine={mine}
+        userNameBC={userNameBC}
+        userProfileImgUrlBC={userProfileImgUrlBC}
+        contentBC={contentBC}
+        deletePost={deleteReport}
+      />
+    );
+  }
+  if (globalFiter == MY_ROUTE) {
+    if (!(stationName in stations)) {
+      return null;
+    }
+  }
+  if (globalFiter !== MAIN_LINE2) {
+    if (stationName !== globalFiter) {
+      return null;
+    }
+  }
   if (type == SUNGAN) {
     return (
       <Sungan
@@ -91,45 +128,26 @@ const Post = ({
         deletePost={deleteSungan}
       />
     );
-  } else if (type == REPORT) {
-    return (
-      <Report
-        vehicleIdNum={vehicleIdNum}
-        didLike={didLike}
-        postId={postId}
-        userName={userName}
-        userProfileImgUrl={userProfileImgUrl}
-        createdAt={createdAt}
-        likeCnt={likeCnt}
-        text={text}
-        mine={mine}
-        userNameBC={userNameBC}
-        userProfileImgUrlBC={userProfileImgUrlBC}
-        contentBC={contentBC}
-        deletePost={deleteReport}
-      />
-    );
-  } else {
-    return (
-      <Place
-        didLike={didLike}
-        postId={postId}
-        stationName={stationName}
-        emoji={emoji}
-        userName={userName}
-        userProfileImgUrl={userProfileImgUrl}
-        createdAt={createdAt}
-        likeCnt={likeCnt}
-        text={text}
-        place={place}
-        mine={mine}
-        userNameBC={userNameBC}
-        userProfileImgUrlBC={userProfileImgUrlBC}
-        contentBC={contentBC}
-        deletePost={deletePlace}
-      />
-    );
   }
+  return (
+    <Place
+      didLike={didLike}
+      postId={postId}
+      stationName={stationName}
+      emoji={emoji}
+      userName={userName}
+      userProfileImgUrl={userProfileImgUrl}
+      createdAt={createdAt}
+      likeCnt={likeCnt}
+      text={text}
+      place={place}
+      mine={mine}
+      userNameBC={userNameBC}
+      userProfileImgUrlBC={userProfileImgUrlBC}
+      contentBC={contentBC}
+      deletePost={deletePlace}
+    />
+  );
 };
 
 export default React.memo(Post);

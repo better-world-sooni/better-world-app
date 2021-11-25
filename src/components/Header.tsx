@@ -54,9 +54,9 @@ export const Header = ({bg, onSelect = null}) => {
       <Col auto pl15 onPress={goToPost}>
         <PlusSquare {...iconSettings} color={'black'}></PlusSquare>
       </Col>
-      <Col auto pl15>
+      {/* <Col auto pl15>
         <Bell {...iconSettings} color={'black'}></Bell>
-      </Col>
+      </Col> */}
     </Row>
   );
 };

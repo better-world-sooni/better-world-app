@@ -88,6 +88,14 @@ const PostScreen = props => {
     const {emoji, ...other} = sungan;
     setSungan({emoji: sunganEmoji, ...other});
   };
+  const setChannelAndEmoji = item => {
+    const {emoji, channelId, ...other} = sungan;
+    if (item === '핫플') {
+      setSungan({emoji: '🔥', channelId: item, ...other});
+    } else {
+      setSungan({emoji: '🚆', channelId: item, ...other});
+    }
+  };
   const setChannelId = sunganChannelId => {
     const {channelId, ...other} = sungan;
     setSungan({channelId: sunganChannelId, ...other});
@@ -218,7 +226,7 @@ const PostScreen = props => {
                 </Row>
                 <Row mb20>
                   <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                    {[...channels].map((item, index) => {
+                    {channels.map((item, index) => {
                       return (
                         <Div
                           mr10
@@ -226,7 +234,7 @@ const PostScreen = props => {
                           key={index}
                           {...borderProp(sungan.channelId === item)}>
                           <Div
-                            onPress={() => setChannelId(item)}
+                            onPress={() => setChannelAndEmoji(item)}
                             px20
                             py10
                             w={'100%'}
@@ -359,7 +367,9 @@ const PostScreen = props => {
             showTabs={false}
             showHistory={true}
             showSectionTitles={true}
-            onEmojiSelected={emoji => setEmoji(emoji)}
+            onEmojiSelected={emoji => {
+              setEmoji(emoji);
+            }}
             columns={8}></EmojiSelector>
         </Div>
       )}

@@ -103,10 +103,7 @@ const MetaSunganScreen = () => {
     <Div flex relative>
       <Div bg={'rgba(255,255,255,.3)'} absolute top width={'100%'} zIndex5>
         <Div h={HAS_NOTCH ? 44 : 20} />
-        <Header
-          bg={'rgba(255,255,255,0)'}
-          onSelect={() => setSelecting(Selecting.GLOBAL_FILTER)}
-        />
+        <Header bg={'rgba(255,255,255,0)'} />
       </Div>
       <WebView
         ref={webViewRef}

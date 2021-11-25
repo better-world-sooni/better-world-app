@@ -648,3 +648,4 @@ export enum ChannelFilter {
 
 export const NUM_OF_LINES_ON_POST = 5;
 export const HEART_COLOR = '#ff4033';
+export const APPLE_RED = 'rgb(255, 69, 58)';

@@ -37,12 +37,15 @@ import {Row} from './common/Row';
 import {Span} from './common/Span';
 import HorizontalStations from './HorizontalStations';
 
-const TrainStatusBoxPlaceholder = ({message = null}) => {
+const TrainStatusBoxPlaceholder = ({
+  message = '열차 정보를 불러오고 있습니다.',
+  onPress = null,
+}) => {
   return (
-    <Div bg={'white'} flex py40>
+    <Div bg={'white'} flex py40 onPress={onPress}>
       <Row py10>
         <Col />
-        <Col>
+        <Col auto>
           <Span>{message}</Span>
         </Col>
         <Col />
@@ -314,11 +317,13 @@ const TrainStatusBox = ({handleSelectDirection}) => {
       : stationArr([], '시청', '시청', Direction.INNER);
   }, [origin, destination, previewStart, direction]);
 
-  if (!trainPositions || !arrivalTrain) {
-    return <TrainStatusBoxPlaceholder />;
-  }
   if (typeof trainPositions == 'string') {
-    return <TrainStatusBoxPlaceholder message={trainPositions} />;
+    return (
+      <TrainStatusBoxPlaceholder message={trainPositions} onPress={refresh} />
+    );
+  }
+  if (!trainPositions || !arrivalTrain) {
+    return <TrainStatusBoxPlaceholder onPress={refresh} />;
   }
   return (
     <Div pb20 pt10>

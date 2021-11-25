@@ -4,6 +4,7 @@ import {Heart, MessageCircle} from 'react-native-feather';
 import {shallowEqual, useDispatch, useSelector} from 'react-redux';
 import APIS from 'src/modules/apis';
 import {
+  APPLE_RED,
   GRAY_COLOR,
   HEART_COLOR,
   iconSettings,
@@ -37,9 +38,9 @@ const options = {
 
 const RightSwipeActions = () => {
   return (
-    <Div flex={1} bg={'red'} justifyCenter itemsEnd>
-      <Span color={'#40394a'} px={20} medium>
-        포스트 지우기
+    <Div flex={1} bg={APPLE_RED} justifyCenter itemsEnd>
+      <Span color={'white'} px={20} medium>
+        게시물 지우기
       </Span>
     </Div>
   );
@@ -65,7 +66,7 @@ const Sungan = props => {
     userNameBC,
     userProfileImgUrlBC,
     contentBC,
-    deletePost = null
+    deletePost = null,
   } = props;
   const navigation = useNavigation();
   const [liked, setLiked] = useState(didLike);
@@ -111,7 +112,7 @@ const Sungan = props => {
       <Swipeable
         renderRightActions={RightSwipeActions}
         onSwipeableRightOpen={deletePost}>
-        <Div bg={'rgba(255,255,255,.9)'} py5 px20>
+        <Div bg={'white'} py5 px20>
           <Row
             py10
             rounded20

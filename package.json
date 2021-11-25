@@ -67,7 +67,6 @@
     "react-native-snap-carousel": "^3.9.1",
     "react-native-svg": "^12.1.1",
     "react-native-swipe-gestures": "^1.0.5",
-    "react-native-swipeable": "^0.6.0",
     "react-native-webview": "^11.13.0",
     "react-redux": "^7.2.4",
     "redux": "^4.1.0",

@@ -226,24 +226,6 @@ const ProfileScreen = props => {
             <Col />
           </Row>
         </Col>
-        <Col itemsCenter justifyCenter onPress={handleSelectGlobalFilter}>
-          <Row itemsCenter>
-            <Col auto>
-              <Span
-                bold
-                textCenter
-                color={'black'}
-                fontSize={15}
-                numberOfLines={1}
-                ellipsizeMode="head">
-                {globalFiter}
-              </Span>
-            </Col>
-            <Col auto justifyCenter>
-              <ChevronDown {...chevronDownSettings}></ChevronDown>
-            </Col>
-          </Row>
-        </Col>
         <Col itemsEnd>
           <Row itemsEnd>
             <Col itemsEnd onPress={logout}>

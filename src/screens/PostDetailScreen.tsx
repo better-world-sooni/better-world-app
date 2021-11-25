@@ -454,6 +454,7 @@ const PostDetailScreen = props => {
                       isLiked={comment.isLiked}
                       handleLikeOnComment={handleLikeOnComment}
                       handleReplyOnComment={handlePressReplyOnComment}
+                      mine={comment.userInfo.userId === currentUser.id}
                       key={index}>
                       {comment.nestedComments.length > 0 &&
                         [...comment.nestedComments]

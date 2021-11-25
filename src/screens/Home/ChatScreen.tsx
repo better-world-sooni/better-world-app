@@ -7,6 +7,7 @@ import {Span} from 'src/components/common/Span';
 import {ScrollView, View} from 'src/modules/viewComponents';
 import {shallowEqual, useDispatch, useSelector} from 'react-redux';
 import {
+  APPLE_RED,
   GRAY_COLOR,
   HAS_NOTCH,
   MAIN_LINE2,
@@ -135,8 +136,8 @@ const NoChatRooms = () => {
 
 const RightSwipeActions = () => {
   return (
-    <Div flex={1} bg={'red'} justifyCenter itemsEnd>
-      <Span color={'#40394a'} px={20} medium>
+    <Div flex={1} bg={APPLE_RED} justifyCenter itemsEnd>
+      <Span color={'white'} px={20} medium>
         채팅방 나가기
       </Span>
     </Div>
