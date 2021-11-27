@@ -9,7 +9,6 @@ import {
   useApiGETWithToken,
   useApiPOST,
 } from 'src/redux/asyncReducer';
-import { chatLogout } from './chatReducer';
 
 export const useLogin = () => {
   const dispatch = useDispatch();
@@ -94,13 +93,12 @@ export const useLogout = (callback?) => {
   const dispatch = useDispatch();
   return () => {
     dispatch(async () => {
-      await AsyncStorage.removeItem(JWT_TOKEN);
-      dispatch(appActions.logout());
-      dispatch(asyncActions.reset());
-      dispatch(chatLogout())
       if (callback) {
         await callback();
       }
+      await AsyncStorage.removeItem(JWT_TOKEN);
+      dispatch(appActions.logout());
+      dispatch(asyncActions.reset());
     });
   };
 };
@@ -129,7 +127,7 @@ const appSlice = createSlice({
     },
     logout(state) {
       state.isLoggedIn = false;
-      // state.session.user = null;
+      state.session.currentUser = null;
       state.session.token = null;
     },
     updateUserAvatar(state, action) {

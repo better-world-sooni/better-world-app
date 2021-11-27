@@ -23,38 +23,52 @@ const APIS = {
   },
   post: {
     main: () => v1('/post/main'),
+    before: (firstId) => v1(`/post/main/before?firstId=${firstId}`),
+    after: (lastId) => v1(`/post/main/after?lastId=${lastId}`),
     sungan: {
       main: () => v1('/post/sungan'),
-      id: (id) => v1(`/post/sungan/${id}`),
+      delete: (id) => v1(`/post/sungan/${id}`),
       my: () => v1('/post/sungan/my'),
       comments: (id) => v1(`/post/sungan/${id}/comments`),
       comment: {
         main: () => v1(`/post/comment`),
         like: () => v1(`/post/comment/like`),
+        delete: (id) => v1(`/post/comment/${id}`),
         unlike: (id) => v1(`/post/comment/like/${id}`),
-        reply: (id) => v1(`/post/comment/${id}/reply`),
+        reply: {
+          main: (id) => v1(`/post/comment/${id}/reply`),
+          delete: (id) => v1(`/post/comment/reply/${id}`)
+        },
       },
       like: (id) => v1(`/post/likes/${id}`),
     },
     report: {
       main: () => v1('/post/report'),
-      id: (id) => v1(`/post/report/${id}`),
+      delete: (id) => v1(`/post/report/${id}`),
       comments: (id) => v1(`/post/report/${id}/comments`),
       comment: {
         main: () => v1(`/post/report/comment`),
         like: (id) => v1(`/post/report/comment/${id}/like`),
-        reply: () => v1(`/post/report/comment/reply`),
+        delete: (id) => v1(`/post/report/comment/${id}`),
+        reply: {
+          main: () => v1(`/post/report/comment/reply`),
+          delete: (id) => v1(`/post/report/comment/reply/${id}`),
+        } 
       },
       like: (id) => v1(`/post/report/${id}/like`),
     },
     place: {
       main: () => v1('/post/place'),
-      id: (id) => v1(`/post/place/${id}`),
+      delete: (id) => v1(`/post/place/${id}`),
       comments: (id) => v1(`/post/place/${id}/comments`),
       comment: {
         main: () => v1(`/post/place/comment`),
         like: (id) => v1(`/post/place/comment/${id}/like`),
-        reply: () => v1(`/post/place/comment/reply`),
+        delete: (id) => v1(`/post/place/comment/${id}`),
+        reply: {
+          main: () => v1(`/post/place/comment/reply`),
+          delete: (id) => v1(`/post/place/comment/reply/${id}`),
+        }
       },
       like: (id) => v1(`/post/place/${id}/like`),
     },

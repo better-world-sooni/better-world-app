@@ -13,7 +13,6 @@ import {
   GO_COLOR,
   GRAY_COLOR,
   HAS_NOTCH,
-  iconSettings,
   PLACE,
   REPORT,
   SUNGAN,
@@ -23,13 +22,10 @@ import {
   deletePromiseFn,
   getPromiseFn,
   postPromiseFn,
-  useApiSelector,
-  useReloadGET,
 } from 'src/redux/asyncReducer';
 import {RootState} from 'src/redux/rootReducer';
 import {Input, KeyboardAvoidingView, NativeBaseProvider} from 'native-base';
 import {Platform, RefreshControl, SafeAreaView, ScrollView} from 'react-native';
-import {setMainPost} from 'src/redux/feedReducer';
 import {isOkay, postKey} from 'src/modules/utils';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 import PostDetailHeader from 'src/components/PostDetailHeader';
@@ -306,7 +302,7 @@ const PostDetailScreen = props => {
         await unlikeOn(APIS.post.report.comment.like, commentId);
       },
       replyOnComment: async commentId => {
-        await replyOn(APIS.post.report.comment.reply().url, commentId);
+        await replyOn(APIS.post.report.comment.reply.main().url, commentId);
       },
     },
     [SUNGAN]: {
@@ -327,7 +323,7 @@ const PostDetailScreen = props => {
       },
       replyOnComment: async commentId => {
         await replyOnSunganComment(
-          APIS.post.sungan.comment.reply(commentId).url,
+          APIS.post.sungan.comment.reply.main(commentId).url,
         );
       },
     },
@@ -349,7 +345,7 @@ const PostDetailScreen = props => {
         await unlikeOn(APIS.post.place.comment.like, commentId);
       },
       replyOnComment: async commentId => {
-        await replyOn(APIS.post.place.comment.reply().url, commentId);
+        await replyOn(APIS.post.place.comment.reply.main().url, commentId);
       },
     },
   };
@@ -445,6 +441,7 @@ const PostDetailScreen = props => {
                 {comments.map((comment, index) => {
                   return (
                     <Comment
+                      postType={currentPost.type}
                       commentId={comment.id}
                       createdAt={comment.createdAt}
                       userName={comment.userInfo.userName}
@@ -509,7 +506,6 @@ const PostDetailScreen = props => {
                     <Input
                       w={'100%'}
                       fontSize={13}
-                      value={text}
                       variant="unstyled"
                       textContentType={'none'}
                       numberOfLines={1}

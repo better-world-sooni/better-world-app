@@ -299,17 +299,13 @@ const TrainStatusBox = ({handleSelectDirection}) => {
     return isRiding ? '탑승중' : calculateETADiff() || '정보 없음';
   };
   const currentStation = useMemo(() => {
-    return (displayedStation ? displayedStation : '출발지를 설정해주세요')
-      .split('(')
-      .join(' (')
-      .split(' ')
-      .map(word => {
-        return (
-          <Span fontSize={23} bold textCenter key={word}>
-            {word}
-          </Span>
-        );
-      });
+    return (
+      <Span fontSize={23} bold textCenter>
+        {displayedStation
+          ? displayedStation.split('(')[0]
+          : '출발지를 설정해주세요'}
+      </Span>
+    );
   }, [displayedStation]);
   const horizontalStations = useMemo(() => {
     return origin && destination

@@ -1,42 +1,58 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {Col} from 'src/components/common/Col';
 import {Div} from 'src/components/common/Div';
 import {Img} from 'src/components/common/Img';
 import {Row} from 'src/components/common/Row';
 import {Span} from 'src/components/common/Span';
 import {ScrollView, View} from 'src/modules/viewComponents';
-import {shallowEqual, useDispatch, useSelector} from 'react-redux';
-import {
-  APPLE_RED,
-  GRAY_COLOR,
-  HAS_NOTCH,
-  MAIN_LINE2,
-  MY_ROUTE,
-  Selecting,
-} from 'src/modules/constants';
-import {Grid, MessageCircle} from 'react-native-feather';
-import {Input, NativeBaseProvider} from 'native-base';
+import {shallowEqual, useSelector} from 'react-redux';
+import {GRAY_COLOR, HAS_NOTCH} from 'src/modules/constants';
+import {Grid} from 'react-native-feather';
 import {RootState} from 'src/redux/rootReducer';
-import {setGlobalFilter} from 'src/redux/feedReducer';
 import {Header} from 'src/components/Header';
 import {useFocusEffect, useNavigation} from '@react-navigation/core';
 import {NAV_NAMES} from 'src/modules/navNames';
-import {setCurrentChatRoomId} from 'src/redux/chatReducer';
-import {Swipeable} from 'react-native-gesture-handler';
-import useSocketInput from 'src/hooks/useSocketInput';
-import {
-  getPromiseFn,
-  patchPromiseFn,
-  postPromiseFn,
-} from 'src/redux/asyncReducer';
+import {getPromiseFn} from 'src/redux/asyncReducer';
 import APIS from 'src/modules/apis';
 import moment from 'moment';
 import 'moment/locale/ko';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
+import ChatRoomItem from 'src/components/ChatRoomItem';
 moment.locale('ko');
 
 const NoChatRooms = () => {
   const navigation = useNavigation();
+  return (
+    <>
+      <Row
+        itemsCenter
+        justifyCenter
+        pt20
+        pb10
+        onPress={() => navigation.navigate(NAV_NAMES.Metaverse)}>
+        <Col h2 />
+        <Col auto>
+          <Grid
+            height={50}
+            width={50}
+            strokeWidth={0.7}
+            color={GRAY_COLOR}></Grid>
+        </Col>
+        <Col h2></Col>
+      </Row>
+      <Row pb20>
+        <Col></Col>
+        <Col auto>
+          <Span color={GRAY_COLOR}>
+            메타순간 탭에 들어가서 말풍선이 있는 유저를 눌러 보세요!
+          </Span>
+        </Col>
+        <Col></Col>
+      </Row>
+    </>
+  );
+};
+const ChatRoomsLoading = () => {
   return (
     <>
       <Row px20>
@@ -105,42 +121,7 @@ const NoChatRooms = () => {
           </View>
         </SkeletonPlaceholder>
       </Row>
-      <Row
-        itemsCenter
-        justifyCenter
-        pt20
-        pb10
-        onPress={() => navigation.navigate(NAV_NAMES.Metaverse)}>
-        <Col h2 />
-        <Col auto>
-          <Grid
-            height={50}
-            width={50}
-            strokeWidth={0.7}
-            color={GRAY_COLOR}></Grid>
-        </Col>
-        <Col h2></Col>
-      </Row>
-      <Row pb20>
-        <Col></Col>
-        <Col auto>
-          <Span color={GRAY_COLOR}>
-            메타순간 탭에 들어가서 말풍선이 있는 유저를 눌러 보세요!
-          </Span>
-        </Col>
-        <Col></Col>
-      </Row>
     </>
-  );
-};
-
-const RightSwipeActions = () => {
-  return (
-    <Div flex={1} bg={APPLE_RED} justifyCenter itemsEnd>
-      <Span color={'white'} px={20} medium>
-        채팅방 나가기
-      </Span>
-    </Div>
   );
 };
 
@@ -150,25 +131,6 @@ const ChatScreen = () => {
     shallowEqual,
   );
   const [chatRooms, setChatRooms] = useState([]);
-  const navigation = useNavigation();
-
-  const goToChatRoom = roomId => {
-    navigation.navigate(NAV_NAMES.ChatRoom, {currentChatRoomId: roomId});
-  };
-  const exitChatRoom = async roomId => {
-    const res = await patchPromiseFn({
-      url: APIS.chat.chatRoom.user().url,
-      body: {
-        userId: currentUser.id,
-        chatRoomId: roomId,
-      },
-      token,
-    });
-    if (res.ok && res.data?.chatRooms) {
-      setChatRooms(res.data.chatRooms);
-    }
-  };
-
   const fetchNewRoom = async () => {
     const res = await getPromiseFn({
       url: APIS.chat.chatRoom.main(currentUser.id).url,
@@ -189,66 +151,25 @@ const ChatScreen = () => {
       <Div h={HAS_NOTCH ? 44 : 20} />
       <Header bg={'rgba(255,255,255,0)'} />
       <ScrollView flex={1} showsVerticalScrollIndicator={false}>
-        <NativeBaseProvider>
-          <Div relative>
-            <Div pb10>
-              {chatRooms.map(chatRoom => {
-                return (
-                  <Swipeable
-                    key={chatRoom.id}
-                    renderRightActions={RightSwipeActions}
-                    onSwipeableRightOpen={() => exitChatRoom(chatRoom.id)}>
-                    <Row
-                      px20
-                      py10
-                      flex
-                      onPress={() => goToChatRoom(chatRoom.id)}
-                      bgWhite>
-                      <Col auto mr5 relative>
-                        <MessageCircle
-                          color={'black'}
-                          height={50}
-                          width={50}
-                          strokeWidth={1}></MessageCircle>
-                      </Col>
-                      <Col justifyCenter ml10>
-                        <Row>
-                          <Col auto pr10>
-                            <Span fontSize={15} bold>
-                              {chatRoom.title}
-                            </Span>
-                          </Col>
-                          <Col auto>
-                            <Span
-                              color={
-                                GRAY_COLOR
-                              }>{`${chatRoom.userIds.length}명`}</Span>
-                          </Col>
-                        </Row>
-                        <Row w={'100%'}>
-                          <Col auto>
-                            <Span fontSize={15}>
-                              {chatRoom.lastMessage?.text}
-                            </Span>
-                          </Col>
-                          <Col />
-                          <Col auto>
-                            <Span fontSize={13} light>
-                              {moment(
-                                chatRoom.lastMessage?.createdAt,
-                              ).calendar()}
-                            </Span>
-                          </Col>
-                        </Row>
-                      </Col>
-                    </Row>
-                  </Swipeable>
-                );
-              })}
-              {chatRooms.length == 0 && <NoChatRooms />}
-            </Div>
-          </Div>
-        </NativeBaseProvider>
+        <Div pb10>
+          {chatRooms.map(chatRoom => {
+            const chatRoomId = chatRoom.id;
+            const userIds = chatRoom.userIds.length;
+            const createdAt = chatRoom.lastMessage?.createdAt;
+            const title = chatRoom.title;
+            const lastMessage = chatRoom.lastMessage?.text;
+            return (
+              <ChatRoomItem
+                chatRoomId={chatRoomId}
+                userIds={userIds}
+                createdAt={createdAt}
+                title={title}
+                lastMessage={lastMessage}
+              />
+            );
+          })}
+          {chatRooms.length == 0 && <NoChatRooms />}
+        </Div>
       </ScrollView>
     </Div>
   );

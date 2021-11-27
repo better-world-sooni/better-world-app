@@ -99,7 +99,6 @@ const SignInScreen = ({navigation}) => {
               onChangeText={handleChangeEmail}
               onBlur={handleErrEmail}
               error={errEmail && '이메일이 정확한지 확인해 주세요'}
-              value={email}
               autoCapitalize="none"
             />
           </Row>
@@ -107,7 +106,6 @@ const SignInScreen = ({navigation}) => {
             <TextField
               label={'비밀번호'}
               onChangeText={handleChangePassword}
-              value={password}
               password
             />
           </Row>

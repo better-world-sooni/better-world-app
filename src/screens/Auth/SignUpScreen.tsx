@@ -266,7 +266,6 @@ const SignUpSceen = ({navigation}) => {
               onChangeText={handleEmailChange}
               onBlur={handleEmailBlur}
               error={errEmail && '이메일이 정확한지 확인해 주세요'}
-              value={email}
               autoCapitalize="none"
             />
           </Row>
@@ -274,7 +273,6 @@ const SignUpSceen = ({navigation}) => {
             <TextField
               label={'비밀번호'}
               onChangeText={handlePasswordChange}
-              value={password}
               onBlur={handlePasswordBlur}
               error={errPassword && passwordError}
               password
@@ -285,7 +283,6 @@ const SignUpSceen = ({navigation}) => {
               label={'닉네임'}
               onChangeText={handleIdChange}
               error={errId}
-              value={username}
               autoCapitalize="none"
             />
           </Row>

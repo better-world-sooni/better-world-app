@@ -1,6 +1,12 @@
-import React from 'react';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {Heart} from 'react-native-feather';
-import {APPLE_RED, GRAY_COLOR, HEART_COLOR} from 'src/modules/constants';
+import {
+  APPLE_RED,
+  GRAY_COLOR,
+  HEART_COLOR,
+  PLACE,
+  SUNGAN,
+} from 'src/modules/constants';
 import {IMAGES} from 'src/modules/images';
 import {Col} from './common/Col';
 import {Div} from './common/Div';
@@ -10,6 +16,12 @@ import {Span} from './common/Span';
 import moment from 'moment';
 import 'moment/locale/ko';
 import {Swipeable} from 'react-native-gesture-handler';
+import {deletePromiseFn} from 'src/redux/asyncReducer';
+import APIS from 'src/modules/apis';
+import {shallowEqual, useSelector} from 'react-redux';
+import {RootState} from 'src/redux/rootReducer';
+import {isOkay} from 'src/modules/utils';
+import {Alert} from 'react-native';
 moment.locale('ko');
 
 const RightSwipeActions = () => {
@@ -23,6 +35,7 @@ const RightSwipeActions = () => {
 };
 
 const Comment = ({
+  postType,
   createdAt,
   commentId,
   userName,
@@ -34,8 +47,40 @@ const Comment = ({
   handleReplyOnComment,
   children = null,
   mine = false,
-  deleteComment = null,
 }) => {
+  const {token} = useSelector(
+    (root: RootState) => root.app.session,
+    shallowEqual,
+  );
+  const [deleted, setDeleted] = useState(false);
+  const deleteCommentUrl = useMemo(() => {
+    if (postType == SUNGAN) {
+      return APIS.post.sungan.comment.delete(commentId).url;
+    }
+    if (postType == PLACE) {
+      return APIS.post.place.comment.delete(commentId).url;
+    }
+    return APIS.post.report.comment.delete(commentId).url;
+  }, [commentId, postType]);
+  const deleteComment = useCallback(async () => {
+    const res = await deletePromiseFn({
+      url: deleteCommentUrl,
+      body: {},
+      token: token,
+    });
+    if (isOkay(res)) {
+      setDeleted(true);
+      Alert.alert('댓글을 성공적으로 지웠습니다.');
+    } else {
+      Alert.alert('댓글을 지우는데 문제가 발생하였습니다.');
+    }
+  }, [deleteCommentUrl, token]);
+  useEffect(() => {
+    setDeleted(false);
+  }, [postType, commentId]);
+  if (deleted) {
+    return null;
+  }
   if (mine) {
     return (
       <Swipeable

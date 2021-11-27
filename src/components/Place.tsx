@@ -16,7 +16,6 @@ import {IMAGES} from 'src/modules/images';
 import {NAV_NAMES} from 'src/modules/navNames';
 import {isOkay, postKey} from 'src/modules/utils';
 import {deletePromiseFn, postPromiseFn} from 'src/redux/asyncReducer';
-import {setMainPost} from 'src/redux/feedReducer';
 import {RootState} from 'src/redux/rootReducer';
 import {Col} from './common/Col';
 import {Div} from './common/Div';
@@ -109,35 +108,37 @@ export const Place = props => {
   };
 
   if (mine) {
-    <Swipeable
-      renderRightActions={RightSwipeActions}
-      onSwipeableRightOpen={deletePost}>
-      <Div bg={'white'} py5 px20>
-        <Row
-          py10
-          rounded20
-          bgWhite
-          w={'100%'}
-          {...postShadowProp(0.3)}
-          onPress={goToPostDetail}>
-          <Col auto justifyCenter itemsCenter px20>
-            <Span fontSize={70}>{emoji}</Span>
-          </Col>
-          <Col justifyCenter pr20 py10>
-            <Span color={'black'} bold mb5>
-              {place}
-            </Span>
-            <Span
-              color={'black'}
-              medium
-              numberOfLines={NUM_OF_LINES_ON_POST}
-              ellipsizeMode={'tail'}>
-              {text}
-            </Span>
-          </Col>
-        </Row>
-      </Div>
-    </Swipeable>;
+    return (
+      <Swipeable
+        renderRightActions={RightSwipeActions}
+        onSwipeableRightOpen={deletePost}>
+        <Div bg={'white'} py5 px20>
+          <Row
+            py10
+            rounded20
+            bgWhite
+            w={'100%'}
+            {...postShadowProp(0.3)}
+            onPress={goToPostDetail}>
+            <Col auto justifyCenter itemsCenter px20>
+              <Span fontSize={70}>{emoji}</Span>
+            </Col>
+            <Col justifyCenter pr20 py10>
+              <Span color={'black'} bold mb5>
+                {place}
+              </Span>
+              <Span
+                color={'black'}
+                medium
+                numberOfLines={NUM_OF_LINES_ON_POST}
+                ellipsizeMode={'tail'}>
+                {text}
+              </Span>
+            </Col>
+          </Row>
+        </Div>
+      </Swipeable>
+    );
   }
   return (
     <Div bg={'rgba(255,255,255,.9)'} py5 px20>

@@ -1,5 +1,5 @@
 import {useNavigation} from '@react-navigation/core';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Heart, MessageCircle} from 'react-native-feather';
 import {shallowEqual, useDispatch, useSelector} from 'react-redux';
 import APIS from 'src/modules/apis';
@@ -16,7 +16,6 @@ import {IMAGES} from 'src/modules/images';
 import {NAV_NAMES} from 'src/modules/navNames';
 import {isOkay, postKey} from 'src/modules/utils';
 import {deletePromiseFn, postPromiseFn} from 'src/redux/asyncReducer';
-import {setMainPost} from 'src/redux/feedReducer';
 import {RootState} from 'src/redux/rootReducer';
 import {Col} from './common/Col';
 import {Div} from './common/Div';
@@ -137,6 +136,10 @@ const Sungan = props => {
       </Swipeable>
     );
   }
+  useEffect(() => {
+    setLiked(didLike);
+    setLikeCount(likeCnt);
+  }, [postId]);
   return (
     <Div bg={'rgba(255,255,255,.9)'} py5 px20>
       <Row itemsCenter py20 borderTopColor={GRAY_COLOR} borderTopWidth={0.3}>

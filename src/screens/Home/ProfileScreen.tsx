@@ -18,18 +18,15 @@ import {
   useReloadGET,
 } from 'src/redux/asyncReducer';
 import {shallowEqual, useDispatch, useSelector} from 'react-redux';
-import {ChevronDown, LogOut, PlusSquare} from 'react-native-feather';
+import {LogOut, PlusSquare} from 'react-native-feather';
 import {
-  chevronDownSettings,
   GRAY_COLOR,
   HAS_NOTCH,
   iconSettings,
   MAIN_LINE2,
   MY_ROUTE,
-  REPORT,
   Selecting,
   shortenStations,
-  SUNGAN,
 } from 'src/modules/constants';
 import {appActions, useLogout} from 'src/redux/appReducer';
 import {ScrollSelector} from 'src/components/ScrollSelector';
@@ -37,11 +34,8 @@ import {setGlobalFilter} from 'src/redux/feedReducer';
 import {RootState} from 'src/redux/rootReducer';
 import {toggleReceiveStationPush} from 'src/redux/routeReducer';
 import {Alert, RefreshControl, Switch} from 'react-native';
-import Sungan from 'src/components/Sungan';
-import Report from 'src/components/Report';
-import Place from 'src/components/Place';
 import AvatarSelect from 'src/components/AvatarSelect';
-import {isOkay, postKey, stationArr} from 'src/modules/utils';
+import {isOkay, stationArr} from 'src/modules/utils';
 import ODSelect from 'src/components/ODSelect';
 import Post from 'src/components/Post';
 
@@ -127,29 +121,6 @@ const ProfileScreen = props => {
   const pullToRefresh = useCallback(() => {
     apiGET(APIS.post.sungan.my());
   }, [apiGET]);
-  const filterPostsByStation = useCallback(
-    key => {
-      const post = myPosts[key];
-      if (post.type === REPORT) {
-        return true;
-      } else if (!post.station?.name) {
-        return true;
-      } else if (
-        globalFiter === MY_ROUTE &&
-        !MY_ROUTE.includes(post.station.name)
-      ) {
-        return false;
-      } else if (
-        globalFiter !== MAIN_LINE2 &&
-        globalFiter !== post.station.name
-      ) {
-        return false;
-      } else {
-        return true;
-      }
-    },
-    [globalFiter, myPosts],
-  );
   const handleReturnSelectAvatar = useCallback(async () => {
     setSelectingAvatar(false);
     if (character) {
@@ -173,10 +144,6 @@ const ProfileScreen = props => {
   const handleReturnSelectOD = () => {
     setSelectingOD(false);
   };
-  const handleSelectGlobalFilter = useCallback(
-    () => setSelecting(Selecting.GLOBAL_FILTER),
-    [],
-  );
   const handleSelectDone = useCallback(() => setSelecting(Selecting.NONE), []);
   const handleSelectAvatar = useCallback(() => setSelectingAvatar(true), []);
   const handleSelectOD = useCallback(() => setSelectingOD(true), []);
@@ -197,12 +164,13 @@ const ProfileScreen = props => {
     setLoading(false);
   }, []);
 
-  if (loading)
+  if (loading) {
     return (
       <Div flex itemsCenter justifyCenter>
         <Span>로딩...</Span>
       </Div>
     );
+  }
 
   return (
     <Div flex backgroundColor={'white'}>
@@ -226,12 +194,8 @@ const ProfileScreen = props => {
             <Col />
           </Row>
         </Col>
-        <Col itemsEnd>
-          <Row itemsEnd>
-            <Col itemsEnd onPress={logout}>
-              <LogOut {...iconSettings} color={'black'}></LogOut>
-            </Col>
-          </Row>
+        <Col itemsEnd onPress={logout}>
+          <LogOut {...iconSettings} color={'black'}></LogOut>
         </Col>
       </Row>
       <FlatList

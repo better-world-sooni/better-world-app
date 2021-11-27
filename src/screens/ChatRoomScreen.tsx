@@ -73,6 +73,7 @@ const ChatRoomScreen = props => {
       Alert.alert('네트워크가 불안정하여 메세지를 보내지 못했습니다');
     }
   };
+  const goBack = useCallback(() => navigation.goBack(), []);
   useEffect(() => {
     if (currentChatRoomId) {
       fetchNewRoom();
@@ -104,6 +105,7 @@ const ChatRoomScreen = props => {
   useEffect(() => {
     if (chatSocket) {
       chatSocket.on('receiveMessage', receiveMessage);
+      chatSocket.on('updateRead');
       return () => {
         chatSocket.off('receiveMessage');
       };
@@ -115,7 +117,7 @@ const ChatRoomScreen = props => {
       <Div h={HAS_NOTCH ? 44 : 20} />
       <Div bgWhite flex={1}>
         <Row justifyCenter py20>
-          <Col auto px10 onPress={() => navigation.goBack()}>
+          <Col auto px10 onPress={goBack}>
             <ChevronLeft {...iconSettings}></ChevronLeft>
           </Col>
           <Col itemsCenter>

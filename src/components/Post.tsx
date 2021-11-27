@@ -1,10 +1,16 @@
-import React, {useCallback} from 'react';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {Alert} from 'react-native';
 import {shallowEqual, useSelector} from 'react-redux';
 import APIS from 'src/modules/apis';
-import {MAIN_LINE2, MY_ROUTE, REPORT, SUNGAN} from 'src/modules/constants';
-import {isOkay, stationArr} from 'src/modules/utils';
-import {deletePromiseFn, useReloadGET} from 'src/redux/asyncReducer';
+import {
+  MAIN_LINE2,
+  MY_ROUTE,
+  PLACE,
+  REPORT,
+  SUNGAN,
+} from 'src/modules/constants';
+import {isOkay} from 'src/modules/utils';
+import {deletePromiseFn} from 'src/redux/asyncReducer';
 import {RootState} from 'src/redux/rootReducer';
 import Place from './Place';
 import Report from './Report';
@@ -39,47 +45,37 @@ const Post = ({
     (root: RootState) => root.route.route,
     shallowEqual,
   );
-  const apiGET = useReloadGET();
-  const deleteSungan = useCallback(async () => {
-    const res = await deletePromiseFn({
-      url: APIS.post.sungan.id(postId).url,
-      body: {},
-      token: token,
-    });
-    if (isOkay(res)) {
-      apiGET(APIS.post.sungan.my());
-      Alert.alert('포스트를 성공적으로 지웠습니다.');
-    } else {
-      Alert.alert('포스트를 지우는데 문제가 발생하였습니다.');
+  const [deleted, setDeleted] = useState(false);
+  const deletePostUrl = useMemo(() => {
+    if (type == SUNGAN) {
+      return APIS.post.sungan.delete(postId).url;
     }
+    if (type == PLACE) {
+      return APIS.post.place.delete(postId).url;
+    }
+    return APIS.post.place.delete(postId).url;
   }, [postId, type]);
-  const deletePlace = useCallback(async () => {
+  const deletePost = useCallback(async () => {
     const res = await deletePromiseFn({
-      url: APIS.post.place.id(postId).url,
+      url: deletePostUrl,
       body: {},
       token: token,
     });
     if (isOkay(res)) {
-      apiGET(APIS.post.sungan.my());
+      setDeleted(true);
       Alert.alert('포스트를 성공적으로 지웠습니다.');
     } else {
       Alert.alert('포스트를 지우는데 문제가 발생하였습니다.');
     }
-  }, [postId, type]);
-  const deleteReport = useCallback(async () => {
-    const res = await deletePromiseFn({
-      url: APIS.post.place.id(postId).url,
-      body: {},
-      token: token,
-    });
-    if (isOkay(res)) {
-      apiGET(APIS.post.sungan.my());
-      Alert.alert('포스트를 성공적으로 지웠습니다.');
-    } else {
-      Alert.alert('포스트를 지우는데 문제가 발생하였습니다.');
-    }
+  }, [deletePostUrl, token]);
+
+  useEffect(() => {
+    setDeleted(false);
   }, [postId, type]);
 
+  if (deleted) {
+    return null;
+  }
   if (type == REPORT) {
     return (
       <Report
@@ -95,7 +91,7 @@ const Post = ({
         userNameBC={userNameBC}
         userProfileImgUrlBC={userProfileImgUrlBC}
         contentBC={contentBC}
-        deletePost={deleteReport}
+        deletePost={deletePost}
       />
     );
   }
@@ -125,7 +121,7 @@ const Post = ({
         userNameBC={userNameBC}
         userProfileImgUrlBC={userProfileImgUrlBC}
         contentBC={contentBC}
-        deletePost={deleteSungan}
+        deletePost={deletePost}
       />
     );
   }
@@ -145,7 +141,7 @@ const Post = ({
       userNameBC={userNameBC}
       userProfileImgUrlBC={userProfileImgUrlBC}
       contentBC={contentBC}
-      deletePost={deletePlace}
+      deletePost={deletePost}
     />
   );
 };
