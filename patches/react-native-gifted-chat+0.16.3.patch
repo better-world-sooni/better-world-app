@@ -1,3 +1,62 @@
+diff --git a/node_modules/react-native-gifted-chat/lib/Bubble.js b/node_modules/react-native-gifted-chat/lib/Bubble.js
+index 63bde0b..0478569 100644
+--- a/node_modules/react-native-gifted-chat/lib/Bubble.js
++++ b/node_modules/react-native-gifted-chat/lib/Bubble.js
+@@ -12,13 +12,13 @@ import { StylePropType, isSameUser, isSameDay } from './utils';
+ const styles = {
+     left: StyleSheet.create({
+         container: {
+-            flex: 1,
++            maxWidth: '70%',
+             alignItems: 'flex-start',
+         },
+         wrapper: {
+             borderRadius: 15,
+             backgroundColor: Color.leftBubbleBackground,
+-            marginRight: 60,
++            marginRight: 5,
+             minHeight: 20,
+             justifyContent: 'flex-end',
+         },
+@@ -35,13 +35,13 @@ const styles = {
+     }),
+     right: StyleSheet.create({
+         container: {
+-            flex: 1,
++            maxWidth: '70%',
+             alignItems: 'flex-end',
+         },
+         wrapper: {
+             borderRadius: 15,
+-            backgroundColor: Color.defaultBlue,
+-            marginLeft: 60,
++            backgroundColor: Color.line2Color,
++            marginLeft: 5,
+             minHeight: 20,
+             justifyContent: 'flex-end',
+         },
+diff --git a/node_modules/react-native-gifted-chat/lib/Color.d.ts b/node_modules/react-native-gifted-chat/lib/Color.d.ts
+index aa7fb72..e0308b5 100644
+--- a/node_modules/react-native-gifted-chat/lib/Color.d.ts
++++ b/node_modules/react-native-gifted-chat/lib/Color.d.ts
+@@ -1,5 +1,6 @@
+ declare const _default: {
+     defaultColor: string;
++    line2Color: string;
+     backgroundTransparent: string;
+     defaultBlue: string;
+     leftBubbleBackground: string;
+diff --git a/node_modules/react-native-gifted-chat/lib/Color.js b/node_modules/react-native-gifted-chat/lib/Color.js
+index 8757a72..3dc0e62 100644
+--- a/node_modules/react-native-gifted-chat/lib/Color.js
++++ b/node_modules/react-native-gifted-chat/lib/Color.js
+@@ -1,5 +1,6 @@
+ export default {
+     defaultColor: '#b2b2b2',
++    line2Color: 'rgb(51, 162, 60)',
+     backgroundTransparent: 'transparent',
+     defaultBlue: '#0084ff',
+     leftBubbleBackground: '#f0f0f0',
 diff --git a/node_modules/react-native-gifted-chat/lib/GiftedAvatar.js b/node_modules/react-native-gifted-chat/lib/GiftedAvatar.js
 index 266857c..f33830b 100644
 --- a/node_modules/react-native-gifted-chat/lib/GiftedAvatar.js
@@ -19,6 +78,116 @@ index 266857c..f33830b 100644
              }
              else if (typeof user.avatar === 'number') {
                  return (<Image source={user.avatar} style={[styles.avatarStyle, this.props.avatarStyle]}/>);
+diff --git a/node_modules/react-native-gifted-chat/lib/GiftedChat.d.ts b/node_modules/react-native-gifted-chat/lib/GiftedChat.d.ts
+index 5e2f61c..8876ef3 100644
+--- a/node_modules/react-native-gifted-chat/lib/GiftedChat.d.ts
++++ b/node_modules/react-native-gifted-chat/lib/GiftedChat.d.ts
+@@ -116,6 +116,7 @@ declare class GiftedChat<TMessage extends IMessage = IMessage> extends React.Com
+         getLocale: PropTypes.Requireable<(...args: any[]) => any>;
+     };
+     static defaultProps: {
++        userCount: number;
+         messages: never[];
+         messagesContainerStyle: undefined;
+         text: undefined;
+diff --git a/node_modules/react-native-gifted-chat/lib/GiftedChat.js b/node_modules/react-native-gifted-chat/lib/GiftedChat.js
+index 73ba4ee..6f61eca 100644
+--- a/node_modules/react-native-gifted-chat/lib/GiftedChat.js
++++ b/node_modules/react-native-gifted-chat/lib/GiftedChat.js
+@@ -32,7 +32,7 @@ class GiftedChat extends React.Component {
+         this._bottomOffset = 0;
+         this._maxHeight = undefined;
+         this._isFirstLayout = true;
+-        this._locale = 'en';
++        this._locale = 'ko';
+         this.invertibleScrollViewProps = undefined;
+         this._actionSheetRef = undefined;
+         this._messageContainerRef = React.createRef();
+diff --git a/node_modules/react-native-gifted-chat/lib/Message.d.ts b/node_modules/react-native-gifted-chat/lib/Message.d.ts
+index 476df8f..f213e38 100644
+--- a/node_modules/react-native-gifted-chat/lib/Message.d.ts
++++ b/node_modules/react-native-gifted-chat/lib/Message.d.ts
+@@ -24,6 +24,7 @@ export interface MessageProps<TMessage extends IMessage> {
+ }
+ export default class Message<TMessage extends IMessage = IMessage> extends React.Component<MessageProps<TMessage>> {
+     static defaultProps: {
++        userCount: number;
+         renderAvatar: undefined;
+         renderBubble: null;
+         renderDay: null;
+diff --git a/node_modules/react-native-gifted-chat/lib/Message.js b/node_modules/react-native-gifted-chat/lib/Message.js
+index 2490081..7aa7cba 100644
+--- a/node_modules/react-native-gifted-chat/lib/Message.js
++++ b/node_modules/react-native-gifted-chat/lib/Message.js
+@@ -1,11 +1,13 @@
+ import PropTypes from 'prop-types';
+ import React from 'react';
+-import { View, StyleSheet } from 'react-native';
++import { View, StyleSheet, Text } from 'react-native';
+ import Avatar from './Avatar';
+ import Bubble from './Bubble';
+ import SystemMessage from './SystemMessage';
+ import Day from './Day';
+ import { StylePropType, isSameUser } from './utils';
++import { LINE2_COLOR } from 'react-native-gifted-chat/lib/Constant';
++import Color from 'react-native-gifted-chat/lib/Color';
+ const styles = {
+     left: StyleSheet.create({
+         container: {
+@@ -46,6 +48,7 @@ export default class Message extends React.Component {
+             next.audio !== current.audio ||
+             previousMessage !== nextPropsPreviousMessage ||
+             nextMessage !== nextPropsMessage ||
++            this.props.userCount - next.readUserIds.length !== this.props.userCount - current.readUserIds.length ||
+             shouldUpdate);
+     }
+     renderDay() {
+@@ -66,6 +69,23 @@ export default class Message extends React.Component {
+         // @ts-ignore
+         return <Bubble {...props}/>;
+     }
++    renderUnreadCount() {
++        const unreadCount = this.props.userCount - this.props.currentMessage.readUserIds.length
++        const textStyleProps = {fontSize: 12, color: Color.line2Color}
++        if(unreadCount == 0){
++            return null
++        }
++        if(this.props.position === 'left'){
++            return (
++                <View style={{flex: 1}}><Text style={textStyleProps}>{unreadCount}</Text></View>
++            )
++        } 
++        if(this.props.position === 'right'){
++            return(
++                <Text style={textStyleProps}>{unreadCount}</Text>
++            )
++        }
++    }
+     renderSystemMessage() {
+         const { containerStyle, ...props } = this.props;
+         if (this.props.renderSystemMessage) {
+@@ -104,7 +124,9 @@ export default class Message extends React.Component {
+                 containerStyle && containerStyle[position],
+             ]}>
+               {this.props.position === 'left' ? this.renderAvatar() : null}
++              {this.props.position === 'right' ? this.renderUnreadCount() : null}
+               {this.renderBubble()}
++              {this.props.position === 'left' ? this.renderUnreadCount() : null}
+               {this.props.position === 'right' ? this.renderAvatar() : null}
+             </View>)}
+         </View>);
+diff --git a/node_modules/react-native-gifted-chat/lib/MessageContainer.d.ts b/node_modules/react-native-gifted-chat/lib/MessageContainer.d.ts
+index 15d0dcd..2cf2e86 100644
+--- a/node_modules/react-native-gifted-chat/lib/MessageContainer.d.ts
++++ b/node_modules/react-native-gifted-chat/lib/MessageContainer.d.ts
+@@ -33,6 +33,7 @@ interface State {
+ }
+ export default class MessageContainer<TMessage extends IMessage = IMessage> extends React.PureComponent<MessageContainerProps<TMessage>, State> {
+     static defaultProps: {
++        userCount: number;
+         messages: never[];
+         user: {};
+         isTyping: boolean;
 diff --git a/node_modules/react-native-gifted-chat/lib/MessageContainer.js b/node_modules/react-native-gifted-chat/lib/MessageContainer.js
 index 193772a..4e80378 100644
 --- a/node_modules/react-native-gifted-chat/lib/MessageContainer.js

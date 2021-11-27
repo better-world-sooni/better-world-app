@@ -1,4 +1,3 @@
-import { useCallback } from 'react';
 import { shallowEqual, useSelector } from 'react-redux';
 import { Socket } from 'socket.io-client';
 import { RootState } from 'src/redux/rootReducer';
@@ -8,7 +7,7 @@ export default function useSocketInput() {
         (root: RootState) => (root.app.session),
         shallowEqual,
     );
-    const sendChatSocketMessage = useCallback(
+    const sendChatSocketMessage = 
         (chatSocket: Socket,  action: string, payload: any) => {
             if (currentUser.id && chatSocket) {
                 const withDefaultParams = {
@@ -17,12 +16,9 @@ export default function useSocketInput() {
                 };
                 chatSocket.emit(action, withDefaultParams);
             } else {
-                throw Error('Network Error while sending socket message!');
+                throw new Error('인터넷 연결을 체크해 주세요.');
             }
-        },
-        [currentUser?.id]
-    );
-
+        }
     return sendChatSocketMessage;
 }
 

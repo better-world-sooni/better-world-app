@@ -1,10 +1,9 @@
 import {useNavigation} from '@react-navigation/core';
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useLayoutEffect, useState} from 'react';
 import {Alert} from 'react-native';
-import {ChevronLeft, ChevronsRight} from 'react-native-feather';
+import {ChevronLeft} from 'react-native-feather';
 import {GiftedChat} from 'react-native-gifted-chat';
-import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
-import {shallowEqual, useDispatch, useSelector} from 'react-redux';
+import {shallowEqual, useSelector} from 'react-redux';
 import {Manager} from 'socket.io-client';
 import {Col} from 'src/components/common/Col';
 import {Div} from 'src/components/common/Div';
@@ -13,7 +12,6 @@ import {Span} from 'src/components/common/Span';
 import useSocketInput from 'src/hooks/useSocketInput';
 import APIS from 'src/modules/apis';
 import {HAS_NOTCH, iconSettings, WS_URL} from 'src/modules/constants';
-import {View} from 'src/modules/viewComponents';
 import {getPromiseFn} from 'src/redux/asyncReducer';
 import {RootState} from 'src/redux/rootReducer';
 
@@ -47,7 +45,24 @@ const ChatRoomScreen = props => {
     setMetasunganUser(loginParams.user);
   }, []);
   const receiveMessage = receiveMessageParams => {
-    setMessages([receiveMessageParams.message, ...messages]);
+    const newMessage = receiveMessageParams.message;
+    setMessages([newMessage, ...messages]);
+    if (chatSocket) {
+      sendSocketMessage(chatSocket, 'readMessage', {
+        chatRoomId: currentChatRoomId,
+        messageId: newMessage._id,
+      });
+    }
+  };
+  const enterChatRoom = enterChatRoomParams => {
+    console.log(
+      'enterChatRoomParams',
+      enterChatRoomParams.chatRoom.messages[1],
+    );
+    setMessages(enterChatRoomParams.chatRoom.messages);
+  };
+  const readMessage = readMessageParams => {
+    setMessages(readMessageParams.chatRoom.messages);
   };
   const fetchNewRoom = async () => {
     const res = await getPromiseFn({
@@ -74,28 +89,32 @@ const ChatRoomScreen = props => {
     }
   };
   const goBack = useCallback(() => navigation.goBack(), []);
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (currentChatRoomId) {
+      console.log('useLayoutEffect');
       fetchNewRoom();
       const manager = new Manager(WS_URL, {
         reconnectionDelayMax: 5000,
-        forceNew: true,
       });
       const newSocket = manager.socket('/chat', {
         auth: {
           token: token,
         },
       });
+
+      newSocket.on('login', login);
+      newSocket.on('disconnect', () => setChatSocket(null));
+      newSocket.on('enterChatRoom', enterChatRoom);
+      newSocket.on('readMessage', readMessage);
       sendSocketMessage(newSocket, 'enterChatRoom', {
         chatRoomId: currentChatRoomId,
       });
-      newSocket.on('login', login);
-      newSocket.on('disconnect', () => setChatSocket(null));
-
       setChatSocket(newSocket);
       return () => {
         newSocket.off('login');
         newSocket.off('disconnect');
+        newSocket.off('enterChatRoom');
+        newSocket.off('readMessage');
         newSocket.close();
         setChatSocket(null);
       };
@@ -105,7 +124,6 @@ const ChatRoomScreen = props => {
   useEffect(() => {
     if (chatSocket) {
       chatSocket.on('receiveMessage', receiveMessage);
-      chatSocket.on('updateRead');
       return () => {
         chatSocket.off('receiveMessage');
       };
@@ -131,6 +149,7 @@ const ChatRoomScreen = props => {
         </Row>
         {metasunganUser._id && (
           <GiftedChat
+            userCount={users.length}
             placeholder={'메세지를 입력하세요'}
             renderAvatarOnTop
             renderUsernameOnMessage

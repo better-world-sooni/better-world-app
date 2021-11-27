@@ -41,7 +41,7 @@ const ChatRoomItem = ({chatRoomId, userIds, title, createdAt, lastMessage}) => {
       const calendar = moment(createdAt).calendar();
       const calendarArr = calendar.split(' ');
       if (calendarArr[0] == '오늘') {
-        return calendar[1] + ' ' + calendar[2];
+        return calendarArr[1] + ' ' + calendarArr[2];
       }
       if (calendarArr[0] == '어제') {
         return calendarArr[0];
