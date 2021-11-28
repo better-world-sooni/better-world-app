@@ -35,6 +35,7 @@ import {View} from 'src/modules/viewComponents';
 import moment from 'moment';
 import 'moment/locale/ko';
 import NestedComment from 'src/components/NestedComment';
+import {Header} from 'src/components/Header';
 moment.locale('ko');
 
 const options = {
@@ -412,11 +413,7 @@ const PostDetailScreen = props => {
   return (
     <NativeBaseProvider>
       <Div flex bg={'white'}>
-        <TopHeader
-          route={useNavigation}
-          title={'게시물'}
-          headerColor={'white'}
-        />
+        <Header bg={'white'} headerTitle={'게시물'} noButtons hasGoBack />
         <KeyboardAvoidingView
           style={{flex: 1, display: 'flex'}}
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>

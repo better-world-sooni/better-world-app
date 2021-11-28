@@ -5,6 +5,7 @@ import APIS from 'src/modules/apis';
 import {
   getPromiseFn,
   postPromiseFn,
+  useApiPOST,
   useApiSelector,
   useReloadGET,
 } from 'src/redux/asyncReducer';
@@ -36,6 +37,77 @@ import FeedChecked from 'src/components/FeedChecked';
 import Post from 'src/components/Post';
 import {useNavigation} from '@react-navigation/core';
 import {useScrollToTop} from '@react-navigation/native';
+import {Loader} from 'react-native-feather';
+import {Row} from 'src/components/common/Row';
+import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
+import {View} from 'src/modules/viewComponents';
+
+const PostsLoading = () => {
+  return (
+    <>
+      <Row px20>
+        <SkeletonPlaceholder>
+          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <View
+              style={{
+                width: 25,
+                height: 25,
+                borderRadius: 50,
+                marginTop: 10,
+              }}
+            />
+            <View style={{marginLeft: 10}}>
+              <View
+                style={{
+                  width: 80,
+                  height: 15,
+                  borderRadius: 4,
+                  marginTop: 10,
+                }}
+              />
+            </View>
+          </View>
+          <View
+            style={{
+              flexDirection: 'column',
+              alignItems: 'flex-start',
+              marginTop: 10,
+            }}>
+            <View
+              style={{
+                width: 350,
+                height: 100,
+                borderRadius: 5,
+                marginTop: 10,
+                marginBottom: 10,
+              }}
+            />
+          </View>
+          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <View
+              style={{
+                width: 40,
+                height: 15,
+                borderRadius: 4,
+                marginTop: 10,
+              }}
+            />
+          </View>
+          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <View
+              style={{
+                width: 200,
+                height: 15,
+                borderRadius: 4,
+                marginTop: 10,
+              }}
+            />
+          </View>
+        </SkeletonPlaceholder>
+      </Row>
+    </>
+  );
+};
 
 const HomeScreen = props => {
   const {data: mainResponse, isLoading: mainLoading} = useApiSelector(
@@ -59,6 +131,7 @@ const HomeScreen = props => {
     (root: RootState) => root.feed,
     shallowEqual,
   );
+  const [addPostLoading, setAddPostLoading] = useState(false);
   const [posts, setPosts] = useState([]);
   const [selectorLoading, setSelectorLoading] = useState(false);
   const [selecting, setSelecting] = useState(Selecting.NONE);
@@ -66,11 +139,35 @@ const HomeScreen = props => {
     return stationArr([], '시청', '충정로(경기대입구)', Direction.CW);
   }, []);
   const apiGET = useReloadGET();
+  const apiPOST = useApiPOST();
   const dispatch = useDispatch();
   const scrollRef = useRef(null);
   const pullToRefresh = useCallback(() => {
-    apiGET(APIS.post.main());
+    apiPOST(APIS.post.main(), {
+      size: 30,
+    });
   }, [origin]);
+  const addMorePostsOnRefesh = async () => {
+    if (!addPostLoading) {
+      setAddPostLoading(true);
+      console.log(
+        'posts[posts.length - 1].post.createdAt',
+        posts[posts.length - 1].post.createdAt,
+      );
+      const res = await postPromiseFn({
+        url: APIS.post.main().url,
+        body: {
+          size: 30,
+          lastCreatedAt: posts[posts.length - 1].post.createdAt,
+        },
+        token,
+      });
+      if (isOkay(res) && res.data?.data) {
+        setPosts([...posts, ...res.data.data]);
+      }
+      setAddPostLoading(false);
+    }
+  };
 
   const exchangeOD = useCallback(() => {
     if (origin && destination) {
@@ -85,7 +182,9 @@ const HomeScreen = props => {
       apiGET(APIS.route.starred());
     }
     if (posts.length == 0) {
-      apiGET(APIS.post.main());
+      apiPOST(APIS.post.main(), {
+        size: 20,
+      });
     }
   }, []);
   useEffect(() => {
@@ -188,6 +287,7 @@ const HomeScreen = props => {
         <FlatList
           ref={scrollRef}
           showsVerticalScrollIndicator={false}
+          onEndReached={addMorePostsOnRefesh}
           ListHeaderComponent={
             <>
               <Div bg={'rgba(255,255,255,.9)'}>
@@ -202,7 +302,9 @@ const HomeScreen = props => {
               <TrainStatusBox handleSelectDirection={handleSelectDirection} />
             </>
           }
-          ListFooterComponent={<FeedChecked />}
+          ListFooterComponent={
+            addPostLoading ? <PostsLoading /> : <FeedChecked />
+          }
           data={posts}
           renderItem={({item, index}) => {
             const type = item.type;
