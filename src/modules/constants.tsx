@@ -634,8 +634,8 @@ export const postShadowProp = opacity => {
   };
 };
 
-// export const WS_URL = 'https://ws.metasgid.com';
-export const WS_URL = 'http://localhost:8000';
+export const WS_URL = 'https://ws.metasgid.com';
+// export const WS_URL = 'http://localhost:8000';
 
 export enum ChannelFilter {
   ALL = 0,

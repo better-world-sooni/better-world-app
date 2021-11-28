@@ -7,7 +7,7 @@ import {Span} from 'src/components/common/Span';
 import {ScrollView, View} from 'src/modules/viewComponents';
 import {shallowEqual, useSelector} from 'react-redux';
 import {GRAY_COLOR, HAS_NOTCH} from 'src/modules/constants';
-import {Grid} from 'react-native-feather';
+import {Grid, MessageCircle} from 'react-native-feather';
 import {RootState} from 'src/redux/rootReducer';
 import {Header} from 'src/components/Header';
 import {useFocusEffect, useNavigation} from '@react-navigation/core';
@@ -126,14 +126,14 @@ const ChatRoomsLoading = () => {
 };
 
 const ChatScreen = () => {
-  const {currentUser, token} = useSelector(
+  const {token} = useSelector(
     (root: RootState) => root.app.session,
     shallowEqual,
   );
   const [chatRooms, setChatRooms] = useState([]);
   const fetchNewRoom = async () => {
     const res = await getPromiseFn({
-      url: APIS.chat.chatRoom.main(currentUser.id).url,
+      url: APIS.chat.chatRoom.main().url,
       token,
     });
     if (res?.data) {
@@ -149,7 +149,7 @@ const ChatScreen = () => {
   return (
     <Div flex bg={'white'}>
       <Div h={HAS_NOTCH ? 44 : 20} />
-      <Header bg={'rgba(255,255,255,0)'} />
+      <Header bg={'rgba(255,255,255,0)'} headerTitle={'채팅'} />
       <ScrollView flex={1} showsVerticalScrollIndicator={false}>
         <Div pb10>
           {chatRooms.map(chatRoom => {
@@ -158,13 +158,23 @@ const ChatScreen = () => {
             const createdAt = chatRoom.lastMessage?.createdAt;
             const title = chatRoom.title;
             const lastMessage = chatRoom.lastMessage?.text;
+            const unreadMessageCount = chatRoom.unreadMessageCount;
+            const firstUserAvatar = chatRoom.avatars[1]?.avatar;
+            const secondUserAvatar = chatRoom.avatars[2]?.avatar;
+            const thirdUserAvatar = chatRoom.avatars[3]?.avatar;
+            const fourthUserAvatar = chatRoom.avatars[4]?.avatar;
             return (
               <ChatRoomItem
                 chatRoomId={chatRoomId}
                 userIds={userIds}
                 createdAt={createdAt}
                 title={title}
+                unreadMessageCount={unreadMessageCount}
                 lastMessage={lastMessage}
+                firstUserAvatar={firstUserAvatar}
+                secondUserAvatar={secondUserAvatar}
+                thirdUserAvatar={thirdUserAvatar}
+                fourthUserAvatar={fourthUserAvatar}
               />
             );
           })}

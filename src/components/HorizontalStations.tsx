@@ -2,7 +2,11 @@ import React, {useCallback, useRef, useEffect} from 'react';
 import {Alert, Dimensions, ScrollView} from 'react-native';
 import {shallowEqual, useDispatch, useSelector} from 'react-redux';
 import APIS from 'src/modules/apis';
-import {LINE2_Linked_List, shortenStations} from 'src/modules/constants';
+import {
+  Direction,
+  LINE2_Linked_List,
+  shortenStations,
+} from 'src/modules/constants';
 import {stationArr} from 'src/modules/utils';
 import {deletePromiseFn, postPromiseFn} from 'src/redux/asyncReducer';
 import {RootState} from 'src/redux/rootReducer';
@@ -54,14 +58,11 @@ const HorzontalStations = ({horizontalStations, trainPositions}) => {
             url: APIS.route.notification().url,
             body: {
               trainNo: trainAtStation?.trainNo,
-              stations: shortenStations(
-                stationArr(
-                  [],
-                  LINE2_Linked_List.get(trainAtStation.statnNm).next,
-                  stations[stations.length - 1],
-                  direction,
-                ),
-              ),
+              stations: [
+                LINE2_Linked_List.get(destination)[
+                  direction == Direction.INNER ? 'next' : 'prev'
+                ].split('(')[0],
+              ],
             },
             token: token,
           });

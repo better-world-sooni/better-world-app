@@ -64,7 +64,7 @@ const ChatRoomScreen = props => {
   const readMessage = readMessageParams => {
     setMessages(readMessageParams.chatRoom.messages);
   };
-  const fetchNewRoom = async () => {
+  const fetchNewRoom = async callback => {
     const res = await getPromiseFn({
       url: APIS.chat.chat(currentChatRoomId).url,
       token,
@@ -74,6 +74,7 @@ const ChatRoomScreen = props => {
       setTitle(title);
       setMessages(messages);
       setUsers(userIds);
+      callback();
     }
   };
   const onSend = (messages = []) => {
@@ -91,8 +92,6 @@ const ChatRoomScreen = props => {
   const goBack = useCallback(() => navigation.goBack(), []);
   useLayoutEffect(() => {
     if (currentChatRoomId) {
-      console.log('useLayoutEffect');
-      fetchNewRoom();
       const manager = new Manager(WS_URL, {
         reconnectionDelayMax: 5000,
       });
@@ -101,14 +100,15 @@ const ChatRoomScreen = props => {
           token: token,
         },
       });
-
+      fetchNewRoom(() => {
+        sendSocketMessage(newSocket, 'enterChatRoom', {
+          chatRoomId: currentChatRoomId,
+        });
+      });
       newSocket.on('login', login);
       newSocket.on('disconnect', () => setChatSocket(null));
       newSocket.on('enterChatRoom', enterChatRoom);
       newSocket.on('readMessage', readMessage);
-      sendSocketMessage(newSocket, 'enterChatRoom', {
-        chatRoomId: currentChatRoomId,
-      });
       setChatSocket(newSocket);
       return () => {
         newSocket.off('login');

@@ -20,9 +20,11 @@ import {
 import {shallowEqual, useDispatch, useSelector} from 'react-redux';
 import {LogOut, PlusSquare} from 'react-native-feather';
 import {
+  Direction,
   GRAY_COLOR,
   HAS_NOTCH,
   iconSettings,
+  LINE2_Linked_List,
   MAIN_LINE2,
   MY_ROUTE,
   Selecting,
@@ -50,7 +52,7 @@ const ProfileScreen = props => {
   const {
     route: {
       receiveStationPush,
-      route: {stations, direction},
+      route: {stations, direction, destination},
       selectedTrain,
     },
     feed: {globalFiter},
@@ -88,19 +90,16 @@ const ProfileScreen = props => {
       }
     } else {
       dispatch(toggleReceiveStationPush());
-      if (selectedTrain) {
+      if (selectedTrain && destination) {
         const res = await postPromiseFn({
           url: APIS.route.notification().url,
           body: {
             trainNo: selectedTrain?.trainNo,
-            stations: shortenStations(
-              stationArr(
-                [],
-                selectedTrain.statnNm,
-                stations[stations.length - 1],
-                direction,
-              ),
-            ),
+            stations: [
+              LINE2_Linked_List.get(destination)[
+                direction == Direction.INNER ? 'next' : 'prev'
+              ].split('(')[0],
+            ],
           },
           token: token,
         });
@@ -175,28 +174,28 @@ const ProfileScreen = props => {
   return (
     <Div flex backgroundColor={'white'}>
       <Div h={HAS_NOTCH ? 44 : 20} />
-      <Row itemsCenter py10 px20 bg={'rgba(255,255,255,0)'}>
+      <Row itemsCenter py10 px20 bg={'white'}>
         <Col justifyCenter>
-          <Row>
-            <Col auto justifyCenter>
-              <Span>{receiveStationPush ? '역알림 킴' : '역알림 끔'}</Span>
+          <Row itemsCenter>
+            <Col itemsCenter auto pr5>
+              <Span
+                bold
+                textCenter
+                color={'black'}
+                fontSize={20}
+                numberOfLines={1}
+                ellipsizeMode="head">
+                프로필
+              </Span>
             </Col>
-            <Col auto justifyCenter>
-              <Switch
-                style={{
-                  transform: [{scaleX: 0.5}, {scaleY: 0.5}],
-                }}
-                ios_backgroundColor="#3e3e3e"
-                onValueChange={toggleStationPush}
-                value={receiveStationPush}
-              />
-            </Col>
-            <Col />
           </Row>
         </Col>
-        <Col itemsEnd onPress={logout}>
+        <Col pl15 auto onPress={logout}>
           <LogOut {...iconSettings} color={'black'}></LogOut>
         </Col>
+        {/* <Col auto pl15>
+        <Bell {...iconSettings} color={'black'}></Bell>
+      </Col> */}
       </Row>
       <FlatList
         flex={1}
@@ -250,6 +249,35 @@ const ProfileScreen = props => {
                   <Span>자주가는 길 설정</Span>
                 </Col>
                 <Col></Col>
+              </Row>
+            </Div>
+            <Div>
+              <Row
+                mt5
+                mb10
+                py5
+                rounded5
+                borderWidth={0.5}
+                borderColor={GRAY_COLOR}>
+                <Col />
+                <Col auto justifyCenter>
+                  <Span>
+                    {receiveStationPush
+                      ? '도착지 전역 알림 킴'
+                      : '도착지 전역 알림 끔'}
+                  </Span>
+                </Col>
+                <Col auto justifyCenter>
+                  <Switch
+                    style={{
+                      transform: [{scaleX: 0.5}, {scaleY: 0.5}],
+                    }}
+                    ios_backgroundColor="#3e3e3e"
+                    onValueChange={toggleStationPush}
+                    value={receiveStationPush}
+                  />
+                </Col>
+                <Col />
               </Row>
             </Div>
           </Div>

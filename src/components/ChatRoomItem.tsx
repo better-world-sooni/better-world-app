@@ -14,6 +14,7 @@ import APIS from 'src/modules/apis';
 import {shallowEqual, useSelector} from 'react-redux';
 import {RootState} from 'src/redux/rootReducer';
 import {Div} from './common/Div';
+import ChatRoomAvatars from './ChatRoomAvatars';
 moment.locale('ko');
 
 const RightSwipeActions = () => {
@@ -26,8 +27,19 @@ const RightSwipeActions = () => {
   );
 };
 
-const ChatRoomItem = ({chatRoomId, userIds, title, createdAt, lastMessage}) => {
-  const {currentUser, token} = useSelector(
+const ChatRoomItem = ({
+  chatRoomId,
+  userIds,
+  title,
+  createdAt,
+  lastMessage,
+  unreadMessageCount,
+  firstUserAvatar = null,
+  secondUserAvatar = null,
+  thirdUserAvatar = null,
+  fourthUserAvatar = null,
+}) => {
+  const {token} = useSelector(
     (root: RootState) => root.app.session,
     shallowEqual,
   );
@@ -54,11 +66,10 @@ const ChatRoomItem = ({chatRoomId, userIds, title, createdAt, lastMessage}) => {
   const goToChatRoom = roomId => {
     navigation.navigate(NAV_NAMES.ChatRoom, {currentChatRoomId: roomId});
   };
-  const exitChatRoom = async roomId => {
+  const deleteChatRoom = async roomId => {
     const res = await patchPromiseFn({
       url: APIS.chat.chatRoom.user().url,
       body: {
-        userId: currentUser.id,
         chatRoomId: roomId,
       },
       token,
@@ -74,17 +85,18 @@ const ChatRoomItem = ({chatRoomId, userIds, title, createdAt, lastMessage}) => {
     <Swipeable
       key={chatRoomId}
       renderRightActions={RightSwipeActions}
-      onSwipeableRightOpen={() => exitChatRoom(chatRoomId)}>
+      onSwipeableRightOpen={() => deleteChatRoom(chatRoomId)}>
       <Row px20 py10 flex onPress={() => goToChatRoom(chatRoomId)} bgWhite>
         <Col auto mr10 relative>
-          <MessageCircle
-            color={'black'}
-            height={50}
-            width={50}
-            strokeWidth={1}></MessageCircle>
+          <ChatRoomAvatars
+            firstUserAvatar={firstUserAvatar}
+            secondUserAvatar={secondUserAvatar}
+            thirdUserAvatar={thirdUserAvatar}
+            fourthUserAvatar={fourthUserAvatar}
+          />
         </Col>
         <Col justifyCenter>
-          <Row>
+          <Row pb2>
             <Col pr10 auto maxW={'60%'}>
               <Span fontSize={15} bold numberOfLines={1} ellipsizeMode={'tail'}>
                 {title}
@@ -99,12 +111,25 @@ const ChatRoomItem = ({chatRoomId, userIds, title, createdAt, lastMessage}) => {
               </Span>
             </Col>
           </Row>
-          <Row w={'100%'}>
-            <Col>
+          <Row w={'100%'} pt2>
+            <Col pr10>
               <Span fontSize={15} numberOfLines={1} ellipsizeMode={'tail'}>
                 {lastMessage}
               </Span>
             </Col>
+            {unreadMessageCount > 0 && (
+              <Col
+                auto
+                fontSize={15}
+                rounded30
+                bg={APPLE_RED}
+                px10
+                justifyCenter>
+                <Span color={'white'}>
+                  {unreadMessageCount == 100 ? '99+' : unreadMessageCount}
+                </Span>
+              </Col>
+            )}
           </Row>
         </Col>
       </Row>

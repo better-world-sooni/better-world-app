@@ -12,6 +12,7 @@ import {shallowEqual, useDispatch, useSelector} from 'react-redux';
 import {
   Direction,
   HAS_NOTCH,
+  LINE2_Linked_List,
   MAIN_LINE2,
   MY_ROUTE,
   Selecting,
@@ -104,14 +105,11 @@ const HomeScreen = props => {
         url: APIS.route.notification().url,
         body: {
           trainNo: selectedTrain?.trainNo,
-          stations: shortenStations(
-            stationArr(
-              [],
-              selectedTrain.statnNm,
-              stations[stations.length - 1],
-              direction,
-            ),
-          ),
+          stations: [
+            LINE2_Linked_List.get(destination)[
+              direction == Direction.INNER ? 'next' : 'prev'
+            ].split('(')[0],
+          ],
         },
         token: token,
       });
