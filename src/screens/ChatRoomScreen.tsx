@@ -9,6 +9,7 @@ import {Col} from 'src/components/common/Col';
 import {Div} from 'src/components/common/Div';
 import {Row} from 'src/components/common/Row';
 import {Span} from 'src/components/common/Span';
+import {Header} from 'src/components/Header';
 import useSocketInput from 'src/hooks/useSocketInput';
 import APIS from 'src/modules/apis';
 import {HAS_NOTCH, iconSettings, WS_URL} from 'src/modules/constants';
@@ -89,7 +90,6 @@ const ChatRoomScreen = props => {
       Alert.alert('네트워크가 불안정하여 메세지를 보내지 못했습니다');
     }
   };
-  const goBack = useCallback(() => navigation.goBack(), []);
   useLayoutEffect(() => {
     if (currentChatRoomId) {
       const manager = new Manager(WS_URL, {
@@ -133,20 +133,13 @@ const ChatRoomScreen = props => {
   return (
     <Div flex bg={'white'}>
       <Div h={HAS_NOTCH ? 44 : 20} />
+      <Header
+        bg={'rgba(255,255,255,0)'}
+        headerTitle={title}
+        noButtons
+        hasGoBack
+      />
       <Div bgWhite flex={1}>
-        <Row justifyCenter py20>
-          <Col auto px10 onPress={goBack}>
-            <ChevronLeft {...iconSettings}></ChevronLeft>
-          </Col>
-          <Col itemsCenter>
-            <Span bold fontSize={20}>
-              {title}
-            </Span>
-          </Col>
-          <Col auto px10>
-            <ChevronLeft {...iconSettings} color={'white'}></ChevronLeft>
-          </Col>
-        </Row>
         {metasunganUser._id && (
           <GiftedChat
             userCount={users.length}

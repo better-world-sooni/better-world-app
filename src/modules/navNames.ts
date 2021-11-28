@@ -14,5 +14,6 @@ export const NAV_NAMES = {
     Chat: "Chat",
     ChatRoom: "ChatRoom",
     PostDetail: "PostDetail",
+    Notification: "Notification",
 };
 

@@ -180,7 +180,6 @@ const HomeScreen = props => {
 
   return (
     <Div flex bgWhite>
-      <Div h={HAS_NOTCH ? 44 : 20} bg={'rgba(255,255,255,.9)'} />
       <Div flex relative>
         <Header
           bg={'rgba(255,255,255,.9)'}

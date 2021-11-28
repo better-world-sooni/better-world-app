@@ -4,7 +4,7 @@ import {Div} from 'src/components/common/Div';
 import {Img} from 'src/components/common/Img';
 import {Row} from 'src/components/common/Row';
 import {Span} from 'src/components/common/Span';
-import {ScrollView, View} from 'src/modules/viewComponents';
+import {FlatList, ScrollView, View} from 'src/modules/viewComponents';
 import {shallowEqual, useSelector} from 'react-redux';
 import {GRAY_COLOR, HAS_NOTCH} from 'src/modules/constants';
 import {Grid, MessageCircle} from 'react-native-feather';
@@ -148,39 +148,39 @@ const ChatScreen = () => {
 
   return (
     <Div flex bg={'white'}>
-      <Div h={HAS_NOTCH ? 44 : 20} />
       <Header bg={'rgba(255,255,255,0)'} headerTitle={'채팅'} />
-      <ScrollView flex={1} showsVerticalScrollIndicator={false}>
-        <Div pb10>
-          {chatRooms.map(chatRoom => {
-            const chatRoomId = chatRoom.id;
-            const userIds = chatRoom.userIds.length;
-            const createdAt = chatRoom.lastMessage?.createdAt;
-            const title = chatRoom.title;
-            const lastMessage = chatRoom.lastMessage?.text;
-            const unreadMessageCount = chatRoom.unreadMessageCount;
-            const firstUserAvatar = chatRoom.avatars[1]?.avatar;
-            const secondUserAvatar = chatRoom.avatars[2]?.avatar;
-            const thirdUserAvatar = chatRoom.avatars[3]?.avatar;
-            const fourthUserAvatar = chatRoom.avatars[4]?.avatar;
-            return (
-              <ChatRoomItem
-                chatRoomId={chatRoomId}
-                userIds={userIds}
-                createdAt={createdAt}
-                title={title}
-                unreadMessageCount={unreadMessageCount}
-                lastMessage={lastMessage}
-                firstUserAvatar={firstUserAvatar}
-                secondUserAvatar={secondUserAvatar}
-                thirdUserAvatar={thirdUserAvatar}
-                fourthUserAvatar={fourthUserAvatar}
-              />
-            );
-          })}
-          {chatRooms.length == 0 && <NoChatRooms />}
-        </Div>
-      </ScrollView>
+      <FlatList
+        flex={1}
+        showsVerticalScrollIndicator={false}
+        data={chatRooms}
+        ListEmptyComponent={<NoChatRooms />}
+        renderItem={({item, index}) => {
+          const chatRoomId = item.id;
+          const userIds = item.userIds.length;
+          const createdAt = item.lastMessage?.createdAt;
+          const title = item.title;
+          const lastMessage = item.lastMessage?.text;
+          const unreadMessageCount = item.unreadMessageCount;
+          const firstUserAvatar = item.avatars[1]?.avatar;
+          const secondUserAvatar = item.avatars[2]?.avatar;
+          const thirdUserAvatar = item.avatars[3]?.avatar;
+          const fourthUserAvatar = item.avatars[4]?.avatar;
+          return (
+            <ChatRoomItem
+              chatRoomId={chatRoomId}
+              userIds={userIds}
+              createdAt={createdAt}
+              title={title}
+              unreadMessageCount={unreadMessageCount}
+              lastMessage={lastMessage}
+              firstUserAvatar={firstUserAvatar}
+              secondUserAvatar={secondUserAvatar}
+              thirdUserAvatar={thirdUserAvatar}
+              fourthUserAvatar={fourthUserAvatar}
+            />
+          );
+        }}
+      />
     </Div>
   );
 };

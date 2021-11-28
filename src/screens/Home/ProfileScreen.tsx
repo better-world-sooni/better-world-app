@@ -193,9 +193,6 @@ const ProfileScreen = props => {
         <Col pl15 auto onPress={logout}>
           <LogOut {...iconSettings} color={'black'}></LogOut>
         </Col>
-        {/* <Col auto pl15>
-        <Bell {...iconSettings} color={'black'}></Bell>
-      </Col> */}
       </Row>
       <FlatList
         flex={1}

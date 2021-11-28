@@ -101,7 +101,6 @@ const MetaSunganScreen = () => {
   return (
     <Div flex relative>
       <Div bg={'rgba(255,255,255,.3)'} absolute top width={'100%'} zIndex5>
-        <Div h={HAS_NOTCH ? 44 : 20} />
         <Header bg={'rgba(255,255,255,0)'} headerTitle={'메타순간'} />
       </Div>
       <WebView

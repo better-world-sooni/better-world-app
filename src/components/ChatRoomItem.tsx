@@ -15,6 +15,7 @@ import {shallowEqual, useSelector} from 'react-redux';
 import {RootState} from 'src/redux/rootReducer';
 import {Div} from './common/Div';
 import ChatRoomAvatars from './ChatRoomAvatars';
+import {Alert} from 'react-native';
 moment.locale('ko');
 
 const RightSwipeActions = () => {
@@ -74,8 +75,10 @@ const ChatRoomItem = ({
       },
       token,
     });
-    if (res.ok && res.data?.chatRooms) {
+    console.log(res);
+    if (res.ok) {
       setDeleted(true);
+      Alert.alert('채팅방을 성공적으로 나가셨습니다.');
     }
   };
   if (deleted) {

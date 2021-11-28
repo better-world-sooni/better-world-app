@@ -13,6 +13,7 @@ import {postPromiseFn} from 'src/redux/asyncReducer';
 import APIS from 'src/modules/apis';
 import {stationArr} from 'src/modules/utils';
 import EmojiSelector, {Categories} from 'react-native-emoji-selector';
+import {Header} from 'src/components/Header';
 
 enum Validity {
   NULL = null,
@@ -188,12 +189,12 @@ const PostScreen = props => {
     <Div flex bgWhite>
       <Div flex={3}>
         <NativeBaseProvider>
-          <TopHeader
-            route={useNavigation}
-            title={'새 게시물'}
-            headerColor={'white'}
-            nextText={isLoading ? '게시중...' : '게시'}
-            onPressNext={() => {
+          <Header
+            bg={'white'}
+            headerTitle={'새 게시물'}
+            noButtons
+            hasGoBack
+            onFinish={() => {
               if (isLoading) {
                 return;
               }
@@ -203,6 +204,7 @@ const PostScreen = props => {
                 postSungan();
               }
             }}
+            onFinishText={isLoading ? '게시중...' : '게시'}
           />
           <ScrollView
             showsVerticalScrollIndicator={false}

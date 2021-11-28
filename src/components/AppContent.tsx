@@ -22,6 +22,7 @@ import ChatRoomScreen from 'src/screens/ChatRoomScreen';
 import PostDetailScreen from 'src/screens/PostDetailScreen';
 import SignUpSceen from 'src/screens/Auth/SignUpScreen';
 import {LINE2_COLOR} from 'src/modules/constants';
+import NotificationScreen from 'src/screens/NotificationScreen';
 
 const RootStack = createStackNavigator();
 
@@ -171,6 +172,13 @@ export const AppContent = () => {
     {
       name: NAV_NAMES.PostDetail,
       component: PostDetailScreen,
+      options: props => ({
+        cardStyle: {backgroundColor: 'black', presentation: 'screen'},
+      }),
+    },
+    {
+      name: NAV_NAMES.Notification,
+      component: NotificationScreen,
       options: props => ({
         cardStyle: {backgroundColor: 'black', presentation: 'screen'},
       }),
