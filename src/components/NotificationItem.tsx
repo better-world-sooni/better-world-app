@@ -139,9 +139,6 @@ const NotificationItem = ({
     }
   };
 
-  if (!title || chatRoomId) {
-    return null;
-  }
   return (
     <Row px20 py10 flex bg={'white'} onPress={handlePress}>
       <Col auto mr10 relative>

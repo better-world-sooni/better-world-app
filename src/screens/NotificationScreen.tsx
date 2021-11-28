@@ -52,7 +52,15 @@ const NotificationScreen = () => {
       token,
     });
     if (res.data) {
-      setNotifications(res.data);
+      const newNotifications = res.data.filter(item => {
+        const title = item.title;
+        const chatRoomId = item.data?.chatRoomId;
+        if (!title || chatRoomId) {
+          return false;
+        }
+        return true;
+      });
+      setNotifications(newNotifications);
     }
   };
   const readAll = async () => {
