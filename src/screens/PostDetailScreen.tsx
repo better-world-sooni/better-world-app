@@ -26,7 +26,7 @@ import {
 import {RootState} from 'src/redux/rootReducer';
 import {Input, KeyboardAvoidingView, NativeBaseProvider} from 'native-base';
 import {Platform, RefreshControl, SafeAreaView, ScrollView} from 'react-native';
-import {isOkay, postKey} from 'src/modules/utils';
+import {isOkay} from 'src/modules/utils';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 import PostDetailHeader from 'src/components/PostDetailHeader';
 import Comment from 'src/components/Comment';
@@ -509,6 +509,7 @@ const PostDetailScreen = props => {
                       returnKeyType={'send'}
                       onChangeText={setText}
                       onSubmitEditing={handleSend}
+                      keyboardType="visible-password"
                       InputRightElement={
                         <Span color={GO_COLOR} px15 onPress={handleSend}>
                           {sendLoading ? '게시중..' : '게시'}

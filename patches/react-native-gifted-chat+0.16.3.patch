@@ -57,6 +57,18 @@ index 8757a72..3dc0e62 100644
      backgroundTransparent: 'transparent',
      defaultBlue: '#0084ff',
      leftBubbleBackground: '#f0f0f0',
+diff --git a/node_modules/react-native-gifted-chat/lib/Composer.js b/node_modules/react-native-gifted-chat/lib/Composer.js
+index 3331d31..c728661 100644
+--- a/node_modules/react-native-gifted-chat/lib/Composer.js
++++ b/node_modules/react-native-gifted-chat/lib/Composer.js
+@@ -7,6 +7,7 @@ import { StylePropType } from './utils';
+ const styles = StyleSheet.create({
+     textInput: {
+         flex: 1,
++        color: '#000000',
+         marginLeft: 10,
+         fontSize: 16,
+         lineHeight: 16,
 diff --git a/node_modules/react-native-gifted-chat/lib/GiftedAvatar.js b/node_modules/react-native-gifted-chat/lib/GiftedAvatar.js
 index 266857c..f33830b 100644
 --- a/node_modules/react-native-gifted-chat/lib/GiftedAvatar.js
@@ -219,3 +231,16 @@ index 193772a..4e80378 100644
          };
          this.renderTypingIndicator = () => {
              if (Platform.OS === 'web') {
+diff --git a/node_modules/react-native-gifted-chat/lib/Send.js b/node_modules/react-native-gifted-chat/lib/Send.js
+index 5e4fe5a..0ff2fa7 100644
+--- a/node_modules/react-native-gifted-chat/lib/Send.js
++++ b/node_modules/react-native-gifted-chat/lib/Send.js
+@@ -33,7 +33,7 @@ export default class Send extends Component {
+         if (alwaysShowSend || (text && text.trim().length > 0)) {
+             return (<TouchableOpacity testID='send' accessible accessibilityLabel='send' style={[styles.container, containerStyle]} onPress={this.handleOnPress} accessibilityTraits='button' disabled={disabled} {...sendButtonProps}>
+           <View>
+-            {children || <Text style={[styles.text, textStyle]}>{label}</Text>}
++            {children || <Text style={[styles.text, textStyle]}>{'전송'}</Text>}
+           </View>
+         </TouchableOpacity>);
+         }
