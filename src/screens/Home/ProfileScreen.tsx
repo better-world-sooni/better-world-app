@@ -13,6 +13,7 @@ import {NAV_NAMES} from 'src/modules/navNames';
 import {FlatList, ScrollView} from 'src/modules/viewComponents';
 import {
   deletePromiseFn,
+  getPromiseFn,
   postPromiseFn,
   useApiSelector,
   useReloadGET,
@@ -43,12 +44,7 @@ import Post from 'src/components/Post';
 
 const ProfileScreen = props => {
   const navigation = useNavigation();
-  const apiGET = useReloadGET();
   const logout = useLogout(() => navigation.navigate(NAV_NAMES.SignIn));
-  const {data: mySunganResponse, isLoading: mySunganLoading} = useApiSelector(
-    APIS.post.sungan.my,
-  );
-  const mySungans = mySunganResponse?.data;
   const {
     route: {
       receiveStationPush,
@@ -61,10 +57,10 @@ const ProfileScreen = props => {
     (root: RootState) => root.app.session,
     shallowEqual,
   );
+  const [loading, setLoading] = useState(false);
   const [myPosts, setMyPosts] = useState([]);
   const [selecting, setSelecting] = useState(Selecting.NONE);
   const [character, setCharacter] = useState(null);
-  const [loading, setLoading] = useState(true);
   const dispatch = useDispatch();
   const [selectingAvatar, setSelectingAvatar] = useState(false);
   const [selectingOD, setSelectingOD] = useState(false);
@@ -117,9 +113,17 @@ const ProfileScreen = props => {
     stations,
     direction,
   ]);
-  const pullToRefresh = useCallback(() => {
-    apiGET(APIS.post.sungan.my());
-  }, [apiGET]);
+  const pullToRefresh = useCallback(async () => {
+    setLoading(true);
+    const res = await getPromiseFn({
+      url: APIS.post.sungan.my().url,
+      token,
+    });
+    if (isOkay(res) && res.data.data) {
+      setMyPosts(res.data.data);
+    }
+    setLoading(false);
+  }, [token]);
   const handleReturnSelectAvatar = useCallback(async () => {
     setSelectingAvatar(false);
     if (character) {
@@ -150,26 +154,11 @@ const ProfileScreen = props => {
     () => navigation.navigate(NAV_NAMES.Post),
     [],
   );
-
   useEffect(() => {
-    if (!mySunganLoading && mySungans) {
-      setMyPosts(mySungans);
-    }
-  }, [mySunganLoading]);
-  useLayoutEffect(() => {
     if (myPosts.length == 0) {
       pullToRefresh();
     }
-    setLoading(false);
   }, []);
-
-  if (loading) {
-    return (
-      <Div flex itemsCenter justifyCenter>
-        <Span>로딩...</Span>
-      </Div>
-    );
-  }
 
   return (
     <Div flex backgroundColor={'white'}>
@@ -342,10 +331,7 @@ const ProfileScreen = props => {
           </>
         }
         refreshControl={
-          <RefreshControl
-            refreshing={mySunganLoading}
-            onRefresh={pullToRefresh}
-          />
+          <RefreshControl refreshing={loading} onRefresh={pullToRefresh} />
         }></FlatList>
       {selecting && (
         <ScrollSelector

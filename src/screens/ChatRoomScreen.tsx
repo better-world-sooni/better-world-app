@@ -56,10 +56,6 @@ const ChatRoomScreen = props => {
     }
   };
   const enterChatRoom = enterChatRoomParams => {
-    console.log(
-      'enterChatRoomParams',
-      enterChatRoomParams.chatRoom.messages[1],
-    );
     setMessages(enterChatRoomParams.chatRoom.messages);
   };
   const readMessage = readMessageParams => {

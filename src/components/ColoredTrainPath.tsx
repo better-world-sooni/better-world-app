@@ -46,10 +46,18 @@ const ColoredTrainPath = ({width, stationName, isOrigin, isDestination}) => {
   }, []);
   return (
     <>
-      <Div relative mb10 justifyCenter itemsCenter textCenter h10 w={width}>
-        <Row absolute w={width} h={10}>
-          <Col bg={leftHalfBg(stationName, isOrigin, isDestination)} mr1></Col>
-          <Col bg={rightHalfBg(stationName, isOrigin, isDestination)} ml1></Col>
+      <Div mb10 justifyCenter itemsCenter textCenter h10 w={width}>
+        <Row w={width} h={10}>
+          <Col
+            bg={leftHalfBg(stationName, isOrigin, isDestination)}
+            mr1
+            borderTopRightRadius={2}
+            borderBottomRightRadius={2}></Col>
+          <Col
+            bg={rightHalfBg(stationName, isOrigin, isDestination)}
+            ml1
+            borderTopLeftRadius={2}
+            borderBottomLeftRadius={2}></Col>
         </Row>
       </Div>
       <Div textCenter itemsCenter w={width}>

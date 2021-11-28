@@ -49,7 +49,6 @@ const NotificationScreen = () => {
       url: APIS.push.notification.user().url,
       token,
     });
-    console.log(res);
     if (res?.data) {
       setNotifications(res.data);
     }

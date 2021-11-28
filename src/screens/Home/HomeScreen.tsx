@@ -12,12 +12,10 @@ import {
 import {shallowEqual, useDispatch, useSelector} from 'react-redux';
 import {
   Direction,
-  HAS_NOTCH,
   LINE2_Linked_List,
   MAIN_LINE2,
   MY_ROUTE,
   Selecting,
-  shortenStations,
 } from 'src/modules/constants';
 import {
   setRoute,
@@ -131,6 +129,7 @@ const HomeScreen = props => {
     (root: RootState) => root.feed,
     shallowEqual,
   );
+  const [noMorePosts, setNoMorePosts] = useState(false);
   const [addPostLoading, setAddPostLoading] = useState(false);
   const [posts, setPosts] = useState([]);
   const [selectorLoading, setSelectorLoading] = useState(false);
@@ -148,12 +147,8 @@ const HomeScreen = props => {
     });
   }, [origin]);
   const addMorePostsOnRefesh = async () => {
-    if (!addPostLoading) {
+    if (!addPostLoading && !noMorePosts) {
       setAddPostLoading(true);
-      console.log(
-        'posts[posts.length - 1].post.createdAt',
-        posts[posts.length - 1].post.createdAt,
-      );
       const res = await postPromiseFn({
         url: APIS.post.main().url,
         body: {
@@ -164,8 +159,10 @@ const HomeScreen = props => {
       });
       if (isOkay(res) && res.data?.data) {
         setPosts([...posts, ...res.data.data]);
+        setAddPostLoading(false);
+      } else {
+        setNoMorePosts(true);
       }
-      setAddPostLoading(false);
     }
   };
 
@@ -303,7 +300,7 @@ const HomeScreen = props => {
             </>
           }
           ListFooterComponent={
-            addPostLoading ? <PostsLoading /> : <FeedChecked />
+            addPostLoading && !noMorePosts ? <PostsLoading /> : <FeedChecked />
           }
           data={posts}
           renderItem={({item, index}) => {

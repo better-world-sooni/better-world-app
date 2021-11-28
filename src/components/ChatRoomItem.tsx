@@ -75,7 +75,6 @@ const ChatRoomItem = ({
       },
       token,
     });
-    console.log(res);
     if (res.ok) {
       setDeleted(true);
       Alert.alert('채팅방을 성공적으로 나가셨습니다.');

@@ -127,7 +127,6 @@ const ChatManager = () => {
     chatRoomIds: [],
     avatar: null,
   });
-  console.log(metasunganUser._id);
   const login = useCallback(loginParams => {
     setMetasunganUser(loginParams.user);
   }, []);

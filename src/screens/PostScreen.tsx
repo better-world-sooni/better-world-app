@@ -2,7 +2,6 @@ import React, {useState} from 'react';
 import {Div} from 'src/components/common/Div';
 import {Row} from 'src/components/common/Row';
 import {Span} from 'src/components/common/Span';
-import TopHeader from 'src/components/TopHeader';
 import {useNavigation} from '@react-navigation/core';
 import {Input, NativeBaseProvider, TextArea} from 'native-base';
 import {Direction, GO_COLOR, GRAY_COLOR} from 'src/modules/constants';
