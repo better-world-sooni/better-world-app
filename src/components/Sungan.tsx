@@ -70,7 +70,6 @@ const Sungan = props => {
   const navigation = useNavigation();
   const [liked, setLiked] = useState(didLike);
   const [likeCount, setLikeCount] = useState(likeCnt);
-  const [deleted, setDeleted] = useState(false);
 
   const like = () => {
     if (liked) {

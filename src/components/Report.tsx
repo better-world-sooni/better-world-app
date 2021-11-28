@@ -83,7 +83,7 @@ export const Report = props => {
     } else {
       ReactNativeHapticFeedback.trigger('impactLight', options);
       setLiked(true);
-      setLikeCount(likeCount - 1);
+      setLikeCount(likeCount + 1);
       postPromiseFn({
         url: APIS.post.report.like(postId).url,
         body: {},

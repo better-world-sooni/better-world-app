@@ -11,6 +11,7 @@ import {shallowEqual, useSelector} from 'react-redux';
 import {
   chevronDownSettings,
   GO_COLOR,
+  GRAY_COLOR,
   HAS_NOTCH,
   iconSettings,
 } from 'src/modules/constants';
@@ -30,6 +31,7 @@ export const Header = ({
   hasGoBack = false,
   onFinish = null,
   onFinishText = '',
+  borderBottom = false,
 }) => {
   const {
     feed: {globalFiter},
@@ -46,12 +48,15 @@ export const Header = ({
     }
   };
   const goToNotification = () => navigation.navigate(NAV_NAMES.Notification);
+  const borderBottomProps = borderBottom
+    ? {borderBottomColor: GRAY_COLOR, borderBottomWidth: 0.2}
+    : {};
 
   return (
     <>
       <StatusBar animated={true} barStyle={'dark-content'} />
       <Div h={HAS_NOTCH ? 44 : 20} bg={bg} />
-      <Row itemsCenter py10 pr20 bg={bg}>
+      <Row itemsCenter py10 pr20 bg={bg} {...borderBottomProps}>
         {hasGoBack ? (
           <Col auto pr10 onPress={goBack} pl10>
             <ChevronLeft {...iconSettings}></ChevronLeft>

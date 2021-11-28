@@ -48,12 +48,12 @@ const Post = ({
   const [deleted, setDeleted] = useState(false);
   const deletePostUrl = useMemo(() => {
     if (type == SUNGAN) {
-      return APIS.post.sungan.delete(postId).url;
+      return APIS.post.sungan.id(postId).url;
     }
     if (type == PLACE) {
-      return APIS.post.place.delete(postId).url;
+      return APIS.post.place.id(postId).url;
     }
-    return APIS.post.place.delete(postId).url;
+    return APIS.post.place.id(postId).url;
   }, [postId, type]);
   const deletePost = useCallback(async () => {
     const res = await deletePromiseFn({

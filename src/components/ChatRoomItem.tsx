@@ -6,8 +6,6 @@ import {APPLE_RED, GRAY_COLOR} from 'src/modules/constants';
 import {Col} from './common/Col';
 import {Row} from './common/Row';
 import {Span} from './common/Span';
-import moment from 'moment';
-import 'moment/locale/ko';
 import {NAV_NAMES} from 'src/modules/navNames';
 import {patchPromiseFn} from 'src/redux/asyncReducer';
 import APIS from 'src/modules/apis';
@@ -16,6 +14,8 @@ import {RootState} from 'src/redux/rootReducer';
 import {Div} from './common/Div';
 import ChatRoomAvatars from './ChatRoomAvatars';
 import {Alert} from 'react-native';
+import moment from 'moment';
+import 'moment/locale/ko';
 moment.locale('ko');
 
 const RightSwipeActions = () => {
@@ -125,7 +125,7 @@ const ChatRoomItem = ({
                 fontSize={15}
                 rounded30
                 bg={APPLE_RED}
-                px10
+                px5
                 justifyCenter>
                 <Span color={'white'}>
                   {unreadMessageCount == 100 ? '99+' : unreadMessageCount}

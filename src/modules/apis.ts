@@ -27,7 +27,7 @@ const APIS = {
     after: (lastId) => v1(`/post/main/after?lastId=${lastId}`),
     sungan: {
       main: () => v1('/post/sungan'),
-      delete: (id) => v1(`/post/sungan/${id}`),
+      id: (id) => v1(`/post/sungan/${id}`),
       my: () => v1('/post/sungan/my'),
       comments: (id) => v1(`/post/sungan/${id}/comments`),
       comment: {
@@ -44,7 +44,7 @@ const APIS = {
     },
     report: {
       main: () => v1('/post/report'),
-      delete: (id) => v1(`/post/report/${id}`),
+      id: (id) => v1(`/post/report/${id}`),
       comments: (id) => v1(`/post/report/${id}/comments`),
       comment: {
         main: () => v1(`/post/report/comment`),
@@ -59,7 +59,7 @@ const APIS = {
     },
     place: {
       main: () => v1('/post/place'),
-      delete: (id) => v1(`/post/place/${id}`),
+      id: (id) => v1(`/post/place/${id}`),
       comments: (id) => v1(`/post/place/${id}/comments`),
       comment: {
         main: () => v1(`/post/place/comment`),

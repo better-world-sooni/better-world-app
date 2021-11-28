@@ -1,17 +1,16 @@
-import React, {useCallback, useEffect, useState} from 'react';
-import {Alert, LogBox} from 'react-native';
+import React, {useCallback, useEffect} from 'react';
+import {LogBox} from 'react-native';
 import codePush from 'react-native-code-push';
 import {withRootReducer} from './src/redux/withRootReducer';
 import {AppContent} from 'src/components/AppContent';
 import {library} from '@fortawesome/fontawesome-svg-core';
 import {faWalking, faBus, faSubway} from '@fortawesome/free-solid-svg-icons';
-import {shallowEqual, useDispatch, useSelector} from 'react-redux';
+import {shallowEqual, useSelector} from 'react-redux';
 import {RootState} from 'src/redux/rootReducer';
 import messaging from '@react-native-firebase/messaging';
 import {postPromiseFn} from 'src/redux/asyncReducer';
 import APIS from 'src/modules/apis';
 import PushNotification from 'react-native-push-notification';
-import {appActions} from 'src/redux/appReducer';
 
 library.add(faWalking, faBus, faSubway);
 
@@ -21,7 +20,6 @@ const App = () => {
     session: {token},
     badge,
   } = useSelector((root: RootState) => root.app, shallowEqual);
-  const dispatch = useDispatch();
   const firebaseMessaging = messaging();
   const getToken = useCallback(async () => {
     try {
@@ -43,8 +41,8 @@ const App = () => {
         });
         console.log('console.log(fcmToken)', fcmToken);
       } else {
-        const fcmToken = await getToken();
         await firebaseMessaging.requestPermission();
+        const fcmToken = await getToken();
         const res = await postPromiseFn({
           url: APIS.push.registrationToken().url,
           body: {
@@ -58,7 +56,7 @@ const App = () => {
       console.log(`Error while saving fcm token: ${error}`);
     }
   }, [token, isLoggedIn]);
-  
+
   useEffect(() => {
     LogBox.ignoreAllLogs();
   });
@@ -66,12 +64,7 @@ const App = () => {
   useEffect(() => {
     if (isLoggedIn) {
       setFCMToken();
-      firebaseMessaging.onNotificationOpenedApp(remoteMessage => {
-        PushNotification.setApplicationIconBadgeNumber(0);
-      });
-      firebaseMessaging.getInitialNotification().then(remoteMessage => {});
       const unsubscribe = firebaseMessaging.onMessage(async remoteMessage => {
-        PushNotification.setApplicationIconBadgeNumber(0);
         const notification = {
           foreground: true, // BOOLEAN: If the notification was received in foreground or not
           userInteraction: false, // BOOLEAN: If the notification was opened by the user from the notification area or not

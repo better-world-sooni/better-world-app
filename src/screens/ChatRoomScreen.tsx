@@ -56,9 +56,11 @@ const ChatRoomScreen = props => {
     }
   };
   const enterChatRoom = enterChatRoomParams => {
+    console.log('enterChatRoom', enterChatRoomParams.chatRoom.messages);
     setMessages(enterChatRoomParams.chatRoom.messages);
   };
   const readMessage = readMessageParams => {
+    console.log('readMessage', readMessageParams.chatRoom.messages);
     setMessages(readMessageParams.chatRoom.messages);
   };
   const fetchNewRoom = async callback => {
@@ -79,7 +81,6 @@ const ChatRoomScreen = props => {
       messages.forEach(message => {
         sendSocketMessage(chatSocket, 'sendMessage', {
           chatRoomId: currentChatRoomId,
-          message: message,
         });
       });
     } else {
@@ -128,7 +129,6 @@ const ChatRoomScreen = props => {
 
   return (
     <Div flex bg={'white'}>
-      <Div h={HAS_NOTCH ? 44 : 20} />
       <Header
         bg={'rgba(255,255,255,0)'}
         headerTitle={title}

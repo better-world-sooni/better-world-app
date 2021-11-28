@@ -15,7 +15,10 @@ import {
   LINE2_Linked_List,
   MAIN_LINE2,
   MY_ROUTE,
+  PLACE,
+  REPORT,
   Selecting,
+  SUNGAN,
 } from 'src/modules/constants';
 import {
   setRoute,
@@ -39,6 +42,8 @@ import {Loader} from 'react-native-feather';
 import {Row} from 'src/components/common/Row';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import {View} from 'src/modules/viewComponents';
+import messaging from '@react-native-firebase/messaging';
+import {NAV_NAMES} from 'src/modules/navNames';
 
 const PostsLoading = () => {
   return (
@@ -140,6 +145,7 @@ const HomeScreen = props => {
   const apiGET = useReloadGET();
   const apiPOST = useApiPOST();
   const dispatch = useDispatch();
+  const navigation = useNavigation();
   const scrollRef = useRef(null);
   const pullToRefresh = useCallback(() => {
     apiPOST(APIS.post.main(), {
@@ -174,7 +180,95 @@ const HomeScreen = props => {
     }
   }, [origin, destination]);
 
+  const firebaseMessaging = messaging();
+
+  const handlePress = async notification => {
+    const goto = notification.data?.goto;
+    const postType = notification.data?.postType;
+    const postId = notification.data?.postId;
+    const chatRoomId = notification.data?.chatRoomId;
+    if (goto == 'Home') {
+      navigation.navigate(goto);
+      return;
+    }
+    if (goto == 'Post') {
+      let url;
+      let type;
+      let get;
+      if (postType == 'Sungan') {
+        url = APIS.post.sungan.id(postId).url;
+        type = SUNGAN;
+        get = 'sungan';
+      } else if (postType == 'Hotplace') {
+        url = APIS.post.place.id(postId).url;
+        type = PLACE;
+        get = 'hotplace';
+      } else {
+        url = APIS.post.place.id(postId).url;
+        type = REPORT;
+        get = 'report';
+      }
+      const res = await getPromiseFn({
+        url,
+        token,
+      });
+      if (!isOkay(res)) {
+        Alert.alert('해당 게시물은 지워졌습니다.');
+      }
+      const item = res.data.data;
+      const post = item[get];
+      const didLike = item.didLike;
+      const likeCount = item.likeCnt;
+      const stationName = post.station?.name;
+      const emoji = post.emoji;
+      const userName = post.userInfo.userName;
+      const userProfileImgUrl = post.userInfo.userProfileImgUrl;
+      const createdAt = post.createdAt;
+      const text = post.text;
+      const place = post.place;
+      const vehicleIdNum = post.vehicleIdNum;
+      const currentPost = {
+        type,
+        didLike,
+        stationName,
+        emoji,
+        userName,
+        userProfileImgUrl,
+        createdAt,
+        likeCount,
+        text,
+        place,
+        vehicleIdNum,
+      };
+      navigation.navigate(NAV_NAMES.PostDetail, {
+        currentPost: {
+          setLiked: () => {},
+          setLikeCount: () => {},
+          ...currentPost,
+        },
+      });
+    }
+    if (goto == 'Chat') {
+      navigation.navigate(NAV_NAMES.ChatRoom, {currentChatRoomId: chatRoomId});
+    }
+  };
+  const createNotificationListeners = async () => {
+    //앱이 foreground, background에서 실행 중일때, push 알림을 클릭하여 열 때,
+    firebaseMessaging.onNotificationOpenedApp(remoteMessage => {
+      handlePress(remoteMessage);
+    });
+
+    //앱이 종료된 상황에서 push 알림을 클릭하여 열 때
+    const notificationOpen = await firebaseMessaging.getInitialNotification();
+    if (notificationOpen) {
+      // receiveNotification(notificationOpen.notification.data);
+      console.log(notificationOpen.notification);
+      handlePress(notificationOpen.notification);
+    }
+  };
+
   useEffect(() => {
+    createNotificationListeners();
     if (!origin || !destination) {
       apiGET(APIS.route.starred());
     }
