@@ -297,7 +297,7 @@ const HomeScreen = props => {
           trainNo: selectedTrain?.trainNo,
           stations: [
             LINE2_Linked_List.get(destination)[
-              direction == Direction.INNER ? 'next' : 'prev'
+              direction == Direction.INNER ? 'prev' : 'next'
             ].split('(')[0],
           ],
         },
