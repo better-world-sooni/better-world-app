@@ -144,6 +144,8 @@ const ChatRoomScreen = props => {
             renderAvatarOnTop
             renderUsernameOnMessage
             messages={messages}
+            // @ts-ignore
+            textInputStyle={{color: '#000000'}}
             onSend={messages => onSend(messages)}
             user={{
               _id: metasunganUser._id,
