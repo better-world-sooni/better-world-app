@@ -47,6 +47,7 @@ export const TextField = (props) => {
             placeholder={placeHolder}
             onChangeText={onChangeText}
             value={value}
+            color={'#000000'}
           />
         </Col>
         {rightComp && <Col auto>{rightComp}</Col>}

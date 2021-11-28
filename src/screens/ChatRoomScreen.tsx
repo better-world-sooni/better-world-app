@@ -81,6 +81,7 @@ const ChatRoomScreen = props => {
       messages.forEach(message => {
         sendSocketMessage(chatSocket, 'sendMessage', {
           chatRoomId: currentChatRoomId,
+          message: message,
         });
       });
     } else {

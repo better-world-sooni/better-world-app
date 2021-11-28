@@ -265,6 +265,7 @@ const PostScreen = props => {
                         <Div px20 py10 w={'100%'}>
                           <Input
                             w={'100%'}
+                            color={'#000000'}
                             padding={0}
                             fontSize={13}
                             onChangeText={change => setPlace(change)}
