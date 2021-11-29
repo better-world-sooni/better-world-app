@@ -7,7 +7,6 @@ import {Div} from 'src/components/common/Div';
 import {Img} from 'src/components/common/Img';
 import {Row} from 'src/components/common/Row';
 import {Span} from 'src/components/common/Span';
-import TopHeader from 'src/components/TopHeader';
 import APIS from 'src/modules/apis';
 import {
   GO_COLOR,
@@ -32,11 +31,8 @@ import PostDetailHeader from 'src/components/PostDetailHeader';
 import Comment from 'src/components/Comment';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import {View} from 'src/modules/viewComponents';
-import moment from 'moment';
-import 'moment/locale/ko';
 import NestedComment from 'src/components/NestedComment';
 import {Header} from 'src/components/Header';
-moment.locale('ko');
 
 const options = {
   enableVibrateFallback: true,
@@ -509,7 +505,7 @@ const PostDetailScreen = props => {
                       returnKeyType={'send'}
                       onChangeText={setText}
                       onSubmitEditing={handleSend}
-                      keyboardType="visible-password"
+                      // keyboardType="visible-password"
                       InputRightElement={
                         <Span color={GO_COLOR} px15 onPress={handleSend}>
                           {sendLoading ? '게시중..' : '게시'}

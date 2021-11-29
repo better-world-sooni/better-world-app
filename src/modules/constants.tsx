@@ -1,6 +1,12 @@
 import React from 'react';
 import {hasNotch} from 'react-native-device-info';
 import {Span} from 'src/components/common/Span';
+import moment from 'moment';
+import 'moment/min/locales';
+moment.locale('ko');
+
+export const kmoment = moment;
+
 export const IOS_APP_VERSION = '6.0.5';
 export const ANDROID_APP_VERSION = '6.0.5';
 export const IOS_CODE_PUSH_VERSION = '117';
@@ -420,7 +426,7 @@ export const characterDesc = new Map(
     enchantress: {
       span: (
         <>
-          <Span>마술에 푹 빠진 </Span>
+          <Span>음악에 푹 빠진 </Span>
           <Span bold>인챈트리스</Span>
         </>
       ),

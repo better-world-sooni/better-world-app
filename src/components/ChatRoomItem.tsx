@@ -2,7 +2,7 @@ import {useNavigation} from '@react-navigation/core';
 import React, {useCallback, useState} from 'react';
 import {MessageCircle} from 'react-native-feather';
 import {Swipeable} from 'react-native-gesture-handler';
-import {APPLE_RED, GRAY_COLOR} from 'src/modules/constants';
+import {APPLE_RED, GRAY_COLOR, kmoment} from 'src/modules/constants';
 import {Col} from './common/Col';
 import {Row} from './common/Row';
 import {Span} from './common/Span';
@@ -14,9 +14,6 @@ import {RootState} from 'src/redux/rootReducer';
 import {Div} from './common/Div';
 import ChatRoomAvatars from './ChatRoomAvatars';
 import {Alert} from 'react-native';
-import moment from 'moment';
-import 'moment/locale/ko';
-moment.locale('ko');
 
 const RightSwipeActions = () => {
   return (
@@ -51,7 +48,7 @@ const ChatRoomItem = ({
 
   const createdAtText = useCallback(createdAt => {
     if (createdAt) {
-      const calendar = moment(createdAt).calendar();
+      const calendar = kmoment(createdAt).calendar();
       const calendarArr = calendar.split(' ');
       if (calendarArr[0] == '오늘') {
         return calendarArr[1] + ' ' + calendarArr[2];

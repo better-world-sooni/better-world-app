@@ -4,12 +4,11 @@ import {Col} from './common/Col';
 import {Img} from './common/Img';
 import {Row} from './common/Row';
 import {Span} from './common/Span';
-import moment from 'moment';
-import 'moment/locale/ko';
 import {useNavigation} from '@react-navigation/core';
 import {NAV_NAMES} from 'src/modules/navNames';
 import {
   iconSettings,
+  kmoment,
   LINE2_COLOR,
   PLACE,
   REPORT,
@@ -22,7 +21,6 @@ import {RootState} from 'src/redux/rootReducer';
 import {isOkay} from 'src/modules/utils';
 import {Alert} from 'react-native';
 import {Heart, MessageCircle} from 'react-native-feather';
-moment.locale('ko');
 
 const NotificationItem = ({
   title,
@@ -59,7 +57,7 @@ const NotificationItem = ({
   };
   const createdAtText = useCallback(createdAt => {
     if (createdAt) {
-      const calendar = moment(createdAt).calendar();
+      const calendar = kmoment(createdAt).calendar();
       const calendarArr = calendar.split(' ');
       if (calendarArr[0] == '오늘') {
         return calendarArr[1] + ' ' + calendarArr[2];
@@ -103,8 +101,8 @@ const NotificationItem = ({
       }
       const item = res.data.data;
       const post = item[get];
-      const didLike = item.didLike;
-      const likeCount = item.likeCnt;
+      const didLike = post.didLike;
+      const likeCount = post.likeCnt;
       const stationName = post.station?.name;
       const emoji = post.emoji;
       const userName = post.userInfo.userName;

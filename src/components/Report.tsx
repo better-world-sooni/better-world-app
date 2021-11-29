@@ -8,13 +8,13 @@ import {
   GRAY_COLOR,
   HEART_COLOR,
   iconSettings,
+  kmoment,
   NUM_OF_LINES_ON_POST,
   postShadowProp,
   REPORT,
 } from 'src/modules/constants';
 import {IMAGES} from 'src/modules/images';
 import {NAV_NAMES} from 'src/modules/navNames';
-import {isOkay, postKey} from 'src/modules/utils';
 import {deletePromiseFn, postPromiseFn} from 'src/redux/asyncReducer';
 import {RootState} from 'src/redux/rootReducer';
 import {Col} from './common/Col';
@@ -23,12 +23,8 @@ import {Img} from './common/Img';
 import {Row} from './common/Row';
 import {Span} from './common/Span';
 import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
-import moment from 'moment';
-import 'moment/locale/ko';
 import BestComment from './BestComment';
-import {Alert} from 'react-native';
 import {Swipeable} from 'react-native-gesture-handler';
-moment.locale('ko');
 
 const options = {
   enableVibrateFallback: true,
@@ -204,7 +200,7 @@ export const Report = props => {
       )}
       <Row py10>
         <Span color={GRAY_COLOR} fontSize={12}>
-          {moment(createdAt).calendar()}
+          {kmoment(createdAt).calendar()}
         </Span>
       </Row>
     </Div>

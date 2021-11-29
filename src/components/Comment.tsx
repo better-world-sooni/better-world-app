@@ -4,6 +4,7 @@ import {
   APPLE_RED,
   GRAY_COLOR,
   HEART_COLOR,
+  kmoment,
   PLACE,
   SUNGAN,
 } from 'src/modules/constants';
@@ -13,8 +14,6 @@ import {Div} from './common/Div';
 import {Img} from './common/Img';
 import {Row} from './common/Row';
 import {Span} from './common/Span';
-import moment from 'moment';
-import 'moment/locale/ko';
 import {Swipeable} from 'react-native-gesture-handler';
 import {deletePromiseFn} from 'src/redux/asyncReducer';
 import APIS from 'src/modules/apis';
@@ -22,7 +21,6 @@ import {shallowEqual, useSelector} from 'react-redux';
 import {RootState} from 'src/redux/rootReducer';
 import {isOkay} from 'src/modules/utils';
 import {Alert} from 'react-native';
-moment.locale('ko');
 
 const RightSwipeActions = () => {
   return (
@@ -103,7 +101,9 @@ const Comment = ({
               </Row>
               <Row pl10>
                 <Col mr10 auto>
-                  <Span color={GRAY_COLOR}>{moment(createdAt).calendar()}</Span>
+                  <Span color={GRAY_COLOR}>
+                    {kmoment(createdAt).calendar()}
+                  </Span>
                 </Col>
                 {likeCnt > 0 && (
                   <Col mr10 auto>
@@ -154,7 +154,7 @@ const Comment = ({
           </Row>
           <Row pl10>
             <Col mr10 auto>
-              <Span color={GRAY_COLOR}>{moment(createdAt).calendar()}</Span>
+              <Span color={GRAY_COLOR}>{kmoment(createdAt).calendar()}</Span>
             </Col>
             {likeCnt > 0 && (
               <Col mr10 auto>

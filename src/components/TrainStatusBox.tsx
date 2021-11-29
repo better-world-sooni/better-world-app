@@ -1,12 +1,5 @@
-import moment from 'moment';
-import React, {
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useMemo,
-  useState,
-} from 'react';
-import {Alert, Dimensions, View} from 'react-native';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
+import {Alert, View} from 'react-native';
 import {ChevronDown, RefreshCw} from 'react-native-feather';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import {shallowEqual, useDispatch, useSelector} from 'react-redux';
@@ -15,24 +8,17 @@ import {
   chevronDownSettings,
   Direction,
   GRAY_COLOR,
-  iconSettings,
+  kmoment,
   LINE2_COLOR,
   LINE2_Linked_List,
   shortenStations,
 } from 'src/modules/constants';
 import {isOkay, stationArr} from 'src/modules/utils';
-import {
-  deletePromiseFn,
-  getPromiseFn,
-  postPromiseFn,
-  useApiSelector,
-  useReloadGET,
-} from 'src/redux/asyncReducer';
+import {deletePromiseFn, getPromiseFn} from 'src/redux/asyncReducer';
 import {RootState} from 'src/redux/rootReducer';
 import {setSelectedTrain} from 'src/redux/routeReducer';
 import {Col} from './common/Col';
 import {Div} from './common/Div';
-import {Img} from './common/Img';
 import {Row} from './common/Row';
 import {Span} from './common/Span';
 import HorizontalStations from './HorizontalStations';
@@ -102,7 +88,7 @@ const TrainStatusBoxPlaceholder = ({
 const TrainStatusBox = ({handleSelectDirection}) => {
   const dispatch = useDispatch();
   const [currentTime, setCurrentTime] = useState(new Date());
-  const [lastUpdate, setLastUpdate] = useState(moment().calendar());
+  const [lastUpdate, setLastUpdate] = useState(kmoment().calendar());
   const [trainPositions, setTrainPositions] = useState(null);
   const [arrivalTrain, setArrivalTrain] = useState(null);
   const {
@@ -226,7 +212,7 @@ const TrainStatusBox = ({handleSelectDirection}) => {
         const seconds = hasMinutes
           ? parseInt(eta[1].substring(0, eta[1].length - 1))
           : parseInt(eta[0].substring(0, eta[0].length - 1));
-        const ETA = moment(
+        const ETA = kmoment(
           arrivalTrain.recptnDt.substring(0, arrivalTrain.recptnDt.length - 2),
         )
           .add(minutes, 'minutes')
@@ -260,7 +246,7 @@ const TrainStatusBox = ({handleSelectDirection}) => {
     if (isOkay(positionRes) && isOkay(arrivalRes)) {
       setTrainPositions(filterPositionResponse(positionRes.data?.data));
       setArrivalTrain(filterArrivalResponse(arrivalRes.data?.data));
-      setLastUpdate(moment().calendar());
+      setLastUpdate(kmoment().calendar());
     }
   };
 

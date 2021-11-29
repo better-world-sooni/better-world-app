@@ -1,24 +1,20 @@
 import React, {useState} from 'react';
 import {Col} from 'src/components/common/Col';
 import {Div} from 'src/components/common/Div';
-import {Img} from 'src/components/common/Img';
 import {Row} from 'src/components/common/Row';
 import {Span} from 'src/components/common/Span';
-import {FlatList, ScrollView, View} from 'src/modules/viewComponents';
+import {FlatList, View} from 'src/modules/viewComponents';
 import {shallowEqual, useSelector} from 'react-redux';
-import {GRAY_COLOR, HAS_NOTCH} from 'src/modules/constants';
-import {Grid, MessageCircle} from 'react-native-feather';
+import {GRAY_COLOR} from 'src/modules/constants';
+import {Grid} from 'react-native-feather';
 import {RootState} from 'src/redux/rootReducer';
 import {Header} from 'src/components/Header';
 import {useFocusEffect, useNavigation} from '@react-navigation/core';
 import {NAV_NAMES} from 'src/modules/navNames';
 import {getPromiseFn} from 'src/redux/asyncReducer';
 import APIS from 'src/modules/apis';
-import moment from 'moment';
-import 'moment/locale/ko';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import ChatRoomItem from 'src/components/ChatRoomItem';
-moment.locale('ko');
 
 const NoChatRooms = () => {
   const navigation = useNavigation();
