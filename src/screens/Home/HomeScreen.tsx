@@ -262,7 +262,6 @@ const HomeScreen = props => {
     const notificationOpen = await firebaseMessaging.getInitialNotification();
     if (notificationOpen) {
       // receiveNotification(notificationOpen.notification.data);
-      console.log(notificationOpen.notification);
       handlePress(notificationOpen.notification);
     }
   };
