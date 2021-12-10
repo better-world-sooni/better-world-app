@@ -504,6 +504,7 @@ const PostDetailScreen = props => {
                       numberOfLines={1}
                       returnKeyType={'send'}
                       onChangeText={setText}
+                      value={text}
                       onSubmitEditing={handleSend}
                       // keyboardType="visible-password"
                       InputRightElement={
