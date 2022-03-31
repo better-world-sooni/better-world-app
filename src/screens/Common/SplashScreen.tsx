@@ -7,22 +7,22 @@ import {Img} from 'src/components/common/Img';
 import {NAV_NAMES} from 'src/modules/navNames';
 import {useAutoLogin} from 'src/redux/appReducer';
 import { IMAGES } from 'src/modules/images';
-import { JWT_TOKEN } from 'src/modules/constants';
+import {JWT} from 'src/modules/constants';
 
 const SplashScreen = ({route}) => {
   const navigation = useNavigation();
   const autoLogin = useAutoLogin();
 
   useEffect(() => {
-    isAutoLoginChecked()
+    isAutoLoginChecked();
   }, []);
 
   const isAutoLoginChecked = () => {
-    AsyncStorage.getItem(JWT_TOKEN).then((value) => {
+    AsyncStorage.getItem(JWT).then(value => {
       if (value) {
         autoLogin(
           value,
-          (props) => {
+          props => {
             navigation.dispatch(
               CommonActions.reset({
                 index: 0,
@@ -30,12 +30,8 @@ const SplashScreen = ({route}) => {
               }),
             );
           },
-          (props) => {
-            Alert.alert(
-              '현재 서비스를 이용할 수 없습니다',
-              props.error.message,
-              [{text: '네'}],
-            );
+          props => {
+            navigation.navigate(NAV_NAMES.SignIn);
           },
         );
       } else {

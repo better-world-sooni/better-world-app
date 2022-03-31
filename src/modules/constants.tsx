@@ -11,7 +11,7 @@ export const IOS_APP_VERSION = '6.0.5';
 export const ANDROID_APP_VERSION = '6.0.5';
 export const IOS_CODE_PUSH_VERSION = '117';
 export const ANDROID_CODE_PUSH_VERSION = '45';
-export const JWT_TOKEN = 'jwt_token';
+export const JWT = 'jwt';
 export const HAS_NOTCH = hasNotch();
 export const GO_COLOR = 'rgb(10, 96, 254)';
 export const LINE2_Linked_List = new Map(
@@ -332,7 +332,8 @@ export const LINE2_Linked_List = new Map(
 export const GRAY_COLOR = 'rgb(199,199,204)';
 export const MAIN_LINE2 = '전체';
 export const MY_ROUTE = '설정된 길';
-export const LINE2_COLOR = 'rgb(51, 162, 60)';
+export const LINE2_COLOR = 'rgb(255, 219, 120)';
+// export const LINE2_COLOR = 'rgb(51, 162, 60)';
 export const LINE2_COLOR_LIGHT = 'rgba(51, 162, 60, 0.5)';
 
 export enum Direction {
@@ -655,3 +656,24 @@ export enum ChannelFilter {
 export const NUM_OF_LINES_ON_POST = 5;
 export const HEART_COLOR = '#ff4033';
 export const APPLE_RED = 'rgb(255, 69, 58)';
+
+export function truncateKlaytnAddress(fullStr, strLen = 12, separator = '...') {
+  if (fullStr.length <= strLen) return fullStr;
+
+  var sepLen = separator.length,
+    charsToShow = strLen - sepLen,
+    frontChars = Math.ceil(charsToShow / 2),
+    backChars = Math.floor(charsToShow / 2);
+
+  return (
+    fullStr.substr(0, frontChars) +
+    separator +
+    fullStr.substr(fullStr.length - backChars)
+  );
+}
+
+export enum KlaytnAccount {
+  KASAccount = 'KASAccount',
+  KaikasAccount = 'KaikasAccount',
+  KlipAccount = 'KlipAccount',
+}

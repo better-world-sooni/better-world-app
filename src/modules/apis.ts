@@ -1,7 +1,7 @@
 import urljoin from 'url-join';
 
-const BASE_URL = 'https://api.metasgid.com';
-// const BASE_URL = 'http://localhost:80';
+// const BASE_URL = 'https://api.metasgid.com';
+const BASE_URL = 'http://localhost:3000';
 const toUrl = (...args) => ({url: urljoin(...args)});
 const base = path => toUrl(BASE_URL, path);
 const v1 = path => toUrl(BASE_URL, '/api/v1', path);
@@ -74,11 +74,18 @@ const APIS = {
     },
   },
   auth: {
+    email: {
+      signin: () => v1('/auth/email/signin')
+    },
     usernameValidity: (id) => v1(`/auth/username-validity?value=${id}`),
     signIn: () => v1('/auth/log-in'),
     signUp: () => v1('/auth/sign-up'),
     avatar: () => v1('/auth/avatar'),
     user: (token) => v1(`/auth/user?jwtToken=${token}`),
+  },
+  profile: {
+    userUuid: (userUuid) => v1(`/profile?user_uuid=${userUuid}`),
+    my: () => v1(`/profile`),
   },
   push: {
     registrationToken: () => v1('/push/registration-token'),

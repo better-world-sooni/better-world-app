@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "postinstall": "patch-package && cd ios && pod install",
-    "android": "react-native run-android",
-    "ios": "react-native run-ios",
+    "android": "ENV=development react-native run-android",
+    "ios": "ENV=development react-native run-ios",
     "buildIos": "react-native bundle --dev false --entry-file index.js --bundle-output ios/main.jsbundle --assets-dest ./ios --platform ios",
     "buildAndroid": "react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res",
     "codePushIos": "appcenter codepush release-react -a noMacGuffins/subway2-app-sungan-ios",
@@ -37,6 +37,7 @@
     "appcenter-cli": "^2.10.4",
     "appcenter-crashes": "4.3.0",
     "babel-plugin-module-resolver": "^4.1.0",
+    "babel-plugin-transform-inline-environment-variables": "^0.4.3",
     "babel-plugin-transform-remove-console": "^6.9.4",
     "code-push-cli": "^3.0.0",
     "immer": "^9.0.5",

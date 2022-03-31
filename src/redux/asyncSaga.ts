@@ -49,7 +49,9 @@ function* asyncSaga(action) {
       }
     } else {
       const err = new Error();
+      // @ts-ignore
       err.data = data;
+      // @ts-ignore
       err.status = status;
       throw err;
     }

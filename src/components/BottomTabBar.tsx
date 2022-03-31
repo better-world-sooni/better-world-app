@@ -50,13 +50,13 @@ const BottomTabBar = ({state, descriptors, navigation}) => {
       return (
         <Div key={key} onPress={onPress} flex itemsCenter justifyCenter pb10>
           {image}
-          <Span
+          {/* <Span
             sectionBody2
             styleComp={[
               isFocused ? <Style color={LINE2_COLOR} bold /> : <Style black />,
             ]}>
             {label}
-          </Span>
+          </Span> */}
         </Div>
       );
     }),

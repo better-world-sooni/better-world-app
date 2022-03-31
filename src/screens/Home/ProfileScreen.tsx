@@ -30,154 +30,53 @@ import {
   MY_ROUTE,
   Selecting,
   shortenStations,
+  truncateKlaytnAddress,
 } from 'src/modules/constants';
 import {appActions, useLogout} from 'src/redux/appReducer';
-import {ScrollSelector} from 'src/components/ScrollSelector';
-import {setGlobalFilter} from 'src/redux/feedReducer';
 import {RootState} from 'src/redux/rootReducer';
-import {toggleReceiveStationPush} from 'src/redux/routeReducer';
 import {Alert, RefreshControl, Switch} from 'react-native';
-import AvatarSelect from 'src/components/AvatarSelect';
-import {isOkay, stationArr} from 'src/modules/utils';
-import ODSelect from 'src/components/ODSelect';
-import Post from 'src/components/Post';
+import {ICONS} from 'src/modules/icons';
 
 const ProfileScreen = props => {
   const navigation = useNavigation();
   const logout = useLogout(() => navigation.navigate(NAV_NAMES.SignIn));
-  const {
-    route: {
-      receiveStationPush,
-      route: {stations, direction, destination},
-      selectedTrain,
-    },
-    feed: {globalFiter},
-  } = useSelector((root: RootState) => root, shallowEqual);
+  const {data: profileResponse, isLoading: profileLoading} = useApiSelector(
+    APIS.profile.my,
+  );
+  const loadingUser = {
+    uuid: 'loading...',
+    username: 'loading...',
+    email_account: null,
+    klaytn_accounts: [],
+    avatar_nfts: [],
+  };
+  const user = profileResponse?.user || loadingUser;
+  const avatarNfts =
+    user.avatar_nfts.filter(nft => {
+      nft.main;
+    })[0] || user.avatar_nfts[0];
+  const profileImgUrl = avatarNfts?.nft_metadatum?.image_url || '';
+  console.log(avatarNfts);
+  const apiGET = useReloadGET();
   const {currentUser, token} = useSelector(
     (root: RootState) => root.app.session,
     shallowEqual,
   );
-  const [loading, setLoading] = useState(false);
-  const [myPosts, setMyPosts] = useState([]);
-  const [selecting, setSelecting] = useState(Selecting.NONE);
-  const [character, setCharacter] = useState(null);
-  const dispatch = useDispatch();
-  const [selectingAvatar, setSelectingAvatar] = useState(false);
-  const [selectingOD, setSelectingOD] = useState(false);
-  const selectGetterSetter = {
-    [Selecting.GLOBAL_FILTER]: {
-      get: globalFiter,
-      set: filt => dispatch(setGlobalFilter(filt)),
-      options: [MAIN_LINE2, MY_ROUTE, ...stations],
-    },
-  };
-  const toggleStationPush = useCallback(async () => {
-    if (receiveStationPush) {
-      dispatch(toggleReceiveStationPush());
-      const res = await deletePromiseFn({
-        url: APIS.route.notification().url,
-        body: {},
-        token: token,
-      });
-      if (isOkay(res)) {
-        Alert.alert('역알림이 취소 되었습니다.');
-      } else {
-        Alert.alert('Error', '역알림이 취소중 문제가 발생하였습니다.');
-      }
-    } else {
-      dispatch(toggleReceiveStationPush());
-      if (selectedTrain && destination) {
-        const res = await postPromiseFn({
-          url: APIS.route.notification().url,
-          body: {
-            trainNo: selectedTrain?.trainNo,
-            stations: [
-              LINE2_Linked_List.get(destination)[
-                direction == Direction.INNER ? 'prev' : 'next'
-              ].split('(')[0],
-            ],
-          },
-          token: token,
-        });
-        if (isOkay(res)) {
-          Alert.alert('역알림이 설정 되었습니다.');
-        } else {
-          Alert.alert('Error', '역알림이 설정중 문제가 발생하였습니다.');
-        }
-      }
-    }
-  }, [
-    receiveStationPush,
-    toggleReceiveStationPush,
-    selectedTrain,
-    stations,
-    direction,
-  ]);
   const pullToRefresh = useCallback(async () => {
-    setLoading(true);
-    const res = await getPromiseFn({
-      url: APIS.post.sungan.my().url,
-      token,
-    });
-    if (isOkay(res) && res.data.data) {
-      setMyPosts(res.data.data);
-    }
-    setLoading(false);
-  }, [token]);
-  const handleReturnSelectAvatar = useCallback(async () => {
-    setSelectingAvatar(false);
-    if (character) {
-      const res = await postPromiseFn({
-        url: APIS.auth.avatar().url,
-        body: {
-          jwtToken: token,
-          avatar: character,
-        },
-        token: '',
-      });
-      if (res.status == 200) {
-        const {avatar} = res.data;
-        dispatch(appActions.updateUserAvatar(avatar));
-        Alert.alert('아바타를 성공적으로 바꾸었습니다.');
-      } else {
-        Alert.alert('아바타를 바꾸는 도중 문제가 생겼습니다.');
-      }
-    }
-  }, [character, token, appActions]);
-  const handleReturnSelectOD = () => {
-    setSelectingOD(false);
-  };
-  const handleSelectDone = useCallback(() => setSelecting(Selecting.NONE), []);
-  const handleSelectAvatar = useCallback(() => setSelectingAvatar(true), []);
-  const handleSelectOD = useCallback(() => setSelectingOD(true), []);
+    apiGET(APIS.profile.my());
+  }, []);
   const handleGotoPost = useCallback(
     () => navigation.navigate(NAV_NAMES.Post),
     [],
   );
-  useEffect(() => {
-    if (myPosts.length == 0) {
-      pullToRefresh();
-    }
-  }, []);
+  useEffect(() => {}, []);
 
   return (
     <Div flex backgroundColor={'white'}>
       <Div h={HAS_NOTCH ? 44 : 20} />
       <Row itemsCenter py10 px20 bg={'white'}>
-        <Col justifyCenter>
-          <Row itemsCenter>
-            <Col itemsCenter auto pr5>
-              <Span
-                bold
-                textCenter
-                color={'black'}
-                fontSize={20}
-                numberOfLines={1}
-                ellipsizeMode="head">
-                프로필
-              </Span>
-            </Col>
-          </Row>
+        <Col justifyCenter bgGray300 rounded20 h30 wFull mr20 px20>
+          <Span gray500>Search by address or username</Span>
         </Col>
         <Col pl15 auto onPress={logout}>
           <LogOut {...iconSettings} color={'black'}></LogOut>
@@ -188,125 +87,76 @@ const ProfileScreen = props => {
         showsVerticalScrollIndicator={false}
         ListHeaderComponent={
           <Div relative px20>
-            <Row itemsCenter mt10>
-              <Col auto rounded100 overflowHidden>
-                <Img
-                  source={IMAGES.characters[currentUser.avatar]}
-                  h100
-                  w100></Img>
+            <Row my10>
+              <Col auto>
+                <Img uri={profileImgUrl} h100 w100 rounded20></Img>
               </Col>
-              <Col px20 flex>
-                <Row itemsCenter flex={1}>
-                  <Col auto>
-                    <Span bold fontSize={20}>
-                      {currentUser.username}
-                    </Span>
-                  </Col>
-                </Row>
+              <Col px20 flex itemsStart>
+                <Span bold fontSize={20}>
+                  {truncateKlaytnAddress(user.username)}
+                </Span>
               </Col>
             </Row>
-            <Div onPress={handleSelectAvatar}>
-              <Row
-                itemsCenter
-                mt10
-                mb5
-                py10
-                rounded5
-                borderWidth={0.5}
-                borderColor={GRAY_COLOR}>
-                <Col></Col>
-                <Col auto>
-                  <Span>아바타 바꾸기</Span>
-                </Col>
-                <Col></Col>
-              </Row>
-            </Div>
-            <Div onPress={handleSelectOD}>
-              <Row
-                itemsCenter
-                mt5
-                mb10
-                py10
-                rounded5
-                borderWidth={0.5}
-                borderColor={GRAY_COLOR}>
-                <Col></Col>
-                <Col auto>
-                  <Span>자주가는 길 설정</Span>
-                </Col>
-                <Col></Col>
-              </Row>
-            </Div>
-            <Div>
-              <Row
-                mt5
-                mb10
-                py5
-                rounded5
-                borderWidth={0.5}
-                borderColor={GRAY_COLOR}>
-                <Col />
-                <Col auto justifyCenter>
-                  <Span>
-                    {receiveStationPush
-                      ? '도착지 전역 알림 킴'
-                      : '도착지 전역 알림 끔'}
-                  </Span>
-                </Col>
-                <Col auto justifyCenter>
-                  <Switch
-                    style={{
-                      transform: [{scaleX: 0.5}, {scaleY: 0.5}],
-                    }}
-                    ios_backgroundColor="#3e3e3e"
-                    onValueChange={toggleStationPush}
-                    value={receiveStationPush}
-                  />
-                </Col>
-                <Col />
-              </Row>
-            </Div>
+            <Row pt10 pb5>
+              <Span bold fontSize={20}>
+                Accounts
+              </Span>
+            </Row>
+            {user.klaytn_accounts.map(klaytnAccount => {
+              return (
+                <Row border1 borderGray400 rounded5 my5 py10 px15>
+                  <Col auto>
+                    <Img
+                      source={ICONS[klaytnAccount.type]}
+                      w30
+                      h30
+                      rounded25></Img>
+                  </Col>
+                  <Col ml10>
+                    <Span bold>{klaytnAccount.type}</Span>
+                    <Span bold>
+                      {truncateKlaytnAddress(klaytnAccount.address)}
+                    </Span>
+                  </Col>
+                  <Col auto>
+                    <Div rounded5 bgGray200 py2 px5>
+                      <Span bold>{klaytnAccount.main ? 'Main' : 'Voting'}</Span>
+                    </Div>
+                  </Col>
+                </Row>
+              );
+            })}
+            <Row pt10 pb5>
+              <Span bold fontSize={20}>
+                Gomz
+              </Span>
+            </Row>
+            <ScrollView horizontal>
+              {user.avatar_nfts.map(avatarNft => {
+                return (
+                  <Div w100 mr20>
+                    <Row auto>
+                      <Img
+                        uri={avatarNft.nft_metadatum?.image_url}
+                        w100
+                        h100
+                        rounded25></Img>
+                    </Row>
+                    <Row py5>
+                      <Span bold>
+                        {avatarNft.nft_metadatum?.name ||
+                          'Metadata doesnt exist'}
+                      </Span>
+                    </Row>
+                  </Div>
+                );
+              })}
+            </ScrollView>
           </Div>
         }
-        data={myPosts}
+        data={user.klaytn_accounts}
         renderItem={({item, index}) => {
-          const type = item.type;
-          const didLike = item.didLike;
-          const postId = item.post.id;
-          const stationName = item.post.station?.name;
-          const emoji = item.post.emoji;
-          const userName = item.post.userInfo.userName;
-          const userProfileImgUrl = item.post.userInfo.userProfileImgUrl;
-          const createdAt = item.post.createdAt;
-          const likeCnt = item.post.likeCnt;
-          const text = item.post.text;
-          const place = item.post.place;
-          const vehicleIdNum = item.post.vehicleIdNum;
-          const userNameBC = item.bestComment?.userInfo.userName;
-          const userProfileImgUrlBC =
-            item.bestComment?.userInfo.userProfileImgUrl;
-          const contentBC = item.bestComment?.content;
-          return (
-            <Post
-              type={type}
-              vehicleIdNum={vehicleIdNum}
-              didLike={didLike}
-              postId={postId}
-              stationName={stationName}
-              emoji={emoji}
-              userName={userName}
-              userProfileImgUrl={userProfileImgUrl}
-              createdAt={createdAt}
-              likeCnt={likeCnt}
-              text={text}
-              place={place}
-              mine={true}
-              userNameBC={userNameBC}
-              userProfileImgUrlBC={userProfileImgUrlBC}
-              contentBC={contentBC}
-              key={index}
-            />
-          );
+          return <Span></Span>;
         }}
         ListEmptyComponent={
           <>
@@ -331,23 +181,11 @@ const ProfileScreen = props => {
           </>
         }
         refreshControl={
-          <RefreshControl refreshing={loading} onRefresh={pullToRefresh} />
+          <RefreshControl
+            refreshing={profileLoading}
+            onRefresh={pullToRefresh}
+          />
         }></FlatList>
-      {selecting && (
-        <ScrollSelector
-          selectedValue={selectGetterSetter[selecting].get}
-          onValueChange={selectGetterSetter[selecting].set}
-          options={selectGetterSetter[selecting].options}
-          onClose={handleSelectDone}
-        />
-      )}
-      <AvatarSelect
-        visible={selectingAvatar}
-        onPressReturn={handleReturnSelectAvatar}
-        character={character}
-        setCharacter={setCharacter}
-      />
-      <ODSelect visible={selectingOD} onPressReturn={handleReturnSelectOD} />
     </Div>
   );
 };

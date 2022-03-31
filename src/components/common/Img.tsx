@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {StyleSheet} from 'react-native';
 import {
   addBackgroundStyles,
@@ -9,6 +9,7 @@ import {
 } from 'src/modules/styleUtils';
 import {mergePropsWithStyleComp} from 'src/modules/viewComponents';
 import FastImage from 'react-native-fast-image';
+import {IMAGES} from 'src/modules/images';
 
 const getImageStyles = props => {
   const {style} = props;
@@ -32,6 +33,7 @@ export const Img = props => {
   const sheet = StyleSheet.create({
     style: StyleSheet.flatten(imageStyles),
   });
+  const [error, setError] = useState(false);
   const s = uri
     ? {
         uri: uri,
@@ -41,6 +43,12 @@ export const Img = props => {
     ? a_source
     : source;
   return (
-    <FastImage ref={innerRef} {...mergedProps} style={sheet.style} source={s} />
+    <FastImage
+      ref={innerRef}
+      {...mergedProps}
+      style={sheet.style}
+      source={error ? IMAGES.placeholder : s}
+      onError={() => setError(true)}
+    />
   );
 };

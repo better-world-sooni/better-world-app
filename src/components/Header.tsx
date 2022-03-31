@@ -102,16 +102,6 @@ export const Header = ({
         )}
         <Col></Col>
         {!noButtons && (
-          <Col auto pl15 onPress={goToReport}>
-            <AlertCircle {...iconSettings} color={'red'}></AlertCircle>
-          </Col>
-        )}
-        {!noButtons && (
-          <Col auto pl15 onPress={goToPost}>
-            <PlusSquare {...iconSettings} color={'black'}></PlusSquare>
-          </Col>
-        )}
-        {!noButtons && (
           <Col auto pl15 onPress={goToNotification}>
             <Bell {...iconSettings} color={'black'}></Bell>
           </Col>

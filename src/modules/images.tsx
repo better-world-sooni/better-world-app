@@ -1,6 +1,6 @@
 export const IMAGES = {
-  mainLogo: require('assets/images/imgSunganLogo1024.png'),
   blueMapMarker: require('assets/images/blueMapMarker.png'),
+  mainLogo: require('assets/images/basicBearNoBg.png'),
   redMapMarker: require('assets/images/redMapMarker.png'),
   imageLogoApple: require('assets/images/imageLogoApple.png'),
   imageLogoKakaotalk: require('assets/images/imageLogoKakaotalk.png'),
@@ -8,6 +8,7 @@ export const IMAGES = {
   imageLogoFacebook: require('assets/images/imageLogoFacebook.png'),
   imageProfileNull: require('assets/images/imagePersonRectangle.png'),
   imageIosLoading: require('assets/images/imageIosLoading.gif'),
+  placeholder: require('assets/images/placeholder.png'),
   characters: {
     alien: require('assets/images/characters/alien.png'),
     blue: require('assets/images/characters/blue.png'),

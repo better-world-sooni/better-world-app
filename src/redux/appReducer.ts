@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {createSlice} from '@reduxjs/toolkit';
 import { useDispatch } from 'react-redux';
 import APIS from 'src/modules/apis';
-import { JWT_TOKEN } from 'src/modules/constants';
+import { JWT } from 'src/modules/constants';
 import {
   asyncActions,
   useApiGET,
@@ -13,20 +13,22 @@ import {
 export const useLogin = () => {
   const dispatch = useDispatch();
   const apiPOST = useApiPOST();
+  const apiGETWithToken = useApiGETWithToken();
   return (email, password, successHandler?, errHandler?) => {
     apiPOST(
-      APIS.auth.signIn(),
+      APIS.auth.email.signin(),
       {
-        email: email,
+        address: email,
         password: password,
       },
       props => {
         dispatch(async () => {
-          const { jwtToken } = props.data;
-          await AsyncStorage.setItem(JWT_TOKEN, jwtToken);
+          const { jwt } = props.data;
+          await apiGETWithToken(APIS.profile.my(), jwt)
+          await AsyncStorage.setItem(JWT, jwt);
           dispatch(appActions.login(props.data));
           if (successHandler) {
-            const success = await successHandler(props);
+            await successHandler(props);
           }
         });
       },
@@ -48,7 +50,7 @@ export const useSocialLogin = () => {
         dispatch(async () => {
           if (!props.data.is_new_user) {
             const { jwtToken } = props.data;
-            await AsyncStorage.setItem(JWT_TOKEN, jwtToken);
+            await AsyncStorage.setItem(JWT, jwtToken);
             dispatch(appActions.login(props.data));
           }
           if (successHandler) {
@@ -71,7 +73,7 @@ export const useAutoLogin = () => {
       APIS.auth.user(token),
       props => {
         dispatch(async () => {
-          await AsyncStorage.setItem(JWT_TOKEN, token);
+          await AsyncStorage.setItem(JWT, token);
           const payload = {
             user: props.data,
             jwtToken: token,
@@ -96,7 +98,7 @@ export const useLogout = (callback?) => {
       if (callback) {
         await callback();
       }
-      await AsyncStorage.removeItem(JWT_TOKEN);
+      await AsyncStorage.removeItem(JWT);
       dispatch(appActions.logout());
       dispatch(asyncActions.reset());
     });
@@ -118,10 +120,10 @@ const appSlice = createSlice({
       state.badge = action.payload;
     },
     login(state, action) {
-      const { jwtToken, user } = action.payload;
+      const { jwt, user } = action.payload;
       state.session = {
         currentUser: user,
-        token: jwtToken,
+        token: jwt,
       };
       state.isLoggedIn = true;
     },

@@ -172,14 +172,6 @@ const HomeScreen = props => {
     }
   };
 
-  const exchangeOD = useCallback(() => {
-    if (origin && destination) {
-      dispatch(exchangeOriginDestination());
-    } else {
-      Alert.alert('출발지와 도착지를 먼저 설정해주세요.');
-    }
-  }, [origin, destination]);
-
   const firebaseMessaging = messaging();
 
   const handlePress = async notification => {
@@ -378,20 +370,6 @@ const HomeScreen = props => {
           ref={scrollRef}
           showsVerticalScrollIndicator={false}
           onEndReached={addMorePostsOnRefesh}
-          ListHeaderComponent={
-            <>
-              <Div bg={'rgba(255,255,255,.9)'}>
-                <OD
-                  origin={origin}
-                  destination={destination}
-                  handleSelectDestination={handleSelectDestination}
-                  handleSelectOrigin={handleSelectOrigin}
-                  exchangeOD={exchangeOD}
-                />
-              </Div>
-              <TrainStatusBox handleSelectDirection={handleSelectDirection} />
-            </>
-          }
           ListFooterComponent={
             addPostLoading && !noMorePosts ? <PostsLoading /> : <FeedChecked />
           }

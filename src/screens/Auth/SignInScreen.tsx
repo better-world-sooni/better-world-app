@@ -12,10 +12,11 @@ import {ScrollView} from 'src/modules/viewComponents';
 import {useLogin} from 'src/redux/appReducer';
 import {IMAGES} from 'src/modules/images';
 import LinearGradient from 'react-native-linear-gradient';
+import {ICONS} from 'src/modules/icons';
 
 const SignInScreen = ({navigation}) => {
   const [email, setEmail] = useState('');
-  const [errEmail, setErrEmail] = useState(false);
+  const [emailError, setEmailError] = useState(false);
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const login = useLogin();
@@ -54,7 +55,7 @@ const SignInScreen = ({navigation}) => {
       },
       props => {
         setLoading(false);
-        Alert.alert('Error', '아이디, 비밀번호를 확인해 주세요.', [
+        Alert.alert('Error', '이메일, 비밀번호를 확인해 주세요.', [
           {text: '네'},
         ]);
       },
@@ -62,15 +63,11 @@ const SignInScreen = ({navigation}) => {
   }, [email, password]);
 
   const handleChangeEmail = useCallback(text => setEmail(text), []);
-  const handleErrEmail = useCallback(
-    () => setErrEmail(!isEmail(email)),
+  const handleBlurEmail = useCallback(
+    () => setEmailError(!isEmail(email)),
     [email],
   );
   const handleChangePassword = useCallback(text => setPassword(text), []);
-  const handlePressSignUp = useCallback(
-    () => navigation.navigate(NAV_NAMES.SignUp),
-    [],
-  );
 
   return (
     <Div bgWhite flex justifyCenter>
@@ -85,7 +82,7 @@ const SignInScreen = ({navigation}) => {
           <Row py20 justifyCenter itemsCenter>
             <Col auto justifyCenter>
               <Span bold fontSize={30}>
-                로그인
+                연결
               </Span>
             </Col>
             <Col></Col>
@@ -93,61 +90,71 @@ const SignInScreen = ({navigation}) => {
               <Img w50 h50 source={IMAGES.mainLogo} />
             </Col>
           </Row>
-          <Row>
+          <Row my15 bgColor="#216FEA" rounded4 h56 flex itemsCenter>
+            <Col />
+            <Col auto pr10>
+              <Div>
+                <Img h10 w20 source={ICONS.iconKlip}></Img>
+              </Div>
+            </Col>
+            <Col auto>
+              <Div>
+                <Span white bold>
+                  {'Klip으로 연결'}
+                </Span>
+              </Div>
+            </Col>
+            <Col />
+          </Row>
+          <Row flex itemsCenter>
+            <Col h={0.5} bgBlack>
+              <Div hrTag />
+            </Col>
+            <Col auto px10>
+              <Span>{'Or'}</Span>
+            </Col>
+            <Col h={0.5} bgBlack></Col>
+          </Row>
+          <Row mt15>
             <TextField
               label={'이메일'}
               onChangeText={handleChangeEmail}
-              onBlur={handleErrEmail}
-              error={errEmail && '이메일이 정확한지 확인해 주세요'}
+              onChange={handleBlurEmail}
+              error={emailError && '이메일이 정확한지 확인해 주세요'}
               autoCapitalize="none"
             />
           </Row>
-          <Row>
+          <Row mb15>
             <TextField
               label={'비밀번호'}
               onChangeText={handleChangePassword}
+              autoCapitalize="none"
               password
             />
           </Row>
-          <LinearGradient
-            colors={['#25e2bc', '#45c01c']}
-            style={{width: '100%', borderRadius: 5, marginTop: 20, padding: 2}}>
-            <Row py15 px20 onPress={handleEmailSignIn} bgWhite rounded5>
-              <Col></Col>
-              <Col auto>
+          <Row
+            mb15
+            bgGray200
+            rounded4
+            h56
+            flex
+            itemsCenter
+            onPress={handleEmailSignIn}>
+            <Col />
+            <Col auto>
+              <Div>
                 <Span black bold>
-                  {loading ? '' : '로그인'}
+                  {'이메일로 연결'}
                 </Span>
-              </Col>
-              <Col></Col>
-            </Row>
-          </LinearGradient>
-          {/* <Row mt100 w="100%" justifyCenter>
-            <Col auto mr16>
-              <Img w42 h42 source={IMAGES.imageLogoFacebook} />
+              </Div>
             </Col>
-            <Col auto mr16>
-              <Img w42 h42 source={IMAGES.imageLogoGoogle} />
-            </Col>
-            <Col auto mr={Platform.OS === 'ios' && 16}>
-              <Img w42 h42 source={IMAGES.imageLogoKakaotalk} />
-            </Col>
-            {Platform.OS === 'ios' && (
-              <Col auto>
-                <Img w42 h42 source={IMAGES.imageLogoApple} />
-              </Col>
-            )}
-          </Row> */}
-        </Div>
-        <Div px20 mt32 itemsCenter w="100%" onPress={handlePressSignUp}>
-          <Row>
-            <Span sectionBody gray600>
-              {'처음이신 가요?'}
-            </Span>
+            <Col />
           </Row>
-          <Row py8 px25>
-            <Span header4 primary black>
-              {'사인업'}
+          <Row textCenter>
+            <Span black>
+              {
+                '카이카스 모바일 지갑은 인증 기능이 아직 부재하기 때문에, Kaikas 유저들은 www.betterworld.io > connect > kaikas > email login method 등록 후에 로그인 진행해 주시길 바랍니다.'
+              }
             </Span>
           </Row>
         </Div>
