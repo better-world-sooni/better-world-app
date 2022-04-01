@@ -93,6 +93,10 @@ const ChatRoomScreen = props => {
       const manager = new Manager(WS_URL, {
         reconnectionDelayMax: 5000,
       });
+
+
+
+      
       const newSocket = manager.socket('/chat', {
         auth: {
           token: token,

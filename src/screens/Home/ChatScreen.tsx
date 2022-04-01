@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useCallback, useState} from 'react';
 import {Col} from 'src/components/common/Col';
 import {Div} from 'src/components/common/Div';
 import {Row} from 'src/components/common/Row';
@@ -138,9 +138,11 @@ const ChatScreen = () => {
     }
   };
 
-  useFocusEffect(() => {
-    fetchNewRoom();
-  });
+  useFocusEffect(
+    useCallback(() => {
+      fetchNewRoom();
+    },[])
+  );
 
   return (
     <Div flex bg={'white'}>
@@ -151,16 +153,26 @@ const ChatScreen = () => {
         data={chatRooms}
         ListEmptyComponent={<NoChatRooms />}
         renderItem={({item, index}) => {
+          // const chatRoomId = item.id;
+          // const userIds = item.userIds.length;
+          // const createdAt = item.lastMessage?.createdAt;
+          // const title = item.title;
+          // const lastMessage = item.lastMessage?.text;
+          // const unreadMessageCount = item.unreadMessageCount;
+          // const firstUserAvatar = item.avatars[1]?.avatar;
+          // const secondUserAvatar = item.avatars[2]?.avatar;
+          // const thirdUserAvatar = item.avatars[3]?.avatar;
+          // const fourthUserAvatar = item.avatars[4]?.avatar;
           const chatRoomId = item.id;
-          const userIds = item.userIds.length;
-          const createdAt = item.lastMessage?.createdAt;
-          const title = item.title;
-          const lastMessage = item.lastMessage?.text;
-          const unreadMessageCount = item.unreadMessageCount;
-          const firstUserAvatar = item.avatars[1]?.avatar;
-          const secondUserAvatar = item.avatars[2]?.avatar;
-          const thirdUserAvatar = item.avatars[3]?.avatar;
-          const fourthUserAvatar = item.avatars[4]?.avatar;
+          const userIds = item.category;
+          const createdAt = item.created_at;
+          const title = item.buddy;
+          const lastMessage = item.last_message;
+          const unreadMessageCount = 100;
+          const firstUserAvatar = null;
+          const secondUserAvatar = null;
+          const thirdUserAvatar = null;
+          const fourthUserAvatar = null;
           return (
             <ChatRoomItem
               chatRoomId={chatRoomId}
