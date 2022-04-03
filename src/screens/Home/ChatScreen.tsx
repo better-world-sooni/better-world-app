@@ -140,6 +140,7 @@ const ChatScreen = () => {
 
   useFocusEffect(
     useCallback(() => {
+      console.log("here")
       fetchNewRoom();
     },[])
   );
@@ -168,8 +169,8 @@ const ChatScreen = () => {
           const createdAt = item.created_at;
           const title = item.buddy;
           const lastMessage = item.last_message;
-          const unreadMessageCount = 100;
-          const firstUserAvatar = null;
+          const unreadMessageCount = 7;
+          const firstUserAvatar = item.buddy;
           const secondUserAvatar = null;
           const thirdUserAvatar = null;
           const fourthUserAvatar = null;

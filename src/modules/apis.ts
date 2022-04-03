@@ -94,7 +94,7 @@ const APIS = {
     }
   },
   chat: {
-    chat: (roomId) => v1(`/chat/chat/${roomId}`),
+    chat: (category, roomId) => v1(`/chat/room?category=${category}&roomId=${roomId}`),
     chatRoom: {
       main: () => v1(`/chat/room/all`),
       user: () => v1(`/chat/chatRoom/user`),

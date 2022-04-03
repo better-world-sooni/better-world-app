@@ -62,7 +62,7 @@ const ChatRoomItem = ({
   }, []);
 
   const goToChatRoom = roomId => {
-    navigation.navigate(NAV_NAMES.ChatRoom, {currentChatRoomId: roomId});
+    navigation.navigate(NAV_NAMES.ChatRoom, {currentChatRoomId: roomId, title: title});
   };
   const deleteChatRoom = async roomId => {
     const res = await patchPromiseFn({
@@ -125,7 +125,7 @@ const ChatRoomItem = ({
                 px5
                 justifyCenter>
                 <Span color={'white'}>
-                  {unreadMessageCount == 100 ? '99+' : unreadMessageCount}
+                  {unreadMessageCount >= 100 ? '99+' : unreadMessageCount}
                 </Span>
               </Col>
             )}
