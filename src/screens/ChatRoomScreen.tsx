@@ -25,39 +25,12 @@ const ChatRoomScreen = props => {
     (root: RootState) => root.app.session,
     shallowEqual,
   );
-  const sendSocketMessage = useSocketInput();
   const navigation = useNavigation();
   const [title, setTitle] = useState(null);
   const [messages, setMessages] = useState([]);
   const [users, setUsers] = useState([]);
   const [chatSocket, setChatSocket] = useState(null);
-  const [metasunganUser, setMetasunganUser] = useState({
-    _id: null,
-    metaSid: null,
-    chatSid: null,
-    username: null,
-    posOnNewScene: {
-      x: null,
-      y: null,
-    },
-    chatBubble: null,
-    updatedAt: null,
-    chatRoomIds: [],
-    avatar: null,
-  });
-  // const login = useCallback(loginParams => {
-  //   setMetasunganUser(loginParams.user);
-  // }, []);
 
-
-  const enterChatRoom = enterChatRoomParams => {
-    console.log('enterChatRoom', enterChatRoomParams.chatRoom.messages);
-    setMessages(enterChatRoomParams.chatRoom.messages);
-  };
-  const readMessage = readMessageParams => {
-    console.log('readMessage', readMessageParams.chatRoom.messages);
-    setMessages(readMessageParams.chatRoom.messages);
-  };
   const fetchNewRoom = async callback => {
     const res = await getPromiseFn({
       url: APIS.chat.chat('private', currentChatRoomId).url,
@@ -71,7 +44,6 @@ const ChatRoomScreen = props => {
     }
   };
 
-
   const onSend = useCallback(async (messages = []) => {
     console.log(messages)
     console.log(messages[0]["text"])
@@ -84,7 +56,6 @@ const ChatRoomScreen = props => {
     }
     
   }, [chatSocket]);
-
 
   const onMessageReceived = (msg) => {
     console.log("receive", msg);
@@ -108,14 +79,10 @@ const ChatRoomScreen = props => {
   useEffect(() => {
     if(chatSocket){
       chatSocket.on('message', res => {
-        console.log("here", res['data']);
+        console.log("socket", res['data']);
         if(res["type"] == 'enter') {
-          console.log('enter room')
-          setUsers((users) => [...users, res['data']])
-        }
-        else if (res["type"] == 'send') {
-          console.log("receive message", users)
-          onMessageReceived(res['data'])
+          console.log('enter room');
+          setUsers((users) => [...users, res['data']]);
         }
       });
       chatSocket.on('close', () => console.log('Disconnected from chat'));
@@ -132,7 +99,15 @@ const ChatRoomScreen = props => {
 
   useEffect(() => {
     console.log("new user enter", users)
-    
+    if(chatSocket){
+      chatSocket.on('message', res => {
+        console.log("user", res['data']);
+        if (res["type"] == 'send') {
+          console.log("receive message", users);
+          onMessageReceived(res['data']);
+        }
+      });
+    }
   }, [users]);
 
   return (
