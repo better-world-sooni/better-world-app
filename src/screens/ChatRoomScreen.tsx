@@ -20,6 +20,7 @@ import {RootState} from 'src/redux/rootReducer';
 const ChatRoomScreen = props => {
   const currentChatRoomId = props.route.params.currentChatRoomId;
   const roomname = props.route.params.title;
+  const username = props.route.params.username;
   const {token} = useSelector(
     (root: RootState) => root.app.session,
     shallowEqual,
@@ -28,7 +29,7 @@ const ChatRoomScreen = props => {
   const navigation = useNavigation();
   const [title, setTitle] = useState(null);
   const [messages, setMessages] = useState([]);
-  const [users, setUsers] = useState(["seungan", "sehan"]);
+  const [users, setUsers] = useState([]);
   const [chatSocket, setChatSocket] = useState(null);
   const [metasunganUser, setMetasunganUser] = useState({
     _id: null,
@@ -66,110 +67,73 @@ const ChatRoomScreen = props => {
       const {title, messages, userIds} = res.data.data;
       setTitle(title);
       setMessages(messages);
-      setUsers(userIds);
       callback();
     }
   };
+
+
   const onSend = useCallback(async (messages = []) => {
     console.log(messages)
     console.log(messages[0]["text"])
-    // if (chatSocket) {
-    //   messages.forEach(message => {
-    //     sendSocketMessage(chatSocket, 'sendMessage', {
-    //       chatRoomId: currentChatRoomId,
-    //       message: message,
-    //     });
-    //   });
-    // } else {
-    //   Alert.alert('네트워크가 불안정하여 메세지를 보내지 못했습니다');
-    // }
-
-    // const msg = {
-    //   author: user.username,
-    //   message: msgText,
-    //   timestamp: new Date().getTime(),
-    //   buddy: "sehan"
-    // }
-    // setMessages(previousMessages => GiftedChat.append(previousMessages, messages))
-    const _ = await chatSocket.perform('sendMessage', { 
-      chatRoomId: currentChatRoomId,
-      msg: messages })
-  }, [chatSocket]);
-
-  const receiveMessage = receiveMessageParams => {
-    const newMessage = receiveMessageParams.message;
-    setMessages([newMessage, ...messages]);
-    if (chatSocket) {
-      sendSocketMessage(chatSocket, 'readMessage', {
+    if(chatSocket) {
+      const _ = await chatSocket.perform('sendMessage', { 
         chatRoomId: currentChatRoomId,
-        messageId: newMessage._id,
-      });
+        msg: messages[0] });
+    } else {
+      Alert.alert('네트워크가 불안정하여 메세지를 보내지 못했습니다');
     }
-  };
+    
+  }, [chatSocket]);
 
 
   const onMessageReceived = (msg) => {
     console.log("receive", msg);
-    setMessages((m) => [...m, msg]);
-    // setMessages([msg, ...messages]);
+    console.log(users)
+    msg['readUserIds'] = users 
+    setMessages((m) => [msg, ...m]);
   }
-
 
   useLayoutEffect(() => {
     const wsConnect = async () => {
       console.log(token)
-      const wsSocket = await cable(token).subscribeTo('ChatChannel', { username: "seungan" });
-      console.log("wsSocket connected")
-      wsSocket.on('message', msg => {
-        onMessageReceived(msg)
-      });
+      const wsSocket = await cable(token).subscribeTo('ChatChannel', { roomId: currentChatRoomId });
       setChatSocket(wsSocket);
+      console.log("wsSocket connected");
     };
     if (currentChatRoomId) {
-      // const manager = new Manager(WS_URL, {
-      //   reconnectionDelayMax: 5000,
-      // });
-      // const newSocket = manager.socket('/chat', {
-      //   auth: {
-      //     token: token,
-      //   },
-      // });
-      // fetchNewRoom(() => {
-      //   sendSocketMessage(newSocket, 'enterChatRoom', {
-      //     chatRoomId: currentChatRoomId,
-      //   });
-      // });
-      // newSocket.on('login', login);
-      // newSocket.on('disconnect', () => setChatSocket(null));
-      // newSocket.on('enterChatRoom', enterChatRoom);
-      // newSocket.on('readMessage', readMessage);
-      // setChatSocket(newSocket);
-      // return () => {
-      //   newSocket.off('login');
-      //   newSocket.off('disconnect');
-      //   newSocket.off('enterChatRoom');
-      //   newSocket.off('readMessage');
-      //   newSocket.close();
-      //   setChatSocket(null);
-      // };
       wsConnect();
-      // fetchNewRoom(() => {
-      //   sendSocketMessage(newSocket, 'enterChatRoom', {
-      //     chatRoomId: currentChatRoomId,
-      //   });
-      // });
-      
     }
   }, [currentChatRoomId]);
 
   useEffect(() => {
+    if(chatSocket){
+      chatSocket.on('message', res => {
+        console.log("here", res['data']);
+        if(res["type"] == 'enter') {
+          console.log('enter room')
+          setUsers((users) => [...users, res['data']])
+        }
+        else if (res["type"] == 'send') {
+          console.log("receive message", users)
+          onMessageReceived(res['data'])
+        }
+      });
+      chatSocket.on('close', () => console.log('Disconnected from chat'));
+      chatSocket.on('disconnect', () => console.log('No chat connection'));
+      chatSocket.perform('enter_room')
+    }
     return () => {
       if(chatSocket) {
         console.log("wsSocket will disconnected")
         chatSocket.disconnect();
       }
     }
-  }, [chatSocket, messages]);
+  }, [chatSocket]);
+
+  useEffect(() => {
+    console.log("new user enter", users)
+    
+  }, [users]);
 
   return (
     <Div flex bg={'white'}>
@@ -188,8 +152,8 @@ const ChatRoomScreen = props => {
             messages={messages}
             onSend={messages => onSend(messages)}
             user={{
-              _id: "seungan",
-              name: "seungan1",
+              _id: "seunganId",
+              name: username,
               // avatar: metasunganUser.avatar,
             }}
           />

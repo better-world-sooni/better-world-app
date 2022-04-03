@@ -127,14 +127,17 @@ const ChatScreen = () => {
     shallowEqual,
   );
   const [chatRooms, setChatRooms] = useState([]);
+  const [user, setUser] = useState(null);
   const fetchNewRoom = async () => {
     const res = await getPromiseFn({
       url: APIS.chat.chatRoom.main().url,
       token,
     });
     if (res?.data) {
-      const {chatRooms} = res.data;
+      console.log(res.data);
+      const {chatRooms, user} = res.data;
       setChatRooms(chatRooms);
+      setUser(user);
     }
   };
 
@@ -164,8 +167,9 @@ const ChatScreen = () => {
           // const secondUserAvatar = item.avatars[2]?.avatar;
           // const thirdUserAvatar = item.avatars[3]?.avatar;
           // const fourthUserAvatar = item.avatars[4]?.avatar;
+          const username = user
           const chatRoomId = item.id;
-          const userIds = item.category;
+          const category = item.category;
           const createdAt = item.created_at;
           const title = item.buddy;
           const lastMessage = item.last_message;
@@ -176,8 +180,9 @@ const ChatScreen = () => {
           const fourthUserAvatar = null;
           return (
             <ChatRoomItem
+              username={username}
               chatRoomId={chatRoomId}
-              userIds={userIds}
+              category={category}
               createdAt={createdAt}
               title={title}
               unreadMessageCount={unreadMessageCount}

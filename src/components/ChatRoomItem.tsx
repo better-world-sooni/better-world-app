@@ -26,8 +26,9 @@ const RightSwipeActions = () => {
 };
 
 const ChatRoomItem = ({
+  username,
   chatRoomId,
-  userIds,
+  category,
   title,
   createdAt,
   lastMessage,
@@ -62,7 +63,7 @@ const ChatRoomItem = ({
   }, []);
 
   const goToChatRoom = roomId => {
-    navigation.navigate(NAV_NAMES.ChatRoom, {currentChatRoomId: roomId, title: title});
+    navigation.navigate(NAV_NAMES.ChatRoom, {currentChatRoomId: roomId, title: title, username: username});
   };
   const deleteChatRoom = async roomId => {
     const res = await patchPromiseFn({
@@ -102,7 +103,7 @@ const ChatRoomItem = ({
               </Span>
             </Col>
             <Col auto fontSize={15}>
-              <Span color={GRAY_COLOR}>{userIds}</Span>
+              <Span color={GRAY_COLOR}>{category}</Span>
             </Col>
             <Col justifyCenter itemsEnd>
               <Span fontSize={13} light>
