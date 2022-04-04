@@ -48,15 +48,17 @@ const ChatRoomScreen = props => {
   useEffect(() => {
     const readCountUpdate = (enterUser) => {
       console.log("EnterUser", enterUser)
-      console.log("before", messages)
-      for(const message of messages) {
+      
+      let msgs = [...messages]
+      console.log("before", msgs)
+      for(const message of msgs) {
         if(message.readUserIds.includes(enterUser)) break;
         message.readUserIds.push(enterUser)
         message.text = message.text + "fix"
         console.log(message)
       }
-      console.log("after", messages)
-      return messages   
+      console.log("after", msgs)
+      return msgs 
     }
     readCountUpdateFunRef.current = readCountUpdate
   }, [messages]);
@@ -64,7 +66,7 @@ const ChatRoomScreen = props => {
   const onSend = useCallback(async (messages = []) => {
     console.log("send: ", messages[0]["text"]);
     if(chatSocket) {
-      const _ = await chatSocket.send(messages[0]);
+      const _ = await chatSocket.send(messages);
     } else {
       Alert.alert('네트워크가 불안정하여 메세지를 보내지 못했습니다');
     }
@@ -79,18 +81,24 @@ const ChatRoomScreen = props => {
       setChatSocket(channel);
       channel.on('enter', res => {
         console.log("enter", res['data']);
-        let msg = readCountUpdateFunRef.current(res['data'])
-        console.log("here" , msg)
-        if(msg.length) {
+        let msgs = readCountUpdateFunRef.current(res['data'])
+        console.log("here" , msgs)
+        if(msgs.length) {
           // setMessages(previousMessages => GiftedChat.append(previousMessages, msg))
-          // setMessages(msg);
-          console.log("append:", GiftedChat.append([], msg))
-          setMessages(GiftedChat.append([], msg));
+          console.log("check")
+          channel.update(msgs);
+          // console.log("append:", GiftedChat.append([], msg))
+          // setMessages((m) => [...GiftedChat.append([], msg), ...m]);
         }
       });
       channel.on('message', res => {
-        setMessages((m) => [res['data'], ...m]);
+        console.log(res['data'])
+        setMessages((m) => [...res['data'], ...m]);
       });
+      channel.on('update', res => {
+        console.log("update", res['data'])
+        setMessages([...res['data']])
+      })
       channel.on('close', () => console.log('Disconnected from chat'));
       channel.on('disconnect', () => console.log('No chat connection'));
       let _ = await channel.enter();

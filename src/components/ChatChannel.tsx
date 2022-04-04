@@ -9,15 +9,21 @@ type EnteringMessage = {
   data: string
 }
 
-type ChatMessage = {
-  type: 'message'
+type UpdatingMessage = {
+  type: 'update'
   data: object
 }
 
-type Message = EnteringMessage | ChatMessage
+type ChatMessage = {
+  type: 'send'
+  data: object
+}
+
+type Message = EnteringMessage | ChatMessage | UpdatingMessage
 
 interface Events extends ChannelEvents<Message> {
   enter: (msg: EnteringMessage) => void
+  update: (msg: UpdatingMessage) => void
 }
 
 export class ChatChannel extends Channel<Params,Message,Events> {
@@ -27,13 +33,22 @@ export class ChatChannel extends Channel<Params,Message,Events> {
     return this.perform('send_message', {message})
   }
 
+  async update(message) {
+    return this.perform('update_read_count', {message})
+  }
+
   async enter() {
     return this.perform('enter_room')
   }
   
   receive(message: Message) {
     if (message.type === 'enter') {
+      console.log("entering")
       return this.emit('enter', message)
+    }
+    else if(message.type === 'update') {
+      console.log("updating")
+      return this.emit('update', message)
     }
     super.receive(message)
   }
