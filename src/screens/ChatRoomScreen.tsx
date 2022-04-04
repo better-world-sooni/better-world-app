@@ -1,5 +1,5 @@
 import {useNavigation} from '@react-navigation/core';
-import React, {useCallback, useEffect, useLayoutEffect, useState} from 'react';
+import React, {useCallback, useEffect, useLayoutEffect, useState, useRef} from 'react';
 import {Alert} from 'react-native';
 import {ChevronLeft, CornerDownLeft} from 'react-native-feather';
 import {GiftedChat} from 'react-native-gifted-chat';
@@ -31,6 +31,7 @@ const ChatRoomScreen = props => {
   const [messages, setMessages] = useState([]);
   const [chatSocket, setChatSocket] = useState(null);
 
+  const readCountUpdateFunRef = useRef(null);
   const fetchNewRoom = async callback => {
     const res = await getPromiseFn({
       url: APIS.chat.chat('private', currentChatRoomId).url,
@@ -44,20 +45,20 @@ const ChatRoomScreen = props => {
     }
   };
 
-
-  const readCountUpdate = useCallback((enterUser) => {
-    console.log("EnterUser", enterUser)
-    console.log("before", messages)
-    if(enterUser){
+  useEffect(() => {
+    const readCountUpdate = (enterUser) => {
+      console.log("EnterUser", enterUser)
+      console.log("before", messages)
       for(const message of messages) {
         if(message.readUserIds.includes(enterUser)) break;
         message.readUserIds.push(enterUser)
-        message.text = "fixfix"
+        message.text = message.text + "fix"
         console.log(message)
       }
       console.log("after", messages)
-      setMessages(messages)
+      return messages   
     }
+    readCountUpdateFunRef.current = readCountUpdate
   }, [messages]);
 
   const onSend = useCallback(async (messages = []) => {
@@ -69,10 +70,6 @@ const ChatRoomScreen = props => {
     }
   }, [chatSocket]);
 
-  const onMessageReceived = useCallback((msg) => {
-    setMessages((m) => [msg, ...m]);
-  }, []);
-  
   useLayoutEffect(() => {
     let channel;
     const wsConnect = async () => {
@@ -82,10 +79,17 @@ const ChatRoomScreen = props => {
       setChatSocket(channel);
       channel.on('enter', res => {
         console.log("enter", res['data']);
-        readCountUpdate(res['data']);
+        let msg = readCountUpdateFunRef.current(res['data'])
+        console.log("here" , msg)
+        if(msg.length) {
+          // setMessages(previousMessages => GiftedChat.append(previousMessages, msg))
+          // setMessages(msg);
+          console.log("append:", GiftedChat.append([], msg))
+          setMessages(GiftedChat.append([], msg));
+        }
       });
       channel.on('message', res => {
-        onMessageReceived(res['data'])
+        setMessages((m) => [res['data'], ...m]);
       });
       channel.on('close', () => console.log('Disconnected from chat'));
       channel.on('disconnect', () => console.log('No chat connection'));
