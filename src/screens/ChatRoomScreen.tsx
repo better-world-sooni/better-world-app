@@ -16,6 +16,7 @@ import {cable} from 'src/modules/cable';
 import {HAS_NOTCH, iconSettings, WS_URL} from 'src/modules/constants';
 import {getPromiseFn} from 'src/redux/asyncReducer';
 import {RootState} from 'src/redux/rootReducer';
+import {ChatChannel} from 'src/components/ChatChannel'
 
 const ChatRoomScreen = props => {
   const currentChatRoomId = props.route.params.currentChatRoomId;
@@ -28,7 +29,6 @@ const ChatRoomScreen = props => {
   const navigation = useNavigation();
   const [title, setTitle] = useState(null);
   const [messages, setMessages] = useState([]);
-  const [users, setUsers] = useState([]);
   const [chatSocket, setChatSocket] = useState(null);
 
   const fetchNewRoom = async callback => {
@@ -44,71 +44,65 @@ const ChatRoomScreen = props => {
     }
   };
 
+
+  const readCountUpdate = useCallback((enterUser) => {
+    console.log("EnterUser", enterUser)
+    console.log("before", messages)
+    if(enterUser){
+      for(const message of messages) {
+        if(message.readUserIds.includes(enterUser)) break;
+        message.readUserIds.push(enterUser)
+        message.text = "fixfix"
+        console.log(message)
+      }
+      console.log("after", messages)
+      setMessages(messages)
+    }
+  }, [messages]);
+
   const onSend = useCallback(async (messages = []) => {
-    console.log(messages)
-    console.log(messages[0]["text"])
+    console.log("send: ", messages[0]["text"]);
     if(chatSocket) {
-      const _ = await chatSocket.perform('sendMessage', { 
-        chatRoomId: currentChatRoomId,
-        msg: messages[0] });
+      const _ = await chatSocket.send(messages[0]);
     } else {
       Alert.alert('네트워크가 불안정하여 메세지를 보내지 못했습니다');
     }
-    
   }, [chatSocket]);
 
-  const onMessageReceived = (msg) => {
-    console.log("receive", msg);
-    console.log(users)
-    msg['readUserIds'] = users 
+  const onMessageReceived = useCallback((msg) => {
     setMessages((m) => [msg, ...m]);
-  }
-
+  }, []);
+  
   useLayoutEffect(() => {
+    let channel;
     const wsConnect = async () => {
-      console.log(token)
-      const wsSocket = await cable(token).subscribeTo('ChatChannel', { roomId: currentChatRoomId });
-      setChatSocket(wsSocket);
-      console.log("wsSocket connected");
+      console.log(token);
+      channel = new ChatChannel({ roomId: currentChatRoomId });
+      await cable(token).subscribe(channel);
+      setChatSocket(channel);
+      channel.on('enter', res => {
+        console.log("enter", res['data']);
+        readCountUpdate(res['data']);
+      });
+      channel.on('message', res => {
+        onMessageReceived(res['data'])
+      });
+      channel.on('close', () => console.log('Disconnected from chat'));
+      channel.on('disconnect', () => console.log('No chat connection'));
+      let _ = await channel.enter();
+
     };
     if (currentChatRoomId) {
       wsConnect();
     }
+    return() => {
+      if(channel) {
+        channel.disconnect();
+        channel.close();
+      }   
+    }
   }, [currentChatRoomId]);
 
-  useEffect(() => {
-    if(chatSocket){
-      chatSocket.on('message', res => {
-        console.log("socket", res['data']);
-        if(res["type"] == 'enter') {
-          console.log('enter room');
-          setUsers((users) => [...users, res['data']]);
-        }
-      });
-      chatSocket.on('close', () => console.log('Disconnected from chat'));
-      chatSocket.on('disconnect', () => console.log('No chat connection'));
-      chatSocket.perform('enter_room')
-    }
-    return () => {
-      if(chatSocket) {
-        console.log("wsSocket will disconnected")
-        chatSocket.disconnect();
-      }
-    }
-  }, [chatSocket]);
-
-  useEffect(() => {
-    console.log("new user enter", users)
-    if(chatSocket){
-      chatSocket.on('message', res => {
-        console.log("user", res['data']);
-        if (res["type"] == 'send') {
-          console.log("receive message", users);
-          onMessageReceived(res['data']);
-        }
-      });
-    }
-  }, [users]);
 
   return (
     <Div flex bg={'white'}>

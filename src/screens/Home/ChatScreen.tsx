@@ -143,7 +143,7 @@ const ChatScreen = () => {
 
   useFocusEffect(
     useCallback(() => {
-      console.log("here")
+      console.log("list room")
       fetchNewRoom();
     },[])
   );
