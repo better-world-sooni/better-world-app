@@ -54,8 +54,6 @@ const ChatRoomScreen = props => {
       for(const message of msgs) {
         if(message.readUserIds.includes(enterUser)) break;
         message.readUserIds.push(enterUser)
-        message.text = message.text + "fix"
-        console.log(message)
       }
       console.log("after", msgs)
       return msgs 
@@ -81,18 +79,16 @@ const ChatRoomScreen = props => {
       setChatSocket(channel);
       channel.on('enter', res => {
         console.log("enter", res['data']);
-        let msgs = readCountUpdateFunRef.current(res['data'])
-        console.log("here" , msgs)
-        if(msgs.length) {
-          // setMessages(previousMessages => GiftedChat.append(previousMessages, msg))
-          console.log("check")
-          channel.update(msgs);
-          // console.log("append:", GiftedChat.append([], msg))
-          // setMessages((m) => [...GiftedChat.append([], msg), ...m]);
+        if(username != res['data']) {
+          let msgs = readCountUpdateFunRef.current(res['data'])
+          if(msgs.length) {
+            console.log("update goes" , msgs)
+            channel.update(msgs);
+          }
         }
       });
       channel.on('message', res => {
-        console.log(res['data'])
+        console.log(username, res['data'])
         setMessages((m) => [...res['data'], ...m]);
       });
       channel.on('update', res => {
@@ -102,7 +98,6 @@ const ChatRoomScreen = props => {
       channel.on('close', () => console.log('Disconnected from chat'));
       channel.on('disconnect', () => console.log('No chat connection'));
       let _ = await channel.enter();
-
     };
     if (currentChatRoomId) {
       wsConnect();
@@ -133,7 +128,7 @@ const ChatRoomScreen = props => {
             messages={messages}
             onSend={messages => onSend(messages)}
             user={{
-              _id: "seunganId",
+              _id: username,
               name: username,
               // avatar: metasunganUser.avatar,
             }}
