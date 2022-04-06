@@ -26,7 +26,7 @@ const RightSwipeActions = () => {
 };
 
 const ChatRoomItem = ({
-  username,
+  userUuid,
   chatRoomId,
   category,
   title,
@@ -63,7 +63,7 @@ const ChatRoomItem = ({
   }, []);
 
   const goToChatRoom = roomId => {
-    navigation.navigate(NAV_NAMES.ChatRoom, {currentChatRoomId: roomId, title: title, username: username});
+    navigation.navigate(NAV_NAMES.ChatRoom, {currentChatRoomId: roomId, title: title, userUuid: userUuid});
   };
   const deleteChatRoom = async roomId => {
     const res = await patchPromiseFn({

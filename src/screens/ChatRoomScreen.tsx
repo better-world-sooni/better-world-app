@@ -21,7 +21,7 @@ import {ChatChannel} from 'src/components/ChatChannel'
 const ChatRoomScreen = props => {
   const currentChatRoomId = props.route.params.currentChatRoomId;
   const roomname = props.route.params.title;
-  const username = props.route.params.username;
+  const userUuid = props.route.params.userUuid;
   const {token} = useSelector(
     (root: RootState) => root.app.session,
     shallowEqual,
@@ -52,8 +52,9 @@ const ChatRoomScreen = props => {
       let msgs = [...messages]
       console.log("before", msgs)
       for(const message of msgs) {
-        if(message.readUserIds.includes(enterUser)) break;
-        message.readUserIds.push(enterUser)
+        if(message.read_user_ids.includes(enterUser)) break;
+        message.read_user_ids.push(enterUser)
+
       }
       console.log("after", msgs)
       return msgs 
@@ -79,7 +80,7 @@ const ChatRoomScreen = props => {
       setChatSocket(channel);
       channel.on('enter', res => {
         console.log("enter", res['data']);
-        if(username != res['data']) {
+        if(userUuid != res['data']) {
           let msgs = readCountUpdateFunRef.current(res['data'])
           if(msgs.length) {
             console.log("update goes" , msgs)
@@ -88,7 +89,7 @@ const ChatRoomScreen = props => {
         }
       });
       channel.on('message', res => {
-        console.log(username, res['data'])
+        console.log(userUuid, res['data'])
         setMessages((m) => [...res['data'], ...m]);
       });
       channel.on('update', res => {
@@ -128,8 +129,7 @@ const ChatRoomScreen = props => {
             messages={messages}
             onSend={messages => onSend(messages)}
             user={{
-              _id: username,
-              name: username,
+              id: userUuid,
               // avatar: metasunganUser.avatar,
             }}
           />

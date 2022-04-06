@@ -135,9 +135,9 @@ const ChatScreen = () => {
     });
     if (res?.data) {
       console.log(res.data);
-      const {chatRooms, user} = res.data;
-      setChatRooms(chatRooms);
-      setUser(user);
+      const {chat_rooms, user_uuid} = res.data;
+      setChatRooms(chat_rooms);
+      setUser(user_uuid);
     }
   };
 
@@ -167,7 +167,6 @@ const ChatScreen = () => {
           // const secondUserAvatar = item.avatars[2]?.avatar;
           // const thirdUserAvatar = item.avatars[3]?.avatar;
           // const fourthUserAvatar = item.avatars[4]?.avatar;
-          const username = user
           const chatRoomId = item.id;
           const category = item.category;
           const createdAt = item.created_at;
@@ -180,7 +179,7 @@ const ChatScreen = () => {
           const fourthUserAvatar = null;
           return (
             <ChatRoomItem
-              username={username}
+              userUuid={user}
               chatRoomId={chatRoomId}
               category={category}
               createdAt={createdAt}
