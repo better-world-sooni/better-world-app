@@ -21,50 +21,31 @@ import {ChatChannel} from 'src/components/ChatChannel'
 const ChatRoomScreen = props => {
   const currentChatRoomId = props.route.params.currentChatRoomId;
   const roomname = props.route.params.title;
-  const userUuid = props.route.params.userUuid;
-  const {token} = useSelector(
+  const numUsers = props.route.params.numUsers;
+
+  const {token, currentUser} = useSelector(
     (root: RootState) => root.app.session,
     shallowEqual,
   );
-  const navigation = useNavigation();
-  const [title, setTitle] = useState(null);
+  const userUuid = currentUser.uuid;
+  const userAvatar = currentUser.main_avatar_nft.nft_metadatum.image_url;
+
   const [messages, setMessages] = useState([]);
   const [chatSocket, setChatSocket] = useState(null);
   const messagesRef = useRef(messages)
-  const readCountUpdateFunRef = useRef(null);
+
   const fetchNewRoom = async callback => {
-    const res = await getPromiseFn({
-      url: APIS.chat.chat('private', currentChatRoomId).url,
-      token,
-    });
-    if (res?.data?.data) {
-      const {title, messages, userIds} = res.data.data;
-      setTitle(title);
-      setMessages(messages);
-      callback();
-    }
+    // const res = await getPromiseFn({
+    //   url: APIS.chat.chat('private', currentChatRoomId).url,
+    //   token,
+    // });
+    // if (res?.data?.data) {
+    //   const {title, messages, userIds} = res.data.data;
+    //   setTitle(title);
+    //   setMessages(messages);
+    //   callback();
+    // }
   };
-
-  useEffect(() => {
-  	messagesRef.current = messages; 
-   },[messages])
-
-  useEffect(() => {
-    const readCountUpdate = (enterUser) => {
-      console.log("EnterUser", enterUser)
-      
-      let msgs = [...messages]
-      console.log("before", msgs)
-      for(const message of msgs) {
-        if(message.read_user_ids.includes(enterUser)) break;
-        message.read_user_ids.push(enterUser)
-
-      }
-      console.log("after", msgs)
-      return msgs 
-    }
-    readCountUpdateFunRef.current = readCountUpdate
-  }, [messages]);
 
   const onSend = useCallback(async (messages = []) => {
     console.log("send: ", messages[0]["text"]);
@@ -75,6 +56,10 @@ const ChatRoomScreen = props => {
     }
   }, [chatSocket]);
 
+  useEffect(() => {
+    messagesRef.current = messages; 
+  }, [messages]);
+
   useLayoutEffect(() => {
     let channel;
     const wsConnect = async () => {
@@ -83,20 +68,14 @@ const ChatRoomScreen = props => {
       await cable(token).subscribe(channel);
       setChatSocket(channel);
       channel.on('enter', res => {
-        console.log("enter", res['data']);
-        console.log(messagesRef.current);
-        channel.update(messagesRef.current);
-
-        // if(userUuid != res['data']) {
-        //   let msgs = readCountUpdateFunRef.current(res['data'])
-        //   if(msgs.length) {
-        //     console.log("update goes" , msgs)
-        //     channel.update(msgs);
-        //   }
-        // }
+        console.log("enter", res['data'], "current_user:", userUuid, messagesRef.current);
+        
+        if(userUuid == res['data']) {
+          channel.update(messagesRef.current);
+        }
       });
       channel.on('message', res => {
-        console.log(userUuid, res['data'])
+        console.log("message receive", userUuid, res['data'])
         setMessages((m) => [...res['data'], ...m]);
       });
       channel.on('update', res => {
@@ -128,7 +107,7 @@ const ChatRoomScreen = props => {
       />
       <Div bgWhite flex={1}>
           <GiftedChat
-            userCount={2}
+            userCount={numUsers}
             placeholder={'메세지를 입력하세요'}
             // renderAvatarOnTop
             // renderUsernameOnMessage
@@ -136,7 +115,7 @@ const ChatRoomScreen = props => {
             onSend={messages => onSend(messages)}
             user={{
               id: userUuid,
-              // avatar: metasunganUser.avatar,
+              avatar: userAvatar,
             }}
           />
       </Div>

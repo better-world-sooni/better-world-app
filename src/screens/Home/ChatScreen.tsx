@@ -127,17 +127,15 @@ const ChatScreen = () => {
     shallowEqual,
   );
   const [chatRooms, setChatRooms] = useState([]);
-  const [user, setUser] = useState(null);
+  
   const fetchNewRoom = async () => {
     const res = await getPromiseFn({
       url: APIS.chat.chatRoom.main().url,
       token,
     });
     if (res?.data) {
-      console.log(res.data);
-      const {chat_rooms, user_uuid} = res.data;
+      const {chat_rooms} = res.data;
       setChatRooms(chat_rooms);
-      setUser(user_uuid);
     }
   };
 
@@ -167,23 +165,24 @@ const ChatScreen = () => {
           // const secondUserAvatar = item.avatars[2]?.avatar;
           // const thirdUserAvatar = item.avatars[3]?.avatar;
           // const fourthUserAvatar = item.avatars[4]?.avatar;
-          const chatRoomId = item.id;
-          const category = item.category;
-          const createdAt = item.created_at;
-          const title = item.buddy;
-          const lastMessage = item.last_message;
+          const chatRoomId = item.room.id;
+          const category = item.room.category;
+          const createdAt = item.room.created_at;
+          const title = item.room.name;
+          const lastMessage = item.room.last_message;
+          const numUsers = item.num_users;
           const unreadMessageCount = 7;
-          const firstUserAvatar = item.buddy;
-          const secondUserAvatar = null;
-          const thirdUserAvatar = null;
-          const fourthUserAvatar = null;
+          const firstUserAvatar = item.profile_imgs[0];
+          const secondUserAvatar = item.profile_imgs[1];
+          const thirdUserAvatar = item.profile_imgs[2];
+          const fourthUserAvatar = item.profile_imgs[3];
           return (
             <ChatRoomItem
-              userUuid={user}
               chatRoomId={chatRoomId}
               category={category}
               createdAt={createdAt}
               title={title}
+              numUsers = {numUsers}
               unreadMessageCount={unreadMessageCount}
               lastMessage={lastMessage}
               firstUserAvatar={firstUserAvatar}

@@ -26,12 +26,12 @@ const RightSwipeActions = () => {
 };
 
 const ChatRoomItem = ({
-  userUuid,
   chatRoomId,
   category,
   title,
   createdAt,
   lastMessage,
+  numUsers,
   unreadMessageCount,
   firstUserAvatar = null,
   secondUserAvatar = null,
@@ -44,7 +44,6 @@ const ChatRoomItem = ({
   );
 
   const navigation = useNavigation();
-
   const [deleted, setDeleted] = useState(false);
 
   const createdAtText = useCallback(createdAt => {
@@ -63,8 +62,9 @@ const ChatRoomItem = ({
   }, []);
 
   const goToChatRoom = roomId => {
-    navigation.navigate(NAV_NAMES.ChatRoom, {currentChatRoomId: roomId, title: title, userUuid: userUuid});
+    navigation.navigate(NAV_NAMES.ChatRoom, {currentChatRoomId: roomId, title: title, numUsers: numUsers});
   };
+
   const deleteChatRoom = async roomId => {
     const res = await patchPromiseFn({
       url: APIS.chat.chatRoom.user().url,
@@ -78,9 +78,11 @@ const ChatRoomItem = ({
       Alert.alert('채팅방을 성공적으로 나가셨습니다.');
     }
   };
+
   if (deleted) {
     return null;
   }
+  
   return (
     <Swipeable
       key={chatRoomId}

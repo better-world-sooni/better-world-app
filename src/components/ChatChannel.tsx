@@ -43,11 +43,9 @@ export class ChatChannel extends Channel<Params,Message,Events> {
   
   receive(message: Message) {
     if (message.type === 'enter') {
-      console.log("entering")
       return this.emit('enter', message)
     }
     else if(message.type === 'update') {
-      console.log("updating")
       return this.emit('update', message)
     }
     super.receive(message)
