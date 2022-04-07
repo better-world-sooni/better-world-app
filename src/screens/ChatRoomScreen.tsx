@@ -70,7 +70,7 @@ const ChatRoomScreen = props => {
       channel.on('enter', res => {
         console.log("enter", res['data'], "current_user:", userUuid, messagesRef.current);
         
-        if(userUuid == res['data']) {
+        if(userUuid != res['data']) {
           channel.update(messagesRef.current);
         }
       });
