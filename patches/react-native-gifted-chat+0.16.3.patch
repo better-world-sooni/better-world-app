@@ -187,7 +187,7 @@ index 5e2f61c..8876ef3 100644
          messagesContainerStyle: undefined;
          text: undefined;
 diff --git a/node_modules/react-native-gifted-chat/lib/GiftedChat.js b/node_modules/react-native-gifted-chat/lib/GiftedChat.js
-index 73ba4ee..1fac087 100644
+index 73ba4ee..7295b86 100644
 --- a/node_modules/react-native-gifted-chat/lib/GiftedChat.js
 +++ b/node_modules/react-native-gifted-chat/lib/GiftedChat.js
 @@ -32,7 +32,7 @@ class GiftedChat extends React.Component {
@@ -199,12 +199,13 @@ index 73ba4ee..1fac087 100644
          this.invertibleScrollViewProps = undefined;
          this._actionSheetRef = undefined;
          this._messageContainerRef = React.createRef();
-@@ -94,8 +94,8 @@ class GiftedChat extends React.Component {
+@@ -94,8 +94,9 @@ class GiftedChat extends React.Component {
                  return {
                      ...message,
                      user: this.props.user,
 -                    createdAt: new Date(),
 -                    _id: this.props.messageIdGenerator && this.props.messageIdGenerator(),
++                    user_uuid: this.props.user.id,
 +                    created_at: new Date(),
 +                    id: this.props.messageIdGenerator && this.props.messageIdGenerator(),
                  };

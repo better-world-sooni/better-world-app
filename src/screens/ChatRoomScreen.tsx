@@ -30,7 +30,7 @@ const ChatRoomScreen = props => {
   const [title, setTitle] = useState(null);
   const [messages, setMessages] = useState([]);
   const [chatSocket, setChatSocket] = useState(null);
-
+  const messagesRef = useRef(messages)
   const readCountUpdateFunRef = useRef(null);
   const fetchNewRoom = async callback => {
     const res = await getPromiseFn({
@@ -44,6 +44,10 @@ const ChatRoomScreen = props => {
       callback();
     }
   };
+
+  useEffect(() => {
+  	messagesRef.current = messages; 
+   },[messages])
 
   useEffect(() => {
     const readCountUpdate = (enterUser) => {
@@ -80,13 +84,16 @@ const ChatRoomScreen = props => {
       setChatSocket(channel);
       channel.on('enter', res => {
         console.log("enter", res['data']);
-        if(userUuid != res['data']) {
-          let msgs = readCountUpdateFunRef.current(res['data'])
-          if(msgs.length) {
-            console.log("update goes" , msgs)
-            channel.update(msgs);
-          }
-        }
+        console.log(messagesRef.current);
+        channel.update(messagesRef.current);
+
+        // if(userUuid != res['data']) {
+        //   let msgs = readCountUpdateFunRef.current(res['data'])
+        //   if(msgs.length) {
+        //     console.log("update goes" , msgs)
+        //     channel.update(msgs);
+        //   }
+        // }
       });
       channel.on('message', res => {
         console.log(userUuid, res['data'])
@@ -110,7 +117,6 @@ const ChatRoomScreen = props => {
       }   
     }
   }, [currentChatRoomId]);
-
 
   return (
     <Div flex bg={'white'}>
