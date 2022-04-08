@@ -126,30 +126,12 @@ const ChatScreen = () => {
     (root: RootState) => root.app.session,
     shallowEqual,
   );
+  
   const {data: chatRoomResponse, isLoading: chatRoomLoading} = useApiSelector(
     APIS.chat.chatRoom.main,
   );
 
   const chatRooms = chatRoomResponse.chat_rooms
-  console.log(chatRooms)
-
-  const fetchNewRoom = async () => {
-    const res = await getPromiseFn({
-      url: APIS.chat.chatRoom.main().url,
-      token,
-    });
-    if (res?.data) {
-      const {chat_rooms} = res.data;
-
-    }
-  };
-
-  useFocusEffect(
-    useCallback(() => {
-      console.log("list room")
-      fetchNewRoom();
-    },[])
-  );
 
   return (
     <Div flex bg={'white'}>
