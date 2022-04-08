@@ -82,15 +82,10 @@ const ChatRoomScreen = props => {
       await cable(token).subscribe(channel);
       setChatSocket(channel);
       channel.on('enter', res => {
-        
-        console.log("enter", res['data'], "current_user:", userUuid);
-        
-        if(userUuid != res['data']) {
-          let msgs = readCountUpdateFunRef.current(res['data'])
-          if(msgs.length) {
-            console.log("update goes" , msgs)
-            channel.update(msgs);
-          }
+        console.log("new user enter")
+        if (res['data'].length > 0) {
+          console.log("here")
+          setMessages([...res['data']]) 
         }
       });
       channel.on('message', res => {
