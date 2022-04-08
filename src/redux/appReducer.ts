@@ -25,6 +25,7 @@ export const useLogin = () => {
         dispatch(async () => {
           const { jwt } = props.data;
           await apiGETWithToken(APIS.profile.my(), jwt)
+          await apiGETWithToken(APIS.chat.chatRoom.main(), jwt)
           await AsyncStorage.setItem(JWT, jwt);
           dispatch(appActions.login(props.data));
           if (successHandler) {

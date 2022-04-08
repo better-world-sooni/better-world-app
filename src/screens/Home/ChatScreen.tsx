@@ -11,7 +11,7 @@ import {RootState} from 'src/redux/rootReducer';
 import {Header} from 'src/components/Header';
 import {useFocusEffect, useNavigation} from '@react-navigation/core';
 import {NAV_NAMES} from 'src/modules/navNames';
-import {getPromiseFn} from 'src/redux/asyncReducer';
+import {getPromiseFn, useApiSelector} from 'src/redux/asyncReducer';
 import APIS from 'src/modules/apis';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import ChatRoomItem from 'src/components/ChatRoomItem';
@@ -126,8 +126,13 @@ const ChatScreen = () => {
     (root: RootState) => root.app.session,
     shallowEqual,
   );
-  const [chatRooms, setChatRooms] = useState([]);
-  
+  const {data: chatRoomResponse, isLoading: chatRoomLoading} = useApiSelector(
+    APIS.chat.chatRoom.main,
+  );
+
+  const chatRooms = chatRoomResponse.chat_rooms
+  console.log(chatRooms)
+
   const fetchNewRoom = async () => {
     const res = await getPromiseFn({
       url: APIS.chat.chatRoom.main().url,
@@ -135,7 +140,7 @@ const ChatScreen = () => {
     });
     if (res?.data) {
       const {chat_rooms} = res.data;
-      setChatRooms(chat_rooms);
+
     }
   };
 
@@ -155,16 +160,6 @@ const ChatScreen = () => {
         data={chatRooms}
         ListEmptyComponent={<NoChatRooms />}
         renderItem={({item, index}) => {
-          // const chatRoomId = item.id;
-          // const userIds = item.userIds.length;
-          // const createdAt = item.lastMessage?.createdAt;
-          // const title = item.title;
-          // const lastMessage = item.lastMessage?.text;
-          // const unreadMessageCount = item.unreadMessageCount;
-          // const firstUserAvatar = item.avatars[1]?.avatar;
-          // const secondUserAvatar = item.avatars[2]?.avatar;
-          // const thirdUserAvatar = item.avatars[3]?.avatar;
-          // const fourthUserAvatar = item.avatars[4]?.avatar;
           const chatRoomId = item.room.id;
           const category = item.room.category;
           const createdAt = item.room.created_at;
