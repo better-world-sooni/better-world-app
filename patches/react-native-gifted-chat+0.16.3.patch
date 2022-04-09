@@ -166,10 +166,18 @@ index 266857c..06c96ba 100644
  const styles = StyleSheet.create({
      avatarStyle: {
 diff --git a/node_modules/react-native-gifted-chat/lib/GiftedChat.d.ts b/node_modules/react-native-gifted-chat/lib/GiftedChat.d.ts
-index 5e2f61c..8876ef3 100644
+index 5e2f61c..fcbe0d7 100644
 --- a/node_modules/react-native-gifted-chat/lib/GiftedChat.d.ts
 +++ b/node_modules/react-native-gifted-chat/lib/GiftedChat.d.ts
-@@ -116,6 +116,7 @@ declare class GiftedChat<TMessage extends IMessage = IMessage> extends React.Com
+@@ -33,6 +33,7 @@ export interface GiftedChatProps<TMessage extends IMessage = IMessage> {
+     placeholder?: string;
+     disableComposer?: boolean;
+     user?: User;
++    roomId?: string;
+     locale?: string;
+     timeFormat?: string;
+     dateFormat?: string;
+@@ -116,6 +117,7 @@ declare class GiftedChat<TMessage extends IMessage = IMessage> extends React.Com
          getLocale: PropTypes.Requireable<(...args: any[]) => any>;
      };
      static defaultProps: {
@@ -177,8 +185,16 @@ index 5e2f61c..8876ef3 100644
          messages: never[];
          messagesContainerStyle: undefined;
          text: undefined;
+@@ -123,6 +125,7 @@ declare class GiftedChat<TMessage extends IMessage = IMessage> extends React.Com
+         disableComposer: boolean;
+         messageIdGenerator: () => string;
+         user: {};
++        roomId: null;
+         onSend: () => void;
+         locale: null;
+         timeFormat: string;
 diff --git a/node_modules/react-native-gifted-chat/lib/GiftedChat.js b/node_modules/react-native-gifted-chat/lib/GiftedChat.js
-index 73ba4ee..7295b86 100644
+index 73ba4ee..1bd7936 100644
 --- a/node_modules/react-native-gifted-chat/lib/GiftedChat.js
 +++ b/node_modules/react-native-gifted-chat/lib/GiftedChat.js
 @@ -32,7 +32,7 @@ class GiftedChat extends React.Component {
@@ -190,12 +206,13 @@ index 73ba4ee..7295b86 100644
          this.invertibleScrollViewProps = undefined;
          this._actionSheetRef = undefined;
          this._messageContainerRef = React.createRef();
-@@ -94,8 +94,9 @@ class GiftedChat extends React.Component {
+@@ -94,8 +94,10 @@ class GiftedChat extends React.Component {
                  return {
                      ...message,
                      user: this.props.user,
 -                    createdAt: new Date(),
 -                    _id: this.props.messageIdGenerator && this.props.messageIdGenerator(),
++                    room_id: this.props.roomId,
 +                    user_uuid: this.props.user.id,
 +                    created_at: new Date(),
 +                    id: this.props.messageIdGenerator && this.props.messageIdGenerator(),

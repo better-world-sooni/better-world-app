@@ -32,6 +32,7 @@ const ChatRoomScreen = props => {
 
   const [messages, setMessages] = useState([]);
   const [chatSocket, setChatSocket] = useState(null);
+  const [enterUsers, setEnterUsers] = useState([]);
   const readCountUpdateFunRef = useRef(null);
 
   const fetchNewRoom = async callback => {
@@ -48,18 +49,18 @@ const ChatRoomScreen = props => {
   };
 
   const onSend = useCallback(async (messages = []) => {
-    console.log("send: ", messages[0]["text"]);
+    messages[0]["read_user_ids"] = enterUsers
+    console.log("send: ", messages[0]);
     if(chatSocket) {
       const _ = await chatSocket.send(messages);
     } else {
       Alert.alert('네트워크가 불안정하여 메세지를 보내지 못했습니다');
     }
-  }, [chatSocket]);
+  }, [chatSocket, enterUsers]);
 
   useEffect(() => {
     const readCountUpdate = (enterUser) => {
       console.log("EnterUser", enterUser)
-      
       let msgs = [...messages]
       console.log("before", msgs)
       for(const message of msgs) {
@@ -82,11 +83,12 @@ const ChatRoomScreen = props => {
       await cable(token).subscribe(channel);
       setChatSocket(channel);
       channel.on('enter', res => {
-        console.log("new user enter")
-        if (res['data'].length > 0) {
-          console.log("here")
-          setMessages([...res['data']]) 
-        }
+        console.log("new user enter", res['data'])
+        // if (res['data'].length > 0) {
+        //   console.log("here")
+        //   setMessages([...res['data']]) 
+        // }
+        setEnterUsers((users) => [...users, res['data']])
       });
       channel.on('message', res => {
         console.log("message receive", userUuid, res['data'])
@@ -121,6 +123,7 @@ const ChatRoomScreen = props => {
       />
       <Div bgWhite flex={1}>
           <GiftedChat
+            roomId={currentChatRoomId}
             userCount={numUsers}
             placeholder={'메세지를 입력하세요'}
             // renderAvatarOnTop
