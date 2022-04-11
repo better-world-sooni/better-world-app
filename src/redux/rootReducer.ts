@@ -4,6 +4,7 @@ import {appReducer} from './appReducer';
 import { routeReducer } from './routeReducer';
 import { metasunganReducer } from './metasunganReducer';
 import { feedReducer } from './feedReducer';
+import { wsReducer } from './wsReducer';
 
 export type RootState = {
   app: ReturnType<typeof appReducer>;
@@ -11,6 +12,7 @@ export type RootState = {
   route: ReturnType<typeof routeReducer>;
   metasungan: ReturnType<typeof metasunganReducer>;
   feed: ReturnType<typeof feedReducer>;
+  ws: ReturnType<typeof wsReducer>;
 };
 
 const rootReducer = combineReducers({
@@ -19,6 +21,7 @@ const rootReducer = combineReducers({
   route: routeReducer,
   metasungan: metasunganReducer,
   feed: feedReducer,
+  ws: wsReducer,
 });
 
 export default rootReducer;

@@ -89,6 +89,8 @@ const ChatRoomScreen = props => {
         //   setMessages([...res['data']]) 
         // }
         setEnterUsers((users) => [...users, res['data']])
+        let updatedMessages = readCountUpdateFunRef.current(res['data'])
+        console.log(updatedMessages)
       });
       channel.on('message', res => {
         console.log("message receive", userUuid, res['data'])
@@ -99,7 +101,7 @@ const ChatRoomScreen = props => {
         setMessages([...res['data']])
       })
       channel.on('close', () => console.log('Disconnected from chat'));
-      channel.on('disconnect', () => console.log('No chat connection'));
+      channel.on('disconnect', () => channel.send('Dis'));
       let _ = await channel.enter();
     };
     if (currentChatRoomId) {
@@ -107,8 +109,13 @@ const ChatRoomScreen = props => {
     }
     return() => {
       if(channel) {
+        // if(enterUsers.length == 1) {
+        //   channel.send("allUserLeave")
+        // }
         channel.disconnect();
+        channel.enter();
         channel.close();
+        channel.enter();
       }   
     }
   }, [currentChatRoomId]);
