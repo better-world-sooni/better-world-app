@@ -12,11 +12,12 @@ import {Span} from 'src/components/common/Span';
 import {Header} from 'src/components/Header';
 import useSocketInput from 'src/hooks/useSocketInput';
 import APIS from 'src/modules/apis';
-import {cable} from 'src/modules/cable';
 import {HAS_NOTCH, iconSettings, WS_URL} from 'src/modules/constants';
 import {getPromiseFn} from 'src/redux/asyncReducer';
 import {RootState} from 'src/redux/rootReducer';
+import {cable} from 'src/modules/cable';
 import {ChatChannel} from 'src/components/ChatChannel'
+
 
 const ChatRoomScreen = props => {
   const currentChatRoomId = props.route.params.currentChatRoomId;
@@ -89,8 +90,10 @@ const ChatRoomScreen = props => {
         //   setMessages([...res['data']]) 
         // }
         setEnterUsers((users) => [...users, res['data']])
-        let updatedMessages = readCountUpdateFunRef.current(res['data'])
-        console.log(updatedMessages)
+        if(res['data'] != userUuid) {
+          let updatedMessages = readCountUpdateFunRef.current(res['data'])
+          channel.update(updatedMessages)
+        }
       });
       channel.on('message', res => {
         console.log("message receive", userUuid, res['data'])
@@ -112,10 +115,10 @@ const ChatRoomScreen = props => {
         // if(enterUsers.length == 1) {
         //   channel.send("allUserLeave")
         // }
+        console.log(channel)
         channel.disconnect();
-        channel.enter();
-        channel.close();
-        channel.enter();
+        // channel.close();
+        // console.log(channel)
       }   
     }
   }, [currentChatRoomId]);

@@ -1,4 +1,4 @@
-import React, {useCallback, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {Col} from 'src/components/common/Col';
 import {Div} from 'src/components/common/Div';
 import {Row} from 'src/components/common/Row';
@@ -11,10 +11,12 @@ import {RootState} from 'src/redux/rootReducer';
 import {Header} from 'src/components/Header';
 import {useFocusEffect, useNavigation} from '@react-navigation/core';
 import {NAV_NAMES} from 'src/modules/navNames';
-import {getPromiseFn, useApiSelector} from 'src/redux/asyncReducer';
+import {getPromiseFn, useApiSelector, useReloadGET} from 'src/redux/asyncReducer';
 import APIS from 'src/modules/apis';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import ChatRoomItem from 'src/components/ChatRoomItem';
+import {cable} from 'src/modules/cable';
+import {ChatChannel} from 'src/components/ChatChannel'
 
 const NoChatRooms = () => {
   const navigation = useNavigation();
@@ -122,16 +124,53 @@ const ChatRoomsLoading = () => {
 };
 
 const ChatScreen = () => {
-  const {token} = useSelector(
+  const {token, currentUser} = useSelector(
     (root: RootState) => root.app.session,
     shallowEqual,
   );
-  
-  const {data: chatRoomResponse, isLoading: chatRoomLoading} = useApiSelector(
+  const userUuid = currentUser.uuid;
+  const {loading, channel, error} = useSelector(
+    (root: RootState) => root.ws, 
+    shallowEqual,
+  );
+  const {data: chatRoomsResponse, isLoading: chatRoomLoading} = useApiSelector(
     APIS.chat.chatRoom.main,
   );
+  const [chatRooms, setChatRooms] = useState(chatRoomsResponse.chat_rooms);
+  const fetchNewRoom = async () => {
+    const res = await getPromiseFn({
+      url: APIS.chat.chatRoom.main().url,
+      token,
+    });
+    if (res?.data) {
+      const {chat_rooms} = res.data;
+      setChatRooms(chat_rooms);
+    }
+  };
+  useFocusEffect(
+    useCallback(() => {
+      let channel;
+      const wsConnect = async () => {
+        channel = new ChatChannel({ roomId: 2});
+        await cable(token).subscribe(channel);
+        fetchNewRoom();
+        channel.on('enter', res => {
 
-  const chatRooms = chatRoomResponse.chat_rooms
+        });
+        channel.on('message', res => {
+          console.log("list", res['data'])
+        });
+        channel.on('update', res => {
+        })
+        channel.on('close', () => console.log('Disconnected list socket connection'));
+        channel.on('disconnect', () => channel.send('Dis'));
+      };
+      wsConnect()
+      return () => {
+        channel.disconnect();
+      }
+    },[])
+  );
 
   return (
     <Div flex bg={'white'}>

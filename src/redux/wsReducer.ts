@@ -1,10 +1,6 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {createSlice} from '@reduxjs/toolkit';
-import { useDispatch } from 'react-redux';
 import {cable} from 'src/modules/cable';
 import {ChatChannel} from 'src/components/ChatChannel'
-
-
 
 export const connectWs = (jwt) => async dispatch => {
 	dispatch(wsActions.loading());
@@ -22,7 +18,7 @@ const wsSlice = createSlice({
   name: 'ws',
   initialState: {
     loading: false,
-    data: null,
+    channel: null,
     error: null
   },
   reducers: {
@@ -32,7 +28,7 @@ const wsSlice = createSlice({
     connect(state, action) {
         const channel = action.payload;
         state.loading = false;
-        state.data = channel;
+        state.channel = channel;
     },
     error(state, action) {
         const error = action.payload;
