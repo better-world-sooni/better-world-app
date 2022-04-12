@@ -1,8 +1,14 @@
 import { Channel, ChannelEvents } from '@anycable/core'
 
-type Params = {
+type UserUuid = {
+  userUuid: string
+}
+
+type RoomId = {
   roomId: string | number
 }
+
+type Params = RoomId | UserUuid
 
 type EnteringMessage = {
   type: 'enter'

@@ -137,7 +137,7 @@ const ChatScreen = () => {
     APIS.chat.chatRoom.main,
   );
   const [chatRooms, setChatRooms] = useState(chatRoomsResponse.chat_rooms);
-  const fetchNewRoom = async () => {
+  const fetchRoomList = async () => {
     const res = await getPromiseFn({
       url: APIS.chat.chatRoom.main().url,
       token,
@@ -147,18 +147,36 @@ const ChatScreen = () => {
       setChatRooms(chat_rooms);
     }
   };
+
+  const updateList = useCallback((newmsg) => {
+    let list = [...chatRooms]
+    let roomId = newmsg['room_id']
+    let index = list.findIndex(x=>x.room.id === roomId)
+    list.splice(0, 0, list.splice(index, 1)[0]);
+    list[0].last_message = newmsg['text']
+    return list
+  }, [chatRooms]);
+
   useFocusEffect(
     useCallback(() => {
       let channel;
       const wsConnect = async () => {
-        channel = new ChatChannel({ roomId: 2});
+        channel = new ChatChannel({ roomId: 4 });
         await cable(token).subscribe(channel);
-        fetchNewRoom();
+        // fetchRoomList();
+        const res = await getPromiseFn({
+          url: APIS.chat.chatRoom.main().url,
+          token,
+        });
+        if (res?.data) {
+          const {chat_rooms} = res.data;
+          setChatRooms(chat_rooms);
+        }
         channel.on('enter', res => {
 
         });
         channel.on('message', res => {
-          console.log("list", res['data'])
+          setChatRooms(updateList(res['data']))
         });
         channel.on('update', res => {
         })
@@ -168,6 +186,7 @@ const ChatScreen = () => {
       wsConnect()
       return () => {
         channel.disconnect();
+        channel.close();
       }
     },[])
   );
@@ -185,7 +204,7 @@ const ChatScreen = () => {
           const category = item.room.category;
           const createdAt = item.room.created_at;
           const title = item.room.name;
-          const lastMessage = item.room.last_message;
+          const lastMessage = item.last_message;
           const numUsers = item.num_users;
           const unreadMessageCount = 7;
           const firstUserAvatar = item.profile_imgs[0];
