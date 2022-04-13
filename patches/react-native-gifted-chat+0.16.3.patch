@@ -1,5 +1,18 @@
+diff --git a/node_modules/react-native-gifted-chat/lib/Bubble.d.ts b/node_modules/react-native-gifted-chat/lib/Bubble.d.ts
+index f7c3c01..bb50025 100644
+--- a/node_modules/react-native-gifted-chat/lib/Bubble.d.ts
++++ b/node_modules/react-native-gifted-chat/lib/Bubble.d.ts
+@@ -64,7 +64,7 @@ export default class Bubble<TMessage extends IMessage = IMessage> extends React.
+         optionTitles: string[];
+         currentMessage: {
+             text: null;
+-            createdAt: null;
++            created_at: null;
+             image: null;
+         };
+         nextMessage: {};
 diff --git a/node_modules/react-native-gifted-chat/lib/Bubble.js b/node_modules/react-native-gifted-chat/lib/Bubble.js
-index 63bde0b..0478569 100644
+index 63bde0b..a9f29ea 100644
 --- a/node_modules/react-native-gifted-chat/lib/Bubble.js
 +++ b/node_modules/react-native-gifted-chat/lib/Bubble.js
 @@ -12,13 +12,13 @@ import { StylePropType, isSameUser, isSameDay } from './utils';
@@ -35,6 +48,42 @@ index 63bde0b..0478569 100644
              minHeight: 20,
              justifyContent: 'flex-end',
          },
+@@ -202,7 +202,7 @@ export default class Bubble extends React.Component {
+         if (currentMessage &&
+             user &&
+             currentMessage.user &&
+-            currentMessage.user._id !== user._id) {
++            currentMessage.user.id !== user.id) {
+             return null;
+         }
+         if (currentMessage &&
+@@ -216,7 +216,7 @@ export default class Bubble extends React.Component {
+         return null;
+     }
+     renderTime() {
+-        if (this.props.currentMessage && this.props.currentMessage.createdAt) {
++        if (this.props.currentMessage && this.props.currentMessage.created_at) {
+             const { containerStyle, wrapperStyle, textStyle, ...timeProps } = this.props;
+             if (this.props.renderTime) {
+                 return this.props.renderTime(timeProps);
+@@ -228,7 +228,7 @@ export default class Bubble extends React.Component {
+     renderUsername() {
+         const { currentMessage, user } = this.props;
+         if (this.props.renderUsernameOnMessage && currentMessage) {
+-            if (user && currentMessage.user._id === user._id) {
++            if (user && currentMessage.user.id === user.id) {
+                 return null;
+             }
+             return (<View style={styles.content.usernameView}>
+@@ -310,7 +310,7 @@ Bubble.defaultProps = {
+     optionTitles: DEFAULT_OPTION_TITLES,
+     currentMessage: {
+         text: null,
+-        createdAt: null,
++        created_at: null,
+         image: null,
+     },
+     nextMessage: {},
 diff --git a/node_modules/react-native-gifted-chat/lib/Color.d.ts b/node_modules/react-native-gifted-chat/lib/Color.d.ts
 index aa7fb72..e0308b5 100644
 --- a/node_modules/react-native-gifted-chat/lib/Color.d.ts
@@ -69,8 +118,43 @@ index 3331d31..c728661 100644
          marginLeft: 10,
          fontSize: 16,
          lineHeight: 16,
+diff --git a/node_modules/react-native-gifted-chat/lib/Day.d.ts b/node_modules/react-native-gifted-chat/lib/Day.d.ts
+index 3a34004..8839d7b 100644
+--- a/node_modules/react-native-gifted-chat/lib/Day.d.ts
++++ b/node_modules/react-native-gifted-chat/lib/Day.d.ts
+@@ -18,7 +18,7 @@ export default class Day<TMessage extends IMessage = IMessage> extends PureCompo
+     };
+     static defaultProps: {
+         currentMessage: {
+-            createdAt: null;
++            created_at: null;
+         };
+         previousMessage: {};
+         nextMessage: {};
+diff --git a/node_modules/react-native-gifted-chat/lib/Day.js b/node_modules/react-native-gifted-chat/lib/Day.js
+index 7829a72..e2d397b 100644
+--- a/node_modules/react-native-gifted-chat/lib/Day.js
++++ b/node_modules/react-native-gifted-chat/lib/Day.js
+@@ -26,7 +26,7 @@ export default class Day extends PureComponent {
+             return (<View style={[styles.container, containerStyle]}>
+           <View style={wrapperStyle}>
+             <Text style={[styles.text, textStyle]}>
+-              {dayjs(currentMessage.createdAt)
++              {dayjs(currentMessage.created_at)
+                 .locale(this.context.getLocale())
+                 .format(dateFormat)}
+             </Text>
+@@ -41,7 +41,7 @@ Day.contextTypes = {
+ };
+ Day.defaultProps = {
+     currentMessage: {
+-        createdAt: null,
++        created_at: null,
+     },
+     previousMessage: {},
+     nextMessage: {},
 diff --git a/node_modules/react-native-gifted-chat/lib/GiftedAvatar.js b/node_modules/react-native-gifted-chat/lib/GiftedAvatar.js
-index 266857c..f33830b 100644
+index 266857c..06c96ba 100644
 --- a/node_modules/react-native-gifted-chat/lib/GiftedAvatar.js
 +++ b/node_modules/react-native-gifted-chat/lib/GiftedAvatar.js
 @@ -3,6 +3,7 @@ import React from 'react';
@@ -81,20 +165,19 @@ index 266857c..f33830b 100644
  const { carrot, emerald, peterRiver, wisteria, alizarin, turquoise, midnightBlue, } = Color;
  const styles = StyleSheet.create({
      avatarStyle: {
-@@ -71,7 +72,7 @@ export default class GiftedAvatar extends React.Component {
-                 return user.avatar([styles.avatarStyle, this.props.avatarStyle]);
-             }
-             else if (typeof user.avatar === 'string') {
--                return (<Image source={{ uri: user.avatar }} style={[styles.avatarStyle, this.props.avatarStyle]}/>);
-+                return (<Image source={IMAGES.characters[user.avatar]} style={[styles.avatarStyle, this.props.avatarStyle]}/>);
-             }
-             else if (typeof user.avatar === 'number') {
-                 return (<Image source={user.avatar} style={[styles.avatarStyle, this.props.avatarStyle]}/>);
 diff --git a/node_modules/react-native-gifted-chat/lib/GiftedChat.d.ts b/node_modules/react-native-gifted-chat/lib/GiftedChat.d.ts
-index 5e2f61c..8876ef3 100644
+index 5e2f61c..fcbe0d7 100644
 --- a/node_modules/react-native-gifted-chat/lib/GiftedChat.d.ts
 +++ b/node_modules/react-native-gifted-chat/lib/GiftedChat.d.ts
-@@ -116,6 +116,7 @@ declare class GiftedChat<TMessage extends IMessage = IMessage> extends React.Com
+@@ -33,6 +33,7 @@ export interface GiftedChatProps<TMessage extends IMessage = IMessage> {
+     placeholder?: string;
+     disableComposer?: boolean;
+     user?: User;
++    roomId?: string;
+     locale?: string;
+     timeFormat?: string;
+     dateFormat?: string;
+@@ -116,6 +117,7 @@ declare class GiftedChat<TMessage extends IMessage = IMessage> extends React.Com
          getLocale: PropTypes.Requireable<(...args: any[]) => any>;
      };
      static defaultProps: {
@@ -102,8 +185,16 @@ index 5e2f61c..8876ef3 100644
          messages: never[];
          messagesContainerStyle: undefined;
          text: undefined;
+@@ -123,6 +125,7 @@ declare class GiftedChat<TMessage extends IMessage = IMessage> extends React.Com
+         disableComposer: boolean;
+         messageIdGenerator: () => string;
+         user: {};
++        roomId: null;
+         onSend: () => void;
+         locale: null;
+         timeFormat: string;
 diff --git a/node_modules/react-native-gifted-chat/lib/GiftedChat.js b/node_modules/react-native-gifted-chat/lib/GiftedChat.js
-index 73ba4ee..6f61eca 100644
+index 73ba4ee..1bd7936 100644
 --- a/node_modules/react-native-gifted-chat/lib/GiftedChat.js
 +++ b/node_modules/react-native-gifted-chat/lib/GiftedChat.js
 @@ -32,7 +32,7 @@ class GiftedChat extends React.Component {
@@ -115,6 +206,19 @@ index 73ba4ee..6f61eca 100644
          this.invertibleScrollViewProps = undefined;
          this._actionSheetRef = undefined;
          this._messageContainerRef = React.createRef();
+@@ -94,8 +94,10 @@ class GiftedChat extends React.Component {
+                 return {
+                     ...message,
+                     user: this.props.user,
+-                    createdAt: new Date(),
+-                    _id: this.props.messageIdGenerator && this.props.messageIdGenerator(),
++                    room_id: this.props.roomId,
++                    user_uuid: this.props.user.id,
++                    created_at: new Date(),
++                    id: this.props.messageIdGenerator && this.props.messageIdGenerator(),
+                 };
+             });
+             if (shouldResetInputToolbar === true) {
 diff --git a/node_modules/react-native-gifted-chat/lib/Message.d.ts b/node_modules/react-native-gifted-chat/lib/Message.d.ts
 index 476df8f..f213e38 100644
 --- a/node_modules/react-native-gifted-chat/lib/Message.d.ts
@@ -128,7 +232,7 @@ index 476df8f..f213e38 100644
          renderBubble: null;
          renderDay: null;
 diff --git a/node_modules/react-native-gifted-chat/lib/Message.js b/node_modules/react-native-gifted-chat/lib/Message.js
-index 2490081..7aa7cba 100644
+index 2490081..177f503 100644
 --- a/node_modules/react-native-gifted-chat/lib/Message.js
 +++ b/node_modules/react-native-gifted-chat/lib/Message.js
 @@ -1,11 +1,13 @@
@@ -146,20 +250,33 @@ index 2490081..7aa7cba 100644
  const styles = {
      left: StyleSheet.create({
          container: {
-@@ -46,6 +48,7 @@ export default class Message extends React.Component {
+@@ -39,17 +41,18 @@ export default class Message extends React.Component {
+         return (next.sent !== current.sent ||
+             next.received !== current.received ||
+             next.pending !== current.pending ||
+-            next.createdAt !== current.createdAt ||
++            next.created_at !== current.created_at ||
+             next.text !== current.text ||
+             next.image !== current.image ||
+             next.video !== current.video ||
              next.audio !== current.audio ||
              previousMessage !== nextPropsPreviousMessage ||
              nextMessage !== nextPropsMessage ||
-+            this.props.userCount - next.readUserIds.length !== this.props.userCount - current.readUserIds.length ||
++            this.props.userCount - next.read_user_ids.length !== this.props.userCount - current.read_user_ids.length ||
              shouldUpdate);
      }
      renderDay() {
+-        if (this.props.currentMessage && this.props.currentMessage.createdAt) {
++        if (this.props.currentMessage && this.props.currentMessage.created_at) {
+             const { containerStyle, ...props } = this.props;
+             if (this.props.renderDay) {
+                 return this.props.renderDay(props);
 @@ -66,6 +69,23 @@ export default class Message extends React.Component {
          // @ts-ignore
          return <Bubble {...props}/>;
      }
 +    renderUnreadCount() {
-+        const unreadCount = this.props.userCount - this.props.currentMessage.readUserIds.length
++        const unreadCount = this.props.userCount - this.props.currentMessage.read_user_ids.length
 +        const textStyleProps = {fontSize: 12, color: Color.line2Color}
 +        if(unreadCount == 0){
 +            return null
@@ -178,6 +295,19 @@ index 2490081..7aa7cba 100644
      renderSystemMessage() {
          const { containerStyle, ...props } = this.props;
          if (this.props.renderSystemMessage) {
+@@ -76,10 +96,10 @@ export default class Message extends React.Component {
+     renderAvatar() {
+         const { user, currentMessage, showUserAvatar } = this.props;
+         if (user &&
+-            user._id &&
++            user.id &&
+             currentMessage &&
+             currentMessage.user &&
+-            user._id === currentMessage.user._id &&
++            user.id === currentMessage.user.id &&
+             !showUserAvatar) {
+             return null;
+         }
 @@ -104,7 +124,9 @@ export default class Message extends React.Component {
                  containerStyle && containerStyle[position],
              ]}>
@@ -201,7 +331,7 @@ index 15d0dcd..2cf2e86 100644
          user: {};
          isTyping: boolean;
 diff --git a/node_modules/react-native-gifted-chat/lib/MessageContainer.js b/node_modules/react-native-gifted-chat/lib/MessageContainer.js
-index 193772a..4e80378 100644
+index 193772a..7c2fe42 100644
 --- a/node_modules/react-native-gifted-chat/lib/MessageContainer.js
 +++ b/node_modules/react-native-gifted-chat/lib/MessageContainer.js
 @@ -55,18 +55,18 @@ export default class MessageContainer extends React.PureComponent {
@@ -231,6 +361,94 @@ index 193772a..4e80378 100644
          };
          this.renderTypingIndicator = () => {
              if (Platform.OS === 'web') {
+@@ -123,14 +123,14 @@ export default class MessageContainer extends React.PureComponent {
+             }
+         };
+         this.renderRow = ({ item, index }) => {
+-            if (!item._id && item._id !== 0) {
+-                warning('GiftedChat: `_id` is missing for message', JSON.stringify(item));
++            if (!item.id && item.id !== 0) {
++                warning('GiftedChat: `id` is missing for message', JSON.stringify(item));
+             }
+             if (!item.user) {
+                 if (!item.system) {
+                     warning('GiftedChat: `user` is missing for message', JSON.stringify(item));
+                 }
+-                item.user = { _id: 0 };
++                item.user = { id: 0 };
+             }
+             const { messages, user, inverted, ...restProps } = this.props;
+             if (messages && user) {
+@@ -139,12 +139,12 @@ export default class MessageContainer extends React.PureComponent {
+                 const messageProps = {
+                     ...restProps,
+                     user,
+-                    key: item._id,
++                    key: item.id,
+                     currentMessage: item,
+                     previousMessage,
+                     inverted,
+                     nextMessage,
+-                    position: item.user._id === user._id ? 'right' : 'left',
++                    position: item.user.id === user.id ? 'right' : 'left',
+                 };
+                 if (this.props.renderMessage) {
+                     return this.props.renderMessage(messageProps);
+@@ -181,7 +181,7 @@ export default class MessageContainer extends React.PureComponent {
+                 onLoadEarlier();
+             }
+         };
+-        this.keyExtractor = (item) => `${item._id}`;
++        this.keyExtractor = (item) => `${item.id}`;
+     }
+     componentDidMount() {
+         if (this.props.messages && this.props.messages.length === 0) {
+diff --git a/node_modules/react-native-gifted-chat/lib/Models.d.ts b/node_modules/react-native-gifted-chat/lib/Models.d.ts
+index e14761d..2086ec0 100644
+--- a/node_modules/react-native-gifted-chat/lib/Models.d.ts
++++ b/node_modules/react-native-gifted-chat/lib/Models.d.ts
+@@ -23,7 +23,7 @@ export interface LeftRightStyle<T> {
+ }
+ declare type renderFunction = (x: any) => JSX.Element;
+ export interface User {
+-    _id: string | number;
++    id: string | number;
+     name?: string;
+     avatar?: string | renderFunction;
+ }
+@@ -38,9 +38,9 @@ export interface QuickReplies {
+     keepIt?: boolean;
+ }
+ export interface IMessage {
+-    _id: string | number;
++    id: string | number;
+     text: string;
+-    createdAt: Date | number;
++    created_at: Date | number;
+     user: User;
+     image?: string;
+     video?: string;
+diff --git a/node_modules/react-native-gifted-chat/lib/QuickReplies.js b/node_modules/react-native-gifted-chat/lib/QuickReplies.js
+index 1678639..e69f460 100644
+--- a/node_modules/react-native-gifted-chat/lib/QuickReplies.js
++++ b/node_modules/react-native-gifted-chat/lib/QuickReplies.js
+@@ -73,14 +73,14 @@ export default class QuickReplies extends Component {
+             if (this.props.onQuickReply) {
+                 this.props.onQuickReply(replies.map((reply) => ({
+                     ...reply,
+-                    messageId: currentMessage._id,
++                    messageId: currentMessage.id,
+                 })));
+             }
+         };
+         this.shouldComponentDisplay = () => {
+             const { currentMessage, nextMessage } = this.props;
+             const hasReplies = !!currentMessage && !!currentMessage.quickReplies;
+-            const hasNext = !!nextMessage && !!nextMessage._id;
++            const hasNext = !!nextMessage && !!nextMessage.id;
+             const keepIt = currentMessage.quickReplies.keepIt;
+             if (hasReplies && !hasNext) {
+                 return true;
 diff --git a/node_modules/react-native-gifted-chat/lib/Send.js b/node_modules/react-native-gifted-chat/lib/Send.js
 index 5e4fe5a..0ff2fa7 100644
 --- a/node_modules/react-native-gifted-chat/lib/Send.js
@@ -244,3 +462,91 @@ index 5e4fe5a..0ff2fa7 100644
            </View>
          </TouchableOpacity>);
          }
+diff --git a/node_modules/react-native-gifted-chat/lib/Time.d.ts b/node_modules/react-native-gifted-chat/lib/Time.d.ts
+index ffa0819..493d56d 100644
+--- a/node_modules/react-native-gifted-chat/lib/Time.d.ts
++++ b/node_modules/react-native-gifted-chat/lib/Time.d.ts
+@@ -16,7 +16,7 @@ export default class Time<TMessage extends IMessage = IMessage> extends Componen
+     static defaultProps: {
+         position: string;
+         currentMessage: {
+-            createdAt: null;
++            created_at: null;
+         };
+         containerStyle: {};
+         timeFormat: string;
+diff --git a/node_modules/react-native-gifted-chat/lib/Time.js b/node_modules/react-native-gifted-chat/lib/Time.js
+index 24b06cc..f102c0a 100644
+--- a/node_modules/react-native-gifted-chat/lib/Time.js
++++ b/node_modules/react-native-gifted-chat/lib/Time.js
+@@ -47,7 +47,7 @@ export default class Time extends Component {
+                 styles[position].text,
+                 timeTextStyle && timeTextStyle[position],
+             ]}>
+-            {dayjs(currentMessage.createdAt)
++            {dayjs(currentMessage.created_at)
+                 .locale(this.context.getLocale())
+                 .format(timeFormat)}
+           </Text>
+@@ -62,7 +62,7 @@ Time.contextTypes = {
+ Time.defaultProps = {
+     position: 'left',
+     currentMessage: {
+-        createdAt: null,
++        created_at: null,
+     },
+     containerStyle: {},
+     timeFormat: TIME_FORMAT,
+diff --git a/node_modules/react-native-gifted-chat/lib/types.js.flow b/node_modules/react-native-gifted-chat/lib/types.js.flow
+index 39cff57..f5a65b3 100644
+--- a/node_modules/react-native-gifted-chat/lib/types.js.flow
++++ b/node_modules/react-native-gifted-chat/lib/types.js.flow
+@@ -8,7 +8,7 @@ export type LeftRightStyle<T> = {|
+ |}
+ 
+ export type User = {
+-  _id: string | number,
++  id: string | number,
+   name?: string,
+   avatar?: string | renderFunction,
+ }
+@@ -26,9 +26,9 @@ export type QuickReplies = {
+ }
+ 
+ export type IMessage = {
+-  _id: string | number,
++  id: string | number,
+   text: string,
+-  createdAt: Date | number,
++  created_at: Date | number,
+   user: User,
+   image?: string,
+   video?: string,
+diff --git a/node_modules/react-native-gifted-chat/lib/utils.js b/node_modules/react-native-gifted-chat/lib/utils.js
+index cf91b98..61d3a2e 100644
+--- a/node_modules/react-native-gifted-chat/lib/utils.js
++++ b/node_modules/react-native-gifted-chat/lib/utils.js
+@@ -7,11 +7,11 @@ export const StylePropType = PropTypes.oneOfType([
+     PropTypes.bool,
+ ]);
+ export function isSameDay(currentMessage, diffMessage) {
+-    if (!diffMessage || !diffMessage.createdAt) {
++    if (!diffMessage || !diffMessage.created_at) {
+         return false;
+     }
+-    const currentCreatedAt = dayjs(currentMessage.createdAt);
+-    const diffCreatedAt = dayjs(diffMessage.createdAt);
++    const currentCreatedAt = dayjs(currentMessage.created_at);
++    const diffCreatedAt = dayjs(diffMessage.created_at);
+     if (!currentCreatedAt.isValid() || !diffCreatedAt.isValid()) {
+         return false;
+     }
+@@ -21,7 +21,7 @@ export function isSameUser(currentMessage, diffMessage) {
+     return !!(diffMessage &&
+         diffMessage.user &&
+         currentMessage.user &&
+-        diffMessage.user._id === currentMessage.user._id);
++        diffMessage.user.id === currentMessage.user.id);
+ }
+ const styleString = (color) => `color: ${color}; font-weight: bold`;
+ const headerLog = '%c[react-native-gifted-chat]';

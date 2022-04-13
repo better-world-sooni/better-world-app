@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "postinstall": "patch-package && cd ios && pod install",
-    "android": "ENV=development react-native run-android",
+    "android": "react-native run-android",
     "ios": "ENV=development react-native run-ios",
     "buildIos": "react-native bundle --dev false --entry-file index.js --bundle-output ios/main.jsbundle --assets-dest ./ios --platform ios",
     "buildAndroid": "react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res",
@@ -16,6 +16,8 @@
     "assets": "react-native link"
   },
   "dependencies": {
+    "@anycable/core": "^0.3.2",
+    "@anycable/web": "^0.3.2",
     "@f/elapsed-time": "^1.0.0",
     "@fortawesome/fontawesome-svg-core": "^1.2.36",
     "@fortawesome/free-regular-svg-icons": "^5.15.4",
