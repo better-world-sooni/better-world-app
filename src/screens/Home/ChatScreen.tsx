@@ -129,41 +129,27 @@ const ChatScreen = () => {
     shallowEqual,
   );
   const userUuid = currentUser.uuid;
-  const {loading, channel, error} = useSelector(
-    (root: RootState) => root.ws, 
-    shallowEqual,
-  );
   const {data: chatRoomsResponse, isLoading: chatRoomLoading} = useApiSelector(
     APIS.chat.chatRoom.main,
   );
   const [chatRooms, setChatRooms] = useState(chatRoomsResponse.chat_rooms);
-  const fetchRoomList = async () => {
-    const res = await getPromiseFn({
-      url: APIS.chat.chatRoom.main().url,
-      token,
-    });
-    if (res?.data) {
-      const {chat_rooms} = res.data;
-      setChatRooms(chat_rooms);
-    }
-  };
 
   const updateList = useCallback((newmsg) => {
-    let list = [...chatRooms]
-    let roomId = newmsg['room_id']
-    let index = list.findIndex(x=>x.room.id === roomId)
+    let list = [...chatRooms];
+    let roomId = newmsg['room_id'];
+    let index = list.findIndex(x=>x.room.id === roomId);
     list.splice(0, 0, list.splice(index, 1)[0]);
-    list[0].last_message = newmsg['text']
-    return list
+    list[0].last_message = newmsg['text'];
+    list[0].unread_count += 1;
+    return list;
   }, [chatRooms]);
 
   useFocusEffect(
     useCallback(() => {
       let channel;
       const wsConnect = async () => {
-        channel = new ChatChannel({ roomId: 4 });
+        channel = new ChatChannel({userUuid: userUuid});
         await cable(token).subscribe(channel);
-        // fetchRoomList();
         const res = await getPromiseFn({
           url: APIS.chat.chatRoom.main().url,
           token,
@@ -173,12 +159,13 @@ const ChatScreen = () => {
           setChatRooms(chat_rooms);
         }
         channel.on('message', res => {
-          setChatRooms(updateList(res['data']))
+          console.log("list receive", res['data']);
+          setChatRooms(updateList(res['data']));
         });
         channel.on('close', () => console.log('Disconnected list socket connection'));
         channel.on('disconnect', () => channel.send('Dis'));
       };
-      wsConnect()
+      wsConnect();
       return () => {
         channel.disconnect();
         channel.close();
@@ -201,7 +188,7 @@ const ChatScreen = () => {
           const title = item.room.name;
           const lastMessage = item.last_message;
           const numUsers = item.num_users;
-          const unreadMessageCount = 7;
+          const unreadMessageCount = item.unread_count;
           const firstUserAvatar = item.profile_imgs[0];
           const secondUserAvatar = item.profile_imgs[1];
           const thirdUserAvatar = item.profile_imgs[2];

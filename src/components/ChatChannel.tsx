@@ -21,22 +21,16 @@ type LeavingMessage = {
 }
 
 
-type UpdatingMessage = {
-  type: 'update'
-  data: object
-}
-
 type ChatMessage = {
   type: 'send'
   data: object
 }
 
-type Message = EnteringMessage | LeavingMessage | ChatMessage | UpdatingMessage
+type Message = EnteringMessage | LeavingMessage | ChatMessage 
 
 interface Events extends ChannelEvents<Message> {
   enter: (msg: EnteringMessage) => void
   leave: (msg: LeavingMessage) => void
-  update: (msg: UpdatingMessage) => void
 }
 
 export class ChatChannel extends Channel<Params,Message,Events> {
@@ -44,10 +38,6 @@ export class ChatChannel extends Channel<Params,Message,Events> {
 
   async send(message) {
     return this.perform('send_message', {message})
-  }
-
-  async update(message) {
-    return this.perform('update_read_count', {message})
   }
 
   async enter() {
@@ -61,9 +51,6 @@ export class ChatChannel extends Channel<Params,Message,Events> {
   receive(message: Message) {
     if (message.type === 'enter') {
       return this.emit('enter', message)
-    }
-    else if(message.type === 'update') {
-      return this.emit('update', message)
     }
     else if(message.type === 'leave') {
       return this.emit('leave', message)

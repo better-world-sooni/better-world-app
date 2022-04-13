@@ -34,20 +34,6 @@ const ChatRoomScreen = props => {
   const [messages, setMessages] = useState([]);
   const [chatSocket, setChatSocket] = useState(null);
   const [enterUsers, setEnterUsers] = useState([]);
-  const readCountUpdateFunRef = useRef(null);
-
-  const fetchNewRoom = async callback => {
-    // const res = await getPromiseFn({
-    //   url: APIS.chat.chat('private', currentChatRoomId).url,
-    //   token,
-    // });
-    // if (res?.data?.data) {
-    //   const {title, messages, userIds} = res.data.data;
-    //   setTitle(title);
-    //   setMessages(messages);
-    //   callback();
-    // }
-  };
 
   const onSend = useCallback(async (messages = []) => {
     messages[0]["read_user_ids"] = enterUsers
@@ -59,42 +45,13 @@ const ChatRoomScreen = props => {
     }
   }, [chatSocket, enterUsers]);
 
-  useEffect(() => {
-    const readCountUpdate = (enterUser) => {
-      console.log("EnterUser", enterUser)
-      let msgs = [...messages]
-      console.log("before", msgs)
-      for(const message of msgs) {
-        if(message.read_user_ids.includes(enterUser)) break;
-        message.read_user_ids.push(enterUser)
-
-      }
-      console.log("after", msgs)
-      return msgs 
-    }
-    readCountUpdateFunRef.current = readCountUpdate
-  }, [messages]);
-
-  const fetchRoomMessages = async () => {
-    const res = await getPromiseFn({
-      url: APIS.chat.chat(currentChatRoomId).url,
-      token,
-    });
-    if (res?.data) {
-      // const {chat_rooms} = res.data;
-      // setChatRooms(chat_rooms);
-      console.log(res.data)
-    }
-  };
-
   useLayoutEffect(() => {
     let channel;
     const wsConnect = async () => {
       console.log(token);
       channel = new ChatChannel({ roomId: currentChatRoomId });
       await cable(token).subscribe(channel);
-      setChatSocket(channel);
-      
+      setChatSocket(channel);     
       channel.on('enter', res => {
         const newUsers = res['new_users']
         const newMsgs = res["update_msgs"]
@@ -102,25 +59,20 @@ const ChatRoomScreen = props => {
         setEnterUsers(newUsers)
         setMessages(newMsgs)
       });
+      let _ = await channel.enter();
       channel.on('message', res => {
         console.log("message receive", userUuid, res['data'])
         setMessages((m) => [res['data'], ...m]);
       });
-      channel.on('update', res => {
-        console.log("update", res['data'])
-        setMessages(res['data'])
-      })
       channel.on('leave', res => {
         console.log(userUuid,  res['leave_user'], res['new_users'])
         if(userUuid != res['leave_user']){
           console.log("here")
           setEnterUsers(res['new_users'])
         }
-
       })
       channel.on('close', () => console.log('Disconnected from chat'));
       channel.on('disconnect', () => console.log("check disconnect"));
-      let _ = await channel.enter();
     };
     if (currentChatRoomId) {
       wsConnect();
@@ -130,7 +82,6 @@ const ChatRoomScreen = props => {
         channel.leave();
         channel.disconnect();
         channel.close();
-        // console.log(channel)
       }   
     }
   }, [currentChatRoomId]);
