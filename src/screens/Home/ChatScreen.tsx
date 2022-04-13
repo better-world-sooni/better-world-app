@@ -128,11 +128,11 @@ const ChatScreen = () => {
     (root: RootState) => root.app.session,
     shallowEqual,
   );
-  const userUuid = currentUser.uuid;
+  const userUuid = currentUser?.uuid;
   const {data: chatRoomsResponse, isLoading: chatRoomLoading} = useApiSelector(
     APIS.chat.chatRoom.main,
   );
-  const [chatRooms, setChatRooms] = useState(chatRoomsResponse.chat_rooms);
+  const [chatRooms, setChatRooms] = useState(chatRoomsResponse?.chat_rooms);
 
   const updateList = useCallback((newmsg) => {
     let list = [...chatRooms];
@@ -159,13 +159,13 @@ const ChatScreen = () => {
           setChatRooms(chat_rooms);
         }
         channel.on('message', res => {
-          console.log("list receive", res['data']);
-          setChatRooms(updateList(res['data']));
+          console.log("list receive", res['data'])
+          setChatRooms([... updateList(res['data'])])
         });
         channel.on('close', () => console.log('Disconnected list socket connection'));
         channel.on('disconnect', () => channel.send('Dis'));
       };
-      wsConnect();
+      wsConnect()
       return () => {
         channel.disconnect();
         channel.close();

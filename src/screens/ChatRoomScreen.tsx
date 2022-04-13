@@ -28,8 +28,8 @@ const ChatRoomScreen = props => {
     (root: RootState) => root.app.session,
     shallowEqual,
   );
-  const userUuid = currentUser.uuid;
-  const userAvatar = currentUser.main_avatar_nft.nft_metadatum.image_url;
+  const userUuid = currentUser?.uuid;
+  const userAvatar = currentUser?.main_avatar_nft.nft_metadatum.image_url;
 
   const [messages, setMessages] = useState([]);
   const [chatSocket, setChatSocket] = useState(null);
@@ -68,7 +68,7 @@ const ChatRoomScreen = props => {
         console.log(userUuid,  res['leave_user'], res['new_users'])
         if(userUuid != res['leave_user']){
           console.log("here")
-          setEnterUsers(res['new_users'])
+          setEnterUsers([...res['new_users']])
         }
       })
       channel.on('close', () => console.log('Disconnected from chat'));
