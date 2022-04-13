@@ -172,14 +172,9 @@ const ChatScreen = () => {
           const {chat_rooms} = res.data;
           setChatRooms(chat_rooms);
         }
-        channel.on('enter', res => {
-
-        });
         channel.on('message', res => {
           setChatRooms(updateList(res['data']))
         });
-        channel.on('update', res => {
-        })
         channel.on('close', () => console.log('Disconnected list socket connection'));
         channel.on('disconnect', () => channel.send('Dis'));
       };

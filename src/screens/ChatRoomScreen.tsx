@@ -87,6 +87,10 @@ const ChatRoomScreen = props => {
     }
   };
 
+  useEffect(() => {
+    console.log("check", enterUsers)
+  }, [enterUsers]);
+
 
   useLayoutEffect(() => {
     let channel;
@@ -95,39 +99,16 @@ const ChatRoomScreen = props => {
       channel = new ChatChannel({ roomId: currentChatRoomId });
       await cable(token).subscribe(channel);
       setChatSocket(channel);
-      // fetchRoomMessages();
-      // const res = await getPromiseFn({
-      //   url: APIS.chat.chat(currentChatRoomId).url,
-      //   token,
-      // });
-      // if (res?.data) {
-      //   // const {chat_rooms} = res.data;
-      //   // setChatRooms(chat_rooms);
-      //   let fetchdata = res.data.messages
-      //   console.log("before", fetchdata)
-      //   for(const message of fetchdata) {
-      //     if(message.read_user_ids.includes(userUuid)) break;
-      //     message.read_user_ids.push(userUuid)
-      //   }
-      //   console.log("after", fetchdata)
-      //   // setMessages(fetchdata)
-      // }
+      
       channel.on('enter', res => {
         let newUser = res['new_user']
         let newMsgs = res["update_msgs"]
-        console.log(newMsgs)
         newMsgs.forEach( (val, idx) => {
-          let {avatar, ...rest} = val
+          const {avatar, ...rest} = val
           rest["user"] = {"id" : rest["user_uuid"], "avatar" : avatar}
           newMsgs[idx] = rest
         });
-        console.log(newMsgs)
-
         setEnterUsers((users) => [...users, newUser])
-        // if(res['data'] != userUuid) {
-        //   let updatedMessages = readCountUpdateFunRef.current(res['data'])
-        //   // channel.update(updatedMessages)
-        // }
         setMessages(newMsgs)
       });
       channel.on('message', res => {
@@ -138,6 +119,13 @@ const ChatRoomScreen = props => {
         console.log("update", res['data'])
         setMessages([...res['data']])
       })
+      channel.on('leave', res => {
+        console.log("here")
+        setEnterUsers((users) => 
+        [ ...users.slice(0, users.indexOf(res['leave_user'])),
+          ...users.slice(users.indexOf(res['leave_user']) + 1) ]
+        )
+      })
       channel.on('close', () => console.log('Disconnected from chat'));
       channel.on('disconnect', () => channel.send('Dis'));
       let _ = await channel.enter();
@@ -147,9 +135,7 @@ const ChatRoomScreen = props => {
     }
     return() => {
       if(channel) {
-        // if(enterUsers.length == 1) {
-        //   channel.send("allUserLeave")
-        // }
+        channel.leave();
         channel.disconnect();
         channel.close();
         // console.log(channel)
