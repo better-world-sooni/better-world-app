@@ -87,11 +87,6 @@ const ChatRoomScreen = props => {
     }
   };
 
-  useEffect(() => {
-    console.log("check", enterUsers)
-  }, [enterUsers]);
-
-
   useLayoutEffect(() => {
     let channel;
     const wsConnect = async () => {
@@ -101,14 +96,10 @@ const ChatRoomScreen = props => {
       setChatSocket(channel);
       
       channel.on('enter', res => {
-        let newUser = res['new_user']
-        let newMsgs = res["update_msgs"]
-        newMsgs.forEach( (val, idx) => {
-          const {avatar, ...rest} = val
-          rest["user"] = {"id" : rest["user_uuid"], "avatar" : avatar}
-          newMsgs[idx] = rest
-        });
-        setEnterUsers((users) => [...users, newUser])
+        const newUsers = res['new_users']
+        const newMsgs = res["update_msgs"]
+        console.log(newUsers)
+        setEnterUsers(newUsers)
         setMessages(newMsgs)
       });
       channel.on('message', res => {
@@ -117,17 +108,18 @@ const ChatRoomScreen = props => {
       });
       channel.on('update', res => {
         console.log("update", res['data'])
-        setMessages([...res['data']])
+        setMessages(res['data'])
       })
       channel.on('leave', res => {
-        console.log("here")
-        setEnterUsers((users) => 
-        [ ...users.slice(0, users.indexOf(res['leave_user'])),
-          ...users.slice(users.indexOf(res['leave_user']) + 1) ]
-        )
+        console.log(userUuid,  res['leave_user'], res['new_users'])
+        if(userUuid != res['leave_user']){
+          console.log("here")
+          setEnterUsers(res['new_users'])
+        }
+
       })
       channel.on('close', () => console.log('Disconnected from chat'));
-      channel.on('disconnect', () => channel.send('Dis'));
+      channel.on('disconnect', () => console.log("check disconnect"));
       let _ = await channel.enter();
     };
     if (currentChatRoomId) {
