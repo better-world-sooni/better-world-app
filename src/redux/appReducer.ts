@@ -115,6 +115,7 @@ const appSlice = createSlice({
     session: {
       currentUser: null,
       token: null,
+      mainNft: null,
     },
     badge: 0,
   },
@@ -127,6 +128,7 @@ const appSlice = createSlice({
       state.session = {
         currentUser: user,
         token: jwt,
+        mainNft: user.main_nft,
       };
       state.isLoggedIn = true;
     },
