@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {Col} from 'src/components/common/Col';
 import {Div} from 'src/components/common/Div';
 import {Row} from 'src/components/common/Row';
@@ -11,10 +11,12 @@ import {RootState} from 'src/redux/rootReducer';
 import {Header} from 'src/components/Header';
 import {useFocusEffect, useNavigation} from '@react-navigation/core';
 import {NAV_NAMES} from 'src/modules/navNames';
-import {getPromiseFn} from 'src/redux/asyncReducer';
+import {getPromiseFn, useApiSelector, useReloadGET} from 'src/redux/asyncReducer';
 import APIS from 'src/modules/apis';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import ChatRoomItem from 'src/components/ChatRoomItem';
+import {cable} from 'src/modules/cable';
+import {ChatChannel} from 'src/components/ChatChannel'
 
 const NoChatRooms = () => {
   const navigation = useNavigation();
@@ -122,25 +124,54 @@ const ChatRoomsLoading = () => {
 };
 
 const ChatScreen = () => {
-  const {token} = useSelector(
+  const {token, currentUser} = useSelector(
     (root: RootState) => root.app.session,
     shallowEqual,
   );
-  const [chatRooms, setChatRooms] = useState([]);
-  const fetchNewRoom = async () => {
-    const res = await getPromiseFn({
-      url: APIS.chat.chatRoom.main().url,
-      token,
-    });
-    if (res?.data) {
-      const {chatRooms} = res.data;
-      setChatRooms(chatRooms);
-    }
-  };
+  const userUuid = currentUser?.uuid;
+  const {data: chatRoomsResponse, isLoading: chatRoomLoading} = useApiSelector(
+    APIS.chat.chatRoom.main,
+  );
+  const [chatRooms, setChatRooms] = useState(chatRoomsResponse?.chat_rooms);
 
-  useFocusEffect(() => {
-    fetchNewRoom();
-  });
+  const updateList = useCallback((newmsg) => {
+    let list = [...chatRooms];
+    let roomId = newmsg['room_id'];
+    let index = list.findIndex(x=>x.room.id === roomId);
+    list.splice(0, 0, list.splice(index, 1)[0]);
+    list[0].last_message = newmsg['text'];
+    list[0].unread_count += 1;
+    return list;
+  }, [chatRooms]);
+
+  useFocusEffect(
+    useCallback(() => {
+      let channel;
+      const wsConnect = async () => {
+        channel = new ChatChannel({userUuid: userUuid});
+        await cable(token).subscribe(channel);
+        const res = await getPromiseFn({
+          url: APIS.chat.chatRoom.main().url,
+          token,
+        });
+        if (res?.data) {
+          const {chat_rooms} = res.data;
+          setChatRooms(chat_rooms);
+        }
+        channel.on('message', res => {
+          console.log("list receive", res['data'])
+          setChatRooms([... updateList(res['data'])])
+        });
+        channel.on('close', () => console.log('Disconnected list socket connection'));
+        channel.on('disconnect', () => channel.send('Dis'));
+      };
+      wsConnect()
+      return () => {
+        channel.disconnect();
+        channel.close();
+      }
+    },[])
+  );
 
   return (
     <Div flex bg={'white'}>
@@ -151,22 +182,24 @@ const ChatScreen = () => {
         data={chatRooms}
         ListEmptyComponent={<NoChatRooms />}
         renderItem={({item, index}) => {
-          const chatRoomId = item.id;
-          const userIds = item.userIds.length;
-          const createdAt = item.lastMessage?.createdAt;
-          const title = item.title;
-          const lastMessage = item.lastMessage?.text;
-          const unreadMessageCount = item.unreadMessageCount;
-          const firstUserAvatar = item.avatars[1]?.avatar;
-          const secondUserAvatar = item.avatars[2]?.avatar;
-          const thirdUserAvatar = item.avatars[3]?.avatar;
-          const fourthUserAvatar = item.avatars[4]?.avatar;
+          const chatRoomId = item.room.id;
+          const category = item.room.category;
+          const createdAt = item.room.created_at;
+          const title = item.room.name;
+          const lastMessage = item.last_message;
+          const numUsers = item.num_users;
+          const unreadMessageCount = item.unread_count;
+          const firstUserAvatar = item.profile_imgs[0];
+          const secondUserAvatar = item.profile_imgs[1];
+          const thirdUserAvatar = item.profile_imgs[2];
+          const fourthUserAvatar = item.profile_imgs[3];
           return (
             <ChatRoomItem
               chatRoomId={chatRoomId}
-              userIds={userIds}
+              category={category}
               createdAt={createdAt}
               title={title}
+              numUsers = {numUsers}
               unreadMessageCount={unreadMessageCount}
               lastMessage={lastMessage}
               firstUserAvatar={firstUserAvatar}

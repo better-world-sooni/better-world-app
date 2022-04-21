@@ -27,10 +27,11 @@ const RightSwipeActions = () => {
 
 const ChatRoomItem = ({
   chatRoomId,
-  userIds,
+  category,
   title,
   createdAt,
   lastMessage,
+  numUsers,
   unreadMessageCount,
   firstUserAvatar = null,
   secondUserAvatar = null,
@@ -43,7 +44,6 @@ const ChatRoomItem = ({
   );
 
   const navigation = useNavigation();
-
   const [deleted, setDeleted] = useState(false);
 
   const createdAtText = useCallback(createdAt => {
@@ -62,8 +62,9 @@ const ChatRoomItem = ({
   }, []);
 
   const goToChatRoom = roomId => {
-    navigation.navigate(NAV_NAMES.ChatRoom, {currentChatRoomId: roomId});
+    navigation.navigate(NAV_NAMES.ChatRoom, {currentChatRoomId: roomId, title: title, numUsers: numUsers});
   };
+
   const deleteChatRoom = async roomId => {
     const res = await patchPromiseFn({
       url: APIS.chat.chatRoom.user().url,
@@ -77,9 +78,11 @@ const ChatRoomItem = ({
       Alert.alert('채팅방을 성공적으로 나가셨습니다.');
     }
   };
+
   if (deleted) {
     return null;
   }
+  
   return (
     <Swipeable
       key={chatRoomId}
@@ -102,7 +105,7 @@ const ChatRoomItem = ({
               </Span>
             </Col>
             <Col auto fontSize={15}>
-              <Span color={GRAY_COLOR}>{userIds}</Span>
+              <Span color={GRAY_COLOR}>{category}</Span>
             </Col>
             <Col justifyCenter itemsEnd>
               <Span fontSize={13} light>
@@ -125,7 +128,7 @@ const ChatRoomItem = ({
                 px5
                 justifyCenter>
                 <Span color={'white'}>
-                  {unreadMessageCount == 100 ? '99+' : unreadMessageCount}
+                  {unreadMessageCount >= 100 ? '99+' : unreadMessageCount}
                 </Span>
               </Col>
             )}

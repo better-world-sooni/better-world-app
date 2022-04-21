@@ -3,6 +3,7 @@ import {createSlice} from '@reduxjs/toolkit';
 import { useDispatch } from 'react-redux';
 import APIS from 'src/modules/apis';
 import { JWT } from 'src/modules/constants';
+import { connectWs } from 'src/redux/wsReducer';
 import {
   asyncActions,
   useApiGET,
@@ -25,7 +26,9 @@ export const useLogin = () => {
         dispatch(async () => {
           const { jwt } = props.data;
           await apiGETWithToken(APIS.profile.my(), jwt)
+          await apiGETWithToken(APIS.chat.chatRoom.main(), jwt)
           await AsyncStorage.setItem(JWT, jwt);
+          // dispatch(connectWs(jwt))
           dispatch(appActions.login(props.data));
           if (successHandler) {
             await successHandler(props);
@@ -112,6 +115,7 @@ const appSlice = createSlice({
     session: {
       currentUser: null,
       token: null,
+      mainNft: null,
     },
     badge: 0,
   },
@@ -124,6 +128,7 @@ const appSlice = createSlice({
       state.session = {
         currentUser: user,
         token: jwt,
+        mainNft: user.main_nft,
       };
       state.isLoggedIn = true;
     },

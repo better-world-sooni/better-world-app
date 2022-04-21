@@ -51,6 +51,7 @@ const SignInScreen = ({navigation}) => {
       password,
       props => {
         setLoading(false);
+        //#1
         goToHome();
       },
       props => {
