@@ -95,7 +95,7 @@ const ChatRoomScreen = props => {
         hasGoBack
       />
       <Div bgWhite flex={1}>
-          <GiftedChat
+          {/* <GiftedChat
             roomId={currentChatRoomId}
             userCount={numUsers}
             placeholder={'메세지를 입력하세요'}
@@ -104,10 +104,10 @@ const ChatRoomScreen = props => {
             messages={messages}
             onSend={messages => onSend(messages)}
             user={{
-              id: userUuid,
+              _id: userUuid,
               avatar: userAvatar,
             }}
-          />
+          /> */}
       </Div>
     </Div>
   );
