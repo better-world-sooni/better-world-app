@@ -11,12 +11,12 @@ import { NAV_NAMES } from 'src/modules/navNames';
 import {ScrollView} from 'src/modules/viewComponents';
 import {useLogin} from 'src/redux/appReducer';
 import {IMAGES} from 'src/modules/images';
-import LinearGradient from 'react-native-linear-gradient';
 import {ICONS} from 'src/modules/icons';
+import Colors from 'src/constants/Colors';
 
 const SignInScreen = ({navigation}) => {
-  const [email, setEmail] = useState('');
-  const [emailError, setEmailError] = useState(false);
+  const [address, setAddress] = useState('');
+  const [addressError, setAddressError] = useState(false);
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const login = useLogin();
@@ -25,9 +25,6 @@ const SignInScreen = ({navigation}) => {
     setLoading(false);
   }, []);
 
-  const isEmail = useCallback(str => {
-    return /.+\@.+\..+/.test(str);
-  }, []);
   const goToHome = useCallback(() => {
     navigation.dispatch(
       CommonActions.reset({
@@ -36,8 +33,16 @@ const SignInScreen = ({navigation}) => {
       }),
     );
   }, []);
-  const handleEmailSignIn = useCallback(() => {
-    if (email === '') {
+  const goToOnboarding = useCallback(() => {
+    navigation.dispatch(
+      CommonActions.reset({
+        index: 0,
+        routes: [{name: NAV_NAMES.Onboarding}],
+      }),
+    );
+  }, []);
+  const handleAddressSignIn = useCallback(() => {
+    if (address === '') {
       Alert.alert('이메일을 입력해 주세요');
       return;
     }
@@ -47,12 +52,15 @@ const SignInScreen = ({navigation}) => {
     }
     setLoading(true);
     login(
-      email,
+      address,
       password,
       props => {
         setLoading(false);
-        //#1
-        goToHome();
+        if (props.data.user.main_nft) {
+          goToHome();
+          return;
+        }
+        goToOnboarding();
       },
       props => {
         setLoading(false);
@@ -61,13 +69,10 @@ const SignInScreen = ({navigation}) => {
         ]);
       },
     );
-  }, [email, password]);
+  }, [address, password]);
 
-  const handleChangeEmail = useCallback(text => setEmail(text), []);
-  const handleBlurEmail = useCallback(
-    () => setEmailError(!isEmail(email)),
-    [email],
-  );
+  const handleChangeAddress = useCallback(text => setAddress(text), []);
+  // const handleBlurAddress = () => setAddressError(!isAddress(address));
   const handleChangePassword = useCallback(text => setPassword(text), []);
 
   return (
@@ -91,7 +96,13 @@ const SignInScreen = ({navigation}) => {
               <Img w50 h50 source={IMAGES.mainLogo} />
             </Col>
           </Row>
-          <Row my15 bgColor="#216FEA" rounded4 h56 flex itemsCenter>
+          <Row
+            my15
+            bgColor={Colors.primary.DEFAULT}
+            rounded10
+            h45
+            flex
+            itemsCenter>
             <Col />
             <Col auto pr10>
               <Div>
@@ -118,15 +129,17 @@ const SignInScreen = ({navigation}) => {
           </Row>
           <Row mt15>
             <TextField
-              label={'이메일'}
-              onChangeText={handleChangeEmail}
-              onChange={handleBlurEmail}
-              error={emailError && '이메일이 정확한지 확인해 주세요'}
+              label={'클레이튼 주소'}
+              mt={0}
+              onChangeText={handleChangeAddress}
+              // onChange={handleBlurAddress}
+              error={addressError && '주소가 정확한지 확인해 주세요'}
               autoCapitalize="none"
             />
           </Row>
           <Row mb15>
             <TextField
+              mt={5}
               label={'비밀번호'}
               onChangeText={handleChangePassword}
               autoCapitalize="none"
@@ -136,11 +149,11 @@ const SignInScreen = ({navigation}) => {
           <Row
             mb15
             bgGray200
-            rounded4
-            h56
+            rounded10
+            h45
             flex
             itemsCenter
-            onPress={handleEmailSignIn}>
+            onPress={handleAddressSignIn}>
             <Col />
             <Col auto>
               <Div>
@@ -152,9 +165,9 @@ const SignInScreen = ({navigation}) => {
             <Col />
           </Row>
           <Row textCenter>
-            <Span black>
+            <Span black fontSize={12}>
               {
-                '카이카스 모바일 지갑은 인증 기능이 아직 부재하기 때문에, Kaikas 유저들은 www.betterworld.io > connect > kaikas > email login method 등록 후에 로그인 진행해 주시길 바랍니다.'
+                'Kaikas 유저들은 데스크탑 www.betterworldapp.io 에서 password 등록 후에 로그인 진행해 주시길 바랍니다.'
               }
             </Span>
           </Row>
@@ -162,5 +175,5 @@ const SignInScreen = ({navigation}) => {
       </ScrollView>
     </Div>
   );
-};
+};;;;;
 export default SignInScreen;

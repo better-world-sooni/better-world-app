@@ -9,7 +9,7 @@ import {Alert, ScrollView} from 'react-native';
 import {shallowEqual, useSelector} from 'react-redux';
 import {RootState} from 'src/redux/rootReducer';
 import {postPromiseFn} from 'src/redux/asyncReducer';
-import APIS from 'src/modules/apis';
+import apis from 'src/modules/apis';
 import {stationArr} from 'src/modules/utils';
 import EmojiSelector, {Categories} from 'react-native-emoji-selector';
 import {Header} from 'src/components/Header';
@@ -123,7 +123,7 @@ const PostScreen = props => {
           ...other,
         };
         const response = await postPromiseFn({
-          url: APIS.post.sungan.main().url,
+          url: apis.post.sungan.main().url,
           body: correctedSungan,
           token: token,
         });
@@ -159,7 +159,7 @@ const PostScreen = props => {
           ...other,
         };
         const response = await postPromiseFn({
-          url: APIS.post.place.main().url,
+          url: apis.post.place.main().url,
           body: correctedSungan,
           token: token,
         });

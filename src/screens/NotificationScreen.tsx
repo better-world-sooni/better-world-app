@@ -9,7 +9,7 @@ import {Row} from 'src/components/common/Row';
 import {Span} from 'src/components/common/Span';
 import {Header} from 'src/components/Header';
 import NotificationItem from 'src/components/NotificationItem';
-import APIS from 'src/modules/apis';
+import apis from 'src/modules/apis';
 import {GRAY_COLOR} from 'src/modules/constants';
 import {FlatList} from 'src/modules/viewComponents';
 import {getPromiseFn, patchPromiseFn} from 'src/redux/asyncReducer';
@@ -48,7 +48,7 @@ const NotificationScreen = () => {
   const [notifications, setNotifications] = useState([]);
   const fetchNewRoom = async () => {
     const res = await getPromiseFn({
-      url: APIS.push.notification.user().url,
+      url: apis.push.notification.user().url,
       token,
     });
     if (res.data) {
@@ -65,7 +65,7 @@ const NotificationScreen = () => {
   };
   const readAll = async () => {
     const res = await patchPromiseFn({
-      url: APIS.push.notification.user().url,
+      url: apis.push.notification.user().url,
       token,
     });
   };

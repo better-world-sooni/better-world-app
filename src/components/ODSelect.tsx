@@ -2,7 +2,7 @@ import React, {useCallback, useMemo, useState} from 'react';
 import {Alert, Modal} from 'react-native';
 import {ChevronDown, RefreshCw} from 'react-native-feather';
 import {shallowEqual, useSelector} from 'react-redux';
-import APIS from 'src/modules/apis';
+import apis from 'src/modules/apis';
 import {
   characterDesc,
   chevronDownSettings,
@@ -153,7 +153,7 @@ const ODSelect = ({visible, onPressReturn}) => {
       return;
     }
     const defaultRouteResponse = await postPromiseFn({
-      url: APIS.route.starred().url,
+      url: apis.route.starred().url,
       body: {
         route: {
           origin: origin,

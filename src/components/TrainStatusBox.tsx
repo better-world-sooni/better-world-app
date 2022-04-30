@@ -3,7 +3,7 @@ import {Alert, View} from 'react-native';
 import {ChevronDown, RefreshCw} from 'react-native-feather';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import {shallowEqual, useDispatch, useSelector} from 'react-redux';
-import APIS from 'src/modules/apis';
+import apis from 'src/modules/apis';
 import {
   chevronDownSettings,
   Direction,
@@ -133,7 +133,7 @@ const TrainStatusBox = ({handleSelectDirection}) => {
               ) {
                 dispatch(setSelectedTrain(null));
                 const res = await deletePromiseFn({
-                  url: APIS.route.notification().url,
+                  url: apis.route.notification().url,
                   body: {},
                   token: token,
                 });
@@ -148,7 +148,7 @@ const TrainStatusBox = ({handleSelectDirection}) => {
         if (trainEnded && selectedTrain) {
           dispatch(setSelectedTrain(null));
           deletePromiseFn({
-            url: APIS.route.notification().url,
+            url: apis.route.notification().url,
             body: {},
             token: token,
           });
@@ -236,11 +236,11 @@ const TrainStatusBox = ({handleSelectDirection}) => {
     setTrainPositions(null);
     setArrivalTrain(null);
     const positionRes = await getPromiseFn({
-      url: APIS.realtime.position().url,
+      url: apis.realtime.position().url,
       token,
     });
     const arrivalRes = await getPromiseFn({
-      url: APIS.realtime.arrival(origin.split('(')[0]).url,
+      url: apis.realtime.arrival(origin.split('(')[0]).url,
       token,
     });
     if (isOkay(positionRes) && isOkay(arrivalRes)) {

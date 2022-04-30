@@ -7,7 +7,7 @@ import {Div} from 'src/components/common/Div';
 import {Img} from 'src/components/common/Img';
 import {Row} from 'src/components/common/Row';
 import {Span} from 'src/components/common/Span';
-import APIS from 'src/modules/apis';
+import apis from 'src/modules/apis';
 import {
   GO_COLOR,
   GRAY_COLOR,
@@ -167,17 +167,17 @@ const PostDetailScreen = props => {
     let res;
     if (currentPost.type === REPORT) {
       res = await getPromiseFn({
-        url: APIS.post.report.comments(currentPost.postId).url,
+        url: apis.post.report.comments(currentPost.postId).url,
         token,
       });
     } else if (currentPost.type === SUNGAN) {
       res = await getPromiseFn({
-        url: APIS.post.sungan.comments(currentPost.postId).url,
+        url: apis.post.sungan.comments(currentPost.postId).url,
         token,
       });
     } else if (currentPost.type === PLACE) {
       res = await getPromiseFn({
-        url: APIS.post.place.comments(currentPost.postId).url,
+        url: apis.post.place.comments(currentPost.postId).url,
         token,
       });
     }
@@ -287,19 +287,19 @@ const PostDetailScreen = props => {
       text: currentPost.text,
       likeCnt: likeCount,
       likeUrl: id => {
-        return APIS.post.report.like(id).url;
+        return apis.post.report.like(id).url;
       },
       postComment: async () => {
-        await commentOn(APIS.post.report.comment.main().url, 'reportId');
+        await commentOn(apis.post.report.comment.main().url, 'reportId');
       },
       likeOnComment: async commentId => {
-        await likeOn(APIS.post.report.comment.like, commentId);
+        await likeOn(apis.post.report.comment.like, commentId);
       },
       unlikeOnComment: async commentId => {
-        await unlikeOn(APIS.post.report.comment.like, commentId);
+        await unlikeOn(apis.post.report.comment.like, commentId);
       },
       replyOnComment: async commentId => {
-        await replyOn(APIS.post.report.comment.reply.main().url, commentId);
+        await replyOn(apis.post.report.comment.reply.main().url, commentId);
       },
     },
     [SUNGAN]: {
@@ -307,20 +307,20 @@ const PostDetailScreen = props => {
       text: currentPost.text,
       likeCnt: likeCount,
       likeUrl: id => {
-        return APIS.post.sungan.like(id).url;
+        return apis.post.sungan.like(id).url;
       },
       postComment: async () => {
-        await commentOn(APIS.post.sungan.comment.main().url, 'sunganId');
+        await commentOn(apis.post.sungan.comment.main().url, 'sunganId');
       },
       likeOnComment: async commentId => {
-        await likeOnSunganComment(APIS.post.sungan.comment.like, commentId);
+        await likeOnSunganComment(apis.post.sungan.comment.like, commentId);
       },
       unlikeOnComment: async commentId => {
-        await unlikeOn(APIS.post.sungan.comment.unlike, commentId);
+        await unlikeOn(apis.post.sungan.comment.unlike, commentId);
       },
       replyOnComment: async commentId => {
         await replyOnSunganComment(
-          APIS.post.sungan.comment.reply.main(commentId).url,
+          apis.post.sungan.comment.reply.main(commentId).url,
         );
       },
     },
@@ -330,19 +330,19 @@ const PostDetailScreen = props => {
       place: currentPost.place,
       likeCnt: likeCount,
       likeUrl: id => {
-        return APIS.post.place.like(id).url;
+        return apis.post.place.like(id).url;
       },
       postComment: async () => {
-        await commentOn(APIS.post.place.comment.main().url, 'hotplaceId');
+        await commentOn(apis.post.place.comment.main().url, 'hotplaceId');
       },
       likeOnComment: async commentId => {
-        await likeOn(APIS.post.place.comment.like, commentId);
+        await likeOn(apis.post.place.comment.like, commentId);
       },
       unlikeOnComment: async commentId => {
-        await unlikeOn(APIS.post.place.comment.like, commentId);
+        await unlikeOn(apis.post.place.comment.like, commentId);
       },
       replyOnComment: async commentId => {
-        await replyOn(APIS.post.place.comment.reply.main().url, commentId);
+        await replyOn(apis.post.place.comment.reply.main().url, commentId);
       },
     },
   };

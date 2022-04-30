@@ -11,7 +11,7 @@ import {Row} from 'src/components/common/Row';
 import {Span} from 'src/components/common/Span';
 import {Header} from 'src/components/Header';
 import useSocketInput from 'src/hooks/useSocketInput';
-import APIS from 'src/modules/apis';
+import apis from 'src/modules/apis';
 import {HAS_NOTCH, iconSettings, WS_URL} from 'src/modules/constants';
 import {getPromiseFn} from 'src/redux/asyncReducer';
 import {RootState} from 'src/redux/rootReducer';

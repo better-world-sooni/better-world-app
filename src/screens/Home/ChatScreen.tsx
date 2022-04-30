@@ -12,11 +12,11 @@ import {Header} from 'src/components/Header';
 import {useFocusEffect, useNavigation} from '@react-navigation/core';
 import {NAV_NAMES} from 'src/modules/navNames';
 import {getPromiseFn, useApiSelector, useReloadGET} from 'src/redux/asyncReducer';
-import APIS from 'src/modules/apis';
+import apis from 'src/modules/apis';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import ChatRoomItem from 'src/components/ChatRoomItem';
 import {cable} from 'src/modules/cable';
-import {ChatChannel} from 'src/components/ChatChannel'
+import {ChatChannel} from 'src/components/ChatChannel';
 
 const NoChatRooms = () => {
   const navigation = useNavigation();
@@ -130,19 +130,22 @@ const ChatScreen = () => {
   );
   const userUuid = currentUser?.uuid;
   const {data: chatRoomsResponse, isLoading: chatRoomLoading} = useApiSelector(
-    APIS.chat.chatRoom.main,
+    apis.chat.chatRoom.main,
   );
   const [chatRooms, setChatRooms] = useState(chatRoomsResponse?.chat_rooms);
 
-  const updateList = useCallback((newmsg) => {
-    let list = [...chatRooms];
-    let roomId = newmsg['room_id'];
-    let index = list.findIndex(x=>x.room.id === roomId);
-    list.splice(0, 0, list.splice(index, 1)[0]);
-    list[0].last_message = newmsg['text'];
-    list[0].unread_count += 1;
-    return list;
-  }, [chatRooms]);
+  const updateList = useCallback(
+    newmsg => {
+      let list = [...chatRooms];
+      let roomId = newmsg['room_id'];
+      let index = list.findIndex(x => x.room.id === roomId);
+      list.splice(0, 0, list.splice(index, 1)[0]);
+      list[0].last_message = newmsg['text'];
+      list[0].unread_count += 1;
+      return list;
+    },
+    [chatRooms],
+  );
 
   useFocusEffect(
     useCallback(() => {
@@ -151,7 +154,7 @@ const ChatScreen = () => {
         channel = new ChatChannel({userUuid: userUuid});
         await cable(token).subscribe(channel);
         const res = await getPromiseFn({
-          url: APIS.chat.chatRoom.main().url,
+          url: apis.chat.chatRoom.main().url,
           token,
         });
         if (res?.data) {
@@ -159,18 +162,20 @@ const ChatScreen = () => {
           setChatRooms(chat_rooms);
         }
         channel.on('message', res => {
-          console.log("list receive", res['data'])
-          setChatRooms([... updateList(res['data'])])
+          console.log('list receive', res['data']);
+          setChatRooms([...updateList(res['data'])]);
         });
-        channel.on('close', () => console.log('Disconnected list socket connection'));
+        channel.on('close', () =>
+          console.log('Disconnected list socket connection'),
+        );
         channel.on('disconnect', () => channel.send('Dis'));
       };
-      wsConnect()
+      wsConnect();
       return () => {
         channel.disconnect();
         channel.close();
-      }
-    },[])
+      };
+    }, []),
   );
 
   return (
@@ -199,7 +204,7 @@ const ChatScreen = () => {
               category={category}
               createdAt={createdAt}
               title={title}
-              numUsers = {numUsers}
+              numUsers={numUsers}
               unreadMessageCount={unreadMessageCount}
               lastMessage={lastMessage}
               firstUserAvatar={firstUserAvatar}

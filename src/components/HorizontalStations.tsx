@@ -1,7 +1,7 @@
 import React, {useCallback, useRef, useEffect} from 'react';
 import {Alert, Dimensions, ScrollView} from 'react-native';
 import {shallowEqual, useDispatch, useSelector} from 'react-redux';
-import APIS from 'src/modules/apis';
+import apis from 'src/modules/apis';
 import {
   Direction,
   LINE2_Linked_List,
@@ -46,7 +46,7 @@ const HorzontalStations = ({horizontalStations, trainPositions}) => {
       if (isRiding) {
         dispatch(setSelectedTrain(null));
         deletePromiseFn({
-          url: APIS.route.notification().url,
+          url: apis.route.notification().url,
           body: {},
           token: token,
         });
@@ -55,7 +55,7 @@ const HorzontalStations = ({horizontalStations, trainPositions}) => {
         dispatch(setSelectedTrain(trainAtStation));
         if (receiveStationPush) {
           postPromiseFn({
-            url: APIS.route.notification().url,
+            url: apis.route.notification().url,
             body: {
               trainNo: trainAtStation?.trainNo,
               stations: [

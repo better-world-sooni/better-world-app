@@ -14,7 +14,7 @@ import {
   REPORT,
   SUNGAN,
 } from 'src/modules/constants';
-import APIS from 'src/modules/apis';
+import apis from 'src/modules/apis';
 import {getPromiseFn} from 'src/redux/asyncReducer';
 import {shallowEqual, useSelector} from 'react-redux';
 import {RootState} from 'src/redux/rootReducer';
@@ -80,15 +80,15 @@ const NotificationItem = ({
       let type;
       let get;
       if (postType == 'Sungan') {
-        url = APIS.post.sungan.id(postId).url;
+        url = apis.post.sungan.id(postId).url;
         type = SUNGAN;
         get = 'sungan';
       } else if (postType == 'Hotplace') {
-        url = APIS.post.place.id(postId).url;
+        url = apis.post.place.id(postId).url;
         type = PLACE;
         get = 'hotplace';
       } else {
-        url = APIS.post.place.id(postId).url;
+        url = apis.post.place.id(postId).url;
         type = REPORT;
         get = 'report';
       }

@@ -16,7 +16,7 @@ import {Row} from './common/Row';
 import {Span} from './common/Span';
 import {Swipeable} from 'react-native-gesture-handler';
 import {deletePromiseFn} from 'src/redux/asyncReducer';
-import APIS from 'src/modules/apis';
+import apis from 'src/modules/apis';
 import {shallowEqual, useSelector} from 'react-redux';
 import {RootState} from 'src/redux/rootReducer';
 import {isOkay} from 'src/modules/utils';
@@ -53,12 +53,12 @@ const Comment = ({
   const [deleted, setDeleted] = useState(false);
   const deleteCommentUrl = useMemo(() => {
     if (postType == SUNGAN) {
-      return APIS.post.sungan.comment.delete(commentId).url;
+      return apis.post.sungan.comment.delete(commentId).url;
     }
     if (postType == PLACE) {
-      return APIS.post.place.comment.delete(commentId).url;
+      return apis.post.place.comment.delete(commentId).url;
     }
-    return APIS.post.report.comment.delete(commentId).url;
+    return apis.post.report.comment.delete(commentId).url;
   }, [commentId, postType]);
   const deleteComment = useCallback(async () => {
     const res = await deletePromiseFn({

@@ -21,7 +21,7 @@ import {ScrollView} from 'src/modules/viewComponents';
 import {useLogin, useSocialLogin} from 'src/redux/appReducer';
 import {IMAGES} from 'src/modules/images';
 import {getPromiseFn, postPromiseFn} from 'src/redux/asyncReducer';
-import APIS from 'src/modules/apis';
+import apis from 'src/modules/apis';
 import {shallowEqual, useDispatch, useSelector} from 'react-redux';
 import {RootState} from 'src/redux/rootReducer';
 import {ScrollSelector} from 'src/components/ScrollSelector';
@@ -108,7 +108,7 @@ const SignUpSceen = ({navigation}) => {
     setLoading(true);
     try {
       const newUserResponse = await postPromiseFn({
-        url: APIS.auth.signUp().url,
+        url: apis.auth.signUp().url,
         body: {
           username: username,
           email: email,
@@ -121,7 +121,7 @@ const SignUpSceen = ({navigation}) => {
       if (newUserResponse.status == 200) {
         const {jwtToken} = newUserResponse.data;
         const defaultRouteResponse = await postPromiseFn({
-          url: APIS.route.starred().url,
+          url: apis.route.starred().url,
           body: {
             route: {
               origin: origin,
@@ -200,7 +200,7 @@ const SignUpSceen = ({navigation}) => {
   const handleIdChange = async id => {
     setUsername(id);
     const res = await getPromiseFn({
-      url: APIS.auth.usernameValidity(id).url,
+      url: apis.auth.usernameValidity(id).url,
       body: {},
       token: null,
     });

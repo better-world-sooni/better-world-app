@@ -8,7 +8,7 @@ import {Row} from './common/Row';
 import {Span} from './common/Span';
 import {NAV_NAMES} from 'src/modules/navNames';
 import {patchPromiseFn} from 'src/redux/asyncReducer';
-import APIS from 'src/modules/apis';
+import apis from 'src/modules/apis';
 import {shallowEqual, useSelector} from 'react-redux';
 import {RootState} from 'src/redux/rootReducer';
 import {Div} from './common/Div';
@@ -62,12 +62,16 @@ const ChatRoomItem = ({
   }, []);
 
   const goToChatRoom = roomId => {
-    navigation.navigate(NAV_NAMES.ChatRoom, {currentChatRoomId: roomId, title: title, numUsers: numUsers});
+    navigation.navigate(NAV_NAMES.ChatRoom, {
+      currentChatRoomId: roomId,
+      title: title,
+      numUsers: numUsers,
+    });
   };
 
   const deleteChatRoom = async roomId => {
     const res = await patchPromiseFn({
-      url: APIS.chat.chatRoom.user().url,
+      url: apis.chat.chatRoom.user().url,
       body: {
         chatRoomId: roomId,
       },
@@ -82,7 +86,7 @@ const ChatRoomItem = ({
   if (deleted) {
     return null;
   }
-  
+
   return (
     <Swipeable
       key={chatRoomId}

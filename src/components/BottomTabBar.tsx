@@ -50,13 +50,6 @@ const BottomTabBar = ({state, descriptors, navigation}) => {
       return (
         <Div key={key} onPress={onPress} flex itemsCenter justifyCenter pb10>
           {image}
-          {/* <Span
-            sectionBody2
-            styleComp={[
-              isFocused ? <Style color={LINE2_COLOR} bold /> : <Style black />,
-            ]}>
-            {label}
-          </Span> */}
         </Div>
       );
     }),
@@ -64,7 +57,7 @@ const BottomTabBar = ({state, descriptors, navigation}) => {
   );
   return (
     <Div
-      h80
+      h70
       borderTopColor={GRAY_COLOR}
       borderTopWidth={0.2}
       overflowHidden
@@ -72,7 +65,7 @@ const BottomTabBar = ({state, descriptors, navigation}) => {
       <NativeBaseProvider>
         <Box flex={1} safeAreaTop>
           <Center flex={1}></Center>
-          <HStack bg={'white'} safeAreaBottom paddingTop={5} shadow={1}>
+          <HStack bg={'white'} safeAreaBottom paddingTop={4} shadow={1}>
             {List}
           </HStack>
         </Box>

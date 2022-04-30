@@ -23,6 +23,8 @@ import PostDetailScreen from 'src/screens/PostDetailScreen';
 import SignUpSceen from 'src/screens/Auth/SignUpScreen';
 import {LINE2_COLOR} from 'src/modules/constants';
 import NotificationScreen from 'src/screens/NotificationScreen';
+import OnboardingScreen from 'src/screens/Auth/OnboardingScreen';
+import Colors from 'src/constants/Colors';
 
 const RootStack = createStackNavigator();
 
@@ -43,7 +45,8 @@ const MainBottomTabs = () => {
           tabBarLabel: '홈',
           tabBarIcon: props => (
             <Home
-              color={props.focused ? LINE2_COLOR : 'gray'}
+              color={props.focused ? Colors.primary.DEFAULT : 'gray'}
+              height={20}
               strokeWidth={1.5}></Home>
           ),
         }}
@@ -55,7 +58,8 @@ const MainBottomTabs = () => {
           tabBarLabel: '메타순간',
           tabBarIcon: props => (
             <Grid
-              color={props.focused ? LINE2_COLOR : 'gray'}
+              color={props.focused ? Colors.primary.DEFAULT : 'gray'}
+              height={20}
               strokeWidth={1.5}></Grid>
           ),
         }}
@@ -67,7 +71,8 @@ const MainBottomTabs = () => {
           tabBarLabel: '채팅',
           tabBarIcon: props => (
             <MessageCircle
-              color={props.focused ? LINE2_COLOR : 'gray'}
+              color={props.focused ? Colors.primary.DEFAULT : 'gray'}
+              height={20}
               strokeWidth={1.5}></MessageCircle>
           ),
         }}
@@ -79,7 +84,8 @@ const MainBottomTabs = () => {
           tabBarLabel: '프로필',
           tabBarIcon: props => (
             <User
-              color={props.focused ? LINE2_COLOR : 'gray'}
+              color={props.focused ? Colors.primary.DEFAULT : 'gray'}
+              height={20}
               strokeWidth={1.5}></User>
           ),
         }}
@@ -179,6 +185,13 @@ export const AppContent = () => {
     {
       name: NAV_NAMES.Notification,
       component: NotificationScreen,
+      options: props => ({
+        cardStyle: {backgroundColor: 'black', presentation: 'screen'},
+      }),
+    },
+    {
+      name: NAV_NAMES.Onboarding,
+      component: OnboardingScreen,
       options: props => ({
         cardStyle: {backgroundColor: 'black', presentation: 'screen'},
       }),

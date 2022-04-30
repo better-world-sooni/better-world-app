@@ -2,7 +2,7 @@ import {useNavigation} from '@react-navigation/core';
 import React, {useEffect, useState} from 'react';
 import {Heart, MessageCircle} from 'react-native-feather';
 import {shallowEqual, useDispatch, useSelector} from 'react-redux';
-import APIS from 'src/modules/apis';
+import apis from 'src/modules/apis';
 import {
   APPLE_RED,
   GRAY_COLOR,
@@ -74,7 +74,7 @@ const Sungan = props => {
       setLiked(false);
       setLikeCount(likeCount - 1);
       deletePromiseFn({
-        url: APIS.post.sungan.like(postId).url,
+        url: apis.post.sungan.like(postId).url,
         body: {},
         token: token,
       });
@@ -83,7 +83,7 @@ const Sungan = props => {
       setLiked(true);
       setLikeCount(likeCount + 1);
       postPromiseFn({
-        url: APIS.post.sungan.like(postId).url,
+        url: apis.post.sungan.like(postId).url,
         body: {},
         token: token,
       });

@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {createSlice} from '@reduxjs/toolkit';
 import { useDispatch } from 'react-redux';
-import APIS from 'src/modules/apis';
+import apis from 'src/modules/apis';
 import { JWT } from 'src/modules/constants';
 import { connectWs } from 'src/redux/wsReducer';
 import {
@@ -15,20 +15,19 @@ export const useLogin = () => {
   const dispatch = useDispatch();
   const apiPOST = useApiPOST();
   const apiGETWithToken = useApiGETWithToken();
-  return (email, password, successHandler?, errHandler?) => {
+  return (address, password, successHandler?, errHandler?) => {
     apiPOST(
-      APIS.auth.email.signin(),
+      apis.auth.password._(),
       {
-        address: email,
+        address,
         password: password,
       },
       props => {
         dispatch(async () => {
-          const { jwt } = props.data;
-          await apiGETWithToken(APIS.profile.my(), jwt)
-          await apiGETWithToken(APIS.chat.chatRoom.main(), jwt)
+          const { jwt, user } = props.data;
           await AsyncStorage.setItem(JWT, jwt);
-          // dispatch(connectWs(jwt))
+          await apiGETWithToken(apis.profile.klaytnAddress(user.klaytn_account.address), jwt)
+          await apiGETWithToken(apis.chat.chatRoom.all(), jwt)
           dispatch(appActions.login(props.data));
           if (successHandler) {
             await successHandler(props);
@@ -42,12 +41,29 @@ export const useLogin = () => {
   };
 };
 
+export const useChangeAccount = () => {
+  const dispatch = useDispatch();
+  return (jwt, successHandler?, errHandler?) => {
+    try{
+      dispatch(async () => {
+        await AsyncStorage.setItem(JWT, jwt);
+        dispatch(appActions.changeAccount({jwt}));
+        if (successHandler) {
+          await successHandler({jwt});
+        }
+      });
+    } catch (e) {
+      errHandler({jwt, error: e});
+    }
+  };
+};
+
 export const useSocialLogin = () => {
   const dispatch = useDispatch();
   const apiPOST = useApiPOST();
   return (body, successHandler?, errHandler?) => {
     apiPOST(
-      APIS.auth.signIn(),
+      apis.auth.user._(),
       body,
       props => {
         dispatch(async () => {
@@ -73,7 +89,7 @@ export const useAutoLogin = () => {
   const apiGET = useApiGET();
   return (token, successHandler?, errHandler?) => {
     apiGET(
-      APIS.auth.user(token),
+      apis.auth.user._(),
       props => {
         dispatch(async () => {
           await AsyncStorage.setItem(JWT, token);
@@ -129,6 +145,14 @@ const appSlice = createSlice({
         currentUser: user,
         token: jwt,
         mainNft: user.main_nft,
+      };
+      state.isLoggedIn = true;
+    },
+    changeAccount(state, action) {
+      const { jwt } = action.payload;
+      state.session = {
+        ...state.session,
+        token: jwt,
       };
       state.isLoggedIn = true;
     },

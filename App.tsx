@@ -9,7 +9,7 @@ import {shallowEqual, useSelector} from 'react-redux';
 import {RootState} from 'src/redux/rootReducer';
 import messaging from '@react-native-firebase/messaging';
 import {postPromiseFn} from 'src/redux/asyncReducer';
-import APIS from 'src/modules/apis';
+import apis from 'src/modules/apis';
 import PushNotification from 'react-native-push-notification';
 
 library.add(faWalking, faBus, faSubway);
@@ -33,7 +33,7 @@ const App = () => {
       if (authorized) {
         const fcmToken = await getToken();
         const res = await postPromiseFn({
-          url: APIS.push.registrationToken().url,
+          url: apis.push.registrationToken().url,
           body: {
             token: fcmToken,
           },
@@ -44,7 +44,7 @@ const App = () => {
         await firebaseMessaging.requestPermission();
         const fcmToken = await getToken();
         const res = await postPromiseFn({
-          url: APIS.push.registrationToken().url,
+          url: apis.push.registrationToken().url,
           body: {
             token: fcmToken,
           },

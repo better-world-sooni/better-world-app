@@ -1,7 +1,7 @@
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {Alert} from 'react-native';
 import {shallowEqual, useSelector} from 'react-redux';
-import APIS from 'src/modules/apis';
+import apis from 'src/modules/apis';
 import {
   MAIN_LINE2,
   MY_ROUTE,
@@ -48,12 +48,12 @@ const Post = ({
   const [deleted, setDeleted] = useState(false);
   const deletePostUrl = useMemo(() => {
     if (type == SUNGAN) {
-      return APIS.post.sungan.id(postId).url;
+      return apis.post.sungan.id(postId).url;
     }
     if (type == PLACE) {
-      return APIS.post.place.id(postId).url;
+      return apis.post.place.id(postId).url;
     }
-    return APIS.post.place.id(postId).url;
+    return apis.post.place.id(postId).url;
   }, [postId, type]);
   const deletePost = useCallback(async () => {
     const res = await deletePromiseFn({

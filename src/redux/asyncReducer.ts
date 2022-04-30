@@ -70,7 +70,7 @@ const keyWithScope = (key, scope?) => {
   return scope ? `${scope}/${key}` : key;
 };
 
-const getKeyByApi = (api, scope?) => {
+export const getKeyByApi = (api, scope?) => {
   if (typeof api === 'function') {
     return keyWithScope(api._apiKey, scope);
   } else if (typeof api === 'object') {

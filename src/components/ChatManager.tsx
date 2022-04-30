@@ -11,7 +11,7 @@ import {Span} from './common/Span';
 import {Div} from 'src/components/common/Div';
 import useSocketInput from 'src/hooks/useSocketInput';
 import {getPromiseFn} from 'src/redux/asyncReducer';
-import APIS from 'src/modules/apis';
+import apis from 'src/modules/apis';
 import {Manager} from 'socket.io-client';
 
 const screenSize = Dimensions.get('screen');
@@ -136,7 +136,7 @@ const ChatManager = () => {
 
   const fetchNewRoom = async () => {
     const res = await getPromiseFn({
-      url: APIS.chat.chat(chatBody.enabledRoomId).url,
+      url: apis.chat.chat(chatBody.enabledRoomId).url,
       token,
     });
     if (res?.data?.data) {

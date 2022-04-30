@@ -1,6 +1,6 @@
 export const IMAGES = {
   blueMapMarker: require('assets/images/blueMapMarker.png'),
-  mainLogo: require('assets/images/basicBearNoBg.png'),
+  mainLogo: require('assets/images/betterWorldBlueLogo.png'),
   redMapMarker: require('assets/images/redMapMarker.png'),
   imageLogoApple: require('assets/images/imageLogoApple.png'),
   imageLogoKakaotalk: require('assets/images/imageLogoKakaotalk.png'),
@@ -39,9 +39,8 @@ export const IMAGES = {
     zBloodyMouth: require('assets/images/characters/zBloodyMouth.png'),
     zBloodyRightHead: require('assets/images/characters/zBloodyRightHead.png'),
     zNormal: require('assets/images/characters/zNormal.png'),
-    "0xb40b60001fd13767b430f8c5b212642607584c62": require('assets/images/characters/seungan.png'),
-    "0xb073a6b858c70f182222702412d37810ae037ccd": require('assets/images/characters/sehan.png'),
-    "0xff86c64f594ccba9335fc50043b6a85eec220323": require('assets/images/characters/minjun.png'),
-
+    '0xb40b60001fd13767b430f8c5b212642607584c62': require('assets/images/characters/seungan.png'),
+    '0xb073a6b858c70f182222702412d37810ae037ccd': require('assets/images/characters/sehan.png'),
+    '0xff86c64f594ccba9335fc50043b6a85eec220323': require('assets/images/characters/minjun.png'),
   },
 };

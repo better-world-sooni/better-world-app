@@ -32,11 +32,11 @@ export const TextField = (props) => {
         <Col>
           <TextInput
             autoCorrect={false}
-            h52
+            h45
             border
             borderGray400
-            rounded4
-            p16
+            rounded10
+            p12
             {...others}
             styleComp={[
               <Style borderDanger isActive={error} />,
