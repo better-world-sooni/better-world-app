@@ -6,12 +6,20 @@ import {RootState} from 'src/redux/rootReducer';
 import CustomHeaderWebView from 'src/components/CustomHeaderWebView';
 import {urls} from 'src/modules/urls';
 import {useChangeAccount} from 'src/redux/appReducer';
-import {CommonActions} from '@react-navigation/native';
+import {CommonActions, useNavigation} from '@react-navigation/native';
 import {NAV_NAMES} from 'src/modules/navNames';
 
-const HomeScreen = ({navigation}) => {
+const HomeScreen = () => {
+  const navigation = useNavigation();
   const homeUrl = urls.home();
-  const handleBwwMessage = message => {};
+  const handleBwwMessage = message => {
+    if (message.action == 'handleClickCapsule') {
+      navigation.navigate(NAV_NAMES.Metaverse, {
+        tokenId: message.tokenId,
+        contractAddress: message.contractAddress,
+      });
+    }
+  };
 
   return (
     <Div flex backgroundColor={'white'}>

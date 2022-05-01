@@ -1,6 +1,6 @@
 import urljoin from 'url-join';
 
-const baseUrl = 'http://localhost:3100';
+const baseUrl = 'http://localhost:3001';
 const toUrl = (...args) => urljoin(...args);
 const base = path => toUrl(baseUrl, path);
 
