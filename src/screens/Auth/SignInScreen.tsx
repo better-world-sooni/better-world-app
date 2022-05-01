@@ -43,7 +43,7 @@ const SignInScreen = ({navigation}) => {
   }, []);
   const handleAddressSignIn = useCallback(() => {
     if (address === '') {
-      Alert.alert('이메일을 입력해 주세요');
+      Alert.alert('클레이튼 주소를 입력해 주세요');
       return;
     }
     if (password === '') {
@@ -64,7 +64,7 @@ const SignInScreen = ({navigation}) => {
       },
       props => {
         setLoading(false);
-        Alert.alert('Error', '이메일, 비밀번호를 확인해 주세요.', [
+        Alert.alert('Error', '클레이튼 주소, 비밀번호를 확인해 주세요.', [
           {text: '네'},
         ]);
       },
@@ -175,5 +175,5 @@ const SignInScreen = ({navigation}) => {
       </ScrollView>
     </Div>
   );
-};;;;;
+};
 export default SignInScreen;
