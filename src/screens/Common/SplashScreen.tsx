@@ -8,6 +8,7 @@ import {NAV_NAMES} from 'src/modules/navNames';
 import {useAutoLogin} from 'src/redux/appReducer';
 import { IMAGES } from 'src/modules/images';
 import {JWT} from 'src/modules/constants';
+import {Span} from 'src/components/common/Span';
 
 const SplashScreen = ({route}) => {
   const navigation = useNavigation();
@@ -39,9 +40,18 @@ const SplashScreen = ({route}) => {
       }
     });
   };
+
   return (
-    <Div bgWhite flex itemsCenter justifyCenter>
-      <Img w150 h150 source={IMAGES.mainLogo} />
+    <Div bgPrimary flex itemsCenter justifyCenter>
+      <Div itemsCenter pb50>
+        <Img w134 h134 source={IMAGES.betterWorldWhiteLogo} />
+        <Span white fontSize={20} mt={-15}>
+          BetterWorld{' '}
+          <Span bold fontSize={20}>
+            alpha
+          </Span>
+        </Span>
+      </Div>
     </Div>
   );
 };

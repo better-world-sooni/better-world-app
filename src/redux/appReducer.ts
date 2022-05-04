@@ -9,6 +9,7 @@ import {
   useApiGET,
   useApiGETWithToken,
   useApiPOST,
+  useApiPUT,
 } from 'src/redux/asyncReducer';
 
 export const useLogin = () => {
@@ -26,9 +27,13 @@ export const useLogin = () => {
         dispatch(async () => {
           const { jwt, user } = props.data;
           await AsyncStorage.setItem(JWT, jwt);
-          await apiGETWithToken(apis.profile.klaytnAddress(user.klaytn_account.address), jwt)
+          await apiGETWithToken(apis.profile._(), jwt)
           await apiGETWithToken(apis.chat.chatRoom.all(), jwt)
-          dispatch(appActions.login(props.data));
+          dispatch(appActions.login({
+            token: jwt,
+            currentUser: user,
+            currentNft: user.main_nft
+          }));
           if (successHandler) {
             await successHandler(props);
           }
@@ -43,18 +48,35 @@ export const useLogin = () => {
 
 export const useChangeAccount = () => {
   const dispatch = useDispatch();
-  return (jwt, successHandler?, errHandler?) => {
-    try{
-      dispatch(async () => {
-        await AsyncStorage.setItem(JWT, jwt);
-        dispatch(appActions.changeAccount({jwt}));
-        if (successHandler) {
-          await successHandler({jwt});
-        }
-      });
-    } catch (e) {
-      errHandler({jwt, error: e});
-    }
+  const apiPUT = useApiPUT();
+
+  const apiGETWithToken = useApiGETWithToken();
+  return (contractAddress, tokenId, successHandler?, errHandler?) => {
+    apiPUT(
+      apis.nft.contractAddressAndTokenId(contractAddress, tokenId),
+      {
+        property: 'main',
+      },
+      props => {
+        dispatch(async () => {
+          const { jwt, user, nft } = props.data;
+          await AsyncStorage.setItem(JWT, jwt);
+          await apiGETWithToken(apis.profile._(), jwt)
+          await apiGETWithToken(apis.chat.chatRoom.all(), jwt)
+          dispatch(appActions.changeAccount({
+            token: jwt,
+            currentUser: user,
+            currentNft: nft
+          }));
+          if (successHandler) {
+            await successHandler(props);
+          }
+        });
+      },
+      async props => {
+        await errHandler(props);
+      },
+    );
   };
 };
 
@@ -131,40 +153,33 @@ const appSlice = createSlice({
     session: {
       currentUser: null,
       token: null,
-      mainNft: null,
+      currentNft: null,
     },
-    badge: 0,
   },
   reducers: {
-    setBadge(state, action){
-      state.badge = action.payload;
-    },
     login(state, action) {
-      const { jwt, user } = action.payload;
+      const { token, currentUser, currentNft } = action.payload;
       state.session = {
-        currentUser: user,
-        token: jwt,
-        mainNft: user.main_nft,
+        currentUser,
+        currentNft,
+        token,
       };
       state.isLoggedIn = true;
     },
     changeAccount(state, action) {
-      const { jwt } = action.payload;
+      const { token, currentUser, currentNft } = action.payload;
       state.session = {
-        ...state.session,
-        token: jwt,
+        currentUser,
+        currentNft,
+        token,
       };
       state.isLoggedIn = true;
     },
     logout(state) {
       state.isLoggedIn = false;
       state.session.currentUser = null;
+      state.session.currentNft = null;
       state.session.token = null;
-    },
-    updateUserAvatar(state, action) {
-      const {avatar, ...rest} = state.session.currentUser;
-      const newUser = {avatar: action.payload, ...rest}
-      state.session.currentUser = newUser;
     },
   },
 });

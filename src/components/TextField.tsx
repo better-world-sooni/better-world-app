@@ -16,15 +16,15 @@ export const TextField = (props) => {
     value,
     onChangeText,
     disabled,
-    placeHolder,
+    placeholder,
     password,
     leftComp,
     rightComp,
     ...others
-  } = props
+  } = props;
   return (
     <Div w="100%" mt={mt}>
-      <Span header6 black styleComp={labelStyle}>
+      <Span notice styleComp={labelStyle}>
         {label}
       </Span>
       <Row itemsCenter mt4>
@@ -44,7 +44,7 @@ export const TextField = (props) => {
             ]}
             editable={!disabled}
             secureTextEntry={password}
-            placeholder={placeHolder}
+            placeholder={placeholder}
             onChangeText={onChangeText}
             value={value}
             color={'#000000'}

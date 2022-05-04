@@ -36,7 +36,15 @@ export const Span = props => {
     <Text
       ref={innerRef}
       {...mergedProps}
-      style={[{fontFamily: 'Helvetica Neue', fontSize: 13}, sheet.style]}>
+      style={[
+        {
+          fontFamily: 'UniSans',
+          fontSize: 13,
+          flexDirection: 'row',
+          flexWrap: 'wrap',
+        },
+        sheet.style,
+      ]}>
       {props.children}
     </Text>
   );

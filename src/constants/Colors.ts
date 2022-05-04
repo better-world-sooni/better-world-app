@@ -20,4 +20,5 @@ export default {
     tabIconDefault: '#ccc',
     tabIconSelected: tintColorDark,
   },
+  danger: { DEFAULT: '#ff3051', light: 'rgba(255, 48, 81, 0.1)' },
 };

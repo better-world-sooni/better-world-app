@@ -1,29 +1,33 @@
 import { CommonActions } from '@react-navigation/native';
-import React, { useCallback, useEffect, useState } from 'react';
-import { Alert } from 'react-native';
-import { Col } from 'src/components/common/Col';
-import { Div } from 'src/components/common/Div';
-import { Img } from 'src/components/common/Img';
-import { Row } from 'src/components/common/Row';
-import { Span } from 'src/components/common/Span';
-import { TextField } from 'src/components/TextField';
-import { NAV_NAMES } from 'src/modules/navNames';
-import {ScrollView} from 'src/modules/viewComponents';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
+import {Alert, Keyboard} from 'react-native';
+import {Col} from 'src/components/common/Col';
+import {Div} from 'src/components/common/Div';
+import {Img} from 'src/components/common/Img';
+import {Row} from 'src/components/common/Row';
+import {Span} from 'src/components/common/Span';
+import {TextField} from 'src/components/TextField';
+import {NAV_NAMES} from 'src/modules/navNames';
 import {useLogin} from 'src/redux/appReducer';
 import {IMAGES} from 'src/modules/images';
 import {ICONS} from 'src/modules/icons';
-import Colors from 'src/constants/Colors';
+import BottomPopup from 'src/components/common/BottomPopup';
+import {BottomSheetModal} from '@gorhom/bottom-sheet';
+import {QuestionIcon} from 'native-base';
+import {
+  iconSettings,
+  iconSettingsSm,
+  iconSettingsXs,
+} from 'src/modules/constants';
+import {KeyboardAvoidingView} from 'src/modules/viewComponents';
 
 const SignInScreen = ({navigation}) => {
   const [address, setAddress] = useState('');
-  const [addressError, setAddressError] = useState(false);
   const [password, setPassword] = useState('');
+  const [expandText, setExpandText] = useState('');
   const [loading, setLoading] = useState(false);
   const login = useLogin();
-
-  useEffect(() => {
-    setLoading(false);
-  }, []);
+  const bottomPopupRef = useRef<BottomSheetModal>(null);
 
   const goToHome = useCallback(() => {
     navigation.dispatch(
@@ -42,12 +46,16 @@ const SignInScreen = ({navigation}) => {
     );
   }, []);
   const handleAddressSignIn = useCallback(() => {
+    Keyboard.dismiss();
+    if (loading) {
+      return;
+    }
     if (address === '') {
-      Alert.alert('클레이튼 주소를 입력해 주세요');
+      expandBottomPopupWithText('클레이튼 주소를 입력해 주세요');
       return;
     }
     if (password === '') {
-      Alert.alert('비밀번호를 입력해 주세요');
+      expandBottomPopupWithText('비밀번호를 입력해 주세요');
       return;
     }
     setLoading(true);
@@ -64,45 +72,43 @@ const SignInScreen = ({navigation}) => {
       },
       props => {
         setLoading(false);
-        Alert.alert('Error', '클레이튼 주소, 비밀번호를 확인해 주세요.', [
-          {text: '네'},
-        ]);
+        expandBottomPopupWithText('클레이튼 주소, 비밀번호를 확인해 주세요.');
       },
     );
   }, [address, password]);
 
   const handleChangeAddress = useCallback(text => setAddress(text), []);
-  // const handleBlurAddress = () => setAddressError(!isAddress(address));
   const handleChangePassword = useCallback(text => setPassword(text), []);
 
+  const handlePressPassword = () => {
+    expandBottomPopupWithText(
+      'Kaikas 유저들은 데스크탑 betterworldapp.io 에서 비밀번호 등록 후 로그인 진행해 주시길 바랍니다.',
+    );
+  };
+
+  const expandBottomPopupWithText = text => {
+    setExpandText(text);
+    bottomPopupRef?.current?.expand();
+  };
+
   return (
-    <Div bgWhite flex justifyCenter>
-      <ScrollView>
-        <Div h100>
-          <Row>
-            <Col></Col>
-            <Col auto></Col>
-          </Row>
-        </Div>
-        <Div flex justifyCenter itemsCenter bgWhite px20>
-          <Row py20 justifyCenter itemsCenter>
-            <Col auto justifyCenter>
-              <Span bold fontSize={30}>
-                연결
+    <KeyboardAvoidingView bgWhite flex justifyCenter behavior="padding">
+      <Div px15>
+        <Div rounded10 overflowHidden>
+          <Row itemsCenter>
+            <Col auto>
+              <Span fontSize={35} primary>
+                Connect to{'\n'}
+                <Span bold fontSize={35}>
+                  BetterWorld
+                </Span>
               </Span>
             </Col>
             <Col></Col>
-            <Col auto>
-              <Img w50 h50 source={IMAGES.mainLogo} />
-            </Col>
           </Row>
-          <Row
-            my15
-            bgColor={Colors.primary.DEFAULT}
-            rounded10
-            h45
-            flex
-            itemsCenter>
+        </Div>
+        <Div h45 my15>
+          <Row bgPrimary rounded10 flex itemsCenter>
             <Col />
             <Col auto pr10>
               <Div>
@@ -112,42 +118,48 @@ const SignInScreen = ({navigation}) => {
             <Col auto>
               <Div>
                 <Span white bold>
-                  {'Klip으로 연결'}
+                  {'Klip 으로 연결'}
                 </Span>
               </Div>
             </Col>
             <Col />
           </Row>
+        </Div>
+        <Div h20 my10>
           <Row flex itemsCenter>
-            <Col h={0.5} bgBlack>
-              <Div hrTag />
-            </Col>
+            <Col h={0.5} bgGray600></Col>
             <Col auto px10>
-              <Span>{'Or'}</Span>
+              <Span gray600>{'Or'}</Span>
             </Col>
-            <Col h={0.5} bgBlack></Col>
+            <Col h={0.5} bgGray600></Col>
           </Row>
-          <Row mt15>
-            <TextField
-              label={'클레이튼 주소'}
-              mt={0}
-              onChangeText={handleChangeAddress}
-              // onChange={handleBlurAddress}
-              error={addressError && '주소가 정확한지 확인해 주세요'}
-              autoCapitalize="none"
-            />
-          </Row>
-          <Row mb15>
-            <TextField
-              mt={5}
-              label={'비밀번호'}
-              onChangeText={handleChangePassword}
-              autoCapitalize="none"
-              password
-            />
-          </Row>
+        </Div>
+        <Row>
+          <TextField
+            label={'Klaytn 주소'}
+            placeholder={'0x...'}
+            mt={0}
+            onChangeText={handleChangeAddress}
+            autoCapitalize="none"
+          />
+        </Row>
+        <Row>
+          <TextField
+            mt={10}
+            label={
+              <Span notice onPress={handlePressPassword}>
+                비밀번호
+                <QuestionIcon {...iconSettingsXs} />
+              </Span>
+            }
+            placeholder={'비밀번호'}
+            onChangeText={handleChangePassword}
+            autoCapitalize="none"
+            password
+          />
+        </Row>
+        <Div h45 my15>
           <Row
-            mb15
             bgGray200
             rounded10
             h45
@@ -158,22 +170,24 @@ const SignInScreen = ({navigation}) => {
             <Col auto>
               <Div>
                 <Span black bold>
-                  {'이메일로 연결'}
+                  {loading ? '연결중...' : '비밀번호로 연결'}
                 </Span>
               </Div>
             </Col>
             <Col />
           </Row>
-          <Row textCenter>
-            <Span black fontSize={12}>
-              {
-                'Kaikas 유저들은 데스크탑 www.betterworldapp.io 에서 password 등록 후에 로그인 진행해 주시길 바랍니다.'
-              }
-            </Span>
-          </Row>
         </Div>
-      </ScrollView>
-    </Div>
+      </Div>
+      <BottomPopup ref={bottomPopupRef} snapPoints={['15%']}>
+        <Div px15>
+          <Span sectionBody style={{textAlign: 'center'}}>
+            {expandText}
+          </Span>
+        </Div>
+      </BottomPopup>
+    </KeyboardAvoidingView>
   );
 };
+
+
 export default SignInScreen;

@@ -1,26 +1,20 @@
 import {combineReducers} from 'redux';
 import {asyncReducer} from './asyncReducer';
 import {appReducer} from './appReducer';
-import { routeReducer } from './routeReducer';
-import { metasunganReducer } from './metasunganReducer';
-import { feedReducer } from './feedReducer';
+import { popupReducer } from './popupReducer';
 import { wsReducer } from './wsReducer';
 
 export type RootState = {
   app: ReturnType<typeof appReducer>;
   async: ReturnType<typeof asyncReducer>;
-  route: ReturnType<typeof routeReducer>;
-  metasungan: ReturnType<typeof metasunganReducer>;
-  feed: ReturnType<typeof feedReducer>;
+  popup: ReturnType<typeof popupReducer>;
   ws: ReturnType<typeof wsReducer>;
 };
 
 const rootReducer = combineReducers({
   async: asyncReducer,
   app: appReducer,
-  route: routeReducer,
-  metasungan: metasunganReducer,
-  feed: feedReducer,
+  popup: popupReducer,
   ws: wsReducer,
 });
 

@@ -887,12 +887,6 @@ export const addImageStyles = (props, arr: Array<any>, key) => {
   if (addIf(ctx, {aspectRatio}, v => ({aspectRatio: v}))) {
     return;
   }
-  // if (addIf(ctx, { resizeMode }, (v) => ({ resizeMode: v }))) return
-  // if (addIf(ctx, { resizeCover }, (v) => ({ resizeMode: 'cover' }))) return
-  // if (addIf(ctx, { resizeContain }, (v) => ({ resizeMode: 'contain' }))) return
-  // if (addIf(ctx, { resizeRepeat }, (v) => ({ resizeMode: 'repeat' }))) return
-  // if (addIf(ctx, { resizeStretch }, (v) => ({ resizeMode: 'stretch' }))) return
-  // if (addIf(ctx, { resizeCenter }, (v) => ({ resizeMode: 'center' }))) return
   if (addIf(ctx, {tintColor}, v => ({tintColor: v}))) {
     return;
   }

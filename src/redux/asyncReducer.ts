@@ -5,55 +5,39 @@ import {shallowEqual, useDispatch, useSelector} from 'react-redux';
 import {RootState} from 'src/redux/rootReducer';
 import {asyncThunk} from './asyncThunk';
 
+
+export const usePutPromiseFnWithToken = () => {
+  const {userToken} = useSelector(
+    (root: RootState) => ({userToken: root.app.session.token}),
+    shallowEqual,
+  );
+  return async(args) => putPromiseFn({...args, token: userToken, method: "PUT"})
+};
+
 export const getPromiseFn = async args => {
-  const {url, token} = args;
-  const res = await fetch(url, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      ...(token && {Authorization: 'Bearer ' + token}),
-    },
-  });
-  const json = await res.json();
-  return {ok: res.ok, data: json, status: res.status};
+  return await promiseFn({...args, method: "GET"})
 };
 
 export const postPromiseFn = async args => {
-  const {url, body, token} = args;
-  const res = await fetch(url, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      ...(token && {Authorization: 'Bearer ' + token}),
-    },
-    ...(body && {body: JSON.stringify(body)}),
-  });
-  const json = await res.json();
-
-
-  return {ok: res.ok, data: json, status: res.status};
+  return await promiseFn({...args, method: "POST"})
 };
 
 export const deletePromiseFn = async args => {
-  const {url, body, token} = args;
-  const res = await fetch(url, {
-    method: 'DELETE',
-    headers: {
-      'Content-Type': 'application/json',
-      ...(token && {Authorization: 'Bearer ' + token}),
-    },
-    ...(body && {body: JSON.stringify(body)}),
-  });
-  const json = await res.json();
-
-
-  return {ok: res.ok, data: json, status: res.status};
+  return await promiseFn({...args, method: "DELETE"})
 };
 
 export const patchPromiseFn = async args => {
-  const {url, body, token} = args;
+  return await promiseFn({...args, method: "PATCH"})
+};
+
+export const putPromiseFn = async args => {
+  return await promiseFn({...args, method: "PUT"})
+};
+
+export const promiseFn = async args => {
+  const {url, body, token, method} = args;
   const res = await fetch(url, {
-    method: 'PATCH',
+    method: method,
     headers: {
       'Content-Type': 'application/json',
       ...(token && {Authorization: 'Bearer ' + token}),
@@ -61,10 +45,8 @@ export const patchPromiseFn = async args => {
     ...(body && {body: JSON.stringify(body)}),
   });
   const json = await res.json();
-
-
   return {ok: res.ok, data: json, status: res.status};
-};
+}
 
 const keyWithScope = (key, scope?) => {
   return scope ? `${scope}/${key}` : key;
@@ -185,6 +167,34 @@ export const useApiPOST = (props = {}) => {
           ...(finalToken && {token: finalToken}),
         },
         promiseFn: postPromiseFn,
+        successHandler,
+        errHandler,
+        navigation,
+      }),
+    );
+  };
+};
+
+export const useApiPUT = (props = {}) => {
+  const {scope, token} = props as any;
+  const { userToken } = useSelector(
+    (root: RootState) => ({ userToken: root.app.session.token }),
+    shallowEqual,
+  );
+  const finalToken = token ? token : userToken;
+  const dispatch = useDispatch();
+  const navigation = useNavigation();
+  return (api, body?, successHandler?, errHandler?) => {
+    const key = getKeyByApi(api, scope);
+    dispatch(
+      asyncThunk({
+        key: key,
+        args: {
+          url: api.url,
+          ...(body && {body}),
+          ...(finalToken && {token: finalToken}),
+        },
+        promiseFn: putPromiseFn,
         successHandler,
         errHandler,
         navigation,

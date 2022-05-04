@@ -3,22 +3,18 @@ import {LogBox} from 'react-native';
 import codePush from 'react-native-code-push';
 import {withRootReducer} from './src/redux/withRootReducer';
 import {AppContent} from 'src/components/AppContent';
-import {library} from '@fortawesome/fontawesome-svg-core';
-import {faWalking, faBus, faSubway} from '@fortawesome/free-solid-svg-icons';
 import {shallowEqual, useSelector} from 'react-redux';
 import {RootState} from 'src/redux/rootReducer';
 import messaging from '@react-native-firebase/messaging';
 import {postPromiseFn} from 'src/redux/asyncReducer';
 import apis from 'src/modules/apis';
 import PushNotification from 'react-native-push-notification';
-
-library.add(faWalking, faBus, faSubway);
+import 'react-native-url-polyfill/auto';
 
 const App = () => {
   const {
     isLoggedIn,
     session: {token},
-    badge,
   } = useSelector((root: RootState) => root.app, shallowEqual);
   const firebaseMessaging = messaging();
   const getToken = useCallback(async () => {
@@ -32,24 +28,24 @@ const App = () => {
       const authorized = await firebaseMessaging.hasPermission();
       if (authorized) {
         const fcmToken = await getToken();
-        const res = await postPromiseFn({
-          url: apis.push.registrationToken().url,
-          body: {
-            token: fcmToken,
-          },
-          token: token,
-        });
+        // const res = await postPromiseFn({
+        //   url: apis.push.registrationToken().url,
+        //   body: {
+        //     token: fcmToken,
+        //   },
+        //   token: token,
+        // });
         console.log('console.log(fcmToken)', fcmToken);
       } else {
         await firebaseMessaging.requestPermission();
         const fcmToken = await getToken();
-        const res = await postPromiseFn({
-          url: apis.push.registrationToken().url,
-          body: {
-            token: fcmToken,
-          },
-          token: token,
-        });
+        // const res = await postPromiseFn({
+        //   url: apis.push.registrationToken().url,
+        //   body: {
+        //     token: fcmToken,
+        //   },
+        //   token: token,
+        // });
         console.log('console.log(fcmToken)', fcmToken);
       }
     } catch (error) {

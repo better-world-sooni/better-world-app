@@ -13,18 +13,21 @@ import SignInScreen from 'src/screens/Auth/SignInScreen';
 import PostScreen from 'src/screens/PostScreen';
 import MetaSunganScreen from 'src/screens/Home/MetaverseScreen';
 import ReportScreen from 'src/screens/ReportScreen';
-import ChatManager from './ChatManager';
 import {shallowEqual, useSelector} from 'react-redux';
 import {RootState} from 'src/redux/rootReducer';
 import ChatScreen from 'src/screens/Home/ChatScreen';
 import {Div} from './common/Div';
 import ChatRoomScreen from 'src/screens/ChatRoomScreen';
 import PostDetailScreen from 'src/screens/PostDetailScreen';
-import SignUpSceen from 'src/screens/Auth/SignUpScreen';
-import {LINE2_COLOR} from 'src/modules/constants';
 import NotificationScreen from 'src/screens/NotificationScreen';
 import OnboardingScreen from 'src/screens/Auth/OnboardingScreen';
 import Colors from 'src/constants/Colors';
+import {BottomSheetModalProvider} from '@gorhom/bottom-sheet';
+import {NativeBaseProvider} from 'native-base';
+import {Image} from 'react-native-svg';
+import {ICONS} from 'src/modules/icons';
+import {Img} from './common/Img';
+import {getNftProfileImage} from 'src/modules/nftUtils';
 
 const RootStack = createStackNavigator();
 
@@ -33,6 +36,18 @@ const Tab = createBottomTabNavigator();
 const tabBarFunc = props => <BottomTabBar {...props} />;
 
 const MainBottomTabs = () => {
+  const {currentNft, currentUser} = useSelector(
+    (root: RootState) => root.app.session,
+    shallowEqual,
+  );
+  const profileTabIconProps = currentNft
+    ? {
+        uri: getNftProfileImage(currentNft, 50, 50),
+        w: 25,
+        h: 25,
+        rounded: 100,
+      }
+    : {source: ICONS.profileIcon, h: 20, w: 20};
   return (
     <Tab.Navigator
       tabBar={tabBarFunc}
@@ -43,12 +58,7 @@ const MainBottomTabs = () => {
         component={HomeScreen}
         options={{
           tabBarLabel: '홈',
-          tabBarIcon: props => (
-            <Home
-              color={props.focused ? Colors.primary.DEFAULT : 'gray'}
-              height={20}
-              strokeWidth={1.5}></Home>
-          ),
+          tabBarIcon: props => <Img h20 w20 source={ICONS.homeIcon}></Img>,
         }}
       />
       <Tab.Screen
@@ -56,12 +66,7 @@ const MainBottomTabs = () => {
         component={MetaSunganScreen}
         options={{
           tabBarLabel: '메타순간',
-          tabBarIcon: props => (
-            <Grid
-              color={props.focused ? Colors.primary.DEFAULT : 'gray'}
-              height={20}
-              strokeWidth={1.5}></Grid>
-          ),
+          tabBarIcon: props => <Img h20 w20 source={ICONS.searchIcon}></Img>,
         }}
       />
       <Tab.Screen
@@ -69,12 +74,7 @@ const MainBottomTabs = () => {
         component={ChatScreen}
         options={{
           tabBarLabel: '채팅',
-          tabBarIcon: props => (
-            <MessageCircle
-              color={props.focused ? Colors.primary.DEFAULT : 'gray'}
-              height={20}
-              strokeWidth={1.5}></MessageCircle>
-          ),
+          tabBarIcon: props => <Img h20 w20 source={ICONS.capsuleIcon}></Img>,
         }}
       />
       <Tab.Screen
@@ -82,12 +82,7 @@ const MainBottomTabs = () => {
         component={ProfileScreen}
         options={{
           tabBarLabel: '프로필',
-          tabBarIcon: props => (
-            <User
-              color={props.focused ? Colors.primary.DEFAULT : 'gray'}
-              height={20}
-              strokeWidth={1.5}></User>
-          ),
+          tabBarIcon: props => <Img {...profileTabIconProps}></Img>,
         }}
       />
     </Tab.Navigator>
@@ -112,13 +107,6 @@ export const AppContent = () => {
         header: topHeader({...props, headerShown: false}),
       }),
     },
-    {
-      name: NAV_NAMES.SignUp,
-      component: SignUpSceen,
-      options: props => ({
-        header: topHeader({...props, headerShown: false}),
-      }),
-    } as any,
     {
       name: NAV_NAMES.SignIn,
       component: SignInScreen,
@@ -201,16 +189,20 @@ export const AppContent = () => {
   return (
     <Div flex relative>
       <NavigationContainer>
-        <RootStack.Navigator screenOptions={{headerShown: false}}>
-          {Navs.map((item, i) => (
-            <RootStack.Screen
-              key={i}
-              name={item.name}
-              component={item.component}
-              options={item.options}
-            />
-          ))}
-        </RootStack.Navigator>
+        <NativeBaseProvider>
+          <BottomSheetModalProvider>
+            <RootStack.Navigator screenOptions={{headerShown: false}}>
+              {Navs.map((item, i) => (
+                <RootStack.Screen
+                  key={i}
+                  name={item.name}
+                  component={item.component}
+                  options={item.options}
+                />
+              ))}
+            </RootStack.Navigator>
+          </BottomSheetModalProvider>
+        </NativeBaseProvider>
       </NavigationContainer>
     </Div>
   );

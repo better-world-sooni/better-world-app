@@ -363,6 +363,17 @@ export const iconSettings = {
   color: 'black',
   height: 24,
 };
+export const iconSettingsSm = {
+  strokeWidth: 1.3,
+  color: 'black',
+  height: 15,
+};
+export const iconSettingsXs = {
+  strokeWidth: 1.3,
+  color: 'black',
+  height: 12,
+  width: 20,
+};
 
 export const shadowProp = {
   shadowOffset: {height: 1, width: 1},

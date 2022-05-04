@@ -51,6 +51,20 @@
 		<string>NotoSansKR-Medium.otf</string>
 		<string>NotoSansKR-Regular.otf</string>
 		<string>NotoSansKR-Thin.otf</string>
+		<string>Uni Sans Bold Italic.otf</string>
+		<string>Uni Sans Bold.otf</string>
+		<string>Uni Sans Book Italic.otf</string>
+		<string>Uni Sans Book.otf</string>
+		<string>Uni Sans Heavy Italic.otf</string>
+		<string>Uni Sans Heavy.otf</string>
+		<string>Uni Sans Italic.otf</string>
+		<string>Uni Sans Light Italic.otf</string>
+		<string>Uni Sans Light.otf</string>
+		<string>Uni Sans Regular.otf</string>
+		<string>Uni Sans SemiBold Italic.otf</string>
+		<string>Uni Sans SemiBold.otf</string>
+		<string>Uni Sans Thin Italic.otf</string>
+		<string>Uni Sans Thin.otf</string>
 	</array>
 	<key>UIBackgroundModes</key>
 	<array>

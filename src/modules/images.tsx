@@ -1,4 +1,6 @@
 export const IMAGES = {
+  betterWorldWhiteLogo: require('assets/images/betterWorldWhiteLogo.png'),
+  betterWorldBlueLogo: require('assets/images/betterWorldBlueLogo.png'),
   blueMapMarker: require('assets/images/blueMapMarker.png'),
   mainLogo: require('assets/images/betterWorldBlueLogo.png'),
   redMapMarker: require('assets/images/redMapMarker.png'),

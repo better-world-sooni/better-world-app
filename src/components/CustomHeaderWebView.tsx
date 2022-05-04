@@ -52,9 +52,6 @@ export default function CustomHeaderWebView({uri, onbwwMessage, ...restProps}) {
             webviewRef.current.reload();
         }
       }}
-      onNavigationStateChange={state => {
-        console.log('current_path', state);
-      }}
       injectedJavaScript={injectedJavascript}
       onMessage={handleMessage}
     />

@@ -8,25 +8,39 @@
 
 /* Begin PBXBuildFile section */
 		00E356F31AD99517003FC87E /* sunganTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* sunganTests.m */; };
+		0E8920293F524BA7BC9AFFAA /* Uni Sans Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = 054F33EC7CC546DA95DBBAEC /* Uni Sans Light.otf */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
+		16528BEA10024C0DAABB1A48 /* Uni Sans Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = 0A493092C663432584F2A9B6 /* Uni Sans Regular.otf */; };
 		1ACA568BF11F4112BF4DFCDE /* Gugi-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9DD7738F6D58410DAD9AABA6 /* Gugi-Regular.ttf */; };
+		1B97E58214AA42099F08FD8B /* Uni Sans Light Italic.otf in Resources */ = {isa = PBXBuildFile; fileRef = D8D0850B627848E9B70D4F96 /* Uni Sans Light Italic.otf */; };
+		1D268D1B10364F3EA3A68B84 /* Uni Sans SemiBold.otf in Resources */ = {isa = PBXBuildFile; fileRef = F46FF67A8C094907B38BC0F6 /* Uni Sans SemiBold.otf */; };
 		21E6837221B64868AA24C220 /* NotoSansKR-Thin.otf in Resources */ = {isa = PBXBuildFile; fileRef = 81C211F5C55443179FCC79FC /* NotoSansKR-Thin.otf */; };
+		24985D2512AA4CBCA98DA33A /* Uni Sans Book Italic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 02686325CB464C23B2EBEE2E /* Uni Sans Book Italic.otf */; };
 		36AB49A9FB194245A5E8BBD3 /* NotoSansKR-Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = FBFFC96F5EBB40A9BA83E30E /* NotoSansKR-Light.otf */; };
 		37B26BCCB0C042809280BF70 /* DroidSerif-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 95E05BA1A60845B7A8BF1840 /* DroidSerif-BoldItalic.ttf */; };
 		3C3501F342304254A2A2B1CE /* NotoSansKR-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = 0209B570957F422D889180CA /* NotoSansKR-Regular.otf */; };
 		4D0CE5ABEC57B85C2BA391F3 /* libPods-sungan-sunganTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ADF5811EE146E9D83369EB07 /* libPods-sungan-sunganTests.a */; };
 		4EFF4FE32E6445E6A9DE4E23 /* DroidSerif-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DF16AC08E6E845C486E10597 /* DroidSerif-Italic.ttf */; };
 		5FE4D8EB86F244709E558F74 /* Jua-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6133CBA8C61E462D80533051 /* Jua-Regular.ttf */; };
+		78B5D51D6BCA457BACC71287 /* Uni Sans Italic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 4F0425492A804FE5A4711833 /* Uni Sans Italic.otf */; };
 		7AEF1C0ABC1E40C6B88DC516 /* NotoSansKR-Black.otf in Resources */ = {isa = PBXBuildFile; fileRef = 9FA550FF0B2948F098CA5B1C /* NotoSansKR-Black.otf */; };
+		7ECB5099698B46E1A4A1EE27 /* Uni Sans Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 3D06EE70CE824D139C29EE6F /* Uni Sans Bold.otf */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		84ED35E67A294CE58D67DD5B /* Uni Sans SemiBold Italic.otf in Resources */ = {isa = PBXBuildFile; fileRef = B21D244718064C408CDD1C9E /* Uni Sans SemiBold Italic.otf */; };
 		8C14521A273912FB009592BD /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8C145219273912FA009592BD /* GoogleService-Info.plist */; };
 		8C916B5126FF182F00AB49D1 /* libswiftWebKit.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C916B5026FF182F00AB49D1 /* libswiftWebKit.tbd */; };
+		913AC4605F064EFF9789DD91 /* Uni Sans Heavy.otf in Resources */ = {isa = PBXBuildFile; fileRef = C5DD4D96F0A54A3A960AE4E8 /* Uni Sans Heavy.otf */; };
 		A9BF9135596D45B5A2FBB32B /* NotoSansKR-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = E1B2E403CE8E435B84EADF13 /* NotoSansKR-Bold.otf */; };
+		B14140B7513C4ACCAF531E24 /* Uni Sans Bold Italic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 6F6288D3854C45999FBCAC27 /* Uni Sans Bold Italic.otf */; };
+		B6A960207D9046149AC29F66 /* Uni Sans Thin.otf in Resources */ = {isa = PBXBuildFile; fileRef = B13F7E20FC4C4883BDBEA74C /* Uni Sans Thin.otf */; };
 		B90AD6DE394E4F53AC2CAB17 /* DroidSerif-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FAD477A8AD964A97B210A77A /* DroidSerif-Bold.ttf */; };
+		C015511C538E4818A5B78C1C /* Uni Sans Thin Italic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 196D87473036401E8E56BCDA /* Uni Sans Thin Italic.otf */; };
 		C5318CCFA3784754A90F8529 /* DroidSerif.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B3059A4D016444C6BC62D7E4 /* DroidSerif.ttf */; };
 		D411A636309C9022AB5DE6C3 /* libPods-sungan.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C383D3450AED9F46F223788 /* libPods-sungan.a */; };
+		D679945081B5427D96C0BDED /* Uni Sans Heavy Italic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 766E41CDBD974B3A99CA8B05 /* Uni Sans Heavy Italic.otf */; };
+		F2244C62DDAF45E7A83FFC95 /* Uni Sans Book.otf in Resources */ = {isa = PBXBuildFile; fileRef = B2D13A2254B04FC3A280ED90 /* Uni Sans Book.otf */; };
 		FE094677BE2E42BC9A4D4C39 /* NotoSansKR-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = E9E561646480470E88ED5A74 /* NotoSansKR-Medium.otf */; };
 /* End PBXBuildFile section */
 
@@ -45,15 +59,23 @@
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* sunganTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = sunganTests.m; sourceTree = "<group>"; };
 		0209B570957F422D889180CA /* NotoSansKR-Regular.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "NotoSansKR-Regular.otf"; path = "../assets/fonts/NotoSansKR-Regular.otf"; sourceTree = "<group>"; };
+		02686325CB464C23B2EBEE2E /* Uni Sans Book Italic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Uni Sans Book Italic.otf"; path = "../assets/fonts/Uni Sans Book Italic.otf"; sourceTree = "<group>"; };
+		054F33EC7CC546DA95DBBAEC /* Uni Sans Light.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Uni Sans Light.otf"; path = "../assets/fonts/Uni Sans Light.otf"; sourceTree = "<group>"; };
+		0A493092C663432584F2A9B6 /* Uni Sans Regular.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Uni Sans Regular.otf"; path = "../assets/fonts/Uni Sans Regular.otf"; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* sungan.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = sungan.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = sungan/AppDelegate.h; sourceTree = "<group>"; };
 		13B07FB01A68108700A75B9A /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = sungan/AppDelegate.m; sourceTree = "<group>"; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = sungan/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = sungan/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = sungan/main.m; sourceTree = "<group>"; };
+		196D87473036401E8E56BCDA /* Uni Sans Thin Italic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Uni Sans Thin Italic.otf"; path = "../assets/fonts/Uni Sans Thin Italic.otf"; sourceTree = "<group>"; };
 		37A72E33B89A04B3B81AEABF /* Pods-sungan.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-sungan.debug.xcconfig"; path = "Target Support Files/Pods-sungan/Pods-sungan.debug.xcconfig"; sourceTree = "<group>"; };
+		3D06EE70CE824D139C29EE6F /* Uni Sans Bold.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Uni Sans Bold.otf"; path = "../assets/fonts/Uni Sans Bold.otf"; sourceTree = "<group>"; };
+		4F0425492A804FE5A4711833 /* Uni Sans Italic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Uni Sans Italic.otf"; path = "../assets/fonts/Uni Sans Italic.otf"; sourceTree = "<group>"; };
 		5C383D3450AED9F46F223788 /* libPods-sungan.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-sungan.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6133CBA8C61E462D80533051 /* Jua-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Jua-Regular.ttf"; path = "../assets/fonts/Jua-Regular.ttf"; sourceTree = "<group>"; };
+		6F6288D3854C45999FBCAC27 /* Uni Sans Bold Italic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Uni Sans Bold Italic.otf"; path = "../assets/fonts/Uni Sans Bold Italic.otf"; sourceTree = "<group>"; };
+		766E41CDBD974B3A99CA8B05 /* Uni Sans Heavy Italic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Uni Sans Heavy Italic.otf"; path = "../assets/fonts/Uni Sans Heavy Italic.otf"; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = sungan/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		81C211F5C55443179FCC79FC /* NotoSansKR-Thin.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "NotoSansKR-Thin.otf"; path = "../assets/fonts/NotoSansKR-Thin.otf"; sourceTree = "<group>"; };
 		822E0F6174BB00DDAE08A9A8 /* Pods-sungan-sunganTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-sungan-sunganTests.debug.xcconfig"; path = "Target Support Files/Pods-sungan-sunganTests/Pods-sungan-sunganTests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -65,12 +87,18 @@
 		9DD7738F6D58410DAD9AABA6 /* Gugi-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Gugi-Regular.ttf"; path = "../assets/fonts/Gugi-Regular.ttf"; sourceTree = "<group>"; };
 		9FA550FF0B2948F098CA5B1C /* NotoSansKR-Black.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "NotoSansKR-Black.otf"; path = "../assets/fonts/NotoSansKR-Black.otf"; sourceTree = "<group>"; };
 		ADF5811EE146E9D83369EB07 /* libPods-sungan-sunganTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-sungan-sunganTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		B13F7E20FC4C4883BDBEA74C /* Uni Sans Thin.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Uni Sans Thin.otf"; path = "../assets/fonts/Uni Sans Thin.otf"; sourceTree = "<group>"; };
+		B21D244718064C408CDD1C9E /* Uni Sans SemiBold Italic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Uni Sans SemiBold Italic.otf"; path = "../assets/fonts/Uni Sans SemiBold Italic.otf"; sourceTree = "<group>"; };
+		B2D13A2254B04FC3A280ED90 /* Uni Sans Book.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Uni Sans Book.otf"; path = "../assets/fonts/Uni Sans Book.otf"; sourceTree = "<group>"; };
 		B3059A4D016444C6BC62D7E4 /* DroidSerif.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = DroidSerif.ttf; path = ../assets/fonts/DroidSerif.ttf; sourceTree = "<group>"; };
 		C3AEDAEAD88249CBB5BE6B72 /* Pods-sungan.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-sungan.release.xcconfig"; path = "Target Support Files/Pods-sungan/Pods-sungan.release.xcconfig"; sourceTree = "<group>"; };
+		C5DD4D96F0A54A3A960AE4E8 /* Uni Sans Heavy.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Uni Sans Heavy.otf"; path = "../assets/fonts/Uni Sans Heavy.otf"; sourceTree = "<group>"; };
+		D8D0850B627848E9B70D4F96 /* Uni Sans Light Italic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Uni Sans Light Italic.otf"; path = "../assets/fonts/Uni Sans Light Italic.otf"; sourceTree = "<group>"; };
 		DF16AC08E6E845C486E10597 /* DroidSerif-Italic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "DroidSerif-Italic.ttf"; path = "../assets/fonts/DroidSerif-Italic.ttf"; sourceTree = "<group>"; };
 		E1B2E403CE8E435B84EADF13 /* NotoSansKR-Bold.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "NotoSansKR-Bold.otf"; path = "../assets/fonts/NotoSansKR-Bold.otf"; sourceTree = "<group>"; };
 		E9E561646480470E88ED5A74 /* NotoSansKR-Medium.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "NotoSansKR-Medium.otf"; path = "../assets/fonts/NotoSansKR-Medium.otf"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
+		F46FF67A8C094907B38BC0F6 /* Uni Sans SemiBold.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Uni Sans SemiBold.otf"; path = "../assets/fonts/Uni Sans SemiBold.otf"; sourceTree = "<group>"; };
 		FAD477A8AD964A97B210A77A /* DroidSerif-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "DroidSerif-Bold.ttf"; path = "../assets/fonts/DroidSerif-Bold.ttf"; sourceTree = "<group>"; };
 		FBFFC96F5EBB40A9BA83E30E /* NotoSansKR-Light.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "NotoSansKR-Light.otf"; path = "../assets/fonts/NotoSansKR-Light.otf"; sourceTree = "<group>"; };
 		FC65B07996145ABF9CB95402 /* Pods-sungan-sunganTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-sungan-sunganTests.release.xcconfig"; path = "Target Support Files/Pods-sungan-sunganTests/Pods-sungan-sunganTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -167,6 +195,20 @@
 				E9E561646480470E88ED5A74 /* NotoSansKR-Medium.otf */,
 				0209B570957F422D889180CA /* NotoSansKR-Regular.otf */,
 				81C211F5C55443179FCC79FC /* NotoSansKR-Thin.otf */,
+				6F6288D3854C45999FBCAC27 /* Uni Sans Bold Italic.otf */,
+				3D06EE70CE824D139C29EE6F /* Uni Sans Bold.otf */,
+				02686325CB464C23B2EBEE2E /* Uni Sans Book Italic.otf */,
+				B2D13A2254B04FC3A280ED90 /* Uni Sans Book.otf */,
+				766E41CDBD974B3A99CA8B05 /* Uni Sans Heavy Italic.otf */,
+				C5DD4D96F0A54A3A960AE4E8 /* Uni Sans Heavy.otf */,
+				4F0425492A804FE5A4711833 /* Uni Sans Italic.otf */,
+				D8D0850B627848E9B70D4F96 /* Uni Sans Light Italic.otf */,
+				054F33EC7CC546DA95DBBAEC /* Uni Sans Light.otf */,
+				0A493092C663432584F2A9B6 /* Uni Sans Regular.otf */,
+				B21D244718064C408CDD1C9E /* Uni Sans SemiBold Italic.otf */,
+				F46FF67A8C094907B38BC0F6 /* Uni Sans SemiBold.otf */,
+				196D87473036401E8E56BCDA /* Uni Sans Thin Italic.otf */,
+				B13F7E20FC4C4883BDBEA74C /* Uni Sans Thin.otf */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -313,6 +355,20 @@
 				FE094677BE2E42BC9A4D4C39 /* NotoSansKR-Medium.otf in Resources */,
 				3C3501F342304254A2A2B1CE /* NotoSansKR-Regular.otf in Resources */,
 				21E6837221B64868AA24C220 /* NotoSansKR-Thin.otf in Resources */,
+				B14140B7513C4ACCAF531E24 /* Uni Sans Bold Italic.otf in Resources */,
+				7ECB5099698B46E1A4A1EE27 /* Uni Sans Bold.otf in Resources */,
+				24985D2512AA4CBCA98DA33A /* Uni Sans Book Italic.otf in Resources */,
+				F2244C62DDAF45E7A83FFC95 /* Uni Sans Book.otf in Resources */,
+				D679945081B5427D96C0BDED /* Uni Sans Heavy Italic.otf in Resources */,
+				913AC4605F064EFF9789DD91 /* Uni Sans Heavy.otf in Resources */,
+				78B5D51D6BCA457BACC71287 /* Uni Sans Italic.otf in Resources */,
+				1B97E58214AA42099F08FD8B /* Uni Sans Light Italic.otf in Resources */,
+				0E8920293F524BA7BC9AFFAA /* Uni Sans Light.otf in Resources */,
+				16528BEA10024C0DAABB1A48 /* Uni Sans Regular.otf in Resources */,
+				84ED35E67A294CE58D67DD5B /* Uni Sans SemiBold Italic.otf in Resources */,
+				1D268D1B10364F3EA3A68B84 /* Uni Sans SemiBold.otf in Resources */,
+				C015511C538E4818A5B78C1C /* Uni Sans Thin Italic.otf in Resources */,
+				B6A960207D9046149AC29F66 /* Uni Sans Thin.otf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
