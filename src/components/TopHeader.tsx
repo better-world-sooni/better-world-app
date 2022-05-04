@@ -15,7 +15,6 @@ const TopHeader = props => {
   const {title, nextText, onPressNext} = props;
   return (
     <Div>
-      <Div h={HAS_NOTCH ? 44 : 20} />
       <Header
         bg={'rgba(255,255,255,0)'}
         headerTitle={title}

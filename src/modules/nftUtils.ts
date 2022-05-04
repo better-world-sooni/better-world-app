@@ -1,3 +1,5 @@
+import { shallowEqual, useSelector } from "react-redux"
+import { RootState } from "src/redux/rootReducer"
 import { resizeImageUri } from "./uriUtils"
 
 export function getNftProfileImage(nft, width=null, height= null){
@@ -27,4 +29,13 @@ export function truncateAddress(fullStr, strLen = 12, separator = '...') {
       separator +
       fullStr.substr(fullStr.length - backChars)
     );
+}
+
+export function useIsCurrentNft(nft) {
+    const {currentNft} = useSelector(
+        (root: RootState) => root.app.session,
+        shallowEqual,
+    );
+    const isCurrentNft = currentNft && nft ? currentNft.contract_address == nft.contract_address && currentNft.token_id == nft.token_id : false
+    return isCurrentNft
 }

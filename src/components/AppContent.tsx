@@ -2,11 +2,10 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import TopHeader from 'src/components/TopHeader';
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import BottomTabBar from 'src/components/BottomTabBar';
 import {NAV_NAMES} from 'src/modules/navNames';
 import HomeScreen from 'src/screens/Home/HomeScreen';
-import {Grid, Home, Map, MessageCircle, User, X} from 'react-native-feather';
 import ProfileScreen from 'src/screens/Home/ProfileScreen';
 import SplashScreen from 'src/screens/Common/SplashScreen';
 import SignInScreen from 'src/screens/Auth/SignInScreen';
@@ -21,10 +20,8 @@ import ChatRoomScreen from 'src/screens/ChatRoomScreen';
 import PostDetailScreen from 'src/screens/PostDetailScreen';
 import NotificationScreen from 'src/screens/NotificationScreen';
 import OnboardingScreen from 'src/screens/Auth/OnboardingScreen';
-import Colors from 'src/constants/Colors';
 import {BottomSheetModalProvider} from '@gorhom/bottom-sheet';
 import {NativeBaseProvider} from 'native-base';
-import {Image} from 'react-native-svg';
 import {ICONS} from 'src/modules/icons';
 import {Img} from './common/Img';
 import {getNftProfileImage} from 'src/modules/nftUtils';
@@ -36,7 +33,7 @@ const Tab = createBottomTabNavigator();
 const tabBarFunc = props => <BottomTabBar {...props} />;
 
 const MainBottomTabs = () => {
-  const {currentNft, currentUser} = useSelector(
+  const {currentNft} = useSelector(
     (root: RootState) => root.app.session,
     shallowEqual,
   );
@@ -57,7 +54,7 @@ const MainBottomTabs = () => {
         name={NAV_NAMES.Home}
         component={HomeScreen}
         options={{
-          tabBarLabel: '홈',
+          tabBarLabel: 'Home',
           tabBarIcon: props => <Img h20 w20 source={ICONS.homeIcon}></Img>,
         }}
       />
@@ -65,23 +62,23 @@ const MainBottomTabs = () => {
         name={NAV_NAMES.Metaverse}
         component={MetaSunganScreen}
         options={{
-          tabBarLabel: '메타순간',
-          tabBarIcon: props => <Img h20 w20 source={ICONS.searchIcon}></Img>,
+          tabBarLabel: 'Explore',
+          tabBarIcon: props => <Img h20 w20 source={ICONS.capsuleIcon}></Img>,
         }}
       />
       <Tab.Screen
         name={NAV_NAMES.Chat}
         component={ChatScreen}
         options={{
-          tabBarLabel: '채팅',
-          tabBarIcon: props => <Img h20 w20 source={ICONS.capsuleIcon}></Img>,
+          tabBarLabel: 'Capsule',
+          tabBarIcon: props => <Img h20 w20 source={ICONS.searchIcon}></Img>,
         }}
       />
       <Tab.Screen
         name={NAV_NAMES.Profile}
         component={ProfileScreen}
         options={{
-          tabBarLabel: '프로필',
+          tabBarLabel: NAV_NAMES.Profile,
           tabBarIcon: props => <Img {...profileTabIconProps}></Img>,
         }}
       />

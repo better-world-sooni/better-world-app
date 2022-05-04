@@ -366,7 +366,7 @@ export const iconSettings = {
 export const iconSettingsSm = {
   strokeWidth: 1.3,
   color: 'black',
-  height: 15,
+  height: 20,
 };
 export const iconSettingsXs = {
   strokeWidth: 1.3,

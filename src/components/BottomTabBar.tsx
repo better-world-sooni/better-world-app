@@ -1,43 +1,29 @@
-import {
-  NativeBaseProvider,
-  Box,
-  Text,
-  Heading,
-  VStack,
-  FormControl,
-  Input,
-  Link,
-  Button,
-  Icon,
-  HStack,
-  Center,
-  Pressable,
-} from 'native-base';
-import React, {useCallback} from 'react';
-import {ICONS} from 'src/modules/icons';
+import {NativeBaseProvider, Box, HStack, Center} from 'native-base';
+import React, {useCallback, useRef} from 'react';
 import {Div} from './common/Div';
-import {Img} from './common/Img';
-import {Span} from './common/Span';
-import {Style} from './common/Style';
-import {IMAGES} from 'src/modules/images';
-import {Row} from './common/Row';
-import {Col} from './common/Col';
-import {GRAY_COLOR, LINE2_COLOR} from 'src/modules/constants';
+import BottomPopup from './common/BottomPopup';
+import NftChooseBottomSheetScrollView from './common/NftChooseBottomSheetScrollView';
+import {shallowEqual, useSelector} from 'react-redux';
+import {RootState} from 'src/redux/rootReducer';
+import {BottomSheetModal} from '@gorhom/bottom-sheet';
+import {NAV_NAMES} from 'src/modules/navNames';
+import Colors from 'src/constants/Colors';
+import {mediumBump} from 'src/modules/hapticFeedBackUtils';
 
 const BottomTabBar = ({state, descriptors, navigation}) => {
+  const bottomPopupRef = useRef<BottomSheetModal>(null);
+  const {currentUser} = useSelector(
+    (root: RootState) => root.app.session,
+    shallowEqual,
+  );
   const List = useCallback(
     state.routes.map((route, index) => {
       const {key, name} = route;
       const {options} = descriptors[key];
-      const label =
-        options.tabBarLabel !== undefined
-          ? options.tabBarLabel
-          : options.title !== undefined
-          ? options.title
-          : name;
+      const changeProfileOnLongPress = options.tabBarLabel == NAV_NAMES.Profile;
       const isFocused = state.index === index;
       const image = options.tabBarIcon({focused: isFocused});
-      const onPress = () => {
+      const handlePress = () => {
         const event = navigation.emit({
           type: 'tabPress',
           target: key,
@@ -47,8 +33,22 @@ const BottomTabBar = ({state, descriptors, navigation}) => {
           navigation.navigate(name);
         }
       };
+      const handleLongPress = () => {
+        mediumBump();
+        bottomPopupRef?.current?.expand();
+      };
+      const conditionalProps = changeProfileOnLongPress
+        ? {onLongPress: handleLongPress}
+        : {};
       return (
-        <Div key={key} onPress={onPress} flex itemsCenter justifyCenter pb10>
+        <Div
+          key={key}
+          onPress={handlePress}
+          {...conditionalProps}
+          flex
+          itemsCenter
+          justifyCenter
+          pb10>
           {image}
         </Div>
       );
@@ -56,21 +56,24 @@ const BottomTabBar = ({state, descriptors, navigation}) => {
     [state, descriptors, navigation],
   );
   return (
-    <Div
-      h70
-      borderTopColor={GRAY_COLOR}
-      borderTopWidth={0.2}
-      overflowHidden
-      bgWhite>
-      <NativeBaseProvider>
-        <Box flex={1} safeAreaTop>
-          <Center flex={1}></Center>
-          <HStack bg={'white'} safeAreaBottom paddingTop={4} shadow={1}>
-            {List}
-          </HStack>
-        </Box>
-      </NativeBaseProvider>
-    </Div>
+    <>
+      <BottomPopup ref={bottomPopupRef} snapPoints={['90%', '30%']} index={-1}>
+        <NftChooseBottomSheetScrollView
+          nfts={currentUser?.nfts}
+          title={'Identity 변경하기'}
+        />
+      </BottomPopup>
+      <Div h70 borderTopColor={Colors.gray[100]} borderTopWidth={0.2} bgWhite>
+        <NativeBaseProvider>
+          <Box flex={1} safeAreaTop>
+            <Center flex={1}></Center>
+            <HStack bg={'white'} safeAreaBottom paddingTop={4} shadow={1}>
+              {List}
+            </HStack>
+          </Box>
+        </NativeBaseProvider>
+      </Div>
+    </>
   );
 };
 

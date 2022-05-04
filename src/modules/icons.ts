@@ -5,6 +5,8 @@ export const ICONS = {
   capsuleIcon: require('assets/icons/capsuleIcon.png'),
   profileIcon: require('assets/icons/profileIcon.png'),
   searchIcon: require('assets/icons/searchIcon.png'),
+  messageIcon: require('assets/icons/messageIcon.png'),
+  bellIcon: require('assets/icons/bellIcon.png'),
   icChveronLeftWhite100: require('assets/icons/icChveronLeftWhite100.png'),
   iconChevronLeftBold: require('assets/icons/iconChevronLeftBold.png'),
   iconMapMarker: require('assets/icons/mapMarker.png'),

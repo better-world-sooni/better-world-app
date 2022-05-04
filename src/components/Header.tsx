@@ -33,20 +33,8 @@ export const Header = ({
   onFinishText = '',
   borderBottom = false,
 }) => {
-  const {
-    feed: {globalFiter},
-    route: {selectedTrain},
-  } = useSelector((root: RootState) => root, shallowEqual);
   const navigation = useNavigation();
   const goBack = () => navigation.goBack();
-  const goToPost = () => navigation.navigate(NAV_NAMES.Post);
-  const goToReport = () => {
-    if (selectedTrain) {
-      navigation.navigate(NAV_NAMES.Report);
-    } else {
-      Alert.alert('탑승하신 열차를 먼저 선택해 주세요.');
-    }
-  };
   const goToNotification = () => navigation.navigate(NAV_NAMES.Notification);
   const borderBottomProps = borderBottom
     ? {borderBottomColor: GRAY_COLOR, borderBottomWidth: 0.2}
@@ -67,17 +55,6 @@ export const Header = ({
         {onSelect ? (
           <Col justifyCenter onPress={() => onSelect()}>
             <Row itemsCenter>
-              <Col itemsCenter auto pr5>
-                <Span
-                  bold
-                  textCenter
-                  color={'black'}
-                  fontSize={20}
-                  numberOfLines={1}
-                  ellipsizeMode="head">
-                  {globalFiter.split('(')[0]}
-                </Span>
-              </Col>
               <Col auto justifyCenter>
                 <ChevronDown {...chevronDownSettings}></ChevronDown>
               </Col>

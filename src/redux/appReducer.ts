@@ -49,7 +49,6 @@ export const useLogin = () => {
 export const useChangeAccount = () => {
   const dispatch = useDispatch();
   const apiPUT = useApiPUT();
-
   const apiGETWithToken = useApiGETWithToken();
   return (contractAddress, tokenId, successHandler?, errHandler?) => {
     apiPUT(
