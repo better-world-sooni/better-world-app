@@ -12,10 +12,19 @@ import {
   useApiPUT,
 } from 'src/redux/asyncReducer';
 
+const usePreloadData = () => {
+  const apiGETWithToken = useApiGETWithToken();
+  return async (jwt) => {
+    await apiGETWithToken(apis.profile._(), jwt)
+    await apiGETWithToken(apis.feed._(), jwt)
+    await apiGETWithToken(apis.chat.chatRoom.all(), jwt)
+  }
+}
+
 export const useLogin = () => {
   const dispatch = useDispatch();
   const apiPOST = useApiPOST();
-  const apiGETWithToken = useApiGETWithToken();
+  const preloadData = usePreloadData()
   return (address, password, successHandler?, errHandler?) => {
     apiPOST(
       apis.auth.password._(),
@@ -27,9 +36,8 @@ export const useLogin = () => {
         dispatch(async () => {
           const { jwt, user } = props.data;
           await AsyncStorage.setItem(JWT, jwt);
-          await apiGETWithToken(apis.profile._(), jwt)
-          await apiGETWithToken(apis.chat.chatRoom.all(), jwt)
-          dispatch(appActions.login({
+          await preloadData(jwt)
+          await dispatch(appActions.login({
             token: jwt,
             currentUser: user,
             currentNft: user.main_nft
@@ -49,7 +57,7 @@ export const useLogin = () => {
 export const useChangeAccount = () => {
   const dispatch = useDispatch();
   const apiPUT = useApiPUT();
-  const apiGETWithToken = useApiGETWithToken();
+  const preloadData = usePreloadData()
   return (contractAddress, tokenId, successHandler?, errHandler?) => {
     apiPUT(
       apis.nft.contractAddressAndTokenId(contractAddress, tokenId),
@@ -60,9 +68,8 @@ export const useChangeAccount = () => {
         dispatch(async () => {
           const { jwt, user, nft } = props.data;
           await AsyncStorage.setItem(JWT, jwt);
-          await apiGETWithToken(apis.profile._(), jwt)
-          await apiGETWithToken(apis.chat.chatRoom.all(), jwt)
-          dispatch(appActions.changeAccount({
+          await preloadData(jwt)
+          await dispatch(appActions.changeAccount({
             token: jwt,
             currentUser: user,
             currentNft: nft

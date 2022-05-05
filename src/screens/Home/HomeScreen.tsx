@@ -16,34 +16,53 @@ import {IMAGES} from 'src/modules/images';
 import {ICONS} from 'src/modules/icons';
 import {X, MessageCircle, Bell} from 'react-native-feather';
 import Colors from 'src/constants/Colors';
+import {Span} from 'src/components/common/Span';
+import apis from 'src/modules/apis';
+import {useApiSelector} from 'src/redux/asyncReducer';
+import Post from 'src/components/common/Post';
+import {ScrollView} from 'src/modules/viewComponents';
 
 const HomeScreen = () => {
-  const navigation = useNavigation();
-  const homeUrl = urls.home();
-  const handleBwwMessage = message => {
-    if (message.action == 'handleClickCapsule') {
-      navigation.navigate(NAV_NAMES.Metaverse, {
-        tokenId: message.tokenId,
-        contractAddress: message.contractAddress,
-      });
-    }
-  };
+  const {data: feedRes, isLoading: feedLoad} = useApiSelector(apis.feed._);
 
   return (
     <Div flex backgroundColor={'white'}>
       <StatusBar animated={true} barStyle={'dark-content'} />
       <Div h={HAS_NOTCH ? 44 : 20} />
-      <Row itemsCenter>
-        <Col px25>
-          <Bell {...iconSettings} color={Colors.primary.DEFAULT} />
+      <Row itemsCenter py10>
+        <Col ml15>
+          <Span fontSize={24} bold primary>
+            BetterWorld
+          </Span>
         </Col>
-        <Col itemsCenter>
-          <Img w45 h45 source={IMAGES.betterWorldBlueLogo} />
+        <Col auto mr15>
+          <Div rounded50 bgGray200 p6>
+            <Bell
+              strokeWidth={2}
+              color={'black'}
+              fill={'black'}
+              height={20}
+              width={20}
+            />
+          </Div>
         </Col>
-        <Col itemsEnd px25>
-          <MessageCircle {...iconSettings} color={Colors.primary.DEFAULT} />
+        <Col auto mr15>
+          <Div rounded50 bgGray200 p6>
+            <MessageCircle
+              strokeWidth={2}
+              color={'black'}
+              fill={'black'}
+              height={20}
+              width={20}
+            />
+          </Div>
         </Col>
       </Row>
+      <ScrollView showsVerticalScrollIndicator={false}>
+        {feedRes?.feed?.map(post => {
+          return <Post post={post} />;
+        })}
+      </ScrollView>
     </Div>
   );
 };

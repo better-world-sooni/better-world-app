@@ -40,11 +40,11 @@ const MainBottomTabs = () => {
   const profileTabIconProps = currentNft
     ? {
         uri: getNftProfileImage(currentNft, 50, 50),
-        w: 25,
-        h: 25,
+        w: 22,
+        h: 22,
         rounded: 100,
       }
-    : {source: ICONS.profileIcon, h: 20, w: 20};
+    : {source: ICONS.profileIcon, h: 18, w: 18};
   return (
     <Tab.Navigator
       tabBar={tabBarFunc}
@@ -55,7 +55,7 @@ const MainBottomTabs = () => {
         component={HomeScreen}
         options={{
           tabBarLabel: 'Home',
-          tabBarIcon: props => <Img h20 w20 source={ICONS.homeIcon}></Img>,
+          tabBarIcon: props => <Img h18 w18 source={ICONS.homeIcon}></Img>,
         }}
       />
       <Tab.Screen
@@ -63,7 +63,7 @@ const MainBottomTabs = () => {
         component={MetaSunganScreen}
         options={{
           tabBarLabel: 'Explore',
-          tabBarIcon: props => <Img h20 w20 source={ICONS.capsuleIcon}></Img>,
+          tabBarIcon: props => <Img h18 w18 source={ICONS.capsuleIcon}></Img>,
         }}
       />
       <Tab.Screen
@@ -71,7 +71,7 @@ const MainBottomTabs = () => {
         component={ChatScreen}
         options={{
           tabBarLabel: 'Capsule',
-          tabBarIcon: props => <Img h20 w20 source={ICONS.searchIcon}></Img>,
+          tabBarIcon: props => <Img h18 w18 source={ICONS.searchIcon}></Img>,
         }}
       />
       <Tab.Screen
