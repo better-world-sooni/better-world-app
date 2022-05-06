@@ -7,3 +7,7 @@ const options = {
 export function mediumBump(){
     ReactNativeHapticFeedback.trigger('impactMedium', options);
 }
+
+export function smallBump(){
+    ReactNativeHapticFeedback.trigger('impactLight', options);
+}

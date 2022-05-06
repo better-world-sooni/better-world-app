@@ -18,7 +18,7 @@ export default function ImageSlideShow({imageUris}) {
 function renderItem({item, index}) {
   return (
     <Div>
-      <Img w={DEVICE_WIDTH} h400 uri={item}></Img>
+      <Img w={DEVICE_WIDTH} h250 uri={item}></Img>
     </Div>
   );
 }

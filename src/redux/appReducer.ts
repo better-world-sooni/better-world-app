@@ -8,25 +8,25 @@ import {
   asyncActions,
   useApiGET,
   useApiGETWithToken,
-  useApiPOST,
-  useApiPUT,
+  useApiPOSTWithToken,
+  useApiPUTWithToken,
 } from 'src/redux/asyncReducer';
 
 const usePreloadData = () => {
-  const apiGETWithToken = useApiGETWithToken();
+  const apiGET = useApiGET();
   return async (jwt) => {
-    await apiGETWithToken(apis.profile._(), jwt)
-    await apiGETWithToken(apis.feed._(), jwt)
-    await apiGETWithToken(apis.chat.chatRoom.all(), jwt)
+    await apiGET(apis.profile._(), jwt)
+    await apiGET(apis.feed._(), jwt)
+    await apiGET(apis.chat.chatRoom.all(), jwt)
   }
 }
 
 export const useLogin = () => {
   const dispatch = useDispatch();
-  const apiPOST = useApiPOST();
+  const apiPOSTWithToken = useApiPOSTWithToken();
   const preloadData = usePreloadData()
   return (address, password, successHandler?, errHandler?) => {
-    apiPOST(
+    apiPOSTWithToken(
       apis.auth.password._(),
       {
         address,
@@ -56,10 +56,10 @@ export const useLogin = () => {
 
 export const useChangeAccount = () => {
   const dispatch = useDispatch();
-  const apiPUT = useApiPUT();
+  const apiPUTWithToken = useApiPUTWithToken();
   const preloadData = usePreloadData()
   return (contractAddress, tokenId, successHandler?, errHandler?) => {
-    apiPUT(
+    apiPUTWithToken(
       apis.nft.contractAddressAndTokenId(contractAddress, tokenId),
       {
         property: 'main',
@@ -88,9 +88,9 @@ export const useChangeAccount = () => {
 
 export const useSocialLogin = () => {
   const dispatch = useDispatch();
-  const apiPOST = useApiPOST();
+  const apiPOSTWithToken = useApiPOSTWithToken();
   return (body, successHandler?, errHandler?) => {
-    apiPOST(
+    apiPOSTWithToken(
       apis.auth.user._(),
       body,
       props => {
@@ -114,9 +114,9 @@ export const useSocialLogin = () => {
 
 export const useAutoLogin = () => {
   const dispatch = useDispatch();
-  const apiGET = useApiGET();
+  const apiGETWithToken = useApiGETWithToken();
   return (token, successHandler?, errHandler?) => {
-    apiGET(
+    apiGETWithToken(
       apis.auth.user._(),
       props => {
         dispatch(async () => {

@@ -13,7 +13,9 @@ const BottomPopup = (
   ref,
 ) => {
   const renderBackdrop = useCallback(
-    props => <BottomSheetBackdrop {...props} disappearsOnIndex={-1} />,
+    props => (
+      <BottomSheetBackdrop {...props} disappearsOnIndex={-1} opacity={0.9} />
+    ),
     [],
   );
 

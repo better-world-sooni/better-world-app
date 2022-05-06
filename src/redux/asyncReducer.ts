@@ -11,7 +11,23 @@ export const usePutPromiseFnWithToken = () => {
     (root: RootState) => ({userToken: root.app.session.token}),
     shallowEqual,
   );
-  return async(args) => putPromiseFn({...args, token: userToken, method: "PUT"})
+  return async(args) => putPromiseFn({...args, token: userToken})
+};
+export const usePostPromiseFnWithToken = () => {
+  const {userToken} = useSelector(
+    (root: RootState) => ({userToken: root.app.session.token}),
+    shallowEqual,
+  );
+  return async(args) => postPromiseFn({...args, token: userToken})
+};
+
+
+export const usePromiseFnWithToken = () => {
+  const {userToken} = useSelector(
+    (root: RootState) => ({userToken: root.app.session.token}),
+    shallowEqual,
+  );
+  return async(args) => promiseFn({...args, token: userToken,})
 };
 
 export const getPromiseFn = async args => {
@@ -78,7 +94,7 @@ export const useApiResetByScope = scope => {
   return () => dispatch(asyncActions.resetByScope({scope}));
 };
 
-export const useApiGET = (props = {}) => {
+export const useApiGETWithToken = (props = {}) => {
   const {scope, token} = props as any;
   const {userToken} = useSelector(
     (root: RootState) => ({userToken: root.app.session.token}),
@@ -102,7 +118,7 @@ export const useApiGET = (props = {}) => {
   };
 };
 
-export const useApiGETWithToken = (props = {}) => {
+export const useApiGET = (props = {}) => {
   const {scope} = props as any;
   const dispatch = useDispatch();
   const navigation = useNavigation();
@@ -122,7 +138,7 @@ export const useApiGETWithToken = (props = {}) => {
   };
 };
 
-export const useReloadGET = (props = {}) => {
+export const useReloadGETWithToken = (props = {}) => {
   const {scope, token} = props as any;
   const { userToken } = useSelector(
     (root: RootState) => ({ userToken: root.app.session.token }),
@@ -147,7 +163,7 @@ export const useReloadGET = (props = {}) => {
   };
 };
 
-export const useApiPOST = (props = {}) => {
+export const useApiPOSTWithToken = (props = {}) => {
   const {scope, token} = props as any;
   const { userToken } = useSelector(
     (root: RootState) => ({ userToken: root.app.session.token }),
@@ -175,7 +191,7 @@ export const useApiPOST = (props = {}) => {
   };
 };
 
-export const useApiPUT = (props = {}) => {
+export const useApiPUTWithToken = (props = {}) => {
   const {scope, token} = props as any;
   const { userToken } = useSelector(
     (root: RootState) => ({ userToken: root.app.session.token }),
@@ -203,7 +219,7 @@ export const useApiPUT = (props = {}) => {
   };
 };
 
-export const useReloadPOST = (props = {}) => {
+export const useReloadPOSTWithToken = (props = {}) => {
   const {scope, token} = props as any;
   const {userToken} = useSelector(
     (root: RootState) => ({userToken: root.app.session.token}),

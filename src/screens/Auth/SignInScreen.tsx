@@ -1,6 +1,6 @@
 import { CommonActions } from '@react-navigation/native';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {Alert, Keyboard} from 'react-native';
+import {ActivityIndicator, Alert, Keyboard} from 'react-native';
 import {Col} from 'src/components/common/Col';
 import {Div} from 'src/components/common/Div';
 import {Img} from 'src/components/common/Img';
@@ -170,7 +170,11 @@ const SignInScreen = ({navigation}) => {
             <Col auto>
               <Div>
                 <Span black bold>
-                  {loading ? '연결중...' : '비밀번호로 연결'}
+                  {loading ? (
+                    <ActivityIndicator></ActivityIndicator>
+                  ) : (
+                    '비밀번호로 연결'
+                  )}
                 </Span>
               </Div>
             </Col>

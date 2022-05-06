@@ -1,11 +1,7 @@
-import {
-  faCheckCircle,
-  faExclamationTriangle,
-} from '@fortawesome/free-solid-svg-icons';
 import {BottomSheetScrollView} from '@gorhom/bottom-sheet';
 import React, {useEffect, useState} from 'react';
 import {ActivityIndicator} from 'react-native';
-import {AlertTriangle, Check, CheckCircle} from 'react-native-feather';
+import {AlertTriangle, CheckCircle} from 'react-native-feather';
 import Colors from 'src/constants/Colors';
 import {iconSettings} from 'src/modules/constants';
 import {
@@ -34,8 +30,8 @@ export default function NftChooseBottomSheetScrollView({
           </Span>
         </Div>
         <Div mt15>
-          {nfts?.map(nft => {
-            return <NftIdentity nft={nft} onSuccess={onSuccess} />;
+          {nfts?.map((nft, index) => {
+            return <NftIdentity key={index} nft={nft} onSuccess={onSuccess} />;
           })}
         </Div>
       </Div>

@@ -63,7 +63,7 @@ const BottomTabBar = ({state, descriptors, navigation}) => {
           title={'Identity 변경하기'}
         />
       </BottomPopup>
-      <Div h70 borderTopColor={Colors.gray[100]} borderTopWidth={0.2} bgWhite>
+      <Div h60 borderTopColor={Colors.gray[100]} borderTopWidth={0.2} bgWhite>
         <NativeBaseProvider>
           <Box flex={1} safeAreaTop>
             <Center flex={1}></Center>

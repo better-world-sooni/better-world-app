@@ -49,7 +49,12 @@ const TruncatedMarkdown: TruncatedMarkdownType = function ({
     }
     return <Markdown children={result.concat('...')} />;
   }
-  return <Markdown style={{body: {marginTop: -20}}} children={result} />;
+  return (
+    <Markdown
+      style={{body: {marginTop: -20, marginBottom: -5}}}
+      children={result}
+    />
+  );
 };
 
 export default TruncatedMarkdown;

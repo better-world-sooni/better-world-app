@@ -3,6 +3,8 @@ import { KlaytnAccount } from "./constants";
 export const ICONS = {
   homeIcon: require('assets/icons/homeIcon.png'),
   capsuleIcon: require('assets/icons/capsuleIcon.png'),
+  capsuleIconBlack: require('assets/icons/capsuleIconBlack.png'),
+  capsuleIconGray: require('assets/icons/capsuleIconGray.png'),
   profileIcon: require('assets/icons/profileIcon.png'),
   searchIcon: require('assets/icons/searchIcon.png'),
   messageIcon: require('assets/icons/messageIcon.png'),

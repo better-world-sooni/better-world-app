@@ -1,21 +1,10 @@
-import React, {useRef} from 'react';
+import React from 'react';
 import {Div} from 'src/components/common/Div';
-import {shallowEqual, useDispatch, useSelector} from 'react-redux';
-import {HAS_NOTCH, iconSettings, iconSettingsSm} from 'src/modules/constants';
-import {RootState} from 'src/redux/rootReducer';
-import CustomHeaderWebView from 'src/components/CustomHeaderWebView';
-import {urls} from 'src/modules/urls';
-import {useChangeAccount} from 'src/redux/appReducer';
-import {CommonActions, useNavigation} from '@react-navigation/native';
-import {NAV_NAMES} from 'src/modules/navNames';
+import {HAS_NOTCH} from 'src/modules/constants';
 import {StatusBar} from 'react-native';
 import {Row} from 'src/components/common/Row';
 import {Col} from 'src/components/common/Col';
-import {Img} from 'src/components/common/Img';
-import {IMAGES} from 'src/modules/images';
-import {ICONS} from 'src/modules/icons';
-import {X, MessageCircle, Bell} from 'react-native-feather';
-import Colors from 'src/constants/Colors';
+import {MessageCircle, Bell} from 'react-native-feather';
 import {Span} from 'src/components/common/Span';
 import apis from 'src/modules/apis';
 import {useApiSelector} from 'src/redux/asyncReducer';
@@ -26,10 +15,10 @@ const HomeScreen = () => {
   const {data: feedRes, isLoading: feedLoad} = useApiSelector(apis.feed._);
 
   return (
-    <Div flex backgroundColor={'white'}>
+    <Div flex bgGray200>
       <StatusBar animated={true} barStyle={'dark-content'} />
-      <Div h={HAS_NOTCH ? 44 : 20} />
-      <Row itemsCenter py10>
+      <Div h={HAS_NOTCH ? 44 : 20} bgWhite />
+      <Row itemsCenter py8 bgWhite>
         <Col ml15>
           <Span fontSize={24} bold primary>
             BetterWorld
@@ -41,8 +30,8 @@ const HomeScreen = () => {
               strokeWidth={2}
               color={'black'}
               fill={'black'}
-              height={20}
-              width={20}
+              height={18}
+              width={18}
             />
           </Div>
         </Col>
@@ -52,15 +41,15 @@ const HomeScreen = () => {
               strokeWidth={2}
               color={'black'}
               fill={'black'}
-              height={20}
-              width={20}
+              height={18}
+              width={18}
             />
           </Div>
         </Col>
       </Row>
       <ScrollView showsVerticalScrollIndicator={false}>
         {feedRes?.feed?.map(post => {
-          return <Post post={post} />;
+          return <Post key={post.id} post={post} />;
         })}
       </ScrollView>
     </Div>

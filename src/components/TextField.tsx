@@ -24,9 +24,11 @@ export const TextField = (props) => {
   } = props;
   return (
     <Div w="100%" mt={mt}>
-      <Span notice styleComp={labelStyle}>
-        {label}
-      </Span>
+      {label ? (
+        <Span notice styleComp={labelStyle}>
+          {label}
+        </Span>
+      ) : null}
       <Row itemsCenter mt4>
         {leftComp && <Col auto>{leftComp}</Col>}
         <Col>

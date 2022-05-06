@@ -25,6 +25,8 @@ import {NativeBaseProvider} from 'native-base';
 import {ICONS} from 'src/modules/icons';
 import {Img} from './common/Img';
 import {getNftProfileImage} from 'src/modules/nftUtils';
+import {Home, Search} from 'react-native-feather';
+import Colors from 'src/constants/Colors';
 
 const RootStack = createStackNavigator();
 
@@ -55,7 +57,12 @@ const MainBottomTabs = () => {
         component={HomeScreen}
         options={{
           tabBarLabel: 'Home',
-          tabBarIcon: props => <Img h18 w18 source={ICONS.homeIcon}></Img>,
+          tabBarIcon: ({focused}) => (
+            <Home
+              width={20}
+              height={20}
+              color={focused ? 'black' : Colors.gray[400]}></Home>
+          ),
         }}
       />
       <Tab.Screen
@@ -63,7 +70,12 @@ const MainBottomTabs = () => {
         component={MetaSunganScreen}
         options={{
           tabBarLabel: 'Explore',
-          tabBarIcon: props => <Img h18 w18 source={ICONS.capsuleIcon}></Img>,
+          tabBarIcon: ({focused}) =>
+            focused ? (
+              <Img h18 w18 source={ICONS.capsuleIconBlack}></Img>
+            ) : (
+              <Img h18 w18 source={ICONS.capsuleIconGray}></Img>
+            ),
         }}
       />
       <Tab.Screen
@@ -71,7 +83,12 @@ const MainBottomTabs = () => {
         component={ChatScreen}
         options={{
           tabBarLabel: 'Capsule',
-          tabBarIcon: props => <Img h18 w18 source={ICONS.searchIcon}></Img>,
+          tabBarIcon: ({focused}) => (
+            <Search
+              width={20}
+              height={20}
+              color={focused ? 'black' : Colors.gray[400]}></Search>
+          ),
         }}
       />
       <Tab.Screen
@@ -79,7 +96,12 @@ const MainBottomTabs = () => {
         component={ProfileScreen}
         options={{
           tabBarLabel: NAV_NAMES.Profile,
-          tabBarIcon: props => <Img {...profileTabIconProps}></Img>,
+          tabBarIcon: ({focused}) => (
+            <Img
+              {...profileTabIconProps}
+              border1={focused}
+              borderBlack={focused}></Img>
+          ),
         }}
       />
     </Tab.Navigator>
