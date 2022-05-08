@@ -50,6 +50,27 @@ export default function Post({post, full = false}) {
     apiGETWithToken(apis.post.postId._(post.id));
     navigation.navigate(NAV_NAMES.Post, {postId: post.id});
   }, []);
+  const goToProfile = useCallback(() => {
+    if (post.nft.token_id) {
+      apiGETWithToken(
+        apis.nft.contractAddressAndTokenId(
+          post.nft.contract_address,
+          post.nft.token_id,
+        ),
+      );
+      navigation.navigate(NAV_NAMES.OtherProfile, {
+        contractAddress: post.nft.contract_address,
+        tokenId: post.nft.token_id,
+      });
+    } else {
+      apiGETWithToken(
+        apis.nft_collection.contractAddress.profile(post.nft.contract_address),
+      );
+      navigation.navigate(NAV_NAMES.NftCollection, {
+        contractAddress: post.nft.contract_address,
+      });
+    }
+  }, []);
   const defaultReplyTo = {
     object: post,
     type: ReplyToType.Post,
@@ -108,11 +129,11 @@ export default function Post({post, full = false}) {
             <ChevronLeft width={20} height={20} color="black" strokeWidth={3} />
           </Col>
         ) : null}
-        <Col auto mr10>
-          <Img w40 h40 rounded10 uri={getNftProfileImage(post.nft, 100, 100)} />
+        <Col auto mr10 onPress={goToProfile}>
+          <Img w35 h35 rounded100 uri={getNftProfileImage(post.nft, 50, 50)} />
         </Col>
         <Col auto>
-          <Span fontSize={15} medium>
+          <Span fontSize={15} medium onPress={goToProfile}>
             {getNftName(post.nft)}
           </Span>
           <Span fontSize={12} mt2 gray600>
@@ -155,7 +176,9 @@ export default function Post({post, full = false}) {
             </Col>
           ) : null}
           <Col auto mr10 onPress={goToPost}>
-            <Span fontSize={12}>{cachedComments.length} Replies</Span>
+            <Span fontSize={12}>
+              {full ? cachedComments.length : post.comments_count} Replies
+            </Span>
           </Col>
           <Col />
         </Row>

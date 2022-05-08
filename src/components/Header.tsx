@@ -7,7 +7,6 @@ import {
   ChevronLeft,
   PlusSquare,
 } from 'react-native-feather';
-import {shallowEqual, useSelector} from 'react-redux';
 import {
   chevronDownSettings,
   GO_COLOR,
@@ -16,7 +15,6 @@ import {
   iconSettings,
 } from 'src/modules/constants';
 import {NAV_NAMES} from 'src/modules/navNames';
-import {RootState} from 'src/redux/rootReducer';
 import {Col} from './common/Col';
 import {Row} from './common/Row';
 import {Span} from './common/Span';

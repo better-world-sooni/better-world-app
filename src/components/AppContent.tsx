@@ -11,14 +11,11 @@ import SplashScreen from 'src/screens/Common/SplashScreen';
 import SignInScreen from 'src/screens/Auth/SignInScreen';
 import PostScreen from 'src/screens/PostScreen';
 import MetaSunganScreen from 'src/screens/Home/MetaverseScreen';
-import ReportScreen from 'src/screens/ReportScreen';
 import {shallowEqual, useSelector} from 'react-redux';
 import {RootState} from 'src/redux/rootReducer';
 import ChatScreen from 'src/screens/Home/ChatScreen';
 import {Div} from './common/Div';
 import ChatRoomScreen from 'src/screens/ChatRoomScreen';
-import PostDetailScreen from 'src/screens/PostDetailScreen';
-import NotificationScreen from 'src/screens/NotificationScreen';
 import OnboardingScreen from 'src/screens/Auth/OnboardingScreen';
 import {BottomSheetModalProvider} from '@gorhom/bottom-sheet';
 import {NativeBaseProvider} from 'native-base';
@@ -27,6 +24,9 @@ import {Img} from './common/Img';
 import {getNftProfileImage} from 'src/modules/nftUtils';
 import {Home, Search} from 'react-native-feather';
 import Colors from 'src/constants/Colors';
+import MetaverseScreen from 'src/screens/Home/MetaverseScreen';
+import OtherProfileScreen from 'src/screens/OtherProfileScreen';
+import NftCollectionScreen from 'src/screens/NftCollectionScreen';
 
 const RootStack = createStackNavigator();
 
@@ -67,7 +67,7 @@ const MainBottomTabs = () => {
       />
       <Tab.Screen
         name={NAV_NAMES.Metaverse}
-        component={MetaSunganScreen}
+        component={MetaverseScreen}
         options={{
           tabBarLabel: 'Explore',
           tabBarIcon: ({focused}) =>
@@ -150,16 +150,27 @@ export const AppContent = () => {
       }),
     },
     {
+      name: NAV_NAMES.OtherProfile,
+      component: OtherProfileScreen,
+      options: props => ({
+        header: topHeader({...props, headerShown: false}),
+        cardStyle: {backgroundColor: 'transparent'},
+      }),
+    },
+    {
+      name: NAV_NAMES.NftCollection,
+      component: NftCollectionScreen,
+      options: props => ({
+        header: topHeader({...props, headerShown: false}),
+        cardStyle: {backgroundColor: 'transparent'},
+      }),
+    },
+    {
       name: NAV_NAMES.Post,
       component: PostScreen,
       options: props => ({
         header: topHeader({...props, title: '새 게시물'}),
       }),
-    },
-    {
-      name: NAV_NAMES.Report,
-      component: ReportScreen,
-      options: props => ({}),
     },
     {
       name: NAV_NAMES.Metaverse,
@@ -178,20 +189,6 @@ export const AppContent = () => {
     {
       name: NAV_NAMES.ChatRoom,
       component: ChatRoomScreen,
-      options: props => ({
-        cardStyle: {backgroundColor: 'black', presentation: 'screen'},
-      }),
-    },
-    {
-      name: NAV_NAMES.PostDetail,
-      component: PostDetailScreen,
-      options: props => ({
-        cardStyle: {backgroundColor: 'black', presentation: 'screen'},
-      }),
-    },
-    {
-      name: NAV_NAMES.Notification,
-      component: NotificationScreen,
       options: props => ({
         cardStyle: {backgroundColor: 'black', presentation: 'screen'},
       }),

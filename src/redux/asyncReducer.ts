@@ -302,7 +302,7 @@ const asyncSlice = createSlice({
       state[key] = {
         args: args,
         data: null,
-        // ...(prevData && {data: prevData}),
+        ...(prevData && {data: prevData}),
         isLoading: true,
         startedAt: new Date().toString(),
         finishedAt: null,

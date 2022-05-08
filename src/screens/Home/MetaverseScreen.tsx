@@ -19,7 +19,6 @@ const MetaverseScreen = props => {
 
   return (
     <Div flex backgroundColor={'white'}>
-      <Div h={HAS_NOTCH ? 44 : 20} />
       <CustomHeaderWebView
         uri={homeUrl}
         sharedCookiesEnabled={true}

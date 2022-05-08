@@ -21,7 +21,7 @@ export default function Comment({
       {...comment}
       nftId={comment.nft.id}
       nftName={getNftName(comment.nft)}
-      nftImageUri={getNftProfileImage(comment.nft)}
+      nftImageUri={getNftProfileImage(comment.nft, 50, 50)}
       nested={nested}
       onPressReplyTo={onPressReplyTo}
     />
@@ -50,7 +50,6 @@ function CommentContent({
   );
   const cachedComments = comments || [];
   const profileImageSize = nested ? 22 : 30;
-  const roundedSize = nested ? 8 : 10;
   const heartSize = 15;
   const heartProps = liked
     ? {
@@ -69,7 +68,7 @@ function CommentContent({
       <Row py8 px15>
         <Col auto mr10>
           <Img
-            rounded={roundedSize}
+            rounded={100}
             h={profileImageSize}
             w={profileImageSize}
             uri={nftImageUri}

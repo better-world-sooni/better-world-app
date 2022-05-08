@@ -7,6 +7,8 @@ export const NAV_NAMES = {
     Mood: 'Mood',
     Villain: 'Villain',
     Profile: 'Profile',
+    OtherProfile: 'OtherProfile',
+    NftCollection: 'NftCollection',
     Splash: "Splash",
     Post: "Post",
     Report: "Report",

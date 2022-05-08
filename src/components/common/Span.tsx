@@ -38,7 +38,7 @@ export const Span = props => {
       {...mergedProps}
       style={[
         {
-          fontFamily: 'UniSans',
+          // fontFamily: 'UniSans',
           fontSize: 13,
           flexDirection: 'row',
           flexWrap: 'wrap',

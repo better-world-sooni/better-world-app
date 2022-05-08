@@ -11,7 +11,7 @@ import {RootState} from 'src/redux/rootReducer';
 import {Header} from 'src/components/Header';
 import {useFocusEffect, useNavigation} from '@react-navigation/core';
 import {NAV_NAMES} from 'src/modules/navNames';
-import {getPromiseFn, useApiSelector, useReloadGET} from 'src/redux/asyncReducer';
+import {getPromiseFn, useApiSelector} from 'src/redux/asyncReducer';
 import apis from 'src/modules/apis';
 import SkeletonPlaceholder from 'react-native-skeleton-placeholder';
 import ChatRoomItem from 'src/components/ChatRoomItem';

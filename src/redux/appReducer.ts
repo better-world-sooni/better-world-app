@@ -16,6 +16,7 @@ const usePreloadData = () => {
   const apiGET = useApiGET();
   return async (jwt) => {
     await apiGET(apis.profile._(), jwt)
+    await apiGET(apis.nft._(), jwt)
     await apiGET(apis.feed._(), jwt)
     await apiGET(apis.chat.chatRoom.all(), jwt)
   }
