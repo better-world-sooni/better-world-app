@@ -13,7 +13,6 @@ import PostScreen from 'src/screens/PostScreen';
 import MetaSunganScreen from 'src/screens/Home/MetaverseScreen';
 import {shallowEqual, useSelector} from 'react-redux';
 import {RootState} from 'src/redux/rootReducer';
-import ChatScreen from 'src/screens/Home/ChatScreen';
 import {Div} from './common/Div';
 import ChatRoomScreen from 'src/screens/ChatRoomScreen';
 import OnboardingScreen from 'src/screens/Auth/OnboardingScreen';
@@ -80,7 +79,7 @@ const MainBottomTabs = () => {
       />
       <Tab.Screen
         name={NAV_NAMES.Chat}
-        component={ChatScreen}
+        component={ProfileScreen}
         options={{
           tabBarLabel: 'Capsule',
           tabBarIcon: ({focused}) => (
@@ -175,13 +174,6 @@ export const AppContent = () => {
     {
       name: NAV_NAMES.Metaverse,
       component: MetaSunganScreen,
-      options: props => ({
-        cardStyle: {backgroundColor: 'black', presentation: 'screen'},
-      }),
-    },
-    {
-      name: NAV_NAMES.Chat,
-      component: ChatScreen,
       options: props => ({
         cardStyle: {backgroundColor: 'black', presentation: 'screen'},
       }),

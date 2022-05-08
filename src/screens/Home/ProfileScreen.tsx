@@ -17,10 +17,10 @@ import NftProfile from 'src/components/common/NftProfile';
 const ProfileScreen = ({route: {params}}) => {
   const {data: profileData, isLoading: loading} = useApiSelector(apis.nft._);
   const reloadGetWithToken = useReloadGETWithToken();
-  const onRefresh = () => {
+  const handleRefresh = () => {
     reloadGetWithToken(apis.nft._());
   };
-  const content = profileData.nft;
+  const nft = profileData.nft;
   return (
     <Div flex bgPrimary>
       <StatusBar animated={true} barStyle={'dark-content'} />
@@ -43,76 +43,10 @@ const ProfileScreen = ({route: {params}}) => {
         </Col>
       </Row>
       <Div></Div>
-      {content && (
-        <ScrollView
-          bgWhite
-          showsVerticalScrollIndicator={false}
-          refreshControl={
-            <RefreshControl refreshing={loading} onRefresh={onRefresh} />
-          }>
-          <NftProfile nft={content} />
-        </ScrollView>
+      {nft && (
+        <NftProfile nft={nft} refreshing={loading} onRefresh={handleRefresh} />
       )}
     </Div>
   );
 };
-
-function ProfileDataTabs({posts}) {
-  enum DataTabType {
-    Feed,
-    Capsule,
-    Story,
-  }
-  const [currentTab, setCurrentTab] = useState(DataTabType.Feed);
-  const tabProps = tab => {
-    if (tab === currentTab)
-      return {
-        itemsCenter: true,
-        py10: true,
-        borderBottom1: true,
-        borderPrimary: true,
-        onPress: () => setCurrentTab(tab),
-      };
-    return {
-      itemsCenter: true,
-      py10: true,
-      borderBottom1: true,
-      borderGray200: true,
-      onPress: () => setCurrentTab(tab),
-    };
-  };
-  return (
-    <Div>
-      <Row bgWhite>
-        <Col {...tabProps(DataTabType.Feed)}>
-          <Span medium>피드</Span>
-        </Col>
-        <Col {...tabProps(DataTabType.Capsule)}>
-          <Span medium>캡술</Span>
-        </Col>
-        <Col {...tabProps(DataTabType.Story)}>
-          <Span medium>스토리</Span>
-        </Col>
-      </Row>
-      {
-        {
-          [DataTabType.Feed]: <Feed feed={posts} />,
-          [DataTabType.Capsule]: posts.map(post => {
-            return <Post key={post.id} post={post} />;
-          }),
-          [DataTabType.Story]: posts.map(post => {
-            return <Post key={post.id} post={post} />;
-          }),
-        }[currentTab]
-      }
-    </Div>
-  );
-}
-
-function Feed({feed}) {
-  return feed.map(post => {
-    return <Post key={post.id} post={post} />;
-  });
-}
-
 export default ProfileScreen;

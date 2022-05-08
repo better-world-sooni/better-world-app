@@ -8,7 +8,7 @@ import {ChevronLeft, PlusSquare} from 'react-native-feather';
 import {Span} from 'src/components/common/Span';
 import apis from 'src/modules/apis';
 import {useApiSelector, useReloadGETWithToken} from 'src/redux/asyncReducer';
-import {ScrollView} from 'src/modules/viewComponents';
+import {FlatList, ScrollView} from 'src/modules/viewComponents';
 import NftProfile from 'src/components/common/NftProfile';
 import NftCollectionProfile from 'src/components/common/NftCollectionProfile';
 
@@ -52,14 +52,14 @@ const NftCollectionScreen = ({
       </Row>
       <Div></Div>
       {nftCollection && (
-        <ScrollView
+        <FlatList
           bgWhite
           showsVerticalScrollIndicator={false}
+          data={[nftCollection]}
+          renderItem={({item}) => <NftCollectionProfile nftCollection={item} />}
           refreshControl={
             <RefreshControl refreshing={loading} onRefresh={onRefresh} />
-          }>
-          <NftCollectionProfile nftCollection={nftCollection} />
-        </ScrollView>
+          }></FlatList>
       )}
     </Div>
   );

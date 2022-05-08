@@ -1,13 +1,12 @@
 import {Edit} from 'react-native-feather';
 import React from 'react';
-import {getNftName, getNftProfileImage} from 'src/modules/nftUtils';
 import {Col} from './Col';
 import {Div} from './Div';
-import Feed from './Feed';
 import {Img} from './Img';
 import {Row} from './Row';
 import {Span} from './Span';
 import {resizeImageUri} from 'src/modules/uriUtils';
+import ProfileDataTabs from '../ProfileDataTabs';
 
 export default function NftCollectionProfile({nftCollection}) {
   return (
@@ -53,13 +52,11 @@ export default function NftCollectionProfile({nftCollection}) {
           </Col>
         </Row>
       </Div>
-      <Div py10 px15 bgWhite borderBottom={0.5} borderGray200>
-        <Span fontSize={18} bold>
-          스토리
-        </Span>
-        <Span py5>{nftCollection.about}</Span>
-      </Div>
-      <Feed feed={nftCollection.posts} />
+      <ProfileDataTabs
+        posts={nftCollection.posts}
+        about={nftCollection.about}
+        members={nftCollection.nfts}
+      />
     </>
   );
 }

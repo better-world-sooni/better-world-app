@@ -20,12 +20,12 @@ const OtherProfileScreen = ({
     apis.nft.contractAddressAndTokenId(contractAddress, tokenId),
   );
   const reloadGetWithToken = useReloadGETWithToken();
-  const onRefresh = () => {
+  const handleRefresh = () => {
     reloadGetWithToken(
       apis.nft.contractAddressAndTokenId(contractAddress, tokenId),
     );
   };
-  const content = profileData?.nft;
+  const nft = profileData?.nft;
   return (
     <Div flex bgPrimary>
       <StatusBar animated={true} barStyle={'dark-content'} />
@@ -51,15 +51,8 @@ const OtherProfileScreen = ({
         </Col>
       </Row>
       <Div></Div>
-      {content && (
-        <ScrollView
-          bgWhite
-          showsVerticalScrollIndicator={false}
-          refreshControl={
-            <RefreshControl refreshing={loading} onRefresh={onRefresh} />
-          }>
-          <NftProfile nft={content} />
-        </ScrollView>
+      {nft && (
+        <NftProfile nft={nft} refreshing={loading} onRefresh={handleRefresh} />
       )}
     </Div>
   );
