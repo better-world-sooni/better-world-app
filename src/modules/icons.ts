@@ -5,6 +5,7 @@ export const ICONS = {
   capsuleIcon: require('assets/icons/capsuleIcon.png'),
   capsuleIconBlack: require('assets/icons/capsuleIconBlack.png'),
   capsuleIconGray: require('assets/icons/capsuleIconGray.png'),
+  capsuleIconWhite: require('assets/icons/capsuleIconWhite.png'),
   capsuleIconPrimary: require('assets/icons/capsuleIconPrimary.png'),
   profileIcon: require('assets/icons/profileIcon.png'),
   searchIcon: require('assets/icons/searchIcon.png'),

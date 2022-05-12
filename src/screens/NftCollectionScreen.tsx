@@ -1,19 +1,21 @@
-import React from 'react';
+import React, {useRef} from 'react';
 import {Div} from 'src/components/common/Div';
 import {HAS_NOTCH} from 'src/modules/constants';
 import {RefreshControl, StatusBar} from 'react-native';
 import {Row} from 'src/components/common/Row';
 import {Col} from 'src/components/common/Col';
 import {ChevronLeft, PlusSquare} from 'react-native-feather';
-import {Span} from 'src/components/common/Span';
 import apis from 'src/modules/apis';
 import {useApiSelector, useReloadGETWithToken} from 'src/redux/asyncReducer';
 import {FlatList, ScrollView} from 'src/modules/viewComponents';
-import NftProfile from 'src/components/common/NftProfile';
 import NftCollectionProfile from 'src/components/common/NftCollectionProfile';
 import {Img} from 'src/components/common/Img';
 import {DEVICE_WIDTH} from 'src/modules/styles';
 import {useNavigation} from '@react-navigation/native';
+import {BottomSheetModal} from '@gorhom/bottom-sheet';
+import {useIsAdmin} from 'src/modules/nftUtils';
+import BottomPopup from 'src/components/common/BottomPopup';
+import NftCollectionProfileEditBottomSheetScrollView from 'src/components/common/NftCollectionProfileEditBottomSheetScrollView';
 
 const NftCollectionScreen = ({
   route: {
@@ -24,6 +26,7 @@ const NftCollectionScreen = ({
   const {data: profileData, isLoading: loading} = useApiSelector(
     apis.nft_collection.contractAddress.profile(contractAddress),
   );
+  const bottomPopupRef = useRef<BottomSheetModal>(null);
   const reloadGetWithToken = useReloadGETWithToken();
   const onRefresh = () => {
     reloadGetWithToken(
@@ -31,18 +34,25 @@ const NftCollectionScreen = ({
     );
   };
   const nftCollection = profileData?.nft_collection;
+  const isAdmin = useIsAdmin(nftCollection);
+  const editProfile = () => {
+    bottomPopupRef?.current?.expand();
+  };
   return (
     <Div flex bgWhite relative>
       {nftCollection && (
         <>
-          <Img
-            zIndex={-10}
-            uri={nftCollection.background_image_uri}
-            absolute
-            bgPrimary={!nftCollection.background_image_uri}
-            top0
-            w={DEVICE_WIDTH}
-            h200></Img>
+          {nftCollection.background_image_uri ? (
+            <Img
+              zIndex={-10}
+              uri={nftCollection.background_image_uri}
+              absolute
+              top0
+              w={DEVICE_WIDTH}
+              h200></Img>
+          ) : (
+            <Div absolute top0 h200 bgGray400 w={DEVICE_WIDTH}></Div>
+          )}
           <FlatList
             showsVerticalScrollIndicator={false}
             data={[nftCollection]}
@@ -73,12 +83,23 @@ const NftCollectionScreen = ({
               </Div>
             }
             renderItem={({item}) => (
-              <NftCollectionProfile nftCollection={item} />
+              <NftCollectionProfile
+                nftCollection={item}
+                isAdmin={isAdmin}
+                onPressEditProfile={editProfile}
+              />
             )}
             refreshControl={
               <RefreshControl refreshing={loading} onRefresh={onRefresh} />
             }></FlatList>
         </>
+      )}
+      {isAdmin && (
+        <BottomPopup ref={bottomPopupRef} snapPoints={['90%']} index={-1}>
+          <NftCollectionProfileEditBottomSheetScrollView
+            nftCollection={nftCollection}
+          />
+        </BottomPopup>
       )}
     </Div>
   );

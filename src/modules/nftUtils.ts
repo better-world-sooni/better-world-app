@@ -12,6 +12,13 @@ export function getNftProfileImage(nft, width=null, height= null){
     return nft.nft_metadatum.image_uri
 }
 
+export function getNftCollectionProfileImage(nftCollection, width=null, height= null){
+    if(width && height){
+        return resizeImageUri(nftCollection.image_uri, width, height)
+    }
+    return nftCollection.image_uri
+}
+
 export function getNftName(nft){
     return nft.name || nft.nft_metadatum.name
 }
@@ -41,4 +48,19 @@ export function useIsCurrentNft(nft) {
     );
     const isCurrentNft = currentNft && nft ? currentNft.contract_address == nft.contract_address && currentNft.token_id == nft.token_id : false
     return isCurrentNft
+}
+
+export function useIsAdmin(nftCollection) {
+    const {currentNft} = useSelector(
+        (root: RootState) => root.app.session,
+        shallowEqual,
+    );
+    const isAdmin = currentNft && nftCollection && currentNft.contract_address == nftCollection.contract_address && currentNft.privilege !== NftPrivilege.NONE
+    return isAdmin
+}
+
+export enum NftPrivilege {
+    ROOT = null,
+    NONE = 1,
+    ADDER = 2
 }

@@ -21,13 +21,14 @@ export default function useName(nameOwner, nameOwnerType) {
         if (!nameError) {
             setNameLoading(true)
 			try {
-				const key = nameOwner == NameOwnerType.NftCollection ? apis.nft_collection.contractAddress.profile(nameOwner.contract_adress) : apis.nft._();
+				const key = nameOwnerType == NameOwnerType.NftCollection ? apis.nft_collection.contractAddress.profile(nameOwner.contract_address) : apis.nft._();
+                const url = nameOwnerType == NameOwnerType.NftCollection ? apis.nft_collection.contractAddress._(nameOwner.contract_address).url : apis.nft._().url;
                 const body = {
 					property: "name",
 					value: name,
 				}
 				const {data} = await putPromiseFnWithToken({
-                    url: key.url,
+                    url,
                     body
                 });
 				if (data?.success) {

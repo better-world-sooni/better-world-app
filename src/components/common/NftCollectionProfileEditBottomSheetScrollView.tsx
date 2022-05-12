@@ -3,7 +3,7 @@ import React from 'react';
 import {ActivityIndicator} from 'react-native';
 import useName, {NameOwnerType} from 'src/hooks/useName';
 import useStory, {StoryOwnerType} from 'src/hooks/useStory';
-import {getNftProfileImage} from 'src/modules/nftUtils';
+import {getNftCollectionProfileImage} from 'src/modules/nftUtils';
 import {DEVICE_WIDTH} from 'src/modules/styles';
 import {KeyboardAvoidingView, TextInput} from 'src/modules/viewComponents';
 import {Col} from './Col';
@@ -15,7 +15,9 @@ import {Upload} from 'react-native-feather';
 import useUploadImage from 'src/hooks/useUploadImage';
 import apis from 'src/modules/apis';
 
-export default function NftProfileEditBottomSheetScrollView({nft}) {
+export default function NftCollectionProfileEditBottomSheetScrollView({
+  nftCollection,
+}) {
   const {
     name,
     nameHasChanged,
@@ -23,7 +25,7 @@ export default function NftProfileEditBottomSheetScrollView({nft}) {
     nameError,
     handleChangeName,
     handleSaveName,
-  } = useName(nft, NameOwnerType.Nft);
+  } = useName(nftCollection, NameOwnerType.NftCollection);
   const {
     story,
     storyHasChanged,
@@ -31,7 +33,7 @@ export default function NftProfileEditBottomSheetScrollView({nft}) {
     storyError,
     handleChangeStory,
     handleSaveStory,
-  } = useStory(nft, StoryOwnerType.Nft);
+  } = useStory(nftCollection, StoryOwnerType.NftCollection);
   const {
     image,
     imageHasChanged,
@@ -40,11 +42,31 @@ export default function NftProfileEditBottomSheetScrollView({nft}) {
     handleRemoveImage,
     handleSaveImage,
   } = useUploadImage({
-    uri: nft.background_image_uri,
-    attachedRecord: 'nft',
-    url: apis.nft._().url,
+    uri: nftCollection.background_image_uri,
+    attachedRecord: 'nft_collection',
+    url: apis.nft_collection.contractAddress._(nftCollection.contract_address)
+      .url,
     property: 'background_image_uri',
-    successReloadKey: apis.nft._(),
+    successReloadKey: apis.nft_collection.contractAddress.profile(
+      nftCollection.contract_address,
+    ),
+  });
+  const {
+    image: profileImage,
+    imageHasChanged: profileImageHasChanged,
+    uploading: profileUploading,
+    handleAddImage: handleAddProfileImage,
+    handleRemoveImage: handleRemoveProfileImage,
+    handleSaveImage: hangeSaveProfileImage,
+  } = useUploadImage({
+    uri: nftCollection.image_uri,
+    attachedRecord: 'nft_collection',
+    url: apis.nft_collection.contractAddress._(nftCollection.contract_address)
+      .url,
+    property: 'image_uri',
+    successReloadKey: apis.nft_collection.contractAddress.profile(
+      nftCollection.contract_address,
+    ),
   });
   return (
     <BottomSheetScrollView>
@@ -69,16 +91,39 @@ export default function NftProfileEditBottomSheetScrollView({nft}) {
           )}
         </Div>
         <Row zIndex={100} px15 mt={-50} relative mb20 itemsEnd>
-          <Div h30 absolute w={DEVICE_WIDTH} bgWhite bottom0></Div>
+          <Div h40 absolute w={DEVICE_WIDTH} bgWhite bottom0></Div>
           <Col auto mr10 relative>
-            <Img
+            <Div
               rounded100
               border3
               borderWhite
               bgGray200
-              h80
-              w80
-              uri={getNftProfileImage(nft, 200, 200)}></Img>
+              h90
+              w90
+              overflowHidden
+              onPress={handleAddProfileImage}>
+              {profileImage?.uri ? (
+                <Img
+                  uri={profileImage.uri}
+                  top0
+                  absolute
+                  w={DEVICE_WIDTH}
+                  h90
+                  rounded100
+                  w90></Img>
+              ) : (
+                <Div flex itemsCenter justifyCenter bgGray400 rounded100>
+                  <Div bgBlack p8 rounded100>
+                    <Upload
+                      strokeWidth={2}
+                      color={'white'}
+                      height={20}
+                      width={20}
+                    />
+                  </Div>
+                </Div>
+              )}
+            </Div>
           </Col>
           <Col>
             <Row>
@@ -115,7 +160,37 @@ export default function NftProfileEditBottomSheetScrollView({nft}) {
                 </Col>
               ) : null}
             </Row>
-            <Row h40></Row>
+            <Row h50 itemsEnd pb5>
+              {profileImage?.uri ? (
+                <Col auto mr10 onPress={handleRemoveProfileImage} pb1>
+                  <Span fontSize={16} danger bold>
+                    제거
+                  </Span>
+                </Col>
+              ) : null}
+              {profileImage?.uri ||
+              profileImageHasChanged ||
+              profileUploading ? (
+                <Col
+                  auto
+                  onPress={
+                    profileImageHasChanged
+                      ? hangeSaveProfileImage
+                      : handleAddProfileImage
+                  }>
+                  <Span fontSize={16} info bold>
+                    {profileUploading ? (
+                      <ActivityIndicator></ActivityIndicator>
+                    ) : profileImageHasChanged ? (
+                      '저장'
+                    ) : (
+                      '변경'
+                    )}
+                  </Span>
+                </Col>
+              ) : null}
+              <Col></Col>
+            </Row>
           </Col>
         </Row>
         <Row px15 py15 itemsCenter borderTop={0.5} borderGray200>
@@ -143,7 +218,7 @@ export default function NftProfileEditBottomSheetScrollView({nft}) {
           </Div>
         ) : null}
         <Row px15 py15 borderTop={0.5} borderGray200>
-          <Col auto w50 m5 mt3>
+          <Col auto w50 mt3 m5>
             <Span fontSize={16} bold>
               스토리
             </Span>

@@ -26,13 +26,17 @@ const ProfileScreen = ({route: {params}}) => {
     <Div flex bgWhite relative>
       {nft && (
         <>
-          <Img
-            uri={nft.background_image_uri}
-            absolute
-            bgPrimary={!nft.background_image_uri}
-            top0
-            w={DEVICE_WIDTH}
-            h200></Img>
+          {nft.background_image_uri ? (
+            <Img
+              zIndex={-10}
+              uri={nft.background_image_uri}
+              absolute
+              top0
+              w={DEVICE_WIDTH}
+              h200></Img>
+          ) : (
+            <Div absolute top0 h200 bgGray400 w={DEVICE_WIDTH}></Div>
+          )}
           <NftProfile
             nft={nft}
             enableBack={false}

@@ -30,18 +30,18 @@ export default function useUploadImage({uri, attachedRecord, url, property, succ
     }
     const handleSaveImage = async () => {
         setUploading(true)
-        if(!image) {
-            const body = {
-                property,
-            }
-            const {data} = await putPromiseFnWithToken({url, body})
-            if(data.success){
-                reloadGetWithToken(successReloadKey)
-            }
-            setUploading(false)
-            return
-        }
         try{
+            if(!image) {
+                const body = {
+                    property,
+                }
+                const {data} = await putPromiseFnWithToken({url, body})
+                if(data.success){
+                    reloadGetWithToken(successReloadKey)
+                }
+                setUploading(false)
+                return
+            }
             const key = await uploadFile(image)
             const body = {
                 property,
@@ -57,12 +57,11 @@ export default function useUploadImage({uri, attachedRecord, url, property, succ
         
         setUploading(false)
     }
-    const imageHasChanged = image?.uri !== uri
-
     useEffect(() => {
         setImage({
             uri
         })
-    }, uri)
+    }, [uri])
+    const imageHasChanged = image?.uri !== uri
     return { image, imageHasChanged, uploading, handleAddImage, handleRemoveImage, handleSaveImage }
 }

@@ -63,6 +63,7 @@ export default function NftProfile({
       .url,
   );
   const {goBack} = useNavigation();
+
   return (
     <>
       <FlatList
@@ -83,6 +84,11 @@ export default function NftProfile({
                   </Col>
                 )}
                 <Col ml10></Col>
+                <Col auto mr15 bgBlack p8 rounded100 onPress={goToCapsule}>
+                  <Div>
+                    <Img w20 h20 source={ICONS.capsuleIconWhite}></Img>
+                  </Div>
+                </Col>
                 <Col auto mr15 bgBlack p8 rounded100>
                   <Div>
                     <PlusSquare

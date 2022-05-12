@@ -11,7 +11,7 @@ export enum StoryOwnerType {
     NftCollection
 }
 export default function useStory(storyOwner, storyOwnerType) {
-    const [story, storyHasChanged, handleChangeText] = useEdittableText(StoryOwnerType.Nft == storyOwnerType ? getNftStory(storyOwner) : storyOwner.story);
+    const [story, storyHasChanged, handleChangeText] = useEdittableText(StoryOwnerType.Nft == storyOwnerType ? getNftStory(storyOwner) : storyOwner.about);
     const [storyError, setStoryError] = useState('')
     const [storyLoading, setStoryLoading] = useState(false)
     const reloadGetWithToken = useReloadGETWithToken();
@@ -21,13 +21,14 @@ export default function useStory(storyOwner, storyOwnerType) {
         if (!storyError) {
             setStoryLoading(true)
 			try {
-				const key = storyOwner == StoryOwnerType.NftCollection ? apis.nft_collection.contractAddress._(storyOwner.contract_adress) : apis.nft._();
+				const key = storyOwnerType == StoryOwnerType.NftCollection ? apis.nft_collection.contractAddress.profile(storyOwner.contract_address) : apis.nft._();
+                const url = storyOwnerType == StoryOwnerType.NftCollection ? apis.nft_collection.contractAddress._(storyOwner.contract_address).url : apis.nft._().url;
                 const body = {
 					property: "story",
 					value: story,
 				}
 				const {data} = await putPromiseFnWithToken({
-                    url: key.url,
+                    url,
                     body
                 });
 				if (data?.success) {
