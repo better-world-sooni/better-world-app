@@ -27,13 +27,21 @@ const getImageStyles = props => {
 };
 
 export const Img = props => {
-  const {innerRef, uri, cache, source, a_source, isActive} = props;
+  const {
+    innerRef,
+    uri,
+    cache,
+    source,
+    a_source,
+    isActive,
+    enablePlaceholder = false,
+  } = props;
   const mergedProps = mergePropsWithStyleComp(props);
   const imageStyles = getImageStyles(mergedProps);
   const sheet = StyleSheet.create({
     style: StyleSheet.flatten(imageStyles),
   });
-  const [error, setError] = useState(false);
+  const [error, setError] = useState(enablePlaceholder);
   const s = uri
     ? {
         uri: uri,

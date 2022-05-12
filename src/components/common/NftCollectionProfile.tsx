@@ -7,28 +7,24 @@ import {Row} from './Row';
 import {Span} from './Span';
 import {resizeImageUri} from 'src/modules/uriUtils';
 import ProfileDataTabs from '../ProfileDataTabs';
+import {DEVICE_WIDTH} from 'src/modules/styles';
 
 export default function NftCollectionProfile({nftCollection}) {
   return (
     <>
-      <Div bgPrimary h100 mb={-70}></Div>
-      <Row zIndex={100} px15>
+      <Row zIndex={100} px15 mt={-70} relative>
+        <Div h80 absolute w={DEVICE_WIDTH} bgWhite bottom0></Div>
         <Col auto mr10 relative>
           <Img
             rounded100
             border3
             borderWhite
+            bgGray200
             h150
             w150
             uri={resizeImageUri(nftCollection.image_uri, 400, 400)}></Img>
         </Col>
         <Col justifyEnd>
-          <Row py20>
-            <Col />
-            <Col auto>
-              <Edit strokeWidth={2} color={'white'} height={22} width={22} />
-            </Col>
-          </Row>
           <Div>
             <Span fontSize={20} bold>
               {nftCollection.name}
@@ -45,8 +41,8 @@ export default function NftCollectionProfile({nftCollection}) {
       </Row>
       <Div bgWhite px15>
         <Row py10>
-          <Col itemsCenter rounded10 border1 borderPrimary py5>
-            <Span primary medium>
+          <Col itemsCenter rounded100 bgPrimary py10>
+            <Span white bold>
               팔로우
             </Span>
           </Col>

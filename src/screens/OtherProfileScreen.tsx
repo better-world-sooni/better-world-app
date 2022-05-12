@@ -10,6 +10,8 @@ import apis from 'src/modules/apis';
 import {useApiSelector, useReloadGETWithToken} from 'src/redux/asyncReducer';
 import {ScrollView} from 'src/modules/viewComponents';
 import NftProfile from 'src/components/common/NftProfile';
+import {Img} from 'src/components/common/Img';
+import {DEVICE_WIDTH} from 'src/modules/styles';
 
 const OtherProfileScreen = ({
   route: {
@@ -27,32 +29,22 @@ const OtherProfileScreen = ({
   };
   const nft = profileData?.nft;
   return (
-    <Div flex bgPrimary>
-      <StatusBar animated={true} barStyle={'dark-content'} />
-      <Div h={HAS_NOTCH ? 44 : 20} bgPrimary />
-      <Row itemsCenter py8>
-        <Col auto ml15>
-          <ChevronLeft width={20} height={20} color="white" strokeWidth={3} />
-        </Col>
-        <Col ml10>
-          <Span fontSize={24} bold white fontFamily={'UniSans'}>
-            BetterWorld
-          </Span>
-        </Col>
-        <Col auto mr15>
-          <Div>
-            <PlusSquare
-              strokeWidth={2}
-              color={'white'}
-              height={22}
-              width={22}
-            />
-          </Div>
-        </Col>
-      </Row>
-      <Div></Div>
+    <Div flex bgWhite>
       {nft && (
-        <NftProfile nft={nft} refreshing={loading} onRefresh={handleRefresh} />
+        <>
+          <Img
+            uri={nft.background_image_uri}
+            absolute
+            bgPrimary={!nft.background_image_uri}
+            top0
+            w={DEVICE_WIDTH}
+            h200></Img>
+          <NftProfile
+            nft={nft}
+            refreshing={loading}
+            onRefresh={handleRefresh}
+          />
+        </>
       )}
     </Div>
   );

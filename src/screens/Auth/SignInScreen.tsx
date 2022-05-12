@@ -97,7 +97,7 @@ const SignInScreen = ({navigation}) => {
         <Div rounded10 overflowHidden>
           <Row itemsCenter>
             <Col auto>
-              <Span fontSize={35} primary>
+              <Span fontSize={35} primary fontFamily={'UniSans'}>
                 Connect to{'\n'}
                 <Span bold fontSize={35}>
                   BetterWorld

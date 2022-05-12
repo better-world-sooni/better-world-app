@@ -1,21 +1,17 @@
-import {useNavigation} from '@react-navigation/core';
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useCallback, useState} from 'react';
+import {RefreshControl} from 'react-native';
 import {ChevronLeft, Heart, MoreHorizontal} from 'react-native-feather';
-import {shallowEqual, useSelector} from 'react-redux';
 import Colors from 'src/constants/Colors';
+import {
+  useGotoNftCollectionProfile,
+  useGotoNftProfile,
+  useGotoPost,
+} from 'src/hooks/useGoto';
 import useLike from 'src/hooks/useLike';
 import apis from 'src/modules/apis';
-import {smallBump} from 'src/modules/hapticFeedBackUtils';
-import {NAV_NAMES} from 'src/modules/navNames';
 import {getNftName, getNftProfileImage} from 'src/modules/nftUtils';
 import {createdAtText} from 'src/modules/timeUtils';
 import {ScrollView} from 'src/modules/viewComponents';
-import {
-  promiseFn,
-  useApiGETWithToken,
-  usePromiseFnWithToken,
-} from 'src/redux/asyncReducer';
-import {RootState} from 'src/redux/rootReducer';
 import {Col} from './Col';
 import Comment from './Comment';
 import {Div} from './Div';
@@ -27,15 +23,18 @@ import {Span} from './Span';
 import TruncatedMarkdown from './TruncatedMarkdown';
 import TruncatedText from './TruncatedText';
 
-export default function Post({post, full = false}) {
+export default function Post({
+  post,
+  full = false,
+  refreshing = false,
+  onRefresh = null,
+}) {
   const [liked, likesCount, handlePressLike] = useLike(
     post.is_liked,
     post.likes_count,
     apis.like.post(post.id).url,
   );
   const [cachedComments, setCachedComments] = useState(post.comments || []);
-  const navigation = useNavigation();
-  const apiGETWithToken = useApiGETWithToken();
   const heartProps = liked
     ? {
         fill: Colors.danger.DEFAULT,
@@ -45,30 +44,19 @@ export default function Post({post, full = false}) {
         strokeWidth: 1.5,
       }
     : {width: 20, height: 20, color: 'black', strokeWidth: 1.5};
-  const goToPost = useCallback(() => {
-    if (full) return;
-    apiGETWithToken(apis.post.postId._(post.id));
-    navigation.navigate(NAV_NAMES.Post, {postId: post.id});
-  }, []);
+  const goToPost = useGotoPost({postId: post.id});
+  const gotoNftProfile = useGotoNftProfile({
+    contractAddress: post.nft.contract_address,
+    tokenId: post.nft.token_id,
+  });
+  const gotoNftCollectionProfile = useGotoNftCollectionProfile({
+    contractAddress: post.nft.contract_address,
+  });
   const goToProfile = useCallback(() => {
     if (post.nft.token_id) {
-      apiGETWithToken(
-        apis.nft.contractAddressAndTokenId(
-          post.nft.contract_address,
-          post.nft.token_id,
-        ),
-      );
-      navigation.navigate(NAV_NAMES.OtherProfile, {
-        contractAddress: post.nft.contract_address,
-        tokenId: post.nft.token_id,
-      });
+      gotoNftProfile();
     } else {
-      apiGETWithToken(
-        apis.nft_collection.contractAddress.profile(post.nft.contract_address),
-      );
-      navigation.navigate(NAV_NAMES.NftCollection, {
-        contractAddress: post.nft.contract_address,
-      });
+      gotoNftCollectionProfile();
     }
   }, []);
   const defaultReplyTo = {
@@ -145,7 +133,11 @@ export default function Post({post, full = false}) {
           <MoreHorizontal color={'black'} width={20} height={20} />
         </Col>
       </Row>
-      <ScrollView {...scrollviewProps}>
+      <ScrollView
+        {...scrollviewProps}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }>
         {post.image_uris.length > 0 ? (
           <ImageSlideShow imageUris={post.image_uris} />
         ) : null}
@@ -171,11 +163,11 @@ export default function Post({post, full = false}) {
             <Span fontSize={12}>{likesCount} likes</Span>
           </Col>
           {cachedComments.length > 0 ? (
-            <Col auto onPress={goToPost}>
+            <Col auto onPress={!full && goToPost}>
               <CommentNftExamples comments={cachedComments} />
             </Col>
           ) : null}
-          <Col auto mr10 onPress={goToPost}>
+          <Col auto mr10 onPress={!full && goToPost}>
             <Span fontSize={12}>
               {full ? cachedComments.length : post.comments_count} Replies
             </Span>

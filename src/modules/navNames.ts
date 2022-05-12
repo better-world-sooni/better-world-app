@@ -13,7 +13,7 @@ export const NAV_NAMES = {
     Post: "Post",
     Report: "Report",
     Select: "Select",
-    Metaverse: "Metaverse",
+    Capsule: "Capsule",
     Chat: "Chat",
     ChatRoom: "ChatRoom",
     PostDetail: "PostDetail",

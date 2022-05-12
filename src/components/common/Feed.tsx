@@ -8,7 +8,4 @@ export default function Feed({feed}) {
       data={feed}
       renderItem={({item}) => <Post post={item} />}></FlatList>
   );
-  return feed.map(post => {
-    return <Post key={post.id} post={post} />;
-  });
 }

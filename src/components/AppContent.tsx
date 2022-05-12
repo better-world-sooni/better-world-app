@@ -1,7 +1,6 @@
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
-import TopHeader from 'src/components/TopHeader';
 import React from 'react';
 import BottomTabBar from 'src/components/BottomTabBar';
 import {NAV_NAMES} from 'src/modules/navNames';
@@ -10,7 +9,6 @@ import ProfileScreen from 'src/screens/Home/ProfileScreen';
 import SplashScreen from 'src/screens/Common/SplashScreen';
 import SignInScreen from 'src/screens/Auth/SignInScreen';
 import PostScreen from 'src/screens/PostScreen';
-import MetaSunganScreen from 'src/screens/Home/MetaverseScreen';
 import {shallowEqual, useSelector} from 'react-redux';
 import {RootState} from 'src/redux/rootReducer';
 import {Div} from './common/Div';
@@ -23,9 +21,9 @@ import {Img} from './common/Img';
 import {getNftProfileImage} from 'src/modules/nftUtils';
 import {Home, Search} from 'react-native-feather';
 import Colors from 'src/constants/Colors';
-import MetaverseScreen from 'src/screens/Home/MetaverseScreen';
 import OtherProfileScreen from 'src/screens/OtherProfileScreen';
 import NftCollectionScreen from 'src/screens/NftCollectionScreen';
+import CapsuleScreen from 'src/screens/Home/CapsuleScreen';
 
 const RootStack = createStackNavigator();
 
@@ -65,10 +63,10 @@ const MainBottomTabs = () => {
         }}
       />
       <Tab.Screen
-        name={NAV_NAMES.Metaverse}
-        component={MetaverseScreen}
+        name={NAV_NAMES.Capsule}
+        component={CapsuleScreen}
         options={{
-          tabBarLabel: 'Explore',
+          tabBarLabel: 'Capsule',
           tabBarIcon: ({focused}) =>
             focused ? (
               <Img h18 w18 source={ICONS.capsuleIconBlack}></Img>
@@ -107,10 +105,6 @@ const MainBottomTabs = () => {
   );
 };
 
-const topHeader = props => {
-  return () => <TopHeader {...props} />;
-};
-
 export const AppContent = () => {
   const {
     isLoggedIn,
@@ -121,62 +115,33 @@ export const AppContent = () => {
     {
       name: NAV_NAMES.Splash,
       component: SplashScreen,
-      options: props => ({
-        header: topHeader({...props, headerShown: false}),
-      }),
     },
     {
       name: NAV_NAMES.SignIn,
       component: SignInScreen,
-      options: props => ({
-        header: topHeader({...props, headerShown: false}),
-      }),
     } as any,
     {
       name: NAV_NAMES.Home,
       component: MainBottomTabs,
       options: props => ({
-        header: topHeader({...props, headerShown: false}),
         cardStyle: {backgroundColor: 'white', presentation: 'screen'},
       }),
     },
     {
       name: NAV_NAMES.Profile,
       component: ProfileScreen,
-      options: props => ({
-        header: topHeader({...props, headerShown: false}),
-        cardStyle: {backgroundColor: 'transparent'},
-      }),
     },
     {
       name: NAV_NAMES.OtherProfile,
       component: OtherProfileScreen,
-      options: props => ({
-        header: topHeader({...props, headerShown: false}),
-        cardStyle: {backgroundColor: 'transparent'},
-      }),
     },
     {
       name: NAV_NAMES.NftCollection,
       component: NftCollectionScreen,
-      options: props => ({
-        header: topHeader({...props, headerShown: false}),
-        cardStyle: {backgroundColor: 'transparent'},
-      }),
     },
     {
       name: NAV_NAMES.Post,
       component: PostScreen,
-      options: props => ({
-        header: topHeader({...props, title: '새 게시물'}),
-      }),
-    },
-    {
-      name: NAV_NAMES.Metaverse,
-      component: MetaSunganScreen,
-      options: props => ({
-        cardStyle: {backgroundColor: 'black', presentation: 'screen'},
-      }),
     },
     {
       name: NAV_NAMES.ChatRoom,

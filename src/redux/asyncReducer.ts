@@ -64,6 +64,19 @@ export const promiseFn = async args => {
   return {ok: res.ok, data: json, status: res.status};
 }
 
+export const promiseFnPure = async args => {
+  const {url, body, method, headers} = args;
+  const res = await fetch(url, {
+    method: method,
+    headers: {
+      'Content-Type': 'application/json',
+      ...headers,
+    },
+    body,
+  });
+  return res
+}
+
 const keyWithScope = (key, scope?) => {
   return scope ? `${scope}/${key}` : key;
 };

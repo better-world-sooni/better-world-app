@@ -173,6 +173,14 @@ const appSlice = createSlice({
       };
       state.isLoggedIn = true;
     },
+    updateCurrentNftName(state, action) {
+      const { name } = action.payload;
+      state.session.currentNft.name = name;
+    },
+    updateCurrentNftStory(state, action) {
+      const { story } = action.payload;
+      state.session.currentNft.story = story;
+    },
     changeAccount(state, action) {
       const { token, currentUser, currentNft } = action.payload;
       state.session = {

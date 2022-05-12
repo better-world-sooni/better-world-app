@@ -15,6 +15,9 @@ export function getNftProfileImage(nft, width=null, height= null){
 export function getNftName(nft){
     return nft.name || nft.nft_metadatum.name
 }
+export function getNftStory(nft){
+    return nft.story || nft.about
+}
 
 export function truncateAddress(fullStr, strLen = 12, separator = '...') {
     if (fullStr.length <= strLen) return fullStr;

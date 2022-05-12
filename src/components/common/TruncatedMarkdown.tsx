@@ -1,5 +1,6 @@
 import React from 'react';
 import Markdown from 'react-native-markdown-display';
+import DefaultMarkdown from './DefaultMarkdown';
 import {Div} from './Div';
 
 type TruncatedMarkdownProps = {
@@ -14,6 +15,7 @@ const TruncatedMarkdown: TruncatedMarkdownType = function ({
   maxLength,
   onPressTruncated = null,
 }) {
+  if (!text) return null;
   const lines = text.split('\n');
   let lineLength = 0;
   const resultLines = [];
@@ -43,18 +45,13 @@ const TruncatedMarkdown: TruncatedMarkdownType = function ({
     if (onPressTruncated) {
       return (
         <Div onPress={onPressTruncated} cursorPointer>
-          <Markdown children={result.concat('... 더보기')} />
+          <DefaultMarkdown children={result.concat('... 더보기')} />
         </Div>
       );
     }
-    return <Markdown children={result.concat('...')} />;
+    return <DefaultMarkdown children={result.concat('...')} />;
   }
-  return (
-    <Markdown
-      style={{body: {marginTop: -20, marginBottom: -5}}}
-      children={result}
-    />
-  );
+  return <DefaultMarkdown children={result} />;
 };
 
 export default TruncatedMarkdown;
