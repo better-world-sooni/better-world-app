@@ -69,16 +69,6 @@ const NftCollectionScreen = ({
                     />
                   </Col>
                   <Col ml10></Col>
-                  <Col auto mr15 bgBlack p8 rounded100>
-                    <Div>
-                      <PlusSquare
-                        strokeWidth={2}
-                        color={'white'}
-                        height={20}
-                        width={20}
-                      />
-                    </Div>
-                  </Col>
                 </Row>
               </Div>
             }

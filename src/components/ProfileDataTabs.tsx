@@ -4,6 +4,7 @@ import {Div} from './common/Div';
 import Feed from './common/Feed';
 import {Row} from './common/Row';
 import {Span} from './common/Span';
+import TruncatedMarkdown from './common/TruncatedMarkdown';
 import NftCollectionMembers from './NftCollectionMembers';
 
 export default function ProfileDataTabs({posts, about, members}) {
@@ -63,8 +64,8 @@ function About({about}) {
     );
   }
   return (
-    <Div>
-      <Span>{about}</Span>
+    <Div py25 mt10 px15 bgWhite>
+      <TruncatedMarkdown text={about} maxLength={5000} />
     </Div>
   );
 }

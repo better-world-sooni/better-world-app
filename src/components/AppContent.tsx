@@ -24,6 +24,7 @@ import Colors from 'src/constants/Colors';
 import OtherProfileScreen from 'src/screens/OtherProfileScreen';
 import NftCollectionScreen from 'src/screens/NftCollectionScreen';
 import CapsuleScreen from 'src/screens/Home/CapsuleScreen';
+import NewPostScreen from 'src/screens/NewPostScreen';
 
 const RootStack = createStackNavigator();
 
@@ -96,8 +97,8 @@ const MainBottomTabs = () => {
           tabBarIcon: ({focused}) => (
             <Img
               {...profileTabIconProps}
-              border1={focused}
-              borderBlack={focused}></Img>
+              border2={focused}
+              borderPrimary={focused}></Img>
           ),
         }}
       />
@@ -142,6 +143,10 @@ export const AppContent = () => {
     {
       name: NAV_NAMES.Post,
       component: PostScreen,
+    },
+    {
+      name: NAV_NAMES.NewPost,
+      component: NewPostScreen,
     },
     {
       name: NAV_NAMES.ChatRoom,

@@ -1,4 +1,10 @@
-import {ChevronLeft, Edit, PlusSquare} from 'react-native-feather';
+import {
+  ChevronLeft,
+  Edit,
+  Edit3,
+  PenTool,
+  PlusSquare,
+} from 'react-native-feather';
 import React, {useCallback, useRef} from 'react';
 import {
   getNftName,
@@ -29,6 +35,7 @@ import {DEVICE_WIDTH} from 'src/modules/styles';
 import BottomPopup from './BottomPopup';
 import {BottomSheetModal} from '@gorhom/bottom-sheet';
 import NftProfileEditBottomSheetScrollView from './NftProfileEditBottomSheetScrollView';
+import {useGotoNewPost} from 'src/hooks/useGoto';
 
 export default function NftProfile({
   nft,
@@ -63,6 +70,7 @@ export default function NftProfile({
       .url,
   );
   const {goBack} = useNavigation();
+  const goToNewPost = useGotoNewPost();
 
   return (
     <>
@@ -84,21 +92,6 @@ export default function NftProfile({
                   </Col>
                 )}
                 <Col ml10></Col>
-                <Col auto mr15 bgBlack p8 rounded100 onPress={goToCapsule}>
-                  <Div>
-                    <Img w20 h20 source={ICONS.capsuleIconWhite}></Img>
-                  </Div>
-                </Col>
-                <Col auto mr15 bgBlack p8 rounded100>
-                  <Div>
-                    <PlusSquare
-                      strokeWidth={2}
-                      color={'white'}
-                      height={20}
-                      width={20}
-                    />
-                  </Div>
-                </Col>
               </Row>
             </Div>
             <Row zIndex={100} px15 mt={-70} relative>
@@ -151,16 +144,10 @@ export default function NftProfile({
                       Message
                     </Span>
                   </Col>
-                  <Col
-                    onPress={goToCapsule}
-                    auto
-                    itemsCenter
-                    justifyCenter
-                    rounded100
-                    border1
-                    borderPrimary
-                    w36>
-                    <Img h18 w18 source={ICONS.capsuleIconPrimary}></Img>
+                  <Col auto bgPrimary p8 rounded100 onPress={goToCapsule}>
+                    <Div>
+                      <Img w20 h20 source={ICONS.capsuleIconWhite}></Img>
+                    </Div>
                   </Col>
                 </Row>
               </Div>
@@ -172,17 +159,31 @@ export default function NftProfile({
                     rounded100
                     bgPrimary
                     py10
-                    mx5
-                    onPress={editProfile}>
+                    onPress={goToNewPost}>
                     <Span white bold>
-                      프로파일 수정
+                      게시물 업로드
                     </Span>
+                  </Col>
+                  <Col auto bgPrimary p8 rounded100 onPress={goToCapsule} mx5>
+                    <Div>
+                      <Img w20 h20 source={ICONS.capsuleIconWhite}></Img>
+                    </Div>
+                  </Col>
+                  <Col auto bgPrimary p8 rounded100 onPress={editProfile}>
+                    <Div>
+                      <Edit3
+                        strokeWidth={2}
+                        color={'white'}
+                        height={20}
+                        width={20}
+                      />
+                    </Div>
                   </Col>
                 </Row>
               </Div>
             )}
             {nft.story ? (
-              <Div py25 px15 bgWhite borderBottom={0.5} borderGray200>
+              <Div py10 px15 bgWhite borderBottom={0.5} borderGray200>
                 <TruncatedMarkdown text={nft.story} maxLength={300} />
               </Div>
             ) : null}

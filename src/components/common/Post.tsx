@@ -1,3 +1,4 @@
+import {useNavigation} from '@react-navigation/native';
 import React, {useCallback, useState} from 'react';
 import {RefreshControl} from 'react-native';
 import {ChevronLeft, Heart, MoreHorizontal} from 'react-native-feather';
@@ -29,6 +30,7 @@ export default function Post({
   refreshing = false,
   onRefresh = null,
 }) {
+  const {goBack} = useNavigation();
   const [liked, likesCount, handlePressLike] = useLike(
     post.is_liked,
     post.likes_count,
@@ -113,7 +115,7 @@ export default function Post({
     <Div py5 borderBottom={full ? 0 : 0.5} borderGray200 bgWhite flex={full}>
       <Row pl={full ? 10 : 15} pr15 itemsCenter py8>
         {full ? (
-          <Col auto mr5>
+          <Col auto mr5 onPress={goBack}>
             <ChevronLeft width={20} height={20} color="black" strokeWidth={3} />
           </Col>
         ) : null}

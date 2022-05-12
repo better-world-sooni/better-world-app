@@ -11,6 +11,7 @@ export const NAV_NAMES = {
     NftCollection: 'NftCollection',
     Splash: "Splash",
     Post: "Post",
+    NewPost: "NewPost",
     Report: "Report",
     Select: "Select",
     Capsule: "Capsule",

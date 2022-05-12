@@ -21,6 +21,14 @@ export function useGotoNftProfile({contractAddress, tokenId}){
       return goToProfile
 }
 
+export function useGotoProfile(){
+  const navigation = useNavigation()
+  const goToProfile = () => {
+        navigation.navigate(NAV_NAMES.Profile);
+    }
+    return goToProfile
+}
+
 export function useGotoNftCollectionProfile({contractAddress}){
     const apiGETWithToken = useApiGETWithToken()
     const navigation = useNavigation()
@@ -43,6 +51,15 @@ export function useGotoPost({postId}){
   const goToPost = () => {
     apiGETWithToken(apis.post.postId._(postId));
     navigation.navigate(NAV_NAMES.Post, {postId});
+  }
+  return goToPost
+}
+
+export function useGotoNewPost(){
+  const apiGETWithToken = useApiGETWithToken()
+  const navigation = useNavigation()
+  const goToPost = () => {
+    navigation.navigate(NAV_NAMES.NewPost);
   }
   return goToPost
 }
