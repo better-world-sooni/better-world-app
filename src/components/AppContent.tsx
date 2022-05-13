@@ -97,8 +97,8 @@ const MainBottomTabs = () => {
           tabBarIcon: ({focused}) => (
             <Img
               {...profileTabIconProps}
-              border2={focused}
-              borderPrimary={focused}></Img>
+              border1={focused}
+              borderBlack={focused}></Img>
           ),
         }}
       />

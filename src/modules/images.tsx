@@ -11,6 +11,7 @@ export const IMAGES = {
   imageProfileNull: require('assets/images/imagePersonRectangle.png'),
   imageIosLoading: require('assets/images/imageIosLoading.gif'),
   placeholder: require('assets/images/placeholder.png'),
+  defaultCapsule: require('assets/images/defaultCapsule.png'),
   characters: {
     alien: require('assets/images/characters/alien.png'),
     blue: require('assets/images/characters/blue.png'),

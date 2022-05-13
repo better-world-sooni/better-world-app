@@ -32,8 +32,8 @@ export default function ProfileDataTabs({posts, about, members}) {
     };
   };
   return (
-    <Div>
-      <Row bgWhite>
+    <Div bgWhite>
+      <Row>
         <Col {...tabProps(DataTabType.Feed)}>
           <Span medium>피드</Span>
         </Col>
@@ -64,7 +64,7 @@ function About({about}) {
     );
   }
   return (
-    <Div py25 mt10 px15 bgWhite>
+    <Div mt10 px15 bgWhite>
       <TruncatedMarkdown text={about} maxLength={5000} />
     </Div>
   );

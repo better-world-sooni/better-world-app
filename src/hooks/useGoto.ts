@@ -55,11 +55,20 @@ export function useGotoPost({postId}){
   return goToPost
 }
 
-export function useGotoNewPost(){
-  const apiGETWithToken = useApiGETWithToken()
+export function useGotoNewPost({postOwnerType}){
   const navigation = useNavigation()
   const goToPost = () => {
-    navigation.navigate(NAV_NAMES.NewPost);
+    navigation.navigate(NAV_NAMES.NewPost, {postOwnerType});
   }
   return goToPost
+}
+
+export function useGotoCapsule({nft}) {
+  const navigation = useNavigation()
+  const goToCapsule = () => {
+    navigation.navigate(NAV_NAMES.Capsule, {
+      nft,
+    })
+  };
+  return goToCapsule
 }

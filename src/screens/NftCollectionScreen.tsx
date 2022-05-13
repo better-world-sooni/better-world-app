@@ -41,48 +41,13 @@ const NftCollectionScreen = ({
   return (
     <Div flex bgWhite relative>
       {nftCollection && (
-        <>
-          {nftCollection.background_image_uri ? (
-            <Img
-              zIndex={-10}
-              uri={nftCollection.background_image_uri}
-              absolute
-              top0
-              w={DEVICE_WIDTH}
-              h200></Img>
-          ) : (
-            <Div absolute top0 h200 bgGray400 w={DEVICE_WIDTH}></Div>
-          )}
-          <FlatList
-            showsVerticalScrollIndicator={false}
-            data={[nftCollection]}
-            ListHeaderComponent={
-              <Div w={'100%'} zIndex={100} h170>
-                <Div h={HAS_NOTCH ? 44 : 20} />
-                <Row itemsCenter py8 zIndex={100}>
-                  <Col auto ml15 bgBlack p5 rounded100 onPress={goBack}>
-                    <ChevronLeft
-                      width={20}
-                      height={20}
-                      color="white"
-                      strokeWidth={3}
-                    />
-                  </Col>
-                  <Col ml10></Col>
-                </Row>
-              </Div>
-            }
-            renderItem={({item}) => (
-              <NftCollectionProfile
-                nftCollection={item}
-                isAdmin={isAdmin}
-                onPressEditProfile={editProfile}
-              />
-            )}
-            refreshControl={
-              <RefreshControl refreshing={loading} onRefresh={onRefresh} />
-            }></FlatList>
-        </>
+        <NftCollectionProfile
+          nftCollection={nftCollection}
+          onRefresh={onRefresh}
+          refreshing={loading}
+          isAdmin={isAdmin}
+          onPressEditProfile={editProfile}
+        />
       )}
       {isAdmin && (
         <BottomPopup ref={bottomPopupRef} snapPoints={['90%']} index={-1}>

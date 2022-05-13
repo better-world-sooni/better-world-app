@@ -108,7 +108,7 @@ const SignInScreen = ({navigation}) => {
           </Row>
         </Div>
         <Div h45 my15>
-          <Row bgPrimary rounded10 flex itemsCenter>
+          <Row bgPrimary rounded100 flex itemsCenter>
             <Col />
             <Col auto pr10>
               <Div>
@@ -136,6 +136,7 @@ const SignInScreen = ({navigation}) => {
         </Div>
         <Row>
           <TextField
+            rounded100
             label={'Klaytn 주소'}
             placeholder={'0x...'}
             mt={0}
@@ -145,6 +146,7 @@ const SignInScreen = ({navigation}) => {
         </Row>
         <Row>
           <TextField
+            rounded100
             mt={10}
             label={
               <Span notice onPress={handlePressPassword}>
@@ -161,7 +163,7 @@ const SignInScreen = ({navigation}) => {
         <Div h45 my15>
           <Row
             bgGray200
-            rounded10
+            rounded100
             h45
             flex
             itemsCenter

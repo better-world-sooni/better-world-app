@@ -14,18 +14,47 @@ import {Span} from 'src/components/common/Span';
 import {createdAtText} from 'src/modules/timeUtils';
 import useUploadPost from 'src/hooks/useUploadPost';
 import UploadImageSlideShow from 'src/components/common/UploadImageSlideShow';
-import {TextInput} from 'src/modules/viewComponents';
-import {useReloadGETWithToken} from 'src/redux/asyncReducer';
-import {useGotoProfile} from 'src/hooks/useGoto';
+import {
+  KeyboardAvoidingView,
+  ScrollView,
+  TextInput,
+} from 'src/modules/viewComponents';
+import {useApiSelector, useReloadGETWithToken} from 'src/redux/asyncReducer';
 import {ActivityIndicator} from 'react-native';
 
-const NewPostScreen = ({}) => {
+export enum PostOwnerType {
+  Nft,
+  NftCollection,
+}
+
+const NewPostScreen = ({
+  route: {
+    params: {postOwnerType},
+  },
+}) => {
   const {goBack} = useNavigation();
   const reloadGetWithToken = useReloadGETWithToken();
-  const goToProfile = useGotoProfile();
+  const {currentNft} = useSelector(
+    (root: RootState) => ({
+      currentNft: root.app.session.currentNft,
+      admin: postOwnerIsCollection,
+    }),
+    shallowEqual,
+  );
+  const {data: nftCollectionData, isLoading: nftCollectionLoading} =
+    useApiSelector(
+      apis.nft_collection.contractAddress.profile(currentNft.contract_address),
+    );
+  const postOwnerIsCollection = postOwnerType == PostOwnerType.NftCollection;
   const uploadSuccessCallback = () => {
-    reloadGetWithToken(apis.nft._());
-    goToProfile();
+    reloadGetWithToken(
+      postOwnerIsCollection
+        ? apis.nft_collection.contractAddress.profile(
+            currentNft.contract_address,
+          )
+        : apis.nft._(),
+    );
+    goBack();
   };
   const {
     error,
@@ -36,46 +65,41 @@ const NewPostScreen = ({}) => {
     handleAddImages,
     handleRemoveImage,
     uploadPost,
-  } = useUploadPost({uploadSuccessCallback: uploadSuccessCallback});
-  const {currentNft} = useSelector(
-    (root: RootState) => ({currentNft: root.app.session.currentNft}),
-    shallowEqual,
-  );
+  } = useUploadPost({uploadSuccessCallback, admin: postOwnerIsCollection});
+
+  const postOwner = postOwnerIsCollection
+    ? nftCollectionData?.nft_collection
+    : currentNft;
   return (
-    <Div flex bgWhite relative>
-      <Div w={'100%'} zIndex={100} h170>
-        <Div h={HAS_NOTCH ? 44 : 20} />
-        <Row pl={10} pr15 itemsCenter py8>
-          <Col auto mr5 onPress={goBack}>
-            <ChevronLeft width={20} height={20} color="black" strokeWidth={3} />
-          </Col>
-          <Col auto mr10>
-            <Img
-              w35
-              h35
-              rounded100
-              uri={getNftProfileImage(currentNft, 50, 50)}
-            />
-          </Col>
-          <Col auto>
-            <Span fontSize={15} medium>
-              {getNftName(currentNft)}
+    <KeyboardAvoidingView behavior="padding" flex bgWhite relative>
+      <Div h={HAS_NOTCH ? 44 : 20} />
+      <Row pl={10} pr15 itemsCenter py8>
+        <Col auto mr5 onPress={goBack}>
+          <ChevronLeft width={20} height={20} color="black" strokeWidth={3} />
+        </Col>
+        <Col auto mr10>
+          <Img w35 h35 rounded100 uri={getNftProfileImage(postOwner, 50, 50)} />
+        </Col>
+        <Col auto>
+          <Span fontSize={15} medium>
+            {getNftName(postOwner)}
+          </Span>
+          <Span fontSize={12} mt2 gray600>
+            {createdAtText(new Date())}
+          </Span>
+        </Col>
+        <Col />
+        <Col auto onPress={uploadPost}>
+          {loading ? (
+            <ActivityIndicator></ActivityIndicator>
+          ) : (
+            <Span info bold fontSize={16}>
+              공유
             </Span>
-            <Span fontSize={12} mt2 gray600>
-              {createdAtText(new Date())}
-            </Span>
-          </Col>
-          <Col />
-          <Col auto onPress={uploadPost}>
-            {loading ? (
-              <ActivityIndicator></ActivityIndicator>
-            ) : (
-              <Span info bold fontSize={16}>
-                공유
-              </Span>
-            )}
-          </Col>
-        </Row>
+          )}
+        </Col>
+      </Row>
+      <ScrollView>
         <Div>
           <UploadImageSlideShow
             images={[...images, {uri: null}]}
@@ -99,8 +123,8 @@ const NewPostScreen = ({}) => {
             bold
             onChangeText={handleContentChange}></TextInput>
         </Div>
-      </Div>
-    </Div>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 };
 

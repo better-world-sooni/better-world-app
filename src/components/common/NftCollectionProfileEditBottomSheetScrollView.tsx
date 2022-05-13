@@ -11,9 +11,10 @@ import {Div} from './Div';
 import {Img} from './Img';
 import {Row} from './Row';
 import {Span} from './Span';
-import {Upload} from 'react-native-feather';
+import {Check, Tool, Trash, Upload} from 'react-native-feather';
 import useUploadImage from 'src/hooks/useUploadImage';
 import apis from 'src/modules/apis';
+import Colors from 'src/constants/Colors';
 
 export default function NftCollectionProfileEditBottomSheetScrollView({
   nftCollection,
@@ -91,15 +92,15 @@ export default function NftCollectionProfileEditBottomSheetScrollView({
           )}
         </Div>
         <Row zIndex={100} px15 mt={-50} relative mb20 itemsEnd>
-          <Div h40 absolute w={DEVICE_WIDTH} bgWhite bottom0></Div>
+          <Div h30 absolute w={DEVICE_WIDTH} bgWhite bottom0></Div>
           <Col auto mr10 relative>
             <Div
               rounded100
               border3
               borderWhite
               bgGray200
-              h90
-              w90
+              h110
+              w110
               overflowHidden
               onPress={handleAddProfileImage}>
               {profileImage?.uri ? (
@@ -108,9 +109,9 @@ export default function NftCollectionProfileEditBottomSheetScrollView({
                   top0
                   absolute
                   w={DEVICE_WIDTH}
-                  h90
+                  h110
                   rounded100
-                  w90></Img>
+                  w110></Img>
               ) : (
                 <Div flex itemsCenter justifyCenter bgGray400 rounded100>
                   <Div bgBlack p8 rounded100>
@@ -126,7 +127,8 @@ export default function NftCollectionProfileEditBottomSheetScrollView({
             </Div>
           </Col>
           <Col>
-            <Row>
+            <Row mb20>
+              <Col />
               <Col />
               {image?.uri ? (
                 <Col
@@ -136,57 +138,84 @@ export default function NftCollectionProfileEditBottomSheetScrollView({
                   rounded100
                   bgBlack
                   p8>
-                  <Span fontSize={16} danger bold>
-                    제거
-                  </Span>
+                  <Trash
+                    strokeWidth={2}
+                    color={Colors.danger.DEFAULT}
+                    height={18}
+                    width={18}
+                  />
                 </Col>
               ) : null}
-              {image?.uri || imageHasChanged || uploading ? (
-                <Col
-                  auto
-                  rounded100
-                  bgBlack
-                  p8
-                  onPress={imageHasChanged ? handleSaveImage : handleAddImage}>
-                  <Span fontSize={16} info bold>
-                    {uploading ? (
-                      <ActivityIndicator></ActivityIndicator>
-                    ) : imageHasChanged ? (
-                      '저장'
-                    ) : (
-                      '변경'
-                    )}
-                  </Span>
+              {image?.uri ? (
+                <Col auto mr10 rounded100 bgBlack p8 onPress={handleAddImage}>
+                  <Tool
+                    strokeWidth={2}
+                    color={Colors.info.DEFAULT}
+                    height={18}
+                    width={18}
+                  />
+                </Col>
+              ) : null}
+              {image?.uri || imageHasChanged ? (
+                <Col auto rounded100 bgBlack p8 onPress={handleSaveImage}>
+                  {uploading ? (
+                    <ActivityIndicator></ActivityIndicator>
+                  ) : (
+                    <Check
+                      strokeWidth={2}
+                      color={Colors.success.DEFAULT}
+                      height={18}
+                      width={18}
+                    />
+                  )}
                 </Col>
               ) : null}
             </Row>
             <Row h50 itemsEnd pb5>
               {profileImage?.uri ? (
-                <Col auto mr10 onPress={handleRemoveProfileImage} pb1>
-                  <Span fontSize={16} danger bold>
-                    제거
-                  </Span>
-                </Col>
-              ) : null}
-              {profileImage?.uri ||
-              profileImageHasChanged ||
-              profileUploading ? (
                 <Col
                   auto
-                  onPress={
-                    profileImageHasChanged
-                      ? hangeSaveProfileImage
-                      : handleAddProfileImage
-                  }>
-                  <Span fontSize={16} info bold>
-                    {profileUploading ? (
-                      <ActivityIndicator></ActivityIndicator>
-                    ) : profileImageHasChanged ? (
-                      '저장'
-                    ) : (
-                      '변경'
-                    )}
-                  </Span>
+                  mr10
+                  onPress={handleRemoveProfileImage}
+                  rounded100
+                  bgBlack
+                  p8>
+                  <Trash
+                    strokeWidth={2}
+                    color={Colors.danger.DEFAULT}
+                    height={18}
+                    width={18}
+                  />
+                </Col>
+              ) : null}
+              {profileImage?.uri ? (
+                <Col
+                  auto
+                  mr10
+                  rounded100
+                  bgBlack
+                  p8
+                  onPress={handleAddProfileImage}>
+                  <Tool
+                    strokeWidth={2}
+                    color={Colors.info.DEFAULT}
+                    height={18}
+                    width={18}
+                  />
+                </Col>
+              ) : null}
+              {profileImage?.uri || profileImageHasChanged ? (
+                <Col auto rounded100 bgBlack p8 onPress={hangeSaveProfileImage}>
+                  {profileUploading ? (
+                    <ActivityIndicator></ActivityIndicator>
+                  ) : (
+                    <Check
+                      strokeWidth={2}
+                      color={Colors.success.DEFAULT}
+                      height={18}
+                      width={18}
+                    />
+                  )}
                 </Col>
               ) : null}
               <Col></Col>

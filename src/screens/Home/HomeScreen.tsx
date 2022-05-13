@@ -9,11 +9,14 @@ import {Span} from 'src/components/common/Span';
 import apis from 'src/modules/apis';
 import {useApiSelector, useReloadGETWithToken} from 'src/redux/asyncReducer';
 import Post from 'src/components/common/Post';
-import {ScrollView} from 'src/modules/viewComponents';
+import {FlatList, ScrollView} from 'src/modules/viewComponents';
 import {Img} from 'src/components/common/Img';
 import {shallowEqual, useSelector} from 'react-redux';
 import {RootState} from 'src/redux/rootReducer';
 import {getNftProfileImage} from 'src/modules/nftUtils';
+import {IMAGES} from 'src/modules/images';
+import {DEVICE_WIDTH} from 'src/modules/styles';
+import {useGotoCapsule} from 'src/hooks/useGoto';
 
 const HomeScreen = () => {
   const {data: feedRes, isLoading: feedLoad} = useApiSelector(apis.feed._);
@@ -23,53 +26,56 @@ const HomeScreen = () => {
   };
   return (
     <Div flex bgWhite>
-      <StatusBar animated={true} barStyle={'dark-content'} />
       <Div h={HAS_NOTCH ? 44 : 20} bgWhite />
-      <Row itemsCenter py8 bgWhite>
-        <Col ml15>
-          <Span fontSize={24} bold primary fontFamily={'UniSans'}>
-            BetterWorld
-          </Span>
-        </Col>
-        <Col auto mr15>
-          <Div rounded50 bgGray200 p6>
-            <Bell
-              strokeWidth={2}
-              color={'black'}
-              fill={'black'}
-              height={18}
-              width={18}
-            />
-          </Div>
-        </Col>
-        <Col auto mr15>
-          <Div rounded50 bgGray200 p6>
-            <MessageCircle
-              strokeWidth={2}
-              color={'black'}
-              fill={'black'}
-              height={18}
-              width={18}
-            />
-          </Div>
-        </Col>
-      </Row>
-      {feedRes && (
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          stickyHeaderIndices={[1]}
-          refreshControl={
-            <RefreshControl refreshing={feedLoad} onRefresh={onRefresh} />
-          }>
-          <ScrollView horizontal pb10>
-            <MyActiveCapsule />
-          </ScrollView>
-          <Div borderBottom={0.5} borderGray200></Div>
-          {feedRes.feed.map(post => {
-            return <Post key={post.id} post={post} />;
-          })}
-        </ScrollView>
-      )}
+      <FlatList
+        showsVerticalScrollIndicator={false}
+        ListHeaderComponent={
+          <>
+            <Row itemsCenter py8 bgWhite>
+              <Col ml15>
+                <Span fontSize={24} bold primary fontFamily={'UniSans'}>
+                  BetterWorld
+                </Span>
+              </Col>
+              <Col auto mr15>
+                <Div rounded50 bgGray200 p6>
+                  <Bell
+                    strokeWidth={2}
+                    color={'black'}
+                    fill={'black'}
+                    height={18}
+                    width={18}
+                  />
+                </Div>
+              </Col>
+              <Col auto mr15>
+                <Div rounded50 bgGray200 p6>
+                  <MessageCircle
+                    strokeWidth={2}
+                    color={'black'}
+                    fill={'black'}
+                    height={18}
+                    width={18}
+                  />
+                </Div>
+              </Col>
+            </Row>
+          </>
+        }
+        refreshControl={
+          <RefreshControl refreshing={feedLoad} onRefresh={onRefresh} />
+        }
+        stickyHeaderIndices={[0]}
+        data={feedRes ? feedRes.feed : []}
+        renderItem={({item, index}) => {
+          if (index == 0)
+            return (
+              <ScrollView horizontal pb8>
+                <MyActiveCapsule />
+              </ScrollView>
+            );
+          return <Post key={item.id} post={item} />;
+        }}></FlatList>
     </Div>
   );
 };
@@ -79,8 +85,9 @@ function MyActiveCapsule() {
     (root: RootState) => root.app.session,
     shallowEqual,
   );
+  const goToCapsule = useGotoCapsule({nft: currentNft});
   return (
-    <Div ml15 relative>
+    <Div ml15 relative onPress={goToCapsule}>
       <Img uri={currentNft.capsule.image_uri} w92 h132 rounded10 />
       <Img
         absolute

@@ -62,6 +62,6 @@ export default function useUploadImage({uri, attachedRecord, url, property, succ
             uri
         })
     }, [uri])
-    const imageHasChanged = image?.uri !== uri
+    const imageHasChanged = image?.uri != uri
     return { image, imageHasChanged, uploading, handleAddImage, handleRemoveImage, handleSaveImage }
 }

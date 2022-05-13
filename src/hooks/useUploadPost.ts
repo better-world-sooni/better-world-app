@@ -19,7 +19,6 @@ export default function useUploadPost({admin=false, uploadSuccessCallback}){
 		}
 		setLoading(true);
 		const signedIdArray = await uploadAllSelectedFiles();
-		console.log(signedIdArray)
         const body =  {
 			content,
 			images: signedIdArray,

@@ -1,7 +1,8 @@
 import {useNavigation} from '@react-navigation/native';
-import React, {useCallback, useState} from 'react';
+import React, {useCallback, useRef, useState} from 'react';
 import {RefreshControl} from 'react-native';
 import {ChevronLeft, Heart, MoreHorizontal} from 'react-native-feather';
+import {State, TapGestureHandler} from 'react-native-gesture-handler';
 import Colors from 'src/constants/Colors';
 import {
   useGotoNftCollectionProfile,
@@ -104,6 +105,13 @@ export default function Post({
       type: ReplyToType.Comment,
     });
   }, []);
+  const doubleTapRef = useRef(null);
+  const handleDoubleTap = event => {
+    console.log(event, 'handleDoubleTap');
+    if (event.nativeEvent.state === State.ACTIVE) {
+      handlePressLike();
+    }
+  };
 
   const scrollviewProps = full
     ? {
@@ -143,17 +151,8 @@ export default function Post({
         {post.image_uris.length > 0 ? (
           <ImageSlideShow imageUris={post.image_uris} />
         ) : null}
-        {post.title ? (
-          <Div px15 py8>
-            <TruncatedText
-              text={post.title}
-              maxLength={50}
-              spanProps={{bold: true, fontSize: 16}}
-            />
-          </Div>
-        ) : null}
         {post.content ? (
-          <Div px15 py8>
+          <Div px15>
             <TruncatedMarkdown text={post.content} maxLength={300} />
           </Div>
         ) : null}

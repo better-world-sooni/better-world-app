@@ -82,15 +82,15 @@ export default function NewComment({
           h40
           py0
           px10
+          rounded100
           placeholder={'댓글을 달아주세요'}
           value={newComment}
           mt={0}
           onChangeText={handleCommentChange}
-          on
           leftComp={
             <Img
               mr10
-              rounded={10}
+              rounded100
               h={30}
               w={30}
               uri={getNftProfileImage(currentNft, 50, 50)}

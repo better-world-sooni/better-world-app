@@ -11,9 +11,10 @@ import {Div} from './Div';
 import {Img} from './Img';
 import {Row} from './Row';
 import {Span} from './Span';
-import {Upload} from 'react-native-feather';
+import {Check, Tool, Trash, Upload} from 'react-native-feather';
 import useUploadImage from 'src/hooks/useUploadImage';
 import apis from 'src/modules/apis';
+import Colors from 'src/constants/Colors';
 
 export default function NftProfileEditBottomSheetScrollView({nft}) {
   const {
@@ -91,27 +92,36 @@ export default function NftProfileEditBottomSheetScrollView({nft}) {
                   rounded100
                   bgBlack
                   p8>
-                  <Span fontSize={16} danger bold>
-                    제거
-                  </Span>
+                  <Trash
+                    strokeWidth={2}
+                    color={Colors.danger.DEFAULT}
+                    height={18}
+                    width={18}
+                  />
                 </Col>
               ) : null}
-              {image?.uri || imageHasChanged || uploading ? (
-                <Col
-                  auto
-                  rounded100
-                  bgBlack
-                  p8
-                  onPress={imageHasChanged ? handleSaveImage : handleAddImage}>
-                  <Span fontSize={16} info bold>
-                    {uploading ? (
-                      <ActivityIndicator></ActivityIndicator>
-                    ) : imageHasChanged ? (
-                      '저장'
-                    ) : (
-                      '변경'
-                    )}
-                  </Span>
+              {image?.uri ? (
+                <Col auto mr10 rounded100 bgBlack p8 onPress={handleAddImage}>
+                  <Tool
+                    strokeWidth={2}
+                    color={Colors.info.DEFAULT}
+                    height={18}
+                    width={18}
+                  />
+                </Col>
+              ) : null}
+              {image?.uri || imageHasChanged ? (
+                <Col auto rounded100 bgBlack p8 onPress={handleSaveImage}>
+                  {uploading ? (
+                    <ActivityIndicator></ActivityIndicator>
+                  ) : (
+                    <Check
+                      strokeWidth={2}
+                      color={Colors.success.DEFAULT}
+                      height={18}
+                      width={18}
+                    />
+                  )}
                 </Col>
               ) : null}
             </Row>
@@ -148,7 +158,7 @@ export default function NftProfileEditBottomSheetScrollView({nft}) {
               스토리
             </Span>
           </Col>
-          <Col>
+          <Col mt={-5}>
             <TextInput
               value={story}
               placeholder={'마크다운을 사용하실 수 있습니다.'}

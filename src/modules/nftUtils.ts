@@ -3,6 +3,7 @@ import { RootState } from "src/redux/rootReducer"
 import { resizeImageUri } from "./uriUtils"
 
 export function getNftProfileImage(nft, width=null, height= null){
+    if(!nft) return null
     if(nft.image_uri){
         if(width && height){
             return resizeImageUri(nft.image_uri, width, height)
@@ -20,9 +21,11 @@ export function getNftCollectionProfileImage(nftCollection, width=null, height= 
 }
 
 export function getNftName(nft){
+    if(!nft) return null
     return nft.name || nft.nft_metadatum.name
 }
 export function getNftStory(nft){
+    if(!nft) return null
     return nft.story || nft.about
 }
 

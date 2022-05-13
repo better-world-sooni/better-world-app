@@ -24,20 +24,7 @@ const OtherProfileScreen = ({
   return (
     <Div flex bgWhite>
       {nft && (
-        <>
-          <Img
-            uri={nft.background_image_uri}
-            absolute
-            bgPrimary={!nft.background_image_uri}
-            top0
-            w={DEVICE_WIDTH}
-            h200></Img>
-          <NftProfile
-            nft={nft}
-            refreshing={loading}
-            onRefresh={handleRefresh}
-          />
-        </>
+        <NftProfile nft={nft} refreshing={loading} onRefresh={handleRefresh} />
       )}
     </Div>
   );
