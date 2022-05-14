@@ -9,6 +9,7 @@ import {BottomSheetModal} from '@gorhom/bottom-sheet';
 import {NAV_NAMES} from 'src/modules/navNames';
 import Colors from 'src/constants/Colors';
 import {mediumBump} from 'src/modules/hapticFeedBackUtils';
+import {HAS_NOTCH} from 'src/modules/constants';
 
 const BottomTabBar = ({state, descriptors, navigation}) => {
   const bottomPopupRef = useRef<BottomSheetModal>(null);
@@ -57,13 +58,17 @@ const BottomTabBar = ({state, descriptors, navigation}) => {
   );
   return (
     <>
-      <BottomPopup ref={bottomPopupRef} snapPoints={['90%', '30%']} index={-1}>
+      <BottomPopup ref={bottomPopupRef} snapPoints={['90%', '25%']} index={-1}>
         <NftChooseBottomSheetScrollView
           nfts={currentUser?.nfts}
           title={'Identity 변경하기'}
         />
       </BottomPopup>
-      <Div h60 borderTopColor={Colors.gray[100]} borderTopWidth={0.2}>
+      <Div
+        h70={HAS_NOTCH}
+        h50={!HAS_NOTCH}
+        borderTopColor={Colors.gray[100]}
+        borderTopWidth={0.2}>
         <NativeBaseProvider>
           <Box flex={1} safeAreaTop>
             <Center flex={1}></Center>

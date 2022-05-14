@@ -17,6 +17,12 @@ import {getNftProfileImage} from 'src/modules/nftUtils';
 import {IMAGES} from 'src/modules/images';
 import {DEVICE_WIDTH} from 'src/modules/styles';
 import {useGotoCapsule} from 'src/hooks/useGoto';
+import Animated, {
+  useAnimatedScrollHandler,
+  useAnimatedStyle,
+  useSharedValue,
+} from 'react-native-reanimated';
+import {BlurView} from '@react-native-community/blur';
 
 const HomeScreen = () => {
   const {data: feedRes, isLoading: feedLoad} = useApiSelector(apis.feed._);
@@ -24,58 +30,66 @@ const HomeScreen = () => {
   const onRefresh = () => {
     reloadGetWithToken(apis.feed._());
   };
+  const translationY = useSharedValue(0);
+  const scrollHandler = useAnimatedScrollHandler(event => {
+    translationY.value = event.contentOffset.y;
+  });
+  const headerHeight = HAS_NOTCH ? 84 : 60;
+  const headerStyles = useAnimatedStyle(() => {
+    return {
+      width: DEVICE_WIDTH,
+      height: headerHeight,
+      position: 'absolute',
+      zIndex: 100,
+      opacity: Math.min(translationY.value / 50, 1),
+    };
+  });
   return (
     <Div flex bgWhite>
-      <Div h={HAS_NOTCH ? 44 : 20} bgWhite />
-      <FlatList
+      <Div h={headerHeight} zIndex={100}>
+        <Animated.View style={headerStyles}>
+          <BlurView
+            blurType="xlight"
+            blurAmount={5}
+            blurRadius={5}
+            style={{
+              width: DEVICE_WIDTH,
+              height: '100%',
+              position: 'absolute',
+            }}
+            reducedTransparencyFallbackColor="white"></BlurView>
+        </Animated.View>
+        <Row
+          itemsCenter
+          py5
+          h40
+          zIndex={100}
+          absolute
+          w={DEVICE_WIDTH}
+          top={HAS_NOTCH ? 44 : 20}>
+          <Col></Col>
+          <Col auto>
+            <Img source={IMAGES.betterWorldBlueLogo} w={40} h={40}></Img>
+          </Col>
+          <Col></Col>
+        </Row>
+      </Div>
+      <Animated.FlatList
         showsVerticalScrollIndicator={false}
-        ListHeaderComponent={
-          <>
-            <Row itemsCenter py8 bgWhite>
-              <Col ml15>
-                <Span fontSize={24} bold primary fontFamily={'UniSans'}>
-                  BetterWorld
-                </Span>
-              </Col>
-              <Col auto mr15>
-                <Div rounded50 bgGray200 p6>
-                  <Bell
-                    strokeWidth={2}
-                    color={'black'}
-                    fill={'black'}
-                    height={18}
-                    width={18}
-                  />
-                </Div>
-              </Col>
-              <Col auto mr15>
-                <Div rounded50 bgGray200 p6>
-                  <MessageCircle
-                    strokeWidth={2}
-                    color={'black'}
-                    fill={'black'}
-                    height={18}
-                    width={18}
-                  />
-                </Div>
-              </Col>
-            </Row>
-          </>
-        }
+        onScroll={scrollHandler}
         refreshControl={
           <RefreshControl refreshing={feedLoad} onRefresh={onRefresh} />
         }
-        stickyHeaderIndices={[0]}
         data={feedRes ? feedRes.feed : []}
         renderItem={({item, index}) => {
           if (index == 0)
             return (
-              <ScrollView horizontal pb8>
+              <ScrollView horizontal pb8 borderBottom={0.5} borderGray200>
                 <MyActiveCapsule />
               </ScrollView>
             );
-          return <Post key={item.id} post={item} />;
-        }}></FlatList>
+          return <Post key={(item as any).id} post={item} />;
+        }}></Animated.FlatList>
     </Div>
   );
 };

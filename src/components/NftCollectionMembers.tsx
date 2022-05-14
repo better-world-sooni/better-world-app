@@ -14,7 +14,6 @@ export default function NftCollectionMembers({members}) {
   return (
     <FlatList
       px10
-      mt10
       data={members}
       numColumns={3}
       renderItem={({item}) => <NftCollectionMember member={item} />}></FlatList>

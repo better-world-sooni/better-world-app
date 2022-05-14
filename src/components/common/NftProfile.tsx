@@ -81,11 +81,12 @@ export default function NftProfile({
       .url,
   );
   const {goBack} = useNavigation();
+  const headerHeight = HAS_NOTCH ? 114 : 90;
   const goToNewPost = useGotoNewPost({postOwnerType: PostOwnerType.Nft});
   const headerStyles = useAnimatedStyle(() => {
     return {
       width: DEVICE_WIDTH,
-      height: HAS_NOTCH ? 124 : 100,
+      height: headerHeight,
       position: 'absolute',
       zIndex: 100,
       opacity: Math.min(translationY.value / 100, 1),
@@ -94,7 +95,7 @@ export default function NftProfile({
 
   return (
     <>
-      <Div h={HAS_NOTCH ? 124 : 100}>
+      <Div h={headerHeight}>
         {nft.background_image_uri ? (
           <Img
             zIndex={-10}
@@ -102,18 +103,13 @@ export default function NftProfile({
             absolute
             top0
             w={DEVICE_WIDTH}
-            h={HAS_NOTCH ? 124 : 100}></Img>
+            h={headerHeight}></Img>
         ) : (
-          <Div
-            absolute
-            top0
-            h={HAS_NOTCH ? 124 : 100}
-            bgGray400
-            w={DEVICE_WIDTH}></Div>
+          <Div absolute top0 h={headerHeight} bgGray400 w={DEVICE_WIDTH}></Div>
         )}
         <Animated.View style={headerStyles}>
           <BlurView
-            blurType="dark"
+            blurType="light"
             blurAmount={20}
             blurRadius={10}
             style={{
@@ -123,7 +119,7 @@ export default function NftProfile({
             }}
             reducedTransparencyFallbackColor="white"></BlurView>
           <Row itemsCenter justifyCenter width={DEVICE_WIDTH} h={'100%'} mt4>
-            <Span white bold fontSize={17}>
+            <Span bold fontSize={17}>
               {getNftName(nft)}
             </Span>
           </Row>
@@ -173,24 +169,8 @@ export default function NftProfile({
                   <Div>
                     <Row py8>
                       <Col />
-                      <Col
-                        auto
-                        bgPrimary={!isFollowing}
-                        p8
-                        rounded100
-                        border1={isFollowing}
-                        borderPrimary={isFollowing}
-                        onPress={handlePressFollowing}>
-                        <Span
-                          white={!isFollowing}
-                          primary={isFollowing}
-                          bold
-                          mt2
-                          px5>
-                          {isFollowing ? '언팔로우' : '팔로우'}
-                        </Span>
-                      </Col>
-                      <Col auto bgPrimary p8 rounded100 mx8>
+
+                      <Col auto bgBlack p8 rounded100>
                         <Div>
                           <MessageCircle
                             strokeWidth={2}
@@ -200,10 +180,22 @@ export default function NftProfile({
                           />
                         </Div>
                       </Col>
-                      <Col auto bgPrimary p9 rounded100 onPress={goToCapsule}>
+                      <Col auto bgBlack p9 rounded100 onPress={goToCapsule} mx8>
                         <Div>
                           <Img w18 h18 source={ICONS.capsuleIconWhite}></Img>
                         </Div>
+                      </Col>
+                      <Col
+                        auto
+                        bgBlack={!isFollowing}
+                        p8
+                        rounded100
+                        border1={isFollowing}
+                        borderGray400={isFollowing}
+                        onPress={handlePressFollowing}>
+                        <Span white={!isFollowing} bold mt3 px5>
+                          {isFollowing ? '언팔로우' : '팔로우'}
+                        </Span>
                       </Col>
                     </Row>
                   </Div>
@@ -211,18 +203,12 @@ export default function NftProfile({
                   <Div>
                     <Row py10>
                       <Col />
-                      <Col auto bgPrimary p8 rounded100 onPress={goToCapsule}>
+                      <Col auto bgBlack p8 rounded100 onPress={goToCapsule}>
                         <Div>
                           <Img w18 h18 source={ICONS.capsuleIconWhite}></Img>
                         </Div>
                       </Col>
-                      <Col
-                        auto
-                        bgPrimary
-                        p8
-                        rounded100
-                        onPress={editProfile}
-                        mx8>
+                      <Col auto bgBlack p8 rounded100 onPress={editProfile} mx8>
                         <Div>
                           <Edit3
                             strokeWidth={2}
@@ -232,7 +218,7 @@ export default function NftProfile({
                           />
                         </Div>
                       </Col>
-                      <Col auto bgPrimary p8 rounded100 onPress={goToNewPost}>
+                      <Col auto bgBlack p8 rounded100 onPress={goToNewPost}>
                         <Span white bold mt1 px5>
                           게시물 업로드
                         </Span>
@@ -263,7 +249,7 @@ export default function NftProfile({
             </Div>
             {nft.story ? (
               <Div py8 px15 bgWhite borderBottom={0.5} borderGray200>
-                <TruncatedMarkdown text={nft.story} maxLength={300} />
+                <TruncatedMarkdown text={nft.story} maxLength={500} />
               </Div>
             ) : null}
           </>

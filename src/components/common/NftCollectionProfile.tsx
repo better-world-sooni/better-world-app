@@ -47,11 +47,11 @@ export default function NftCollectionProfile({
   const scrollHandler = useAnimatedScrollHandler(event => {
     translationY.value = event.contentOffset.y;
   });
-
+  const headerHeight = HAS_NOTCH ? 114 : 90;
   const headerStyles = useAnimatedStyle(() => {
     return {
       width: DEVICE_WIDTH,
-      height: HAS_NOTCH ? 124 : 100,
+      height: headerHeight,
       position: 'absolute',
       zIndex: 100,
       opacity: Math.min(translationY.value / 100, 1),
@@ -60,7 +60,7 @@ export default function NftCollectionProfile({
 
   return (
     <>
-      <Div h={HAS_NOTCH ? 124 : 100}>
+      <Div h={headerHeight}>
         {nftCollection.background_image_uri ? (
           <Img
             zIndex={-10}
@@ -68,18 +68,13 @@ export default function NftCollectionProfile({
             absolute
             top0
             w={DEVICE_WIDTH}
-            h={HAS_NOTCH ? 124 : 100}></Img>
+            h={headerHeight}></Img>
         ) : (
-          <Div
-            absolute
-            top0
-            h={HAS_NOTCH ? 124 : 100}
-            bgGray400
-            w={DEVICE_WIDTH}></Div>
+          <Div absolute top0 h={headerHeight} bgGray400 w={DEVICE_WIDTH}></Div>
         )}
         <Animated.View style={headerStyles}>
           <BlurView
-            blurType="dark"
+            blurType="light"
             blurAmount={20}
             blurRadius={10}
             style={{
@@ -133,11 +128,11 @@ export default function NftCollectionProfile({
                       <Col />
                       <Col
                         auto
-                        bgPrimary={!isFollowing}
+                        bgBlack={!isFollowing}
                         p8
                         rounded100
                         border1={isFollowing}
-                        borderPrimary={isFollowing}
+                        borderGray400={isFollowing}
                         onPress={handlePressFollowing}>
                         <Span
                           white={!isFollowing}
@@ -157,7 +152,7 @@ export default function NftCollectionProfile({
 
                       <Col
                         auto
-                        bgPrimary
+                        bgBlack
                         p8
                         rounded100
                         onPress={onPressEditProfile}>
@@ -172,23 +167,18 @@ export default function NftCollectionProfile({
                       </Col>
                       <Col
                         auto
-                        bgPrimary={!isFollowing}
+                        bgBlack={!isFollowing}
                         p8
                         mx8
                         rounded100
                         border1={isFollowing}
-                        borderPrimary={isFollowing}
+                        borderGray400={isFollowing}
                         onPress={handlePressFollowing}>
-                        <Span
-                          white={!isFollowing}
-                          primary={isFollowing}
-                          bold
-                          mt2
-                          px5>
+                        <Span white={!isFollowing} bold mt2 px5>
                           {isFollowing ? '언팔로우' : '팔로우'}
                         </Span>
                       </Col>
-                      <Col auto bgPrimary p8 rounded100 onPress={goToNewPost}>
+                      <Col auto bgBlack p8 rounded100 onPress={goToNewPost}>
                         <Span white bold mt1 px5>
                           게시물 업로드
                         </Span>

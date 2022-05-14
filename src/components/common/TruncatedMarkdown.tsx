@@ -45,7 +45,7 @@ const TruncatedMarkdown: TruncatedMarkdownType = function ({
     if (onPressTruncated) {
       return (
         <Div onPress={onPressTruncated} cursorPointer>
-          <DefaultMarkdown children={result.concat('... 더보기')} />
+          <DefaultMarkdown children={result.concat('\n... 더보기')} />
         </Div>
       );
     }

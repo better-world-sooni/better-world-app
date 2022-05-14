@@ -1,7 +1,7 @@
 import {BottomSheetScrollView} from '@gorhom/bottom-sheet';
 import React, {useEffect, useState} from 'react';
 import {ActivityIndicator} from 'react-native';
-import {AlertTriangle, CheckCircle} from 'react-native-feather';
+import {AlertTriangle, Check, CheckCircle} from 'react-native-feather';
 import Colors from 'src/constants/Colors';
 import {iconSettings} from 'src/modules/constants';
 import {
@@ -24,12 +24,7 @@ export default function NftChooseBottomSheetScrollView({
   return (
     <BottomSheetScrollView>
       <Div px15>
-        <Div itemsCenter mt15>
-          <Span fontSize={12} bold>
-            {title}
-          </Span>
-        </Div>
-        <Div mt15>
+        <Div mt10>
           {nfts?.map((nft, index) => {
             return <NftIdentity key={index} nft={nft} onSuccess={onSuccess} />;
           })}
@@ -78,23 +73,19 @@ function NftIdentity({nft, onSuccess}) {
   }, [isCurrentNft]);
 
   return (
-    <Row
-      itemsCenter
-      bgGray200
-      rounded10
-      px10
-      py10
-      onPress={handlePressIdentity}>
-      <Img w50 h50 rounded10 uri={getNftProfileImage(nft, 200, 200)} />
+    <Row itemsCenter rounded10 py10 onPress={handlePressIdentity}>
+      <Img w50 h50 rounded100 uri={getNftProfileImage(nft, 200, 200)} />
       <Col mx15>
         <Div>
-          <Span medium fontSize={20}>
+          <Span medium fontSize={15}>
             {getNftName(nft)}
           </Span>
         </Div>
         {getNftName(nft) !== nft.nft_metadatum.name && (
           <Div mt5>
-            <Span>{nft.nft_metadatum.name}</Span>
+            <Span gray600 fontSize={12}>
+              {nft.nft_metadatum.name}
+            </Span>
           </Div>
         )}
       </Col>
@@ -103,7 +94,9 @@ function NftIdentity({nft, onSuccess}) {
           {stateType === StateType.Loading ? (
             <ActivityIndicator />
           ) : stateType === StateType.Success ? (
-            <CheckCircle {...iconSettings} color={Colors.success.DEFAULT} />
+            <Div auto mr10 rounded100 bgBlack p3 bgInfo>
+              <Check strokeWidth={2} height={18} width={18} color={'white'} />
+            </Div>
           ) : (
             <AlertTriangle {...iconSettings} color={Colors.danger.DEFAULT} />
           )}

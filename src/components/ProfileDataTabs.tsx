@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import {Col} from './common/Col';
+import DefaultMarkdown from './common/DefaultMarkdown';
 import {Div} from './common/Div';
 import Feed from './common/Feed';
 import {Row} from './common/Row';
@@ -33,7 +34,7 @@ export default function ProfileDataTabs({posts, about, members}) {
   };
   return (
     <Div bgWhite>
-      <Row>
+      <Row py8>
         <Col {...tabProps(DataTabType.Feed)}>
           <Span medium>피드</Span>
         </Col>
@@ -65,7 +66,7 @@ function About({about}) {
   }
   return (
     <Div mt10 px15 bgWhite>
-      <TruncatedMarkdown text={about} maxLength={5000} />
+      <DefaultMarkdown children={about} />
     </Div>
   );
 }

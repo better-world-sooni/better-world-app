@@ -16,6 +16,7 @@ import {createdAtText} from 'src/modules/timeUtils';
 import {ScrollView} from 'src/modules/viewComponents';
 import {Col} from './Col';
 import Comment from './Comment';
+import DefaultMarkdown from './DefaultMarkdown';
 import {Div} from './Div';
 import ImageSlideShow from './ImageSlideShow';
 import {Img} from './Img';
@@ -31,6 +32,7 @@ export default function Post({
   refreshing = false,
   onRefresh = null,
 }) {
+  console.log(post);
   const {goBack} = useNavigation();
   const [liked, likesCount, handlePressLike] = useLike(
     post.is_liked,
@@ -128,7 +130,7 @@ export default function Post({
           </Col>
         ) : null}
         <Col auto mr10 onPress={goToProfile}>
-          <Img w35 h35 rounded100 uri={getNftProfileImage(post.nft, 50, 50)} />
+          <Img w40 h40 rounded100 uri={getNftProfileImage(post.nft, 50, 50)} />
         </Col>
         <Col auto>
           <Span fontSize={15} medium onPress={goToProfile}>
@@ -153,7 +155,15 @@ export default function Post({
         ) : null}
         {post.content ? (
           <Div px15>
-            <TruncatedMarkdown text={post.content} maxLength={300} />
+            {full ? (
+              <DefaultMarkdown children={post.content}></DefaultMarkdown>
+            ) : (
+              <TruncatedMarkdown
+                text={post.content}
+                maxLength={500}
+                onPressTruncated={goToPost}
+              />
+            )}
           </Div>
         ) : null}
         <Row px15 itemsCenter py8>
