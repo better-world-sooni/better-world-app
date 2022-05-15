@@ -25,6 +25,7 @@ import OtherProfileScreen from 'src/screens/OtherProfileScreen';
 import NftCollectionScreen from 'src/screens/NftCollectionScreen';
 import CapsuleScreen from 'src/screens/Home/CapsuleScreen';
 import NewPostScreen from 'src/screens/NewPostScreen';
+import ReportScreen from 'src/screens/ReportScreen';
 
 const RootStack = createStackNavigator();
 
@@ -143,6 +144,10 @@ export const AppContent = () => {
     {
       name: NAV_NAMES.Post,
       component: PostScreen,
+    },
+    {
+      name: NAV_NAMES.Report,
+      component: ReportScreen,
     },
     {
       name: NAV_NAMES.NewPost,

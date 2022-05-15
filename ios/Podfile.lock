@@ -379,6 +379,8 @@ PODS:
     - React-Core
   - react-native-image-picker (4.8.3):
     - React-Core
+  - react-native-menu (0.5.2):
+    - React
   - react-native-safe-area-context (3.2.0):
     - React-Core
   - react-native-sms (1.11.0):
@@ -569,6 +571,7 @@ DEPENDENCIES:
   - "react-native-blur (from `../node_modules/@react-native-community/blur`)"
   - react-native-get-random-values (from `../node_modules/react-native-get-random-values`)
   - react-native-image-picker (from `../node_modules/react-native-image-picker`)
+  - "react-native-menu (from `../node_modules/@react-native-menu/menu`)"
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
   - react-native-sms (from `../node_modules/react-native-sms`)
   - react-native-webview (from `../node_modules/react-native-webview`)
@@ -688,6 +691,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-get-random-values"
   react-native-image-picker:
     :path: "../node_modules/react-native-image-picker"
+  react-native-menu:
+    :path: "../node_modules/@react-native-menu/menu"
   react-native-safe-area-context:
     :path: "../node_modules/react-native-safe-area-context"
   react-native-sms:
@@ -807,6 +812,7 @@ SPEC CHECKSUMS:
   react-native-blur: cad4d93b364f91e7b7931b3fa935455487e5c33c
   react-native-get-random-values: 237bffb1c7e05fb142092681531810a29ba53015
   react-native-image-picker: e95b4785b685cfc06609bc50ed6fb55b59990c99
+  react-native-menu: 52089949cbe30b035c51e54f92a7d99136c2fed4
   react-native-safe-area-context: f0906bf8bc9835ac9a9d3f97e8bde2a997d8da79
   react-native-sms: 31fbb9d6ebb565ad32e409eaf9dc70329936a129
   react-native-webview: 0b7bd2bffced115aefd393e1841babd9b9a557b1

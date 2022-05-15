@@ -89,7 +89,16 @@ export default function NftProfile({
       height: headerHeight,
       position: 'absolute',
       zIndex: 100,
-      opacity: Math.min(translationY.value / 100, 1),
+      opacity: Math.min((translationY.value - 150) / 100, 1),
+    };
+  });
+  const titleStyles = useAnimatedStyle(() => {
+    return {
+      transform: [
+        {
+          translateY: Math.max(0, headerHeight - (translationY.value - 150)),
+        },
+      ],
     };
   });
 
@@ -118,10 +127,12 @@ export default function NftProfile({
               position: 'absolute',
             }}
             reducedTransparencyFallbackColor="white"></BlurView>
-          <Row itemsCenter justifyCenter width={DEVICE_WIDTH} h={'100%'} mt4>
-            <Span bold fontSize={17}>
-              {getNftName(nft)}
-            </Span>
+          <Row itemsCenter justifyCenter width={DEVICE_WIDTH} h={'100%'}>
+            <Animated.View style={titleStyles}>
+              <Span bold fontSize={17} mt18>
+                {getNftName(nft)}
+              </Span>
+            </Animated.View>
           </Row>
         </Animated.View>
         <Row

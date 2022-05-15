@@ -6,7 +6,7 @@ import { useApiGETWithToken } from "src/redux/asyncReducer";
 export function useGotoNftProfile({contractAddress, tokenId}){
     const apiGETWithToken = useApiGETWithToken()
     const navigation = useNavigation()
-    const goToProfile = () => {
+    const gotoProfile = () => {
         apiGETWithToken(
             apis.nft.contractAddressAndTokenId(
                 contractAddress,
@@ -18,21 +18,21 @@ export function useGotoNftProfile({contractAddress, tokenId}){
             tokenId
           });
       }
-      return goToProfile
+      return gotoProfile
 }
 
 export function useGotoProfile(){
   const navigation = useNavigation()
-  const goToProfile = () => {
+  const gotoProfile = () => {
         navigation.navigate(NAV_NAMES.Profile);
     }
-    return goToProfile
+    return gotoProfile
 }
 
 export function useGotoNftCollectionProfile({contractAddress}){
     const apiGETWithToken = useApiGETWithToken()
     const navigation = useNavigation()
-    const goToProfile = () => {
+    const gotoProfile = () => {
         apiGETWithToken(
             apis.nft_collection.contractAddress.profile(
                 contractAddress
@@ -42,33 +42,44 @@ export function useGotoNftCollectionProfile({contractAddress}){
             contractAddress
           });
       }
-      return goToProfile
+      return gotoProfile
 }
 
 export function useGotoPost({postId}){
   const apiGETWithToken = useApiGETWithToken()
   const navigation = useNavigation()
-  const goToPost = () => {
+  const gotoPost = () => {
     apiGETWithToken(apis.post.postId._(postId));
     navigation.navigate(NAV_NAMES.Post, {postId});
   }
-  return goToPost
+  return gotoPost
 }
 
 export function useGotoNewPost({postOwnerType}){
   const navigation = useNavigation()
-  const goToPost = () => {
+  const gotoPost = () => {
     navigation.navigate(NAV_NAMES.NewPost, {postOwnerType});
   }
-  return goToPost
+  return gotoPost
 }
 
 export function useGotoCapsule({nft}) {
   const navigation = useNavigation()
-  const goToCapsule = () => {
+  const gotoCapsule = () => {
     navigation.navigate(NAV_NAMES.Capsule, {
       nft,
     })
   };
-  return goToCapsule
+  return gotoCapsule
+}
+
+export function useGotoReport({id, reportType}){
+  const navigation = useNavigation()
+  const gotoReport = () => {
+    navigation.navigate(NAV_NAMES.Report, {
+      id,
+      reportType
+    })
+  }
+  return gotoReport
 }

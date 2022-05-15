@@ -54,7 +54,16 @@ export default function NftCollectionProfile({
       height: headerHeight,
       position: 'absolute',
       zIndex: 100,
-      opacity: Math.min(translationY.value / 100, 1),
+      opacity: Math.min((translationY.value - 150) / 100, 1),
+    };
+  });
+  const titleStyles = useAnimatedStyle(() => {
+    return {
+      transform: [
+        {
+          translateY: Math.max(0, headerHeight - (translationY.value - 150)),
+        },
+      ],
     };
   });
 
@@ -83,10 +92,12 @@ export default function NftCollectionProfile({
               position: 'absolute',
             }}
             reducedTransparencyFallbackColor="white"></BlurView>
-          <Row itemsCenter justifyCenter width={DEVICE_WIDTH} h={'100%'} mt4>
-            <Span white bold fontSize={17}>
-              {nftCollection.name}
-            </Span>
+          <Row itemsCenter justifyCenter width={DEVICE_WIDTH} h={'100%'}>
+            <Animated.View style={titleStyles}>
+              <Span bold fontSize={17} mt18>
+                {nftCollection.name}
+              </Span>
+            </Animated.View>
           </Row>
         </Animated.View>
         <Row
@@ -194,9 +205,9 @@ export default function NftCollectionProfile({
                   {nftCollection.name}
                 </Span>
               </Div>
-              <Row>
+              <Row mt5>
                 <Col auto mr20>
-                  <Span>팔로워 {followerCount}</Span>
+                  <Span>{followerCount} 팔로워</Span>
                 </Col>
                 <Col />
               </Row>
@@ -208,6 +219,7 @@ export default function NftCollectionProfile({
             posts={nftCollection.posts}
             about={nftCollection.about}
             members={nftCollection.nfts}
+            adminNfts={nftCollection.admin_nfts}
           />
         )}
         refreshControl={

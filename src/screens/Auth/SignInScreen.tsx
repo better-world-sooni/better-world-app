@@ -14,11 +14,6 @@ import {ICONS} from 'src/modules/icons';
 import BottomPopup from 'src/components/common/BottomPopup';
 import {BottomSheetModal} from '@gorhom/bottom-sheet';
 import {QuestionIcon} from 'native-base';
-import {
-  iconSettings,
-  iconSettingsSm,
-  iconSettingsXs,
-} from 'src/modules/constants';
 import {KeyboardAvoidingView} from 'src/modules/viewComponents';
 
 const SignInScreen = ({navigation}) => {
@@ -91,6 +86,13 @@ const SignInScreen = ({navigation}) => {
     bottomPopupRef?.current?.expand();
   };
 
+  const iconSettingsXs = {
+    strokeWidth: 1.3,
+    color: 'black',
+    height: 12,
+    width: 20,
+  };
+
   return (
     <KeyboardAvoidingView bgWhite flex justifyCenter behavior="padding">
       <Div px15>
@@ -107,33 +109,7 @@ const SignInScreen = ({navigation}) => {
             <Col></Col>
           </Row>
         </Div>
-        <Div h45 my15>
-          <Row bgPrimary rounded100 flex itemsCenter>
-            <Col />
-            <Col auto pr10>
-              <Div>
-                <Img h10 w20 source={ICONS.iconKlip}></Img>
-              </Div>
-            </Col>
-            <Col auto>
-              <Div>
-                <Span white bold>
-                  {'Klip 으로 연결'}
-                </Span>
-              </Div>
-            </Col>
-            <Col />
-          </Row>
-        </Div>
-        <Div h20 my10>
-          <Row flex itemsCenter>
-            <Col h={0.5} bgGray600></Col>
-            <Col auto px10>
-              <Span gray600>{'Or'}</Span>
-            </Col>
-            <Col h={0.5} bgGray600></Col>
-          </Row>
-        </Div>
+        <Div h20></Div>
         <Row>
           <TextField
             rounded100
@@ -172,11 +148,7 @@ const SignInScreen = ({navigation}) => {
             <Col auto>
               <Div>
                 <Span black bold>
-                  {loading ? (
-                    <ActivityIndicator></ActivityIndicator>
-                  ) : (
-                    '비밀번호로 연결'
-                  )}
+                  {loading ? <ActivityIndicator></ActivityIndicator> : '연결'}
                 </Span>
               </Div>
             </Col>

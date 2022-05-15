@@ -3,7 +3,6 @@ import React, {useEffect, useState} from 'react';
 import {ActivityIndicator} from 'react-native';
 import {AlertTriangle, Check, CheckCircle} from 'react-native-feather';
 import Colors from 'src/constants/Colors';
-import {iconSettings} from 'src/modules/constants';
 import {
   getNftName,
   getNftProfileImage,
@@ -82,7 +81,7 @@ function NftIdentity({nft, onSuccess}) {
           </Span>
         </Div>
         {getNftName(nft) !== nft.nft_metadatum.name && (
-          <Div mt5>
+          <Div mt3>
             <Span gray600 fontSize={12}>
               {nft.nft_metadatum.name}
             </Span>
@@ -98,7 +97,12 @@ function NftIdentity({nft, onSuccess}) {
               <Check strokeWidth={2} height={18} width={18} color={'white'} />
             </Div>
           ) : (
-            <AlertTriangle {...iconSettings} color={Colors.danger.DEFAULT} />
+            <AlertTriangle
+              strokeWidth={2}
+              height={18}
+              width={18}
+              color={Colors.danger.DEFAULT}
+            />
           )}
         </Col>
       )}

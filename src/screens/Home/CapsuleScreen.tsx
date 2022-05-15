@@ -44,7 +44,7 @@ function Capsule({capsuleOwner}) {
 
   return (
     <>
-      <Div flex backgroundColor={'black'} relative>
+      <Div flex bgBlack relative>
         <Div absolute h100 zIndex={100} w={'100%'}>
           <Div h={HAS_NOTCH ? 44 : 20} />
           <Row itemsCenter>

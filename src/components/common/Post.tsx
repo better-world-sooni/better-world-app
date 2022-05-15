@@ -1,6 +1,6 @@
 import {useNavigation} from '@react-navigation/native';
 import React, {useCallback, useRef, useState} from 'react';
-import {RefreshControl} from 'react-native';
+import {Platform, RefreshControl} from 'react-native';
 import {ChevronLeft, Heart, MoreHorizontal} from 'react-native-feather';
 import {State, TapGestureHandler} from 'react-native-gesture-handler';
 import Colors from 'src/constants/Colors';
@@ -8,10 +8,16 @@ import {
   useGotoNftCollectionProfile,
   useGotoNftProfile,
   useGotoPost,
+  useGotoReport,
 } from 'src/hooks/useGoto';
 import useLike from 'src/hooks/useLike';
 import apis from 'src/modules/apis';
-import {getNftName, getNftProfileImage} from 'src/modules/nftUtils';
+import {
+  getNftName,
+  getNftProfileImage,
+  useIsAdmin,
+  useIsCurrentNft,
+} from 'src/modules/nftUtils';
 import {createdAtText} from 'src/modules/timeUtils';
 import {ScrollView} from 'src/modules/viewComponents';
 import {Col} from './Col';
@@ -24,7 +30,17 @@ import NewComment, {ReplyToType} from './NewComment';
 import {Row} from './Row';
 import {Span} from './Span';
 import TruncatedMarkdown from './TruncatedMarkdown';
-import TruncatedText from './TruncatedText';
+import {MenuView} from '@react-native-menu/menu';
+import {
+  deletePromiseFn,
+  useDeletePromiseFnWithToken,
+} from 'src/redux/asyncReducer';
+import {ReportTypes} from 'src/screens/ReportScreen';
+
+enum PostEventTypes {
+  Delete = 'DELETE',
+  Report = 'REPORT',
+}
 
 export default function Post({
   post,
@@ -32,14 +48,51 @@ export default function Post({
   refreshing = false,
   onRefresh = null,
 }) {
-  console.log(post);
   const {goBack} = useNavigation();
+  const [deleted, setDeleted] = useState(false);
   const [liked, likesCount, handlePressLike] = useLike(
     post.is_liked,
     post.likes_count,
     apis.like.post(post.id).url,
   );
   const [cachedComments, setCachedComments] = useState(post.comments || []);
+  const isCurrentNft = useIsCurrentNft(post.nft);
+  const isAdmin = !post.nft.token_id && useIsAdmin(post.nft);
+  const deletePromiseFnWithToken = useDeletePromiseFnWithToken();
+  const menuOptions =
+    isCurrentNft || isAdmin
+      ? [
+          {
+            id: 'REPORT',
+            title: 'Report Post',
+            titleColor: '#46F289',
+            subtitle: 'Share action on SNS',
+            image: Platform.select({
+              ios: 'flag',
+              android: 'stat_sys_warning',
+            }),
+          },
+          {
+            id: PostEventTypes.Delete,
+            title: 'Delete Post',
+            image: Platform.select({
+              ios: 'trash',
+              android: 'ic_menu_delete',
+            }),
+          },
+        ]
+      : [
+          {
+            id: PostEventTypes.Report,
+            title: 'Report Post',
+            titleColor: '#46F289',
+            subtitle: 'Share action on SNS',
+            image: Platform.select({
+              ios: 'flag',
+              android: 'stat_sys_warning',
+            }),
+          },
+        ];
   const heartProps = liked
     ? {
         fill: Colors.danger.DEFAULT,
@@ -101,25 +154,34 @@ export default function Post({
     setReplyTo(defaultReplyTo);
   };
   const handlePressReplyTo = useCallback(comment => {
-    'yoyoyo';
     setReplyTo({
       object: comment,
       type: ReplyToType.Comment,
     });
   }, []);
-  const doubleTapRef = useRef(null);
-  const handleDoubleTap = event => {
-    console.log(event, 'handleDoubleTap');
-    if (event.nativeEvent.state === State.ACTIVE) {
-      handlePressLike();
-    }
-  };
-
   const scrollviewProps = full
     ? {
         scrollEnabled: true,
       }
     : {};
+  const deletePost = async () => {
+    const {data} = await deletePromiseFnWithToken({
+      url: apis.post.postId._(post.id).url,
+    });
+    if (data.success) {
+      setDeleted(true);
+    }
+  };
+  const gotoReport = useGotoReport({
+    id: post.id,
+    reportType: ReportTypes.Post,
+  });
+  const handlePressMenu = ({nativeEvent: {event}}) => {
+    if (event == PostEventTypes.Delete) deletePost();
+    if (event == PostEventTypes.Report) gotoReport();
+  };
+
+  if (deleted) return null;
 
   return (
     <Div py5 borderBottom={full ? 0 : 0.5} borderGray200 bgWhite flex={full}>
@@ -142,7 +204,9 @@ export default function Post({
         </Col>
         <Col />
         <Col auto>
-          <MoreHorizontal color={'black'} width={20} height={20} />
+          <MenuView onPressAction={handlePressMenu} actions={menuOptions}>
+            <MoreHorizontal color={'black'} width={20} height={20} />
+          </MenuView>
         </Col>
       </Row>
       <ScrollView

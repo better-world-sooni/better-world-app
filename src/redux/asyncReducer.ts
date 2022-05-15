@@ -20,6 +20,13 @@ export const usePostPromiseFnWithToken = () => {
   );
   return async(args) => postPromiseFn({...args, token: userToken})
 };
+export const useDeletePromiseFnWithToken = () => {
+  const {userToken} = useSelector(
+    (root: RootState) => ({userToken: root.app.session.token}),
+    shallowEqual,
+  );
+  return async(args) => deletePromiseFn({...args, token: userToken})
+};
 
 
 export const usePromiseFnWithToken = () => {

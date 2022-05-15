@@ -10,6 +10,7 @@ import {Div} from './Div';
 import {Img} from './Img';
 import {Row} from './Row';
 import {Span} from './Span';
+import {useGotoNftProfile, useGotoProfile} from 'src/hooks/useGoto';
 
 export default function Comment({
   comment,
@@ -19,7 +20,8 @@ export default function Comment({
   return (
     <CommentMemo
       {...comment}
-      nftId={comment.nft.id}
+      nftContractAddress={comment.nft.contract_address}
+      nftTokenId={comment.nft.token_id}
       nftName={getNftName(comment.nft)}
       nftImageUri={getNftProfileImage(comment.nft, 50, 50)}
       nested={nested}
@@ -36,7 +38,8 @@ function CommentContent({
   likes_count,
   comments,
   content,
-  nftId,
+  nftContractAddress,
+  nftTokenId,
   nftImageUri,
   nftName,
   updated_at,
@@ -61,12 +64,16 @@ function CommentContent({
       }
     : {width: heartSize, height: heartSize, color: 'black', strokeWidth: 1.5};
   const handlePressReplyTo = () => {
-    onPressReplyTo({id, is_liked, comments, nft: {id: nftId, name: nftName}});
+    onPressReplyTo({id, is_liked, comments, nft: {name: nftName}});
   };
+  const goToProfile = useGotoNftProfile({
+    contractAddress: nftContractAddress,
+    tokenId: nftTokenId,
+  });
   return (
-    <Div>
+    <Div py3={!nested}>
       <Row py8 px15>
-        <Col auto mr10>
+        <Col auto mr10 onPress={goToProfile}>
           <Img
             rounded={100}
             h={profileImageSize}
@@ -78,7 +85,7 @@ function CommentContent({
           <Row>
             <Col mr10>
               <Span>
-                <Span medium fontSize={14}>
+                <Span medium fontSize={14} onPress={goToProfile}>
                   {nftName}{' '}
                 </Span>{' '}
                 <Span fontSize={14}>{content}</Span>

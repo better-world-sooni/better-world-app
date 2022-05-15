@@ -68,7 +68,7 @@ export default function NewComment({
       {replyToType == ReplyToType.Comment && (
         <Row itemsCenter bgGray200 py5 px15>
           <Col></Col>
-          <Col itemsCenter>
+          <Col itemsCenter auto>
             <Span>{getNftName(replyToObject.nft)} 에게 답변중</Span>
           </Col>
           <Col itemsEnd onPress={onPressExitReplyToComment}>

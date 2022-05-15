@@ -58,6 +58,14 @@ const apis = {
       comment: (postId) => apiV1(`/post/${postId}/comment`)
     }
   },
+  report: {
+    post: {
+      postId: (postId) => apiV1(`/report/post/${postId}`)
+    },
+    comment: {
+      commentId: (commentId) => apiV1(`/report/comment/${commentId}`)
+    }
+  },
   feed: {
     _: () => apiV1(`/feed`),
   },

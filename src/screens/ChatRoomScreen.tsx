@@ -9,15 +9,12 @@ import {Col} from 'src/components/common/Col';
 import {Div} from 'src/components/common/Div';
 import {Row} from 'src/components/common/Row';
 import {Span} from 'src/components/common/Span';
-import {Header} from 'src/components/Header';
 import useSocketInput from 'src/hooks/useSocketInput';
 import apis from 'src/modules/apis';
-import {HAS_NOTCH, iconSettings, WS_URL} from 'src/modules/constants';
 import {getPromiseFn} from 'src/redux/asyncReducer';
 import {RootState} from 'src/redux/rootReducer';
 import {cable} from 'src/modules/cable';
-import {ChatChannel} from 'src/components/ChatChannel'
-
+import {ChatChannel} from 'src/components/ChatChannel';
 
 const ChatRoomScreen = props => {
   const currentChatRoomId = props.route.params.currentChatRoomId;
@@ -35,67 +32,64 @@ const ChatRoomScreen = props => {
   const [chatSocket, setChatSocket] = useState(null);
   const [enterUsers, setEnterUsers] = useState([]);
 
-  const onSend = useCallback(async (messages = []) => {
-    messages[0]["read_user_ids"] = enterUsers
-    console.log("send: ", messages[0]);
-    if(chatSocket) {
-      const _ = await chatSocket.send(messages);
-    } else {
-      Alert.alert('네트워크가 불안정하여 메세지를 보내지 못했습니다');
-    }
-  }, [chatSocket, enterUsers]);
+  const onSend = useCallback(
+    async (messages = []) => {
+      messages[0]['read_user_ids'] = enterUsers;
+      console.log('send: ', messages[0]);
+      if (chatSocket) {
+        const _ = await chatSocket.send(messages);
+      } else {
+        Alert.alert('네트워크가 불안정하여 메세지를 보내지 못했습니다');
+      }
+    },
+    [chatSocket, enterUsers],
+  );
 
   useLayoutEffect(() => {
     let channel;
     const wsConnect = async () => {
       console.log(token);
-      channel = new ChatChannel({ roomId: currentChatRoomId });
+      channel = new ChatChannel({roomId: currentChatRoomId});
       await cable(token).subscribe(channel);
-      setChatSocket(channel);     
+      setChatSocket(channel);
       channel.on('enter', res => {
-        const newUsers = res['new_users']
-        const newMsgs = res["update_msgs"]
-        console.log(newUsers)
-        setEnterUsers(newUsers)
-        setMessages(newMsgs)
+        const newUsers = res['new_users'];
+        const newMsgs = res['update_msgs'];
+        console.log(newUsers);
+        setEnterUsers(newUsers);
+        setMessages(newMsgs);
       });
       let _ = await channel.enter();
       channel.on('message', res => {
-        console.log("message receive", userUuid, res['data'])
-        setMessages((m) => [res['data'], ...m]);
+        console.log('message receive', userUuid, res['data']);
+        setMessages(m => [res['data'], ...m]);
       });
       channel.on('leave', res => {
-        console.log(userUuid,  res['leave_user'], res['new_users'])
-        if(userUuid != res['leave_user']){
-          console.log("here")
-          setEnterUsers([...res['new_users']])
+        console.log(userUuid, res['leave_user'], res['new_users']);
+        if (userUuid != res['leave_user']) {
+          console.log('here');
+          setEnterUsers([...res['new_users']]);
         }
-      })
+      });
       channel.on('close', () => console.log('Disconnected from chat'));
-      channel.on('disconnect', () => console.log("check disconnect"));
+      channel.on('disconnect', () => console.log('check disconnect'));
     };
     if (currentChatRoomId) {
       wsConnect();
     }
-    return() => {
-      if(channel) {
+    return () => {
+      if (channel) {
         channel.leave();
         channel.disconnect();
         channel.close();
-      }   
-    }
+      }
+    };
   }, [currentChatRoomId]);
 
   return (
     <Div flex bg={'white'}>
-      <Header
-        bg={'rgba(255,255,255,0)'}
-        headerTitle={roomname}
-        noButtons
-        hasGoBack
-      />
       <Div bgWhite flex={1}>
-          {/* <GiftedChat
+        {/* <GiftedChat
             roomId={currentChatRoomId}
             userCount={numUsers}
             placeholder={'메세지를 입력하세요'}
