@@ -8,10 +8,6 @@ import {Span} from './Span';
 import {resizeImageUri} from 'src/modules/uriUtils';
 import ProfileDataTabs from '../ProfileDataTabs';
 import {DEVICE_WIDTH} from 'src/modules/styles';
-import {BottomSheetModal} from '@gorhom/bottom-sheet';
-import {useIsAdmin} from 'src/modules/nftUtils';
-import BottomPopup from './BottomPopup';
-import NftCollectionProfileEditBottomSheetScrollView from './NftCollectionProfileEditBottomSheetScrollView';
 import useFollow from 'src/hooks/useFollow';
 import apis from 'src/modules/apis';
 import {useGotoNewPost} from 'src/hooks/useGoto';
@@ -24,7 +20,6 @@ import Animated, {
 } from 'react-native-reanimated';
 import {BlurView} from '@react-native-community/blur';
 import {useNavigation} from '@react-navigation/native';
-import {FlatList} from 'react-native-gesture-handler';
 import {RefreshControl} from 'react-native';
 
 export default function NftCollectionProfile({
@@ -160,7 +155,6 @@ export default function NftCollectionProfile({
                   <Div>
                     <Row py10>
                       <Col />
-
                       <Col
                         auto
                         bgBlack

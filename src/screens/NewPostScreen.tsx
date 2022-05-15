@@ -3,7 +3,7 @@ import {Div} from 'src/components/common/Div';
 import {HAS_NOTCH} from 'src/modules/constants';
 import {Row} from 'src/components/common/Row';
 import {Col} from 'src/components/common/Col';
-import {ChevronLeft, MoreHorizontal} from 'react-native-feather';
+import {ChevronDown, ChevronLeft, MoreHorizontal} from 'react-native-feather';
 import apis from 'src/modules/apis';
 import {Img} from 'src/components/common/Img';
 import {useNavigation} from '@react-navigation/native';
@@ -21,6 +21,18 @@ import {
 } from 'src/modules/viewComponents';
 import {useApiSelector, useReloadGETWithToken} from 'src/redux/asyncReducer';
 import {ActivityIndicator} from 'react-native';
+import {MenuView} from '@react-native-menu/menu';
+
+const postTypes = [
+  {
+    id: '',
+    title: '기본',
+  },
+  {
+    id: 'Proposal',
+    title: '투표',
+  },
+];
 
 export enum PostOwnerType {
   Nft,
@@ -59,13 +71,28 @@ const NewPostScreen = ({
   const {
     error,
     loading,
+    currentPostType,
+    setPostType,
+    votingDeadline,
+    setVotingDeadline,
     content,
     handleContentChange,
     images,
     handleAddImages,
     handleRemoveImage,
     uploadPost,
-  } = useUploadPost({uploadSuccessCallback, admin: postOwnerIsCollection});
+  } = useUploadPost();
+
+  const handlePressUpload = () => {
+    uploadPost({
+      admin: postOwnerIsCollection,
+      uploadSuccessCallback,
+    });
+  };
+
+  const handlePressMenu = ({nativeEvent: {event}}) => {
+    setPostType(event);
+  };
 
   const postOwner = postOwnerIsCollection
     ? nftCollectionData?.nft_collection
@@ -89,7 +116,7 @@ const NewPostScreen = ({
           </Span>
         </Col>
         <Col />
-        <Col auto onPress={uploadPost}>
+        <Col auto onPress={handlePressUpload}>
           {loading ? (
             <ActivityIndicator></ActivityIndicator>
           ) : (
@@ -107,6 +134,29 @@ const NewPostScreen = ({
             onPressRemove={handleRemoveImage}
           />
         </Div>
+        <Row px15>
+          <Col />
+          <Col auto>
+            <MenuView onPressAction={handlePressMenu} actions={postTypes}>
+              <Row pt10>
+                <Col auto mr5>
+                  <Div>
+                    <Span fontSize={16}>
+                      {
+                        postTypes.filter(
+                          postType => postType.id == currentPostType,
+                        )[0].title
+                      }
+                    </Span>
+                  </Div>
+                </Col>
+                <Col auto>
+                  <ChevronDown color={'black'} width={20} height={20} />
+                </Col>
+              </Row>
+            </MenuView>
+          </Col>
+        </Row>
         {error ? (
           <Div px15 mt10>
             <Span notice danger>

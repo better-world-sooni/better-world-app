@@ -39,44 +39,45 @@ const HomeScreen = () => {
     return {
       width: DEVICE_WIDTH,
       height: headerHeight,
-      position: 'absolute',
-      zIndex: 100,
       opacity: Math.min(translationY.value / 50, 1),
     };
   });
   return (
     <Div flex bgWhite>
-      <Div h={headerHeight} zIndex={100}>
-        <Animated.View style={headerStyles}>
-          <BlurView
-            blurType="xlight"
-            blurAmount={5}
-            blurRadius={5}
-            style={{
-              width: DEVICE_WIDTH,
-              height: '100%',
-              position: 'absolute',
-            }}
-            reducedTransparencyFallbackColor="white"></BlurView>
-        </Animated.View>
-        <Row
-          itemsCenter
-          py5
-          h40
-          zIndex={100}
-          absolute
-          w={DEVICE_WIDTH}
-          top={HAS_NOTCH ? 44 : 20}>
-          <Col></Col>
-          <Col auto>
-            <Img source={IMAGES.betterWorldBlueLogo} w={40} h={40}></Img>
-          </Col>
-          <Col></Col>
-        </Row>
-      </Div>
       <Animated.FlatList
         showsVerticalScrollIndicator={false}
         onScroll={scrollHandler}
+        ListHeaderComponent={
+          <Div h={headerHeight} zIndex={100}>
+            <Animated.View style={headerStyles}>
+              <BlurView
+                blurType="xlight"
+                blurAmount={30}
+                blurRadius={20}
+                style={{
+                  width: DEVICE_WIDTH,
+                  height: '100%',
+                  position: 'absolute',
+                }}
+                reducedTransparencyFallbackColor="white"></BlurView>
+            </Animated.View>
+            <Row
+              itemsCenter
+              py5
+              h40
+              zIndex={100}
+              absolute
+              w={DEVICE_WIDTH}
+              top={HAS_NOTCH ? 44 : 20}>
+              <Col></Col>
+              <Col auto>
+                <Img source={IMAGES.betterWorldBlueLogo} w={40} h={40}></Img>
+              </Col>
+              <Col></Col>
+            </Row>
+          </Div>
+        }
+        stickyHeaderIndices={[0]}
         refreshControl={
           <RefreshControl refreshing={feedLoad} onRefresh={onRefresh} />
         }

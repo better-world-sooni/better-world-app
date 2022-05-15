@@ -1,7 +1,14 @@
 import {useNavigation} from '@react-navigation/native';
 import React, {useCallback, useRef, useState} from 'react';
-import {Platform, RefreshControl} from 'react-native';
-import {ChevronLeft, Heart, MoreHorizontal} from 'react-native-feather';
+import {ActivityIndicator, Platform, RefreshControl} from 'react-native';
+import {
+  ChevronLeft,
+  Coffee,
+  Heart,
+  MoreHorizontal,
+  ThumbsDown,
+  ThumbsUp,
+} from 'react-native-feather';
 import {State, TapGestureHandler} from 'react-native-gesture-handler';
 import Colors from 'src/constants/Colors';
 import {
@@ -36,6 +43,7 @@ import {
   useDeletePromiseFnWithToken,
 } from 'src/redux/asyncReducer';
 import {ReportTypes} from 'src/screens/ReportScreen';
+import useVote from 'src/hooks/useVote';
 
 enum PostEventTypes {
   Delete = 'DELETE',
@@ -50,12 +58,30 @@ export default function Post({
 }) {
   const {goBack} = useNavigation();
   const [deleted, setDeleted] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [liked, likesCount, handlePressLike] = useLike(
     post.is_liked,
     post.likes_count,
     apis.like.post(post.id).url,
   );
   const [cachedComments, setCachedComments] = useState(post.comments || []);
+  const {
+    forVotesCount,
+    againstVotesCount,
+    abstainVotesCount,
+    hasVotedFor,
+    hasVotedAgainst,
+    hasVotedAbstain,
+    handlePressVoteAbstain,
+    handlePressVoteFor,
+    handlePressVoteAgainst,
+  } = useVote({
+    initialVote: post.vote_category,
+    initialAbstainVotesCount: post.abstain_votes_count,
+    initialForVotesCount: post.for_votes_count,
+    initialAgainstVotesCount: post.against_votes_count,
+    postId: post.id,
+  });
   const isCurrentNft = useIsCurrentNft(post.nft);
   const isAdmin = !post.nft.token_id && useIsAdmin(post.nft);
   const deletePromiseFnWithToken = useDeletePromiseFnWithToken();
@@ -93,6 +119,13 @@ export default function Post({
             }),
           },
         ];
+
+  const actionIconDefaultProps = {
+    width: 20,
+    height: 20,
+    color: 'black',
+    strokeWidth: 1.5,
+  };
   const heartProps = liked
     ? {
         fill: Colors.danger.DEFAULT,
@@ -101,7 +134,35 @@ export default function Post({
         color: Colors.danger.DEFAULT,
         strokeWidth: 1.5,
       }
-    : {width: 20, height: 20, color: 'black', strokeWidth: 1.5};
+    : actionIconDefaultProps;
+
+  const forVoteProps = hasVotedFor
+    ? {
+        fill: Colors.success.DEFAULT,
+        width: 20,
+        height: 20,
+        color: Colors.success.DEFAULT,
+        strokeWidth: 1.5,
+      }
+    : actionIconDefaultProps;
+  const abstainVoteProps = hasVotedAbstain
+    ? {
+        fill: Colors.info.DEFAULT,
+        width: 20,
+        height: 20,
+        color: Colors.info.DEFAULT,
+        strokeWidth: 1.5,
+      }
+    : actionIconDefaultProps;
+  const againstVoteProps = hasVotedAgainst
+    ? {
+        fill: Colors.danger.DEFAULT,
+        width: 20,
+        height: 20,
+        color: Colors.danger.DEFAULT,
+        strokeWidth: 1.5,
+      }
+    : actionIconDefaultProps;
   const goToPost = useGotoPost({postId: post.id});
   const gotoNftProfile = useGotoNftProfile({
     contractAddress: post.nft.contract_address,
@@ -165,9 +226,11 @@ export default function Post({
       }
     : {};
   const deletePost = async () => {
+    setLoading(true);
     const {data} = await deletePromiseFnWithToken({
       url: apis.post.postId._(post.id).url,
     });
+    setLoading(false);
     if (data.success) {
       setDeleted(true);
     }
@@ -192,7 +255,12 @@ export default function Post({
           </Col>
         ) : null}
         <Col auto mr10 onPress={goToProfile}>
-          <Img w40 h40 rounded100 uri={getNftProfileImage(post.nft, 50, 50)} />
+          <Img
+            w40
+            h40
+            rounded100
+            uri={getNftProfileImage(post.nft, 100, 100)}
+          />
         </Col>
         <Col auto>
           <Span fontSize={15} medium onPress={goToProfile}>
@@ -205,7 +273,11 @@ export default function Post({
         <Col />
         <Col auto>
           <MenuView onPressAction={handlePressMenu} actions={menuOptions}>
-            <MoreHorizontal color={'black'} width={20} height={20} />
+            {loading ? (
+              <ActivityIndicator />
+            ) : (
+              <MoreHorizontal color={'black'} width={20} height={20} />
+            )}
           </MenuView>
         </Col>
       </Row>
@@ -231,12 +303,37 @@ export default function Post({
           </Div>
         ) : null}
         <Row px15 itemsCenter py8>
-          <Col auto mr5 onPress={handlePressLike}>
-            {<Heart {...heartProps}></Heart>}
-          </Col>
-          <Col auto mr10>
-            <Span fontSize={12}>{likesCount} likes</Span>
-          </Col>
+          {!post.type ? (
+            <>
+              <Col auto mr5 onPress={handlePressLike}>
+                {<Heart {...heartProps}></Heart>}
+              </Col>
+              <Col auto mr10>
+                <Span fontSize={12}>{likesCount} Likes</Span>
+              </Col>
+            </>
+          ) : (
+            <>
+              <Col auto mr5 onPress={handlePressVoteAgainst}>
+                {<ThumbsDown {...againstVoteProps}></ThumbsDown>}
+              </Col>
+              <Col auto mr10>
+                <Span fontSize={12}>{againstVotesCount} Against</Span>
+              </Col>
+              <Col auto mr5 onPress={handlePressVoteAbstain}>
+                {<Coffee {...abstainVoteProps}></Coffee>}
+              </Col>
+              <Col auto mr10>
+                <Span fontSize={12}>{abstainVotesCount} Abstain</Span>
+              </Col>
+              <Col auto mr5 onPress={handlePressVoteFor}>
+                {<ThumbsUp {...forVoteProps}></ThumbsUp>}
+              </Col>
+              <Col auto mr10>
+                <Span fontSize={12}>{forVotesCount} For</Span>
+              </Col>
+            </>
+          )}
           {cachedComments.length > 0 ? (
             <Col auto onPress={!full && goToPost}>
               <CommentNftExamples comments={cachedComments} />

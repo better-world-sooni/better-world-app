@@ -2,14 +2,16 @@ import { useState } from "react";
 import apis from "src/modules/apis";
 import { usePostPromiseFnWithToken } from "src/redux/asyncReducer";
 import useUploadImages from "./useUploadImages";
-
-export default function useUploadPost({admin=false, uploadSuccessCallback}){
+  
+export default function useUploadPost(){
     const [loading, setLoading] = useState(false);
     const [content, setContent] = useState('')
+	const [currentPostType, setPostType] = useState('')
+	const [votingDeadline, setVotingDeadline] = useState(null)
     const { images, error, setError, handleAddImages, handleRemoveImage, uploadAllSelectedFiles } = useUploadImages({attachedRecord:"post"})
     const postPromiseFnWithToken = usePostPromiseFnWithToken()
 
-    const uploadPost = async () => {
+    const uploadPost = async ({admin, uploadSuccessCallback}) => {
 		if (loading) {
 			return;
 		}
@@ -23,6 +25,8 @@ export default function useUploadPost({admin=false, uploadSuccessCallback}){
 			content,
 			images: signedIdArray,
             admin,
+			type: currentPostType || null,
+			voting_deadline: votingDeadline
 		}
 		const {data} = await postPromiseFnWithToken({url: apis.post._().url, body});
 		if (!data.success) {
@@ -40,5 +44,5 @@ export default function useUploadPost({admin=false, uploadSuccessCallback}){
 		setError("");
 	};
 
-    return { error, loading, content, handleContentChange, images, handleAddImages, handleRemoveImage, uploadPost }
+    return { error, loading, currentPostType, setPostType, votingDeadline, setVotingDeadline, content, handleContentChange, images, handleAddImages, handleRemoveImage, uploadPost }
 }

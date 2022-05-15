@@ -250,10 +250,10 @@ export default function NftProfile({
               </Div>
               <Row>
                 <Col auto mr20>
-                  <Span>팔로워 {followerCount}</Span>
+                  <Span>{followerCount} 팔로워</Span>
                 </Col>
                 <Col auto>
-                  <Span>팔로잉 {nft.following_count}</Span>
+                  <Span>{nft.following_count} 팔로잉</Span>
                 </Col>
                 <Col />
               </Row>

@@ -51,6 +51,9 @@ const apis = {
     post: (postId) => apiV1(`/like/post/${postId}`),
     comment: (commentId) => apiV1(`/like/comment/${commentId}`)
   },
+  vote: {
+    postId: (postId) => apiV1(`/vote/${postId}`),
+  },
   post: {
     _: () => apiV1(`/post`),
     postId: {
