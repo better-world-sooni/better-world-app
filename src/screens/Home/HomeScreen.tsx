@@ -66,13 +66,13 @@ const HomeScreen = () => {
               itemsCenter
               py5
               h40
+              px15
               zIndex={100}
               absolute
               w={DEVICE_WIDTH}
               top={HAS_NOTCH ? 44 : 20}>
-              <Col></Col>
               <Col auto>
-                <Img source={IMAGES.betterWorldBlueLogo} w={40} h={40}></Img>
+                <Img source={IMAGES.betterWorldBlueLogo} w={50} h={50}></Img>
               </Col>
               <Col></Col>
             </Row>

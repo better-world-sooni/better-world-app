@@ -5,6 +5,7 @@ import {
   ChevronLeft,
   Coffee,
   Heart,
+  MessageCircle,
   MoreHorizontal,
   ThumbsDown,
   ThumbsUp,
@@ -44,6 +45,8 @@ import {
 } from 'src/redux/asyncReducer';
 import {ReportTypes} from 'src/screens/ReportScreen';
 import useVote from 'src/hooks/useVote';
+import {shallowEqual, useSelector} from 'react-redux';
+import {RootState} from 'src/redux/rootReducer';
 
 enum PostEventTypes {
   Delete = 'DELETE',
@@ -85,6 +88,10 @@ export default function Post({
   const isCurrentNft = useIsCurrentNft(post.nft);
   const isAdmin = !post.nft.token_id && useIsAdmin(post.nft);
   const deletePromiseFnWithToken = useDeletePromiseFnWithToken();
+  const {currentNft} = useSelector(
+    (root: RootState) => root.app.session,
+    shallowEqual,
+  );
   const menuOptions =
     isCurrentNft || isAdmin
       ? [
@@ -123,7 +130,7 @@ export default function Post({
   const actionIconDefaultProps = {
     width: 20,
     height: 20,
-    color: 'black',
+    color: Colors.gray[700],
     strokeWidth: 1.5,
   };
   const heartProps = liked
@@ -138,19 +145,19 @@ export default function Post({
 
   const forVoteProps = hasVotedFor
     ? {
-        fill: Colors.success.DEFAULT,
+        fill: Colors.primary.DEFAULT,
         width: 20,
         height: 20,
-        color: Colors.success.DEFAULT,
+        color: Colors.primary.DEFAULT,
         strokeWidth: 1.5,
       }
     : actionIconDefaultProps;
   const abstainVoteProps = hasVotedAbstain
     ? {
-        fill: Colors.info.DEFAULT,
+        fill: Colors.primary.DEFAULT,
         width: 20,
         height: 20,
-        color: Colors.info.DEFAULT,
+        color: Colors.primary.DEFAULT,
         strokeWidth: 1.5,
       }
     : actionIconDefaultProps;
@@ -262,11 +269,21 @@ export default function Post({
             uri={getNftProfileImage(post.nft, 100, 100)}
           />
         </Col>
-        <Col auto>
+        <Col auto mr10>
           <Span fontSize={15} medium onPress={goToProfile}>
             {getNftName(post.nft)}
           </Span>
-          <Span fontSize={12} mt2 gray600>
+        </Col>
+        {post.nft.token_id && (
+          <Col auto>
+            <Span fontSize={13} gray700 onPress={goToProfile}>
+              @{post.nft.nft_metadatum.name}
+              {' · '}
+            </Span>
+          </Col>
+        )}
+        <Col auto>
+          <Span fontSize={13} gray700>
             {createdAtText(post.updated_at)}
           </Span>
         </Col>
@@ -286,9 +303,6 @@ export default function Post({
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }>
-        {post.image_uris.length > 0 ? (
-          <ImageSlideShow imageUris={post.image_uris} />
-        ) : null}
         {post.content ? (
           <Div px15>
             {full ? (
@@ -302,14 +316,42 @@ export default function Post({
             )}
           </Div>
         ) : null}
-        <Row px15 itemsCenter py8>
+        {post.type == 'Proposal' &&
+          post.nft.contract_address == currentNft.contract_address && (
+            <Row px15 pb10>
+              <Col auto mr10>
+                <Span fontSize={13} bold>
+                  예{' '}
+                  {(forVotesCount / (againstVotesCount + forVotesCount)) * 100}%
+                </Span>
+              </Col>
+              <Col auto>
+                <Span fontSize={13} bold>
+                  아니요{' '}
+                  {(againstVotesCount / (againstVotesCount + forVotesCount)) *
+                    100}
+                  %
+                </Span>
+              </Col>
+              <Col />
+            </Row>
+          )}
+        {post.image_uris.length > 0 ? (
+          <Div mx15 rounded10 overflowHidden>
+            <ImageSlideShow imageUris={post.image_uris} />
+          </Div>
+        ) : null}
+        <Row px15 itemsCenter pb8 mt15>
+          <Col />
           {!post.type ? (
             <>
               <Col auto mr5 onPress={handlePressLike}>
                 {<Heart {...heartProps}></Heart>}
               </Col>
-              <Col auto mr10>
-                <Span fontSize={12}>{likesCount} Likes</Span>
+              <Col auto mr10 gray800>
+                <Span fontSize={12} danger={liked}>
+                  {likesCount}
+                </Span>
               </Col>
             </>
           ) : (
@@ -318,33 +360,33 @@ export default function Post({
                 {<ThumbsDown {...againstVoteProps}></ThumbsDown>}
               </Col>
               <Col auto mr10>
-                <Span fontSize={12}>{againstVotesCount} Against</Span>
-              </Col>
-              <Col auto mr5 onPress={handlePressVoteAbstain}>
-                {<Coffee {...abstainVoteProps}></Coffee>}
-              </Col>
-              <Col auto mr10>
-                <Span fontSize={12}>{abstainVotesCount} Abstain</Span>
+                <Span fontSize={12} gray800 danger={hasVotedAgainst}>
+                  {againstVotesCount}
+                </Span>
               </Col>
               <Col auto mr5 onPress={handlePressVoteFor}>
                 {<ThumbsUp {...forVoteProps}></ThumbsUp>}
               </Col>
-              <Col auto mr10>
-                <Span fontSize={12}>{forVotesCount} For</Span>
+              <Col auto mr10 gray800>
+                <Span fontSize={12} primary={hasVotedFor}>
+                  {forVotesCount}
+                </Span>
               </Col>
             </>
           )}
-          {cachedComments.length > 0 ? (
-            <Col auto onPress={!full && goToPost}>
+          <Col auto onPress={!full && goToPost}>
+            {cachedComments.length > 0 ? (
               <CommentNftExamples comments={cachedComments} />
-            </Col>
-          ) : null}
+            ) : (
+              <MessageCircle {...actionIconDefaultProps} />
+            )}
+          </Col>
           <Col auto mr10 onPress={!full && goToPost}>
-            <Span fontSize={12}>
-              {full ? cachedComments.length : post.comments_count} Replies
+            <Span fontSize={12} gray800>
+              {' '}
+              {full ? cachedComments.length : post.comments_count}
             </Span>
           </Col>
-          <Col />
         </Row>
         {full && (
           <Div borderTop={0.5} borderGray200 pt5>
@@ -374,7 +416,7 @@ export default function Post({
 
 function CommentNftExamples({comments}) {
   return (
-    <Div w={(comments.slice(0, 3).length - 1) * 12 + 22} relative h22 mr5>
+    <Div w={(comments.slice(0, 3).length - 1) * 12 + 19} relative h22 mr5>
       {comments.slice(0, 3).map((comment, index) => {
         return (
           <Img
