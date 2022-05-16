@@ -94,7 +94,11 @@ const SignInScreen = ({navigation}) => {
   };
 
   return (
-    <KeyboardAvoidingView bgWhite flex justifyCenter behavior="padding">
+    <KeyboardAvoidingView
+      bgWhite
+      justifyCenter
+      behavior="padding"
+      style={{flex: 1}}>
       <Div px15>
         <Div rounded10 overflowHidden>
           <Row itemsCenter>

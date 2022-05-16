@@ -43,7 +43,7 @@ const HomeScreen = () => {
     };
   });
   return (
-    <Div flex bgWhite>
+    <Div bgWhite>
       <Animated.FlatList
         automaticallyAdjustContentInsets
         showsVerticalScrollIndicator={false}
@@ -132,7 +132,6 @@ function MyActiveCapsule() {
 
 function ActiveCapsule({nft}) {
   const goToCapsule = useGotoCapsule({nft});
-  console.log(nft.capsule.is_active, nft);
   return (
     <Div
       ml15
