@@ -37,6 +37,7 @@ export default function CustomHeaderWebView({uri, onbwwMessage, ...restProps}) {
   return (
     <WebView
       allowsBackForwardNavigationGestures={true}
+      style={{backgroundColor: 'transparent'}}
       {...restProps}
       source={{
         uri,

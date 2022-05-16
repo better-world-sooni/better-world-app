@@ -134,29 +134,31 @@ const NewPostScreen = ({
             onPressRemove={handleRemoveImage}
           />
         </Div>
-        <Row px15>
-          <Col />
-          <Col auto>
-            <MenuView onPressAction={handlePressMenu} actions={postTypes}>
-              <Row pt10>
-                <Col auto mr5>
-                  <Div>
-                    <Span fontSize={16}>
-                      {
-                        postTypes.filter(
-                          postType => postType.id == currentPostType,
-                        )[0].title
-                      }
-                    </Span>
-                  </Div>
-                </Col>
-                <Col auto>
-                  <ChevronDown color={'black'} width={20} height={20} />
-                </Col>
-              </Row>
-            </MenuView>
-          </Col>
-        </Row>
+        {postOwnerIsCollection && (
+          <Row px15>
+            <Col />
+            <Col auto>
+              <MenuView onPressAction={handlePressMenu} actions={postTypes}>
+                <Row pt10>
+                  <Col auto mr5>
+                    <Div>
+                      <Span fontSize={16}>
+                        {
+                          postTypes.filter(
+                            postType => postType.id == currentPostType,
+                          )[0].title
+                        }
+                      </Span>
+                    </Div>
+                  </Col>
+                  <Col auto>
+                    <ChevronDown color={'black'} width={20} height={20} />
+                  </Col>
+                </Row>
+              </MenuView>
+            </Col>
+          </Row>
+        )}
         {error ? (
           <Div px15 mt10>
             <Span notice danger>

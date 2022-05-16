@@ -65,19 +65,6 @@ const MainBottomTabs = () => {
         }}
       />
       <Tab.Screen
-        name={NAV_NAMES.Capsule}
-        component={CapsuleScreen}
-        options={{
-          tabBarLabel: 'Capsule',
-          tabBarIcon: ({focused}) =>
-            focused ? (
-              <Img h18 w18 source={ICONS.capsuleIconBlack}></Img>
-            ) : (
-              <Img h18 w18 source={ICONS.capsuleIconGray}></Img>
-            ),
-        }}
-      />
-      <Tab.Screen
         name={NAV_NAMES.Chat}
         component={ProfileScreen}
         options={{
@@ -88,6 +75,20 @@ const MainBottomTabs = () => {
               height={20}
               color={focused ? 'black' : Colors.gray[400]}></Search>
           ),
+        }}
+      />
+      <Tab.Screen
+        name={NAV_NAMES.Capsule}
+        component={CapsuleScreen}
+        options={{
+          unmountOnBlur: true,
+          tabBarLabel: 'Capsule',
+          tabBarIcon: ({focused}) =>
+            focused ? (
+              <Img h18 w18 source={ICONS.capsuleIconWhite}></Img>
+            ) : (
+              <Img h18 w18 source={ICONS.capsuleIconGray}></Img>
+            ),
         }}
       />
       <Tab.Screen

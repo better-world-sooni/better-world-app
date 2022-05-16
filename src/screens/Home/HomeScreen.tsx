@@ -45,6 +45,7 @@ const HomeScreen = () => {
   return (
     <Div flex bgWhite>
       <Animated.FlatList
+        automaticallyAdjustContentInsets
         showsVerticalScrollIndicator={false}
         onScroll={scrollHandler}
         ListHeaderComponent={
@@ -83,12 +84,23 @@ const HomeScreen = () => {
         }
         data={feedRes ? feedRes.feed : []}
         renderItem={({item, index}) => {
-          if (index == 0)
+          if (index == 0) {
+            if ((item as any).length == 0)
+              return <Div borderBottom={0.5} borderGray200></Div>;
             return (
-              <ScrollView horizontal pb8 borderBottom={0.5} borderGray200>
+              <ScrollView
+                horizontal
+                py8
+                borderBottom={0.5}
+                borderGray200
+                showsHorizontalScrollIndicator={false}>
                 <MyActiveCapsule />
+                {(item as any).map(capsuleOwner => {
+                  return <ActiveCapsule nft={capsuleOwner} />;
+                })}
               </ScrollView>
             );
+          }
           return <Post key={(item as any).id} post={item} />;
         }}></Animated.FlatList>
     </Div>
@@ -114,6 +126,30 @@ function MyActiveCapsule() {
         border1
         borderWhite
         uri={getNftProfileImage(currentNft, 50, 50)}></Img>
+    </Div>
+  );
+}
+
+function ActiveCapsule({nft}) {
+  const goToCapsule = useGotoCapsule({nft});
+  console.log(nft.capsule.is_active, nft);
+  return (
+    <Div
+      ml15
+      relative
+      onPress={goToCapsule}
+      opacity={nft.capsule.is_active ? 1 : 0.8}>
+      <Img uri={nft.capsule.image_uri} w92 h132 rounded10 />
+      <Img
+        absolute
+        top10
+        left10
+        w28
+        h28
+        rounded20
+        border1
+        borderWhite
+        uri={getNftProfileImage(nft, 50, 50)}></Img>
     </Div>
   );
 }

@@ -12,6 +12,12 @@ import {mediumBump} from 'src/modules/hapticFeedBackUtils';
 import {HAS_NOTCH} from 'src/modules/constants';
 
 const BottomTabBar = ({state, descriptors, navigation}) => {
+  const isFocusedOnProfile = state.history[
+    state.history.length - 1
+  ].key.startsWith(NAV_NAMES.Capsule);
+  descriptors[
+    state.history[state.history.length - 1].key
+  ]?.navigation?.isFocused();
   const bottomPopupRef = useRef<BottomSheetModal>(null);
   const {currentUser} = useSelector(
     (root: RootState) => root.app.session,
@@ -67,12 +73,16 @@ const BottomTabBar = ({state, descriptors, navigation}) => {
       <Div
         h70={HAS_NOTCH}
         h50={!HAS_NOTCH}
-        borderTopColor={Colors.gray[100]}
+        borderTopColor={isFocusedOnProfile ? 'black' : Colors.gray[100]}
         borderTopWidth={0.2}>
         <NativeBaseProvider>
           <Box flex={1} safeAreaTop>
             <Center flex={1}></Center>
-            <HStack bg={'white'} safeAreaBottom paddingTop={4} shadow={1}>
+            <HStack
+              bg={isFocusedOnProfile ? 'black' : 'white'}
+              safeAreaBottom
+              paddingTop={4}
+              shadow={1}>
               {List}
             </HStack>
           </Box>

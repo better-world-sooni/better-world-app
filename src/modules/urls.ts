@@ -1,13 +1,18 @@
 import urljoin from 'url-join';
 
 const baseUrl = 'http://localhost:3001';
+const capsuleBaseUrl = 'http://localhost:3100';
 const toUrl = (...args) => urljoin(...args);
 const base = path => toUrl(baseUrl, path);
+const capsuleBase = path => toUrl(capsuleBaseUrl, path);
 
 export const urls = {
     index: () => base('/'),
     home: () => base('/home'),
     feed: () => base('/feed'),
+    capsule: {
+        contractAddressAndTokenIdAndJwt: (contractAddress, tokenId, token) => capsuleBase(`/${contractAddress}/${tokenId}?jwt=${token}`)
+    },
     post: {
         index: () => base(`/post`),
         postId: (postId, section = "#") => base(`/post/${postId}${section}`),
