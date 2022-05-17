@@ -37,7 +37,11 @@ import {DEVICE_WIDTH} from 'src/modules/styles';
 import BottomPopup from './BottomPopup';
 import {BottomSheetModal} from '@gorhom/bottom-sheet';
 import NftProfileEditBottomSheetScrollView from './NftProfileEditBottomSheetScrollView';
-import {useGotoCapsule, useGotoNewPost} from 'src/hooks/useGoto';
+import {
+  useGotoCapsule,
+  useGotoNewPost,
+  useGotoNftCollectionProfile,
+} from 'src/hooks/useGoto';
 import {PostOwnerType} from 'src/screens/NewPostScreen';
 import Animated, {
   useAnimatedScrollHandler,
@@ -54,22 +58,15 @@ export default function NftProfile({
   enableBack = true,
 }) {
   const translationY = useSharedValue(0);
-
   const scrollHandler = useAnimatedScrollHandler(event => {
     translationY.value = event.contentOffset.y;
   });
   const bottomPopupRef = useRef<BottomSheetModal>(null);
-  const navigation = useNavigation();
-  const apiGETWithToken = useApiGETWithToken();
   const isCurrentNft = useIsCurrentNft(nft);
-  const goToProfile = useCallback(() => {
-    apiGETWithToken(
-      apis.nft_collection.contractAddress.profile(nft.contract_address),
-    );
-    navigation.navigate(NAV_NAMES.NftCollection, {
-      contractAddress: nft.contract_address,
-    });
-  }, [nft.contract_address]);
+
+  const gotoNftCollectionProfile = useGotoNftCollectionProfile({
+    contractAddress: nft.contract_address,
+  });
   const goToCapsule = useGotoCapsule({nft});
   const editProfile = () => {
     bottomPopupRef?.current?.expand();
@@ -81,7 +78,7 @@ export default function NftProfile({
       .url,
   );
   const {goBack} = useNavigation();
-  const headerHeight = HAS_NOTCH ? 114 : 90;
+  const headerHeight = HAS_NOTCH ? 124 : 100;
   const goToNewPost = useGotoNewPost({postOwnerType: PostOwnerType.Nft});
   const headerStyles = useAnimatedStyle(() => {
     return {
@@ -127,9 +124,14 @@ export default function NftProfile({
               position: 'absolute',
             }}
             reducedTransparencyFallbackColor="white"></BlurView>
-          <Row itemsCenter justifyCenter width={DEVICE_WIDTH} h={'100%'}>
+          <Row
+            itemsCenter
+            justifyCenter
+            width={DEVICE_WIDTH}
+            absolute
+            top={HAS_NOTCH ? 42 : 18}>
             <Animated.View style={titleStyles}>
-              <Span bold fontSize={17} mt18>
+              <Span bold fontSize={19} mt18>
                 {getNftName(nft)}
               </Span>
             </Animated.View>
@@ -141,9 +143,9 @@ export default function NftProfile({
           h40
           zIndex={100}
           absolute
-          top={HAS_NOTCH ? 44 : 20}>
+          top={HAS_NOTCH ? 49 : 25}>
           {enableBack && (
-            <Col auto ml15 bgBlack p5 rounded100 onPress={goBack}>
+            <Col auto ml15 bgRealBlack p5 rounded100 onPress={goBack}>
               <ChevronLeft
                 width={20}
                 height={20}
@@ -180,25 +182,30 @@ export default function NftProfile({
                   <Div>
                     <Row py8>
                       <Col />
-
-                      <Col auto bgBlack p8 rounded100>
+                      <Col auto bgRealBlack p8 rounded100>
                         <Div>
                           <MessageCircle
                             strokeWidth={2}
                             color={'white'}
-                            height={18}
-                            width={18}
+                            height={16}
+                            width={16}
                           />
-                        </Div>
-                      </Col>
-                      <Col auto bgBlack p9 rounded100 onPress={goToCapsule} mx8>
-                        <Div>
-                          <Img w18 h18 source={ICONS.capsuleIconWhite}></Img>
                         </Div>
                       </Col>
                       <Col
                         auto
-                        bgBlack={!isFollowing}
+                        bgRealBlack
+                        p9
+                        rounded100
+                        onPress={goToCapsule}
+                        mx8>
+                        <Div>
+                          <Img w16 h16 source={ICONS.capsuleIconWhite}></Img>
+                        </Div>
+                      </Col>
+                      <Col
+                        auto
+                        bgRealBlack={!isFollowing}
                         p8
                         rounded100
                         border1={isFollowing}
@@ -214,22 +221,28 @@ export default function NftProfile({
                   <Div>
                     <Row py10>
                       <Col />
-                      <Col auto bgBlack p8 rounded100 onPress={goToCapsule}>
+                      <Col auto bgRealBlack p8 rounded100 onPress={goToCapsule}>
                         <Div>
-                          <Img w18 h18 source={ICONS.capsuleIconWhite}></Img>
+                          <Img w16 h16 source={ICONS.capsuleIconWhite}></Img>
                         </Div>
                       </Col>
-                      <Col auto bgBlack p8 rounded100 onPress={editProfile} mx8>
+                      <Col
+                        auto
+                        bgRealBlack
+                        p8
+                        rounded100
+                        onPress={editProfile}
+                        mx8>
                         <Div>
                           <Edit3
                             strokeWidth={2}
                             color={'white'}
-                            height={18}
-                            width={18}
+                            height={16}
+                            width={16}
                           />
                         </Div>
                       </Col>
-                      <Col auto bgBlack p8 rounded100 onPress={goToNewPost}>
+                      <Col auto bgRealBlack p8 rounded100 onPress={goToNewPost}>
                         <Span white bold mt1 px5>
                           게시물 업로드
                         </Span>
@@ -239,37 +252,40 @@ export default function NftProfile({
                 )}
               </Col>
             </Row>
-            <Div px15 pt10 bgWhite>
+            <Div px15 py10 bgWhite borderBottom={0.5} borderGray200>
               <Div>
                 <Span fontSize={20} bold>
                   {getNftName(nft)}
                 </Span>
               </Div>
-              <Div pb10 pt3 onPress={goToProfile}>
-                <Span gray600>{nft.nft_metadatum.name}</Span>
+              <Div pt3 onPress={gotoNftCollectionProfile}>
+                <Span gray700>{nft.nft_metadatum.name}</Span>
               </Div>
-              <Row>
+              {nft.story ? (
+                <Div mt8 bgWhite>
+                  <TruncatedMarkdown text={nft.story} maxLength={500} />
+                </Div>
+              ) : null}
+              <Row mt3>
                 <Col auto mr20>
-                  <Span>{followerCount} 팔로워</Span>
+                  <Span>
+                    {followerCount} <Span gray700>팔로워</Span>
+                  </Span>
                 </Col>
                 <Col auto>
-                  <Span>{nft.following_count} 팔로잉</Span>
+                  <Span>
+                    {nft.following_count} <Span gray700>팔로잉</Span>
+                  </Span>
                 </Col>
                 <Col />
               </Row>
             </Div>
-            {nft.story ? (
-              <Div py8 px15 bgWhite borderBottom={0.5} borderGray200>
-                <TruncatedMarkdown text={nft.story} maxLength={500} />
-              </Div>
-            ) : null}
           </>
         }
         renderItem={({item}) => <Post post={item} />}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }></Animated.FlatList>
-
       {isCurrentNft && (
         <BottomPopup ref={bottomPopupRef} snapPoints={['90%']} index={-1}>
           <NftProfileEditBottomSheetScrollView nft={nft} />

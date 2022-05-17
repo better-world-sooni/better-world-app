@@ -58,7 +58,7 @@ export default function NftProfileEditBottomSheetScrollView({nft}) {
             </>
           ) : (
             <Div flex itemsCenter justifyCenter bgGray400>
-              <Div bgBlack p8 rounded100>
+              <Div bgRealBlack p8 rounded100>
                 <Upload
                   strokeWidth={2}
                   color={'white'}
@@ -90,7 +90,7 @@ export default function NftProfileEditBottomSheetScrollView({nft}) {
                   mr10
                   onPress={handleRemoveImage}
                   rounded100
-                  bgBlack
+                  bgRealBlack
                   p8>
                   <Trash
                     strokeWidth={2}
@@ -101,7 +101,13 @@ export default function NftProfileEditBottomSheetScrollView({nft}) {
                 </Col>
               ) : null}
               {image?.uri ? (
-                <Col auto mr10 rounded100 bgBlack p8 onPress={handleAddImage}>
+                <Col
+                  auto
+                  mr10
+                  rounded100
+                  bgRealBlack
+                  p8
+                  onPress={handleAddImage}>
                   <Tool
                     strokeWidth={2}
                     color={Colors.info.DEFAULT}
@@ -111,7 +117,7 @@ export default function NftProfileEditBottomSheetScrollView({nft}) {
                 </Col>
               ) : null}
               {image?.uri || imageHasChanged ? (
-                <Col auto rounded100 bgBlack p8 onPress={handleSaveImage}>
+                <Col auto rounded100 bgRealBlack p8 onPress={handleSaveImage}>
                   {uploading ? (
                     <ActivityIndicator></ActivityIndicator>
                   ) : (

@@ -1,10 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import {useFocusEffect, useNavigation} from '@react-navigation/native';
 import { useCallback, useState } from 'react';
-import {useApiGET, useApiPOST} from 'src/redux/asyncReducer';
+import {useApiGET, useApiPOSTWithToken} from 'src/redux/asyncReducer';
 
 export const useBetterApiPOST = (props = {scope: 'POST'}) => {
-  const apiPOST = useApiPOST(props);
+  const apiPOST = useApiPOSTWithToken(props);
   return ({api, body, ...others}) => {
     const {
       setLoading,

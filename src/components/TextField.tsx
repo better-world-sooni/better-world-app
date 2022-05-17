@@ -34,7 +34,7 @@ export const TextField = (props) => {
         <Col>
           <TextInput
             autoCorrect={false}
-            h45
+            h48
             border
             borderGray400
             rounded10

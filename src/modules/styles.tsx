@@ -77,7 +77,7 @@ export const globalStyle = {
   bgInfo: {
     backgroundColor: varStyle.info,
   },
-  bgBlack: {
+  bgRealBlack: {
     backgroundColor: varStyle.black,
   },
   bgWhite: {

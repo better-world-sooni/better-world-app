@@ -29,6 +29,34 @@ export function useGotoProfile(){
     return gotoProfile
 }
 
+export function useGotoChatList(){
+  const navigation = useNavigation()
+  const apiGETWithToken = useApiGETWithToken()
+  const gotoChatList = () => {
+      apiGETWithToken(
+        apis.chat.chatRoom.all
+      );
+      navigation.navigate(NAV_NAMES.ChatList);
+    }
+    return gotoChatList
+}
+
+export function useGotoChatRoom(){
+  const navigation = useNavigation()
+  const apiGETWithToken = useApiGETWithToken()
+  const gotoChatRoom = ({roomId}) => {
+    apiGETWithToken(
+      apis.chat.chatRoom.roomId(
+          roomId
+      ),
+    );
+      navigation.navigate(NAV_NAMES.ChatRoom, {
+        roomId
+      });
+  }
+  return gotoChatRoom
+}
+
 export function useGotoNftCollectionProfile({contractAddress}){
     const apiGETWithToken = useApiGETWithToken()
     const navigation = useNavigation()

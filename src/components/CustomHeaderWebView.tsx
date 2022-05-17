@@ -3,7 +3,11 @@ import {WebView} from 'react-native-webview';
 import {shallowEqual, useSelector} from 'react-redux';
 import {RootState} from 'src/redux/rootReducer';
 
-export default function CustomHeaderWebView({uri, onbwwMessage, ...restProps}) {
+export default function CustomHeaderWebView({
+  uri,
+  onCapsuleMessage,
+  ...restProps
+}) {
   const {token} = useSelector(
     (root: RootState) => root.app.session,
     shallowEqual,
@@ -29,8 +33,8 @@ export default function CustomHeaderWebView({uri, onbwwMessage, ...restProps}) {
   }, []);
   const handleMessage = event => {
     const message = tryParseJSONObject(event.nativeEvent.data);
-    if (message && 'bwwMessage' in message) {
-      onbwwMessage(message.bwwMessage);
+    if (message && 'capsuleMessage' in message) {
+      onCapsuleMessage(message.capsuleMessage);
     }
   };
 

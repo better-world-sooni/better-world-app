@@ -255,7 +255,7 @@ export default function Post({
 
   return (
     <Div py5 borderBottom={full ? 0 : 0.5} borderGray200 bgWhite flex={full}>
-      <Row pl={full ? 10 : 15} pr15 itemsCenter py8>
+      <Row pl={full ? 10 : 15} pr15 itemsCenter pt8>
         {full ? (
           <Col auto mr5 onPress={goBack}>
             <ChevronLeft width={20} height={20} color="black" strokeWidth={3} />
@@ -263,8 +263,8 @@ export default function Post({
         ) : null}
         <Col auto mr10 onPress={goToProfile}>
           <Img
-            w40
-            h40
+            w35
+            h35
             rounded100
             uri={getNftProfileImage(post.nft, 100, 100)}
           />
@@ -274,14 +274,15 @@ export default function Post({
             {getNftName(post.nft)}
           </Span>
         </Col>
-        {post.nft.token_id && (
-          <Col auto>
-            <Span fontSize={13} gray700 onPress={goToProfile}>
-              @{post.nft.nft_metadatum.name}
-              {' · '}
-            </Span>
-          </Col>
-        )}
+        {post.nft.token_id &&
+          post.nft.nft_metadatum.name != getNftName(post.nft) && (
+            <Col auto>
+              <Span fontSize={13} gray700 onPress={goToProfile}>
+                {post.nft.nft_metadatum.name}
+                {' · '}
+              </Span>
+            </Col>
+          )}
         <Col auto>
           <Span fontSize={13} gray700>
             {createdAtText(post.updated_at)}
@@ -293,7 +294,7 @@ export default function Post({
             {loading ? (
               <ActivityIndicator />
             ) : (
-              <MoreHorizontal color={'black'} width={20} height={20} />
+              <MoreHorizontal color={Colors.gray[500]} width={20} height={20} />
             )}
           </MenuView>
         </Col>
@@ -322,14 +323,18 @@ export default function Post({
               <Col auto mr10>
                 <Span fontSize={13} bold>
                   예{' '}
-                  {(forVotesCount / (againstVotesCount + forVotesCount)) * 100}%
+                  {(againstVotesCount + forVotesCount > 0
+                    ? forVotesCount / (againstVotesCount + forVotesCount)
+                    : 0) * 100}
+                  %
                 </Span>
               </Col>
               <Col auto>
                 <Span fontSize={13} bold>
                   아니요{' '}
-                  {(againstVotesCount / (againstVotesCount + forVotesCount)) *
-                    100}
+                  {(againstVotesCount + forVotesCount > 0
+                    ? againstVotesCount / (againstVotesCount + forVotesCount)
+                    : 0) * 100}
                   %
                 </Span>
               </Col>
@@ -337,18 +342,16 @@ export default function Post({
             </Row>
           )}
         {post.image_uris.length > 0 ? (
-          <Div mx15 rounded10 overflowHidden>
-            <ImageSlideShow imageUris={post.image_uris} />
-          </Div>
+          <ImageSlideShow imageUris={post.image_uris} />
         ) : null}
-        <Row px15 itemsCenter pb8 mt15>
+        <Row px15 itemsCenter mb8 mt8>
           <Col />
           {!post.type ? (
             <>
-              <Col auto mr5 onPress={handlePressLike}>
+              <Col auto mr8 onPress={handlePressLike}>
                 {<Heart {...heartProps}></Heart>}
               </Col>
-              <Col auto mr10 gray800>
+              <Col auto mr12 gray800>
                 <Span fontSize={12} danger={liked}>
                   {likesCount}
                 </Span>
@@ -356,18 +359,18 @@ export default function Post({
             </>
           ) : (
             <>
-              <Col auto mr5 onPress={handlePressVoteAgainst}>
+              <Col auto mr8 onPress={handlePressVoteAgainst}>
                 {<ThumbsDown {...againstVoteProps}></ThumbsDown>}
               </Col>
-              <Col auto mr10>
+              <Col auto mr12>
                 <Span fontSize={12} gray800 danger={hasVotedAgainst}>
                   {againstVotesCount}
                 </Span>
               </Col>
-              <Col auto mr5 onPress={handlePressVoteFor}>
+              <Col auto mr8 onPress={handlePressVoteFor}>
                 {<ThumbsUp {...forVoteProps}></ThumbsUp>}
               </Col>
-              <Col auto mr10 gray800>
+              <Col auto mr12 gray800>
                 <Span fontSize={12} primary={hasVotedFor}>
                   {forVotesCount}
                 </Span>
@@ -381,7 +384,7 @@ export default function Post({
               <MessageCircle {...actionIconDefaultProps} />
             )}
           </Col>
-          <Col auto mr10 onPress={!full && goToPost}>
+          <Col auto onPress={!full && goToPost}>
             <Span fontSize={12} gray800>
               {' '}
               {full ? cachedComments.length : post.comments_count}

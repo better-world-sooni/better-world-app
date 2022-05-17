@@ -10,13 +10,6 @@ export const LINE2_COLOR = 'rgb(255, 219, 120)';
 
 export const JWT = 'jwt';
 
-export const chevronDownSettings = {
-  strokeWidth: 3,
-  color: 'black',
-  height: 15,
-  width: 15,
-};
-
 export const shadowProp = {
   shadowOffset: {height: 1, width: 1},
   shadowColor: 'gray',

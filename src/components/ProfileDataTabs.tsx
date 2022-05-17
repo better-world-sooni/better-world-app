@@ -52,8 +52,12 @@ export default function ProfileDataTabs({posts, about, members, adminNfts}) {
       {
         {
           [DataTabType.Feed]: <Feed feed={posts} />,
-          [DataTabType.Members]: <NftCollectionMembers members={members} />,
-          [DataTabType.AdminNfts]: <NftCollectionMembers members={adminNfts} />,
+          [DataTabType.Members]: members && (
+            <NftCollectionMembers members={members} />
+          ),
+          [DataTabType.AdminNfts]: adminNfts && (
+            <NftCollectionMembers members={adminNfts} />
+          ),
           [DataTabType.Story]: <About about={about} />,
         }[currentTab]
       }

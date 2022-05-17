@@ -38,6 +38,7 @@ const NftCollectionScreen = ({
   const editProfile = () => {
     bottomPopupRef?.current?.expand();
   };
+
   return (
     <Div flex bgWhite relative>
       {nftCollection && (

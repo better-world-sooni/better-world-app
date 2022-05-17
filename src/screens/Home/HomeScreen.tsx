@@ -4,7 +4,7 @@ import {HAS_NOTCH} from 'src/modules/constants';
 import {RefreshControl, StatusBar} from 'react-native';
 import {Row} from 'src/components/common/Row';
 import {Col} from 'src/components/common/Col';
-import {MessageCircle, Bell} from 'react-native-feather';
+import {MessageCircle, Bell, Send} from 'react-native-feather';
 import {Span} from 'src/components/common/Span';
 import apis from 'src/modules/apis';
 import {useApiSelector, useReloadGETWithToken} from 'src/redux/asyncReducer';
@@ -16,16 +16,18 @@ import {RootState} from 'src/redux/rootReducer';
 import {getNftProfileImage} from 'src/modules/nftUtils';
 import {IMAGES} from 'src/modules/images';
 import {DEVICE_WIDTH} from 'src/modules/styles';
-import {useGotoCapsule} from 'src/hooks/useGoto';
+import {useGotoCapsule, useGotoChatList} from 'src/hooks/useGoto';
 import Animated, {
   useAnimatedScrollHandler,
   useAnimatedStyle,
   useSharedValue,
 } from 'react-native-reanimated';
 import {BlurView} from '@react-native-community/blur';
+import Colors from 'src/constants/Colors';
 
 const HomeScreen = () => {
   const {data: feedRes, isLoading: feedLoad} = useApiSelector(apis.feed._);
+  const gotoChatList = useGotoChatList();
   const reloadGetWithToken = useReloadGETWithToken();
   const onRefresh = () => {
     reloadGetWithToken(apis.feed._());
@@ -34,7 +36,7 @@ const HomeScreen = () => {
   const scrollHandler = useAnimatedScrollHandler(event => {
     translationY.value = event.contentOffset.y;
   });
-  const headerHeight = HAS_NOTCH ? 84 : 60;
+  const headerHeight = HAS_NOTCH ? 94 : 70;
   const headerStyles = useAnimatedStyle(() => {
     return {
       width: DEVICE_WIDTH,
@@ -70,11 +72,33 @@ const HomeScreen = () => {
               zIndex={100}
               absolute
               w={DEVICE_WIDTH}
-              top={HAS_NOTCH ? 44 : 20}>
+              top={HAS_NOTCH ? 49 : 25}>
               <Col auto>
-                <Img source={IMAGES.betterWorldBlueLogo} w={50} h={50}></Img>
+                <Span fontSize={24} medium fontFamily="UniSans">
+                  BetterWorld
+                </Span>
               </Col>
-              <Col></Col>
+              <Col />
+              <Col auto bgRealBlack p8 rounded100 mr12>
+                <Div>
+                  <Bell
+                    strokeWidth={2}
+                    color={'white'}
+                    height={16}
+                    width={16}
+                  />
+                </Div>
+              </Col>
+              <Col auto bgRealBlack p8 rounded100 onPress={gotoChatList}>
+                <Div>
+                  <Send
+                    strokeWidth={2}
+                    color={'white'}
+                    height={16}
+                    width={16}
+                  />
+                </Div>
+              </Col>
             </Row>
           </Div>
         }
@@ -114,7 +138,7 @@ function MyActiveCapsule() {
   );
   const goToCapsule = useGotoCapsule({nft: currentNft});
   return (
-    <Div ml15 relative onPress={goToCapsule}>
+    <Div ml18 relative onPress={goToCapsule}>
       <Img uri={currentNft.capsule.image_uri} w92 h132 rounded10 />
       <Img
         absolute
@@ -132,10 +156,9 @@ function MyActiveCapsule() {
 
 function ActiveCapsule({nft}) {
   const goToCapsule = useGotoCapsule({nft});
-  console.log(nft.capsule.is_active, nft);
   return (
     <Div
-      ml15
+      ml18
       relative
       onPress={goToCapsule}
       opacity={nft.capsule.is_active ? 1 : 0.8}>

@@ -93,7 +93,7 @@ function NftIdentity({nft, onSuccess}) {
           {stateType === StateType.Loading ? (
             <ActivityIndicator />
           ) : stateType === StateType.Success ? (
-            <Div auto mr10 rounded100 bgBlack p3 bgInfo>
+            <Div auto mr10 rounded100 bgRealBlack p3 bgInfo>
               <Check strokeWidth={2} height={18} width={18} color={'white'} />
             </Div>
           ) : (

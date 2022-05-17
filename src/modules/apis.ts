@@ -54,6 +54,9 @@ const apis = {
   vote: {
     postId: (postId) => apiV1(`/vote/${postId}`),
   },
+  rank:{
+    all: () => apiV1(`/rank/all`)
+  },
   post: {
     _: () => apiV1(`/post`),
     postId: {

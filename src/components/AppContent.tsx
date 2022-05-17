@@ -26,6 +26,8 @@ import NftCollectionScreen from 'src/screens/NftCollectionScreen';
 import CapsuleScreen from 'src/screens/Home/CapsuleScreen';
 import NewPostScreen from 'src/screens/NewPostScreen';
 import ReportScreen from 'src/screens/ReportScreen';
+import SearchScreen from 'src/screens/SearchScreen';
+import ChatListScreen from 'src/screens/ChatListScreen';
 
 const RootStack = createStackNavigator();
 
@@ -41,11 +43,11 @@ const MainBottomTabs = () => {
   const profileTabIconProps = currentNft
     ? {
         uri: getNftProfileImage(currentNft, 50, 50),
-        w: 22,
-        h: 22,
+        w: 24,
+        h: 24,
         rounded: 100,
       }
-    : {source: ICONS.profileIcon, h: 18, w: 18};
+    : {source: ICONS.profileIcon, h: 20, w: 20};
   return (
     <Tab.Navigator
       tabBar={tabBarFunc}
@@ -58,21 +60,23 @@ const MainBottomTabs = () => {
           tabBarLabel: 'Home',
           tabBarIcon: ({focused}) => (
             <Home
-              width={20}
-              height={20}
+              width={22}
+              height={22}
+              strokeWidth={2}
               color={focused ? 'black' : Colors.gray[400]}></Home>
           ),
         }}
       />
       <Tab.Screen
-        name={NAV_NAMES.Chat}
-        component={ProfileScreen}
+        name={NAV_NAMES.Search}
+        component={SearchScreen}
         options={{
-          tabBarLabel: 'Capsule',
+          tabBarLabel: 'Search',
           tabBarIcon: ({focused}) => (
             <Search
-              width={20}
-              height={20}
+              width={22}
+              height={22}
+              strokeWidth={2}
               color={focused ? 'black' : Colors.gray[400]}></Search>
           ),
         }}
@@ -85,9 +89,9 @@ const MainBottomTabs = () => {
           tabBarLabel: 'Capsule',
           tabBarIcon: ({focused}) =>
             focused ? (
-              <Img h18 w18 source={ICONS.capsuleIconWhite}></Img>
+              <Img h20 w20 source={ICONS.capsuleIconWhite}></Img>
             ) : (
-              <Img h18 w18 source={ICONS.capsuleIconGray}></Img>
+              <Img h20 w20 source={ICONS.capsuleIconGray}></Img>
             ),
         }}
       />
@@ -153,6 +157,10 @@ export const AppContent = () => {
     {
       name: NAV_NAMES.NewPost,
       component: NewPostScreen,
+    },
+    {
+      name: NAV_NAMES.ChatList,
+      component: ChatListScreen,
     },
     {
       name: NAV_NAMES.ChatRoom,

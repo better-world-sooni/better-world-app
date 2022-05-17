@@ -103,7 +103,13 @@ export default function NewComment({
                   <ActivityIndicator></ActivityIndicator>
                 </Span>
               ) : (
-                <Span>게시</Span>
+                <Span
+                  medium
+                  fontSize={14}
+                  primary={newComment}
+                  gray400={!newComment}>
+                  전송
+                </Span>
               )}
             </Div>
           }

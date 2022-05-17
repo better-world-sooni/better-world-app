@@ -68,7 +68,7 @@ function CarouselItem({item, index, onPressAdd, onPressRemove}) {
               auto
               onPress={handlePressRemoveImageAtIndex}
               rounded100
-              bgBlack
+              bgRealBlack
               p8
               m10>
               {item.loading ? (

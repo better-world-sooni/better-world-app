@@ -12,7 +12,7 @@ import {mediumBump} from 'src/modules/hapticFeedBackUtils';
 import {HAS_NOTCH} from 'src/modules/constants';
 
 const BottomTabBar = ({state, descriptors, navigation}) => {
-  const isFocusedOnProfile = state.history[
+  const isFocusedOnCapsule = state.history[
     state.history.length - 1
   ].key.startsWith(NAV_NAMES.Capsule);
   descriptors[
@@ -62,30 +62,37 @@ const BottomTabBar = ({state, descriptors, navigation}) => {
     }),
     [state, descriptors, navigation],
   );
+  const getSnapPoints = itemsLength => {
+    const fullHeight = 90;
+    const unceilingedHeight = itemsLength * 15;
+    const ceiling = 18 * 4;
+    if (unceilingedHeight > ceiling) return [`${fullHeight}%`];
+    return [`${fullHeight}%`, `${unceilingedHeight}%`];
+  };
   return (
     <>
-      <BottomPopup ref={bottomPopupRef} snapPoints={['90%', '25%']} index={-1}>
+      <BottomPopup
+        ref={bottomPopupRef}
+        snapPoints={getSnapPoints(currentUser?.nfts?.length || 0)}
+        index={-1}>
         <NftChooseBottomSheetScrollView
           nfts={currentUser?.nfts}
           title={'Identity 변경하기'}
         />
       </BottomPopup>
       <Div
-        h70={HAS_NOTCH}
-        h50={!HAS_NOTCH}
-        borderTopColor={isFocusedOnProfile ? 'black' : Colors.gray[100]}
+        h80={HAS_NOTCH}
+        h60={!HAS_NOTCH}
+        borderTopColor={isFocusedOnCapsule ? 'black' : Colors.gray[100]}
         borderTopWidth={0.2}>
         <NativeBaseProvider>
-          <Box flex={1} safeAreaTop>
-            <Center flex={1}></Center>
-            <HStack
-              bg={isFocusedOnProfile ? 'black' : 'white'}
-              safeAreaBottom
-              paddingTop={4}
-              shadow={1}>
-              {List}
-            </HStack>
-          </Box>
+          <HStack
+            bg={isFocusedOnCapsule ? 'black' : 'white'}
+            safeAreaBottom
+            paddingTop={4}
+            paddingBottom={0}>
+            {List}
+          </HStack>
         </NativeBaseProvider>
       </Div>
     </>

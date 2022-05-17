@@ -80,7 +80,7 @@ export default function NftCollectionProfileEditBottomSheetScrollView({
             </>
           ) : (
             <Div flex itemsCenter justifyCenter bgGray400>
-              <Div bgBlack p8 rounded100>
+              <Div bgRealBlack p8 rounded100>
                 <Upload
                   strokeWidth={2}
                   color={'white'}
@@ -114,7 +114,7 @@ export default function NftCollectionProfileEditBottomSheetScrollView({
                   w110></Img>
               ) : (
                 <Div flex itemsCenter justifyCenter bgGray400 rounded100>
-                  <Div bgBlack p8 rounded100>
+                  <Div bgRealBlack p8 rounded100>
                     <Upload
                       strokeWidth={2}
                       color={'white'}
@@ -136,7 +136,7 @@ export default function NftCollectionProfileEditBottomSheetScrollView({
                   mr10
                   onPress={handleRemoveImage}
                   rounded100
-                  bgBlack
+                  bgRealBlack
                   p8>
                   <Trash
                     strokeWidth={2}
@@ -147,7 +147,13 @@ export default function NftCollectionProfileEditBottomSheetScrollView({
                 </Col>
               ) : null}
               {image?.uri ? (
-                <Col auto mr10 rounded100 bgBlack p8 onPress={handleAddImage}>
+                <Col
+                  auto
+                  mr10
+                  rounded100
+                  bgRealBlack
+                  p8
+                  onPress={handleAddImage}>
                   <Tool
                     strokeWidth={2}
                     color={Colors.info.DEFAULT}
@@ -157,7 +163,7 @@ export default function NftCollectionProfileEditBottomSheetScrollView({
                 </Col>
               ) : null}
               {image?.uri || imageHasChanged ? (
-                <Col auto rounded100 bgBlack p8 onPress={handleSaveImage}>
+                <Col auto rounded100 bgRealBlack p8 onPress={handleSaveImage}>
                   {uploading ? (
                     <ActivityIndicator></ActivityIndicator>
                   ) : (
@@ -178,7 +184,7 @@ export default function NftCollectionProfileEditBottomSheetScrollView({
                   mr10
                   onPress={handleRemoveProfileImage}
                   rounded100
-                  bgBlack
+                  bgRealBlack
                   p8>
                   <Trash
                     strokeWidth={2}
@@ -193,7 +199,7 @@ export default function NftCollectionProfileEditBottomSheetScrollView({
                   auto
                   mr10
                   rounded100
-                  bgBlack
+                  bgRealBlack
                   p8
                   onPress={handleAddProfileImage}>
                   <Tool
@@ -205,7 +211,12 @@ export default function NftCollectionProfileEditBottomSheetScrollView({
                 </Col>
               ) : null}
               {profileImage?.uri || profileImageHasChanged ? (
-                <Col auto rounded100 bgBlack p8 onPress={hangeSaveProfileImage}>
+                <Col
+                  auto
+                  rounded100
+                  bgRealBlack
+                  p8
+                  onPress={hangeSaveProfileImage}>
                   {profileUploading ? (
                     <ActivityIndicator></ActivityIndicator>
                   ) : (

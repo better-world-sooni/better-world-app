@@ -10,19 +10,19 @@ export function getNftProfileImage(nft, width=null, height= null){
         }
         return nft.image_uri
     }
-    return nft.nft_metadatum.image_uri
+    return nft?.nft_metadatum?.image_uri
 }
 
 export function getNftCollectionProfileImage(nftCollection, width=null, height= null){
     if(width && height){
-        return resizeImageUri(nftCollection.image_uri, width, height)
+        return resizeImageUri(nftCollection?.image_uri, width, height)
     }
-    return nftCollection.image_uri
+    return nftCollection?.image_uri
 }
 
 export function getNftName(nft){
     if(!nft) return null
-    return nft.name || nft.nft_metadatum.name
+    return nft?.name || nft?.nft_metadatum.name
 }
 export function getNftStory(nft){
     if(!nft) return null
@@ -58,7 +58,7 @@ export function useIsAdmin(nftCollection) {
         (root: RootState) => root.app.session,
         shallowEqual,
     );
-    const isAdmin = currentNft && nftCollection && currentNft.contract_address == nftCollection.contract_address && currentNft.privilege !== NftPrivilege.NONE
+    const isAdmin = currentNft && nftCollection && currentNft.contract_address == nftCollection.contract_address && currentNft.privilege == NftPrivilege.ROOT
     return isAdmin
 }
 

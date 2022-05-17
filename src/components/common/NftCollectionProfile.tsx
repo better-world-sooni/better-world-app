@@ -42,7 +42,7 @@ export default function NftCollectionProfile({
   const scrollHandler = useAnimatedScrollHandler(event => {
     translationY.value = event.contentOffset.y;
   });
-  const headerHeight = HAS_NOTCH ? 114 : 90;
+  const headerHeight = HAS_NOTCH ? 124 : 100;
   const headerStyles = useAnimatedStyle(() => {
     return {
       width: DEVICE_WIDTH,
@@ -87,9 +87,15 @@ export default function NftCollectionProfile({
               position: 'absolute',
             }}
             reducedTransparencyFallbackColor="white"></BlurView>
-          <Row itemsCenter justifyCenter width={DEVICE_WIDTH} h={'100%'}>
+          <Row
+            itemsCenter
+            justifyCenter
+            width={DEVICE_WIDTH}
+            zIndex={100}
+            absolute
+            top={HAS_NOTCH ? 42 : 18}>
             <Animated.View style={titleStyles}>
-              <Span bold fontSize={17} mt18>
+              <Span bold fontSize={19} mt18>
                 {nftCollection.name}
               </Span>
             </Animated.View>
@@ -99,11 +105,19 @@ export default function NftCollectionProfile({
           itemsCenter
           py5
           h40
+          px15
           zIndex={100}
           absolute
-          top={HAS_NOTCH ? 44 : 20}>
-          <Col auto ml15 bgBlack p5 rounded100 onPress={goBack}>
-            <ChevronLeft width={20} height={20} color="white" strokeWidth={3} />
+          top={HAS_NOTCH ? 49 : 25}>
+          <Col auto bg={'black'} p8 rounded100 mr12>
+            <Div>
+              <ChevronLeft
+                strokeWidth={2}
+                color={'white'}
+                height={16}
+                width={16}
+              />
+            </Div>
           </Col>
           <Col ml10></Col>
         </Row>
@@ -134,18 +148,13 @@ export default function NftCollectionProfile({
                       <Col />
                       <Col
                         auto
-                        bgBlack={!isFollowing}
+                        bgRealBlack={!isFollowing}
                         p8
                         rounded100
                         border1={isFollowing}
                         borderGray400={isFollowing}
                         onPress={handlePressFollowing}>
-                        <Span
-                          white={!isFollowing}
-                          primary={isFollowing}
-                          bold
-                          mt2
-                          px5>
+                        <Span white={!isFollowing} bold mt2 px5>
                           {isFollowing ? '언팔로우' : '팔로우'}
                         </Span>
                       </Col>
@@ -157,7 +166,7 @@ export default function NftCollectionProfile({
                       <Col />
                       <Col
                         auto
-                        bgBlack
+                        bgRealBlack
                         p8
                         rounded100
                         onPress={onPressEditProfile}>
@@ -165,25 +174,25 @@ export default function NftCollectionProfile({
                           <Edit3
                             strokeWidth={2}
                             color={'white'}
-                            height={18}
-                            width={18}
+                            height={16}
+                            width={16}
                           />
                         </Div>
                       </Col>
                       <Col
                         auto
-                        bgBlack={!isFollowing}
+                        bgRealBlack={!isFollowing}
                         p8
                         mx8
                         rounded100
                         border1={isFollowing}
                         borderGray400={isFollowing}
                         onPress={handlePressFollowing}>
-                        <Span white={!isFollowing} bold mt2 px5>
+                        <Span white={!isFollowing} bold mt1 px5>
                           {isFollowing ? '언팔로우' : '팔로우'}
                         </Span>
                       </Col>
-                      <Col auto bgBlack p8 rounded100 onPress={goToNewPost}>
+                      <Col auto bgRealBlack p8 rounded100 onPress={goToNewPost}>
                         <Span white bold mt1 px5>
                           게시물 업로드
                         </Span>

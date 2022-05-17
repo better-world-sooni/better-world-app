@@ -20,8 +20,14 @@ import {BlurView} from '@react-native-community/blur';
 import {DEVICE_WIDTH} from 'src/modules/styles';
 import {ChevronDown} from 'react-native-feather';
 import {MenuView} from '@react-native-menu/menu';
+import {BottomSheetModal} from '@gorhom/bottom-sheet';
+import BottomPopup from 'src/components/common/BottomPopup';
+import NftProfileSummaryBottomSheetScrollView from 'src/components/common/NftProfileSummaryBottomSheetScrollView';
+import {useApiGETWithToken} from 'src/redux/asyncReducer';
+import apis from 'src/modules/apis';
 
 function CapsuleScreen({route: {params}}) {
+  const bottomPopupRef = useRef<BottomSheetModal>(null);
   const {token, currentNft} = useSelector(
     (root: RootState) => root.app.session,
     shallowEqual,
@@ -30,6 +36,8 @@ function CapsuleScreen({route: {params}}) {
   const isCurrentNft = useIsCurrentNft(initialCapsuleOwner);
   const [currentCapsuleOwner, setCurrentCapsuleOwner] =
     useState(initialCapsuleOwner);
+  const [pressedNftAvatar, setPressedNftAvatar] = useState(currentCapsuleOwner);
+  const apiGETWithToken = useApiGETWithToken();
   const contractAddress = currentCapsuleOwner.contract_address;
   const tokenId = currentCapsuleOwner.token_id;
   const url = urls.capsule.contractAddressAndTokenIdAndJwt(
@@ -43,7 +51,19 @@ function CapsuleScreen({route: {params}}) {
       [initialCapsuleOwner.contract_address, initialCapsuleOwner.token_id],
     ),
   );
-  const handleBwwMessage = message => {};
+  const handleCapsuleMessage = message => {
+    if (message.action == 'clickNft') expandNftProfilePopup(message.payload);
+  };
+  const expandNftProfilePopup = payload => {
+    apiGETWithToken(
+      apis.nft.contractAddressAndTokenId(
+        payload.contract_address,
+        payload.token_id,
+      ),
+    );
+    setPressedNftAvatar(payload);
+    bottomPopupRef?.current?.expand();
+  };
   const headerHeight = HAS_NOTCH ? 84 : 60;
 
   const menu = [
@@ -67,7 +87,6 @@ function CapsuleScreen({route: {params}}) {
   return (
     <>
       <Div flex backgroundColor={'black'} relative>
-        <Div h={HAS_NOTCH ? 44 : 20} />
         <Div h={headerHeight} zIndex={100} absolute>
           <Div
             style={{
@@ -121,9 +140,15 @@ function CapsuleScreen({route: {params}}) {
           uri={url}
           sharedCookiesEnabled={true}
           thirdPartyCookiesEnabled={true}
-          onbwwMessage={handleBwwMessage}
+          onCapsuleMessage={handleCapsuleMessage}
         />
       </Div>
+      <BottomPopup ref={bottomPopupRef} snapPoints={['90%', '30%']} index={-1}>
+        <NftProfileSummaryBottomSheetScrollView
+          contractAddress={pressedNftAvatar.contract_address}
+          tokenId={pressedNftAvatar.token_id}
+        />
+      </BottomPopup>
     </>
   );
 }
