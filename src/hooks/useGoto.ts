@@ -1,7 +1,8 @@
 import { useNavigation } from "@react-navigation/native";
 import apis from "src/modules/apis";
 import { NAV_NAMES } from "src/modules/navNames";
-import { useApiGETWithToken } from "src/redux/asyncReducer";
+import { useApiGETWithToken, useApiPOSTWithToken } from "src/redux/asyncReducer";
+import { ChatRoomType } from "src/screens/ChatRoomScreen";
 
 export function useGotoNftProfile({contractAddress, tokenId}){
     const apiGETWithToken = useApiGETWithToken()
@@ -41,10 +42,11 @@ export function useGotoChatList(){
     return gotoChatList
 }
 
-export function useGotoChatRoom(){
+export function useGotoChatRoom({chatRoomType}){
   const navigation = useNavigation()
   const apiGETWithToken = useApiGETWithToken()
-  const gotoChatRoom = ({roomId}) => {
+  const apiPOSTWithToken = useApiPOSTWithToken()
+  const gotoChatRoomWithRoomId = ({roomId}: any) => {
     apiGETWithToken(
       apis.chat.chatRoom.roomId(
           roomId
@@ -54,7 +56,19 @@ export function useGotoChatRoom(){
         roomId
       });
   }
-  return gotoChatRoom
+  const gotoChatRoomAsDirectMessage = ({contractAddress, tokenId}: any)  => {
+    apiPOSTWithToken(
+      apis.chat.chatRoom.contractAddressAndTokenId(
+        contractAddress,
+        tokenId
+      ),
+    );
+      navigation.navigate(NAV_NAMES.ChatRoom, {
+        contractAddress,
+        tokenId
+      });
+  }
+  return chatRoomType == ChatRoomType.RoomId ? gotoChatRoomWithRoomId : gotoChatRoomAsDirectMessage
 }
 
 export function useGotoNftCollectionProfile({contractAddress}){

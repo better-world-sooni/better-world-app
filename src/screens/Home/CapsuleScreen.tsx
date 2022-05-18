@@ -144,10 +144,12 @@ function CapsuleScreen({route: {params}}) {
         />
       </Div>
       <BottomPopup ref={bottomPopupRef} snapPoints={['90%', '30%']} index={-1}>
-        <NftProfileSummaryBottomSheetScrollView
-          contractAddress={pressedNftAvatar.contract_address}
-          tokenId={pressedNftAvatar.token_id}
-        />
+        {pressedNftAvatar && (
+          <NftProfileSummaryBottomSheetScrollView
+            contractAddress={pressedNftAvatar.contract_address}
+            tokenId={pressedNftAvatar.token_id}
+          />
+        )}
       </BottomPopup>
     </>
   );

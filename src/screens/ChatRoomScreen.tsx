@@ -29,9 +29,13 @@ import {View} from 'native-base';
 import NewMessage from 'src/components/common/NewMessage';
 import {useFocusOnce} from 'src/modules/useCustomHooks';
 
+export enum ChatRoomType {
+  RoomId,
+  DirectMessage,
+}
 function ChatRoomScreen({
   route: {
-    params: {roomId},
+    params: {roomId, contractAddress, tokenId, chatRoomType},
   },
 }) {
   const flatListRef = useRef(null);
@@ -40,7 +44,9 @@ function ChatRoomScreen({
     shallowEqual,
   );
   const {data: chatRoomRes, isLoading: chatRoomLoad} = useApiSelector(
-    apis.chat.chatRoom.roomId(roomId),
+    chatRoomType == ChatRoomType.RoomId
+      ? apis.chat.chatRoom.roomId(roomId)
+      : apis.chat.chatRoom.contractAddressAndTokenId(contractAddress, tokenId),
   );
   const currentNftId = {
     token_id: currentNft.token_id,

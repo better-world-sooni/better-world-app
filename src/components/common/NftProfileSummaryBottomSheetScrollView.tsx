@@ -20,10 +20,15 @@ import useUploadImage from 'src/hooks/useUploadImage';
 import apis from 'src/modules/apis';
 import Colors from 'src/constants/Colors';
 import {useApiSelector} from 'src/redux/asyncReducer';
-import {useGotoCapsule, useGotoNftCollectionProfile} from 'src/hooks/useGoto';
+import {
+  useGotoCapsule,
+  useGotoChatRoom,
+  useGotoNftCollectionProfile,
+} from 'src/hooks/useGoto';
 import {ICONS} from 'src/modules/icons';
 import useFollow from 'src/hooks/useFollow';
 import TruncatedMarkdown from './TruncatedMarkdown';
+import {ChatRoomType} from 'src/screens/ChatRoomScreen';
 
 export default function NftProfileSummaryBottomSheetScrollView({
   contractAddress,
@@ -57,6 +62,9 @@ function NftProfileSummary({nft}) {
   const gotoNftCollectionProfile = useGotoNftCollectionProfile({
     contractAddress: nft.contract_address,
   });
+  const gotoChatRoom = useGotoChatRoom({
+    chatRoomType: ChatRoomType.DirectMessage,
+  });
   return (
     <BottomSheetScrollView>
       <Row zIndex={100} px15 relative>
@@ -76,7 +84,17 @@ function NftProfileSummary({nft}) {
             <Div>
               <Row py8>
                 <Col />
-                <Col auto bgRealBlack p8 rounded100>
+                <Col
+                  auto
+                  bgRealBlack
+                  p8
+                  rounded100
+                  onPress={() =>
+                    gotoChatRoom({
+                      contractAddress: nft.contract_addres,
+                      tokenId: nft.token_id,
+                    })
+                  }>
                   <Div>
                     <MessageCircle
                       strokeWidth={2}

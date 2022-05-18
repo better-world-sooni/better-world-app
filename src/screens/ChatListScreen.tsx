@@ -34,6 +34,7 @@ import {BlurView} from '@react-native-community/blur';
 import {TextInput} from 'src/modules/viewComponents';
 import {createdAtText} from 'src/modules/timeUtils';
 import {useGotoChatRoom} from 'src/hooks/useGoto';
+import {ChatRoomType} from './ChatRoomScreen';
 
 function ChatListScreen() {
   const {data: chatListRes, isLoading: chatListLoad} = useApiSelector(
@@ -44,7 +45,9 @@ function ChatListScreen() {
     shallowEqual,
   );
   const {goBack} = useNavigation();
-  const gotoChatRoom = useGotoChatRoom();
+  const gotoChatRoom = useGotoChatRoom({
+    chatRoomType: ChatRoomType.RoomId,
+  });
   const currentNftId = {
     token_id: currentNft.token_id,
     contract_address: currentNft.contract_address,
