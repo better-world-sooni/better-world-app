@@ -3,7 +3,7 @@ require_relative '../node_modules/@react-native-community/cli-platform-ios/nativ
 
 platform :ios, '11.0'
 
-target 'sungan' do
+target 'BetterWorld' do
   config = use_native_modules!
 
   # rn_maps_path = '../node_modules/react-native-maps'
@@ -19,7 +19,7 @@ target 'sungan' do
     :hermes_enabled => true
   )
 
-  target 'sunganTests' do
+  target 'BetterWorldTests' do
     inherit! :complete
     # Pods for testing
   end

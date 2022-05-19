@@ -63,7 +63,7 @@ didReceiveNotificationResponse:(UNNotificationResponse *)response
 
   RCTBridge *bridge = [[RCTBridge alloc] initWithDelegate:self launchOptions:launchOptions];
   RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:bridge
-                                                   moduleName:@"sungan"
+                                                   moduleName:@"BetterWorld"
                                             initialProperties:nil];
 
   if (@available(iOS 13.0, *)) {
