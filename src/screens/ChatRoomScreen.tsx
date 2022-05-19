@@ -128,15 +128,14 @@ function ChatRoomScreen({
         channel.close();
       }
     };
-  });
+  }, [roomId, contractAddress, tokenId]);
   const scrollToEnd = () => {
-    console.log(flatListRef?.current, 'flatListRef?.current');
     flatListRef?.current?.scrollToEnd({animated: true});
   };
   useEffect(() => {
     setIsNew((chatRoomRes ? chatRoomRes.init_messages : []).length == 0);
     setMessages(chatRoomRes ? chatRoomRes.init_messages : []);
-  }, [chatRoomRes?.init_messages?.length]);
+  }, [chatRoomRes?.init_messages?.length, roomId, contractAddress, tokenId]);
   const headerHeight = HAS_NOTCH ? 94 : 70;
   const isSameNft = (nft1, nft2) =>
     nft1?.token_id === nft2?.token_id &&
@@ -144,7 +143,7 @@ function ChatRoomScreen({
 
   useEffect(() => {
     scrollToEnd();
-  }, [chatRoomRes?.init_messages?.length]);
+  }, [chatRoomRes?.init_messages?.length, roomId, contractAddress, tokenId]);
   return (
     <KeyboardAvoidingView flex={1} bgWhite behavior="padding">
       <Div h={headerHeight} zIndex={100}>
@@ -189,10 +188,13 @@ function ChatRoomScreen({
         <FlatList
           ref={flatListRef}
           showsVerticalScrollIndicator={false}
-          bounces={false}
+          // bounces={false}
           contentContainerStyle={{
             paddingTop: 5,
             paddingBottom: 5,
+            justifyContent: 'flex-end',
+            flexGrow: 1,
+            flexDirection: 'column',
           }}
           data={messages}
           renderItem={({item: message, index}) => {

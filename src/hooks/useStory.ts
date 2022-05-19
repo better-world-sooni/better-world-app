@@ -31,11 +31,13 @@ export default function useStory(storyOwner, storyOwnerType) {
                     url,
                     body
                 });
+                console.log(data)
 				if (data?.success) {
                     setStoryError('')
                     setStoryLoading(false)
                     await reloadGetWithToken(key);
                     if(storyOwnerType == StoryOwnerType.Nft){ 
+                        await reloadGetWithToken(apis.nft.contractAddressAndTokenId(storyOwner.contract_address, storyOwner.token_id));
                         await dispatch(appActions.updateCurrentNftStory({
                             story
                          }));

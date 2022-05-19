@@ -83,7 +83,7 @@ function NftProfileSummary({nft}) {
         <Div absolute top0 h={headerHeight} bgGray400 w={DEVICE_WIDTH}></Div>
       )}
       <Row zIndex={100} px15 relative mt40>
-        <Div absolute bottom0 w={DEVICE_WIDTH} bgWhite h={45}></Div>
+        <Div absolute bottom0 w={DEVICE_WIDTH} bgWhite h={50}></Div>
         <Col auto mr10 relative onPress={gotoNftProfile}>
           <Img
             rounded100

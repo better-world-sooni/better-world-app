@@ -55,7 +55,7 @@ const apis = {
     postId: (postId) => apiV1(`/vote/${postId}`),
   },
   rank:{
-    all: (year?, week?, keyword?) => year && week ?  (keyword ? apiV1(`/rank/all?year=${year}&week=${week}&keyword=${keyword}`) : apiV1(`/rank/all?year=${year}&week=${week}`)) : apiV1(`/rank/all`)
+    all: (cwyear?, cweek?, keyword?) => cwyear && cweek ?  (keyword ? apiV1(`/rank/all?cwyear=${cwyear}&cweek=${cweek}&keyword=${keyword}`) : apiV1(`/rank/all?cwyear=${cwyear}&cweek=${cweek}`)) : apiV1(`/rank/all`)
   },
   post: {
     _: () => apiV1(`/post`),
