@@ -86,9 +86,8 @@ function ChatRoomScreen({
       };
       const room = {
         room_id: connectRoomId,
-        room_profile_imgs: roomImage,
         last_message: text,
-        room_name: roomName
+        room_name: roomName,
       };
       if (isNew) {
         const _ = await chatSocket.sendNew(msg, room);
@@ -102,13 +101,12 @@ function ChatRoomScreen({
   };
 
   useEffect(() => {
-    if(connectRoomId){
+    if (connectRoomId) {
       const channel = new ChatChannel({roomId: connectRoomId});
       const wsConnect = async () => {
         await cable(token).subscribe(channel);
         setChatSocket(channel);
         channel.on('enter', res => {
-          console.log("enter res", res)
           setEnterNfts(res['new_nfts']);
           setMessages(res['update_msgs']);
         });
@@ -137,26 +135,24 @@ function ChatRoomScreen({
     }
   }, [connectRoomId]);
 
-
   const scrollToEnd = () => {
     flatListRef?.current?.scrollToEnd({animated: true});
   };
   const headerHeight = HAS_NOTCH ? 94 : 70;
   const isSameNft = (nft1, nft2) => {
     nft1?.token_id === nft2?.token_id &&
-    nft1?.contract_address === nft2?.contract_address;
+      nft1?.contract_address === nft2?.contract_address;
   };
 
   useEffect(() => {
-    if(chatRoomRes){
-      console.log("api fin", chatRoomRes)
+    if (chatRoomRes) {
       setMessages(chatRoomRes.init_messages);
       setConnectRoomId(chatRoomRes.room_id);
       setIsNew(chatRoomRes.init_messages.length == 0);
       setNumNfts(chatRoomRes.num_nfts);
       scrollToEnd();
     }
-  }, [chatRoomRes])
+  }, [chatRoomRes]);
 
   return (
     <KeyboardAvoidingView flex={1} bgWhite behavior="padding">

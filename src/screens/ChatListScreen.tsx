@@ -1,4 +1,4 @@
-import {useNavigation} from '@react-navigation/core';
+import {useNavigation, useFocusEffect} from '@react-navigation/core';
 import React, {
   useCallback,
   useEffect,
@@ -58,22 +58,20 @@ function ChatListScreen() {
   const [chatSocket, setChatSocket] = useState(null);
   const updateListRef = useRef(null);
 
-  
   useEffect(() => {
-    if(chatListRes) {
-      setChatRooms(chatListRes.chat_rooms)
+    if (chatListRes) {
+      setChatRooms(chatListRes.chat_rooms);
     }
-  }, [chatListRes])
-  
+  }, [chatListRes]);
+
   useEffect(() => {
     const updateList = newRoom => {
-      const index = chatRooms.findIndex(
-        x => x.room_id === newRoom.room_id,
-      );
+      const index = chatRooms.findIndex(x => x.room_id === newRoom.room_id);
       newRoom.unread_count = 1;
       if (index > -1) {
-        if (chatSocket) chatSocket.newRoomOpen(newRoom.room_info._id.$oid);
+        if (chatSocket) chatSocket.newRoomOpen(newRoom.room_id);
         newRoom.unread_count = chatRooms[index].unread_count + 1;
+        newRoom.room_profile_imgs = chatRooms[index].room_profile_imgs;
         setChatRooms(prev => [newRoom, ...prev.filter((_, i) => i != index)]);
       } else {
         setChatRooms(prev => [newRoom, ...prev]);
@@ -82,25 +80,32 @@ function ChatListScreen() {
     updateListRef.current = updateList;
   }, [chatRooms]);
 
-  useEffect(() => {
-    const channel = new ChatChannel(currentNftId);
-    const wsConnect = async () => {
-      await cable(token).subscribe(channel);
-      setChatSocket(channel);
-      channel.on('message', res => {
-        updateListRef.current(res['room']);
-      });
-      channel.on('close', () => console.log('Disconnected from chat'));
-      channel.on('disconnect', () => console.log('check disconnect'));
-    };
-    wsConnect();
-    return () => {
-      if (channel) {
-        channel.disconnect();
-        channel.close();
-      }
-    };
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      const channel = new ChatChannel(currentNftId);
+      const wsConnect = async () => {
+        await cable(token).subscribe(channel);
+        setChatSocket(channel);
+        channel.on('fetch', res => {
+          setChatRooms(res['data']);
+        });
+        let _ = await channel.fetchList();
+        channel.on('message', res => {
+          updateListRef.current(res['room']);
+        });
+        channel.on('close', () => console.log('Disconnected from chat'));
+        channel.on('disconnect', () => console.log('check disconnect'));
+      };
+      wsConnect();
+      return () => {
+        console.log('bye');
+        if (channel) {
+          channel.disconnect();
+          channel.close();
+        }
+      };
+    }, []),
+  );
 
   const translationY = useSharedValue(0);
   const scrollHandler = useAnimatedScrollHandler(event => {
@@ -115,7 +120,7 @@ function ChatListScreen() {
     };
   });
   return (
-    <Div flex={1}  bgWhite>
+    <Div flex={1} bgWhite>
       <Animated.FlatList
         automaticallyAdjustContentInsets
         showsVerticalScrollIndicator={false}
@@ -171,7 +176,9 @@ function ChatListScreen() {
           return (
             <ChatRoomItem
               key={index}
-              onPress={(roomName, roomImage, roomId) => gotoChatRoom({roomName, roomImage, roomId})}
+              onPress={(roomName, roomImage, roomId) =>
+                gotoChatRoom({roomName, roomImage, roomId})
+              }
               room={item}
             />
           );

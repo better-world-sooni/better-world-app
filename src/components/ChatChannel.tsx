@@ -1,4 +1,5 @@
 import { Channel, ChannelEvents } from '@anycable/core'
+import {VoidFunctionComponent} from 'react';
 
 type nftId = {
   token_id: number;
@@ -31,12 +32,23 @@ type ChatMessage = {
   data: object;
 };
 
-type Message = EnteringMessage | NewRoomOpen | LeavingMessage | ChatMessage;
+type FetchMessage = {
+  type: 'fetch';
+  data: object;
+};
+
+type Message =
+  | EnteringMessage
+  | NewRoomOpen
+  | LeavingMessage
+  | ChatMessage
+  | FetchMessage;
 
 interface Events extends ChannelEvents<Message> {
   enter: (msg: EnteringMessage) => void;
   leave: (msg: LeavingMessage) => void;
   new: (msg: NewRoomOpen) => void;
+  fetch: (msg: FetchMessage) => void;
 }
 
 export class ChatChannel extends Channel<Params, Message, Events> {
@@ -62,6 +74,10 @@ export class ChatChannel extends Channel<Params, Message, Events> {
     return this.perform('leave_room', {roomId});
   }
 
+  async fetchList() {
+    return this.perform('fetch_list');
+  }
+
   receive(message: Message) {
     if (message.type === 'enter') {
       return this.emit('enter', message);
@@ -69,6 +85,8 @@ export class ChatChannel extends Channel<Params, Message, Events> {
       return this.emit('leave', message);
     } else if (message.type === 'new') {
       return this.emit('new', message);
+    } else if (message.type === 'fetch') {
+      return this.emit('fetch', message);
     }
     super.receive(message);
   }

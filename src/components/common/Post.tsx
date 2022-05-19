@@ -250,7 +250,6 @@ export default function Post({
     if (event == PostEventTypes.Delete) deletePost();
     if (event == PostEventTypes.Report) gotoReport();
   };
-  console.log(post);
   if (deleted) return null;
 
   return (
