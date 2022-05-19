@@ -284,12 +284,12 @@ export default function NftProfile({
               <Row mt8>
                 <Col auto mr20>
                   <Span>
-                    {followerCount} <Span gray700>팔로워</Span>
+                    <Span gray700>팔로워</Span> {followerCount}
                   </Span>
                 </Col>
                 <Col auto mr20>
                   <Span>
-                    {nft.following_count} <Span gray700>팔로잉</Span>
+                    <Span gray700>팔로잉</Span> {nft.following_count}
                   </Span>
                 </Col>
                 <Col auto mr20>

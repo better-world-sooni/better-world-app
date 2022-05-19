@@ -30,7 +30,7 @@ import useEdittableText from 'src/hooks/useEdittableText';
 import {resizeImageUri} from 'src/modules/uriUtils';
 import Colors from 'src/constants/Colors';
 
-const SearchScreen = () => {
+const LikeListScreen = () => {
   const {data: rankRes, isLoading: rankLoad} = useApiSelector(apis.rank.all);
   const reloadGetWithToken = useReloadGETWithToken();
   const onRefresh = () => {
@@ -267,4 +267,4 @@ function RankedNft({rankItem}) {
   );
 }
 
-export default SearchScreen;
+export default LikeListScreen;

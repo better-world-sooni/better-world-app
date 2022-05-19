@@ -10,6 +10,7 @@ import {NAV_NAMES} from 'src/modules/navNames';
 import Colors from 'src/constants/Colors';
 import {mediumBump} from 'src/modules/hapticFeedBackUtils';
 import {HAS_NOTCH} from 'src/modules/constants';
+import {DEVICE_HEIGHT} from 'src/modules/styles';
 
 const BottomTabBar = ({state, descriptors, navigation}) => {
   const isFocusedOnCapsule = state.history[
@@ -63,11 +64,10 @@ const BottomTabBar = ({state, descriptors, navigation}) => {
     [state, descriptors, navigation],
   );
   const getSnapPoints = itemsLength => {
-    const fullHeight = 90;
-    const unceilingedHeight = itemsLength * 15;
-    const ceiling = 18 * 4;
-    if (unceilingedHeight > ceiling) return [`${fullHeight}%`];
-    return [`${fullHeight}%`, `${unceilingedHeight}%`];
+    const fullHeight = 0.9 * DEVICE_HEIGHT;
+    const unceilingedHeight = itemsLength * 70 + (HAS_NOTCH ? 110 : 90);
+    if (unceilingedHeight > fullHeight) return [fullHeight];
+    return [fullHeight, unceilingedHeight];
   };
   return (
     <>

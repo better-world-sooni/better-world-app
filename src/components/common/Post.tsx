@@ -250,11 +250,16 @@ export default function Post({
     if (event == PostEventTypes.Delete) deletePost();
     if (event == PostEventTypes.Report) gotoReport();
   };
-
+  console.log(post);
   if (deleted) return null;
 
   return (
-    <Div py5 borderBottom={full ? 0 : 0.5} borderGray200 bgWhite {...(full && {flex: 1})}>
+    <Div
+      py5
+      borderBottom={full ? 0 : 0.5}
+      borderGray200
+      bgWhite
+      {...(full && {flex: 1})}>
       <Row pl={full ? 10 : 15} pr15 itemsCenter pt8>
         {full ? (
           <Col auto mr5 onPress={goBack}>
@@ -345,53 +350,57 @@ export default function Post({
           <ImageSlideShow imageUris={post.image_uris} />
         ) : null}
         <Row px15 itemsCenter mb8 mt8>
-          <Col />
           {!post.type ? (
             <>
-              <Col auto mr8 onPress={handlePressLike}>
-                {<Heart {...heartProps}></Heart>}
-              </Col>
               <Col auto mr12 gray800>
-                <Span fontSize={12} danger={liked}>
-                  {likesCount}
+                <Span fontSize={13} gray700>
+                  좋아요 <Span realBlack>{likesCount}</Span> 개
                 </Span>
               </Col>
+              <Col auto mr12 gray800>
+                <Span fontSize={13} gray700>
+                  댓글 <Span realBlack>{cachedComments.length}</Span> 개
+                </Span>
+              </Col>
+              <Col />
+              {!full && (
+                <Col auto mr16 onPress={handlePressLike}>
+                  {<Heart {...heartProps}></Heart>}
+                </Col>
+              )}
             </>
           ) : (
             <>
-              <Col auto mr8 onPress={handlePressVoteAgainst}>
-                {<ThumbsDown {...againstVoteProps}></ThumbsDown>}
-              </Col>
-              <Col auto mr12>
-                <Span fontSize={12} gray800 danger={hasVotedAgainst}>
-                  {againstVotesCount}
+              <Col auto mr12 gray800>
+                <Span fontSize={13} gray700>
+                  반대 <Span realBlack>{againstVotesCount}</Span> 표
                 </Span>
-              </Col>
-              <Col auto mr8 onPress={handlePressVoteFor}>
-                {<ThumbsUp {...forVoteProps}></ThumbsUp>}
               </Col>
               <Col auto mr12 gray800>
-                <Span fontSize={12} primary={hasVotedFor}>
-                  {forVotesCount}
+                <Span fontSize={13} gray700>
+                  찬성 <Span realBlack>{forVotesCount}</Span> 표
                 </Span>
               </Col>
+              <Col />
+              {!full && (
+                <>
+                  <Col auto mr16 onPress={handlePressVoteAgainst}>
+                    {<ThumbsDown {...againstVoteProps}></ThumbsDown>}
+                  </Col>
+                  <Col auto mr16 onPress={handlePressVoteFor}>
+                    {<ThumbsUp {...forVoteProps}></ThumbsUp>}
+                  </Col>
+                </>
+              )}
             </>
           )}
-          <Col auto onPress={!full && goToPost}>
-            {cachedComments.length > 0 ? (
-              <CommentNftExamples comments={cachedComments} />
-            ) : (
+          {!full && (
+            <Col auto onPress={!full && goToPost}>
               <MessageCircle {...actionIconDefaultProps} />
-            )}
-          </Col>
-          <Col auto onPress={!full && goToPost}>
-            <Span fontSize={12} gray800>
-              {' '}
-              {full ? cachedComments.length : post.comments_count}
-            </Span>
-          </Col>
+            </Col>
+          )}
         </Row>
-        {full && (
+        {full ? (
           <Div borderTop={0.5} borderGray200 pt5>
             {cachedComments.map(comment => {
               return (
@@ -402,6 +411,16 @@ export default function Post({
               );
             })}
           </Div>
+        ) : (
+          cachedComments.length > 0 && (
+            <Div onPress={goToPost}>
+              <Comment
+                hot
+                key={cachedComments[0].id}
+                comment={cachedComments[0]}
+                onPressReplyTo={handlePressReplyTo}></Comment>
+            </Div>
+          )
         )}
         {full && <Div h100></Div>}
       </ScrollView>

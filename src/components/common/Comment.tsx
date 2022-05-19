@@ -10,10 +10,15 @@ import {Div} from './Div';
 import {Img} from './Img';
 import {Row} from './Row';
 import {Span} from './Span';
-import {useGotoNftProfile, useGotoProfile} from 'src/hooks/useGoto';
+import {
+  useGotoNftProfile,
+  useGotoPost,
+  useGotoProfile,
+} from 'src/hooks/useGoto';
 
 export default function Comment({
   comment,
+  hot = false,
   nested = false,
   onPressReplyTo = comment => {},
 }) {
@@ -23,6 +28,7 @@ export default function Comment({
       nftContractAddress={comment.nft.contract_address}
       nftTokenId={comment.nft.token_id}
       nftName={getNftName(comment.nft)}
+      hot={hot}
       nftImageUri={getNftProfileImage(comment.nft, 50, 50)}
       nested={nested}
       onPressReplyTo={onPressReplyTo}
@@ -43,6 +49,7 @@ function CommentContent({
   nftImageUri,
   nftName,
   updated_at,
+  hot,
   nested = false,
   onPressReplyTo = comment => {},
 }) {
@@ -108,7 +115,7 @@ function CommentContent({
                 </Span>
               </Col>
             ) : null}
-            {!nested ? (
+            {!nested && !hot ? (
               <Col auto onPress={handlePressReplyTo}>
                 <Span fontSize={12} gray600>
                   답글 달기

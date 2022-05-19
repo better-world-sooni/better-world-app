@@ -35,7 +35,7 @@ export function useGotoChatList(){
   const apiGETWithToken = useApiGETWithToken()
   const gotoChatList = () => {
       apiGETWithToken(
-        apis.chat.chatRoom.all
+        apis.chat.chatRoom.all()
       );
       navigation.navigate(NAV_NAMES.ChatList);
     }
