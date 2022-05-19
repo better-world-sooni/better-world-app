@@ -30,7 +30,7 @@ export default function UploadImageSlideShow({
           />
         )}
       />
-      <Div flex itemsCenter justifyCenter>
+      <Div flex={1} itemsCenter justifyCenter>
         <Pagination
           dotsLength={images.length}
           activeDotIndex={currentPage}
@@ -63,7 +63,7 @@ function CarouselItem({item, index, onPressAdd, onPressRemove}) {
       {item.uri ? (
         <Div w={DEVICE_WIDTH} h250 bgGray200 relative>
           <Img w={DEVICE_WIDTH} h250 uri={item.uri} absolute></Img>
-          <Div flex itemsEnd justifyEnd>
+          <Div flex={1} itemsEnd justifyEnd>
             <Div
               auto
               onPress={handlePressRemoveImageAtIndex}
@@ -86,7 +86,7 @@ function CarouselItem({item, index, onPressAdd, onPressRemove}) {
         </Div>
       ) : (
         <Div w={DEVICE_WIDTH} h250 bgGray200 onPress={onPressAdd}>
-          <Div flex itemsCenter justifyCenter>
+          <Div flex={1} itemsCenter justifyCenter>
             <Upload width={20} height={20} color="black" strokeWidth={3} />
           </Div>
         </Div>

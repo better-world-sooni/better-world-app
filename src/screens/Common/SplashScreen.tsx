@@ -42,7 +42,7 @@ const SplashScreen = ({route}) => {
   };
 
   return (
-    <Div bgPrimary flex itemsCenter justifyCenter>
+    <Div bgPrimary flex={1} itemsCenter justifyCenter>
       <Div itemsCenter pb50>
         <Img w134 h134 source={IMAGES.betterWorldWhiteLogo} />
         <Span white fontSize={20} mt={-15} fontFamily={'UniSans'}>

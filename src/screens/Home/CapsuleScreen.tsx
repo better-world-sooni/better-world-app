@@ -86,7 +86,7 @@ function CapsuleScreen({route: {params}}) {
   };
   return (
     <>
-      <Div flex backgroundColor={'black'} relative>
+      <Div flex={1} backgroundColor={'black'} relative>
         <Div h={headerHeight} zIndex={100} absolute>
           <Div
             style={{

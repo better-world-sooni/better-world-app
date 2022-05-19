@@ -22,7 +22,7 @@ const OtherProfileScreen = ({
   };
   const nft = profileData?.nft;
   return (
-    <Div flex bgWhite>
+    <Div flex={1} bgWhite>
       {nft && (
         <NftProfile nft={nft} refreshing={loading} onRefresh={handleRefresh} />
       )}

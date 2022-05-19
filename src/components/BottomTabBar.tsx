@@ -52,7 +52,7 @@ const BottomTabBar = ({state, descriptors, navigation}) => {
           key={key}
           onPress={handlePress}
           {...conditionalProps}
-          flex
+          flex={1}
           itemsCenter
           justifyCenter
           pb10>

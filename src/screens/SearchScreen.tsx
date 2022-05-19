@@ -97,7 +97,7 @@ const SearchScreen = () => {
     };
   });
   return (
-    <Div flex bgWhite>
+    <Div flex={1} bgWhite>
       <Div h={headerHeight} zIndex={100}>
         <Animated.View style={headerStyles}>
           <BlurView

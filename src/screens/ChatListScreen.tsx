@@ -108,7 +108,7 @@ function ChatListScreen() {
     };
   });
   return (
-    <Div flex={1} bgWhite>
+    <Div flex={1}  bgWhite>
       <Animated.FlatList
         automaticallyAdjustContentInsets
         showsVerticalScrollIndicator={false}

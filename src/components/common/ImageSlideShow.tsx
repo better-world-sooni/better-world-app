@@ -16,7 +16,7 @@ export default function ImageSlideShow({imageUris}) {
         renderItem={renderItem}
         onSnapToItem={index => setCurrentPage(index)}
       />
-      <Div flex itemsCenter justifyCenter>
+      <Div flex={1} itemsCenter justifyCenter>
         <Pagination
           dotsLength={imageUris.length}
           activeDotIndex={currentPage}

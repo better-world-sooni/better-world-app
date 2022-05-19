@@ -60,7 +60,7 @@ export default function ReportScreen({
   }, [textHasChanged]);
 
   return (
-    <KeyboardAvoidingView behavior="padding" flex bgWhite relative>
+    <KeyboardAvoidingView behavior="padding" flex={1} bgWhite relative>
       <Div h={HAS_NOTCH ? 44 : 20} />
       <Row pl={10} pr15 itemsCenter py8>
         <Col auto mr5 onPress={goBack}>

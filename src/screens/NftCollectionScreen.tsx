@@ -40,7 +40,7 @@ const NftCollectionScreen = ({
   };
 
   return (
-    <Div flex bgWhite relative>
+    <Div flex={1} bgWhite relative>
       {nftCollection && (
         <NftCollectionProfile
           nftCollection={nftCollection}
