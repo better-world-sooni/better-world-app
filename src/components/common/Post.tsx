@@ -254,7 +254,7 @@ export default function Post({
   if (deleted) return null;
 
   return (
-    <Div py5 borderBottom={full ? 0 : 0.5} borderGray200 bgWhite flex={full}>
+    <Div py5 borderBottom={full ? 0 : 0.5} borderGray200 bgWhite {...(full && {flex: 1})}>
       <Row pl={full ? 10 : 15} pr15 itemsCenter pt8>
         {full ? (
           <Col auto mr5 onPress={goBack}>

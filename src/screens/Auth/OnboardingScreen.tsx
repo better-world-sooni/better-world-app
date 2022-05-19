@@ -17,7 +17,7 @@ const OnboardingScreen = ({navigation}) => {
   );
 
   return (
-    <Div bgPrimary flex justifyCenter>
+    <Div bgPrimary flex={1} justifyCenter>
       <Div px15 pb50>
         <Div>
           <Row itemsCenter>

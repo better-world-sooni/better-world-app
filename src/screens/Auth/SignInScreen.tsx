@@ -155,7 +155,7 @@ const SignInScreen = ({navigation}) => {
                 bgRealBlack
                 rounded100
                 h48
-                flex
+                flex={1}
                 itemsCenter
                 onPress={handleAddressSignIn}>
                 <Col />

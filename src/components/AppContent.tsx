@@ -179,7 +179,7 @@ export const AppContent = () => {
   ];
 
   return (
-    <Div flex relative>
+    <Div flex={1} relative>
       <NavigationContainer>
         <NativeBaseProvider>
           <BottomSheetModalProvider>

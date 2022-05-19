@@ -54,10 +54,10 @@ export default function NftProfileEditBottomSheetScrollView({nft}) {
           {image?.uri ? (
             <>
               <Img uri={image.uri} top0 absolute w={DEVICE_WIDTH} h150></Img>
-              <Div flex itemsEnd justifyEnd px15 zIndex={100} py15></Div>
+              <Div flex={1} itemsEnd justifyEnd px15 zIndex={100} py15></Div>
             </>
           ) : (
-            <Div flex itemsCenter justifyCenter bgGray400>
+            <Div flex={1} itemsCenter justifyCenter bgGray400>
               <Div bgRealBlack p8 rounded100>
                 <Upload
                   strokeWidth={2}

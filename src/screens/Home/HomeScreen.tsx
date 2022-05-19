@@ -45,7 +45,7 @@ const HomeScreen = () => {
     };
   });
   return (
-    <Div flex bgWhite>
+    <Div flex={1} bgWhite>
       <Animated.FlatList
         automaticallyAdjustContentInsets
         showsVerticalScrollIndicator={false}

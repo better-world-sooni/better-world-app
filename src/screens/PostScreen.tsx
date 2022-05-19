@@ -21,7 +21,7 @@ export default function PostScreen({
   };
 
   return (
-    <KeyboardAvoidingView flex bgWhite relative behavior="padding">
+    <KeyboardAvoidingView flex={1} bgWhite relative behavior="padding">
       <StatusBar animated={true} barStyle={'dark-content'} />
       <Div h={HAS_NOTCH ? 44 : 20} />
       {postRes?.post ? (
