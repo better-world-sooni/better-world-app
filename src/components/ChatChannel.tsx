@@ -1,5 +1,4 @@
-import { Channel, ChannelEvents } from '@anycable/core'
-import {VoidFunctionComponent} from 'react';
+import {Channel, ChannelEvents} from '@anycable/core';
 
 type nftId = {
   token_id: number;
