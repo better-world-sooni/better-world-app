@@ -58,10 +58,17 @@ function ChatListScreen() {
   const [chatSocket, setChatSocket] = useState(null);
   const updateListRef = useRef(null);
 
+  
+  useEffect(() => {
+    if(chatListRes) {
+      setChatRooms(chatListRes.chat_rooms)
+    }
+  }, [chatListRes])
+  
   useEffect(() => {
     const updateList = newRoom => {
       const index = chatRooms.findIndex(
-        x => x.room_info._id.$oid === newRoom.room_info._id.$oid,
+        x => x.room_id === newRoom.room_id,
       );
       newRoom.unread_count = 1;
       if (index > -1) {
@@ -164,7 +171,7 @@ function ChatListScreen() {
           return (
             <ChatRoomItem
               key={index}
-              onPress={roomId => gotoChatRoom({roomId})}
+              onPress={(roomName, roomImage, roomId) => gotoChatRoom({roomName, roomImage, roomId})}
               room={item}
             />
           );
@@ -174,10 +181,9 @@ function ChatListScreen() {
 }
 
 function ChatRoomItem({onPress, room}) {
-  const roomId = room.room_info._id.$oid;
-  const updatedAt = room.room_info.updated_at;
+  const roomId = room.room_id;
+  const updatedAt = room.updated_at;
   const roomName = room.room_name;
-  const numNfts = room.room_info.participants.length;
   const unreadMessageCount = room.unread_count;
   const lastMessage = room.last_message;
   const profileImgArr = room.room_profile_imgs;
@@ -186,7 +192,7 @@ function ChatRoomItem({onPress, room}) {
     <Div px15>
       <Row
         bgWhite
-        onPress={() => onPress(roomId)}
+        onPress={() => onPress(roomName, profileImgArr, roomId)}
         py5
         cursorPointer
         itemsCenter>

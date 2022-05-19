@@ -194,6 +194,8 @@ export default function NftProfile({
                         rounded100
                         onPress={() =>
                           gotoChatRoom({
+                            roomName: getNftName(nft),
+                            roomImage: [getNftProfileImage(nft)],
                             contractAddress: nft.contract_address,
                             tokenId: nft.token_id,
                           })

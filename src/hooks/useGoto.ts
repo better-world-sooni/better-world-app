@@ -35,7 +35,7 @@ export function useGotoChatList(){
   const apiGETWithToken = useApiGETWithToken()
   const gotoChatList = () => {
       apiGETWithToken(
-        apis.chat.chatRoom.all
+        apis.chat.chatRoom.all()
       );
       navigation.navigate(NAV_NAMES.ChatList);
     }
@@ -46,25 +46,31 @@ export function useGotoChatRoom({chatRoomType}){
   const navigation = useNavigation()
   const apiGETWithToken = useApiGETWithToken()
   const apiPOSTWithToken = useApiPOSTWithToken()
-  const gotoChatRoomWithRoomId = ({roomId}: any) => {
+  const gotoChatRoomWithRoomId = ({roomName, roomImage, roomId}: any) => {
     apiGETWithToken(
       apis.chat.chatRoom.roomId(
           roomId
       ),
     );
+    console.log(roomName, roomImage)
       navigation.navigate(NAV_NAMES.ChatRoom, {
+        roomName,
+        roomImage,
         roomId,
         chatRoomType
       });
   }
-  const gotoChatRoomAsDirectMessage = ({contractAddress, tokenId}: any)  => {
+  const gotoChatRoomAsDirectMessage = ({roomName, roomImage, contractAddress, tokenId}: any)  => {
     apiPOSTWithToken(
       apis.chat.chatRoom.contractAddressAndTokenId(
         contractAddress,
         tokenId
       ),
     );
+      console.log(roomName, roomImage)
       navigation.navigate(NAV_NAMES.ChatRoom, {
+        roomName,
+        roomImage,
         contractAddress,
         tokenId,
         chatRoomType

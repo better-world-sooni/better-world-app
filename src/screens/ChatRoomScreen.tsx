@@ -28,6 +28,7 @@ import {Img} from 'src/components/common/Img';
 import {View} from 'native-base';
 import NewMessage from 'src/components/common/NewMessage';
 import {useFocusOnce} from 'src/modules/useCustomHooks';
+import ChatRoomAvatars from 'src/components/ChatRoomAvatars';
 
 export enum ChatRoomType {
   RoomId,
@@ -35,7 +36,7 @@ export enum ChatRoomType {
 }
 function ChatRoomScreen({
   route: {
-    params: {roomId, contractAddress, tokenId, chatRoomType},
+    params: {roomName, roomImage, roomId, contractAddress, tokenId, chatRoomType},
   },
 }) {
   const flatListRef = useRef(null);
@@ -48,6 +49,7 @@ function ChatRoomScreen({
       ? apis.chat.chatRoom.roomId(roomId)
       : apis.chat.chatRoom.contractAddressAndTokenId(contractAddress, tokenId),
   );
+
   const currentNftId = {
     token_id: currentNft.token_id,
     contract_address: currentNft.contract_address,
@@ -55,7 +57,9 @@ function ChatRoomScreen({
   const currentAvatar = currentNft.nft_metadatum.image_uri;
   const {goBack} = useNavigation();
 
+  const [connectRoomId, setConnectRoomId] = useState(null);
   const [chatSocket, setChatSocket] = useState(null);
+  const [numNfts, setNumNfts] = useState(null);
   const [enterNfts, setEnterNfts] = useState([]);
   const [messages, setMessages] = useState(
     chatRoomRes ? chatRoomRes.init_messages : [],
@@ -81,10 +85,10 @@ function ChatRoomScreen({
         updated_at: Timestamp,
       };
       const room = {
-        room_info: chatRoomRes?.room_info,
-        room_name: chatRoomRes?.room_name,
-        room_profile_imgs: chatRoomRes?.room_profile_imgs,
+        room_id: connectRoomId,
+        room_profile_imgs: roomImage,
         last_message: text,
+        room_name: roomName
       };
       if (isNew) {
         const _ = await chatSocket.sendNew(msg, room);
@@ -98,52 +102,62 @@ function ChatRoomScreen({
   };
 
   useEffect(() => {
-    const channel = new ChatChannel({roomId: roomId});
-    const wsConnect = async () => {
-      await cable(token).subscribe(channel);
-      setChatSocket(channel);
-      channel.on('enter', res => {
-        setEnterNfts(res['new_nfts']);
-        setMessages(res['update_msgs']);
-      });
-      let _ = await channel.enter(roomId);
-      channel.on('message', res => {
-        setMessages(m => [...m, res['data']]);
-      });
-      channel.on('leave', res => {
-        if (currentNftId != res['leave_nft']) {
+    if(connectRoomId){
+      const channel = new ChatChannel({roomId: connectRoomId});
+      const wsConnect = async () => {
+        await cable(token).subscribe(channel);
+        setChatSocket(channel);
+        channel.on('enter', res => {
+          console.log("enter res", res)
           setEnterNfts(res['new_nfts']);
+          setMessages(res['update_msgs']);
+        });
+        let _ = await channel.enter(connectRoomId);
+        channel.on('message', res => {
+          setMessages(m => [...m, res['data']]);
+        });
+        channel.on('leave', res => {
+          if (currentNftId != res['leave_nft']) {
+            setEnterNfts(res['new_nfts']);
+          }
+        });
+        channel.on('new', res => {
+          setIsNew(false);
+        });
+        channel.on('close', () => console.log('Disconnected from chat'));
+        channel.on('disconnect', () => console.log('check disconnect'));
+      };
+      wsConnect();
+      return () => {
+        if (channel) {
+          channel.disconnect();
+          channel.close();
         }
-      });
-      channel.on('new', res => {
-        setIsNew(false);
-      });
-      channel.on('close', () => console.log('Disconnected from chat'));
-      channel.on('disconnect', () => console.log('check disconnect'));
-    };
-    wsConnect();
-    return () => {
-      if (channel) {
-        channel.disconnect();
-        channel.close();
-      }
-    };
-  }, [roomId, contractAddress, tokenId]);
+      };
+    }
+  }, [connectRoomId]);
+
+
   const scrollToEnd = () => {
     flatListRef?.current?.scrollToEnd({animated: true});
   };
-  useEffect(() => {
-    setIsNew((chatRoomRes ? chatRoomRes.init_messages : []).length == 0);
-    setMessages(chatRoomRes ? chatRoomRes.init_messages : []);
-  }, [chatRoomRes?.init_messages?.length, roomId, contractAddress, tokenId]);
   const headerHeight = HAS_NOTCH ? 94 : 70;
-  const isSameNft = (nft1, nft2) =>
+  const isSameNft = (nft1, nft2) => {
     nft1?.token_id === nft2?.token_id &&
     nft1?.contract_address === nft2?.contract_address;
+  };
 
   useEffect(() => {
-    scrollToEnd();
-  }, [chatRoomRes?.init_messages?.length, roomId, contractAddress, tokenId]);
+    if(chatRoomRes){
+      console.log("api fin", chatRoomRes)
+      setMessages(chatRoomRes.init_messages);
+      setConnectRoomId(chatRoomRes.room_id);
+      setIsNew(chatRoomRes.init_messages.length == 0);
+      setNumNfts(chatRoomRes.num_nfts);
+      scrollToEnd();
+    }
+  }, [chatRoomRes])
+
   return (
     <KeyboardAvoidingView flex={1} bgWhite behavior="padding">
       <Div h={headerHeight} zIndex={100}>
@@ -176,9 +190,17 @@ function ChatRoomScreen({
               />
             </Div>
           </Col>
+          <Col auto relative mr10>
+            <Div rounded100 overflowHidden h50>
+              <ChatRoomAvatars
+                firstUserAvatar={roomImage[0]}
+                secondUserAvatar={roomImage[1]}
+              />
+            </Div>
+          </Col>
           <Col auto>
             <Span bold fontSize={19}>
-              {chatRoomRes?.room_name}
+              {roomName}
             </Span>
           </Col>
           <Col />
@@ -207,7 +229,7 @@ function ChatRoomScreen({
                 index={index}
                 isConsecutive={isConsecutive}
                 isMine={isMine}
-                numNfts={2}
+                numNfts={numNfts}
               />
             );
           }}></FlatList>
@@ -229,15 +251,15 @@ const Message = ({message, index, isConsecutive, isMine, numNfts}) => {
   return (
     <Div key={index} px15>
       <Row
-        {...(isMine && {style: {flexDirection: 'row-reverse'}})}
+        // {...(isMine && {style: {flexDirection: 'row-reverse'}})}
         itemsEnd
         py3>
         <Col auto w28 px0 mb3>
           {!isConsecutive && <Img rounded100 uri={avatar} h31 w31 />}
         </Col>
         <Col
-          style={{flex: 5, wordBreak: 'break-all'}}
-          {...(isMine && {style: {flexDirection: 'row-reverse'}})}
+          auto={!isMine}
+          style={isMine ? {flex: 5, wordBreak: 'break-all', flexDirection: 'row-reverse'} : {wordBreak: 'break-all'}}
           itemsEnd>
           <Div bgGray100={!isMine} bgPrimary={isMine} rounded30 p8 px16 mx10>
             <Span fontSize={16} white={isMine}>
@@ -245,7 +267,7 @@ const Message = ({message, index, isConsecutive, isMine, numNfts}) => {
             </Span>
           </Div>
           <Div fontSize={10}>
-            <Span>{Boolean(unreadCount) && unreadCount}</Span>
+            <Span>{unreadCount}</Span>
           </Div>
         </Col>
         <Col style={{flex: 1}}></Col>
