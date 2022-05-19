@@ -10,6 +10,7 @@ import {
   Bell,
   ChevronLeft,
   ChevronRight,
+  HelpCircle,
   Search,
   Send,
   Star,
@@ -44,35 +45,29 @@ const SearchScreen = () => {
   const {data: rankRes, isLoading: rankLoad} = useApiSelector(apis.rank.all);
   const reloadGetWithToken = useReloadGETWithToken();
   const onRefresh = () => {
-    if (!rankRes || rankLoad) return;
+    if (rankLoad) return;
     reloadGetWithToken(
-      apis.rank.all(rankRes.rank_season.cwyear, rankRes.rank_season.cweek),
+      apis.rank.all(rankRes?.rank_season?.cwyear, rankRes?.rank_season?.cweek),
     );
   };
-  const isFirstSeason = rankRes?.is_first_season;
-  const isCurrentSeason = rankRes?.is_current_season;
+  const [text, textHasChanged, handleChangeText] = useEdittableText('');
+  const previousSeason = rankRes?.previous_season;
+  const nextSeason = rankRes?.next_season;
+  console.log(previousSeason, nextSeason);
   const onPressLeft = () => {
-    if (!rankRes || rankLoad || isFirstSeason) return;
-    const week =
-      rankRes.rank_season.cweek - 1 < 1 ? 52 : rankRes.rank_season.cweek - 1;
-    const year =
-      rankRes.rank_season.cweek - 1 < 1
-        ? rankRes.rank_season.cwyear - 1
-        : rankRes.rank_season.cwyear;
-    reloadGetWithToken(apis.rank.all(year, week));
+    if (!rankRes || rankLoad || !previousSeason) return;
+    reloadGetWithToken(
+      apis.rank.all(previousSeason.cwyear, previousSeason.cweek, text),
+    );
   };
   const onPressRight = () => {
-    if (!rankRes || rankLoad || isCurrentSeason) return;
-    const week =
-      rankRes.rank_season.cweek + 1 > 52 ? 1 : rankRes.rank_season.cweek + 1;
-    const year =
-      rankRes.rank_season.cweek + 1 > 52
-        ? rankRes.rank_season.cwyear + 1
-        : rankRes.rank_season.cwyear;
-    reloadGetWithToken(apis.rank.all(year, week));
+    if (!rankRes || rankLoad || !nextSeason) return;
+    reloadGetWithToken(
+      apis.rank.all(nextSeason.cwyear, nextSeason.cweek, text),
+    );
   };
   const translationY = useSharedValue(0);
-  const [text, textHasChanged, handleChangeText] = useEdittableText('');
+
   const handleChangeQuery = text => {
     handleChangeText(text);
     if (rankRes) {
@@ -120,7 +115,8 @@ const SearchScreen = () => {
                 fontSize={16}
                 bgGray200
                 rounded100
-                p8
+                px8
+                h32
                 bold
                 onChangeText={handleChangeQuery}
               />
@@ -150,40 +146,38 @@ const SearchScreen = () => {
               <Col itemsStart>
                 <Div
                   auto
-                  bg={isFirstSeason ? Colors.gray[200] : 'black'}
+                  bg={!previousSeason ? Colors.gray[200] : 'black'}
                   p8
                   rounded100
                   onPress={onPressLeft}>
                   <ChevronLeft
                     strokeWidth={2}
-                    color={isFirstSeason ? Colors.gray[400] : 'white'}
+                    color={!previousSeason ? Colors.gray[400] : 'white'}
                     height={16}
                     width={16}></ChevronLeft>
                 </Div>
               </Col>
-              <Col auto justifyCenter>
-                <Span fontSize={16}>
-                  {!rankLoad && rankRes ? (
-                    isCurrentSeason ? (
-                      '현재 주'
-                    ) : (
-                      `${rankRes.rank_season.cwyear}년 ${rankRes.rank_season.cweek}주 `
-                    )
-                  ) : (
-                    <ActivityIndicator />
-                  )}
-                </Span>
+              <Col auto py8 px16 rounded100 bgRealBlack>
+                {!rankLoad && rankRes ? (
+                  <Span fontSize={16} white>
+                    {!nextSeason
+                      ? '현재 주'
+                      : `${rankRes.rank_season.cwyear}년 ${rankRes.rank_season.cweek}주`}
+                  </Span>
+                ) : (
+                  <ActivityIndicator />
+                )}
               </Col>
               <Col itemsEnd>
                 <Div
                   auto
-                  bg={isCurrentSeason ? Colors.gray[200] : 'black'}
+                  bg={!nextSeason ? Colors.gray[200] : 'black'}
                   p8
                   rounded100
                   onPress={onPressRight}>
                   <ChevronRight
                     strokeWidth={2}
-                    color={isCurrentSeason ? Colors.gray[400] : 'white'}
+                    color={!nextSeason ? Colors.gray[400] : 'white'}
                     height={16}
                     width={16}></ChevronRight>
                 </Div>
@@ -215,12 +209,29 @@ function RankedNft({rankItem}) {
     tokenId: rankItem.token_id,
   });
   return (
-    <Row
-      itemsCenter
-      py10
-      onPress={gotoNftProfile}
-      px15
-      bgGray100={isCurrentNft}>
+    <Row itemsCenter h70 onPress={gotoNftProfile} px15 relative>
+      {isCurrentNft && (
+        <Div h70 absolute width={DEVICE_WIDTH}>
+          {rankItem.background_image_uri ? (
+            <Img
+              uri={rankItem.background_image_uri}
+              h70
+              width={DEVICE_WIDTH}></Img>
+          ) : (
+            <Div h70 width={DEVICE_WIDTH}></Div>
+          )}
+          <BlurView
+            blurType="xlight"
+            blurAmount={10}
+            blurRadius={10}
+            style={{
+              width: DEVICE_WIDTH,
+              height: '100%',
+              position: 'absolute',
+            }}
+            reducedTransparencyFallbackColor="white"></BlurView>
+        </Div>
+      )}
       <Img
         w50
         h50
