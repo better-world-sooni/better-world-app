@@ -10,7 +10,7 @@ import ProfileDataTabs from '../ProfileDataTabs';
 import {DEVICE_WIDTH} from 'src/modules/styles';
 import useFollow from 'src/hooks/useFollow';
 import apis from 'src/modules/apis';
-import {useGotoNewPost} from 'src/hooks/useGoto';
+import {useGotoFollowList, useGotoNewPost} from 'src/hooks/useGoto';
 import {PostOwnerType} from 'src/screens/NewPostScreen';
 import {HAS_NOTCH} from 'src/modules/constants';
 import Animated, {
@@ -21,6 +21,7 @@ import Animated, {
 import {BlurView} from '@react-native-community/blur';
 import {useNavigation} from '@react-navigation/native';
 import {RefreshControl} from 'react-native';
+import {FollowOwnerType, FollowType} from 'src/screens/FollowListScreen';
 
 export default function NftCollectionProfile({
   nftCollection,
@@ -37,7 +38,10 @@ export default function NftCollectionProfile({
   const goToNewPost = useGotoNewPost({
     postOwnerType: PostOwnerType.NftCollection,
   });
-  const {goBack} = useNavigation();
+  const gotoFollowList = useGotoFollowList({
+    followOwnerType: FollowOwnerType.NftCollection,
+    contractAddress: nftCollection.contract_address,
+  });
   const translationY = useSharedValue(0);
   const scrollHandler = useAnimatedScrollHandler(event => {
     translationY.value = event.contentOffset.y;
@@ -210,7 +214,9 @@ export default function NftCollectionProfile({
               </Div>
               <Row mt5>
                 <Col auto mr20>
-                  <Span>{followerCount} 팔로워</Span>
+                  <Span onPress={() => gotoFollowList(FollowType.Followers)}>
+                    {followerCount} 팔로워
+                  </Span>
                 </Col>
                 <Col />
               </Row>

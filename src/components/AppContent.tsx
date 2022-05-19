@@ -28,6 +28,8 @@ import NewPostScreen from 'src/screens/NewPostScreen';
 import ReportScreen from 'src/screens/ReportScreen';
 import SearchScreen from 'src/screens/SearchScreen';
 import ChatListScreen from 'src/screens/ChatListScreen';
+import LikeListScreen from 'src/screens/LikeListScreen';
+import FollowListScreen from 'src/screens/FollowListScreen';
 
 const RootStack = createStackNavigator();
 
@@ -163,18 +165,20 @@ export const AppContent = () => {
       component: ChatListScreen,
     },
     {
+      name: NAV_NAMES.LikeList,
+      component: LikeListScreen,
+    },
+    {
+      name: NAV_NAMES.FollowList,
+      component: FollowListScreen,
+    },
+    {
       name: NAV_NAMES.ChatRoom,
       component: ChatRoomScreen,
-      options: props => ({
-        cardStyle: {backgroundColor: 'black', presentation: 'screen'},
-      }),
     },
     {
       name: NAV_NAMES.Onboarding,
       component: OnboardingScreen,
-      options: props => ({
-        cardStyle: {backgroundColor: 'black', presentation: 'screen'},
-      }),
     },
   ];
 

@@ -246,7 +246,7 @@ const Message = ({message, index, isConsecutive, isMine, numNfts}) => {
   return (
     <Div key={index} px15>
       <Row
-        // {...(isMine && {style: {flexDirection: 'row-reverse'}})}
+        {...(isMine && {style: {flexDirection: 'row-reverse'}})}
         itemsEnd
         py3>
         <Col auto w28 px0 mb3>
@@ -254,7 +254,11 @@ const Message = ({message, index, isConsecutive, isMine, numNfts}) => {
         </Col>
         <Col
           auto={!isMine}
-          style={isMine ? {flex: 5, wordBreak: 'break-all', flexDirection: 'row-reverse'} : {wordBreak: 'break-all'}}
+          style={
+            isMine
+              ? {flex: 5, wordBreak: 'break-all', flexDirection: 'row-reverse'}
+              : {wordBreak: 'break-all'}
+          }
           itemsEnd>
           <Div bgGray100={!isMine} bgPrimary={isMine} rounded30 p8 px16 mx10>
             <Span fontSize={16} white={isMine}>
@@ -262,7 +266,7 @@ const Message = ({message, index, isConsecutive, isMine, numNfts}) => {
             </Span>
           </Div>
           <Div fontSize={10}>
-            <Span>{unreadCount}</Span>
+            <Span>{unreadCount > 0 ? unreadCount : null}</Span>
           </Div>
         </Col>
         <Col style={{flex: 1}}></Col>

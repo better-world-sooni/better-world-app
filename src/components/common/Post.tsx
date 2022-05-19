@@ -13,6 +13,7 @@ import {
 import {State, TapGestureHandler} from 'react-native-gesture-handler';
 import Colors from 'src/constants/Colors';
 import {
+  useGotoLikeList,
   useGotoNftCollectionProfile,
   useGotoNftProfile,
   useGotoPost,
@@ -47,6 +48,7 @@ import {ReportTypes} from 'src/screens/ReportScreen';
 import useVote from 'src/hooks/useVote';
 import {shallowEqual, useSelector} from 'react-redux';
 import {RootState} from 'src/redux/rootReducer';
+import {LikeListType} from 'src/screens/LikeListScreen';
 
 enum PostEventTypes {
   Delete = 'DELETE',
@@ -250,6 +252,12 @@ export default function Post({
     if (event == PostEventTypes.Delete) deletePost();
     if (event == PostEventTypes.Report) gotoReport();
   };
+
+  const gotoLikeList = useGotoLikeList({
+    likableId: post.id,
+    likableType: LikeListType.Post,
+  });
+
   if (deleted) return null;
 
   return (
@@ -348,15 +356,15 @@ export default function Post({
         {post.image_uris.length > 0 ? (
           <ImageSlideShow imageUris={post.image_uris} />
         ) : null}
-        <Row px15 itemsCenter mb8 mt8>
+        <Row px15 itemsCenter mb8 mt8 mb13={full}>
           {!post.type ? (
             <>
               <Col auto mr12 gray800>
-                <Span fontSize={13} gray700>
+                <Span fontSize={13} gray700 onPress={gotoLikeList}>
                   좋아요 <Span realBlack>{likesCount}</Span> 개
                 </Span>
               </Col>
-              <Col auto mr12 gray800>
+              <Col auto mr12 gray800 onPress={!full && goToPost}>
                 <Span fontSize={13} gray700>
                   댓글 <Span realBlack>{cachedComments.length}</Span> 개
                 </Span>

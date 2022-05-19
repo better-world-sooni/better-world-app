@@ -25,24 +25,40 @@ import {useNavigation} from '@react-navigation/native';
 import {ChevronLeft} from 'react-native-feather';
 import useFollow from 'src/hooks/useFollow';
 
-export enum LikeListType {
-  Comment = 'comment',
-  Post = 'post',
+export enum FollowOwnerType {
+  Nft,
+  NftCollection,
 }
 
-const LikeListScreen = ({
+export enum FollowType {
+  Followings,
+  Followers,
+}
+
+const FollowListScreen = ({
   route: {
-    params: {likableType, likableId},
+    params: {followOwnerType, followType, contractAddress, tokenId},
   },
 }) => {
-  const {data: likeListRes, isLoading: likeListLoad} = useApiSelector(
-    apis.like.list,
+  const {data: followListRes, isLoading: followListLoad} = useApiSelector(
+    apis.follow.list,
   );
   const {goBack} = useNavigation();
   const reloadGetWithToken = useReloadGETWithToken();
   const onRefresh = () => {
-    if (likeListLoad) return;
-    reloadGetWithToken(apis.like.list(likableType, likableId));
+    if (followListLoad) return;
+    reloadGetWithToken(
+      followOwnerType == FollowOwnerType.Nft
+        ? apis.follow.list(
+            followType == FollowType.Followers ? true : false,
+            contractAddress,
+            tokenId,
+          )
+        : apis.follow.list(
+            followType == FollowType.Followers ? true : false,
+            contractAddress,
+          ),
+    );
   };
 
   const translationY = useSharedValue(0);
@@ -97,7 +113,7 @@ const LikeListScreen = ({
                   </Col>
                   <Col auto onPress={goBack}>
                     <Span bold fontSize={19}>
-                      좋아요
+                      {FollowType.Followers == followType ? '팔로워' : '팔로잉'}
                     </Span>
                   </Col>
                   <Col></Col>
@@ -107,12 +123,13 @@ const LikeListScreen = ({
           </>
         }
         refreshControl={
-          <RefreshControl refreshing={likeListLoad} onRefresh={onRefresh} />
+          <RefreshControl refreshing={followListLoad} onRefresh={onRefresh} />
         }
-        data={likeListRes ? likeListRes.likes : []}
+        data={followListRes ? followListRes.follows : []}
         renderItem={({item, index}) => {
+          console.log(item);
           return (
-            <LikeOwner
+            <FollowOwner
               nft={(item as any).nft}
               isFollowing={(item as any).is_following}
             />
@@ -122,7 +139,7 @@ const LikeListScreen = ({
   );
 };
 
-function LikeOwner({nft, isFollowing}) {
+function FollowOwner({nft, isFollowing}) {
   const [following, _followerCount, handlePressFollowing] = useFollow(
     isFollowing,
     0,
@@ -170,4 +187,4 @@ function LikeOwner({nft, isFollowing}) {
   );
 }
 
-export default LikeListScreen;
+export default FollowListScreen;

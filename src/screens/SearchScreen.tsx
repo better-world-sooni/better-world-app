@@ -42,7 +42,6 @@ const SearchScreen = () => {
   const [text, textHasChanged, handleChangeText] = useEdittableText('');
   const previousSeason = rankRes?.previous_season;
   const nextSeason = rankRes?.next_season;
-  console.log(previousSeason, nextSeason);
   const onPressLeft = () => {
     if (!rankRes || rankLoad || !previousSeason) return;
     reloadGetWithToken(
@@ -148,7 +147,7 @@ const SearchScreen = () => {
               </Col>
               <Col auto>
                 {!rankLoad && rankRes ? (
-                  <Span fontSize={16} underline info>
+                  <Span fontSize={16}>
                     {!nextSeason
                       ? '현재 주'
                       : `${rankRes.rank_season.cwyear}년 ${rankRes.rank_season.cweek}주`}

@@ -3,6 +3,7 @@ import apis from "src/modules/apis";
 import { NAV_NAMES } from "src/modules/navNames";
 import { useApiGETWithToken, useApiPOSTWithToken } from "src/redux/asyncReducer";
 import { ChatRoomType } from "src/screens/ChatRoomScreen";
+import { FollowOwnerType, FollowType } from "src/screens/FollowListScreen";
 
 export function useGotoNftProfile({contractAddress, tokenId}){
     const apiGETWithToken = useApiGETWithToken()
@@ -120,6 +121,43 @@ export function useGotoCapsule({nft}) {
     navigation.navigate(NAV_NAMES.Capsule, {
       nft,
     })
+  };
+  return gotoCapsule
+}
+
+export function useGotoLikeList({likableType, likableId}) {
+  const navigation = useNavigation()
+  const apiGETWithToken = useApiGETWithToken()
+  const gotoCapsule = () => {
+    apiGETWithToken(
+      apis.like.list(
+        likableType, likableId
+      ),
+    );
+    navigation.navigate(NAV_NAMES.LikeList, {
+      likableType, likableId
+    })
+  };
+  return gotoCapsule
+}
+
+export function useGotoFollowList({followOwnerType, contractAddress, tokenId = null}) {
+  const navigation = useNavigation()
+  const apiGETWithToken = useApiGETWithToken()
+  const gotoCapsule = (followType) => {
+    apiGETWithToken(
+      followOwnerType == FollowOwnerType.Nft
+        ? apis.follow.list(
+            followType == FollowType.Followers ? true : false,
+            contractAddress,
+            tokenId,
+          )
+        : apis.follow.list(
+            followType == FollowType.Followers ? true : false,
+            contractAddress,
+          )
+    );
+    navigation.navigate(NAV_NAMES.FollowList, {followOwnerType, followType, contractAddress, tokenId})
   };
   return gotoCapsule
 }

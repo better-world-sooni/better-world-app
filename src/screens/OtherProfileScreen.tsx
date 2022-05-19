@@ -3,8 +3,6 @@ import {Div} from 'src/components/common/Div';
 import apis from 'src/modules/apis';
 import {useApiSelector, useReloadGETWithToken} from 'src/redux/asyncReducer';
 import NftProfile from 'src/components/common/NftProfile';
-import {Img} from 'src/components/common/Img';
-import {DEVICE_WIDTH} from 'src/modules/styles';
 
 const OtherProfileScreen = ({
   route: {

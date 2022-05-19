@@ -40,6 +40,7 @@ import NftProfileEditBottomSheetScrollView from './NftProfileEditBottomSheetScro
 import {
   useGotoCapsule,
   useGotoChatRoom,
+  useGotoFollowList,
   useGotoNewPost,
   useGotoNftCollectionProfile,
 } from 'src/hooks/useGoto';
@@ -52,6 +53,7 @@ import Animated, {
 import {BlurView} from '@react-native-community/blur';
 import Colors from 'src/constants/Colors';
 import {ChatRoomType} from 'src/screens/ChatRoomScreen';
+import {FollowOwnerType, FollowType} from 'src/screens/FollowListScreen';
 
 export default function NftProfile({
   nft,
@@ -80,6 +82,11 @@ export default function NftProfile({
       .url,
   );
   const {goBack} = useNavigation();
+  const gotoFollowList = useGotoFollowList({
+    followOwnerType: FollowOwnerType.Nft,
+    contractAddress: nft.contract_address,
+    tokenId: nft.token_id,
+  });
   const headerHeight = HAS_NOTCH ? 124 : 100;
   const goToNewPost = useGotoNewPost({postOwnerType: PostOwnerType.Nft});
   const gotoChatRoom = useGotoChatRoom({
@@ -285,12 +292,12 @@ export default function NftProfile({
               ) : null}
               <Row mt8>
                 <Col auto mr20>
-                  <Span>
+                  <Span onPress={() => gotoFollowList(FollowType.Followers)}>
                     <Span gray700>팔로워</Span> {followerCount}
                   </Span>
                 </Col>
                 <Col auto mr20>
-                  <Span>
+                  <Span onPress={() => gotoFollowList(FollowType.Followings)}>
                     <Span gray700>팔로잉</Span> {nft.following_count}
                   </Span>
                 </Col>

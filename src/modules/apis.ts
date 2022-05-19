@@ -38,7 +38,8 @@ const apis = {
   },
   follow: {
     contractAddressAndTokenId: (contractAddress, tokenId) => apiV1(`/follow/${contractAddress}/${tokenId}`),
-    contractAddress: (contractAddress) => apiV1(`/follow/${contractAddress}`)
+    contractAddress: (contractAddress) => apiV1(`/follow/${contractAddress}`),
+    list: (getFollowers, contractAddress, tokenId?) => !tokenId ? apiV1(`/follow/list?get_followers=${getFollowers}&contract_address=${contractAddress}`): apiV1(`/follow/list?get_followers=${getFollowers}&contract_address=${contractAddress}&token_id=${tokenId}`),
   },
   nft_collection: {
     contractAddress: {
@@ -52,7 +53,8 @@ const apis = {
   },
   like: {
     post: (postId) => apiV1(`/like/post/${postId}`),
-    comment: (commentId) => apiV1(`/like/comment/${commentId}`)
+    comment: (commentId) => apiV1(`/like/comment/${commentId}`),
+    list: (likableType, likableId) => apiV1(`/like/${likableType}/${likableId}/list`),
   },
   vote: {
     postId: (postId) => apiV1(`/vote/${postId}`),
