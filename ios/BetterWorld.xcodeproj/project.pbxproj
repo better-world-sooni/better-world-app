@@ -21,7 +21,6 @@
 		36AB49A9FB194245A5E8BBD3 /* NotoSansKR-Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = FBFFC96F5EBB40A9BA83E30E /* NotoSansKR-Light.otf */; };
 		37B26BCCB0C042809280BF70 /* DroidSerif-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 95E05BA1A60845B7A8BF1840 /* DroidSerif-BoldItalic.ttf */; };
 		3C3501F342304254A2A2B1CE /* NotoSansKR-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = 0209B570957F422D889180CA /* NotoSansKR-Regular.otf */; };
-		4D0CE5ABEC57B85C2BA391F3 /* libPods-sungan-sunganTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ADF5811EE146E9D83369EB07 /* libPods-sungan-sunganTests.a */; };
 		4EFF4FE32E6445E6A9DE4E23 /* DroidSerif-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = DF16AC08E6E845C486E10597 /* DroidSerif-Italic.ttf */; };
 		5FE4D8EB86F244709E558F74 /* Jua-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6133CBA8C61E462D80533051 /* Jua-Regular.ttf */; };
 		78B5D51D6BCA457BACC71287 /* Uni Sans Italic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 4F0425492A804FE5A4711833 /* Uni Sans Italic.otf */; };
@@ -32,13 +31,14 @@
 		8C14521A273912FB009592BD /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8C145219273912FA009592BD /* GoogleService-Info.plist */; };
 		8C916B5126FF182F00AB49D1 /* libswiftWebKit.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C916B5026FF182F00AB49D1 /* libswiftWebKit.tbd */; };
 		913AC4605F064EFF9789DD91 /* Uni Sans Heavy.otf in Resources */ = {isa = PBXBuildFile; fileRef = C5DD4D96F0A54A3A960AE4E8 /* Uni Sans Heavy.otf */; };
+		A45D1B6C7CA477D4B4332FFF /* libPods-BetterWorld-BetterWorldTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FED37267FBF0515C26FCD68C /* libPods-BetterWorld-BetterWorldTests.a */; };
 		A9BF9135596D45B5A2FBB32B /* NotoSansKR-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = E1B2E403CE8E435B84EADF13 /* NotoSansKR-Bold.otf */; };
+		B140A97B9449868912C668DE /* libPods-BetterWorld.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DD820C87D98D02235B285F8 /* libPods-BetterWorld.a */; };
 		B14140B7513C4ACCAF531E24 /* Uni Sans Bold Italic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 6F6288D3854C45999FBCAC27 /* Uni Sans Bold Italic.otf */; };
 		B6A960207D9046149AC29F66 /* Uni Sans Thin.otf in Resources */ = {isa = PBXBuildFile; fileRef = B13F7E20FC4C4883BDBEA74C /* Uni Sans Thin.otf */; };
 		B90AD6DE394E4F53AC2CAB17 /* DroidSerif-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FAD477A8AD964A97B210A77A /* DroidSerif-Bold.ttf */; };
 		C015511C538E4818A5B78C1C /* Uni Sans Thin Italic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 196D87473036401E8E56BCDA /* Uni Sans Thin Italic.otf */; };
 		C5318CCFA3784754A90F8529 /* DroidSerif.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B3059A4D016444C6BC62D7E4 /* DroidSerif.ttf */; };
-		D411A636309C9022AB5DE6C3 /* libPods-sungan.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C383D3450AED9F46F223788 /* libPods-sungan.a */; };
 		D679945081B5427D96C0BDED /* Uni Sans Heavy Italic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 766E41CDBD974B3A99CA8B05 /* Uni Sans Heavy Italic.otf */; };
 		F2244C62DDAF45E7A83FFC95 /* Uni Sans Book.otf in Resources */ = {isa = PBXBuildFile; fileRef = B2D13A2254B04FC3A280ED90 /* Uni Sans Book.otf */; };
 		FE094677BE2E42BC9A4D4C39 /* NotoSansKR-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = E9E561646480470E88ED5A74 /* NotoSansKR-Medium.otf */; };
@@ -55,27 +55,30 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		00E356EE1AD99517003FC87E /* sunganTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = sunganTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		00E356EE1AD99517003FC87E /* BetterWorldTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BetterWorldTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* sunganTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = sunganTests.m; sourceTree = "<group>"; };
 		0209B570957F422D889180CA /* NotoSansKR-Regular.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "NotoSansKR-Regular.otf"; path = "../assets/fonts/NotoSansKR-Regular.otf"; sourceTree = "<group>"; };
-		02686325CB464C23B2EBEE2E /* Uni Sans Book Italic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Uni Sans Book Italic.otf"; path = "../assets/fonts/Uni Sans Book Italic.otf"; sourceTree = "<group>"; };
-		054F33EC7CC546DA95DBBAEC /* Uni Sans Light.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Uni Sans Light.otf"; path = "../assets/fonts/Uni Sans Light.otf"; sourceTree = "<group>"; };
-		0A493092C663432584F2A9B6 /* Uni Sans Regular.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Uni Sans Regular.otf"; path = "../assets/fonts/Uni Sans Regular.otf"; sourceTree = "<group>"; };
-		13B07F961A680F5B00A75B9A /* sungan.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = sungan.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		02686325CB464C23B2EBEE2E /* Uni Sans Book Italic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Uni Sans Book Italic.otf"; path = "../assets/fonts/Uni Sans Book Italic.otf"; sourceTree = "<group>"; };
+		054F33EC7CC546DA95DBBAEC /* Uni Sans Light.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Uni Sans Light.otf"; path = "../assets/fonts/Uni Sans Light.otf"; sourceTree = "<group>"; };
+		0A493092C663432584F2A9B6 /* Uni Sans Regular.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Uni Sans Regular.otf"; path = "../assets/fonts/Uni Sans Regular.otf"; sourceTree = "<group>"; };
+		13B07F961A680F5B00A75B9A /* BetterWorld.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BetterWorld.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = sungan/AppDelegate.h; sourceTree = "<group>"; };
 		13B07FB01A68108700A75B9A /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = sungan/AppDelegate.m; sourceTree = "<group>"; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = sungan/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = sungan/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = sungan/main.m; sourceTree = "<group>"; };
-		196D87473036401E8E56BCDA /* Uni Sans Thin Italic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Uni Sans Thin Italic.otf"; path = "../assets/fonts/Uni Sans Thin Italic.otf"; sourceTree = "<group>"; };
+		196D87473036401E8E56BCDA /* Uni Sans Thin Italic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Uni Sans Thin Italic.otf"; path = "../assets/fonts/Uni Sans Thin Italic.otf"; sourceTree = "<group>"; };
 		37A72E33B89A04B3B81AEABF /* Pods-sungan.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-sungan.debug.xcconfig"; path = "Target Support Files/Pods-sungan/Pods-sungan.debug.xcconfig"; sourceTree = "<group>"; };
-		3D06EE70CE824D139C29EE6F /* Uni Sans Bold.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Uni Sans Bold.otf"; path = "../assets/fonts/Uni Sans Bold.otf"; sourceTree = "<group>"; };
-		4F0425492A804FE5A4711833 /* Uni Sans Italic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Uni Sans Italic.otf"; path = "../assets/fonts/Uni Sans Italic.otf"; sourceTree = "<group>"; };
-		5C383D3450AED9F46F223788 /* libPods-sungan.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-sungan.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		3D06EE70CE824D139C29EE6F /* Uni Sans Bold.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Uni Sans Bold.otf"; path = "../assets/fonts/Uni Sans Bold.otf"; sourceTree = "<group>"; };
+		3D573EAC000C1E01E40D753F /* Pods-BetterWorld-BetterWorldTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BetterWorld-BetterWorldTests.release.xcconfig"; path = "Target Support Files/Pods-BetterWorld-BetterWorldTests/Pods-BetterWorld-BetterWorldTests.release.xcconfig"; sourceTree = "<group>"; };
+		4F0425492A804FE5A4711833 /* Uni Sans Italic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Uni Sans Italic.otf"; path = "../assets/fonts/Uni Sans Italic.otf"; sourceTree = "<group>"; };
+		58770DF0E35840AB8DBCED9A /* Pods-BetterWorld-BetterWorldTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BetterWorld-BetterWorldTests.debug.xcconfig"; path = "Target Support Files/Pods-BetterWorld-BetterWorldTests/Pods-BetterWorld-BetterWorldTests.debug.xcconfig"; sourceTree = "<group>"; };
 		6133CBA8C61E462D80533051 /* Jua-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Jua-Regular.ttf"; path = "../assets/fonts/Jua-Regular.ttf"; sourceTree = "<group>"; };
-		6F6288D3854C45999FBCAC27 /* Uni Sans Bold Italic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Uni Sans Bold Italic.otf"; path = "../assets/fonts/Uni Sans Bold Italic.otf"; sourceTree = "<group>"; };
-		766E41CDBD974B3A99CA8B05 /* Uni Sans Heavy Italic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Uni Sans Heavy Italic.otf"; path = "../assets/fonts/Uni Sans Heavy Italic.otf"; sourceTree = "<group>"; };
+		672D2D0D9393919A6AB7F361 /* Pods-BetterWorld.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BetterWorld.release.xcconfig"; path = "Target Support Files/Pods-BetterWorld/Pods-BetterWorld.release.xcconfig"; sourceTree = "<group>"; };
+		6F6288D3854C45999FBCAC27 /* Uni Sans Bold Italic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Uni Sans Bold Italic.otf"; path = "../assets/fonts/Uni Sans Bold Italic.otf"; sourceTree = "<group>"; };
+		766E41CDBD974B3A99CA8B05 /* Uni Sans Heavy Italic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Uni Sans Heavy Italic.otf"; path = "../assets/fonts/Uni Sans Heavy Italic.otf"; sourceTree = "<group>"; };
+		7DD820C87D98D02235B285F8 /* libPods-BetterWorld.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-BetterWorld.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = sungan/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		81C211F5C55443179FCC79FC /* NotoSansKR-Thin.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "NotoSansKR-Thin.otf"; path = "../assets/fonts/NotoSansKR-Thin.otf"; sourceTree = "<group>"; };
 		822E0F6174BB00DDAE08A9A8 /* Pods-sungan-sunganTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-sungan-sunganTests.debug.xcconfig"; path = "Target Support Files/Pods-sungan-sunganTests/Pods-sungan-sunganTests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -86,22 +89,23 @@
 		95E05BA1A60845B7A8BF1840 /* DroidSerif-BoldItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "DroidSerif-BoldItalic.ttf"; path = "../assets/fonts/DroidSerif-BoldItalic.ttf"; sourceTree = "<group>"; };
 		9DD7738F6D58410DAD9AABA6 /* Gugi-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Gugi-Regular.ttf"; path = "../assets/fonts/Gugi-Regular.ttf"; sourceTree = "<group>"; };
 		9FA550FF0B2948F098CA5B1C /* NotoSansKR-Black.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "NotoSansKR-Black.otf"; path = "../assets/fonts/NotoSansKR-Black.otf"; sourceTree = "<group>"; };
-		ADF5811EE146E9D83369EB07 /* libPods-sungan-sunganTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-sungan-sunganTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		B13F7E20FC4C4883BDBEA74C /* Uni Sans Thin.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Uni Sans Thin.otf"; path = "../assets/fonts/Uni Sans Thin.otf"; sourceTree = "<group>"; };
-		B21D244718064C408CDD1C9E /* Uni Sans SemiBold Italic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Uni Sans SemiBold Italic.otf"; path = "../assets/fonts/Uni Sans SemiBold Italic.otf"; sourceTree = "<group>"; };
-		B2D13A2254B04FC3A280ED90 /* Uni Sans Book.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Uni Sans Book.otf"; path = "../assets/fonts/Uni Sans Book.otf"; sourceTree = "<group>"; };
+		B13F7E20FC4C4883BDBEA74C /* Uni Sans Thin.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Uni Sans Thin.otf"; path = "../assets/fonts/Uni Sans Thin.otf"; sourceTree = "<group>"; };
+		B21D244718064C408CDD1C9E /* Uni Sans SemiBold Italic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Uni Sans SemiBold Italic.otf"; path = "../assets/fonts/Uni Sans SemiBold Italic.otf"; sourceTree = "<group>"; };
+		B2D13A2254B04FC3A280ED90 /* Uni Sans Book.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Uni Sans Book.otf"; path = "../assets/fonts/Uni Sans Book.otf"; sourceTree = "<group>"; };
 		B3059A4D016444C6BC62D7E4 /* DroidSerif.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = DroidSerif.ttf; path = ../assets/fonts/DroidSerif.ttf; sourceTree = "<group>"; };
 		C3AEDAEAD88249CBB5BE6B72 /* Pods-sungan.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-sungan.release.xcconfig"; path = "Target Support Files/Pods-sungan/Pods-sungan.release.xcconfig"; sourceTree = "<group>"; };
-		C5DD4D96F0A54A3A960AE4E8 /* Uni Sans Heavy.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Uni Sans Heavy.otf"; path = "../assets/fonts/Uni Sans Heavy.otf"; sourceTree = "<group>"; };
-		D8D0850B627848E9B70D4F96 /* Uni Sans Light Italic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Uni Sans Light Italic.otf"; path = "../assets/fonts/Uni Sans Light Italic.otf"; sourceTree = "<group>"; };
+		C5DD4D96F0A54A3A960AE4E8 /* Uni Sans Heavy.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Uni Sans Heavy.otf"; path = "../assets/fonts/Uni Sans Heavy.otf"; sourceTree = "<group>"; };
+		D8D0850B627848E9B70D4F96 /* Uni Sans Light Italic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Uni Sans Light Italic.otf"; path = "../assets/fonts/Uni Sans Light Italic.otf"; sourceTree = "<group>"; };
 		DF16AC08E6E845C486E10597 /* DroidSerif-Italic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "DroidSerif-Italic.ttf"; path = "../assets/fonts/DroidSerif-Italic.ttf"; sourceTree = "<group>"; };
 		E1B2E403CE8E435B84EADF13 /* NotoSansKR-Bold.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "NotoSansKR-Bold.otf"; path = "../assets/fonts/NotoSansKR-Bold.otf"; sourceTree = "<group>"; };
 		E9E561646480470E88ED5A74 /* NotoSansKR-Medium.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "NotoSansKR-Medium.otf"; path = "../assets/fonts/NotoSansKR-Medium.otf"; sourceTree = "<group>"; };
+		ECF3C9170531EC64F9D5F41A /* Pods-BetterWorld.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BetterWorld.debug.xcconfig"; path = "Target Support Files/Pods-BetterWorld/Pods-BetterWorld.debug.xcconfig"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
-		F46FF67A8C094907B38BC0F6 /* Uni Sans SemiBold.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Uni Sans SemiBold.otf"; path = "../assets/fonts/Uni Sans SemiBold.otf"; sourceTree = "<group>"; };
+		F46FF67A8C094907B38BC0F6 /* Uni Sans SemiBold.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Uni Sans SemiBold.otf"; path = "../assets/fonts/Uni Sans SemiBold.otf"; sourceTree = "<group>"; };
 		FAD477A8AD964A97B210A77A /* DroidSerif-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "DroidSerif-Bold.ttf"; path = "../assets/fonts/DroidSerif-Bold.ttf"; sourceTree = "<group>"; };
 		FBFFC96F5EBB40A9BA83E30E /* NotoSansKR-Light.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "NotoSansKR-Light.otf"; path = "../assets/fonts/NotoSansKR-Light.otf"; sourceTree = "<group>"; };
 		FC65B07996145ABF9CB95402 /* Pods-sungan-sunganTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-sungan-sunganTests.release.xcconfig"; path = "Target Support Files/Pods-sungan-sunganTests/Pods-sungan-sunganTests.release.xcconfig"; sourceTree = "<group>"; };
+		FED37267FBF0515C26FCD68C /* libPods-BetterWorld-BetterWorldTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-BetterWorld-BetterWorldTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -109,7 +113,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4D0CE5ABEC57B85C2BA391F3 /* libPods-sungan-sunganTests.a in Frameworks */,
+				A45D1B6C7CA477D4B4332FFF /* libPods-BetterWorld-BetterWorldTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -118,7 +122,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8C916B5126FF182F00AB49D1 /* libswiftWebKit.tbd in Frameworks */,
-				D411A636309C9022AB5DE6C3 /* libPods-sungan.a in Frameworks */,
+				B140A97B9449868912C668DE /* libPods-BetterWorld.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -164,6 +168,10 @@
 				C3AEDAEAD88249CBB5BE6B72 /* Pods-sungan.release.xcconfig */,
 				822E0F6174BB00DDAE08A9A8 /* Pods-sungan-sunganTests.debug.xcconfig */,
 				FC65B07996145ABF9CB95402 /* Pods-sungan-sunganTests.release.xcconfig */,
+				ECF3C9170531EC64F9D5F41A /* Pods-BetterWorld.debug.xcconfig */,
+				672D2D0D9393919A6AB7F361 /* Pods-BetterWorld.release.xcconfig */,
+				58770DF0E35840AB8DBCED9A /* Pods-BetterWorld-BetterWorldTests.debug.xcconfig */,
+				3D573EAC000C1E01E40D753F /* Pods-BetterWorld-BetterWorldTests.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -174,8 +182,8 @@
 				8C916B4D26FF154A00AB49D1 /* libswiftWebKit.tbd */,
 				8C916B5026FF182F00AB49D1 /* libswiftWebKit.tbd */,
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
-				5C383D3450AED9F46F223788 /* libPods-sungan.a */,
-				ADF5811EE146E9D83369EB07 /* libPods-sungan-sunganTests.a */,
+				7DD820C87D98D02235B285F8 /* libPods-BetterWorld.a */,
+				FED37267FBF0515C26FCD68C /* libPods-BetterWorld-BetterWorldTests.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -239,8 +247,8 @@
 		83CBBA001A601CBA00E9B192 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				13B07F961A680F5B00A75B9A /* sungan.app */,
-				00E356EE1AD99517003FC87E /* sunganTests.xctest */,
+				13B07F961A680F5B00A75B9A /* BetterWorld.app */,
+				00E356EE1AD99517003FC87E /* BetterWorldTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -248,9 +256,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		00E356ED1AD99517003FC87E /* sunganTests */ = {
+		00E356ED1AD99517003FC87E /* BetterWorldTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "sunganTests" */;
+			buildConfigurationList = 00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "BetterWorldTests" */;
 			buildPhases = (
 				D3271218D1FFFBFCF7FA85BE /* [CP] Check Pods Manifest.lock */,
 				00E356EA1AD99517003FC87E /* Sources */,
@@ -264,14 +272,14 @@
 			dependencies = (
 				00E356F51AD99517003FC87E /* PBXTargetDependency */,
 			);
-			name = sunganTests;
+			name = BetterWorldTests;
 			productName = sunganTests;
-			productReference = 00E356EE1AD99517003FC87E /* sunganTests.xctest */;
+			productReference = 00E356EE1AD99517003FC87E /* BetterWorldTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		13B07F861A680F5B00A75B9A /* sungan */ = {
+		13B07F861A680F5B00A75B9A /* BetterWorld */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "sungan" */;
+			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "BetterWorld" */;
 			buildPhases = (
 				88D56E7B17AD59799155A902 /* [CP] Check Pods Manifest.lock */,
 				FD10A7F022414F080027D42C /* Start Packager */,
@@ -287,9 +295,9 @@
 			);
 			dependencies = (
 			);
-			name = sungan;
+			name = BetterWorld;
 			productName = sungan;
-			productReference = 13B07F961A680F5B00A75B9A /* sungan.app */;
+			productReference = 13B07F961A680F5B00A75B9A /* BetterWorld.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -309,7 +317,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "sungan" */;
+			buildConfigurationList = 83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "BetterWorld" */;
 			compatibilityVersion = "Xcode 11.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -322,8 +330,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				13B07F861A680F5B00A75B9A /* sungan */,
-				00E356ED1AD99517003FC87E /* sunganTests */,
+				13B07F861A680F5B00A75B9A /* BetterWorld */,
+				00E356ED1AD99517003FC87E /* BetterWorldTests */,
 			);
 		};
 /* End PBXProject section */
@@ -395,15 +403,15 @@
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-sungan-sunganTests/Pods-sungan-sunganTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-BetterWorld-BetterWorldTests/Pods-BetterWorld-BetterWorldTests-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-sungan-sunganTests/Pods-sungan-sunganTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-BetterWorld-BetterWorldTests/Pods-BetterWorld-BetterWorldTests-frameworks-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-sungan-sunganTests/Pods-sungan-sunganTests-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-BetterWorld-BetterWorldTests/Pods-BetterWorld-BetterWorldTests-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		5E032F22268B95DED6E833A6 /* [CP] Copy Pods Resources */ = {
@@ -412,15 +420,15 @@
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-sungan/Pods-sungan-resources-${CONFIGURATION}-input-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-BetterWorld/Pods-BetterWorld-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-sungan/Pods-sungan-resources-${CONFIGURATION}-output-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-BetterWorld/Pods-BetterWorld-resources-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-sungan/Pods-sungan-resources.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-BetterWorld/Pods-BetterWorld-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		88D56E7B17AD59799155A902 /* [CP] Check Pods Manifest.lock */ = {
@@ -438,7 +446,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-sungan-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-BetterWorld-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -451,15 +459,15 @@
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-sungan-sunganTests/Pods-sungan-sunganTests-resources-${CONFIGURATION}-input-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-BetterWorld-BetterWorldTests/Pods-BetterWorld-BetterWorldTests-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-sungan-sunganTests/Pods-sungan-sunganTests-resources-${CONFIGURATION}-output-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-BetterWorld-BetterWorldTests/Pods-BetterWorld-BetterWorldTests-resources-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-sungan-sunganTests/Pods-sungan-sunganTests-resources.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-BetterWorld-BetterWorldTests/Pods-BetterWorld-BetterWorldTests-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		C23251328CBE68344E9B9638 /* [CP-User] [RNFB] Core Configuration */ = {
@@ -490,7 +498,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-sungan-sunganTests-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-BetterWorld-BetterWorldTests-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -503,15 +511,15 @@
 			files = (
 			);
 			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-sungan/Pods-sungan-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-BetterWorld/Pods-BetterWorld-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-sungan/Pods-sungan-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+				"${PODS_ROOT}/Target Support Files/Pods-BetterWorld/Pods-BetterWorld-frameworks-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-sungan/Pods-sungan-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-BetterWorld/Pods-BetterWorld-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		FD10A7F022414F080027D42C /* Start Packager */ = {
@@ -558,7 +566,7 @@
 /* Begin PBXTargetDependency section */
 		00E356F51AD99517003FC87E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 13B07F861A680F5B00A75B9A /* sungan */;
+			target = 13B07F861A680F5B00A75B9A /* BetterWorld */;
 			targetProxy = 00E356F41AD99517003FC87E /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -566,7 +574,7 @@
 /* Begin XCBuildConfiguration section */
 		00E356F61AD99517003FC87E /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 822E0F6174BB00DDAE08A9A8 /* Pods-sungan-sunganTests.debug.xcconfig */;
+			baseConfigurationReference = 58770DF0E35840AB8DBCED9A /* Pods-BetterWorld-BetterWorldTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -587,13 +595,13 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/sungan.app/sungan";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BetterWorld.app/BetterWorld";
 			};
 			name = Debug;
 		};
 		00E356F71AD99517003FC87E /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = FC65B07996145ABF9CB95402 /* Pods-sungan-sunganTests.release.xcconfig */;
+			baseConfigurationReference = 3D573EAC000C1E01E40D753F /* Pods-BetterWorld-BetterWorldTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
@@ -611,13 +619,13 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/sungan.app/sungan";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BetterWorld.app/BetterWorld";
 			};
 			name = Release;
 		};
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 37A72E33B89A04B3B81AEABF /* Pods-sungan.debug.xcconfig */;
+			baseConfigurationReference = ECF3C9170531EC64F9D5F41A /* Pods-BetterWorld.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -641,8 +649,8 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.app.sungan;
-				PRODUCT_NAME = sungan;
+				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.app.betterworld;
+				PRODUCT_NAME = BetterWorld;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -651,7 +659,7 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = C3AEDAEAD88249CBB5BE6B72 /* Pods-sungan.release.xcconfig */;
+			baseConfigurationReference = 672D2D0D9393919A6AB7F361 /* Pods-BetterWorld.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -675,8 +683,8 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.app.sungan;
-				PRODUCT_NAME = sungan;
+				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.app.betterworld;
+				PRODUCT_NAME = BetterWorld;
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -808,7 +816,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "sunganTests" */ = {
+		00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "BetterWorldTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				00E356F61AD99517003FC87E /* Debug */,
@@ -817,7 +825,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "sungan" */ = {
+		13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "BetterWorld" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				13B07F941A680F5B00A75B9A /* Debug */,
@@ -826,7 +834,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "sungan" */ = {
+		83CBB9FA1A601CBA00E9B192 /* Build configuration list for PBXProject "BetterWorld" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				83CBBA201A601CBA00E9B192 /* Debug */,

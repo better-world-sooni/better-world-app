@@ -22,6 +22,9 @@ const apis = {
     },
     jwt: () => apiV1('/auth/jwt')
   },
+  pushNotificationSetting: {
+    registrationToken: () => apiV1(`/push_notification_setting/registration_token`)
+  },
   profile: {
     klaytnAddress: (klaytnAddress) => apiV1(`/profile/${klaytnAddress}`),
     _: () => apiV1(`/profile`)
