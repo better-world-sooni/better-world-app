@@ -1,8 +1,6 @@
 import {BottomSheetScrollView} from '@gorhom/bottom-sheet';
 import React from 'react';
 import {ActivityIndicator} from 'react-native';
-import useName, {NameOwnerType} from 'src/hooks/useName';
-import useStory, {StoryOwnerType} from 'src/hooks/useStory';
 import {
   getNftName,
   getNftProfileImage,
@@ -15,20 +13,21 @@ import {Div} from './Div';
 import {Img} from './Img';
 import {Row} from './Row';
 import {Span} from './Span';
-import {Check, MessageCircle, Tool, Trash, Upload} from 'react-native-feather';
+import {MessageCircle} from 'react-native-feather';
 import useUploadImage from 'src/hooks/useUploadImage';
 import apis from 'src/modules/apis';
-import Colors from 'src/constants/Colors';
 import {useApiSelector} from 'src/redux/asyncReducer';
 import {
   useGotoCapsule,
   useGotoChatRoom,
   useGotoNftCollectionProfile,
+  useGotoNftProfile,
 } from 'src/hooks/useGoto';
 import {ICONS} from 'src/modules/icons';
 import useFollow from 'src/hooks/useFollow';
 import TruncatedMarkdown from './TruncatedMarkdown';
 import {ChatRoomType} from 'src/screens/ChatRoomScreen';
+import {HAS_NOTCH} from 'src/modules/constants';
 
 export default function NftProfileSummaryBottomSheetScrollView({
   contractAddress,
@@ -59,17 +58,33 @@ function NftProfileSummary({nft}) {
     apis.follow.contractAddressAndTokenId(nft.contract_address, nft.token_id)
       .url,
   );
+  const gotoNftProfile = useGotoNftProfile({
+    contractAddress: nft.contract_address,
+    tokenId: nft.token_id,
+  });
   const gotoNftCollectionProfile = useGotoNftCollectionProfile({
     contractAddress: nft.contract_address,
   });
   const gotoChatRoom = useGotoChatRoom({
     chatRoomType: ChatRoomType.DirectMessage,
   });
+  const headerHeight = HAS_NOTCH ? 124 : 100;
   return (
     <BottomSheetScrollView>
-      <Row zIndex={100} px15 relative>
-        <Div absolute bottom0 w={DEVICE_WIDTH} bgWhite h={55}></Div>
-        <Col auto mr10 relative>
+      {nft.background_image_uri ? (
+        <Img
+          zIndex={-10}
+          uri={nft.background_image_uri}
+          absolute
+          top0
+          w={DEVICE_WIDTH}
+          h={headerHeight}></Img>
+      ) : (
+        <Div absolute top0 h={headerHeight} bgGray400 w={DEVICE_WIDTH}></Div>
+      )}
+      <Row zIndex={100} px15 relative mt40>
+        <Div absolute bottom0 w={DEVICE_WIDTH} bgWhite h={45}></Div>
+        <Col auto mr10 relative onPress={gotoNftProfile}>
           <Img
             rounded100
             border4
@@ -91,7 +106,7 @@ function NftProfileSummary({nft}) {
                   rounded100
                   onPress={() =>
                     gotoChatRoom({
-                      contractAddress: nft.contract_addres,
+                      contractAddress: nft.contract_address,
                       tokenId: nft.token_id,
                     })
                   }>

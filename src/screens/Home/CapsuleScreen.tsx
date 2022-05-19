@@ -143,7 +143,7 @@ function CapsuleScreen({route: {params}}) {
           onCapsuleMessage={handleCapsuleMessage}
         />
       </Div>
-      <BottomPopup ref={bottomPopupRef} snapPoints={['90%', '30%']} index={-1}>
+      <BottomPopup ref={bottomPopupRef} snapPoints={[250]} index={-1}>
         {pressedNftAvatar && (
           <NftProfileSummaryBottomSheetScrollView
             contractAddress={pressedNftAvatar.contract_address}

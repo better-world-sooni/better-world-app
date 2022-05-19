@@ -39,6 +39,7 @@ import {BottomSheetModal} from '@gorhom/bottom-sheet';
 import NftProfileEditBottomSheetScrollView from './NftProfileEditBottomSheetScrollView';
 import {
   useGotoCapsule,
+  useGotoChatRoom,
   useGotoNewPost,
   useGotoNftCollectionProfile,
 } from 'src/hooks/useGoto';
@@ -50,6 +51,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import {BlurView} from '@react-native-community/blur';
 import Colors from 'src/constants/Colors';
+import {ChatRoomType} from 'src/screens/ChatRoomScreen';
 
 export default function NftProfile({
   nft,
@@ -80,6 +82,9 @@ export default function NftProfile({
   const {goBack} = useNavigation();
   const headerHeight = HAS_NOTCH ? 124 : 100;
   const goToNewPost = useGotoNewPost({postOwnerType: PostOwnerType.Nft});
+  const gotoChatRoom = useGotoChatRoom({
+    chatRoomType: ChatRoomType.DirectMessage,
+  });
   const headerStyles = useAnimatedStyle(() => {
     return {
       width: DEVICE_WIDTH,
@@ -182,7 +187,17 @@ export default function NftProfile({
                   <Div>
                     <Row py8>
                       <Col />
-                      <Col auto bgRealBlack p8 rounded100>
+                      <Col
+                        auto
+                        bgRealBlack
+                        p8
+                        rounded100
+                        onPress={() =>
+                          gotoChatRoom({
+                            contractAddress: nft.contract_address,
+                            tokenId: nft.token_id,
+                          })
+                        }>
                         <Div>
                           <MessageCircle
                             strokeWidth={2}
@@ -266,7 +281,15 @@ export default function NftProfile({
                   <TruncatedMarkdown text={nft.story} maxLength={500} />
                 </Div>
               ) : null}
-              <Row mt3>
+              <Row mt8>
+                <Col auto mr20>
+                  <Span>
+                    <Span gray700>랭크</Span> {nft.rank}
+                  </Span>
+                </Col>
+                <Col />
+              </Row>
+              <Row mt8>
                 <Col auto mr20>
                   <Span>
                     {followerCount} <Span gray700>팔로워</Span>

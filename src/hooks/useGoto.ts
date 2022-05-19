@@ -53,7 +53,8 @@ export function useGotoChatRoom({chatRoomType}){
       ),
     );
       navigation.navigate(NAV_NAMES.ChatRoom, {
-        roomId
+        roomId,
+        chatRoomType
       });
   }
   const gotoChatRoomAsDirectMessage = ({contractAddress, tokenId}: any)  => {
@@ -65,7 +66,9 @@ export function useGotoChatRoom({chatRoomType}){
     );
       navigation.navigate(NAV_NAMES.ChatRoom, {
         contractAddress,
-        tokenId
+        tokenId,
+        chatRoomType
+        
       });
   }
   return chatRoomType == ChatRoomType.RoomId ? gotoChatRoomWithRoomId : gotoChatRoomAsDirectMessage

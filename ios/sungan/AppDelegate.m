@@ -7,7 +7,6 @@
 #import <UserNotifications/UserNotifications.h>
 #import <RNCPushNotificationIOS.h>
 #import <CodePush/CodePush.h>
-//#import <GoogleMaps/GoogleMaps.h>
 
 #ifdef FB_SONARKIT_ENABLED
 #import <FlipperKit/FlipperClient.h>
@@ -91,7 +90,6 @@ didReceiveNotificationResponse:(UNNotificationResponse *)response
 - (NSURL *)sourceURLForBridge:(RCTBridge *)bridge
 {
   #if DEBUG
-//  return [NSURL URLWithString:@"http://192.168.31.148:8081/index.bundle?platform=ios"];
     return [[RCTBundleURLProvider sharedSettings] jsBundleURLForBundleRoot:@"index" fallbackResource:nil];
   #else
     return [CodePush bundleURL];
