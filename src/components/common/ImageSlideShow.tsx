@@ -2,6 +2,7 @@ import React, {useState} from 'react';
 import Carousel, {Pagination} from 'react-native-snap-carousel';
 import Colors from 'src/constants/Colors';
 import {DEVICE_WIDTH} from 'src/modules/styles';
+import {resizeImageUri} from 'src/modules/uriUtils';
 import {Div} from './Div';
 import {Img} from './Img';
 
@@ -43,7 +44,7 @@ export default function ImageSlideShow({imageUris}) {
 function renderItem({item, index}) {
   return (
     <Div>
-      <Img w={DEVICE_WIDTH} h250 uri={item}></Img>
+      <Img w={DEVICE_WIDTH} h300 uri={resizeImageUri(item, 500, 500)}></Img>
     </Div>
   );
 }

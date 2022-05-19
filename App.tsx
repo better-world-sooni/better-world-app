@@ -6,7 +6,7 @@ import {AppContent} from 'src/components/AppContent';
 import {shallowEqual, useSelector} from 'react-redux';
 import {RootState} from 'src/redux/rootReducer';
 import messaging from '@react-native-firebase/messaging';
-import {postPromiseFn} from 'src/redux/asyncReducer';
+import {postPromiseFn, usePostPromiseFnWithToken} from 'src/redux/asyncReducer';
 import apis from 'src/modules/apis';
 import PushNotification from 'react-native-push-notification';
 import 'react-native-url-polyfill/auto';
@@ -17,6 +17,7 @@ const App = () => {
     session: {token},
   } = useSelector((root: RootState) => root.app, shallowEqual);
   const firebaseMessaging = messaging();
+  const postPromiseFnWithToken = usePostPromiseFnWithToken();
   const getToken = useCallback(async () => {
     try {
       const token = await firebaseMessaging.getToken();
@@ -28,24 +29,22 @@ const App = () => {
       const authorized = await firebaseMessaging.hasPermission();
       if (authorized) {
         const fcmToken = await getToken();
-        // const res = await postPromiseFn({
-        //   url: apis.push.registrationToken().url,
-        //   body: {
-        //     token: fcmToken,
-        //   },
-        //   token: token,
-        // });
+        const res = await postPromiseFnWithToken({
+          url: apis.pushNotificationSetting.registrationToken().url,
+          body: {
+            token: fcmToken,
+          },
+        });
         console.log('console.log(fcmToken)', fcmToken);
       } else {
         await firebaseMessaging.requestPermission();
         const fcmToken = await getToken();
-        // const res = await postPromiseFn({
-        //   url: apis.push.registrationToken().url,
-        //   body: {
-        //     token: fcmToken,
-        //   },
-        //   token: token,
-        // });
+        const res = await postPromiseFnWithToken({
+          url: apis.pushNotificationSetting.registrationToken().url,
+          body: {
+            token: fcmToken,
+          },
+        });
         console.log('console.log(fcmToken)', fcmToken);
       }
     } catch (error) {

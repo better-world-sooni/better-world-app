@@ -284,20 +284,22 @@ export default function NftProfile({
               <Row mt8>
                 <Col auto mr20>
                   <Span>
-                    <Span gray700>랭크</Span> {nft.rank}
-                  </Span>
-                </Col>
-                <Col />
-              </Row>
-              <Row mt8>
-                <Col auto mr20>
-                  <Span>
                     {followerCount} <Span gray700>팔로워</Span>
                   </Span>
                 </Col>
-                <Col auto>
+                <Col auto mr20>
                   <Span>
                     {nft.following_count} <Span gray700>팔로잉</Span>
+                  </Span>
+                </Col>
+                <Col auto mr20>
+                  <Span>
+                    <Span gray700>랭크</Span> {nft.current_rank}
+                  </Span>
+                </Col>
+                <Col auto mr20>
+                  <Span>
+                    <Span gray700>랭크 스코어</Span> {nft.current_rank_score}
                   </Span>
                 </Col>
                 <Col />

@@ -188,7 +188,6 @@ function ChatRoomScreen({
         <FlatList
           ref={flatListRef}
           showsVerticalScrollIndicator={false}
-          // bounces={false}
           contentContainerStyle={{
             paddingTop: 5,
             paddingBottom: 5,
