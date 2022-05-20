@@ -14,10 +14,10 @@ export const NAV_NAMES = {
     Capsule: "Capsule",
     ChatList: "ChatList",
     ChatRoom: "ChatRoom",
-    PostDetail: "PostDetail",
     Notification: "Notification",
     LikeList: "LikeList",
     FollowList: "FollowList",
     VoteList: "VoteList",
+    Qr: "Qr",
 };
 

@@ -236,7 +236,7 @@ function RankedNft({rankItem}) {
             {rankItem.nft_name || rankItem.nft_metadatum_name}
           </Span>
         </Div>
-        {!rankItem.nft_name && (
+        {rankItem.nft_name && (
           <Div mt3>
             <Span gray600 fontSize={12}>
               {rankItem.nft_metadatum_name}

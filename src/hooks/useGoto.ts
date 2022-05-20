@@ -1,7 +1,9 @@
 import { useNavigation } from "@react-navigation/native";
+import { shallowEqual, useSelector } from "react-redux";
 import apis from "src/modules/apis";
 import { NAV_NAMES } from "src/modules/navNames";
 import { useApiGETWithToken, useApiPOSTWithToken } from "src/redux/asyncReducer";
+import { RootState } from "src/redux/rootReducer";
 import { ChatRoomType } from "src/screens/ChatRoomScreen";
 import { FollowOwnerType, FollowType } from "src/screens/FollowListScreen";
 
@@ -53,7 +55,6 @@ export function useGotoChatRoom({chatRoomType}){
           roomId
       ),
     );
-    console.log(roomName, roomImage)
       navigation.navigate(NAV_NAMES.ChatRoom, {
         roomName,
         roomImage,
@@ -68,7 +69,6 @@ export function useGotoChatRoom({chatRoomType}){
         tokenId
       ),
     );
-      console.log(roomName, roomImage)
       navigation.navigate(NAV_NAMES.ChatRoom, {
         roomName,
         roomImage,
@@ -185,6 +185,23 @@ export function useGotoReport({id, reportType}){
       id,
       reportType
     })
+  }
+  return gotoReport
+}
+
+export function useGotoQR(){
+  const navigation = useNavigation()
+  const apiPOSTWithToken = useApiPOSTWithToken()
+  const {currentNft} = useSelector(
+    (root: RootState) => root.app.session,
+    shallowEqual,
+);
+  const gotoReport = () => {
+    apiPOSTWithToken(apis.auth.qr(), {
+      contract_address: currentNft.contract_address,
+      token_id: currentNft.token_id
+    })
+    navigation.navigate(NAV_NAMES.Qr)
   }
   return gotoReport
 }

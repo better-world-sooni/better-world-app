@@ -28,13 +28,12 @@ export default function NewMessage({text, onTextChange, onPressSend, onFocus}) {
       w={'100%'}
       borderTop={0.5}
       borderColor={varStyle.gray200}>
-      <Div px15 pt8>
+      <Div px15 py8>
         <TextField
           w={'100%'}
           h40
           py0
           px10
-          onFo
           rounded100
           onFocus={onFocus}
           placeholder={'메세지를 전송해요.'}
@@ -51,7 +50,6 @@ export default function NewMessage({text, onTextChange, onPressSend, onFocus}) {
           autoCapitalize="none"
         />
       </Div>
-      <Div h={HAS_NOTCH ? 35 : 20} />
     </Div>
   );
 }

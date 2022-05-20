@@ -14,7 +14,10 @@ import {
   useIsCurrentNft,
 } from 'src/modules/nftUtils';
 import {DEVICE_WIDTH} from 'src/modules/styles';
-import {useGotoNftProfile} from 'src/hooks/useGoto';
+import {
+  useGotoNftCollectionProfile,
+  useGotoNftProfile,
+} from 'src/hooks/useGoto';
 import Animated, {
   useAnimatedScrollHandler,
   useAnimatedStyle,
@@ -151,8 +154,16 @@ function FollowOwner({nft, isFollowing}) {
     contractAddress: nft.contract_address,
     tokenId: nft.token_id,
   });
+  const gotoNftCollectionProfile = useGotoNftCollectionProfile({
+    contractAddress: nft.contract_address,
+  });
   return (
-    <Row itemsCenter h70 onPress={gotoNftProfile} px15 relative>
+    <Row
+      itemsCenter
+      h70
+      onPress={nft.token_id ? gotoNftProfile : gotoNftCollectionProfile}
+      px15
+      relative>
       <Img w50 h50 rounded100 uri={getNftProfileImage(nft, 100, 100)} />
       <Col mx15>
         <Div>

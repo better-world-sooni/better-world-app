@@ -46,7 +46,7 @@ function renderItem({item, index}) {
     <Div>
       <Img
         w={DEVICE_WIDTH}
-        h={(DEVICE_WIDTH * 2) / 3}
+        h={DEVICE_WIDTH}
         uri={resizeImageUri(item, 500, 500)}></Img>
     </Div>
   );

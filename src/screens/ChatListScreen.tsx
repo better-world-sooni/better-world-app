@@ -98,7 +98,6 @@ function ChatListScreen() {
       };
       wsConnect();
       return () => {
-        console.log('bye');
         if (channel) {
           channel.disconnect();
           channel.close();
@@ -230,17 +229,15 @@ function ChatRoomItem({onPress, room}) {
                 <TruncatedText text={lastMessage} maxLength={30} />
               </Div>
             </Col>
-            {unreadMessageCount > 0 && (
-              <Col auto rounded30 bgDanger px5 justifyCenter>
-                <Div>
-                  <Span white fontSize={15}>
-                    {unreadMessageCount >= 100 ? '99+' : unreadMessageCount}
-                  </Span>
-                </Div>
-              </Col>
-            )}
           </Row>
         </Col>
+        {unreadMessageCount > 0 && (
+          <Col auto rounded100 bgDanger px8 py4 justifyCenter>
+            <Span white fontSize={12}>
+              {unreadMessageCount >= 100 ? '99+' : unreadMessageCount}
+            </Span>
+          </Col>
+        )}
       </Row>
     </Div>
   );

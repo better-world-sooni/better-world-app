@@ -1,5 +1,5 @@
 import {useNavigation} from '@react-navigation/native';
-import React, {useCallback, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {ActivityIndicator, Platform, RefreshControl} from 'react-native';
 import {
   ChevronLeft,
@@ -71,6 +71,9 @@ export default function Post({
     apis.like.post(post.id).url,
   );
   const [cachedComments, setCachedComments] = useState(post.comments || []);
+  useEffect(() => {
+    setCachedComments(post.comments || []);
+  }, [post.comments?.length]);
   const {
     forVotesCount,
     againstVotesCount,
@@ -131,46 +134,46 @@ export default function Post({
         ];
 
   const actionIconDefaultProps = {
-    width: 20,
-    height: 20,
+    width: 22,
+    height: 22,
     color: Colors.gray[700],
-    strokeWidth: 1.5,
+    strokeWidth: 1.7,
   };
   const heartProps = liked
     ? {
         fill: Colors.danger.DEFAULT,
-        width: 20,
-        height: 20,
+        width: 22,
+        height: 22,
         color: Colors.danger.DEFAULT,
-        strokeWidth: 1.5,
+        strokeWidth: 1.7,
       }
     : actionIconDefaultProps;
 
   const forVoteProps = hasVotedFor
     ? {
         fill: Colors.primary.DEFAULT,
-        width: 20,
-        height: 20,
+        width: 22,
+        height: 22,
         color: Colors.primary.DEFAULT,
-        strokeWidth: 1.5,
+        strokeWidth: 1.7,
       }
     : actionIconDefaultProps;
   const abstainVoteProps = hasVotedAbstain
     ? {
         fill: Colors.primary.DEFAULT,
-        width: 20,
-        height: 20,
+        width: 22,
+        height: 22,
         color: Colors.primary.DEFAULT,
-        strokeWidth: 1.5,
+        strokeWidth: 1.7,
       }
     : actionIconDefaultProps;
   const againstVoteProps = hasVotedAgainst
     ? {
         fill: Colors.danger.DEFAULT,
-        width: 20,
-        height: 20,
+        width: 22,
+        height: 22,
         color: Colors.danger.DEFAULT,
-        strokeWidth: 1.5,
+        strokeWidth: 1.7,
       }
     : actionIconDefaultProps;
   const goToPost = useGotoPost({postId: post.id});
@@ -268,7 +271,7 @@ export default function Post({
     <Div
       py5
       borderBottom={full ? 0 : 0.5}
-      borderGray200
+      borderGray100
       bgWhite
       {...(full && {flex: 1})}>
       <Row pl={full ? 10 : 15} pr15 itemsCenter pt8>
@@ -310,7 +313,7 @@ export default function Post({
             {loading ? (
               <ActivityIndicator />
             ) : (
-              <MoreHorizontal color={Colors.gray[500]} width={20} height={20} />
+              <MoreHorizontal color={'black'} width={20} height={20} />
             )}
           </MenuView>
         </Col>
@@ -363,20 +366,19 @@ export default function Post({
         <Row px15 itemsCenter mb8 mt8 mb13={full}>
           {!post.type ? (
             <>
-              {likesCount > 0 && (
-                <Col auto mr12 gray800>
-                  <Span fontSize={13} gray700 onPress={gotoLikeList}>
-                    좋아요 <Span realBlack>{likesCount}</Span> 개
-                  </Span>
-                </Col>
-              )}
-              {cachedComments.length > 0 && (
-                <Col auto mr12 gray800 onPress={!full && goToPost}>
-                  <Span fontSize={13} gray700>
-                    댓글 <Span realBlack>{cachedComments.length}</Span> 개
-                  </Span>
-                </Col>
-              )}
+              <Col auto mr12>
+                <Span
+                  fontSize={14}
+                  style={{fontWeight: '600'}}
+                  onPress={gotoLikeList}>
+                  좋아요 <Span realBlack>{likesCount}</Span>개
+                </Span>
+              </Col>
+              <Col auto mr12 onPress={!full && goToPost}>
+                <Span fontSize={14} style={{fontWeight: '600'}}>
+                  댓글 <Span realBlack>{cachedComments.length}</Span>개
+                </Span>
+              </Col>
               <Col />
               {!full && (
                 <Col auto mr16 onPress={handlePressLike}>
@@ -388,18 +390,18 @@ export default function Post({
             <>
               <Col auto mr12 gray800>
                 <Span
-                  fontSize={13}
-                  gray700
+                  fontSize={14}
+                  style={{fontWeight: '600'}}
                   onPress={() => gotoVoteList(VoteCategory.Against)}>
-                  반대 <Span realBlack>{againstVotesCount}</Span> 표
+                  반대 <Span realBlack>{againstVotesCount}</Span>표
                 </Span>
               </Col>
               <Col auto mr12 gray800>
                 <Span
-                  fontSize={13}
-                  gray700
+                  fontSize={14}
+                  style={{fontWeight: '600'}}
                   onPress={() => gotoVoteList(VoteCategory.For)}>
-                  찬성 <Span realBlack>{forVotesCount}</Span> 표
+                  찬성 <Span realBlack>{forVotesCount}</Span>표
                 </Span>
               </Col>
               <Col />

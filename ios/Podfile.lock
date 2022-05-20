@@ -529,8 +529,8 @@ PODS:
   - RNScreens (3.9.0):
     - React-Core
     - React-RCTImage
-  - RNSVG (12.1.1):
-    - React
+  - RNSVG (12.3.0):
+    - React-Core
   - SDWebImage (5.12.2):
     - SDWebImage/Core (= 5.12.2)
   - SDWebImage/Core (5.12.2)
@@ -868,7 +868,7 @@ SPEC CHECKSUMS:
   RNReactNativeHapticFeedback: b83bfb4b537bdd78eb4f6ffe63c6884f7b049ead
   RNReanimated: 40cf17b319e14401ebf6b188cce5c3a45ae81041
   RNScreens: 4d79118be80f79fa1f4aa131909a1d6e86280af3
-  RNSVG: 551acb6562324b1d52a4e0758f7ca0ec234e278f
+  RNSVG: 302bfc9905bd8122f08966dc2ce2d07b7b52b9f8
   SDWebImage: 240e5c12b592fb1268c1d03b8c90d90e8c2ffe82
   SDWebImageWebPCoder: d0dac55073088d24b2ac1b191a71a8f8d0adac21
   SSZipArchive: 62d4947b08730e4cda640473b0066d209ff033c9

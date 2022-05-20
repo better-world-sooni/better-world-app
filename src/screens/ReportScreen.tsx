@@ -17,6 +17,13 @@ import {Col} from 'src/components/common/Col';
 import {ChevronLeft} from 'react-native-feather';
 import {Span} from 'src/components/common/Span';
 import {ActivityIndicator} from 'react-native';
+import Animated, {
+  useAnimatedScrollHandler,
+  useAnimatedStyle,
+  useSharedValue,
+} from 'react-native-reanimated';
+import {DEVICE_WIDTH} from 'src/modules/styles';
+import {BlurView} from '@react-native-community/blur';
 
 export enum ReportTypes {
   Post,
@@ -59,30 +66,68 @@ export default function ReportScreen({
     setError('');
   }, [textHasChanged]);
 
+  const translationY = useSharedValue(0);
+  const scrollHandler = useAnimatedScrollHandler(event => {
+    translationY.value = event.contentOffset.y;
+  });
+  const headerHeight = HAS_NOTCH ? 94 : 70;
+  const headerStyles = useAnimatedStyle(() => {
+    return {
+      width: DEVICE_WIDTH,
+      height: headerHeight,
+      opacity: Math.min(translationY.value / 50, 1),
+    };
+  });
   return (
     <KeyboardAvoidingView behavior="padding" flex={1} bgWhite relative>
-      <Div h={HAS_NOTCH ? 44 : 20} />
-      <Row pl={10} pr15 itemsCenter py8>
-        <Col auto mr5 onPress={goBack}>
-          <ChevronLeft width={20} height={20} color="black" strokeWidth={3} />
-        </Col>
-        <Col auto>
-          <Span fontSize={15} medium>
-            게시물 신고하기
-          </Span>
-        </Col>
-        <Col />
-        <Col auto onPress={reportPost}>
-          {loading ? (
-            <ActivityIndicator></ActivityIndicator>
-          ) : (
-            <Span info bold fontSize={16}>
-              신고
-            </Span>
-          )}
-        </Col>
-      </Row>
-      <ScrollView>
+      <Div h={headerHeight} zIndex={100}>
+        <Animated.View style={headerStyles}>
+          <BlurView
+            blurType="xlight"
+            blurAmount={30}
+            blurRadius={20}
+            style={{
+              width: DEVICE_WIDTH,
+              height: '100%',
+              position: 'absolute',
+            }}
+            reducedTransparencyFallbackColor="white"></BlurView>
+        </Animated.View>
+        <Div zIndex={100} absolute w={DEVICE_WIDTH} top={HAS_NOTCH ? 49 : 25}>
+          <Row itemsCenter py5 h40 px15>
+            <Col itemsStart>
+              <Div auto bgRealBlack p5 rounded100 onPress={goBack}>
+                <ChevronLeft
+                  width={20}
+                  height={20}
+                  color="white"
+                  strokeWidth={3}
+                />
+              </Div>
+            </Col>
+            <Col auto onPress={goBack}>
+              <Span bold fontSize={19}>
+                게시물 신고하기
+              </Span>
+            </Col>
+            <Col itemsEnd>
+              <Div auto onPress={reportPost}>
+                {loading ? (
+                  <ActivityIndicator></ActivityIndicator>
+                ) : (
+                  <Span info bold fontSize={16}>
+                    신고
+                  </Span>
+                )}
+              </Div>
+            </Col>
+          </Row>
+        </Div>
+      </Div>
+      <Animated.ScrollView
+        automaticallyAdjustContentInsets
+        showsVerticalScrollIndicator={false}
+        onScroll={scrollHandler}>
         {error ? (
           <Div px15 mt10>
             <Span notice danger>
@@ -99,7 +144,7 @@ export default function ReportScreen({
             bold
             onChangeText={handleChangeText}></TextInput>
         </Div>
-      </ScrollView>
+      </Animated.ScrollView>
     </KeyboardAvoidingView>
   );
 }

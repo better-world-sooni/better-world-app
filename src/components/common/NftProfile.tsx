@@ -2,6 +2,8 @@ import {
   ChevronLeft,
   Edit,
   Edit3,
+  Grid,
+  Maximize,
   MessageCircle,
   PenTool,
   Plus,
@@ -43,6 +45,7 @@ import {
   useGotoFollowList,
   useGotoNewPost,
   useGotoNftCollectionProfile,
+  useGotoQR,
 } from 'src/hooks/useGoto';
 import {PostOwnerType} from 'src/screens/NewPostScreen';
 import Animated, {
@@ -87,6 +90,7 @@ export default function NftProfile({
     contractAddress: nft.contract_address,
     tokenId: nft.token_id,
   });
+  const gotoQr = useGotoQR();
   const headerHeight = HAS_NOTCH ? 124 : 100;
   const goToNewPost = useGotoNewPost({postOwnerType: PostOwnerType.Nft});
   const gotoChatRoom = useGotoChatRoom({
@@ -188,6 +192,23 @@ export default function NftProfile({
                   h85
                   w85
                   uri={getNftProfileImage(nft, 100, 100)}></Img>
+                {isCurrentNft && (
+                  <Div
+                    absolute
+                    bottom0
+                    right0
+                    bgRealBlack
+                    rounded100
+                    p8
+                    onPress={gotoQr}>
+                    <Grid
+                      strokeWidth={2}
+                      color={'white'}
+                      height={16}
+                      width={16}
+                    />
+                  </Div>
+                )}
               </Col>
               <Col justifyEnd>
                 {!isCurrentNft ? (

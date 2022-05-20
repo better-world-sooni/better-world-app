@@ -1,34 +1,23 @@
 import {useNavigation} from '@react-navigation/core';
 import React, {useCallback, useEffect, useLayoutEffect, useState, useRef} from 'react';
-import {Alert, FlatList, RefreshControl} from 'react-native';
-import {ChevronLeft, CornerDownLeft, Search} from 'react-native-feather';
-import {GiftedChat} from 'react-native-gifted-chat';
+import {Alert, FlatList} from 'react-native';
+import {ChevronLeft} from 'react-native-feather';
 import {shallowEqual, useSelector} from 'react-redux';
-import {Manager} from 'socket.io-client';
 import {Col} from 'src/components/common/Col';
 import {Div} from 'src/components/common/Div';
 import {Row} from 'src/components/common/Row';
 import {Span} from 'src/components/common/Span';
-import useSocketInput from 'src/hooks/useSocketInput';
 import apis from 'src/modules/apis';
-import {getPromiseFn, useApiSelector} from 'src/redux/asyncReducer';
+import {useApiSelector} from 'src/redux/asyncReducer';
 import {RootState} from 'src/redux/rootReducer';
 import {cable} from 'src/modules/cable';
 import {ChatChannel} from 'src/components/ChatChannel';
-import Animated, {
-  useAnimatedScrollHandler,
-  useAnimatedStyle,
-  useSharedValue,
-} from 'react-native-reanimated';
 import {HAS_NOTCH} from 'src/modules/constants';
 import {DEVICE_WIDTH} from 'src/modules/styles';
 import {BlurView} from '@react-native-community/blur';
-import {KeyboardAvoidingView, TextInput} from 'src/modules/viewComponents';
+import {KeyboardAvoidingView} from 'src/modules/viewComponents';
 import {Img} from 'src/components/common/Img';
-import {View} from 'native-base';
 import NewMessage from 'src/components/common/NewMessage';
-import {useFocusOnce} from 'src/modules/useCustomHooks';
-import ChatRoomAvatars from 'src/components/ChatRoomAvatars';
 
 export enum ChatRoomType {
   RoomId,
@@ -36,7 +25,14 @@ export enum ChatRoomType {
 }
 function ChatRoomScreen({
   route: {
-    params: {roomName, roomImage, roomId, contractAddress, tokenId, chatRoomType},
+    params: {
+      roomName,
+      roomImage,
+      roomId,
+      contractAddress,
+      tokenId,
+      chatRoomType,
+    },
   },
 }) {
   const flatListRef = useRef(null);
@@ -136,12 +132,14 @@ function ChatRoomScreen({
   }, [connectRoomId]);
 
   const scrollToEnd = () => {
-    flatListRef?.current?.scrollToEnd({animated: true});
+    flatListRef?.current?.scrollToEnd({animated: false});
   };
   const headerHeight = HAS_NOTCH ? 94 : 70;
   const isSameNft = (nft1, nft2) => {
-    nft1?.token_id === nft2?.token_id &&
-      nft1?.contract_address === nft2?.contract_address;
+    return (
+      nft1?.token_id === nft2?.token_id &&
+      nft1?.contract_address === nft2?.contract_address
+    );
   };
 
   useEffect(() => {
@@ -150,12 +148,11 @@ function ChatRoomScreen({
       setConnectRoomId(chatRoomRes.room_id);
       setIsNew(chatRoomRes.init_messages.length == 0);
       setNumNfts(chatRoomRes.num_nfts);
-      scrollToEnd();
     }
   }, [chatRoomRes]);
 
   return (
-    <KeyboardAvoidingView flex={1} bgWhite behavior="padding">
+    <>
       <Div h={headerHeight} zIndex={100}>
         <BlurView
           blurType="xlight"
@@ -186,14 +183,6 @@ function ChatRoomScreen({
               />
             </Div>
           </Col>
-          <Col auto relative mr10>
-            <Div rounded100 overflowHidden h50>
-              <ChatRoomAvatars
-                firstUserAvatar={roomImage[0]}
-                secondUserAvatar={roomImage[1]}
-              />
-            </Div>
-          </Col>
           <Col auto>
             <Span bold fontSize={19}>
               {roomName}
@@ -202,77 +191,85 @@ function ChatRoomScreen({
           <Col />
         </Row>
       </Div>
-      <Div flex={1}>
+      <KeyboardAvoidingView flex={1} bgWhite behavior="padding">
         <FlatList
           ref={flatListRef}
           showsVerticalScrollIndicator={false}
+          contentInset={{bottom: 5, top: 5}}
           contentContainerStyle={{
-            paddingTop: 5,
-            paddingBottom: 5,
             justifyContent: 'flex-end',
             flexGrow: 1,
             flexDirection: 'column',
           }}
+          onContentSizeChange={() => scrollToEnd()}
           data={messages}
           renderItem={({item: message, index}) => {
             const author = (message as any).nft;
             const isConsecutive = isSameNft(messages[index - 1]?.nft, author);
             const isMine = isSameNft(author, currentNftId);
             return (
-              <Message
-                message={message}
-                index={index}
+              <MessageMemo
+                text={message.text}
+                avatar={message.avatar}
+                createdAt={message.created_at}
+                readNftIdLength={message.read_nft_ids.length}
                 isConsecutive={isConsecutive}
                 isMine={isMine}
                 numNfts={numNfts}
               />
             );
           }}></FlatList>
-      </Div>
-      <NewMessage
-        text={text}
-        onFocus={scrollToEnd}
-        onTextChange={handleTextChange}
-        onPressSend={sendMessage}
-      />
-    </KeyboardAvoidingView>
+        <NewMessage
+          text={text}
+          onFocus={scrollToEnd}
+          onTextChange={handleTextChange}
+          onPressSend={sendMessage}
+        />
+      </KeyboardAvoidingView>
+      <Div h={HAS_NOTCH ? 27 : 12} bgWhite />
+    </>
   );
 }
-const Message = ({message, index, isConsecutive, isMine, numNfts}) => {
-  const text = message.text;
-  const time = new Date(message.created_at);
-  const avatar = message.avatar;
-  const unreadCount = numNfts - message.read_nft_ids.length;
+
+const Message = ({
+  text,
+  avatar,
+  isConsecutive,
+  isMine,
+  numNfts,
+  createdAt,
+  readNftIdLength,
+}) => {
+  const time = new Date(createdAt);
+  const unreadCount = numNfts - readNftIdLength;
   return (
-    <Div key={index} px15>
-      <Row
+    <Row
+      px15
+      {...(isMine && {style: {flexDirection: 'row-reverse'}})}
+      py3={isMine}
+      itemsStart>
+      <Col auto w31 h31 px0>
+        {!isConsecutive && <Img rounded100 uri={avatar} h31 w31 />}
+      </Col>
+      <Col
+        auto={!isMine}
+        style={{flex: 5, wordBreak: 'break-all'}}
         {...(isMine && {style: {flexDirection: 'row-reverse'}})}
-        itemsEnd
-        py3>
-        <Col auto w28 px0 mb3>
-          {!isConsecutive && <Img rounded100 uri={avatar} h31 w31 />}
-        </Col>
-        <Col
-          auto={!isMine}
-          style={
-            isMine
-              ? {flex: 5, wordBreak: 'break-all', flexDirection: 'row-reverse'}
-              : {wordBreak: 'break-all'}
-          }
-          itemsEnd>
-          <Div bgGray100={!isMine} bgPrimary={isMine} rounded30 p8 px16 mx10>
-            <Span fontSize={16} white={isMine}>
-              {text}
-            </Span>
-          </Div>
-          <Div fontSize={10}>
-            <Span>{unreadCount > 0 ? unreadCount : null}</Span>
-          </Div>
-        </Col>
-        <Col style={{flex: 1}}></Col>
-      </Row>
-    </Div>
+        itemsEnd={isMine}
+        itemsStart={!isMine}>
+        <Div bgGray100={!isMine} bgPrimary={isMine} rounded30 p8 px16 mx10>
+          <Span fontSize={16} white={isMine}>
+            {text}
+          </Span>
+        </Div>
+        <Div fontSize={10}>
+          <Span primary>{unreadCount > 0 ? unreadCount : null}</Span>
+        </Div>
+      </Col>
+      <Col style={{flex: 1}}></Col>
+    </Row>
   );
 };
+const MessageMemo = React.memo(Message);
 
 export default ChatRoomScreen;
