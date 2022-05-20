@@ -9,6 +9,7 @@ import {
   Award,
   ChevronLeft,
   ChevronRight,
+  HelpCircle,
   Search,
   Star,
 } from 'react-native-feather';
@@ -19,7 +20,7 @@ import {TextInput} from 'src/modules/viewComponents';
 import {Img} from 'src/components/common/Img';
 import {useIsCurrentNft} from 'src/modules/nftUtils';
 import {DEVICE_WIDTH} from 'src/modules/styles';
-import {useGotoNftProfile} from 'src/hooks/useGoto';
+import {useGotoNftProfile, useGotoRankSeason} from 'src/hooks/useGoto';
 import Animated, {
   useAnimatedScrollHandler,
   useAnimatedStyle,
@@ -54,6 +55,11 @@ const SearchScreen = () => {
       apis.rank.all(nextSeason.cwyear, nextSeason.cweek, text),
     );
   };
+  const gotoRankSeason = useGotoRankSeason({
+    cwyear: rankRes?.rank_season?.cwyear,
+    cweek: rankRes?.rank_season?.cweek,
+  });
+
   const translationY = useSharedValue(0);
 
   const handleChangeQuery = text => {
@@ -130,24 +136,19 @@ const SearchScreen = () => {
         ListHeaderComponent={
           <>
             <Div h={headerHeight}></Div>
-            <Row px15 py5 itemsCenter>
+            <Row px15 py9 itemsCenter>
               <Col itemsStart>
-                <Div
-                  auto
-                  bg={!previousSeason ? Colors.gray[200] : 'black'}
-                  p8
-                  rounded100
-                  onPress={onPressLeft}>
+                <Div auto p4 rounded100 onPress={onPressLeft}>
                   <ChevronLeft
                     strokeWidth={2}
-                    color={!previousSeason ? Colors.gray[400] : 'white'}
-                    height={16}
-                    width={16}></ChevronLeft>
+                    color={!previousSeason ? Colors.gray[200] : 'black'}
+                    height={20}
+                    width={20}></ChevronLeft>
                 </Div>
               </Col>
-              <Col auto>
+              <Col auto onPress={gotoRankSeason}>
                 {!rankLoad && rankRes ? (
-                  <Span fontSize={16}>
+                  <Span fontSize={16} bold underline>
                     {!nextSeason
                       ? '현재 주'
                       : `${rankRes.rank_season.cwyear}년 ${rankRes.rank_season.cweek}주`}
@@ -157,17 +158,12 @@ const SearchScreen = () => {
                 )}
               </Col>
               <Col itemsEnd>
-                <Div
-                  auto
-                  bg={!nextSeason ? Colors.gray[200] : 'black'}
-                  p8
-                  rounded100
-                  onPress={onPressRight}>
+                <Div auto p4 rounded100 onPress={onPressRight}>
                   <ChevronRight
                     strokeWidth={2}
-                    color={!nextSeason ? Colors.gray[400] : 'white'}
-                    height={16}
-                    width={16}></ChevronRight>
+                    color={!nextSeason ? Colors.gray[200] : 'black'}
+                    height={20}
+                    width={20}></ChevronRight>
                 </Div>
               </Col>
             </Row>

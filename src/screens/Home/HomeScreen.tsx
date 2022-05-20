@@ -79,23 +79,23 @@ const HomeScreen = () => {
                 </Span>
               </Col>
               <Col />
-              <Col auto bgRealBlack p8 rounded100 mr12>
+              <Col auto rounded100 mr20>
                 <Div>
                   <Bell
                     strokeWidth={2}
-                    color={'white'}
-                    height={16}
-                    width={16}
+                    color={'black'}
+                    height={24}
+                    width={24}
                   />
                 </Div>
               </Col>
-              <Col auto bgRealBlack p8 rounded100 onPress={gotoChatList}>
+              <Col auto rounded100 onPress={gotoChatList}>
                 <Div>
                   <Send
                     strokeWidth={2}
-                    color={'white'}
-                    height={16}
-                    width={16}
+                    color={'black'}
+                    height={24}
+                    width={24}
                   />
                 </Div>
               </Col>
@@ -109,8 +109,8 @@ const HomeScreen = () => {
         data={feedRes ? feedRes.feed : []}
         renderItem={({item, index}) => {
           if (index == 0) {
-            if ((item as any).length == 0)
-              return <Div borderBottom={0.5} borderGray200></Div>;
+            // if ((item as any).length == 0)
+            return <Div borderBottom={0.5} borderGray200></Div>;
             return (
               <ScrollView
                 horizontal

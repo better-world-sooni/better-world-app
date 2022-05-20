@@ -205,3 +205,19 @@ export function useGotoQR(){
   }
   return gotoReport
 }
+
+export function useGotoRankSeason({cwyear, cweek}) {
+  const navigation = useNavigation()
+  const apiGETWithToken = useApiGETWithToken()
+  const useGotoRankSeason = () => {
+    apiGETWithToken(
+      apis.rankSeason._(
+        cwyear, cweek
+      ),
+    );
+    navigation.navigate(NAV_NAMES.RankSeason, {
+      cwyear, cweek
+    })
+  };
+  return useGotoRankSeason
+}

@@ -134,16 +134,16 @@ export default function Post({
         ];
 
   const actionIconDefaultProps = {
-    width: 22,
-    height: 22,
+    width: 21,
+    height: 21,
     color: Colors.gray[700],
     strokeWidth: 1.7,
   };
   const heartProps = liked
     ? {
         fill: Colors.danger.DEFAULT,
-        width: 22,
-        height: 22,
+        width: 21,
+        height: 21,
         color: Colors.danger.DEFAULT,
         strokeWidth: 1.7,
       }
@@ -152,8 +152,8 @@ export default function Post({
   const forVoteProps = hasVotedFor
     ? {
         fill: Colors.primary.DEFAULT,
-        width: 22,
-        height: 22,
+        width: 21,
+        height: 21,
         color: Colors.primary.DEFAULT,
         strokeWidth: 1.7,
       }
@@ -161,8 +161,8 @@ export default function Post({
   const abstainVoteProps = hasVotedAbstain
     ? {
         fill: Colors.primary.DEFAULT,
-        width: 22,
-        height: 22,
+        width: 21,
+        height: 21,
         color: Colors.primary.DEFAULT,
         strokeWidth: 1.7,
       }
@@ -170,8 +170,8 @@ export default function Post({
   const againstVoteProps = hasVotedAgainst
     ? {
         fill: Colors.danger.DEFAULT,
-        width: 22,
-        height: 22,
+        width: 21,
+        height: 21,
         color: Colors.danger.DEFAULT,
         strokeWidth: 1.7,
       }
@@ -271,13 +271,13 @@ export default function Post({
     <Div
       py5
       borderBottom={full ? 0 : 0.5}
-      borderGray100
+      borderGray200
       bgWhite
       {...(full && {flex: 1})}>
       <Row pl={full ? 10 : 15} pr15 itemsCenter pt8>
         {full ? (
           <Col auto mr5 onPress={goBack}>
-            <ChevronLeft width={20} height={20} color="black" strokeWidth={3} />
+            <ChevronLeft width={20} height={20} color="black" strokeWidth={2} />
           </Col>
         ) : null}
         <Col auto mr10 onPress={goToProfile}>

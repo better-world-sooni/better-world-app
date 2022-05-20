@@ -30,6 +30,9 @@ const apis = {
     klaytnAddress: (klaytnAddress) => apiV1(`/profile/${klaytnAddress}`),
     _: () => apiV1(`/profile`)
   },
+  rankSeason: {
+    _: (cwyear, cweek) => apiV1(`/rank_season?cwyear=${cwyear}&cweek=${cweek}`),
+  },
   search: {
     nft: (keyword) => apiV1(`/search/nft/${keyword}`)
   },

@@ -1,21 +1,13 @@
 import {useNavigation, useFocusEffect} from '@react-navigation/core';
-import React, {
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useState,
-  useRef,
-} from 'react';
+import React, {useCallback, useEffect, useState, useRef} from 'react';
 import {Alert, RefreshControl} from 'react-native';
 import {ChevronLeft, CornerDownLeft, Search} from 'react-native-feather';
-import {GiftedChat} from 'react-native-gifted-chat';
 import {shallowEqual, useSelector} from 'react-redux';
 import {Manager} from 'socket.io-client';
 import {Col} from 'src/components/common/Col';
 import {Div} from 'src/components/common/Div';
 import {Row} from 'src/components/common/Row';
 import {Span} from 'src/components/common/Span';
-import useSocketInput from 'src/hooks/useSocketInput';
 import apis from 'src/modules/apis';
 import {getPromiseFn, useApiSelector} from 'src/redux/asyncReducer';
 import {RootState} from 'src/redux/rootReducer';
@@ -31,7 +23,6 @@ import Animated, {
 } from 'react-native-reanimated';
 import {DEVICE_WIDTH} from 'src/modules/styles';
 import {BlurView} from '@react-native-community/blur';
-import {TextInput} from 'src/modules/viewComponents';
 import {createdAtText} from 'src/modules/timeUtils';
 import {useGotoChatRoom} from 'src/hooks/useGoto';
 import {ChatRoomType} from './ChatRoomScreen';
@@ -154,7 +145,7 @@ function ChatListScreen() {
                       width={20}
                       height={20}
                       color="white"
-                      strokeWidth={3}
+                      strokeWidth={2}
                     />
                   </Div>
                 </Col>

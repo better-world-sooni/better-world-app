@@ -102,7 +102,7 @@ const NewPostScreen = ({
       <Div h={HAS_NOTCH ? 44 : 20} />
       <Row pl={10} pr15 itemsCenter py8>
         <Col auto mr5 onPress={goBack}>
-          <ChevronLeft width={20} height={20} color="black" strokeWidth={3} />
+          <ChevronLeft width={20} height={20} color="black" strokeWidth={2} />
         </Col>
         <Col auto mr10>
           <Img w35 h35 rounded100 uri={getNftProfileImage(postOwner, 50, 50)} />

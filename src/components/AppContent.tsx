@@ -26,12 +26,13 @@ import NftCollectionScreen from 'src/screens/NftCollectionScreen';
 import CapsuleScreen from 'src/screens/Home/CapsuleScreen';
 import NewPostScreen from 'src/screens/NewPostScreen';
 import ReportScreen from 'src/screens/ReportScreen';
-import SearchScreen from 'src/screens/SearchScreen';
+import SearchScreen from 'src/screens/Home/SearchScreen';
 import ChatListScreen from 'src/screens/ChatListScreen';
 import LikeListScreen from 'src/screens/LikeListScreen';
 import FollowListScreen from 'src/screens/FollowListScreen';
 import VoteListScreen from 'src/screens/VoteListScreen';
 import QrScreen from 'src/screens/QrScreen';
+import RankSeasonScreen from 'src/screens/RankSeasonScreen';
 
 const RootStack = createStackNavigator();
 
@@ -185,6 +186,10 @@ export const AppContent = () => {
     {
       name: NAV_NAMES.Onboarding,
       component: OnboardingScreen,
+    },
+    {
+      name: NAV_NAMES.RankSeason,
+      component: RankSeasonScreen,
     },
     {
       name: NAV_NAMES.Qr,

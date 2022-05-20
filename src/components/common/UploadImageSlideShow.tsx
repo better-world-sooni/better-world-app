@@ -87,7 +87,7 @@ function CarouselItem({item, index, onPressAdd, onPressRemove}) {
       ) : (
         <Div w={DEVICE_WIDTH} h250 bgGray200 onPress={onPressAdd}>
           <Div flex={1} itemsCenter justifyCenter>
-            <Upload width={20} height={20} color="black" strokeWidth={3} />
+            <Upload width={20} height={20} color="black" strokeWidth={2} />
           </Div>
         </Div>
       )}

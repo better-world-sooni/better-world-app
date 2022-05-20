@@ -1,22 +1,14 @@
-import {StatusBar} from 'native-base';
 import React, {useEffect, useState} from 'react';
 import {Div} from 'src/components/common/Div';
 import Post from 'src/components/common/Post';
 import apis from 'src/modules/apis';
 import {HAS_NOTCH} from 'src/modules/constants';
-import {
-  KeyboardAvoidingView,
-  ScrollView,
-  TextInput,
-} from 'src/modules/viewComponents';
-import {usePostPromiseFnWithToken} from 'src/redux/asyncReducer';
-import useEdittableText from 'src/hooks/useEdittableText';
+import {KeyboardAvoidingView} from 'src/modules/viewComponents';
 import {Row} from 'src/components/common/Row';
 import {useNavigation} from '@react-navigation/native';
 import {Col} from 'src/components/common/Col';
 import {ChevronLeft} from 'react-native-feather';
 import {Span} from 'src/components/common/Span';
-import {ActivityIndicator} from 'react-native';
 import Animated, {
   useAnimatedScrollHandler,
   useAnimatedStyle,
@@ -24,48 +16,25 @@ import Animated, {
 } from 'react-native-reanimated';
 import {DEVICE_WIDTH} from 'src/modules/styles';
 import {BlurView} from '@react-native-community/blur';
+import {useApiSelector, useReloadGETWithToken} from 'src/redux/asyncReducer';
+import {RefreshControl} from 'react-native';
+import {Img} from 'src/components/common/Img';
+import {ICONS} from 'src/modules/icons';
 
-export enum ReportTypes {
-  Post,
-  Comment,
-}
-
-export default function ReportScreen({
+export default function RankSeasonScreen({
   route: {
-    params: {id, reportType},
+    params: {cweek, cwyear},
   },
 }) {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState(false);
-  const [text, textHasChanged, handleChangeText] = useEdittableText('');
-  const {goBack} = useNavigation();
-  const postPromiseFnWithToken = usePostPromiseFnWithToken();
-  const reportPost = async () => {
-    if (text && !error && !success) {
-      setLoading(true);
-      const url =
-        reportType == ReportTypes.Post
-          ? apis.report.post.postId(id).url
-          : apis.report.comment.commentId(id).url;
-      const {data} = await postPromiseFnWithToken({
-        url,
-        body: {content: text},
-      });
-      setLoading(false);
-      if (data.success) {
-        setSuccess(true);
-      } else {
-        setError('업로드 중 문제가 발생하였습니다.');
-      }
-      return;
-    }
-    setError('신고 사유는 필수 항목입니다.');
+  const {data: rankSeasonRes, isLoading: rankSeasonLoad} = useApiSelector(
+    apis.rankSeason._,
+  );
+  const reloadGetWithToken = useReloadGETWithToken();
+  const onRefresh = () => {
+    if (rankSeasonLoad) return;
+    reloadGetWithToken(apis.rankSeason._(cwyear, cweek));
   };
-  useEffect(() => {
-    setError('');
-  }, [textHasChanged]);
-
+  const {goBack} = useNavigation();
   const translationY = useSharedValue(0);
   const scrollHandler = useAnimatedScrollHandler(event => {
     translationY.value = event.contentOffset.y;
@@ -107,42 +76,46 @@ export default function ReportScreen({
             </Col>
             <Col auto onPress={goBack}>
               <Span bold fontSize={19}>
-                게시물 신고하기
+                {`${cwyear}년 ${cweek}주 랭크 보상`}
               </Span>
             </Col>
-            <Col itemsEnd>
-              <Div auto onPress={reportPost}>
-                {loading ? (
-                  <ActivityIndicator></ActivityIndicator>
-                ) : (
-                  <Span info bold fontSize={16}>
-                    신고
-                  </Span>
-                )}
-              </Div>
-            </Col>
+            <Col itemsEnd></Col>
           </Row>
         </Div>
       </Div>
       <Animated.ScrollView
         automaticallyAdjustContentInsets
         showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl refreshing={rankSeasonLoad} onRefresh={onRefresh} />
+        }
         onScroll={scrollHandler}>
-        {error ? (
-          <Div px15 mt10>
-            <Span notice danger>
-              {error}
-            </Span>
-          </Div>
-        ) : null}
-        <Div px15 py10>
-          <TextInput
-            value={text}
-            placeholder={'신고 사유를 적어주세요.'}
-            fontSize={16}
-            multiline
-            bold
-            onChangeText={handleChangeText}></TextInput>
+        <Div px15>
+          {rankSeasonRes?.rank_season?.rank_strategies?.map(
+            (rankStrategy, index) => {
+              return (
+                <Row key={index} itemsCenter py15>
+                  <Col auto>
+                    <Span bold fontSize={16}>
+                      {rankStrategy.start_index}위 ~
+                    </Span>
+                  </Col>
+                  <Col auto mr10>
+                    <Span bold fontSize={16}>
+                      {rankStrategy.end_index}위
+                    </Span>
+                  </Col>
+                  <Col />
+                  <Col auto>
+                    <Span bold>{rankStrategy.award_amount}</Span>
+                  </Col>
+                  <Col auto mx10>
+                    <Img h20 w20 source={ICONS.klayIcon}></Img>
+                  </Col>
+                </Row>
+              );
+            },
+          )}
         </Div>
       </Animated.ScrollView>
     </KeyboardAvoidingView>

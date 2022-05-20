@@ -166,7 +166,7 @@ export default function NftProfile({
                 width={20}
                 height={20}
                 color="white"
-                strokeWidth={3}
+                strokeWidth={2}
               />
             </Col>
           )}

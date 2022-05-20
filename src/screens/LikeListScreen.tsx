@@ -91,7 +91,7 @@ const LikeListScreen = ({
                         width={20}
                         height={20}
                         color="white"
-                        strokeWidth={3}
+                        strokeWidth={2}
                       />
                     </Div>
                   </Col>
