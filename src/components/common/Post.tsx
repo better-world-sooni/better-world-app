@@ -18,6 +18,7 @@ import {
   useGotoNftProfile,
   useGotoPost,
   useGotoReport,
+  useGotoVoteList,
 } from 'src/hooks/useGoto';
 import useLike from 'src/hooks/useLike';
 import apis from 'src/modules/apis';
@@ -45,7 +46,7 @@ import {
   useDeletePromiseFnWithToken,
 } from 'src/redux/asyncReducer';
 import {ReportTypes} from 'src/screens/ReportScreen';
-import useVote from 'src/hooks/useVote';
+import useVote, {VoteCategory} from 'src/hooks/useVote';
 import {shallowEqual, useSelector} from 'react-redux';
 import {RootState} from 'src/redux/rootReducer';
 import {LikeListType} from 'src/screens/LikeListScreen';
@@ -258,6 +259,9 @@ export default function Post({
     likableType: LikeListType.Post,
   });
 
+  const gotoVoteList = useGotoVoteList({
+    postId: post.id,
+  });
   if (deleted) return null;
 
   return (
@@ -359,16 +363,20 @@ export default function Post({
         <Row px15 itemsCenter mb8 mt8 mb13={full}>
           {!post.type ? (
             <>
-              <Col auto mr12 gray800>
-                <Span fontSize={13} gray700 onPress={gotoLikeList}>
-                  좋아요 <Span realBlack>{likesCount}</Span> 개
-                </Span>
-              </Col>
-              <Col auto mr12 gray800 onPress={!full && goToPost}>
-                <Span fontSize={13} gray700>
-                  댓글 <Span realBlack>{cachedComments.length}</Span> 개
-                </Span>
-              </Col>
+              {likesCount > 0 && (
+                <Col auto mr12 gray800>
+                  <Span fontSize={13} gray700 onPress={gotoLikeList}>
+                    좋아요 <Span realBlack>{likesCount}</Span> 개
+                  </Span>
+                </Col>
+              )}
+              {cachedComments.length > 0 && (
+                <Col auto mr12 gray800 onPress={!full && goToPost}>
+                  <Span fontSize={13} gray700>
+                    댓글 <Span realBlack>{cachedComments.length}</Span> 개
+                  </Span>
+                </Col>
+              )}
               <Col />
               {!full && (
                 <Col auto mr16 onPress={handlePressLike}>
@@ -379,12 +387,18 @@ export default function Post({
           ) : (
             <>
               <Col auto mr12 gray800>
-                <Span fontSize={13} gray700>
+                <Span
+                  fontSize={13}
+                  gray700
+                  onPress={() => gotoVoteList(VoteCategory.Against)}>
                   반대 <Span realBlack>{againstVotesCount}</Span> 표
                 </Span>
               </Col>
               <Col auto mr12 gray800>
-                <Span fontSize={13} gray700>
+                <Span
+                  fontSize={13}
+                  gray700
+                  onPress={() => gotoVoteList(VoteCategory.For)}>
                   찬성 <Span realBlack>{forVotesCount}</Span> 표
                 </Span>
               </Col>

@@ -141,6 +141,22 @@ export function useGotoLikeList({likableType, likableId}) {
   return gotoCapsule
 }
 
+export function useGotoVoteList({postId}) {
+  const navigation = useNavigation()
+  const apiGETWithToken = useApiGETWithToken()
+  const useGotoVoteList = (voteCategory) => {
+    apiGETWithToken(
+      apis.vote.list(
+        voteCategory, postId
+      ),
+    );
+    navigation.navigate(NAV_NAMES.VoteList, {
+      voteCategory, postId
+    })
+  };
+  return useGotoVoteList
+}
+
 export function useGotoFollowList({followOwnerType, contractAddress, tokenId = null}) {
   const navigation = useNavigation()
   const apiGETWithToken = useApiGETWithToken()

@@ -18,5 +18,6 @@ export const NAV_NAMES = {
     Notification: "Notification",
     LikeList: "LikeList",
     FollowList: "FollowList",
+    VoteList: "VoteList",
 };
 

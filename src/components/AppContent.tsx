@@ -30,6 +30,7 @@ import SearchScreen from 'src/screens/SearchScreen';
 import ChatListScreen from 'src/screens/ChatListScreen';
 import LikeListScreen from 'src/screens/LikeListScreen';
 import FollowListScreen from 'src/screens/FollowListScreen';
+import VoteListScreen from 'src/screens/VoteListScreen';
 
 const RootStack = createStackNavigator();
 
@@ -171,6 +172,10 @@ export const AppContent = () => {
     {
       name: NAV_NAMES.FollowList,
       component: FollowListScreen,
+    },
+    {
+      name: NAV_NAMES.VoteList,
+      component: VoteListScreen,
     },
     {
       name: NAV_NAMES.ChatRoom,

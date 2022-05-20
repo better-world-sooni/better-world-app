@@ -11,10 +11,12 @@ import {Img} from './Img';
 import {Row} from './Row';
 import {Span} from './Span';
 import {
+  useGotoLikeList,
   useGotoNftProfile,
   useGotoPost,
   useGotoProfile,
 } from 'src/hooks/useGoto';
+import {LikeListType} from 'src/screens/LikeListScreen';
 
 export default function Comment({
   comment,
@@ -77,6 +79,10 @@ function CommentContent({
     contractAddress: nftContractAddress,
     tokenId: nftTokenId,
   });
+  const gotoLikeList = useGotoLikeList({
+    likableId: id,
+    likableType: LikeListType.Comment,
+  });
   return (
     <Div py3={!nested}>
       <Row py8 px15>
@@ -110,7 +116,7 @@ function CommentContent({
             </Col>
             {likesCount > 0 ? (
               <Col auto mr10>
-                <Span fontSize={12} gray600>
+                <Span fontSize={12} gray600 onPress={gotoLikeList}>
                   좋아요 {likesCount}개
                 </Span>
               </Col>
