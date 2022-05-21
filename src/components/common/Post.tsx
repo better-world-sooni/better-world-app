@@ -134,16 +134,16 @@ export default function Post({
         ];
 
   const actionIconDefaultProps = {
-    width: 21,
-    height: 21,
+    width: 20,
+    height: 20,
     color: Colors.gray[700],
     strokeWidth: 1.7,
   };
   const heartProps = liked
     ? {
         fill: Colors.danger.DEFAULT,
-        width: 21,
-        height: 21,
+        width: 20,
+        height: 20,
         color: Colors.danger.DEFAULT,
         strokeWidth: 1.7,
       }
@@ -152,8 +152,8 @@ export default function Post({
   const forVoteProps = hasVotedFor
     ? {
         fill: Colors.primary.DEFAULT,
-        width: 21,
-        height: 21,
+        width: 20,
+        height: 20,
         color: Colors.primary.DEFAULT,
         strokeWidth: 1.7,
       }
@@ -161,8 +161,8 @@ export default function Post({
   const abstainVoteProps = hasVotedAbstain
     ? {
         fill: Colors.primary.DEFAULT,
-        width: 21,
-        height: 21,
+        width: 20,
+        height: 20,
         color: Colors.primary.DEFAULT,
         strokeWidth: 1.7,
       }
@@ -170,8 +170,8 @@ export default function Post({
   const againstVoteProps = hasVotedAgainst
     ? {
         fill: Colors.danger.DEFAULT,
-        width: 21,
-        height: 21,
+        width: 20,
+        height: 20,
         color: Colors.danger.DEFAULT,
         strokeWidth: 1.7,
       }

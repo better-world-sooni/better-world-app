@@ -4,7 +4,7 @@ import {HAS_NOTCH} from 'src/modules/constants';
 import {RefreshControl, StatusBar} from 'react-native';
 import {Row} from 'src/components/common/Row';
 import {Col} from 'src/components/common/Col';
-import {MessageCircle, Bell, Send} from 'react-native-feather';
+import {MessageCircle, Bell, Send, Maximize} from 'react-native-feather';
 import {Span} from 'src/components/common/Span';
 import apis from 'src/modules/apis';
 import {useApiSelector, useReloadGETWithToken} from 'src/redux/asyncReducer';
@@ -14,21 +14,26 @@ import {Img} from 'src/components/common/Img';
 import {shallowEqual, useSelector} from 'react-redux';
 import {RootState} from 'src/redux/rootReducer';
 import {getNftProfileImage} from 'src/modules/nftUtils';
-import {IMAGES} from 'src/modules/images';
 import {DEVICE_WIDTH} from 'src/modules/styles';
-import {useGotoCapsule, useGotoChatList} from 'src/hooks/useGoto';
+import {
+  useGotoCapsule,
+  useGotoChatList,
+  useGotoNotification,
+  useGotoScan,
+} from 'src/hooks/useGoto';
 import Animated, {
   useAnimatedScrollHandler,
   useAnimatedStyle,
   useSharedValue,
 } from 'react-native-reanimated';
 import {BlurView} from '@react-native-community/blur';
-import Colors from 'src/constants/Colors';
 
 const HomeScreen = () => {
   const {data: feedRes, isLoading: feedLoad} = useApiSelector(apis.feed._);
   const gotoChatList = useGotoChatList();
+  const gotoScan = useGotoScan();
   const reloadGetWithToken = useReloadGETWithToken();
+  const gotoNotification = useGotoNotification();
   const onRefresh = () => {
     reloadGetWithToken(apis.feed._());
   };
@@ -79,7 +84,17 @@ const HomeScreen = () => {
                 </Span>
               </Col>
               <Col />
-              <Col auto rounded100 mr20>
+              <Col auto rounded100 mr23 onPress={gotoScan}>
+                <Div>
+                  <Maximize
+                    strokeWidth={2}
+                    color={'black'}
+                    height={24}
+                    width={24}
+                  />
+                </Div>
+              </Col>
+              <Col auto rounded100 mr18 onPress={gotoNotification}>
                 <Div>
                   <Bell
                     strokeWidth={2}
@@ -109,8 +124,8 @@ const HomeScreen = () => {
         data={feedRes ? feedRes.feed : []}
         renderItem={({item, index}) => {
           if (index == 0) {
-            // if ((item as any).length == 0)
-            return <Div borderBottom={0.5} borderGray200></Div>;
+            if ((item as any).length == 0)
+              return <Div borderBottom={0.5} borderGray200></Div>;
             return (
               <ScrollView
                 horizontal
@@ -138,7 +153,7 @@ function MyActiveCapsule() {
   );
   const goToCapsule = useGotoCapsule({nft: currentNft});
   return (
-    <Div ml18 relative onPress={goToCapsule}>
+    <Div ml15 relative onPress={goToCapsule}>
       <Img uri={currentNft.capsule.image_uri} w92 h132 rounded10 />
       <Img
         absolute
@@ -158,7 +173,7 @@ function ActiveCapsule({nft}) {
   const goToCapsule = useGotoCapsule({nft});
   return (
     <Div
-      ml18
+      ml8
       relative
       onPress={goToCapsule}
       opacity={nft.capsule.is_active ? 1 : 0.8}>

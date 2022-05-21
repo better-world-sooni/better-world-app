@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useRef} from 'react';
 import {Div} from 'src/components/common/Div';
 import {HAS_NOTCH} from 'src/modules/constants';
 import {ActivityIndicator, RefreshControl} from 'react-native';
@@ -32,6 +32,7 @@ import {resizeImageUri} from 'src/modules/uriUtils';
 import Colors from 'src/constants/Colors';
 
 const SearchScreen = () => {
+  const searchRef = useRef(null);
   const {data: rankRes, isLoading: rankLoad} = useApiSelector(apis.rank.all);
   const reloadGetWithToken = useReloadGETWithToken();
   const onRefresh = () => {
@@ -54,6 +55,9 @@ const SearchScreen = () => {
     reloadGetWithToken(
       apis.rank.all(nextSeason.cwyear, nextSeason.cweek, text),
     );
+  };
+  const onPressSearch = () => {
+    searchRef?.current?.focus();
   };
   const gotoRankSeason = useGotoRankSeason({
     cwyear: rankRes?.rank_season?.cwyear,
@@ -104,6 +108,7 @@ const SearchScreen = () => {
           <Row itemsCenter py5 h40 px15>
             <Col mr10>
               <TextInput
+                innerRef={searchRef}
                 value={text}
                 placeholder={'NFT를 찾아보세요'}
                 fontSize={16}
@@ -115,7 +120,7 @@ const SearchScreen = () => {
                 onChangeText={handleChangeQuery}
               />
             </Col>
-            <Col auto bgRealBlack p8 rounded100>
+            <Col auto bgRealBlack p8 rounded100 onPress={onPressSearch}>
               <Div>
                 <Search
                   strokeWidth={2}
@@ -136,7 +141,7 @@ const SearchScreen = () => {
         ListHeaderComponent={
           <>
             <Div h={headerHeight}></Div>
-            <Row px15 py9 itemsCenter>
+            <Row px15 py5 itemsCenter>
               <Col itemsStart>
                 <Div auto p4 rounded100 onPress={onPressLeft}>
                   <ChevronLeft

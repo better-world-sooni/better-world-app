@@ -108,7 +108,7 @@ function ChatRoomScreen({
         });
         let _ = await channel.enter(connectRoomId);
         channel.on('message', res => {
-          setMessages(m => [...m, res['data']]);
+          setMessages(m => [res['data'], ...m]);
         });
         channel.on('leave', res => {
           if (currentNftId != res['leave_nft']) {
@@ -118,8 +118,6 @@ function ChatRoomScreen({
         channel.on('new', res => {
           setIsNew(false);
         });
-        channel.on('close', () => console.log('Disconnected from chat'));
-        channel.on('disconnect', () => console.log('check disconnect'));
       };
       wsConnect();
       return () => {
@@ -141,7 +139,6 @@ function ChatRoomScreen({
       nft1?.contract_address === nft2?.contract_address
     );
   };
-
   useEffect(() => {
     if (chatRoomRes) {
       setMessages(chatRoomRes.init_messages);
@@ -196,19 +193,17 @@ function ChatRoomScreen({
           ref={flatListRef}
           showsVerticalScrollIndicator={false}
           contentInset={{bottom: 5, top: 5}}
-          contentContainerStyle={{
-            justifyContent: 'flex-end',
-            flexGrow: 1,
-            flexDirection: 'column',
-          }}
-          onContentSizeChange={() => scrollToEnd()}
+          inverted
           data={messages}
+          initialNumToRender={25}
+          keyExtractor={item => item._id.$oid}
           renderItem={({item: message, index}) => {
             const author = (message as any).nft;
             const isConsecutive = isSameNft(messages[index - 1]?.nft, author);
             const isMine = isSameNft(author, currentNftId);
             return (
               <MessageMemo
+                key={message._id.$oid}
                 text={message.text}
                 avatar={message.avatar}
                 createdAt={message.created_at}
@@ -221,7 +216,6 @@ function ChatRoomScreen({
           }}></FlatList>
         <NewMessage
           text={text}
-          onFocus={scrollToEnd}
           onTextChange={handleTextChange}
           onPressSend={sendMessage}
         />
@@ -246,7 +240,7 @@ const Message = ({
     <Row
       px15
       {...(isMine && {style: {flexDirection: 'row-reverse'}})}
-      py3={isMine}
+      my={isMine ? 3 : -3}
       itemsStart>
       <Col auto w31 h31 px0>
         {!isConsecutive && <Img rounded100 uri={avatar} h31 w31 />}

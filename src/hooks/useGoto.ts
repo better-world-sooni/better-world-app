@@ -221,3 +221,23 @@ export function useGotoRankSeason({cwyear, cweek}) {
   };
   return useGotoRankSeason
 }
+
+export function useGotoScan(){
+  const navigation = useNavigation()
+  const gotoScan = () => {
+    navigation.navigate(NAV_NAMES.Scan)
+  }
+  return gotoScan
+}
+
+export function useGotoNotification() {
+  const navigation = useNavigation()
+  const apiGETWithToken = useApiGETWithToken()
+  const useGotoNotification = () => {
+    apiGETWithToken(
+      apis.notification.list()
+    );
+    navigation.navigate(NAV_NAMES.Notification)
+  };
+  return useGotoNotification
+}

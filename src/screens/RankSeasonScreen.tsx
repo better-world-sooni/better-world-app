@@ -49,75 +49,80 @@ export default function RankSeasonScreen({
   });
   return (
     <KeyboardAvoidingView behavior="padding" flex={1} bgWhite relative>
-      <Div h={headerHeight} zIndex={100}>
-        <Animated.View style={headerStyles}>
-          <BlurView
-            blurType="xlight"
-            blurAmount={30}
-            blurRadius={20}
-            style={{
-              width: DEVICE_WIDTH,
-              height: '100%',
-              position: 'absolute',
-            }}
-            reducedTransparencyFallbackColor="white"></BlurView>
-        </Animated.View>
-        <Div zIndex={100} absolute w={DEVICE_WIDTH} top={HAS_NOTCH ? 49 : 25}>
-          <Row itemsCenter py5 h40 px15>
-            <Col itemsStart>
-              <Div auto bgRealBlack p5 rounded100 onPress={goBack}>
-                <ChevronLeft
-                  width={20}
-                  height={20}
-                  color="white"
-                  strokeWidth={2}
-                />
-              </Div>
-            </Col>
-            <Col auto onPress={goBack}>
-              <Span bold fontSize={19}>
-                {`${cwyear}년 ${cweek}주 랭크 보상`}
-              </Span>
-            </Col>
-            <Col itemsEnd></Col>
-          </Row>
-        </Div>
-      </Div>
-      <Animated.ScrollView
+      <Animated.FlatList
         automaticallyAdjustContentInsets
+        stickyHeaderIndices={[0]}
         showsVerticalScrollIndicator={false}
+        ListHeaderComponent={
+          <Div h={headerHeight} zIndex={100}>
+            <Animated.View style={headerStyles}>
+              <BlurView
+                blurType="xlight"
+                blurAmount={30}
+                blurRadius={20}
+                style={{
+                  width: DEVICE_WIDTH,
+                  height: '100%',
+                  position: 'absolute',
+                }}
+                reducedTransparencyFallbackColor="white"></BlurView>
+            </Animated.View>
+            <Div
+              zIndex={100}
+              absolute
+              w={DEVICE_WIDTH}
+              top={HAS_NOTCH ? 49 : 25}>
+              <Row itemsCenter py5 h40 px15>
+                <Col itemsStart>
+                  <Div auto bgRealBlack p5 rounded100 onPress={goBack}>
+                    <ChevronLeft
+                      width={20}
+                      height={20}
+                      color="white"
+                      strokeWidth={2}
+                    />
+                  </Div>
+                </Col>
+                <Col auto onPress={goBack}>
+                  <Span bold fontSize={19}>
+                    {`${cwyear}년 ${cweek}주 랭크 보상`}
+                  </Span>
+                </Col>
+                <Col itemsEnd></Col>
+              </Row>
+            </Div>
+          </Div>
+        }
         refreshControl={
           <RefreshControl refreshing={rankSeasonLoad} onRefresh={onRefresh} />
         }
-        onScroll={scrollHandler}>
-        <Div px15>
-          {rankSeasonRes?.rank_season?.rank_strategies?.map(
-            (rankStrategy, index) => {
-              return (
-                <Row key={index} itemsCenter py15>
-                  <Col auto>
-                    <Span bold fontSize={16}>
-                      {rankStrategy.start_index}위 ~
-                    </Span>
-                  </Col>
-                  <Col auto mr10>
-                    <Span bold fontSize={16}>
-                      {rankStrategy.end_index}위
-                    </Span>
-                  </Col>
-                  <Col />
-                  <Col auto>
-                    <Span bold>{rankStrategy.award_amount}</Span>
-                  </Col>
-                  <Col auto mx10>
-                    <Img h20 w20 source={ICONS.klayIcon}></Img>
-                  </Col>
-                </Row>
-              );
-            },
-          )}
-        </Div>
-      </Animated.ScrollView>
+        renderItem={({item, index}) => <RankAward rankStrategy={item} />}
+        data={rankSeasonRes?.rank_season?.rank_strategies || []}
+        onScroll={scrollHandler}></Animated.FlatList>
     </KeyboardAvoidingView>
   );
 }
+
+const RankAward = ({rankStrategy}) => {
+  return (
+    <Row itemsCenter py15 px15>
+      <Col auto>
+        <Span bold fontSize={16}>
+          {rankStrategy.start_index}위 ~
+        </Span>
+      </Col>
+      <Col auto mr10>
+        <Span bold fontSize={16}>
+          {rankStrategy.end_index}위
+        </Span>
+      </Col>
+      <Col />
+      <Col auto>
+        <Span bold>{rankStrategy.award_amount}</Span>
+      </Col>
+      <Col auto mx10>
+        <Img h20 w20 source={ICONS.klayIcon}></Img>
+      </Col>
+    </Row>
+  );
+};

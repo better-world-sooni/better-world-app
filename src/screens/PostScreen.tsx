@@ -21,16 +21,19 @@ export default function PostScreen({
   };
 
   return (
-    <KeyboardAvoidingView flex={1} bgWhite relative behavior="padding">
-      <StatusBar animated={true} barStyle={'dark-content'} />
-      <Div h={HAS_NOTCH ? 44 : 20} />
-      {postRes?.post ? (
-        <Post
-          post={postRes?.post}
-          refreshing={postLoad}
-          onRefresh={handleRefresh}
-          full></Post>
-      ) : null}
-    </KeyboardAvoidingView>
+    <>
+      <KeyboardAvoidingView flex={1} bgWhite relative behavior="padding">
+        <StatusBar animated={true} barStyle={'dark-content'} />
+        <Div h={HAS_NOTCH ? 44 : 20} />
+        {postRes?.post ? (
+          <Post
+            post={postRes?.post}
+            refreshing={postLoad}
+            onRefresh={handleRefresh}
+            full></Post>
+        ) : null}
+      </KeyboardAvoidingView>
+      <Div h={HAS_NOTCH ? 27 : 12} bgWhite />
+    </>
   );
 }

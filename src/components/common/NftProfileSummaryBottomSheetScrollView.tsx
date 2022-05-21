@@ -49,7 +49,7 @@ export default function NftProfileSummaryBottomSheetScrollView({
   );
 }
 
-function NftProfileSummary({nft}) {
+export function NftProfileSummary({nft}) {
   const isCurrentNft = useIsCurrentNft(nft);
   const goToCapsule = useGotoCapsule({nft});
   const [isFollowing, followerCount, handlePressFollowing] = useFollow(

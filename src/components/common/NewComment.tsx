@@ -76,7 +76,7 @@ export default function NewComment({
           </Col>
         </Row>
       )}
-      <Div px15 pt8>
+      <Div px15 py8>
         <TextField
           w={'100%'}
           h40
@@ -116,7 +116,6 @@ export default function NewComment({
           autoCapitalize="none"
         />
       </Div>
-      <Div h={HAS_NOTCH ? 35 : 20} />
     </Div>
   );
 }

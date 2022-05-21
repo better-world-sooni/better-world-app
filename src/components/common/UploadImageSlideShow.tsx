@@ -61,8 +61,8 @@ function CarouselItem({item, index, onPressAdd, onPressRemove}) {
   return (
     <Div>
       {item.uri ? (
-        <Div w={DEVICE_WIDTH} h250 bgGray200 relative>
-          <Img w={DEVICE_WIDTH} h250 uri={item.uri} absolute></Img>
+        <Div w={DEVICE_WIDTH} h={DEVICE_WIDTH} bgGray200 relative>
+          <Img w={DEVICE_WIDTH} h={DEVICE_WIDTH} uri={item.uri} absolute></Img>
           <Div flex={1} itemsEnd justifyEnd>
             <Div
               auto
@@ -85,7 +85,7 @@ function CarouselItem({item, index, onPressAdd, onPressRemove}) {
           </Div>
         </Div>
       ) : (
-        <Div w={DEVICE_WIDTH} h250 bgGray200 onPress={onPressAdd}>
+        <Div w={DEVICE_WIDTH} h={DEVICE_WIDTH} bgGray200 onPress={onPressAdd}>
           <Div flex={1} itemsCenter justifyCenter>
             <Upload width={20} height={20} color="black" strokeWidth={2} />
           </Div>

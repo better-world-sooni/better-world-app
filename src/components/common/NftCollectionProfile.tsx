@@ -35,6 +35,7 @@ export default function NftCollectionProfile({
     nftCollection.follower_count,
     apis.follow.contractAddress(nftCollection.contract_address).url,
   );
+  const {goBack} = useNavigation();
   const goToNewPost = useGotoNewPost({
     postOwnerType: PostOwnerType.NftCollection,
   });
@@ -113,7 +114,7 @@ export default function NftCollectionProfile({
           zIndex={100}
           absolute
           top={HAS_NOTCH ? 49 : 25}>
-          <Col auto bg={'black'} p8 rounded100 mr12>
+          <Col auto bg={'black'} p8 rounded100 mr12 onPress={goBack}>
             <Div>
               <ChevronLeft
                 strokeWidth={2}
@@ -231,6 +232,7 @@ export default function NftCollectionProfile({
             adminNfts={nftCollection.admin_nfts}
           />
         )}
+        ListFooterComponent={<Div h={HAS_NOTCH ? 27 : 12} />}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }></Animated.FlatList>

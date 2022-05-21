@@ -36,12 +36,22 @@ const apis = {
   search: {
     nft: (keyword) => apiV1(`/search/nft/${keyword}`)
   },
+  hug: {
+    qr: () => apiV1(`/nft/qr`),
+  },
+  rankDeltum: {
+    list: () => apiV1(`/rank_deltum/list`)
+  },
+  notification: {
+    list: () => apiV1(`/notification/list`)
+  },
   nft: {
     contractAddressAndTokenId: (contractAddress, tokenId) => apiV1(`/nft/${contractAddress}/${tokenId}`),
+    qr: (token) => apiV1(`/nft/qr?token=${token}`),
     _: () => apiV1(`/nft`)
   },
   follow: {
-    contractAddressAndTokenId: (contractAddress, tokenId) => apiV1(`/follow/${contractAddress}/${tokenId}`),
+    contractAddressAndTokenId: (contractAddress, tokenId?) => tokenId ? apiV1(`/follow/${contractAddress}/${tokenId}`) : apiV1(`/follow/${contractAddress}`),
     contractAddress: (contractAddress) => apiV1(`/follow/${contractAddress}`),
     list: (getFollowers, contractAddress, tokenId?) => !tokenId ? apiV1(`/follow/list?get_followers=${getFollowers}&contract_address=${contractAddress}`): apiV1(`/follow/list?get_followers=${getFollowers}&contract_address=${contractAddress}&token_id=${tokenId}`),
   },

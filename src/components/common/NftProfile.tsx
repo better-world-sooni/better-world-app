@@ -337,6 +337,9 @@ export default function NftProfile({
             </Div>
           </>
         }
+        ListFooterComponent={
+          !isCurrentNft ? <Div h={HAS_NOTCH ? 27 : 12} /> : null
+        }
         renderItem={({item}) => <Post post={item} />}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />

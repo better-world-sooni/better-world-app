@@ -176,6 +176,7 @@ const NewPostScreen = ({
             onChangeText={handleContentChange}></TextInput>
         </Div>
       </ScrollView>
+      <Div h={HAS_NOTCH ? 27 : 12} bgWhite />
     </KeyboardAvoidingView>
   );
 };

@@ -33,6 +33,8 @@ import FollowListScreen from 'src/screens/FollowListScreen';
 import VoteListScreen from 'src/screens/VoteListScreen';
 import QrScreen from 'src/screens/QrScreen';
 import RankSeasonScreen from 'src/screens/RankSeasonScreen';
+import ScanScreen from 'src/screens/ScanScreen';
+import NotificationScreen from 'src/screens/NotificationScreen';
 
 const RootStack = createStackNavigator();
 
@@ -190,6 +192,14 @@ export const AppContent = () => {
     {
       name: NAV_NAMES.RankSeason,
       component: RankSeasonScreen,
+    },
+    {
+      name: NAV_NAMES.Scan,
+      component: ScanScreen,
+    },
+    {
+      name: NAV_NAMES.Notification,
+      component: NotificationScreen,
     },
     {
       name: NAV_NAMES.Qr,

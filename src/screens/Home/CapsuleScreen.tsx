@@ -1,22 +1,15 @@
 import React, {useCallback, useRef, useState} from 'react';
 import {Div} from 'src/components/common/Div';
-import {shallowEqual, useDispatch, useSelector} from 'react-redux';
+import {shallowEqual, useSelector} from 'react-redux';
 import {HAS_NOTCH} from 'src/modules/constants';
 import {RootState} from 'src/redux/rootReducer';
 import CustomHeaderWebView from 'src/components/CustomHeaderWebView';
 import {urls} from 'src/modules/urls';
-import {useChangeAccount} from 'src/redux/appReducer';
-import {
-  CommonActions,
-  useFocusEffect,
-  useNavigation,
-} from '@react-navigation/native';
-import {NAV_NAMES} from 'src/modules/navNames';
+import {useFocusEffect} from '@react-navigation/native';
 import {Row} from 'src/components/common/Row';
 import {Col} from 'src/components/common/Col';
 import {Span} from 'src/components/common/Span';
 import {getNftName, useIsCurrentNft} from 'src/modules/nftUtils';
-import {BlurView} from '@react-native-community/blur';
 import {DEVICE_WIDTH} from 'src/modules/styles';
 import {ChevronDown} from 'react-native-feather';
 import {MenuView} from '@react-native-menu/menu';

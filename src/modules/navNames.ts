@@ -19,6 +19,7 @@ export const NAV_NAMES = {
     FollowList: "FollowList",
     VoteList: "VoteList",
     RankSeason: "RankSeason",
+    Scan: "Scan",
     Qr: "Qr",
 };
 

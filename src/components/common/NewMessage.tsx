@@ -20,7 +20,7 @@ export enum ReplyToType {
   Post = 'Post',
 }
 
-export default function NewMessage({text, onTextChange, onPressSend, onFocus}) {
+export default function NewMessage({text, onTextChange, onPressSend}) {
   return (
     <Div
       zIndex={100}
@@ -35,7 +35,6 @@ export default function NewMessage({text, onTextChange, onPressSend, onFocus}) {
           py0
           px10
           rounded100
-          onFocus={onFocus}
           placeholder={'메세지를 전송해요.'}
           value={text}
           mt={0}
