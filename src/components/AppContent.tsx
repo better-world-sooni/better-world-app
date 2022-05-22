@@ -59,7 +59,8 @@ const MainBottomTabs = () => {
     <Tab.Navigator
       tabBar={tabBarFunc}
       initialRouteName={NAV_NAMES.Home}
-      detachInactiveScreens={true}>
+      detachInactiveScreens={true}
+      lazy={false}>
       <Tab.Screen
         name={NAV_NAMES.Home}
         component={HomeScreen}

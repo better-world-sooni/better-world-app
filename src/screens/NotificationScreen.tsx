@@ -20,7 +20,11 @@ import {useApiSelector, useReloadGETWithToken} from 'src/redux/asyncReducer';
 import {RefreshControl} from 'react-native';
 import {Img} from 'src/components/common/Img';
 import {ICONS} from 'src/modules/icons';
-import {getNftProfileImage, useIsCurrentNft} from 'src/modules/nftUtils';
+import {
+  getNftName,
+  getNftProfileImage,
+  useIsCurrentNft,
+} from 'src/modules/nftUtils';
 import {createdAtText} from 'src/modules/timeUtils';
 import useFollow from 'src/hooks/useFollow';
 import {IMAGES} from 'src/modules/images';
@@ -29,15 +33,17 @@ import {
   useGotoNftProfile,
   useGotoPost,
 } from 'src/hooks/useGoto';
+import {shallowEqual, useSelector} from 'react-redux';
+import {RootState} from 'src/redux/rootReducer';
 
 export default function NotificationScreen() {
   const {data: notificationRes, isLoading: notificationLoad} = useApiSelector(
-    apis.notification.list,
+    apis.notification.list._,
   );
   const reloadGetWithToken = useReloadGETWithToken();
   const onRefresh = () => {
     if (notificationLoad) return;
-    reloadGetWithToken(apis.notification.list());
+    reloadGetWithToken(apis.notification.list._());
   };
   const {goBack} = useNavigation();
   const translationY = useSharedValue(0);
@@ -117,6 +123,10 @@ enum NotificationEventType {
 }
 
 const Notification = ({notification}) => {
+  const {currentNft} = useSelector(
+    (root: RootState) => root.app.session,
+    shallowEqual,
+  );
   const isCurrentNft = useIsCurrentNft(notification.nft);
   const gotoNftCollectionProfile = useGotoNftCollectionProfile({
     contractAddress: notification.nft?.contract_address,
@@ -170,6 +180,81 @@ const Notification = ({notification}) => {
       return;
     }
   };
+  const getNotificationContent = () => {
+    const event = notification.metadata?.event;
+    const name = getNftName(notification.nft) || 'BetterWorld';
+    const currentNftName = getNftName(currentNft);
+    if (event == NotificationEventType.Comment) {
+      return (
+        <Span fontSize={14}>
+          <Span bold fontSize={14}>
+            {name}
+          </Span>
+          님이{' '}
+          <Span bold fontSize={14}>
+            {currentNftName}
+          </Span>
+          의 게시물에 댓글을 남겼습니다
+        </Span>
+      );
+    }
+    if (event == NotificationEventType.LikePost) {
+      return (
+        <Span fontSize={14}>
+          <Span bold fontSize={14}>
+            {name}
+          </Span>
+          님이{' '}
+          <Span bold fontSize={14}>
+            {currentNftName}
+          </Span>
+          의 게시물을 좋아요 했습니다.
+        </Span>
+      );
+    }
+    if (event == NotificationEventType.LikeComment) {
+      return (
+        <Span fontSize={14}>
+          <Span bold fontSize={14}>
+            {name}
+          </Span>
+          님이{' '}
+          <Span bold fontSize={14}>
+            {currentNftName}
+          </Span>
+          의 댓글을 좋아요 했습니다.
+        </Span>
+      );
+    }
+    if (event == NotificationEventType.Follow) {
+      return (
+        <Span fontSize={14}>
+          <Span bold fontSize={14}>
+            {name}
+          </Span>
+          님이{' '}
+          <Span bold fontSize={14}>
+            {currentNftName}
+          </Span>
+          을 팔로우 하기 시작했습니다.
+        </Span>
+      );
+    }
+    if (event == NotificationEventType.Hug) {
+      return (
+        <Span fontSize={14}>
+          <Span bold fontSize={14}>
+            {name}
+          </Span>
+          님이{' '}
+          <Span bold fontSize={14}>
+            {currentNftName}
+          </Span>
+          을 허그 했습니다.
+        </Span>
+      );
+    }
+  };
   return (
     <Row itemsCenter py10 px15 onPress={handlePressNotification}>
       <Col auto onPress={handlePressProfile}>
@@ -182,8 +267,8 @@ const Notification = ({notification}) => {
             : {source: IMAGES.betterWorldBlueLogo})}></Img>
       </Col>
       <Col px15>
-        <Span fontSize={14}>
-          {notification.content}{' '}
+        <Span>
+          {getNotificationContent()}{' '}
           <Span gray700>{createdAtText(notification.created_at)}</Span>
         </Span>
       </Col>

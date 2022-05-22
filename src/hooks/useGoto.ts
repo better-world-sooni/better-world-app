@@ -1,4 +1,4 @@
-import { useNavigation } from "@react-navigation/native";
+import { CommonActions, useNavigation } from "@react-navigation/native";
 import { shallowEqual, useSelector } from "react-redux";
 import apis from "src/modules/apis";
 import { NAV_NAMES } from "src/modules/navNames";
@@ -235,9 +235,35 @@ export function useGotoNotification() {
   const apiGETWithToken = useApiGETWithToken()
   const useGotoNotification = () => {
     apiGETWithToken(
-      apis.notification.list()
+      apis.notification.list._()
     );
     navigation.navigate(NAV_NAMES.Notification)
   };
   return useGotoNotification
+}
+
+export function useGotoHome() {
+  const navigation = useNavigation()
+  const gotoHome = () => {
+    navigation.dispatch(
+      CommonActions.reset({
+        index: 0,
+        routes: [{name: NAV_NAMES.Home}],
+      }),
+    );
+  };
+  return gotoHome
+}
+
+export function useGotoOnboarding() {
+  const navigation = useNavigation()
+  const gotoOnboarding = () => {
+    navigation.dispatch(
+      CommonActions.reset({
+        index: 0,
+        routes: [{name: NAV_NAMES.Onboarding}],
+      }),
+    );
+  };
+  return gotoOnboarding
 }

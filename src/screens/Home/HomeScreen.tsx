@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {Div} from 'src/components/common/Div';
 import {HAS_NOTCH} from 'src/modules/constants';
 import {RefreshControl, StatusBar} from 'react-native';
@@ -27,6 +27,8 @@ import Animated, {
   useSharedValue,
 } from 'react-native-reanimated';
 import {BlurView} from '@react-native-community/blur';
+import {useFocusEffect} from '@react-navigation/native';
+import {useUpdateUnreadMessageCount} from 'src/redux/appReducer';
 
 const HomeScreen = () => {
   const {data: feedRes, isLoading: feedLoad} = useApiSelector(apis.feed._);
@@ -34,6 +36,7 @@ const HomeScreen = () => {
   const gotoScan = useGotoScan();
   const reloadGetWithToken = useReloadGETWithToken();
   const gotoNotification = useGotoNotification();
+  const updateUnreadMessageCount = useUpdateUnreadMessageCount();
   const onRefresh = () => {
     reloadGetWithToken(apis.feed._());
   };
@@ -48,6 +51,9 @@ const HomeScreen = () => {
       height: headerHeight,
       opacity: Math.min(translationY.value / 50, 1),
     };
+  });
+  useFocusEffect(() => {
+    updateUnreadMessageCount();
   });
   return (
     <Div flex={1} bgWhite>

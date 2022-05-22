@@ -43,7 +43,10 @@ const apis = {
     list: () => apiV1(`/rank_deltum/list`)
   },
   notification: {
-    list: () => apiV1(`/notification/list`)
+    list: {
+      _: () => apiV1(`/notification/list`),
+      unreadCount: () => apiV1(`/notification/list/unread_count`)
+    }
   },
   nft: {
     contractAddressAndTokenId: (contractAddress, tokenId) => apiV1(`/nft/${contractAddress}/${tokenId}`),

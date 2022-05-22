@@ -7,19 +7,22 @@ import { connectWs } from 'src/redux/wsReducer';
 import {
   asyncActions,
   useApiGET,
+  useApiGETAsync,
   useApiGETWithToken,
   useApiPOSTWithToken,
   useApiPUTWithToken,
 } from 'src/redux/asyncReducer';
 
 const usePreloadData = () => {
-  const apiGET = useApiGET();
+  const apiGETAsync = useApiGETAsync();
   return async (jwt) => {
-    await apiGET(apis.profile._(), jwt)
-    await apiGET(apis.nft._(), jwt)
-    await apiGET(apis.feed._(), jwt)
-    await apiGET(apis.rank.all(), jwt)
-    await apiGET(apis.chat.chatRoom.all(), jwt)
+    await Promise.all([
+      apiGETAsync(apis.profile._(), jwt),
+      apiGETAsync(apis.nft._(), jwt),
+      apiGETAsync(apis.feed._(), jwt),
+      apiGETAsync(apis.rank.all(), jwt),
+      apiGETAsync(apis.chat.chatRoom.all(), jwt)
+    ])
   }
 }
 
@@ -88,20 +91,24 @@ export const useChangeAccount = () => {
   };
 };
 
-export const useSocialLogin = () => {
+export const useAutoLogin = () => {
   const dispatch = useDispatch();
-  const apiPOSTWithToken = useApiPOSTWithToken();
-  return (body, successHandler?, errHandler?) => {
-    apiPOSTWithToken(
+  const apiGET = useApiGET();
+  const preloadData = usePreloadData()
+  return (token, successHandler?, errHandler?) => {
+    apiGET(
       apis.auth.user._(),
-      body,
+      token,
       props => {
         dispatch(async () => {
-          if (!props.data.is_new_user) {
-            const { jwtToken } = props.data;
-            await AsyncStorage.setItem(JWT, jwtToken);
-            dispatch(appActions.login(props.data));
-          }
+          const { jwt, user, current_nft } = props.data;
+          await AsyncStorage.setItem(JWT, jwt);
+          await preloadData(jwt)
+          dispatch(appActions.login({
+            token: jwt,
+            currentUser: user,
+            currentNft: current_nft
+          }));
           if (successHandler) {
             await successHandler(props);
           }
@@ -114,20 +121,18 @@ export const useSocialLogin = () => {
   };
 };
 
-export const useAutoLogin = () => {
+export const useUpdateUnreadMessageCount = () => {
   const dispatch = useDispatch();
   const apiGETWithToken = useApiGETWithToken();
-  return (token, successHandler?, errHandler?) => {
+  return (successHandler?, errHandler?) => {
     apiGETWithToken(
-      apis.auth.user._(),
+      apis.notification.list.unreadCount(),
       props => {
         dispatch(async () => {
-          await AsyncStorage.setItem(JWT, token);
           const payload = {
-            user: props.data,
-            jwtToken: token,
+            unreadCount: props.data.unread_count
           };
-          dispatch(appActions.login(payload));
+          dispatch(appActions.updateUnreadCount(payload));
           if (successHandler) {
             await successHandler(props);
           }
@@ -158,6 +163,8 @@ const appSlice = createSlice({
   name: 'app',
   initialState: {
     isLoggedIn: false,
+    unreadNotificationCount: 0,
+    unreadMessagesCount: 0,
     session: {
       currentUser: null,
       token: null,
@@ -198,6 +205,10 @@ const appSlice = createSlice({
       state.session.currentUser = null;
       state.session.currentNft = null;
       state.session.token = null;
+    },
+    updateUnreadCount(state, action) {
+      const { unreadCount } = action.payload;
+      state.unreadNotificationCount = unreadCount
     },
   },
 });

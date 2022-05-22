@@ -9,10 +9,12 @@ import {useAutoLogin} from 'src/redux/appReducer';
 import { IMAGES } from 'src/modules/images';
 import {JWT} from 'src/modules/constants';
 import {Span} from 'src/components/common/Span';
+import {useGotoHome} from 'src/hooks/useGoto';
 
 const SplashScreen = ({route}) => {
   const navigation = useNavigation();
   const autoLogin = useAutoLogin();
+  const gotoHome = useGotoHome();
 
   useEffect(() => {
     isAutoLoginChecked();
@@ -24,6 +26,10 @@ const SplashScreen = ({route}) => {
         autoLogin(
           value,
           props => {
+            if (props.data.user.main_nft) {
+              gotoHome();
+              return;
+            }
             navigation.dispatch(
               CommonActions.reset({
                 index: 0,

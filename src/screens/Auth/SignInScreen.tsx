@@ -19,6 +19,7 @@ import Colors from 'src/constants/Colors';
 import {HAS_NOTCH} from 'src/modules/constants';
 import {DEVICE_WIDTH} from 'src/modules/styles';
 import Carousel from 'react-native-snap-carousel';
+import {useGotoHome, useGotoOnboarding} from 'src/hooks/useGoto';
 
 const SignInScreen = ({navigation}) => {
   const [address, setAddress] = useState('');
@@ -28,22 +29,8 @@ const SignInScreen = ({navigation}) => {
   const login = useLogin();
   const bottomPopupRef = useRef<BottomSheetModal>(null);
 
-  const goToHome = useCallback(() => {
-    navigation.dispatch(
-      CommonActions.reset({
-        index: 0,
-        routes: [{name: NAV_NAMES.Home}],
-      }),
-    );
-  }, []);
-  const goToOnboarding = useCallback(() => {
-    navigation.dispatch(
-      CommonActions.reset({
-        index: 0,
-        routes: [{name: NAV_NAMES.Onboarding}],
-      }),
-    );
-  }, []);
+  const gotoHome = useGotoHome();
+  const gotoOnboarding = useGotoOnboarding();
   const handleAddressSignIn = useCallback(() => {
     Keyboard.dismiss();
     if (loading) {
@@ -64,10 +51,10 @@ const SignInScreen = ({navigation}) => {
       props => {
         setLoading(false);
         if (props.data.user.main_nft) {
-          goToHome();
+          gotoHome();
           return;
         }
-        goToOnboarding();
+        gotoOnboarding();
       },
       props => {
         setLoading(false);

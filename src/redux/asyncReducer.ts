@@ -158,6 +158,23 @@ export const useApiGET = (props = {}) => {
   };
 };
 
+export const useApiGETAsync = (props = {}) => {
+  const {scope} = props as any;
+  const navigation = useNavigation();
+  const dispatch = useDispatch();
+  return async (api, token, successHandler?, errHandler?) => {
+    const key = getKeyByApi(api, scope);
+    await dispatch(await asyncThunk({
+      key: key,
+      args: {url: api.url, ...(token && {token: token})},
+      promiseFn: getPromiseFn,
+      successHandler,
+      errHandler,
+      navigation,
+    }))
+  };
+};
+
 export const useReloadGETWithToken = (props = {}) => {
   const {scope, token} = props as any;
   const { userToken } = useSelector(

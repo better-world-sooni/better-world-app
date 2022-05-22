@@ -224,7 +224,7 @@ function ChatRoomItem({onPress, room}) {
         </Col>
         {unreadMessageCount > 0 && (
           <Col auto rounded100 bgDanger px8 py4 justifyCenter>
-            <Span white fontSize={12}>
+            <Span white fontSize={12} medium>
               {unreadMessageCount >= 100 ? '99+' : unreadMessageCount}
             </Span>
           </Col>
