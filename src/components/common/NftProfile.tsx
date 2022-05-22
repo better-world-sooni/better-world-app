@@ -1,15 +1,5 @@
-import {
-  ChevronLeft,
-  Edit,
-  Edit3,
-  Grid,
-  Maximize,
-  MessageCircle,
-  PenTool,
-  Plus,
-  PlusSquare,
-} from 'react-native-feather';
-import React, {useCallback, useRef} from 'react';
+import {ChevronLeft, Edit3, Grid, MessageCircle} from 'react-native-feather';
+import React, {useRef} from 'react';
 import {
   getNftName,
   getNftProfileImage,
@@ -21,15 +11,9 @@ import Feed from './Feed';
 import {Img} from './Img';
 import {Row} from './Row';
 import {Span} from './Span';
-import {
-  useApiGETWithToken,
-  usePromiseFnWithToken,
-} from 'src/redux/asyncReducer';
 import apis from 'src/modules/apis';
 import {useNavigation} from '@react-navigation/native';
-import {NAV_NAMES} from 'src/modules/navNames';
 import {RefreshControl} from 'react-native';
-import {FlatList} from 'src/modules/viewComponents';
 import Post from './Post';
 import TruncatedMarkdown from './TruncatedMarkdown';
 import useFollow from 'src/hooks/useFollow';
@@ -46,6 +30,8 @@ import {
   useGotoNewPost,
   useGotoNftCollectionProfile,
   useGotoQR,
+  useGotoRankDeltum,
+  useGotoRankSeason,
 } from 'src/hooks/useGoto';
 import {PostOwnerType} from 'src/screens/NewPostScreen';
 import Animated, {
@@ -54,7 +40,6 @@ import Animated, {
   useSharedValue,
 } from 'react-native-reanimated';
 import {BlurView} from '@react-native-community/blur';
-import Colors from 'src/constants/Colors';
 import {ChatRoomType} from 'src/screens/ChatRoomScreen';
 import {FollowOwnerType, FollowType} from 'src/screens/FollowListScreen';
 
@@ -85,6 +70,10 @@ export default function NftProfile({
       .url,
   );
   const {goBack} = useNavigation();
+  const gotoRankDeltum = useGotoRankDeltum({
+    contractAddress: nft.contract_address,
+    tokenId: nft.token_id,
+  });
   const gotoFollowList = useGotoFollowList({
     followOwnerType: FollowOwnerType.Nft,
     contractAddress: nft.contract_address,
@@ -96,6 +85,11 @@ export default function NftProfile({
   const gotoChatRoom = useGotoChatRoom({
     chatRoomType: ChatRoomType.DirectMessage,
   });
+  const gotoRankSeason = useGotoRankSeason({
+    cwyear: null,
+    cweek: null,
+  });
+
   const headerStyles = useAnimatedStyle(() => {
     return {
       width: DEVICE_WIDTH,
@@ -322,12 +316,12 @@ export default function NftProfile({
                     <Span gray700>팔로잉</Span> {nft.following_count}
                   </Span>
                 </Col>
-                <Col auto mr20>
+                <Col auto mr20 onPress={gotoRankSeason}>
                   <Span>
                     <Span gray700>랭크</Span> {nft.current_rank}
                   </Span>
                 </Col>
-                <Col auto mr20>
+                <Col auto mr20 onPress={gotoRankDeltum}>
                   <Span>
                     <Span gray700>랭크 스코어</Span> {nft.current_rank_score}
                   </Span>

@@ -246,22 +246,11 @@ function RankedNft({rankItem}) {
         )}
       </Col>
       <Col />
-      {isCurrentNft && (
-        <Col auto mr10 itemsCenter justifyCenter>
-          <Star strokeWidth={2} color={'black'} height={16} width={16} />
-        </Col>
-      )}
-      <Col auto mr3 itemsCenter justifyCenter>
-        <Award strokeWidth={2} color={'black'} height={16} width={16} />
+      <Col auto mr10 itemsCenter justifyCenter>
+        <Span>{rankItem.rank}위</Span>
       </Col>
       <Col auto mr10 itemsCenter justifyCenter>
-        <Span>{rankItem.rank}</Span>
-      </Col>
-      <Col auto mr3 itemsCenter justifyCenter>
-        <AtSign strokeWidth={2} color={'black'} height={16} width={16} />
-      </Col>
-      <Col auto mr10 itemsCenter justifyCenter>
-        <Span>{rankItem.rank_score}</Span>
+        <Span>{rankItem.rank_score} RP</Span>
       </Col>
     </Row>
   );

@@ -376,7 +376,11 @@ export default function Post({
               </Col>
               <Col auto mr12 onPress={!full && goToPost}>
                 <Span fontSize={14} style={{fontWeight: '600'}}>
-                  댓글 <Span realBlack>{cachedComments.length}</Span>개
+                  댓글{' '}
+                  <Span realBlack>
+                    {full ? cachedComments.length : post.comments_count}
+                  </Span>
+                  개
                 </Span>
               </Col>
               <Col />

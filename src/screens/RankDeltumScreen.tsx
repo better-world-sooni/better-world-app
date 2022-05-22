@@ -1,6 +1,5 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {Div} from 'src/components/common/Div';
-import Post from 'src/components/common/Post';
 import apis from 'src/modules/apis';
 import {HAS_NOTCH} from 'src/modules/constants';
 import {KeyboardAvoidingView} from 'src/modules/viewComponents';
@@ -17,23 +16,21 @@ import Animated, {
 import {DEVICE_WIDTH} from 'src/modules/styles';
 import {BlurView} from '@react-native-community/blur';
 import {useApiSelector, useReloadGETWithToken} from 'src/redux/asyncReducer';
-import {ActivityIndicator, RefreshControl} from 'react-native';
-import {Img} from 'src/components/common/Img';
-import {ICONS} from 'src/modules/icons';
+import {RefreshControl} from 'react-native';
+import {createdAtText} from 'src/modules/timeUtils';
 
-export default function RankSeasonScreen() {
-  const {data: rankSeasonRes, isLoading: rankSeasonLoad} = useApiSelector(
-    apis.rankSeason._,
+export default function RankDeltumScreen({
+  route: {
+    params: {contractAddress, tokenId},
+  },
+}) {
+  const {data: rankDeltumRes, isLoading: rankDeltumLoad} = useApiSelector(
+    apis.rankDeltum.list,
   );
   const reloadGetWithToken = useReloadGETWithToken();
   const onRefresh = () => {
-    if (rankSeasonLoad) return;
-    reloadGetWithToken(
-      apis.rankSeason._(
-        rankSeasonRes?.rank_season?.cwyear,
-        rankSeasonRes?.rank_season?.cweek,
-      ),
-    );
+    if (rankDeltumLoad) return;
+    reloadGetWithToken(apis.rankDeltum.list(contractAddress, tokenId));
   };
   const {goBack} = useNavigation();
   const translationY = useSharedValue(0);
@@ -86,11 +83,7 @@ export default function RankSeasonScreen() {
                 </Col>
                 <Col auto onPress={goBack}>
                   <Span bold fontSize={19}>
-                    {rankSeasonRes?.rank_season ? (
-                      `${rankSeasonRes.rank_season.cwyear}년 ${rankSeasonRes.rank_season.cweek}주 랭크 보상`
-                    ) : (
-                      <ActivityIndicator />
-                    )}
+                    랭크 포인트 로그
                   </Span>
                 </Col>
                 <Col itemsEnd></Col>
@@ -99,34 +92,62 @@ export default function RankSeasonScreen() {
           </Div>
         }
         refreshControl={
-          <RefreshControl refreshing={rankSeasonLoad} onRefresh={onRefresh} />
+          <RefreshControl refreshing={rankDeltumLoad} onRefresh={onRefresh} />
         }
-        renderItem={({item, index}) => <RankAward rankStrategy={item} />}
-        data={rankSeasonRes?.rank_season?.rank_strategies || []}
+        renderItem={({item, index}) => <RankDeltum rankDeltum={item} />}
+        data={rankDeltumRes?.rank_delta || []}
         onScroll={scrollHandler}></Animated.FlatList>
     </KeyboardAvoidingView>
   );
 }
 
-const RankAward = ({rankStrategy}) => {
+enum RankDeltumEventType {
+  Follow = 'follow',
+  Comment = 'comment',
+  LikePost = 'like_post',
+  LikeComment = 'like_comment',
+  Hug = 'hug',
+}
+
+const RankDeltum = ({rankDeltum}) => {
+  const event = rankDeltum.event;
+  const point = rankDeltum.point;
+  const getNotificationContent = () => {
+    if (event == RankDeltumEventType.Comment) {
+      return (
+        <Span fontSize={14}>게시물에 댓글 {point < 0 ? '삭제' : '받음'}</Span>
+      );
+    }
+    if (event == RankDeltumEventType.LikePost) {
+      return (
+        <Span fontSize={14}>게시물에 좋아요 {point < 0 ? '취소' : '받음'}</Span>
+      );
+    }
+    if (event == RankDeltumEventType.LikeComment) {
+      return (
+        <Span fontSize={14}>댓글에 좋아요{point < 0 ? ' 취소' : '받음'}</Span>
+      );
+    }
+    if (event == RankDeltumEventType.Follow) {
+      return <Span fontSize={14}>팔로우 {point < 0 ? '취소' : '시작'}</Span>;
+    }
+    if (event == RankDeltumEventType.Hug) {
+      return <Span fontSize={14}>허그 받음</Span>;
+    }
+  };
   return (
     <Row itemsCenter py15 px15>
       <Col auto>
         <Span bold fontSize={16}>
-          {rankStrategy.start_index}위 ~
+          {getNotificationContent()}
         </Span>
-      </Col>
-      <Col auto mr10>
-        <Span bold fontSize={16}>
-          {rankStrategy.end_index}위
+        <Span gray700 fontSize={12} mt5>
+          {createdAtText(rankDeltum.created_at)}
         </Span>
       </Col>
       <Col />
       <Col auto>
-        <Span bold>{rankStrategy.award_amount}</Span>
-      </Col>
-      <Col auto mx10>
-        <Img h20 w20 source={ICONS.klayIcon}></Img>
+        <Span>{point} RP</Span>
       </Col>
     </Row>
   );

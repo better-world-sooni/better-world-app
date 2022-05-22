@@ -215,9 +215,7 @@ export function useGotoRankSeason({cwyear, cweek}) {
         cwyear, cweek
       ),
     );
-    navigation.navigate(NAV_NAMES.RankSeason, {
-      cwyear, cweek
-    })
+    navigation.navigate(NAV_NAMES.RankSeason)
   };
   return useGotoRankSeason
 }
@@ -266,4 +264,16 @@ export function useGotoOnboarding() {
     );
   };
   return gotoOnboarding
+}
+
+export function useGotoRankDeltum({contractAddress, tokenId}) {
+  const navigation = useNavigation()
+  const apiGETWithToken = useApiGETWithToken()
+  const useGotoRankDeltum = () => {
+    apiGETWithToken(
+      apis.rankDeltum.list(contractAddress, tokenId)
+    );
+    navigation.navigate(NAV_NAMES.RankDeltum, {contractAddress, tokenId})
+  };
+  return useGotoRankDeltum
 }

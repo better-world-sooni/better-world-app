@@ -130,7 +130,6 @@ const FollowListScreen = ({
         }
         data={followListRes ? followListRes.follows : []}
         renderItem={({item, index}) => {
-          console.log(item);
           return (
             <FollowOwner
               nft={(item as any).nft}

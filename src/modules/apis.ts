@@ -31,7 +31,7 @@ const apis = {
     _: () => apiV1(`/profile`)
   },
   rankSeason: {
-    _: (cwyear, cweek) => apiV1(`/rank_season?cwyear=${cwyear}&cweek=${cweek}`),
+    _: (cwyear?, cweek?) => cwyear && cweek ? apiV1(`/rank_season?cwyear=${cwyear}&cweek=${cweek}`) : apiV1(`/rank_season`),
   },
   search: {
     nft: (keyword) => apiV1(`/search/nft/${keyword}`)
@@ -40,7 +40,7 @@ const apis = {
     qr: () => apiV1(`/nft/qr`),
   },
   rankDeltum: {
-    list: () => apiV1(`/rank_deltum/list`)
+    list: (contractAddress, tokenId) => apiV1(`/rank_deltum/${contractAddress}/${tokenId}/list`)
   },
   notification: {
     list: {
