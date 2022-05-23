@@ -87,7 +87,7 @@ export default function RankSeasonScreen() {
                 <Col auto onPress={goBack}>
                   <Span bold fontSize={19}>
                     {rankSeasonRes?.rank_season ? (
-                      `${rankSeasonRes.rank_season.cwyear}년 ${rankSeasonRes.rank_season.cweek}주 랭크 보상`
+                      `${rankSeasonRes.rank_season.cwyear}년 ${rankSeasonRes.rank_season.cweek}번째 주`
                     ) : (
                       <ActivityIndicator />
                     )}

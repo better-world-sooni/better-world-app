@@ -160,7 +160,7 @@ export default function NftProfile({
                 width={20}
                 height={20}
                 color="white"
-                strokeWidth={2}
+                strokeWidth={2.4}
               />
             </Col>
           )}
@@ -306,24 +306,42 @@ export default function NftProfile({
                 </Div>
               ) : null}
               <Row mt8>
-                <Col auto mr20>
-                  <Span onPress={() => gotoFollowList(FollowType.Followers)}>
-                    <Span gray700>팔로워</Span> {followerCount}
+                <Col
+                  auto
+                  mr20
+                  onPress={() => gotoFollowList(FollowType.Followers)}>
+                  <Span bold>
+                    <Span gray700 regular>
+                      팔로워
+                    </Span>{' '}
+                    {followerCount}
                   </Span>
                 </Col>
-                <Col auto mr20>
-                  <Span onPress={() => gotoFollowList(FollowType.Followings)}>
-                    <Span gray700>팔로잉</Span> {nft.following_count}
+                <Col
+                  auto
+                  mr20
+                  onPress={() => gotoFollowList(FollowType.Followings)}>
+                  <Span bold>
+                    <Span gray700 regular>
+                      팔로잉
+                    </Span>{' '}
+                    {nft.following_count}
                   </Span>
                 </Col>
                 <Col auto mr20 onPress={gotoRankSeason}>
-                  <Span>
-                    <Span gray700>랭크</Span> {nft.current_rank}
+                  <Span bold>
+                    <Span gray700 regular>
+                      랭크
+                    </Span>{' '}
+                    {nft.current_rank}
                   </Span>
                 </Col>
                 <Col auto mr20 onPress={gotoRankDeltum}>
-                  <Span>
-                    <Span gray700>랭크 스코어</Span> {nft.current_rank_score}
+                  <Span bold>
+                    <Span gray700 regular>
+                      랭크 스코어
+                    </Span>{' '}
+                    {nft.current_rank_score}
                   </Span>
                 </Col>
                 <Col />

@@ -24,6 +24,7 @@ export default function NewComment({
   replyToObject,
   replyToType,
   onSuccess,
+  autoFocus = false,
   onPressExitReplyToComment,
 }) {
   const {currentNft} = useSelector(
@@ -83,6 +84,7 @@ export default function NewComment({
           py0
           px10
           rounded100
+          autoFocus
           placeholder={'댓글을 달아주세요'}
           value={newComment}
           mt={0}

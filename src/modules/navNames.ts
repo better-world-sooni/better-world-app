@@ -22,6 +22,7 @@ export const NAV_NAMES = {
     VoteList: "VoteList",
     RankSeason: "RankSeason",
     RankDeltum: "RankDeltum",
+    CollectionFeed: "CollectionFeed",
     Scan: "Scan",
     Qr: "Qr",
 };

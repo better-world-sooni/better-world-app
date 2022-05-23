@@ -5,41 +5,33 @@ export default function DefaultMarkdown(props) {
   return (
     <Markdown
       style={{
-        body: {marginTop: -10, marginBottom: 0, fontSize: 14},
+        body: {marginTop: 0, marginBottom: 0, fontSize: 14},
+        paragraph: {
+          marginTop: 0,
+          marginBottom: 0,
+        },
         heading1: {
           fontSize: 19,
-          fontWeight: '600',
-          marginTop: 5,
           marginBottom: 5,
         },
         heading2: {
           fontSize: 18,
-          fontWeight: '600',
-          marginTop: 5,
           marginBottom: 5,
         },
         heading3: {
           fontSize: 17,
-          fontWeight: '600',
-          marginTop: 5,
           marginBottom: 5,
         },
         heading4: {
           fontSize: 16,
-          fontWeight: '500',
-          marginTop: 5,
           marginBottom: 5,
         },
         heading5: {
           fontSize: 15,
-          fontWeight: '500',
-          marginTop: 5,
           marginBottom: 5,
         },
         heading6: {
           fontSize: 14,
-          fontWeight: '500',
-          marginTop: 5,
           marginBottom: 5,
         },
       }}

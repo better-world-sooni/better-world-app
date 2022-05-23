@@ -19,7 +19,7 @@ import {NativeBaseProvider} from 'native-base';
 import {ICONS} from 'src/modules/icons';
 import {Img} from './common/Img';
 import {getNftProfileImage} from 'src/modules/nftUtils';
-import {Home, Search} from 'react-native-feather';
+import {Bell, Home, Search} from 'react-native-feather';
 import Colors from 'src/constants/Colors';
 import OtherProfileScreen from 'src/screens/OtherProfileScreen';
 import NftCollectionScreen from 'src/screens/NftCollectionScreen';
@@ -36,13 +36,13 @@ import RankSeasonScreen from 'src/screens/RankSeasonScreen';
 import ScanScreen from 'src/screens/ScanScreen';
 import NotificationScreen from 'src/screens/NotificationScreen';
 import RankDeltumScreen from 'src/screens/RankDeltumScreen';
+import CollectionFeedScreen from 'src/screens/CollectionFeedScreen';
 
 const RootStack = createStackNavigator();
 
 const Tab = createBottomTabNavigator();
 
 const tabBarFunc = props => <BottomTabBar {...props} />;
-
 
 const MainBottomTabs = () => {
   const {currentNft} = useSelector(
@@ -67,7 +67,6 @@ const MainBottomTabs = () => {
         name={NAV_NAMES.Home}
         component={HomeScreen}
         options={{
-          tabBarLabel: 'Home',
           tabBarIcon: ({focused}) => (
             <Home
               width={22}
@@ -81,7 +80,6 @@ const MainBottomTabs = () => {
         name={NAV_NAMES.Search}
         component={SearchScreen}
         options={{
-          tabBarLabel: 'Search',
           tabBarIcon: ({focused}) => (
             <Search
               width={22}
@@ -96,13 +94,25 @@ const MainBottomTabs = () => {
         component={CapsuleScreen}
         options={{
           unmountOnBlur: true,
-          tabBarLabel: 'Capsule',
           tabBarIcon: ({focused}) =>
             focused ? (
               <Img h20 w20 source={ICONS.capsuleIconWhite}></Img>
             ) : (
               <Img h20 w20 source={ICONS.capsuleIconGray}></Img>
             ),
+        }}
+      />
+      <Tab.Screen
+        name={NAV_NAMES.Notification}
+        component={NotificationScreen}
+        options={{
+          tabBarIcon: ({focused}) => (
+            <Bell
+              width={22}
+              height={22}
+              strokeWidth={2}
+              color={focused ? 'black' : Colors.gray[400]}></Bell>
+          ),
         }}
       />
       <Tab.Screen
@@ -155,6 +165,10 @@ export const AppContent = () => {
     {
       name: NAV_NAMES.NftCollection,
       component: NftCollectionScreen,
+    },
+    {
+      name: NAV_NAMES.CollectionFeed,
+      component: CollectionFeedScreen,
     },
     {
       name: NAV_NAMES.Post,

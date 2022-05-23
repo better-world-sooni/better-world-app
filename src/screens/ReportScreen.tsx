@@ -94,13 +94,13 @@ export default function ReportScreen({
             reducedTransparencyFallbackColor="white"></BlurView>
         </Animated.View>
         <Div zIndex={100} absolute w={DEVICE_WIDTH} top={HAS_NOTCH ? 49 : 25}>
-          <Row itemsCenter py5 h40 px15>
+          <Row itemsCenter py5 h40 px8>
             <Col itemsStart>
-              <Div auto bgRealBlack p5 rounded100 onPress={goBack}>
+              <Div auto rounded100 onPress={goBack}>
                 <ChevronLeft
-                  width={20}
-                  height={20}
-                  color="white"
+                  width={30}
+                  height={30}
+                  color="black"
                   strokeWidth={2}
                 />
               </Div>
@@ -110,7 +110,7 @@ export default function ReportScreen({
                 게시물 신고하기
               </Span>
             </Col>
-            <Col itemsEnd>
+            <Col itemsEnd pr7>
               <Div auto onPress={reportPost}>
                 {loading ? (
                   <ActivityIndicator></ActivityIndicator>

@@ -84,16 +84,7 @@ export default function NotificationScreen() {
               w={DEVICE_WIDTH}
               top={HAS_NOTCH ? 49 : 25}>
               <Row itemsCenter py5 h40 px15>
-                <Col itemsStart>
-                  <Div auto bgRealBlack p5 rounded100 onPress={goBack}>
-                    <ChevronLeft
-                      width={20}
-                      height={20}
-                      color="white"
-                      strokeWidth={2}
-                    />
-                  </Div>
-                </Col>
+                <Col itemsStart></Col>
                 <Col auto onPress={goBack}>
                   <Span bold fontSize={19}>
                     알림
@@ -107,7 +98,10 @@ export default function NotificationScreen() {
         refreshControl={
           <RefreshControl refreshing={notificationLoad} onRefresh={onRefresh} />
         }
-        renderItem={({item, index}) => <Notification notification={item} />}
+        keyExtractor={item => (item as any).id}
+        renderItem={({item, index}) => (
+          <Notification key={(item as any).id} notification={item} />
+        )}
         data={notificationRes?.notifications || []}
         onScroll={scrollHandler}></Animated.FlatList>
     </KeyboardAvoidingView>
@@ -128,37 +122,63 @@ const Notification = ({notification}) => {
     shallowEqual,
   );
   const isCurrentNft = useIsCurrentNft(notification.nft);
+  return (
+    <NotificationMemo
+      postId={notification.metadata.target_id?.post_id}
+      isFollowing={notification.is_following}
+      hasNft={!!notification.nft}
+      profileImgUri={getNftProfileImage(notification.nft, 100, 100)}
+      contractAddress={notification.nft.contract_address}
+      tokenId={notification.nft.token_id}
+      event={notification.metadata?.event}
+      createdAt={notification.created_at}
+      isCurrentNft={isCurrentNft}
+      currentNftName={getNftName(currentNft)}
+      nftName={getNftName(notification.nft)}
+    />
+  );
+};
+
+const NotificationContent = ({
+  postId,
+  isFollowing,
+  hasNft,
+  profileImgUri,
+  contractAddress,
+  tokenId,
+  event,
+  createdAt,
+  isCurrentNft,
+  currentNftName,
+  nftName,
+}) => {
+  const gotoPost = useGotoPost({
+    postId,
+  });
   const gotoNftCollectionProfile = useGotoNftCollectionProfile({
-    contractAddress: notification.nft?.contract_address,
+    contractAddress,
   });
   const gotoNftProfile = useGotoNftProfile({
-    contractAddress: notification.nft?.contract_address,
-    tokenId: notification.nft?.token_id,
+    contractAddress,
+    tokenId,
   });
-  const gotoPost = useGotoPost({
-    postId: notification.metadata.target_id?.post_id,
-  });
-  const [following, _followerCount, handlePressFollowing] = useFollow(
-    notification.is_following,
-    0,
-    apis.follow.contractAddressAndTokenId(
-      notification.nft?.contract_address,
-      notification.nft?.token_id,
-    ).url,
-  );
   const handlePressProfile = () => {
-    if (!notification.nft) return;
-    if (!notification.nft.token_id) {
+    if (!hasNft) return;
+    if (!tokenId) {
       gotoNftCollectionProfile();
       return;
     }
-    if (notification.nft.contract_address) {
+    if (contractAddress) {
       gotoNftProfile();
       return;
     }
   };
+  const [following, _followerCount, handlePressFollowing] = useFollow(
+    isFollowing,
+    0,
+    apis.follow.contractAddressAndTokenId(contractAddress, tokenId).url,
+  );
   const handlePressNotification = () => {
-    const event = notification.metadata?.event;
     if (event == NotificationEventType.Comment) {
       gotoPost();
       return;
@@ -181,9 +201,7 @@ const Notification = ({notification}) => {
     }
   };
   const getNotificationContent = () => {
-    const event = notification.metadata?.event;
-    const name = getNftName(notification.nft) || 'BetterWorld';
-    const currentNftName = getNftName(currentNft);
+    const name = nftName;
     if (event == NotificationEventType.Comment) {
       return (
         <Span fontSize={14}>
@@ -255,6 +273,7 @@ const Notification = ({notification}) => {
       );
     }
   };
+
   return (
     <Row itemsCenter py10 px15 onPress={handlePressNotification}>
       <Col auto onPress={handlePressProfile}>
@@ -262,14 +281,14 @@ const Notification = ({notification}) => {
           rounded100
           h50
           w50
-          {...(notification.nft
-            ? {uri: getNftProfileImage(notification.nft, 100, 100)}
+          {...(hasNft
+            ? {uri: profileImgUri}
             : {source: IMAGES.betterWorldBlueLogo})}></Img>
       </Col>
       <Col px15>
         <Span>
           {getNotificationContent()}{' '}
-          <Span gray700>{createdAtText(notification.created_at)}</Span>
+          <Span gray700>{createdAtText(createdAt)}</Span>
         </Span>
       </Col>
       {!isCurrentNft && (
@@ -289,3 +308,5 @@ const Notification = ({notification}) => {
     </Row>
   );
 };
+
+const NotificationMemo = React.memo(NotificationContent);

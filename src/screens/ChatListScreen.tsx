@@ -134,17 +134,17 @@ function ChatListScreen() {
                 itemsCenter
                 py5
                 h40
-                px15
+                p8
                 zIndex={100}
                 absolute
                 w={DEVICE_WIDTH}
                 top={HAS_NOTCH ? 49 : 25}>
                 <Col justifyStart mr10>
-                  <Div bgRealBlack p5 rounded100 onPress={goBack} w30>
+                  <Div auto rounded100 onPress={goBack}>
                     <ChevronLeft
-                      width={20}
-                      height={20}
-                      color="white"
+                      width={30}
+                      height={30}
+                      color="black"
                       strokeWidth={2}
                     />
                   </Div>

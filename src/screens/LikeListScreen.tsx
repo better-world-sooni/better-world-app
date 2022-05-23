@@ -84,7 +84,7 @@ const LikeListScreen = ({
                 absolute
                 w={DEVICE_WIDTH}
                 top={HAS_NOTCH ? 49 : 25}>
-                <Row itemsCenter py5 h40 pr15 pl7>
+                <Row itemsCenter py5 h40 px8>
                   <Col itemsStart>
                     <Div auto rounded100 onPress={goBack}>
                       <ChevronLeft
@@ -139,7 +139,7 @@ function LikeOwner({nft, isFollowing}) {
       <Img w50 h50 rounded100 uri={getNftProfileImage(nft, 100, 100)} />
       <Col mx15>
         <Div>
-          <Span medium fontSize={15}>
+          <Span medium fontSize={15} bold>
             {getNftName(nft)}
           </Span>
         </Div>

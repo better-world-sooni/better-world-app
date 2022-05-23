@@ -103,7 +103,7 @@ const FollowListScreen = ({
                 absolute
                 w={DEVICE_WIDTH}
                 top={HAS_NOTCH ? 49 : 25}>
-                <Row itemsCenter py5 h40 pr15 pl7>
+                <Row itemsCenter py5 h40 pr15 pl8>
                   <Col itemsStart>
                     <Div auto rounded100 onPress={goBack}>
                       <ChevronLeft

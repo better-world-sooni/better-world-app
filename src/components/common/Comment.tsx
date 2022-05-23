@@ -85,7 +85,7 @@ function CommentContent({
   });
   return (
     <Div py3={!nested}>
-      <Row py8 pr20 pl32>
+      <Row py6 pr20 pl32>
         <Col auto mr10 onPress={goToProfile}>
           <Img
             rounded={100}
@@ -98,7 +98,7 @@ function CommentContent({
           <Row>
             <Col mr10>
               <Span>
-                <Span medium fontSize={14} onPress={goToProfile}>
+                <Span bold fontSize={14} onPress={goToProfile}>
                   {nftName}{' '}
                 </Span>{' '}
                 <Span fontSize={14}>{content}</Span>

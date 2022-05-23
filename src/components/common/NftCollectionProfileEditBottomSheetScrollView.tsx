@@ -263,12 +263,13 @@ export default function NftCollectionProfileEditBottomSheetScrollView({
               스토리
             </Span>
           </Col>
-          <Col>
+          <Col pr10>
             <TextInput
               value={story}
               placeholder={'마크다운을 사용하실 수 있습니다.'}
               fontSize={16}
               multiline
+              mt={-4}
               bold
               onChangeText={handleChangeStory}></TextInput>
           </Col>

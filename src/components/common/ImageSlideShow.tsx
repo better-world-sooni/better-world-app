@@ -48,7 +48,7 @@ export default function ImageSlideShow({imageUris, sliderHeight, sliderWidth}) {
 function ImageItem({url, width, height}) {
   return (
     <Div>
-      <Img w={width} h={height} uri={resizeImageUri(url, 500, 500)}></Img>
+      <Img w={width} h={height} uri={url}></Img>
     </Div>
   );
 }

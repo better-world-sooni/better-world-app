@@ -187,7 +187,7 @@ const NewPostScreen = ({
               <Row>
                 <Col auto>
                   <Span>
-                    <Span fontSize={14} bold>
+                    <Span fontSize={15} bold>
                       {getNftName(currentNft)}{' '}
                     </Span>{' '}
                     {currentNft.token_id &&

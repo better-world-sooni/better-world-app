@@ -13,11 +13,17 @@ import {resizeImageUri} from 'src/modules/uriUtils';
 import {Span} from './Span';
 import TruncatedMarkdown from './TruncatedMarkdown';
 import {FollowOwnerType, FollowType} from 'src/screens/FollowListScreen';
-import {useGotoFollowList, useGotoProfile} from 'src/hooks/useGoto';
+import {
+  useGotoCollectionFeed,
+  useGotoFollowList,
+  useGotoNftCollectionProfile,
+  useGotoProfile,
+} from 'src/hooks/useGoto';
 import {shallowEqual, useSelector} from 'react-redux';
 import {RootState} from 'src/redux/rootReducer';
 import {Award, Layers, List, Map, ThumbsUp} from 'react-native-feather';
 import {ICONS} from 'src/modules/icons';
+import Colors from 'src/constants/Colors';
 
 const MyNftCollectionMenu = ({}) => {
   const {data: profileData, isLoading: loading} = useApiSelector(
@@ -27,33 +33,30 @@ const MyNftCollectionMenu = ({}) => {
     (root: RootState) => root.app.session,
     shallowEqual,
   );
-  const textColor = 'rgb(49, 45, 52)';
-  const backgroundColor = 'rgb(209, 217, 254)';
+  const textColor = 'black';
+  const backgroundColor = 'white';
   const bottomPopupRef = useRef<BottomSheetModal>(null);
-  const reloadGetWithToken = useReloadGETWithToken();
-  const onRefresh = () => {
-    reloadGetWithToken(apis.nft_collection.profile());
-  };
   const nftCollection = profileData?.nft_collection;
   const gotoFollowList = useGotoFollowList({
     followOwnerType: FollowOwnerType.NftCollection,
     contractAddress: nftCollection?.contract_address,
   });
-  const goToProfile = useGotoProfile();
-  const isAdmin = useIsAdmin(nftCollection);
-  const editProfile = () => {
-    bottomPopupRef?.current?.expand();
-  };
+  const gotoNftCollectionProfile = useGotoNftCollectionProfile({
+    contractAddress: nftCollection.contract_address,
+  });
+  const gotoCollectionFeed = useGotoCollectionFeed({
+    contractAddress: currentNft.contract_address,
+  });
   const notchHeight = HAS_NOTCH ? 44 : 20;
   const headerHeight = notchHeight + 18;
 
   return (
-    <Div flex={1} bg={backgroundColor} relative>
+    <Div flex={1} bg={backgroundColor} relative borderRight={0.5} borderGray200>
       <Div h={headerHeight} />
       {nftCollection && (
-        <>
-          <Row zIndex={100} px15 relative>
-            <Col auto mr10 relative>
+        <Div px30>
+          <Row zIndex={100} relative>
+            <Col auto mr10 relative onPress={gotoNftCollectionProfile}>
               <Img
                 rounded100
                 borderWhite
@@ -63,9 +66,9 @@ const MyNftCollectionMenu = ({}) => {
                 uri={resizeImageUri(nftCollection.image_uri, 100, 100)}></Img>
             </Col>
           </Row>
-          <Div px15 py10>
+          <Div py10>
             <Row itemsCenter>
-              <Col auto mr10>
+              <Col auto mr10 onPress={gotoNftCollectionProfile}>
                 <Span>
                   <Span fontSize={20} bold color={textColor}>
                     {nftCollection.name}
@@ -74,35 +77,57 @@ const MyNftCollectionMenu = ({}) => {
               </Col>
             </Row>
             <Row mt10 itemsEnd>
-              <Col auto mr5>
-                <Span
-                  onPress={() => gotoFollowList(FollowType.Followers)}
-                  bold
-                  color={textColor}
-                  fontSize={16}>
-                  {nftCollection.follower_count} <Span gray700>팔로워</Span>
+              <Col
+                auto
+                mr20
+                onPress={() => gotoFollowList(FollowType.Followers)}>
+                <Span bold>
+                  <Span gray700 regular>
+                    팔로워
+                  </Span>{' '}
+                  {nftCollection.follower_count}
                 </Span>
               </Col>
               <Col />
             </Row>
-            {nftCollection.about ? (
-              <Div mt8 bgWhite>
-                <TruncatedMarkdown text={nftCollection.about} maxLength={500} />
-              </Div>
-            ) : null}
-            <Div h15></Div>
+            <Row mt10 itemsEnd>
+              <Col
+                auto
+                mr20
+                onPress={() => gotoFollowList(FollowType.Followers)}>
+                <Span bold>
+                  <Span gray700 regular>
+                    멤버 친목도
+                  </Span>{' '}
+                  {Math.ceil(
+                    (nftCollection.affinity.follows_among_members /
+                      nftCollection.affinity.total_possible_follows) *
+                      100,
+                  )}
+                  % ({nftCollection.affinity.follows_among_members} /{' '}
+                  {nftCollection.affinity.total_possible_follows})
+                </Span>
+              </Col>
+              <Col />
+            </Row>
           </Div>
-          <Row px15 itemsCenter py15>
+          <Div h10 />
+          <Row itemsCenter py15>
             <Col auto mr20>
-              <Map strokeWidth={1.3} color={textColor} height={28} width={28} />
+              <Map
+                strokeWidth={1.3}
+                color={Colors.gray[400]}
+                height={28}
+                width={28}
+              />
             </Col>
             <Col>
-              <Span fontSize={18} color={textColor}>
+              <Span fontSize={18} gray400>
                 로드맵
               </Span>
             </Col>
           </Row>
-          <Row px15 itemsCenter py15>
+          <Row itemsCenter py15>
             <Col auto mr20>
               <Layers
                 strokeWidth={1.3}
@@ -112,12 +137,17 @@ const MyNftCollectionMenu = ({}) => {
               />
             </Col>
             <Col>
-              <Span fontSize={18} color={textColor}>
-                멤버들의 모든 포스트
+              <Span
+                fontSize={18}
+                color={textColor}
+                onPress={() =>
+                  gotoCollectionFeed(`${nftCollection.name} 멤버 피드`)
+                }>
+                모든 멤버들의 게시물
               </Span>
             </Col>
           </Row>
-          <Row px15 itemsCenter py15>
+          <Row itemsCenter py15>
             <Col auto mr20>
               <ThumbsUp
                 strokeWidth={1.3}
@@ -127,47 +157,55 @@ const MyNftCollectionMenu = ({}) => {
               />
             </Col>
             <Col>
-              <Span fontSize={18} color={textColor}>
+              <Span
+                fontSize={18}
+                color={textColor}
+                onPress={() =>
+                  gotoCollectionFeed(
+                    `${nftCollection.name} 진행중인 투표`,
+                    'Proposal',
+                  )
+                }>
                 진행중인 투표
               </Span>
             </Col>
           </Row>
-          <Row px15 itemsCenter py15>
+          <Row itemsCenter py15>
             <Col auto mr20>
               <Award
                 strokeWidth={1.3}
-                color={textColor}
+                color={Colors.gray[400]}
                 height={28}
                 width={28}
               />
             </Col>
             <Col>
-              <Span fontSize={18} color={textColor}>
+              <Span fontSize={18} gray400>
                 파트너
               </Span>
             </Col>
           </Row>
-          <Row px15 itemsCenter py15>
+          <Row itemsCenter py15>
             <Col auto mr20>
-              <Img h28 w28 source={ICONS.discordIcon} />
+              <Img h28 w28 source={ICONS.discordIcon} opacity={0.5} />
             </Col>
             <Col>
-              <Span fontSize={18} color={textColor}>
+              <Span fontSize={18} gray400>
                 디스코드
               </Span>
             </Col>
           </Row>
-          <Row px15 itemsCenter py15>
+          <Row itemsCenter py15>
             <Col auto mr20>
-              <Img h28 w28 source={ICONS.openseaIcon} />
+              <Img h28 w28 source={ICONS.openseaIcon} opacity={0.5} />
             </Col>
             <Col>
-              <Span fontSize={18} color={textColor}>
+              <Span fontSize={18} gray400>
                 오픈씨
               </Span>
             </Col>
           </Row>
-        </>
+        </Div>
       )}
     </Div>
   );

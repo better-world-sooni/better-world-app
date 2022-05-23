@@ -100,9 +100,9 @@ export function useGotoNftCollectionProfile({contractAddress = null}){
 export function useGotoPost({postId}){
   const apiGETWithToken = useApiGETWithToken()
   const navigation = useNavigation()
-  const gotoPost = () => {
+  const gotoPost = (autoFocus=false) => {
     apiGETWithToken(apis.post.postId._(postId));
-    navigation.navigate(NAV_NAMES.Post, {postId});
+    navigation.navigate(NAV_NAMES.Post, {postId, autoFocus});
   }
   return gotoPost
 }
@@ -269,11 +269,27 @@ export function useGotoOnboarding() {
 export function useGotoRankDeltum({contractAddress, tokenId}) {
   const navigation = useNavigation()
   const apiGETWithToken = useApiGETWithToken()
-  const useGotoRankDeltum = () => {
+  const gotoRankDeltum = () => {
     apiGETWithToken(
       apis.rankDeltum.list(contractAddress, tokenId)
     );
     navigation.navigate(NAV_NAMES.RankDeltum, {contractAddress, tokenId})
   };
-  return useGotoRankDeltum
+  return gotoRankDeltum
 }
+
+export function useGotoCollectionFeed({contractAddress}) {
+  const navigation = useNavigation()
+  const apiGETWithToken = useApiGETWithToken()
+  const gotoCollectionFeed = (title, type?) => {
+    apiGETWithToken(
+      apis.feed.collection(contractAddress, type)
+    );
+    navigation.navigate(NAV_NAMES.CollectionFeed, {
+      contractAddress,
+      title
+    })
+  };
+  return gotoCollectionFeed
+}
+

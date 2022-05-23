@@ -154,9 +154,7 @@ const SearchScreen = () => {
               <Col auto onPress={gotoRankSeason}>
                 {!rankLoad && rankRes ? (
                   <Span fontSize={16} bold>
-                    {!nextSeason
-                      ? '현재 주'
-                      : `${rankRes.rank_season.cwyear}년 ${rankRes.rank_season.cweek}주`}
+                    {`${rankRes.rank_season.cwyear}년 ${rankRes.rank_season.cweek}번째 주`}
                   </Span>
                 ) : (
                   <ActivityIndicator />
@@ -189,22 +187,12 @@ const SearchScreen = () => {
 };
 
 function RankedNft({rankItem}) {
-  const isCurrentNft = useIsCurrentNft({
-    contract_address: rankItem.contract_address,
-    token_id: rankItem.token_id,
-  });
   const gotoNftProfile = useGotoNftProfile({
     contractAddress: rankItem.contract_address,
     tokenId: rankItem.token_id,
   });
   return (
-    <Row
-      itemsCenter
-      h70
-      onPress={gotoNftProfile}
-      px15
-      relative
-      bgGray200={isCurrentNft}>
+    <Row itemsCenter h70 onPress={gotoNftProfile} px15 relative>
       <Img
         w50
         h50
@@ -217,7 +205,7 @@ function RankedNft({rankItem}) {
       />
       <Col mx15>
         <Div>
-          <Span medium fontSize={15}>
+          <Span medium fontSize={15} bold>
             {rankItem.nft_name || rankItem.nft_metadatum_name}
           </Span>
         </Div>

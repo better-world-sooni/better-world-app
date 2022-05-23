@@ -4,6 +4,7 @@ import { Div } from "src/components/common/Div"
 import { Row } from "src/components/common/Row"
 import { Span } from "src/components/common/Span"
 import { Style } from "src/components/common/Style"
+import useAutoFocusRef from 'src/hooks/useAutoFocusRef';
 import { TextInput  } from "src/modules/viewComponents"
 
 export const TextField = (props) => {
@@ -20,8 +21,10 @@ export const TextField = (props) => {
     password,
     leftComp,
     rightComp,
+    autoFocus,
     ...others
   } = props;
+  const autoFocusRef = useAutoFocusRef();
   return (
     <Div w="100%" mt={mt}>
       {label ? (
@@ -33,6 +36,7 @@ export const TextField = (props) => {
         {leftComp && <Col auto>{leftComp}</Col>}
         <Col>
           <TextInput
+            innerRef={autoFocus && autoFocusRef}
             autoCorrect={false}
             h48
             border

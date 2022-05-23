@@ -9,7 +9,7 @@ import {useApiSelector, useReloadGETWithToken} from 'src/redux/asyncReducer';
 
 export default function PostScreen({
   route: {
-    params: {postId},
+    params: {postId, autoFocus = false},
   },
 }) {
   const {data: postRes, isLoading: postLoad} = useApiSelector(
@@ -26,6 +26,7 @@ export default function PostScreen({
         <StatusBar animated={true} barStyle={'dark-content'} />
         {postRes?.post ? (
           <Post
+              autoFocus={autoFocus}
             post={postRes?.post}
             refreshing={postLoad}
             onRefresh={handleRefresh}

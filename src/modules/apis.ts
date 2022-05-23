@@ -98,6 +98,7 @@ const apis = {
   },
   feed: {
     _: () => apiV1(`/feed`),
+    collection: (contractAddress, type?) => type ? apiV1(`/feed/collection?contract_address=${contractAddress}&type=${type}`) : apiV1(`/feed/collection?contract_address=${contractAddress}`),
   },
   presignedUrl: {
     _: () => apiV1(`/presigned_url`)

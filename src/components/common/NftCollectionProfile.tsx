@@ -126,7 +126,7 @@ export default function NftCollectionProfile({
           <Col auto bg={'black'} p8 rounded100 mr12 onPress={goBack}>
             <Div>
               <ChevronLeft
-                strokeWidth={2}
+                strokeWidth={2.4}
                 color={'white'}
                 height={16}
                 width={16}
@@ -148,7 +148,7 @@ export default function NftCollectionProfile({
               <Col auto mr10 relative>
                 <Img
                   rounded100
-                  border4
+                  border3
                   borderWhite
                   bgGray200
                   h85
@@ -220,9 +220,32 @@ export default function NftCollectionProfile({
                 </Span>
               </Div>
               <Row mt5>
-                <Col auto mr20>
-                  <Span onPress={() => gotoFollowList(FollowType.Followers)}>
-                    {followerCount} 팔로워
+                <Col
+                  auto
+                  mr20
+                  onPress={() => gotoFollowList(FollowType.Followers)}>
+                  <Span bold>
+                    <Span gray700 regular>
+                      팔로워
+                    </Span>{' '}
+                    {followerCount}
+                  </Span>
+                </Col>
+                <Col
+                  auto
+                  mr20
+                  onPress={() => gotoFollowList(FollowType.Followers)}>
+                  <Span bold>
+                    <Span gray700 regular>
+                      멤버 친목도
+                    </Span>{' '}
+                    {Math.ceil(
+                      (nftCollection.affinity.follows_among_members /
+                        nftCollection.affinity.total_possible_follows) *
+                        100,
+                    )}
+                    % ({nftCollection.affinity.follows_among_members} /{' '}
+                    {nftCollection.affinity.total_possible_follows})
                   </Span>
                 </Col>
                 <Col />
@@ -237,7 +260,7 @@ export default function NftCollectionProfile({
                 <Col />
               </Row>
               {nftCollection.about ? (
-                <Div mt8 bgWhite>
+                <Div mt16>
                   <TruncatedMarkdown
                     text={nftCollection.about}
                     maxLength={500}
@@ -291,7 +314,7 @@ function AdminNames({admin}) {
             })
             .join(', ')}
         </Span>
-        가 관리중
+        이(가) 관리중
       </Span>
     );
   }

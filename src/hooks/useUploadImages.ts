@@ -11,8 +11,8 @@ export default function useUploadImages({attachedRecord = "post"}){
           const {assets} = await launchImageLibrary({
             mediaType: 'photo',
             selectionLimit: 0,
-            maxHeight: 500,
-            maxWidth: 800
+            maxHeight: 1600,
+            maxWidth: 1600
           });
           const targetFilesLength = assets.length;
             if (targetFilesLength === 0) {
