@@ -82,11 +82,11 @@ const VoteListScreen = ({
                 top={HAS_NOTCH ? 49 : 25}>
                 <Row itemsCenter py5 h40 px15>
                   <Col itemsStart>
-                    <Div auto bgRealBlack p5 rounded100 onPress={goBack}>
+                    <Div auto rounded100 onPress={goBack}>
                       <ChevronLeft
-                        width={20}
-                        height={20}
-                        color="white"
+                        width={30}
+                        height={30}
+                        color="black"
                         strokeWidth={2}
                       />
                     </Div>

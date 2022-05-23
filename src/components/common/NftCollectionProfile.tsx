@@ -22,6 +22,11 @@ import {BlurView} from '@react-native-community/blur';
 import {useNavigation} from '@react-navigation/native';
 import {RefreshControl} from 'react-native';
 import {FollowOwnerType, FollowType} from 'src/screens/FollowListScreen';
+import {shallowEqual, useSelector} from 'react-redux';
+import {RootState} from 'src/redux/rootReducer';
+import TruncatedMarkdown from './TruncatedMarkdown';
+import Post from './Post';
+import {getNftName, getNftProfileImage} from 'src/modules/nftUtils';
 
 export default function NftCollectionProfile({
   nftCollection,
@@ -30,6 +35,10 @@ export default function NftCollectionProfile({
   refreshing,
   onRefresh,
 }) {
+  const {currentNft} = useSelector(
+    (root: RootState) => root.app.session,
+    shallowEqual,
+  );
   const [isFollowing, followerCount, handlePressFollowing] = useFollow(
     nftCollection.is_following,
     nftCollection.follower_count,
@@ -131,7 +140,7 @@ export default function NftCollectionProfile({
         showsVerticalScrollIndicator={false}
         onScroll={scrollHandler}
         style={{marginTop: -30}}
-        data={[null]}
+        data={nftCollection.posts}
         ListHeaderComponent={
           <>
             <Row zIndex={100} px15 relative>
@@ -147,7 +156,9 @@ export default function NftCollectionProfile({
                   uri={resizeImageUri(nftCollection.image_uri, 100, 100)}></Img>
               </Col>
               <Col justifyEnd>
-                {!isAdmin ? (
+                {!isAdmin &&
+                nftCollection.contract_address !=
+                  currentNft.contract_address ? (
                   <Div>
                     <Row py8>
                       <Col />
@@ -166,48 +177,43 @@ export default function NftCollectionProfile({
                     </Row>
                   </Div>
                 ) : (
-                  <Div>
-                    <Row py10>
-                      <Col />
-                      <Col
-                        auto
-                        bgRealBlack
-                        p8
-                        rounded100
-                        onPress={onPressEditProfile}>
-                        <Div>
-                          <Edit3
-                            strokeWidth={2}
-                            color={'white'}
-                            height={16}
-                            width={16}
-                          />
-                        </Div>
-                      </Col>
-                      <Col
-                        auto
-                        bgRealBlack={!isFollowing}
-                        p8
-                        mx8
-                        rounded100
-                        border1={isFollowing}
-                        borderGray400={isFollowing}
-                        onPress={handlePressFollowing}>
-                        <Span white={!isFollowing} bold mt1 px5>
-                          {isFollowing ? '언팔로우' : '팔로우'}
-                        </Span>
-                      </Col>
-                      <Col auto bgRealBlack p8 rounded100 onPress={goToNewPost}>
-                        <Span white bold mt1 px5>
-                          게시물 업로드
-                        </Span>
-                      </Col>
-                    </Row>
-                  </Div>
+                  isAdmin && (
+                    <Div>
+                      <Row py10>
+                        <Col />
+                        <Col
+                          auto
+                          bgRealBlack
+                          p8
+                          rounded100
+                          mr8
+                          onPress={onPressEditProfile}>
+                          <Div>
+                            <Edit3
+                              strokeWidth={2}
+                              color={'white'}
+                              height={16}
+                              width={16}
+                            />
+                          </Div>
+                        </Col>
+                        <Col
+                          auto
+                          bgRealBlack
+                          p8
+                          rounded100
+                          onPress={goToNewPost}>
+                          <Span white bold mt1 px5>
+                            게시물 업로드
+                          </Span>
+                        </Col>
+                      </Row>
+                    </Div>
+                  )
                 )}
               </Col>
             </Row>
-            <Div px15 pt10 bgWhite>
+            <Div px15 py10 bgWhite borderBottom={0.5} borderGray200>
               <Div>
                 <Span fontSize={20} bold>
                   {nftCollection.name}
@@ -221,21 +227,85 @@ export default function NftCollectionProfile({
                 </Col>
                 <Col />
               </Row>
+              <Row mt10 itemsCenter>
+                <Col auto>
+                  <AdminProfiles admin={nftCollection.admin_nfts} />
+                </Col>
+                <Col auto>
+                  <AdminNames admin={nftCollection.admin_nfts} />
+                </Col>
+                <Col />
+              </Row>
+              {nftCollection.about ? (
+                <Div mt8 bgWhite>
+                  <TruncatedMarkdown
+                    text={nftCollection.about}
+                    maxLength={500}
+                  />
+                </Div>
+              ) : null}
             </Div>
           </>
         }
-        renderItem={() => (
-          <ProfileDataTabs
-            posts={nftCollection.posts}
-            about={nftCollection.about}
-            members={nftCollection.nfts}
-            adminNfts={nftCollection.admin_nfts}
-          />
-        )}
+        renderItem={({item}) => <Post post={item} />}
         ListFooterComponent={<Div h={HAS_NOTCH ? 27 : 12} />}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }></Animated.FlatList>
     </>
+  );
+}
+
+function AdminProfiles({admin}) {
+  return (
+    <Div w={(admin.slice(0, 3).length - 1) * 12 + 19} relative h22 mr5>
+      {admin.slice(0, 3).map((nft, index) => {
+        return (
+          <Img
+            key={index}
+            uri={getNftProfileImage(nft)}
+            rounded100
+            h22
+            w22
+            absolute
+            top0
+            left={index * 12}
+            border={1.5}
+            borderWhite></Img>
+        );
+      })}
+    </Div>
+  );
+}
+
+function AdminNames({admin}) {
+  if (admin.length == 0) return null;
+  if (admin.length < 4) {
+    return (
+      <Span>
+        <Span bold>
+          {admin
+            .slice(0, 3)
+            .map((nft, index) => {
+              return getNftName(nft);
+            })
+            .join(', ')}
+        </Span>
+        가 관리중
+      </Span>
+    );
+  }
+  return (
+    <Span>
+      <Span bold>
+        {admin
+          .slice(0, 3)
+          .map((nft, index) => {
+            return getNftName(nft);
+          })
+          .join(', ')}{' '}
+      </Span>
+      외 <Span bold>{admin.length - 3}</Span>명이 관리중
+    </Span>
   );
 }

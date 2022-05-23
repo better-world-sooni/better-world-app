@@ -24,7 +24,6 @@ export default function PostScreen({
     <>
       <KeyboardAvoidingView flex={1} bgWhite relative behavior="padding">
         <StatusBar animated={true} barStyle={'dark-content'} />
-        <Div h={HAS_NOTCH ? 44 : 20} />
         {postRes?.post ? (
           <Post
             post={postRes?.post}

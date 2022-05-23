@@ -70,13 +70,13 @@ export default function RankDeltumScreen({
               absolute
               w={DEVICE_WIDTH}
               top={HAS_NOTCH ? 49 : 25}>
-              <Row itemsCenter py5 h40 px15>
+              <Row itemsCenter py5 h40 pr15 pl7>
                 <Col itemsStart>
-                  <Div auto bgRealBlack p5 rounded100 onPress={goBack}>
+                  <Div auto rounded100 onPress={goBack}>
                     <ChevronLeft
-                      width={20}
-                      height={20}
-                      color="white"
+                      width={30}
+                      height={30}
+                      color="black"
                       strokeWidth={2}
                     />
                   </Div>
@@ -103,6 +103,7 @@ export default function RankDeltumScreen({
 
 enum RankDeltumEventType {
   Follow = 'follow',
+  Post = 'post',
   Comment = 'comment',
   LikePost = 'like_post',
   LikeComment = 'like_comment',
@@ -118,6 +119,9 @@ const RankDeltum = ({rankDeltum}) => {
         <Span fontSize={14}>게시물에 댓글 {point < 0 ? '삭제' : '받음'}</Span>
       );
     }
+    if (event == RankDeltumEventType.Post) {
+      return <Span fontSize={14}>게시물 {point < 0 ? '삭제' : '올림'}</Span>;
+    }
     if (event == RankDeltumEventType.LikePost) {
       return (
         <Span fontSize={14}>게시물에 좋아요 {point < 0 ? '취소' : '받음'}</Span>
@@ -125,7 +129,7 @@ const RankDeltum = ({rankDeltum}) => {
     }
     if (event == RankDeltumEventType.LikeComment) {
       return (
-        <Span fontSize={14}>댓글에 좋아요{point < 0 ? ' 취소' : '받음'}</Span>
+        <Span fontSize={14}>댓글에 좋아요 {point < 0 ? ' 취소' : '받음'}</Span>
       );
     }
     if (event == RankDeltumEventType.Follow) {

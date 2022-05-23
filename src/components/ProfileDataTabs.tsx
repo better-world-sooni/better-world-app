@@ -39,9 +39,9 @@ export default function ProfileDataTabs({posts, about, members, adminNfts}) {
         <Col {...tabProps(DataTabType.Feed)}>
           <Span medium>피드</Span>
         </Col>
-        <Col {...tabProps(DataTabType.Members)}>
+        {/* <Col {...tabProps(DataTabType.Members)}>
           <Span medium>멤버</Span>
-        </Col>
+        </Col> */}
         <Col {...tabProps(DataTabType.AdminNfts)}>
           <Span medium>어드민</Span>
         </Col>
@@ -52,9 +52,9 @@ export default function ProfileDataTabs({posts, about, members, adminNfts}) {
       {
         {
           [DataTabType.Feed]: <Feed feed={posts} />,
-          [DataTabType.Members]: members && (
-            <NftCollectionMembers members={members} />
-          ),
+          // [DataTabType.Members]: members && (
+          //   <NftCollectionMembers members={members} />
+          // ),
           [DataTabType.AdminNfts]: adminNfts && (
             <NftCollectionMembers members={adminNfts} />
           ),

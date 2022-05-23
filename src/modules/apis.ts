@@ -1,7 +1,7 @@
 import urljoin from 'url-join';
 
-// const BASE_URL = 'https://api.metasgid.com';
-const BASE_URL = 'http://localhost:3000';
+const BASE_URL = 'http://192.168.1.185:3000';
+// const BASE_URL = 'http://localhost:3000';
 const toUrl = (...args) => ({url: urljoin(...args)});
 const base = path => toUrl(BASE_URL, path);
 const apiV1 = path => toUrl(BASE_URL, '/api/v1', path);
@@ -59,6 +59,7 @@ const apis = {
     list: (getFollowers, contractAddress, tokenId?) => !tokenId ? apiV1(`/follow/list?get_followers=${getFollowers}&contract_address=${contractAddress}`): apiV1(`/follow/list?get_followers=${getFollowers}&contract_address=${contractAddress}&token_id=${tokenId}`),
   },
   nft_collection: {
+    profile: () => apiV1(`/nft_collection/profile`),
     contractAddress: {
       _: (contractAddress) => apiV1(`/nft_collection/${contractAddress}`),
       profile: (contractAddress) => apiV1(`/nft_collection/${contractAddress}/profile`)

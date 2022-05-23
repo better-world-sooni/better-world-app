@@ -50,6 +50,14 @@ import useVote, {VoteCategory} from 'src/hooks/useVote';
 import {shallowEqual, useSelector} from 'react-redux';
 import {RootState} from 'src/redux/rootReducer';
 import {LikeListType} from 'src/screens/LikeListScreen';
+import {HAS_NOTCH} from 'src/modules/constants';
+import {DEVICE_WIDTH} from 'src/modules/styles';
+import Animated, {
+  useAnimatedScrollHandler,
+  useAnimatedStyle,
+  useSharedValue,
+} from 'react-native-reanimated';
+import {BlurView} from '@react-native-community/blur';
 
 enum PostEventTypes {
   Delete = 'DELETE',
@@ -134,16 +142,16 @@ export default function Post({
         ];
 
   const actionIconDefaultProps = {
-    width: 20,
-    height: 20,
+    width: 18,
+    height: 18,
     color: Colors.gray[700],
     strokeWidth: 1.7,
   };
   const heartProps = liked
     ? {
         fill: Colors.danger.DEFAULT,
-        width: 20,
-        height: 20,
+        width: 18,
+        height: 18,
         color: Colors.danger.DEFAULT,
         strokeWidth: 1.7,
       }
@@ -152,8 +160,8 @@ export default function Post({
   const forVoteProps = hasVotedFor
     ? {
         fill: Colors.primary.DEFAULT,
-        width: 20,
-        height: 20,
+        width: 18,
+        height: 18,
         color: Colors.primary.DEFAULT,
         strokeWidth: 1.7,
       }
@@ -161,8 +169,8 @@ export default function Post({
   const abstainVoteProps = hasVotedAbstain
     ? {
         fill: Colors.primary.DEFAULT,
-        width: 20,
-        height: 20,
+        width: 18,
+        height: 18,
         color: Colors.primary.DEFAULT,
         strokeWidth: 1.7,
       }
@@ -170,8 +178,8 @@ export default function Post({
   const againstVoteProps = hasVotedAgainst
     ? {
         fill: Colors.danger.DEFAULT,
-        width: 20,
-        height: 20,
+        width: 18,
+        height: 18,
         color: Colors.danger.DEFAULT,
         strokeWidth: 1.7,
       }
@@ -265,222 +273,267 @@ export default function Post({
   const gotoVoteList = useGotoVoteList({
     postId: post.id,
   });
+  const translationY = useSharedValue(0);
+  const scrollHandler = useAnimatedScrollHandler(event => {
+    translationY.value = event.contentOffset.y;
+  });
+  const headerHeight = HAS_NOTCH ? 94 : 70;
+  const headerStyles = useAnimatedStyle(() => {
+    return {
+      width: DEVICE_WIDTH,
+      height: headerHeight,
+      opacity: Math.min(translationY.value / 20, 1),
+    };
+  });
+
+  const itemWidth = DEVICE_WIDTH - 30 - 50;
+
   if (deleted) return null;
 
   return (
-    <Div
-      py5
-      borderBottom={full ? 0 : 0.5}
-      borderGray200
-      bgWhite
-      {...(full && {flex: 1})}>
-      <Row pl={full ? 10 : 15} pr15 itemsCenter pt8>
-        {full ? (
-          <Col auto mr5 onPress={goBack}>
-            <ChevronLeft width={20} height={20} color="black" strokeWidth={2} />
-          </Col>
-        ) : null}
-        <Col auto mr10 onPress={goToProfile}>
-          <Img
-            w35
-            h35
-            rounded100
-            uri={getNftProfileImage(post.nft, 100, 100)}
-          />
-        </Col>
-        <Col auto mr10>
-          <Span fontSize={15} medium onPress={goToProfile}>
-            {getNftName(post.nft)}
-          </Span>
-        </Col>
-        {post.nft.token_id &&
-          post.nft.nft_metadatum.name != getNftName(post.nft) && (
-            <Col auto>
-              <Span fontSize={13} gray700 onPress={goToProfile}>
-                {post.nft.nft_metadatum.name}
-                {' · '}
-              </Span>
-            </Col>
-          )}
-        <Col auto>
-          <Span fontSize={13} gray700>
-            {createdAtText(post.updated_at)}
-          </Span>
-        </Col>
-        <Col />
-        <Col auto>
-          <MenuView onPressAction={handlePressMenu} actions={menuOptions}>
-            {loading ? (
-              <ActivityIndicator />
-            ) : (
-              <MoreHorizontal color={'black'} width={20} height={20} />
-            )}
-          </MenuView>
-        </Col>
-      </Row>
-      <ScrollView
-        {...scrollviewProps}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }>
-        {post.content ? (
-          <Div px15>
-            {full ? (
-              <DefaultMarkdown children={post.content}></DefaultMarkdown>
-            ) : (
-              <TruncatedMarkdown
-                text={post.content}
-                maxLength={500}
-                onPressTruncated={goToPost}
-              />
-            )}
-          </Div>
-        ) : null}
-        {post.type == 'Proposal' &&
-          post.nft.contract_address == currentNft.contract_address && (
-            <Row px15 pb10>
-              <Col auto mr10>
-                <Span fontSize={13} bold>
-                  예{' '}
-                  {(againstVotesCount + forVotesCount > 0
-                    ? forVotesCount / (againstVotesCount + forVotesCount)
-                    : 0) * 100}
-                  %
-                </Span>
-              </Col>
-              <Col auto>
-                <Span fontSize={13} bold>
-                  아니요{' '}
-                  {(againstVotesCount + forVotesCount > 0
-                    ? againstVotesCount / (againstVotesCount + forVotesCount)
-                    : 0) * 100}
-                  %
-                </Span>
-              </Col>
-              <Col />
-            </Row>
-          )}
-        {post.image_uris.length > 0 ? (
-          <ImageSlideShow imageUris={post.image_uris} />
-        ) : null}
-        <Row px15 itemsCenter mb8 mt8 mb13={full}>
-          {!post.type ? (
-            <>
-              <Col auto mr12>
-                <Span
-                  fontSize={14}
-                  style={{fontWeight: '600'}}
-                  onPress={gotoLikeList}>
-                  좋아요 <Span realBlack>{likesCount}</Span>개
-                </Span>
-              </Col>
-              <Col auto mr12 onPress={!full && goToPost}>
-                <Span fontSize={14} style={{fontWeight: '600'}}>
-                  댓글{' '}
-                  <Span realBlack>
-                    {full ? cachedComments.length : post.comments_count}
-                  </Span>
-                  개
-                </Span>
-              </Col>
-              <Col />
-              {!full && (
-                <Col auto mr16 onPress={handlePressLike}>
-                  {<Heart {...heartProps}></Heart>}
-                </Col>
-              )}
-            </>
-          ) : (
-            <>
-              <Col auto mr12 gray800>
-                <Span
-                  fontSize={14}
-                  style={{fontWeight: '600'}}
-                  onPress={() => gotoVoteList(VoteCategory.Against)}>
-                  반대 <Span realBlack>{againstVotesCount}</Span>표
-                </Span>
-              </Col>
-              <Col auto mr12 gray800>
-                <Span
-                  fontSize={14}
-                  style={{fontWeight: '600'}}
-                  onPress={() => gotoVoteList(VoteCategory.For)}>
-                  찬성 <Span realBlack>{forVotesCount}</Span>표
-                </Span>
-              </Col>
-              <Col />
-              {!full && (
-                <>
-                  <Col auto mr16 onPress={handlePressVoteAgainst}>
-                    {<ThumbsDown {...againstVoteProps}></ThumbsDown>}
-                  </Col>
-                  <Col auto mr16 onPress={handlePressVoteFor}>
-                    {<ThumbsUp {...forVoteProps}></ThumbsUp>}
-                  </Col>
-                </>
-              )}
-            </>
-          )}
-          {!full && (
-            <Col auto onPress={!full && goToPost}>
-              <MessageCircle {...actionIconDefaultProps} />
-            </Col>
-          )}
-        </Row>
-        {full ? (
-          <Div borderTop={0.5} borderGray200 pt5>
-            {cachedComments.map(comment => {
-              return (
-                <Comment
-                  key={comment.id}
-                  comment={comment}
-                  onPressReplyTo={handlePressReplyTo}></Comment>
-              );
-            })}
-          </Div>
-        ) : (
-          cachedComments.length > 0 && (
-            <Div onPress={goToPost}>
-              <Comment
-                hot
-                key={cachedComments[0].id}
-                comment={cachedComments[0]}
-                onPressReplyTo={handlePressReplyTo}></Comment>
-            </Div>
-          )
-        )}
-        {full && <Div h100></Div>}
-      </ScrollView>
+    <>
       {full && (
-        <NewComment
-          replyToObject={replyTo.object}
-          replyToType={replyTo.type}
-          onSuccess={handleNewCommentSuccess}
-          onPressExitReplyToComment={resetReplyTo}
-        />
+        <Div h={headerHeight} zIndex={100} absolute top0>
+          <Animated.View style={headerStyles}>
+            <BlurView
+              blurType="xlight"
+              blurAmount={30}
+              blurRadius={20}
+              style={{
+                width: DEVICE_WIDTH,
+                height: '100%',
+                position: 'absolute',
+              }}
+              reducedTransparencyFallbackColor="white"></BlurView>
+          </Animated.View>
+          <Div zIndex={100} absolute w={DEVICE_WIDTH} top={HAS_NOTCH ? 49 : 25}>
+            <Row itemsCenter py5 h40 px15>
+              <Col itemsStart>
+                <Div auto bgRealBlack p5 rounded100 onPress={goBack}>
+                  <ChevronLeft
+                    width={20}
+                    height={20}
+                    color="white"
+                    strokeWidth={2}
+                  />
+                </Div>
+              </Col>
+              <Col auto onPress={goBack}>
+                <Span bold fontSize={19}>
+                  알림
+                </Span>
+              </Col>
+              <Col itemsEnd></Col>
+            </Row>
+          </Div>
+        </Div>
       )}
-    </Div>
-  );
-}
+      <Div
+        py5
+        borderBottom={full ? 0 : 0.5}
+        borderGray200
+        bgWhite
+        {...(full && {flex: 1})}>
+        <Div>
+          <Animated.ScrollView
+            {...scrollviewProps}
+            onScroll={scrollHandler}
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }>
+            {full && <Div h={headerHeight}></Div>}
+            <Row px15 pt8>
+              <Col auto mr10>
+                <Div onPress={goToProfile}>
+                  <Img
+                    w47
+                    h47
+                    rounded100
+                    uri={getNftProfileImage(post.nft, 100, 100)}
+                  />
+                </Div>
+              </Col>
+              <Col>
+                <Row>
+                  <Col auto>
+                    <Span>
+                      <Span fontSize={14} bold onPress={goToProfile}>
+                        {getNftName(post.nft)}{' '}
+                      </Span>{' '}
+                      {post.nft.token_id &&
+                        post.nft.nft_metadatum.name != getNftName(post.nft) && (
+                          <Span fontSize={12} gray700 onPress={goToProfile}>
+                            {post.nft.nft_metadatum.name}
+                            {' · '}
+                          </Span>
+                        )}
+                      <Span fontSize={12} gray700>
+                        {createdAtText(post.updated_at)}
+                      </Span>
+                    </Span>
+                  </Col>
+                  <Col />
+                  <Col auto>
+                    <MenuView
+                      onPressAction={handlePressMenu}
+                      actions={menuOptions}>
+                      {loading ? (
+                        <ActivityIndicator />
+                      ) : (
+                        <MoreHorizontal
+                          color={Colors.gray[400]}
+                          width={20}
+                          height={20}
+                        />
+                      )}
+                    </MenuView>
+                  </Col>
+                </Row>
+                <Row>
+                  {post.content ? (
+                    <Div>
+                      {full ? (
+                        <DefaultMarkdown
+                          children={post.content}></DefaultMarkdown>
+                      ) : (
+                        <TruncatedMarkdown
+                          text={post.content}
+                          maxLength={500}
+                          onPressTruncated={goToPost}
+                        />
+                      )}
+                    </Div>
+                  ) : null}
+                </Row>
+                {post.type == 'Proposal' &&
+                  post.nft.contract_address == currentNft.contract_address && (
+                    <Row pb10>
+                      <Col auto mr10>
+                        <Span fontSize={13} bold>
+                          예{' '}
+                          {(againstVotesCount + forVotesCount > 0
+                            ? forVotesCount /
+                              (againstVotesCount + forVotesCount)
+                            : 0) * 100}
+                          %
+                        </Span>
+                      </Col>
+                      <Col auto>
+                        <Span fontSize={13} bold>
+                          아니요{' '}
+                          {(againstVotesCount + forVotesCount > 0
+                            ? againstVotesCount /
+                              (againstVotesCount + forVotesCount)
+                            : 0) * 100}
+                          %
+                        </Span>
+                      </Col>
+                      <Col />
+                    </Row>
+                  )}
+                {post.image_uris.length > 0 ? (
+                  <ImageSlideShow
+                    imageUris={post.image_uris}
+                    sliderHeight={
+                      post.image_width && post.image_height
+                        ? (post.image_height / post.image_width) * itemWidth
+                        : itemWidth
+                    }
+                    sliderWidth={itemWidth}
+                  />
+                ) : null}
+                <Row itemsCenter mb8 mt8 mb13={full}>
+                  {!post.type ? (
+                    <>
+                      <Col auto mr12>
+                        <Span
+                          fontSize={12}
+                          style={{fontWeight: '600'}}
+                          onPress={gotoLikeList}>
+                          좋아요 <Span realBlack>{likesCount}</Span>개
+                        </Span>
+                      </Col>
+                      <Col />
+                      {!full && (
+                        <Col auto mr16 onPress={handlePressLike}>
+                          {<Heart {...heartProps}></Heart>}
+                        </Col>
+                      )}
+                    </>
+                  ) : (
+                    <>
+                      <Col auto mr12 gray800>
+                        <Span
+                          fontSize={14}
+                          style={{fontWeight: '600'}}
+                          onPress={() => gotoVoteList(VoteCategory.Against)}>
+                          반대 <Span realBlack>{againstVotesCount}</Span>표
+                        </Span>
+                      </Col>
+                      <Col auto mr12 gray800>
+                        <Span
+                          fontSize={14}
+                          style={{fontWeight: '600'}}
+                          onPress={() => gotoVoteList(VoteCategory.For)}>
+                          찬성 <Span realBlack>{forVotesCount}</Span>표
+                        </Span>
+                      </Col>
+                      <Col />
+                      {!full && (
+                        <>
+                          <Col auto mr16 onPress={handlePressVoteAgainst}>
+                            {<ThumbsDown {...againstVoteProps}></ThumbsDown>}
+                          </Col>
+                          <Col auto mr16 onPress={handlePressVoteFor}>
+                            {<ThumbsUp {...forVoteProps}></ThumbsUp>}
+                          </Col>
+                        </>
+                      )}
+                    </>
+                  )}
+                  {!full && (
+                    <Col auto onPress={!full && goToPost}>
+                      <MessageCircle {...actionIconDefaultProps} />
+                    </Col>
+                  )}
+                </Row>
+              </Col>
+            </Row>
+            {full ? (
+              <Div borderTop={0.5} borderGray200 pt5>
+                {cachedComments.map(comment => {
+                  return (
+                    <Comment
+                      key={comment.id}
+                      comment={comment}
+                      onPressReplyTo={handlePressReplyTo}></Comment>
+                  );
+                })}
+              </Div>
+            ) : (
+              cachedComments.length > 0 && (
+                <Div onPress={goToPost}>
+                  <Comment
+                    hot
+                    key={cachedComments[0].id}
+                    comment={cachedComments[0]}
+                    onPressReplyTo={handlePressReplyTo}></Comment>
+                </Div>
+              )
+            )}
 
-function CommentNftExamples({comments}) {
-  return (
-    <Div w={(comments.slice(0, 3).length - 1) * 12 + 19} relative h22 mr5>
-      {comments.slice(0, 3).map((comment, index) => {
-        return (
-          <Img
-            key={comment.id}
-            uri={comment.nft.nft_metadatum.image_uri}
-            rounded100
-            h22
-            w22
-            absolute
-            top0
-            left={index * 12}
-            border={1.5}
-            borderWhite></Img>
-        );
-      })}
-    </Div>
+            {full && <Div h100></Div>}
+          </Animated.ScrollView>
+          {full && (
+            <NewComment
+              replyToObject={replyTo.object}
+              replyToType={replyTo.type}
+              onSuccess={handleNewCommentSuccess}
+              onPressExitReplyToComment={resetReplyTo}
+            />
+          )}
+        </Div>
+      </Div>
+    </>
   );
 }

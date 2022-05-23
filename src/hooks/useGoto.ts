@@ -81,20 +81,20 @@ export function useGotoChatRoom({chatRoomType}){
   return chatRoomType == ChatRoomType.RoomId ? gotoChatRoomWithRoomId : gotoChatRoomAsDirectMessage
 }
 
-export function useGotoNftCollectionProfile({contractAddress}){
+export function useGotoNftCollectionProfile({contractAddress = null}){
     const apiGETWithToken = useApiGETWithToken()
     const navigation = useNavigation()
+    const {currentNft} = useSelector(
+      (root: RootState) => root.app.session,
+      shallowEqual,
+    );
     const gotoProfile = () => {
-        apiGETWithToken(
-            apis.nft_collection.contractAddress.profile(
-                contractAddress
-            ),
-          );
-          navigation.navigate(NAV_NAMES.NftCollection, {
-            contractAddress
-          });
-      }
-      return gotoProfile
+      apiGETWithToken(apis.nft_collection.contractAddress.profile(contractAddress || currentNft.contract_address));
+      navigation.navigate(NAV_NAMES.NftCollection, {
+        contractAddress:  contractAddress || currentNft.contract_address
+      });
+    }
+    return gotoProfile
 }
 
 export function useGotoPost({postId}){

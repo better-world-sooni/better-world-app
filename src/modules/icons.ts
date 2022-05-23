@@ -19,6 +19,8 @@ export const ICONS = {
   kasLogo: require('assets/icons/kasLogo.png'),
   iconKaikas: require('assets/icons/kaikasLogo.png'),
   klayIcon: require('assets/icons/klayIcon.png'),
+  discordIcon: require('assets/icons/discordIcon.png'),
+  openseaIcon: require('assets/icons/openseaIcon.png'),
   [KlaytnAccount.KASAccount]: require('assets/icons/kasLogo.png'),
   [KlaytnAccount.KlipAccount]: require('assets/icons/klipLogo.png'),
   [KlaytnAccount.KaikasAccount]: require('assets/icons/kaikasGrayLogo.jpeg'),

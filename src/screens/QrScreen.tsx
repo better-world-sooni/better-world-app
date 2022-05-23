@@ -82,11 +82,11 @@ const QrScreen = () => {
           absolute
           w={DEVICE_WIDTH}
           top={HAS_NOTCH ? 49 : 25}>
-          <Col justifyStart mr10>
-            <Div bgRealBlack p5 rounded100 onPress={goBack} w30>
+          <Col justifyStart>
+            <Div auto rounded100 onPress={goBack}>
               <ChevronLeft
-                width={20}
-                height={20}
+                width={30}
+                height={30}
                 color="white"
                 strokeWidth={2}
               />

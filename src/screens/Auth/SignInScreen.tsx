@@ -101,6 +101,7 @@ const SignInScreen = ({navigation}) => {
               '보유한 PFP의 가치를 직접 창조하고 함께 공유해요.',
               '개인정보 노출 위험 없이 커뮤니티원들과 PFP 계정으로 쉽게 소통해요.',
               '귀찮은 인증, 신경쓰이는 가스비 없이 모바일에서 커뮤니티 거버넌스에 참여해요.',
+              'PFP의 메타버스와 프로필을 개성에 맞게 꾸며봐요.',
             ]}
             itemWidth={DEVICE_WIDTH}
             autoplay

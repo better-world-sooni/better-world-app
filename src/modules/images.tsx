@@ -1,8 +1,10 @@
 export const IMAGES = {
   betterWorldWhiteLogo: require('assets/images/betterWorldWhiteLogo.png'),
   betterWorldBlueLogo: require('assets/images/betterWorldBlueLogo.png'),
+  betterWorldBlackLogo: require('assets/images/betterWorldBlackLogo.png'),
   blueMapMarker: require('assets/images/blueMapMarker.png'),
   mainLogo: require('assets/images/betterWorldBlueLogo.png'),
+  webeLogo: require('assets/images/webeLogo.png'),
   redMapMarker: require('assets/images/redMapMarker.png'),
   imageLogoApple: require('assets/images/imageLogoApple.png'),
   imageLogoKakaotalk: require('assets/images/imageLogoKakaotalk.png'),

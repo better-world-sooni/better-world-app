@@ -5,7 +5,7 @@ export default function DefaultMarkdown(props) {
   return (
     <Markdown
       style={{
-        body: {marginTop: 0, marginBottom: 0, fontSize: 14},
+        body: {marginTop: -10, marginBottom: 0, fontSize: 14},
         heading1: {
           fontSize: 19,
           fontWeight: '600',

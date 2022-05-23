@@ -61,7 +61,7 @@ function CommentContent({
     apis.like.comment(id).url,
   );
   const cachedComments = comments || [];
-  const profileImageSize = nested ? 22 : 30;
+  const profileImageSize = nested ? 25 : 30;
   const heartSize = 15;
   const heartProps = liked
     ? {
@@ -85,7 +85,7 @@ function CommentContent({
   });
   return (
     <Div py3={!nested}>
-      <Row py8 px15>
+      <Row py8 pr20 pl32>
         <Col auto mr10 onPress={goToProfile}>
           <Img
             rounded={100}
@@ -104,9 +104,11 @@ function CommentContent({
                 <Span fontSize={14}>{content}</Span>
               </Span>
             </Col>
-            <Col auto onPress={handlePressLike}>
-              <Heart {...heartProps}></Heart>
-            </Col>
+            {!hot && (
+              <Col auto onPress={handlePressLike}>
+                <Heart {...heartProps}></Heart>
+              </Col>
+            )}
           </Row>
           <Row mt5>
             <Col auto mr10>

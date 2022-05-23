@@ -75,7 +75,7 @@ export default function NftCollectionProfileEditBottomSheetScrollView({
         <Div h150 relative onPress={handleAddImage}>
           {image?.uri ? (
             <>
-              <Img uri={image.uri} top0 absolute w={DEVICE_WIDTH} h150></Img>
+              <Img uri={image.uri} top0 absolute w={'100%'} h150></Img>
               <Div flex={1} itemsEnd justifyEnd px15 zIndex={100} py15></Div>
             </>
           ) : (
@@ -92,7 +92,7 @@ export default function NftCollectionProfileEditBottomSheetScrollView({
           )}
         </Div>
         <Row zIndex={100} px15 mt={-50} relative mb20 itemsEnd>
-          <Div h30 absolute w={DEVICE_WIDTH} bgWhite bottom0></Div>
+          <Div h30 absolute w={'100%'} bgWhite bottom0></Div>
           <Col auto mr10 relative>
             <Div
               rounded100
@@ -108,7 +108,7 @@ export default function NftCollectionProfileEditBottomSheetScrollView({
                   uri={profileImage.uri}
                   top0
                   absolute
-                  w={DEVICE_WIDTH}
+                  w={'100%'}
                   h110
                   rounded100
                   w110></Img>

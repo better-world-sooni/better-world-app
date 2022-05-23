@@ -8,6 +8,7 @@ export default function useUploadPost(){
     const [content, setContent] = useState('')
 	const [currentPostType, setPostType] = useState('')
 	const [votingDeadline, setVotingDeadline] = useState(null)
+	const [addImages, setAddImages] = useState(false)
     const { images, error, setError, handleAddImages, handleRemoveImage, uploadAllSelectedFiles } = useUploadImages({attachedRecord:"post"})
     const postPromiseFnWithToken = usePostPromiseFnWithToken()
 
@@ -20,13 +21,23 @@ export default function useUploadPost(){
 			return;
 		}
 		setLoading(true);
-		const signedIdArray = await uploadAllSelectedFiles();
         const body =  {
 			content,
-			images: signedIdArray,
+			images: [],
             admin,
 			type: currentPostType || null,
-			voting_deadline: votingDeadline
+			voting_deadline: votingDeadline,
+			image_width: null,
+			image_height: null
+		}
+		if(addImages){
+			const signedIdArray = await uploadAllSelectedFiles();
+			body.images = signedIdArray
+			if (signedIdArray.length > 0) {
+				console.log(images[0])
+				body.image_width = images[0].width
+				body.image_height = images[0].height
+			}
 		}
 		const {data} = await postPromiseFnWithToken({url: apis.post._().url, body});
 		if (!data.success) {
@@ -44,5 +55,5 @@ export default function useUploadPost(){
 		setError("");
 	};
 
-    return { error, loading, currentPostType, setPostType, votingDeadline, setVotingDeadline, content, handleContentChange, images, handleAddImages, handleRemoveImage, uploadPost }
+    return { error, loading, addImages, setAddImages, currentPostType, setPostType, votingDeadline, setVotingDeadline, content, handleContentChange, images, handleAddImages, handleRemoveImage, uploadPost }
 }

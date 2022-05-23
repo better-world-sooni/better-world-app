@@ -153,7 +153,7 @@ const SearchScreen = () => {
               </Col>
               <Col auto onPress={gotoRankSeason}>
                 {!rankLoad && rankRes ? (
-                  <Span fontSize={16} bold underline>
+                  <Span fontSize={16} bold>
                     {!nextSeason
                       ? '현재 주'
                       : `${rankRes.rank_season.cwyear}년 ${rankRes.rank_season.cweek}주`}
@@ -198,29 +198,13 @@ function RankedNft({rankItem}) {
     tokenId: rankItem.token_id,
   });
   return (
-    <Row itemsCenter h70 onPress={gotoNftProfile} px15 relative>
-      {isCurrentNft && (
-        <Div h70 absolute width={DEVICE_WIDTH}>
-          {rankItem.background_image_uri ? (
-            <Img
-              uri={rankItem.background_image_uri}
-              h70
-              width={DEVICE_WIDTH}></Img>
-          ) : (
-            <Div h70 width={DEVICE_WIDTH}></Div>
-          )}
-          <BlurView
-            blurType="xlight"
-            blurAmount={10}
-            blurRadius={10}
-            style={{
-              width: DEVICE_WIDTH,
-              height: '100%',
-              position: 'absolute',
-            }}
-            reducedTransparencyFallbackColor="white"></BlurView>
-        </Div>
-      )}
+    <Row
+      itemsCenter
+      h70
+      onPress={gotoNftProfile}
+      px15
+      relative
+      bgGray200={isCurrentNft}>
       <Img
         w50
         h50

@@ -180,7 +180,7 @@ export default function NftProfile({
               <Col auto mr10 relative>
                 <Img
                   rounded100
-                  border4
+                  border3
                   borderWhite
                   bgGray200
                   h85

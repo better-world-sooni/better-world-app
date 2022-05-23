@@ -6,17 +6,21 @@ import {resizeImageUri} from 'src/modules/uriUtils';
 import {Div} from './Div';
 import {Img} from './Img';
 
-export default function ImageSlideShow({imageUris}) {
+export default function ImageSlideShow({imageUris, sliderHeight, sliderWidth}) {
   const [currentPage, setCurrentPage] = useState(0);
   return (
     <>
-      <Carousel
-        data={imageUris}
-        itemWidth={DEVICE_WIDTH}
-        sliderWidth={DEVICE_WIDTH}
-        renderItem={renderItem}
-        onSnapToItem={index => setCurrentPage(index)}
-      />
+      <Div rounded10 overflowHidden>
+        <Carousel
+          data={imageUris}
+          itemWidth={sliderWidth}
+          sliderWidth={sliderWidth}
+          renderItem={({item}) => (
+            <ImageItem url={item} width={sliderWidth} height={sliderHeight} />
+          )}
+          onSnapToItem={index => setCurrentPage(index)}
+        />
+      </Div>
       <Div flex={1} itemsCenter justifyCenter>
         <Pagination
           dotsLength={imageUris.length}
@@ -41,13 +45,10 @@ export default function ImageSlideShow({imageUris}) {
   );
 }
 
-function renderItem({item, index}) {
+function ImageItem({url, width, height}) {
   return (
     <Div>
-      <Img
-        w={DEVICE_WIDTH}
-        h={DEVICE_WIDTH}
-        uri={resizeImageUri(item, 500, 500)}></Img>
+      <Img w={width} h={height} uri={resizeImageUri(url, 500, 500)}></Img>
     </Div>
   );
 }

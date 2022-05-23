@@ -43,6 +43,7 @@ const Tab = createBottomTabNavigator();
 
 const tabBarFunc = props => <BottomTabBar {...props} />;
 
+
 const MainBottomTabs = () => {
   const {currentNft} = useSelector(
     (root: RootState) => root.app.session,
