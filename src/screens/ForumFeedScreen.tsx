@@ -15,12 +15,12 @@ export default function ForumFeedScreen({
   },
 }) {
   const {data: repostRes, isLoading: repostLoad} = useApiSelector(
-    apis.post.postId.repost.list,
+    apis.post.postId.repost.list.proposal,
   );
   const {goBack} = useNavigation();
   const reloadGetWithToken = useReloadGETWithToken();
   const onRefresh = () => {
-    reloadGetWithToken(apis.post.postId.repost.list(postId, 1));
+    reloadGetWithToken(apis.post.postId.repost.list.proposal(postId, 1));
   };
   return (
     <FeedFlatlistWithHeader

@@ -282,7 +282,8 @@ export function useGotoCollectionFeed({contractAddress}) {
     );
     navigation.navigate(NAV_NAMES.CollectionFeed, {
       contractAddress,
-      title
+      title,
+      type
     })
   };
   return gotoCollectionFeed
@@ -293,11 +294,25 @@ export function useGotoForumFeed({postId}) {
   const apiGETWithToken = useApiGETWithToken()
   const gotoCollectionFeed = (title) => {
     apiGETWithToken(
-      apis.post.postId.repost.list(postId, 1)
+      apis.post.postId.repost.list.proposal(postId, 1)
     );
     navigation.navigate(NAV_NAMES.ForumFeed, {
       postId,
       title
+    })
+  };
+  return gotoCollectionFeed
+}
+
+export function useGotoRepostList({postId}) {
+  const navigation = useNavigation()
+  const apiGETWithToken = useApiGETWithToken()
+  const gotoCollectionFeed = (title) => {
+    apiGETWithToken(
+      apis.post.postId.repost.list._(postId, 1)
+    );
+    navigation.navigate(NAV_NAMES.RepostList, {
+      postId
     })
   };
   return gotoCollectionFeed

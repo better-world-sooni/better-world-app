@@ -21,6 +21,7 @@ import {
   useGotoNftProfile,
   useGotoPost,
   useGotoReport,
+  useGotoRepostList,
   useGotoVoteList,
 } from 'src/hooks/useGoto';
 import useLike from 'src/hooks/useLike';
@@ -293,6 +294,10 @@ export default function Post({
   const gotoForumFeed = useGotoForumFeed({
     postId: post.id,
   });
+
+  const gotoRepostList = useGotoRepostList({
+    postId: post.id,
+  });
   const translationY = useSharedValue(0);
   const scrollHandler = useAnimatedScrollHandler(event => {
     translationY.value = event.contentOffset.y * 20;
@@ -458,7 +463,7 @@ export default function Post({
                         <Span
                           fontSize={12}
                           style={{fontWeight: '600'}}
-                          onPress={gotoLikeList}>
+                          onPress={gotoRepostList}>
                           리포스트 <Span realBlack>{post.repost_count}</Span>번
                         </Span>
                       </Col>
@@ -501,7 +506,7 @@ export default function Post({
                         <Col auto mr16 onPress={handlePressVoteAgainst}>
                           {<ThumbsDown {...againstVoteProps}></ThumbsDown>}
                         </Col>
-                        <Col auto mr16 onPress={handlePressVoteFor}>
+                        <Col auto mr16={!full} onPress={handlePressVoteFor}>
                           {<ThumbsUp {...forVoteProps}></ThumbsUp>}
                         </Col>
                       </>

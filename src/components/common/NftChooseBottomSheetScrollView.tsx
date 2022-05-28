@@ -1,7 +1,13 @@
 import {BottomSheetScrollView} from '@gorhom/bottom-sheet';
 import React, {useEffect, useState} from 'react';
 import {ActivityIndicator} from 'react-native';
-import {AlertTriangle, Check, CheckCircle, Lock} from 'react-native-feather';
+import {
+  AlertTriangle,
+  Check,
+  CheckCircle,
+  Lock,
+  RefreshCw,
+} from 'react-native-feather';
 import Colors from 'src/constants/Colors';
 import {useGotoHome, useGotoSignIn} from 'src/hooks/useGoto';
 import {
@@ -27,7 +33,7 @@ export default function NftChooseBottomSheetScrollView({
     <BottomSheetScrollView>
       <Row px20 itemsCenter>
         <Col />
-        <Col auto onPress={logout}>
+        <Col auto onPress={logout} mr10>
           <Span info bold>
             로그아웃
           </Span>
@@ -57,12 +63,7 @@ function NftIdentity({nft, onSuccess}) {
     isCurrentNft ? StateType.Success : StateType.None,
   );
   const changeAccount = useChangeAccount();
-  const gotoHome = useGotoHome();
   const handlePressIdentity = async () => {
-    if (isCurrentNft) {
-      gotoHome();
-      return;
-    }
     setStateType(StateType.Loading);
     await changeAccount(
       contract_address,
@@ -87,7 +88,7 @@ function NftIdentity({nft, onSuccess}) {
   return (
     <Row itemsCenter rounded10 py10 onPress={handlePressIdentity}>
       <Img w50 h50 rounded100 uri={getNftProfileImage(nft, 200, 200)} />
-      <Col mx15>
+      <Col mx15 auto>
         <Div>
           <Span medium fontSize={15} bold>
             {getNftName(nft)}
@@ -101,6 +102,12 @@ function NftIdentity({nft, onSuccess}) {
           </Div>
         )}
       </Col>
+      {isCurrentNft && (
+        <Col auto>
+          <RefreshCw strokeWidth={2} height={18} width={18} color={'black'} />
+        </Col>
+      )}
+      <Col></Col>
       {stateType !== StateType.None && (
         <Col auto>
           {stateType === StateType.Loading ? (

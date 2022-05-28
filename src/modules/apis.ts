@@ -87,7 +87,10 @@ const apis = {
       _: (postId) => apiV1(`/post/${postId}`),
       comment: (postId) => apiV1(`/post/${postId}/comment`),
       repost: {
-        list: (postId, page) => apiV1(`/post/${postId}/repost/list?page=${page}`),
+        list: {
+          _: (postId, page) => apiV1(`/post/${postId}/repost/list?page=${page}`),
+          proposal: (postId, page) => apiV1(`/post/${postId}/repost/list/proposal?page=${page}`),
+        }
       }
     }
   },

@@ -38,6 +38,7 @@ import NotificationScreen from 'src/screens/NotificationScreen';
 import RankDeltumScreen from 'src/screens/RankDeltumScreen';
 import CollectionFeedScreen from 'src/screens/CollectionFeedScreen';
 import ForumFeedScreen from 'src/screens/ForumFeedScreen';
+import RepostListScreen from 'src/screens/RepostListScreen';
 
 const RootStack = createStackNavigator();
 
@@ -152,6 +153,7 @@ export const AppContent = () => {
       name: NAV_NAMES.Home,
       component: MainBottomTabs,
       options: props => ({
+        gestureEnabled: false,
         cardStyle: {backgroundColor: 'white', presentation: 'screen'},
       }),
     },
@@ -226,6 +228,10 @@ export const AppContent = () => {
     {
       name: NAV_NAMES.ForumFeed,
       component: ForumFeedScreen,
+    },
+    {
+      name: NAV_NAMES.RepostList,
+      component: RepostListScreen,
     },
     {
       name: NAV_NAMES.Qr,

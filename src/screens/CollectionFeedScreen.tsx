@@ -11,7 +11,7 @@ import {Span} from 'src/components/common/Span';
 
 export default function CollectionFeedScreen({
   route: {
-    params: {contractAddress, title},
+    params: {contractAddress, title, type},
   },
 }) {
   const {data: feedRes, isLoading: feedLoad} = useApiSelector(
@@ -20,7 +20,7 @@ export default function CollectionFeedScreen({
   const {goBack} = useNavigation();
   const reloadGetWithToken = useReloadGETWithToken();
   const onRefresh = () => {
-    reloadGetWithToken(apis.feed.collection(contractAddress));
+    reloadGetWithToken(apis.feed.collection(contractAddress, type));
   };
   return (
     <FeedFlatlistWithHeader

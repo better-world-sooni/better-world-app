@@ -24,6 +24,7 @@ export const NAV_NAMES = {
     RankDeltum: "RankDeltum",
     CollectionFeed: "CollectionFeed",
     ForumFeed: "ForumFeed",
+    RepostList: "RepostList",
     Scan: "Scan",
     Qr: "Qr",
 };

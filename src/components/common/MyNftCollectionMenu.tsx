@@ -152,10 +152,7 @@ const MyNftCollectionMenu = ({nftCollection}) => {
             itemsCenter
             py15
             onPress={() =>
-              gotoCollectionFeed(
-                `${nftCollection.name} 진행중인 투표`,
-                'Proposal',
-              )
+              gotoCollectionFeed(`${nftCollection.name} 진행중인 포럼`, 'Forum')
             }>
             <Col auto mr20>
               <PieChart
