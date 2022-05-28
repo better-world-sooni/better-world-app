@@ -7,13 +7,16 @@ import {
   Heart,
   MessageCircle,
   MoreHorizontal,
+  Repeat,
   ThumbsDown,
   ThumbsUp,
 } from 'react-native-feather';
 import {State, TapGestureHandler} from 'react-native-gesture-handler';
 import Colors from 'src/constants/Colors';
 import {
+  useGotoForumFeed,
   useGotoLikeList,
+  useGotoNewPost,
   useGotoNftCollectionProfile,
   useGotoNftProfile,
   useGotoPost,
@@ -26,6 +29,7 @@ import {
   getNftName,
   getNftProfileImage,
   useIsAdmin,
+  useIsCurrentCollection,
   useIsCurrentNft,
 } from 'src/modules/nftUtils';
 import {createdAtText} from 'src/modules/timeUtils';
@@ -59,6 +63,9 @@ import Animated, {
 } from 'react-native-reanimated';
 import {BlurView} from '@react-native-community/blur';
 import useScrollToEndRef from 'src/hooks/useScrollToEndRef';
+import {PostOwnerType} from 'src/screens/NewPostScreen';
+import TruncatedText from './TruncatedText';
+import RepostedPost from './RepostedPost';
 
 enum PostEventTypes {
   Delete = 'DELETE',
@@ -103,6 +110,7 @@ export default function Post({
     postId: post.id,
   });
   const isCurrentNft = useIsCurrentNft(post.nft);
+  const isCurrentCollection = useIsCurrentCollection(post.nft);
   const isAdmin = !post.nft.token_id && useIsAdmin(post.nft);
   const deletePromiseFnWithToken = useDeletePromiseFnWithToken();
   const {currentNft} = useSelector(
@@ -187,21 +195,21 @@ export default function Post({
         strokeWidth: 1.7,
       }
     : actionIconDefaultProps;
-  const goToPost = useGotoPost({postId: post.id});
+  const gotoPost = useGotoPost({postId: post.id});
+
   const gotoNftProfile = useGotoNftProfile({
-    contractAddress: post.nft.contract_address,
-    tokenId: post.nft.token_id,
+    nft: post.nft,
   });
   const gotoNftCollectionProfile = useGotoNftCollectionProfile({
-    contractAddress: post.nft.contract_address,
+    nftCollection: post.nft,
   });
-  const goToProfile = useCallback(() => {
+  const goToProfile = () => {
     if (post.nft.token_id) {
       gotoNftProfile();
     } else {
       gotoNftCollectionProfile();
     }
-  }, []);
+  };
   const defaultReplyTo = {
     object: post,
     type: ReplyToType.Post,
@@ -275,6 +283,14 @@ export default function Post({
   });
 
   const gotoVoteList = useGotoVoteList({
+    postId: post.id,
+  });
+
+  const gotoNewPost = useGotoNewPost({
+    postOwnerType: PostOwnerType.Nft,
+  });
+
+  const gotoForumFeed = useGotoForumFeed({
     postId: post.id,
   });
   const translationY = useSharedValue(0);
@@ -396,49 +412,18 @@ export default function Post({
                 {post.content ? (
                   <Div>
                     {full ? (
-                      <DefaultMarkdown
-                        children={post.content}></DefaultMarkdown>
+                      <Span>{post.content}</Span>
                     ) : (
-                      <TruncatedMarkdown
+                      <TruncatedText
                         text={post.content}
                         maxLength={500}
-                        onPressTruncated={goToPost}
+                        spanProps={{fontSize: 14}}
+                        onPressTruncated={gotoPost}
                       />
                     )}
                   </Div>
                 ) : null}
               </Row>
-              {post.type == 'Proposal' &&
-                post.nft.contract_address == currentNft.contract_address && (
-                  <Row>
-                    <Col auto mr12 gray800>
-                      <Span
-                        fontSize={14}
-                        style={{fontWeight: '600'}}
-                        onPress={() => gotoVoteList(VoteCategory.Against)}>
-                        반대 <Span realBlack>{againstVotesCount}</Span>표 (
-                        {(againstVotesCount + forVotesCount > 0
-                          ? againstVotesCount /
-                            (againstVotesCount + forVotesCount)
-                          : 0) * 100}
-                        %)
-                      </Span>
-                    </Col>
-                    <Col auto mr12 gray800>
-                      <Span
-                        fontSize={14}
-                        style={{fontWeight: '600'}}
-                        onPress={() => gotoVoteList(VoteCategory.For)}>
-                        찬성 <Span realBlack>{forVotesCount}</Span>표 (
-                        {(againstVotesCount + forVotesCount > 0
-                          ? forVotesCount / (againstVotesCount + forVotesCount)
-                          : 0) * 100}
-                        %)
-                      </Span>
-                    </Col>
-                    <Col />
-                  </Row>
-                )}
               {post.image_uris.length > 0 ? (
                 <Div mt5>
                   <ImageSlideShow
@@ -452,10 +437,13 @@ export default function Post({
                   />
                 </Div>
               ) : null}
+              {post.reposted_post && (
+                <RepostedPost repostedPost={post.reposted_post} enablePress />
+              )}
               <Row itemsCenter mb8 mt8 mb10={full}>
                 {!post.type ? (
                   <>
-                    {
+                    {likesCount > 0 && (
                       <Col auto mr12>
                         <Span
                           fontSize={12}
@@ -464,18 +452,51 @@ export default function Post({
                           좋아요 <Span realBlack>{likesCount}</Span>개
                         </Span>
                       </Col>
-                    }
-                    <Col />
-                    {!full && (
-                      <Col auto mr16 onPress={handlePressLike}>
-                        {<Heart {...heartProps}></Heart>}
+                    )}
+                    {post.repost_count > 0 && (
+                      <Col auto mr12>
+                        <Span
+                          fontSize={12}
+                          style={{fontWeight: '600'}}
+                          onPress={gotoLikeList}>
+                          리포스트 <Span realBlack>{post.repost_count}</Span>번
+                        </Span>
                       </Col>
                     )}
-                  </>
-                ) : (
-                  <>
                     <Col />
-                    {!full && (
+                    <Col auto mr16 onPress={handlePressLike}>
+                      {<Heart {...heartProps}></Heart>}
+                    </Col>
+                  </>
+                ) : post.type == 'Proposal' ? (
+                  <>
+                    <Col auto mr12 gray800>
+                      <Span
+                        fontSize={12}
+                        style={{fontWeight: '600'}}
+                        onPress={() => gotoVoteList(VoteCategory.Against)}>
+                        반대 <Span realBlack>{againstVotesCount}</Span>표 (
+                        {(againstVotesCount + forVotesCount > 0
+                          ? againstVotesCount /
+                            (againstVotesCount + forVotesCount)
+                          : 0) * 100}
+                        %)
+                      </Span>
+                    </Col>
+                    <Col auto mr12 gray800>
+                      <Span
+                        fontSize={12}
+                        style={{fontWeight: '600'}}
+                        onPress={() => gotoVoteList(VoteCategory.For)}>
+                        찬성 <Span realBlack>{forVotesCount}</Span>표 (
+                        {(againstVotesCount + forVotesCount > 0
+                          ? forVotesCount / (againstVotesCount + forVotesCount)
+                          : 0) * 100}
+                        %)
+                      </Span>
+                    </Col>
+                    <Col />
+                    {isCurrentCollection && (
                       <>
                         <Col auto mr16 onPress={handlePressVoteAgainst}>
                           {<ThumbsDown {...againstVoteProps}></ThumbsDown>}
@@ -486,11 +507,40 @@ export default function Post({
                       </>
                     )}
                   </>
+                ) : (
+                  <>
+                    <Col auto mr12>
+                      <Span
+                        fontSize={12}
+                        style={{fontWeight: '600'}}
+                        onPress={() =>
+                          gotoForumFeed(`${getNftName(post.nft)} 포럼`)
+                        }>
+                        제안 <Span realBlack>{post.repost_count}</Span>개
+                      </Span>
+                    </Col>
+                    <Col />
+                  </>
                 )}
-                {!full && (
-                  <Col auto onPress={!full && (() => goToPost(true))}>
-                    <MessageCircle {...actionIconDefaultProps} />
-                  </Col>
+                {post.type == 'Forum'
+                  ? isCurrentCollection && (
+                      <Col auto onPress={() => gotoNewPost(post)}>
+                        <Span info bold fontSize={12}>
+                          제안하기
+                        </Span>
+                      </Col>
+                    )
+                  : !post.type && (
+                      <Col auto onPress={() => gotoNewPost(post)} mr16={!full}>
+                        <Repeat {...actionIconDefaultProps} />
+                      </Col>
+                    )}
+                {!full && post.type !== 'Forum' && (
+                  <>
+                    <Col auto onPress={() => gotoPost(true)}>
+                      <MessageCircle {...actionIconDefaultProps} />
+                    </Col>
+                  </>
                 )}
               </Row>
             </Col>
@@ -508,7 +558,7 @@ export default function Post({
             </Div>
           ) : (
             cachedComments.length > 0 && (
-              <Div onPress={goToPost}>
+              <Div onPress={gotoPost}>
                 <Comment
                   hot
                   key={cachedComments[0].id}
@@ -519,7 +569,7 @@ export default function Post({
           )}
           {full && <Div h100></Div>}
         </Animated.ScrollView>
-        {full && (
+        {full && post.type !== 'Forum' && (
           <NewComment
             autoFocus={autoFocus}
             replyToObject={replyTo.object}

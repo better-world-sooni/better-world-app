@@ -1,7 +1,8 @@
-import {StatusBar} from 'native-base';
 import React from 'react';
 import {Div} from 'src/components/common/Div';
 import Post from 'src/components/common/Post';
+import NotFound from 'src/components/error/NotFound';
+import PostLoading from 'src/components/loading/PostLoading';
 import apis from 'src/modules/apis';
 import {HAS_NOTCH} from 'src/modules/constants';
 import {KeyboardAvoidingView} from 'src/modules/viewComponents';
@@ -12,21 +13,27 @@ export default function PostScreen({
     params: {postId, autoFocus = false},
   },
 }) {
-  const {data: postRes, isLoading: postLoad} = useApiSelector(
-    apis.post.postId._(postId),
-  );
+  const {
+    data: postRes,
+    isLoading: postLoad,
+    error,
+  } = useApiSelector(apis.post.postId._(postId));
   const reloadGetWithToken = useReloadGETWithToken();
   const handleRefresh = () => {
     reloadGetWithToken(apis.post.postId._(postId));
   };
 
+  if (postLoad) return <PostLoading />;
+
+  if (!postRes && error)
+    return <NotFound text={'해당 게시물은 지워졌습니다.'} />;
+
   return (
     <>
       <KeyboardAvoidingView flex={1} bgWhite relative behavior="padding">
-        <StatusBar animated={true} barStyle={'dark-content'} />
         {postRes?.post ? (
           <Post
-              autoFocus={autoFocus}
+            autoFocus={autoFocus}
             post={postRes?.post}
             refreshing={postLoad}
             onRefresh={handleRefresh}

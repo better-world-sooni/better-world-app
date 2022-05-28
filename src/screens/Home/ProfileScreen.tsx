@@ -1,19 +1,10 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {Div} from 'src/components/common/Div';
-import {HAS_NOTCH} from 'src/modules/constants';
-import {RefreshControl, StatusBar} from 'react-native';
-import {Row} from 'src/components/common/Row';
-import {Col} from 'src/components/common/Col';
-import {PlusSquare, Edit} from 'react-native-feather';
-import {Span} from 'src/components/common/Span';
 import apis from 'src/modules/apis';
 import {useApiSelector, useReloadGETWithToken} from 'src/redux/asyncReducer';
-import Post from 'src/components/common/Post';
-import {ScrollView} from 'src/modules/viewComponents';
-import {Img} from 'src/components/common/Img';
-import {getNftName, getNftProfileImage} from 'src/modules/nftUtils';
 import NftProfile from 'src/components/common/NftProfile';
-import {DEVICE_WIDTH} from 'src/modules/styles';
+import {shallowEqual, useSelector} from 'react-redux';
+import {RootState} from 'src/redux/rootReducer';
 
 const ProfileScreen = ({route: {params}}) => {
   const {data: profileData, isLoading: loading} = useApiSelector(apis.nft._);
@@ -21,11 +12,17 @@ const ProfileScreen = ({route: {params}}) => {
   const handleRefresh = () => {
     reloadGetWithToken(apis.nft._());
   };
+  const {currentNft} = useSelector(
+    (root: RootState) => root.app.session,
+    shallowEqual,
+  );
   const nft = profileData?.nft;
   return (
     <Div flex={1} bgWhite>
       {nft && (
         <NftProfile
+          qrScan
+          nftCore={currentNft}
           nft={nft}
           enableBack={false}
           refreshing={loading}

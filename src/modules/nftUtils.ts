@@ -53,6 +53,16 @@ export function useIsCurrentNft(nft) {
     return isCurrentNft
 }
 
+
+
+export function useIsCurrentCollection(nftCollection) {
+    const {currentNft} = useSelector(
+        (root: RootState) => root.app.session,
+        shallowEqual,
+    );
+    const isCurrentCollection = currentNft && nftCollection && currentNft.contract_address == nftCollection.contract_address
+    return isCurrentCollection
+}
 export function useIsAdmin(nftCollection) {
     const {currentNft} = useSelector(
         (root: RootState) => root.app.session,

@@ -98,6 +98,17 @@ export default function NotificationScreen() {
         refreshControl={
           <RefreshControl refreshing={notificationLoad} onRefresh={onRefresh} />
         }
+        ListEmptyComponent={
+          <Div>
+            <Row py15>
+              <Col></Col>
+              <Col auto>
+                <Span>아직 알림이 없습니다.</Span>
+              </Col>
+              <Col></Col>
+            </Row>
+          </Div>
+        }
         keyExtractor={item => (item as any).id}
         renderItem={({item, index}) => (
           <Notification key={(item as any).id} notification={item} />
@@ -135,6 +146,7 @@ const Notification = ({notification}) => {
       isCurrentNft={isCurrentNft}
       currentNftName={getNftName(currentNft)}
       nftName={getNftName(notification.nft)}
+      nftMetadatumName={notification.nft.nft_metadatum.name}
     />
   );
 };
@@ -151,16 +163,32 @@ const NotificationContent = ({
   isCurrentNft,
   currentNftName,
   nftName,
+  nftMetadatumName,
 }) => {
   const gotoPost = useGotoPost({
     postId,
   });
   const gotoNftCollectionProfile = useGotoNftCollectionProfile({
-    contractAddress,
+    nftCollection: {
+      contract_address: contractAddress,
+      token_id: tokenId,
+      name: nftName,
+      image_uri: profileImgUri,
+      nft_metadatum: {
+        name: nftMetadatumName,
+      },
+    },
   });
   const gotoNftProfile = useGotoNftProfile({
-    contractAddress,
-    tokenId,
+    nft: {
+      contract_address: contractAddress,
+      token_id: tokenId,
+      name: nftName,
+      image_uri: profileImgUri,
+      nft_metadatum: {
+        name: nftMetadatumName,
+      },
+    },
   });
   const handlePressProfile = () => {
     if (!hasNft) return;

@@ -23,6 +23,7 @@ export const NAV_NAMES = {
     RankSeason: "RankSeason",
     RankDeltum: "RankDeltum",
     CollectionFeed: "CollectionFeed",
+    ForumFeed: "ForumFeed",
     Scan: "Scan",
     Qr: "Qr",
 };

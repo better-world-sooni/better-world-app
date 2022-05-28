@@ -188,8 +188,15 @@ const SearchScreen = () => {
 
 function RankedNft({rankItem}) {
   const gotoNftProfile = useGotoNftProfile({
-    contractAddress: rankItem.contract_address,
-    tokenId: rankItem.token_id,
+    nft: {
+      contract_address: rankItem.contract_address,
+      token_id: rankItem.token_id,
+      name: rankItem.nft_name,
+      image_uri: rankItem.nft_image_uri || rankItem.nft_metadatum_image_uri,
+      nft_metadatum: {
+        name: rankItem.nft_metadatum_name,
+      },
+    },
   });
   return (
     <Row itemsCenter h70 onPress={gotoNftProfile} px15 relative>
@@ -219,10 +226,20 @@ function RankedNft({rankItem}) {
       </Col>
       <Col />
       <Col auto mr10 itemsCenter justifyCenter>
-        <Span>{rankItem.rank}위</Span>
+        <Span gray700>
+          <Span bold black>
+            {rankItem.rank}
+          </Span>{' '}
+          위
+        </Span>
       </Col>
       <Col auto mr10 itemsCenter justifyCenter>
-        <Span>{rankItem.rank_score} RP</Span>
+        <Span gray700>
+          <Span bold black>
+            {rankItem.rank_score}
+          </Span>{' '}
+          RP
+        </Span>
       </Col>
     </Row>
   );

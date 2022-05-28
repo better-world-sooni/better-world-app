@@ -31,7 +31,6 @@ export default function useStory(storyOwner, storyOwnerType) {
                     url,
                     body
                 });
-                console.log(data)
 				if (data?.success) {
                     setStoryError('')
                     setStoryLoading(false)

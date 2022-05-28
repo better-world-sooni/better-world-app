@@ -36,6 +36,8 @@ import {DEVICE_HEIGHT, DEVICE_WIDTH} from 'src/modules/styles';
 import {BlurView} from '@react-native-community/blur';
 import Colors from 'src/constants/Colors';
 import useAutoFocusRef from 'src/hooks/useAutoFocusRef';
+import TruncatedText from 'src/components/common/TruncatedText';
+import RepostedPost from 'src/components/common/RepostedPost';
 
 const postTypes = [
   {
@@ -46,6 +48,10 @@ const postTypes = [
     id: 'Proposal',
     title: '투표',
   },
+  {
+    id: 'Forum',
+    title: '포럼',
+  },
 ];
 
 export enum PostOwnerType {
@@ -55,7 +61,7 @@ export enum PostOwnerType {
 
 const NewPostScreen = ({
   route: {
-    params: {postOwnerType},
+    params: {postOwnerType, repostable},
   },
 }) => {
   const autoFocusRef = useAutoFocusRef();
@@ -98,12 +104,15 @@ const NewPostScreen = ({
     handleAddImages,
     handleRemoveImage,
     uploadPost,
-  } = useUploadPost();
+  } = useUploadPost({
+    initialPostType: repostable?.type == 'Forum' ? 'Proposal' : '',
+  });
 
   const handlePressUpload = () => {
     uploadPost({
       admin: postOwnerIsCollection,
       uploadSuccessCallback,
+      repostId: repostable?.id,
     });
   };
 
@@ -114,6 +123,12 @@ const NewPostScreen = ({
   const postOwner = postOwnerIsCollection
     ? nftCollectionData?.nft_collection
     : currentNft;
+
+  const textInputPlaceholder = postOwnerIsCollection
+    ? `${getNftName(postOwner)} 멤버들에게...`
+    : currentPostType == 'Proposal'
+    ? `${getNftName(postOwner)} 생각에는...`
+    : `${getNftName(postOwner)}은(는) 지금...`;
 
   const translationY = useSharedValue(0);
   const scrollHandler = useAnimatedScrollHandler(event => {
@@ -179,7 +194,7 @@ const NewPostScreen = ({
                   w47
                   h47
                   rounded100
-                  uri={getNftProfileImage(currentNft, 100, 100)}
+                  uri={getNftProfileImage(postOwner, 100, 100)}
                 />
               </Div>
             </Col>
@@ -188,9 +203,10 @@ const NewPostScreen = ({
                 <Col auto>
                   <Span>
                     <Span fontSize={15} bold>
-                      {getNftName(currentNft)}{' '}
+                      {getNftName(postOwner)}{' '}
                     </Span>{' '}
-                    {currentNft.token_id &&
+                    {!postOwnerIsCollection &&
+                      currentNft.token_id &&
                       currentNft.nft_metadatum.name !=
                         getNftName(currentNft) && (
                         <Span fontSize={12} gray700>
@@ -209,7 +225,7 @@ const NewPostScreen = ({
                 <TextInput
                   innerRef={autoFocusRef}
                   value={content}
-                  placeholder={'마크다운을 사용하실 수 있습니다.'}
+                  placeholder={textInputPlaceholder}
                   fontSize={16}
                   w={'100%'}
                   h={'100%'}
@@ -227,10 +243,10 @@ const NewPostScreen = ({
                   />
                 </Div>
               )}
+              {repostable && <RepostedPost repostedPost={repostable} />}
             </Col>
           </Row>
         </Animated.ScrollView>
-
         <Row px15 py15 borderTop={0.5} borderGray200>
           <Col />
           <Col auto>

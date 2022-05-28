@@ -150,11 +150,10 @@ function FollowOwner({nft, isFollowing}) {
   );
   const isCurrentNft = useIsCurrentNft(nft);
   const gotoNftProfile = useGotoNftProfile({
-    contractAddress: nft.contract_address,
-    tokenId: nft.token_id,
+    nft,
   });
   const gotoNftCollectionProfile = useGotoNftCollectionProfile({
-    contractAddress: nft.contract_address,
+    nftCollection: nft,
   });
   return (
     <Row

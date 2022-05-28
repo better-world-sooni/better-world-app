@@ -115,6 +115,17 @@ function ChatListScreen() {
         automaticallyAdjustContentInsets
         showsVerticalScrollIndicator={false}
         onScroll={scrollHandler}
+        ListEmptyComponent={
+          <Div>
+            <Row py15>
+              <Col></Col>
+              <Col auto>
+                <Span>채팅 기록이 없습니다.</Span>
+              </Col>
+              <Col></Col>
+            </Row>
+          </Div>
+        }
         ListHeaderComponent={
           <>
             <Div h={headerHeight} zIndex={100}>

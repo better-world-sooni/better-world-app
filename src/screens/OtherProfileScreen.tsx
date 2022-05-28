@@ -3,27 +3,31 @@ import {Div} from 'src/components/common/Div';
 import apis from 'src/modules/apis';
 import {useApiSelector, useReloadGETWithToken} from 'src/redux/asyncReducer';
 import NftProfile from 'src/components/common/NftProfile';
-import {HAS_NOTCH} from 'src/modules/constants';
 
 const OtherProfileScreen = ({
   route: {
-    params: {contractAddress, tokenId},
+    params: {nft},
   },
 }) => {
   const {data: profileData, isLoading: loading} = useApiSelector(
-    apis.nft.contractAddressAndTokenId(contractAddress, tokenId),
+    apis.nft.contractAddressAndTokenId(nft.contract_address, nft.token_id),
   );
   const reloadGetWithToken = useReloadGETWithToken();
   const handleRefresh = () => {
     reloadGetWithToken(
-      apis.nft.contractAddressAndTokenId(contractAddress, tokenId),
+      apis.nft.contractAddressAndTokenId(nft.contract_address, nft.token_id),
     );
   };
-  const nft = profileData?.nft;
+  const nftProfile = profileData?.nft;
   return (
     <Div flex={1} bgWhite>
       {nft && (
-        <NftProfile nft={nft} refreshing={loading} onRefresh={handleRefresh} />
+        <NftProfile
+          nft={nftProfile}
+          nftCore={nft}
+          refreshing={loading}
+          onRefresh={handleRefresh}
+        />
       )}
     </Div>
   );

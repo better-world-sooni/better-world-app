@@ -7,19 +7,18 @@ import { RootState } from "src/redux/rootReducer";
 import { ChatRoomType } from "src/screens/ChatRoomScreen";
 import { FollowOwnerType, FollowType } from "src/screens/FollowListScreen";
 
-export function useGotoNftProfile({contractAddress, tokenId}){
+export function useGotoNftProfile({nft}){
     const apiGETWithToken = useApiGETWithToken()
     const navigation = useNavigation()
     const gotoProfile = () => {
         apiGETWithToken(
             apis.nft.contractAddressAndTokenId(
-                contractAddress,
-              tokenId,
+              nft.contract_address,
+              nft.token_id,
             ),
           );
           navigation.navigate(NAV_NAMES.OtherProfile, {
-            contractAddress,
-            tokenId
+            nft
           });
       }
       return gotoProfile
@@ -81,17 +80,13 @@ export function useGotoChatRoom({chatRoomType}){
   return chatRoomType == ChatRoomType.RoomId ? gotoChatRoomWithRoomId : gotoChatRoomAsDirectMessage
 }
 
-export function useGotoNftCollectionProfile({contractAddress = null}){
+export function useGotoNftCollectionProfile({nftCollection}){
     const apiGETWithToken = useApiGETWithToken()
     const navigation = useNavigation()
-    const {currentNft} = useSelector(
-      (root: RootState) => root.app.session,
-      shallowEqual,
-    );
     const gotoProfile = () => {
-      apiGETWithToken(apis.nft_collection.contractAddress.profile(contractAddress || currentNft.contract_address));
+      apiGETWithToken(apis.nft_collection.contractAddress.profile(nftCollection.contract_address));
       navigation.navigate(NAV_NAMES.NftCollection, {
-        contractAddress:  contractAddress || currentNft.contract_address
+        nftCollection
       });
     }
     return gotoProfile
@@ -109,10 +104,10 @@ export function useGotoPost({postId}){
 
 export function useGotoNewPost({postOwnerType}){
   const navigation = useNavigation()
-  const gotoPost = () => {
-    navigation.navigate(NAV_NAMES.NewPost, {postOwnerType});
+  const gotoNewPost = (repostable = null) => {
+    navigation.navigate(NAV_NAMES.NewPost, {postOwnerType, repostable});
   }
-  return gotoPost
+  return gotoNewPost
 }
 
 export function useGotoCapsule({nft}) {
@@ -164,12 +159,12 @@ export function useGotoFollowList({followOwnerType, contractAddress, tokenId = n
     apiGETWithToken(
       followOwnerType == FollowOwnerType.Nft
         ? apis.follow.list(
-            followType == FollowType.Followers ? true : false,
+            followType == FollowType.Followers,
             contractAddress,
             tokenId,
           )
         : apis.follow.list(
-            followType == FollowType.Followers ? true : false,
+            followType == FollowType.Followers,
             contractAddress,
           )
     );
@@ -291,5 +286,33 @@ export function useGotoCollectionFeed({contractAddress}) {
     })
   };
   return gotoCollectionFeed
+}
+
+export function useGotoForumFeed({postId}) {
+  const navigation = useNavigation()
+  const apiGETWithToken = useApiGETWithToken()
+  const gotoCollectionFeed = (title) => {
+    apiGETWithToken(
+      apis.post.postId.repost.list(postId, 1)
+    );
+    navigation.navigate(NAV_NAMES.ForumFeed, {
+      postId,
+      title
+    })
+  };
+  return gotoCollectionFeed
+}
+
+export function useGotoSignIn(){
+  const navigation = useNavigation()
+  const gotoSignIn = () => {
+    navigation.dispatch(
+      CommonActions.reset({
+        index: 0,
+        routes: [{name: NAV_NAMES.SignIn}],
+      }),
+    );
+  }
+  return gotoSignIn
 }
 

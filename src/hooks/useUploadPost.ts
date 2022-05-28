@@ -3,16 +3,16 @@ import apis from "src/modules/apis";
 import { usePostPromiseFnWithToken } from "src/redux/asyncReducer";
 import useUploadImages from "./useUploadImages";
   
-export default function useUploadPost(){
+export default function useUploadPost({initialPostType = ''}){
     const [loading, setLoading] = useState(false);
     const [content, setContent] = useState('')
-	const [currentPostType, setPostType] = useState('')
+	const [currentPostType, setPostType] = useState(initialPostType)
 	const [votingDeadline, setVotingDeadline] = useState(null)
 	const [addImages, setAddImages] = useState(false)
     const { images, error, setError, handleAddImages, handleRemoveImage, uploadAllSelectedFiles } = useUploadImages({attachedRecord:"post"})
     const postPromiseFnWithToken = usePostPromiseFnWithToken()
 
-    const uploadPost = async ({admin, uploadSuccessCallback}) => {
+    const uploadPost = async ({admin, uploadSuccessCallback, repostId = null}) => {
 		if (loading) {
 			return;
 		}
@@ -28,13 +28,13 @@ export default function useUploadPost(){
 			type: currentPostType || null,
 			voting_deadline: votingDeadline,
 			image_width: null,
-			image_height: null
+			image_height: null,
+			repost_id: repostId
 		}
 		if(addImages){
 			const signedIdArray = await uploadAllSelectedFiles();
 			body.images = signedIdArray
 			if (signedIdArray.length > 0) {
-				console.log(images[0])
 				body.image_width = images[0].width
 				body.image_height = images[0].height
 			}

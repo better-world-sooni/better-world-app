@@ -94,7 +94,9 @@ export default function RankDeltumScreen({
         refreshControl={
           <RefreshControl refreshing={rankDeltumLoad} onRefresh={onRefresh} />
         }
-        renderItem={({item, index}) => <RankDeltum rankDeltum={item} />}
+        renderItem={({item, index}) => {
+          return <RankDeltum rankDeltum={item} />;
+        }}
         data={rankDeltumRes?.rank_delta || []}
         onScroll={scrollHandler}></Animated.FlatList>
     </KeyboardAvoidingView>

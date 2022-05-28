@@ -71,7 +71,7 @@ const QrScreen = () => {
   }, [qrRes?.exp]);
 
   return (
-    <KeyboardAvoidingView behavior="padding" flex={1} bgPrimary>
+    <KeyboardAvoidingView behavior="padding" flex={1} bgRealBlack>
       <Div h={headerHeight} zIndex={100} absolute top0>
         <Row
           itemsCenter
@@ -159,7 +159,11 @@ const QrScreen = () => {
           </Div>
           <Row mt20 itemsCenter>
             <Col auto mr10>
-              <Span bold fontSize={20} primary={!qrLoad}>
+              <Span
+                bold
+                fontSize={20}
+                primary={!qrLoad}
+                danger={ttl.minutes < 0 && !qrLoad}>
                 {error
                   ? '인증코드 요청 오류'
                   : qrLoad

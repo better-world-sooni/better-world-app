@@ -1,4 +1,10 @@
-import {ChevronLeft, Edit3, Grid, MessageCircle} from 'react-native-feather';
+import {
+  ChevronLeft,
+  Edit3,
+  Grid,
+  Maximize,
+  MessageCircle,
+} from 'react-native-feather';
 import React, {useRef} from 'react';
 import {
   getNftName,
@@ -32,6 +38,7 @@ import {
   useGotoQR,
   useGotoRankDeltum,
   useGotoRankSeason,
+  useGotoScan,
 } from 'src/hooks/useGoto';
 import {PostOwnerType} from 'src/screens/NewPostScreen';
 import Animated, {
@@ -45,43 +52,46 @@ import {FollowOwnerType, FollowType} from 'src/screens/FollowListScreen';
 
 export default function NftProfile({
   nft,
+  nftCore,
   refreshing,
   onRefresh,
   enableBack = true,
+  qrScan = false,
 }) {
   const translationY = useSharedValue(0);
   const scrollHandler = useAnimatedScrollHandler(event => {
     translationY.value = event.contentOffset.y;
   });
   const bottomPopupRef = useRef<BottomSheetModal>(null);
-  const isCurrentNft = useIsCurrentNft(nft);
+  const isCurrentNft = useIsCurrentNft(nftCore);
 
   const gotoNftCollectionProfile = useGotoNftCollectionProfile({
-    contractAddress: nft.contract_address,
+    nftCollection: nftCore,
   });
   const goToCapsule = useGotoCapsule({nft});
   const editProfile = () => {
     bottomPopupRef?.current?.expand();
   };
   const [isFollowing, followerCount, handlePressFollowing] = useFollow(
-    nft.is_following,
-    nft.follower_count,
-    apis.follow.contractAddressAndTokenId(nft.contract_address, nft.token_id)
+    nft?.is_following,
+    nft?.follower_count,
+    apis.follow.contractAddressAndTokenId(nft?.contract_address, nft?.token_id)
       .url,
   );
   const {goBack} = useNavigation();
   const gotoRankDeltum = useGotoRankDeltum({
-    contractAddress: nft.contract_address,
-    tokenId: nft.token_id,
+    contractAddress: nftCore.contract_address,
+    tokenId: nftCore.token_id,
   });
   const gotoFollowList = useGotoFollowList({
     followOwnerType: FollowOwnerType.Nft,
-    contractAddress: nft.contract_address,
-    tokenId: nft.token_id,
+    contractAddress: nftCore.contract_address,
+    tokenId: nftCore.token_id,
   });
   const gotoQr = useGotoQR();
+  const gotoScan = useGotoScan();
   const headerHeight = HAS_NOTCH ? 124 : 100;
-  const goToNewPost = useGotoNewPost({postOwnerType: PostOwnerType.Nft});
+  const gotoNewPost = useGotoNewPost({postOwnerType: PostOwnerType.Nft});
   const gotoChatRoom = useGotoChatRoom({
     chatRoomType: ChatRoomType.DirectMessage,
   });
@@ -112,7 +122,7 @@ export default function NftProfile({
   return (
     <>
       <Div h={headerHeight}>
-        {nft.background_image_uri ? (
+        {nft?.background_image_uri ? (
           <Img
             zIndex={-10}
             uri={nft.background_image_uri}
@@ -142,7 +152,7 @@ export default function NftProfile({
             top={HAS_NOTCH ? 42 : 18}>
             <Animated.View style={titleStyles}>
               <Span bold fontSize={19} mt18>
-                {getNftName(nft)}
+                {getNftName(nftCore)}
               </Span>
             </Animated.View>
           </Row>
@@ -172,7 +182,7 @@ export default function NftProfile({
         style={{marginTop: -30}}
         showsVerticalScrollIndicator={false}
         onScroll={scrollHandler}
-        data={nft.posts}
+        data={nft?.posts || []}
         ListHeaderComponent={
           <>
             <Row zIndex={100} px15 relative>
@@ -185,7 +195,7 @@ export default function NftProfile({
                   bgGray200
                   h85
                   w85
-                  uri={getNftProfileImage(nft, 100, 100)}></Img>
+                  uri={getNftProfileImage(nftCore, 100, 100)}></Img>
                 {isCurrentNft && (
                   <Div
                     absolute
@@ -216,10 +226,10 @@ export default function NftProfile({
                         rounded100
                         onPress={() =>
                           gotoChatRoom({
-                            roomName: getNftName(nft),
-                            roomImage: [getNftProfileImage(nft)],
-                            contractAddress: nft.contract_address,
-                            tokenId: nft.token_id,
+                            roomName: getNftName(nftCore),
+                            roomImage: [getNftProfileImage(nftCore)],
+                            contractAddress: nftCore.contract_address,
+                            tokenId: nftCore.token_id,
                           })
                         }>
                         <Div>
@@ -251,7 +261,11 @@ export default function NftProfile({
                         borderGray400={isFollowing}
                         onPress={handlePressFollowing}>
                         <Span white={!isFollowing} bold mt3 px5>
-                          {isFollowing ? '언팔로우' : '팔로우'}
+                          {nft
+                            ? '불러오는 중'
+                            : isFollowing
+                            ? '언팔로우'
+                            : '팔로우'}
                         </Span>
                       </Col>
                     </Row>
@@ -260,11 +274,29 @@ export default function NftProfile({
                   <Div>
                     <Row py10>
                       <Col />
-                      <Col auto bgRealBlack p8 rounded100 onPress={goToCapsule}>
-                        <Div>
-                          <Img w16 h16 source={ICONS.capsuleIconWhite}></Img>
-                        </Div>
-                      </Col>
+                      {qrScan ? (
+                        <Col auto bgRealBlack p8 rounded100 onPress={gotoScan}>
+                          <Div>
+                            <Maximize
+                              strokeWidth={2}
+                              color={'white'}
+                              height={16}
+                              width={16}
+                            />
+                          </Div>
+                        </Col>
+                      ) : (
+                        <Col
+                          auto
+                          bgRealBlack
+                          p8
+                          rounded100
+                          onPress={goToCapsule}>
+                          <Div>
+                            <Img w16 h16 source={ICONS.capsuleIconWhite}></Img>
+                          </Div>
+                        </Col>
+                      )}
                       <Col
                         auto
                         bgRealBlack
@@ -281,7 +313,12 @@ export default function NftProfile({
                           />
                         </Div>
                       </Col>
-                      <Col auto bgRealBlack p8 rounded100 onPress={goToNewPost}>
+                      <Col
+                        auto
+                        bgRealBlack
+                        p8
+                        rounded100
+                        onPress={() => gotoNewPost()}>
                         <Span white bold mt1 px5>
                           게시물 업로드
                         </Span>
@@ -294,69 +331,80 @@ export default function NftProfile({
             <Div px15 py10 bgWhite borderBottom={0.5} borderGray200>
               <Div>
                 <Span fontSize={20} bold>
-                  {getNftName(nft)}
+                  {getNftName(nftCore)}
                 </Span>
               </Div>
               <Div pt3 onPress={gotoNftCollectionProfile}>
-                <Span gray700>{nft.nft_metadatum.name}</Span>
+                <Span gray700>{nftCore.nft_metadatum.name}</Span>
               </Div>
-              {nft.story ? (
+              {nftCore.story ? (
                 <Div mt8 bgWhite>
-                  <TruncatedMarkdown text={nft.story} maxLength={500} />
+                  <TruncatedMarkdown text={nftCore.story} maxLength={500} />
                 </Div>
               ) : null}
-              <Row mt8>
-                <Col
-                  auto
-                  mr20
-                  onPress={() => gotoFollowList(FollowType.Followers)}>
-                  <Span bold>
-                    <Span gray700 regular>
-                      팔로워
-                    </Span>{' '}
-                    {followerCount}
-                  </Span>
-                </Col>
-                <Col
-                  auto
-                  mr20
-                  onPress={() => gotoFollowList(FollowType.Followings)}>
-                  <Span bold>
-                    <Span gray700 regular>
-                      팔로잉
-                    </Span>{' '}
-                    {nft.following_count}
-                  </Span>
-                </Col>
-                <Col auto mr20 onPress={gotoRankSeason}>
-                  <Span bold>
-                    <Span gray700 regular>
-                      랭크
-                    </Span>{' '}
-                    {nft.current_rank}
-                  </Span>
-                </Col>
-                <Col auto mr20 onPress={gotoRankDeltum}>
-                  <Span bold>
-                    <Span gray700 regular>
-                      랭크 스코어
-                    </Span>{' '}
-                    {nft.current_rank_score}
-                  </Span>
-                </Col>
-                <Col />
-              </Row>
+              {nft && (
+                <Row mt8>
+                  <Col
+                    auto
+                    mr20
+                    onPress={() => gotoFollowList(FollowType.Followers)}>
+                    <Span bold>
+                      <Span gray700 regular>
+                        팔로워
+                      </Span>{' '}
+                      {followerCount}
+                    </Span>
+                  </Col>
+                  <Col
+                    auto
+                    mr20
+                    onPress={() => gotoFollowList(FollowType.Followings)}>
+                    <Span bold>
+                      <Span gray700 regular>
+                        팔로잉
+                      </Span>{' '}
+                      {nft.following_count}
+                    </Span>
+                  </Col>
+                  <Col auto mr20 onPress={gotoRankSeason}>
+                    <Span bold>
+                      <Span gray700 regular>
+                        랭크
+                      </Span>{' '}
+                      {nft.current_rank}
+                    </Span>
+                  </Col>
+                  <Col auto mr20 onPress={gotoRankDeltum}>
+                    <Span bold>
+                      <Span gray700 regular>
+                        랭크 스코어
+                      </Span>{' '}
+                      {nft.current_rank_score}
+                    </Span>
+                  </Col>
+                  <Col />
+                </Row>
+              )}
             </Div>
           </>
         }
-        ListFooterComponent={
-          !isCurrentNft ? <Div h={HAS_NOTCH ? 27 : 12} /> : null
+        ListEmptyComponent={
+          <Div>
+            <Row py15>
+              <Col></Col>
+              <Col auto>
+                <Span>아직 게시물이 없습니다.</Span>
+              </Col>
+              <Col></Col>
+            </Row>
+          </Div>
         }
+        ListFooterComponent={<Div h={HAS_NOTCH ? 27 : 12} />}
         renderItem={({item}) => <Post post={item} />}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }></Animated.FlatList>
-      {isCurrentNft && (
+      {isCurrentNft && qrScan && (
         <BottomPopup ref={bottomPopupRef} snapPoints={['90%']} index={-1}>
           <NftProfileEditBottomSheetScrollView nft={nft} />
         </BottomPopup>

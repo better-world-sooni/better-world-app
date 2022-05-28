@@ -9,27 +9,27 @@ import {ChevronLeft} from 'react-native-feather';
 import FeedFlatlistWithHeader from 'src/components/FeedFlatlistWithHeader';
 import {Span} from 'src/components/common/Span';
 
-export default function CollectionFeedScreen({
+export default function ForumFeedScreen({
   route: {
-    params: {contractAddress, title},
+    params: {postId, title},
   },
 }) {
-  const {data: feedRes, isLoading: feedLoad} = useApiSelector(
-    apis.feed.collection,
+  const {data: repostRes, isLoading: repostLoad} = useApiSelector(
+    apis.post.postId.repost.list,
   );
   const {goBack} = useNavigation();
   const reloadGetWithToken = useReloadGETWithToken();
   const onRefresh = () => {
-    reloadGetWithToken(apis.feed.collection(contractAddress));
+    reloadGetWithToken(apis.post.postId.repost.list(postId, 1));
   };
   return (
     <FeedFlatlistWithHeader
-      refreshing={feedLoad}
+      refreshing={repostLoad}
       onRefresh={onRefresh}
       renderItem={({item, index}) => {
         return <Post key={(item as any).id} post={item} />;
       }}
-      data={feedRes ? feedRes.feed : []}
+      data={repostRes ? repostRes.proposals : []}
       HeaderComponent={
         <>
           <Col itemsStart>

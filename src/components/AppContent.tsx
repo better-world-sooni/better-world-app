@@ -37,6 +37,7 @@ import ScanScreen from 'src/screens/ScanScreen';
 import NotificationScreen from 'src/screens/NotificationScreen';
 import RankDeltumScreen from 'src/screens/RankDeltumScreen';
 import CollectionFeedScreen from 'src/screens/CollectionFeedScreen';
+import ForumFeedScreen from 'src/screens/ForumFeedScreen';
 
 const RootStack = createStackNavigator();
 
@@ -221,6 +222,10 @@ export const AppContent = () => {
     {
       name: NAV_NAMES.RankDeltum,
       component: RankDeltumScreen,
+    },
+    {
+      name: NAV_NAMES.ForumFeed,
+      component: ForumFeedScreen,
     },
     {
       name: NAV_NAMES.Qr,

@@ -26,7 +26,6 @@ export default function useFileUpload({attachedRecord}){
     }
     const uploadToPresignedUrl = async (presignedUrlObject, file) => {
         const res = await promiseFnPure({url: presignedUrlObject.direct_upload.url, body: file, method: 'PUT', headers: presignedUrlObject.direct_upload.headers })
-        console.log(res)
         if(res.status == 200) return res.url
         return false
     }

@@ -1,6 +1,6 @@
 import urljoin from 'url-join';
 
-const BASE_URL = 'http://192.168.1.185:3000';
+const BASE_URL = 'http://localhost:3000';
 // const BASE_URL = 'http://localhost:3000';
 const toUrl = (...args) => ({url: urljoin(...args)});
 const base = path => toUrl(BASE_URL, path);
@@ -37,7 +37,7 @@ const apis = {
     nft: (keyword) => apiV1(`/search/nft/${keyword}`)
   },
   hug: {
-    qr: () => apiV1(`/nft/qr`),
+    qr: () => apiV1(`/hug/qr`),
   },
   rankDeltum: {
     list: (contractAddress, tokenId) => apiV1(`/rank_deltum/${contractAddress}/${tokenId}/list`)
@@ -85,7 +85,10 @@ const apis = {
     _: () => apiV1(`/post`),
     postId: {
       _: (postId) => apiV1(`/post/${postId}`),
-      comment: (postId) => apiV1(`/post/${postId}/comment`)
+      comment: (postId) => apiV1(`/post/${postId}/comment`),
+      repost: {
+        list: (postId, page) => apiV1(`/post/${postId}/repost/list?page=${page}`),
+      }
     }
   },
   report: {

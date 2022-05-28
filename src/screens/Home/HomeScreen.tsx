@@ -23,6 +23,7 @@ const HomeScreen = () => {
   const {data: nftCollectionRes, isLoading: nftCollectionLoad} = useApiSelector(
     apis.nft_collection.profile(),
   );
+  const nftCollection = nftCollectionRes?.nft_collection;
   const gotoChatList = useGotoChatList();
   const reloadGetWithToken = useReloadGETWithToken();
   const updateUnreadMessageCount = useUpdateUnreadMessageCount();
@@ -34,10 +35,6 @@ const HomeScreen = () => {
   const openSideMenu = () => {
     sideMenuRef?.current?.openMenu(true);
   };
-  const diffClamp = (value, lowerBound, upperBound) => {
-    'worklet';
-    return Math.min(Math.max(lowerBound, value), upperBound);
-  };
   useFocusEffect(() => {
     updateUnreadMessageCount();
   });
@@ -46,7 +43,7 @@ const HomeScreen = () => {
       ref={sideMenuRef}
       toleranceX={0}
       edgeHitWidth={100}
-      menu={<MyNftCollectionMenu />}
+      menu={<MyNftCollectionMenu nftCollection={nftCollection} />}
       bounceBackOnOverdraw={false}
       openMenuOffset={DEVICE_WIDTH - 65}>
       <FeedFlatlist

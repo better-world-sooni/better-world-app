@@ -1,7 +1,7 @@
 import urljoin from 'url-join';
 
 const baseUrl = 'http://localhost:3001';
-const capsuleBaseUrl = 'http://192.168.1.185/:3100';
+const capsuleBaseUrl = 'http://localhost:3100';
 const toUrl = (...args) => urljoin(...args);
 const base = path => toUrl(baseUrl, path);
 const capsuleBase = path => toUrl(capsuleBaseUrl, path);

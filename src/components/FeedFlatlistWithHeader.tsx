@@ -13,7 +13,7 @@ import {DEVICE_WIDTH} from 'src/modules/styles';
 import {Div} from './common/Div';
 import {Row} from './common/Row';
 
-export default function FeedFlatlistWorklet({
+export default function FeedFlatlistWithHeader({
   refreshing,
   onRefresh,
   renderItem,

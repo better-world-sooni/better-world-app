@@ -29,6 +29,7 @@ import Post from './Post';
 import {getNftName, getNftProfileImage} from 'src/modules/nftUtils';
 
 export default function NftCollectionProfile({
+  nftCollectionCore,
   nftCollection,
   isAdmin,
   onPressEditProfile,
@@ -40,17 +41,17 @@ export default function NftCollectionProfile({
     shallowEqual,
   );
   const [isFollowing, followerCount, handlePressFollowing] = useFollow(
-    nftCollection.is_following,
-    nftCollection.follower_count,
-    apis.follow.contractAddress(nftCollection.contract_address).url,
+    nftCollection?.is_following,
+    nftCollection?.follower_count,
+    apis.follow.contractAddress(nftCollectionCore.contract_address).url,
   );
   const {goBack} = useNavigation();
-  const goToNewPost = useGotoNewPost({
+  const gotoNewPost = useGotoNewPost({
     postOwnerType: PostOwnerType.NftCollection,
   });
   const gotoFollowList = useGotoFollowList({
     followOwnerType: FollowOwnerType.NftCollection,
-    contractAddress: nftCollection.contract_address,
+    contractAddress: nftCollectionCore.contract_address,
   });
   const translationY = useSharedValue(0);
   const scrollHandler = useAnimatedScrollHandler(event => {
@@ -79,7 +80,7 @@ export default function NftCollectionProfile({
   return (
     <>
       <Div h={headerHeight}>
-        {nftCollection.background_image_uri ? (
+        {nftCollection?.background_image_uri ? (
           <Img
             zIndex={-10}
             uri={nftCollection.background_image_uri}
@@ -110,7 +111,7 @@ export default function NftCollectionProfile({
             top={HAS_NOTCH ? 42 : 18}>
             <Animated.View style={titleStyles}>
               <Span bold fontSize={19} mt18>
-                {nftCollection.name}
+                {nftCollectionCore.name}
               </Span>
             </Animated.View>
           </Row>
@@ -140,7 +141,18 @@ export default function NftCollectionProfile({
         showsVerticalScrollIndicator={false}
         onScroll={scrollHandler}
         style={{marginTop: -30}}
-        data={nftCollection.posts}
+        data={nftCollection?.posts}
+        ListEmptyComponent={
+          <Div>
+            <Row py15>
+              <Col></Col>
+              <Col auto>
+                <Span>아직 게시물이 없습니다.</Span>
+              </Col>
+              <Col></Col>
+            </Row>
+          </Div>
+        }
         ListHeaderComponent={
           <>
             <Row zIndex={100} px15 relative>
@@ -153,11 +165,16 @@ export default function NftCollectionProfile({
                   bgGray200
                   h85
                   w85
-                  uri={resizeImageUri(nftCollection.image_uri, 100, 100)}></Img>
+                  uri={resizeImageUri(
+                    nftCollectionCore.image_uri ||
+                      nftCollectionCore.nft_metadatum.image_uri,
+                    100,
+                    100,
+                  )}></Img>
               </Col>
               <Col justifyEnd>
                 {!isAdmin &&
-                nftCollection.contract_address !=
+                nftCollectionCore.contract_address !=
                   currentNft.contract_address ? (
                   <Div>
                     <Row py8>
@@ -202,7 +219,7 @@ export default function NftCollectionProfile({
                           bgRealBlack
                           p8
                           rounded100
-                          onPress={goToNewPost}>
+                          onPress={() => gotoNewPost(null)}>
                           <Span white bold mt1 px5>
                             게시물 업로드
                           </Span>
@@ -216,57 +233,63 @@ export default function NftCollectionProfile({
             <Div px15 py10 bgWhite borderBottom={0.5} borderGray200>
               <Div>
                 <Span fontSize={20} bold>
-                  {nftCollection.name}
+                  {nftCollectionCore.name}
                 </Span>
               </Div>
-              <Row mt5>
-                <Col
-                  auto
-                  mr20
-                  onPress={() => gotoFollowList(FollowType.Followers)}>
-                  <Span bold>
-                    <Span gray700 regular>
-                      팔로워
-                    </Span>{' '}
-                    {followerCount}
-                  </Span>
-                </Col>
-                <Col
-                  auto
-                  mr20
-                  onPress={() => gotoFollowList(FollowType.Followers)}>
-                  <Span bold>
-                    <Span gray700 regular>
-                      멤버 친목도
-                    </Span>{' '}
-                    {Math.ceil(
-                      (nftCollection.affinity.follows_among_members /
-                        nftCollection.affinity.total_possible_follows) *
-                        100,
-                    )}
-                    % ({nftCollection.affinity.follows_among_members} /{' '}
-                    {nftCollection.affinity.total_possible_follows})
-                  </Span>
-                </Col>
-                <Col />
-              </Row>
-              <Row mt10 itemsCenter>
-                <Col auto>
-                  <AdminProfiles admin={nftCollection.admin_nfts} />
-                </Col>
-                <Col auto>
-                  <AdminNames admin={nftCollection.admin_nfts} />
-                </Col>
-                <Col />
-              </Row>
-              {nftCollection.about ? (
-                <Div mt16>
-                  <TruncatedMarkdown
-                    text={nftCollection.about}
-                    maxLength={500}
-                  />
-                </Div>
-              ) : null}
+              {nftCollection && (
+                <>
+                  <Row mt5>
+                    <Col
+                      auto
+                      mr20
+                      onPress={() => gotoFollowList(FollowType.Followers)}>
+                      <Span bold>
+                        <Span gray700 regular>
+                          팔로워
+                        </Span>{' '}
+                        {followerCount}
+                      </Span>
+                    </Col>
+                    <Col
+                      auto
+                      mr20
+                      onPress={() => gotoFollowList(FollowType.Followers)}>
+                      <Span bold>
+                        <Span gray700 regular>
+                          멤버 친목도
+                        </Span>{' '}
+                        {nftCollection.affinity.total_possible_follows
+                          ? Math.ceil(
+                              (nftCollection.affinity.follows_among_members /
+                                nftCollection.affinity.total_possible_follows) *
+                                100,
+                            )
+                          : 0}
+                        % ({nftCollection.affinity.follows_among_members} /{' '}
+                        {nftCollection.affinity.total_possible_follows})
+                      </Span>
+                    </Col>
+                    <Col />
+                  </Row>
+                  <Row mt10 itemsCenter>
+                    <Col auto>
+                      <AdminProfiles admin={nftCollection.admin_nfts} />
+                    </Col>
+                    <Col auto>
+                      <AdminNames admin={nftCollection.admin_nfts} />
+                    </Col>
+                    <Col />
+                  </Row>
+                  {nftCollection.about ? (
+                    <Div mt16>
+                      <TruncatedMarkdown
+                        text={nftCollection.about}
+                        maxLength={500}
+                      />
+                    </Div>
+                  ) : null}
+                </>
+              )}
             </Div>
           </>
         }

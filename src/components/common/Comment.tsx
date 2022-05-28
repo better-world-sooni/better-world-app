@@ -29,7 +29,8 @@ export default function Comment({
       {...comment}
       nftContractAddress={comment.nft.contract_address}
       nftTokenId={comment.nft.token_id}
-      nftName={getNftName(comment.nft)}
+      nftName={comment.nft.name}
+      nftMetadatumName={comment.nft.nft_metadatum.name}
       hot={hot}
       nftImageUri={getNftProfileImage(comment.nft, 50, 50)}
       nested={nested}
@@ -50,6 +51,7 @@ function CommentContent({
   nftTokenId,
   nftImageUri,
   nftName,
+  nftMetadatumName,
   updated_at,
   hot,
   nested = false,
@@ -76,8 +78,15 @@ function CommentContent({
     onPressReplyTo({id, is_liked, comments, nft: {name: nftName}});
   };
   const goToProfile = useGotoNftProfile({
-    contractAddress: nftContractAddress,
-    tokenId: nftTokenId,
+    nft: {
+      contract_address: nftContractAddress,
+      token_id: nftTokenId,
+      name: nftName,
+      image_uri: nftImageUri,
+      nft_metadatum: {
+        name: nftMetadatumName,
+      },
+    },
   });
   const gotoLikeList = useGotoLikeList({
     likableId: id,

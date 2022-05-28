@@ -19,7 +19,7 @@ import NftProfileSummaryBottomSheetScrollView from 'src/components/common/NftPro
 import {useApiGETWithToken} from 'src/redux/asyncReducer';
 import apis from 'src/modules/apis';
 
-function CapsuleScreen({route: {params}}) {
+function CapsuleScreen({route: {params = null}}) {
   const bottomPopupRef = useRef<BottomSheetModal>(null);
   const {token, currentNft} = useSelector(
     (root: RootState) => root.app.session,

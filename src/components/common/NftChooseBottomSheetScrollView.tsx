@@ -1,14 +1,15 @@
 import {BottomSheetScrollView} from '@gorhom/bottom-sheet';
 import React, {useEffect, useState} from 'react';
 import {ActivityIndicator} from 'react-native';
-import {AlertTriangle, Check, CheckCircle} from 'react-native-feather';
+import {AlertTriangle, Check, CheckCircle, Lock} from 'react-native-feather';
 import Colors from 'src/constants/Colors';
+import {useGotoHome, useGotoSignIn} from 'src/hooks/useGoto';
 import {
   getNftName,
   getNftProfileImage,
   useIsCurrentNft,
 } from 'src/modules/nftUtils';
-import {useChangeAccount} from 'src/redux/appReducer';
+import {useLogout, useChangeAccount} from 'src/redux/appReducer';
 import {Col} from './Col';
 import {Div} from './Div';
 import {Img} from './Img';
@@ -20,10 +21,20 @@ export default function NftChooseBottomSheetScrollView({
   title,
   onSuccess = null,
 }) {
+  const gotoSignIn = useGotoSignIn();
+  const logout = useLogout(gotoSignIn);
   return (
     <BottomSheetScrollView>
-      <Div px15>
-        <Div mt10>
+      <Row px20 itemsCenter>
+        <Col />
+        <Col auto onPress={logout}>
+          <Span info bold>
+            로그아웃
+          </Span>
+        </Col>
+      </Row>
+      <Div px20>
+        <Div>
           {nfts?.map((nft, index) => {
             return <NftIdentity key={index} nft={nft} onSuccess={onSuccess} />;
           })}
@@ -46,8 +57,10 @@ function NftIdentity({nft, onSuccess}) {
     isCurrentNft ? StateType.Success : StateType.None,
   );
   const changeAccount = useChangeAccount();
+  const gotoHome = useGotoHome();
   const handlePressIdentity = async () => {
     if (isCurrentNft) {
+      gotoHome();
       return;
     }
     setStateType(StateType.Loading);
@@ -76,24 +89,24 @@ function NftIdentity({nft, onSuccess}) {
       <Img w50 h50 rounded100 uri={getNftProfileImage(nft, 200, 200)} />
       <Col mx15>
         <Div>
-          <Span medium fontSize={15}>
+          <Span medium fontSize={15} bold>
             {getNftName(nft)}
           </Span>
         </Div>
         {getNftName(nft) !== nft.nft_metadatum.name && (
           <Div mt3>
-            <Span gray600 fontSize={12}>
+            <Span gray700 fontSize={12}>
               {nft.nft_metadatum.name}
             </Span>
           </Div>
         )}
       </Col>
       {stateType !== StateType.None && (
-        <Col auto px10>
+        <Col auto>
           {stateType === StateType.Loading ? (
             <ActivityIndicator />
           ) : stateType === StateType.Success ? (
-            <Div auto mr10 rounded100 bgRealBlack p3 bgInfo>
+            <Div auto rounded100 bgRealBlack p3 bgInfo>
               <Check strokeWidth={2} height={18} width={18} color={'white'} />
             </Div>
           ) : (

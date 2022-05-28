@@ -32,8 +32,8 @@ export default function FeedFlatlist({
     onScroll: (event, ctx) => {
       translationY.value = event.contentOffset.y;
       // @ts-ignore
-      const diff = event.contentOffset.y - ctx.prevY;
-      scrollClamp.value = Math.min(Math.max(0, scrollClamp.value + diff), 200);
+      const diff = 2 * (event.contentOffset.y - ctx.prevY);
+      scrollClamp.value = clamp(scrollClamp.value + diff, 0, headerHeight);
     },
     onBeginDrag: (event, ctx) => {
       // @ts-ignore
@@ -71,7 +71,7 @@ export default function FeedFlatlist({
   const topBarStyles = useAnimatedStyle(() => {
     const translateY = interpolate(
       scrollClamp.value,
-      [0, headerHeight + 200],
+      [0, headerHeight],
       [0, -headerHeight],
       Extrapolate.CLAMP,
     );

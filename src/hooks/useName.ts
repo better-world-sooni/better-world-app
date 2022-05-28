@@ -34,7 +34,6 @@ export default function useName(nameOwner, nameOwnerType) {
 				if (data?.success) {
                     setNameError('')
                     setNameLoading(false)
-                    console.log(data)
                     await reloadGetWithToken(key);
                     if(nameOwnerType == NameOwnerType.Nft){ 
                         await reloadGetWithToken(apis.nft.contractAddressAndTokenId(nameOwner.contract_address, nameOwner.token_id));

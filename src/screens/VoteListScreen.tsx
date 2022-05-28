@@ -131,8 +131,7 @@ function LikeOwner({nft, isFollowing}) {
   );
   const isCurrentNft = useIsCurrentNft(nft);
   const gotoNftProfile = useGotoNftProfile({
-    contractAddress: nft.contract_address,
-    tokenId: nft.token_id,
+    nft,
   });
   return (
     <Row itemsCenter h70 onPress={gotoNftProfile} px15 relative>

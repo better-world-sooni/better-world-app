@@ -154,9 +154,9 @@ export const useLogout = (callback?) => {
       if (callback) {
         await callback();
       }
-      await AsyncStorage.removeItem(JWT);
-      dispatch(appActions.logout());
-      dispatch(asyncActions.reset());
+      appActions.logout()
+      asyncActions.reset()
+      AsyncStorage.removeItem(JWT)
     });
   };
 };
