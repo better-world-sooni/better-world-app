@@ -12,6 +12,7 @@ export default function UploadImageSlideShow({
   onPressAdd,
   onPressRemove,
   sliderWidth,
+  disablePagination = false,
 }) {
   const [currentPage, setCurrentPage] = useState(0);
   const imageHeight =
@@ -20,7 +21,11 @@ export default function UploadImageSlideShow({
       : sliderWidth;
   return (
     <>
-      <Div rounded10 overflowHidden>
+      <Div
+        rounded10={!disablePagination}
+        borderTopLeftRadius={10}
+        borderTopRightRadius={10}
+        overflowHidden>
         <Carousel
           data={images}
           itemWidth={sliderWidth}
@@ -38,26 +43,28 @@ export default function UploadImageSlideShow({
           )}
         />
       </Div>
-      <Div flex={1} itemsCenter justifyCenter>
-        <Pagination
-          dotsLength={images.length}
-          activeDotIndex={currentPage}
-          containerStyle={{
-            paddingTop: 8,
-            paddingBottom: 0,
-            borderRadius: 100,
-          }}
-          dotStyle={{
-            width: 7,
-            height: 7,
-            borderRadius: 5,
-            marginHorizontal: -5,
-          }}
-          inactiveDotColor={Colors.gray[400]}
-          inactiveDotScale={1}
-          dotColor={Colors.primary.DEFAULT}
-        />
-      </Div>
+      {!disablePagination && (
+        <Div flex={1} itemsCenter justifyCenter>
+          <Pagination
+            dotsLength={images.length}
+            activeDotIndex={currentPage}
+            containerStyle={{
+              paddingTop: 8,
+              paddingBottom: 0,
+              borderRadius: 100,
+            }}
+            dotStyle={{
+              width: 7,
+              height: 7,
+              borderRadius: 5,
+              marginHorizontal: -5,
+            }}
+            inactiveDotColor={Colors.gray[400]}
+            inactiveDotScale={1}
+            dotColor={Colors.primary.DEFAULT}
+          />
+        </Div>
+      )}
     </>
   );
 }
@@ -78,7 +85,7 @@ function CarouselItem({
       {item.uri ? (
         <Div w={sliderWidth} h={imageHeight} bgGray200 relative>
           <Img w={sliderWidth} h={imageHeight} uri={item.uri} absolute></Img>
-          <Div flex={1} itemsEnd justifyEnd>
+          <Div flex={1} itemsEnd justifyStart>
             <Div
               auto
               onPress={handlePressRemoveImageAtIndex}

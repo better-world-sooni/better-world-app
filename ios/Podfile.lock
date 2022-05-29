@@ -413,6 +413,8 @@ PODS:
     - React-Core
   - react-native-camera/RN (4.2.1):
     - React-Core
+  - react-native-date-picker (4.2.2):
+    - React-Core
   - react-native-get-random-values (1.7.0):
     - React-Core
   - react-native-image-picker (4.8.3):
@@ -619,6 +621,7 @@ DEPENDENCIES:
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
   - "react-native-blur (from `../node_modules/@react-native-community/blur`)"
   - react-native-camera (from `../node_modules/react-native-camera`)
+  - react-native-date-picker (from `../node_modules/react-native-date-picker`)
   - react-native-get-random-values (from `../node_modules/react-native-get-random-values`)
   - react-native-image-picker (from `../node_modules/react-native-image-picker`)
   - "react-native-menu (from `../node_modules/@react-native-menu/menu`)"
@@ -755,6 +758,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-community/blur"
   react-native-camera:
     :path: "../node_modules/react-native-camera"
+  react-native-date-picker:
+    :path: "../node_modules/react-native-date-picker"
   react-native-get-random-values:
     :path: "../node_modules/react-native-get-random-values"
   react-native-image-picker:
@@ -889,6 +894,7 @@ SPEC CHECKSUMS:
   React-jsinspector: 41e58e5b8e3e0bf061fdf725b03f2144014a8fb0
   react-native-blur: cad4d93b364f91e7b7931b3fa935455487e5c33c
   react-native-camera: 3eae183c1d111103963f3dd913b65d01aef8110f
+  react-native-date-picker: 9088350e06918f7d842a34c171acadc66583cb94
   react-native-get-random-values: 237bffb1c7e05fb142092681531810a29ba53015
   react-native-image-picker: e95b4785b685cfc06609bc50ed6fb55b59990c99
   react-native-menu: 52089949cbe30b035c51e54f92a7d99136c2fed4

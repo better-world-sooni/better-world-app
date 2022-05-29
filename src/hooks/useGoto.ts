@@ -331,3 +331,27 @@ export function useGotoSignIn(){
   return gotoSignIn
 }
 
+export function useGotoCollectionEventList({nftCollection}){
+  const navigation = useNavigation()
+  const apiGETWithToken = useApiGETWithToken()
+  const gotoCollectionEventList = () => {
+    apiGETWithToken(
+      apis.collectionEvent.contractAddress.list(nftCollection.contract_address)
+    )
+    navigation.navigate(NAV_NAMES.CollectionEventList, {
+      nftCollection
+    })
+  }
+  return gotoCollectionEventList
+}
+
+
+export function useGotoNewCollectionEvent({nftCollection}){
+  const navigation = useNavigation()
+  const gotoNewCollectionEvent = () => {
+    navigation.navigate(NAV_NAMES.NewCollectionEvent, {
+      nftCollection
+    })
+  }
+  return gotoNewCollectionEvent
+}

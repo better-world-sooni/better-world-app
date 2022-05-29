@@ -47,7 +47,7 @@ export default function RepostedPost({repostedPost, enablePress = false}) {
                 </Span>
               )}
             <Span fontSize={12} gray700>
-              {createdAtText(new Date())}
+              {createdAtText(repostedPost.updated_at)}
             </Span>
           </Span>
         </Col>

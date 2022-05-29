@@ -39,6 +39,8 @@ import RankDeltumScreen from 'src/screens/RankDeltumScreen';
 import CollectionFeedScreen from 'src/screens/CollectionFeedScreen';
 import ForumFeedScreen from 'src/screens/ForumFeedScreen';
 import RepostListScreen from 'src/screens/RepostListScreen';
+import CollectionEventListScreen from 'src/screens/CollectionEventListScreen';
+import NewCollectionEventScreen from 'src/screens/NewCollectionEventScreen';
 
 const RootStack = createStackNavigator();
 
@@ -232,6 +234,14 @@ export const AppContent = () => {
     {
       name: NAV_NAMES.RepostList,
       component: RepostListScreen,
+    },
+    {
+      name: NAV_NAMES.CollectionEventList,
+      component: CollectionEventListScreen,
+    },
+    {
+      name: NAV_NAMES.NewCollectionEvent,
+      component: NewCollectionEventScreen,
     },
     {
       name: NAV_NAMES.Qr,

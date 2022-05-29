@@ -6,11 +6,21 @@ import {resizeImageUri} from 'src/modules/uriUtils';
 import {Div} from './Div';
 import {Img} from './Img';
 
-export default function ImageSlideShow({imageUris, sliderHeight, sliderWidth}) {
+export default function ImageSlideShow({
+  imageUris,
+  sliderHeight,
+  sliderWidth,
+  roundedTopOnly = false,
+  enablePagination = true,
+}) {
   const [currentPage, setCurrentPage] = useState(0);
   return (
     <>
-      <Div rounded10 overflowHidden>
+      <Div
+        rounded10={!roundedTopOnly}
+        borderBottomRight={10}
+        borderBottomLeft={10}
+        overflowHidden>
         <Carousel
           data={imageUris}
           itemWidth={sliderWidth}
@@ -21,26 +31,28 @@ export default function ImageSlideShow({imageUris, sliderHeight, sliderWidth}) {
           onSnapToItem={index => setCurrentPage(index)}
         />
       </Div>
-      <Div flex={1} itemsCenter justifyCenter>
-        <Pagination
-          dotsLength={imageUris.length}
-          activeDotIndex={currentPage}
-          containerStyle={{
-            paddingTop: 8,
-            paddingBottom: 0,
-            borderRadius: 100,
-          }}
-          dotStyle={{
-            width: 7,
-            height: 7,
-            borderRadius: 5,
-            marginHorizontal: -5,
-          }}
-          inactiveDotColor={Colors.gray[400]}
-          inactiveDotScale={1}
-          dotColor={Colors.primary.DEFAULT}
-        />
-      </Div>
+      {enablePagination && (
+        <Div flex={1} itemsCenter justifyCenter>
+          <Pagination
+            dotsLength={imageUris.length}
+            activeDotIndex={currentPage}
+            containerStyle={{
+              paddingTop: 8,
+              paddingBottom: 0,
+              borderRadius: 100,
+            }}
+            dotStyle={{
+              width: 7,
+              height: 7,
+              borderRadius: 5,
+              marginHorizontal: -5,
+            }}
+            inactiveDotColor={Colors.gray[400]}
+            inactiveDotScale={1}
+            dotColor={Colors.primary.DEFAULT}
+          />
+        </Div>
+      )}
     </>
   );
 }

@@ -71,6 +71,7 @@ export default function FeedFlatlistWithHeader({
         automaticallyAdjustContentInsets
         showsVerticalScrollIndicator={false}
         onScroll={scrollHandler}
+        ListFooterComponent={<Div h={HAS_NOTCH ? 27 : 12} />}
         ListHeaderComponent={
           <Animated.View style={topBarStyles}>
             <Animated.View style={headerStyles}>
@@ -88,7 +89,7 @@ export default function FeedFlatlistWithHeader({
             <Row
               itemsCenter
               h40
-              px15
+              px8
               zIndex={100}
               absolute
               w={DEVICE_WIDTH}

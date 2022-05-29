@@ -11,6 +11,7 @@ import {resizeImageUri} from 'src/modules/uriUtils';
 import {Span} from './Span';
 import {FollowOwnerType, FollowType} from 'src/screens/FollowListScreen';
 import {
+  useGotoCollectionEventList,
   useGotoCollectionFeed,
   useGotoFollowList,
   useGotoNftCollectionProfile,
@@ -45,6 +46,9 @@ const MyNftCollectionMenu = ({nftCollection}) => {
   });
   const gotoCollectionFeed = useGotoCollectionFeed({
     contractAddress: currentNft.contract_address,
+  });
+  const gotoCollectionEventList = useGotoCollectionEventList({
+    nftCollection,
   });
   const notchHeight = HAS_NOTCH ? 44 : 20;
   const headerHeight = notchHeight + 18;
@@ -113,19 +117,17 @@ const MyNftCollectionMenu = ({nftCollection}) => {
             </Row>
           </Div>
           <Div h10 />
-          <Row itemsCenter py15>
+          <Row itemsCenter py15 onPress={gotoCollectionEventList}>
             <Col auto mr20>
               <Calendar
                 strokeWidth={1.3}
-                color={Colors.gray[400]}
+                color={'black'}
                 height={28}
                 width={28}
               />
             </Col>
             <Col>
-              <Span fontSize={18} gray400>
-                일정
-              </Span>
+              <Span fontSize={18}>일정</Span>
             </Col>
           </Row>
           <Row

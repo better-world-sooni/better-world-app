@@ -9955,6 +9955,11 @@ react-native-communications@^2.2.1:
   resolved "https://registry.npmjs.org/react-native-communications/-/react-native-communications-2.2.1.tgz"
   integrity sha1-eIO1ayCgAu63kMET+GFuqGksp5U=
 
+react-native-date-picker@^4.2.2:
+  version "4.2.2"
+  resolved "https://registry.yarnpkg.com/react-native-date-picker/-/react-native-date-picker-4.2.2.tgz#07fb8a9021fb48ef9a20b043d33c14e858220883"
+  integrity sha512-x0jxWbJXKDXivRDwsUx58tKOxe719XoVqqq6UzMSYSsTiPL2i13r7PyDxop3f3et/62qbcMgeswl+/CLdX6+Eg==
+
 react-native-device-info@^8.4.1:
   version "8.4.1"
   resolved "https://registry.npmjs.org/react-native-device-info/-/react-native-device-info-8.4.1.tgz"

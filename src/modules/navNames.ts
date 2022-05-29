@@ -25,6 +25,8 @@ export const NAV_NAMES = {
     CollectionFeed: "CollectionFeed",
     ForumFeed: "ForumFeed",
     RepostList: "RepostList",
+    CollectionEventList: "CollectionEventList",
+    NewCollectionEvent: "NewCollectionEvent",
     Scan: "Scan",
     Qr: "Qr",
 };
