@@ -1,8 +1,5 @@
-import React, {useRef} from 'react';
+import React from 'react';
 import {Div} from 'src/components/common/Div';
-import apis from 'src/modules/apis';
-import {useApiSelector} from 'src/redux/asyncReducer';
-import {BottomSheetModal} from '@gorhom/bottom-sheet';
 import {HAS_NOTCH} from 'src/modules/constants';
 import {Row} from './Row';
 import {Col} from './Col';
@@ -11,6 +8,7 @@ import {resizeImageUri} from 'src/modules/uriUtils';
 import {Span} from './Span';
 import {FollowOwnerType, FollowType} from 'src/screens/FollowListScreen';
 import {
+  useGotoAffinity,
   useGotoCollectionEventList,
   useGotoCollectionFeed,
   useGotoFollowList,
@@ -18,17 +16,8 @@ import {
 } from 'src/hooks/useGoto';
 import {shallowEqual, useSelector} from 'react-redux';
 import {RootState} from 'src/redux/rootReducer';
-import {
-  Award,
-  Bookmark,
-  Calendar,
-  Layers,
-  Map,
-  PieChart,
-  ThumbsUp,
-} from 'react-native-feather';
+import {Calendar, Layers, PieChart} from 'react-native-feather';
 import {ICONS} from 'src/modules/icons';
-import Colors from 'src/constants/Colors';
 
 const MyNftCollectionMenu = ({nftCollection}) => {
   const {currentNft} = useSelector(
@@ -48,6 +37,9 @@ const MyNftCollectionMenu = ({nftCollection}) => {
     contractAddress: currentNft.contract_address,
   });
   const gotoCollectionEventList = useGotoCollectionEventList({
+    nftCollection,
+  });
+  const gotoAffinity = useGotoAffinity({
     nftCollection,
   });
   const notchHeight = HAS_NOTCH ? 44 : 20;
@@ -94,10 +86,7 @@ const MyNftCollectionMenu = ({nftCollection}) => {
               <Col />
             </Row>
             <Row mt10 itemsEnd>
-              <Col
-                auto
-                mr20
-                onPress={() => gotoFollowList(FollowType.Followers)}>
+              <Col auto mr20 onPress={gotoAffinity}>
                 <Span bold>
                   <Span gray700 regular>
                     멤버 친목도

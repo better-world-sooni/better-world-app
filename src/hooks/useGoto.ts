@@ -104,8 +104,8 @@ export function useGotoPost({postId}){
 
 export function useGotoNewPost({postOwnerType}){
   const navigation = useNavigation()
-  const gotoNewPost = (repostable = null) => {
-    navigation.navigate(NAV_NAMES.NewPost, {postOwnerType, repostable});
+  const gotoNewPost = (repostable = null, collectionEvent = null) => {
+    navigation.navigate(NAV_NAMES.NewPost, {postOwnerType, repostable, collectionEvent});
   }
   return gotoNewPost
 }
@@ -345,6 +345,23 @@ export function useGotoCollectionEventList({nftCollection}){
   return gotoCollectionEventList
 }
 
+export function useGotoAttendanceList({collectionEventId}){
+  const navigation = useNavigation()
+  const apiGETWithToken = useApiGETWithToken()
+  const gotoAttendanceList = (attendanceCategory) => {
+    apiGETWithToken(
+      apis.attendance.collectionEventId.list(
+        collectionEventId,
+        attendanceCategory,
+      )
+    )
+    navigation.navigate(NAV_NAMES.AttendanceList, {
+      collectionEventId,
+        attendanceCategory,
+    })
+  }
+  return gotoAttendanceList
+}
 
 export function useGotoNewCollectionEvent({nftCollection}){
   const navigation = useNavigation()
@@ -354,4 +371,34 @@ export function useGotoNewCollectionEvent({nftCollection}){
     })
   }
   return gotoNewCollectionEvent
+}
+
+export function useGotoAffinity({nftCollection}){
+  const navigation = useNavigation()
+  const gotoAffinity = () => {
+    navigation.navigate(NAV_NAMES.Affinity, {
+      nftCollection
+    })
+  }
+  return gotoAffinity
+}
+
+
+export function useGotoCollectionEvent({collectionEvent}){
+  const navigation = useNavigation()
+  const apiGETWithToken = useApiGETWithToken()
+  const gotoCollectionEvent = (reload=false) => {
+    if(reload){
+      apiGETWithToken(
+        apis.collectionEvent.collectionEventId(
+          collectionEvent.id
+        )
+      )
+    }
+    navigation.navigate(NAV_NAMES.CollectionEvent, {
+      collectionEvent,
+      reload
+    })
+  }
+  return gotoCollectionEvent
 }

@@ -12,7 +12,7 @@ export default function useUploadPost({initialPostType = ''}){
     const { images, error, setError, handleAddImages, handleRemoveImage, uploadAllSelectedFiles } = useUploadImages({attachedRecord:"post"})
     const postPromiseFnWithToken = usePostPromiseFnWithToken()
 
-    const uploadPost = async ({admin, uploadSuccessCallback, repostId = null}) => {
+    const uploadPost = async ({admin, uploadSuccessCallback, repostId = null, collectionEventId = null}) => {
 		if (loading) {
 			return;
 		}
@@ -29,7 +29,8 @@ export default function useUploadPost({initialPostType = ''}){
 			voting_deadline: votingDeadline,
 			image_width: null,
 			image_height: null,
-			repost_id: repostId
+			repost_id: repostId,
+			collection_event_id: collectionEventId
 		}
 		if(addImages){
 			const signedIdArray = await uploadAllSelectedFiles();

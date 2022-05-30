@@ -1,9 +1,8 @@
 import {useNavigation} from '@react-navigation/native';
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {ActivityIndicator, Platform, RefreshControl} from 'react-native';
 import {
   ChevronLeft,
-  Coffee,
   Heart,
   MessageCircle,
   MoreHorizontal,
@@ -11,7 +10,6 @@ import {
   ThumbsDown,
   ThumbsUp,
 } from 'react-native-feather';
-import {State, TapGestureHandler} from 'react-native-gesture-handler';
 import Colors from 'src/constants/Colors';
 import {
   useGotoForumFeed,
@@ -34,26 +32,18 @@ import {
   useIsCurrentNft,
 } from 'src/modules/nftUtils';
 import {createdAtText} from 'src/modules/timeUtils';
-import {ScrollView} from 'src/modules/viewComponents';
 import {Col} from './Col';
 import Comment from './Comment';
-import DefaultMarkdown from './DefaultMarkdown';
 import {Div} from './Div';
 import ImageSlideShow from './ImageSlideShow';
 import {Img} from './Img';
 import NewComment, {ReplyToType} from './NewComment';
 import {Row} from './Row';
 import {Span} from './Span';
-import TruncatedMarkdown from './TruncatedMarkdown';
 import {MenuView} from '@react-native-menu/menu';
-import {
-  deletePromiseFn,
-  useDeletePromiseFnWithToken,
-} from 'src/redux/asyncReducer';
+import {useDeletePromiseFnWithToken} from 'src/redux/asyncReducer';
 import {ReportTypes} from 'src/screens/ReportScreen';
 import useVote, {VoteCategory} from 'src/hooks/useVote';
-import {shallowEqual, useSelector} from 'react-redux';
-import {RootState} from 'src/redux/rootReducer';
 import {LikeListType} from 'src/screens/LikeListScreen';
 import {HAS_NOTCH} from 'src/modules/constants';
 import {DEVICE_WIDTH} from 'src/modules/styles';
@@ -67,6 +57,7 @@ import useScrollToEndRef from 'src/hooks/useScrollToEndRef';
 import {PostOwnerType} from 'src/screens/NewPostScreen';
 import TruncatedText from './TruncatedText';
 import RepostedPost from './RepostedPost';
+import CollectionEvent from './CollectionEvent';
 
 enum PostEventTypes {
   Delete = 'DELETE',
@@ -114,10 +105,6 @@ export default function Post({
   const isCurrentCollection = useIsCurrentCollection(post.nft);
   const isAdmin = !post.nft.token_id && useIsAdmin(post.nft);
   const deletePromiseFnWithToken = useDeletePromiseFnWithToken();
-  const {currentNft} = useSelector(
-    (root: RootState) => root.app.session,
-    shallowEqual,
-  );
   const menuOptions =
     isCurrentNft || isAdmin
       ? [
@@ -444,6 +431,15 @@ export default function Post({
               ) : null}
               {post.reposted_post && (
                 <RepostedPost repostedPost={post.reposted_post} enablePress />
+              )}
+              {post.collection_event && (
+                <Div mt5>
+                  <CollectionEvent
+                    collectionEvent={post.collection_event}
+                    reposted
+                    itemWidth={itemWidth}
+                  />
+                </Div>
               )}
               <Row itemsCenter mb8 mt8 mb10={full}>
                 {!post.type ? (

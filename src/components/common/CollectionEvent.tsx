@@ -1,10 +1,21 @@
 import {BlurView} from '@react-native-community/blur';
-import React from 'react';
-import {Linking} from 'react-native';
-import {MoreHorizontal} from 'react-native-feather';
-import useAttendance from 'src/hooks/useAttendance';
+import {MenuView} from '@react-native-menu/menu';
+import React, {useState} from 'react';
+import {ActivityIndicator, Linking, Platform} from 'react-native';
+import {MoreHorizontal, Repeat} from 'react-native-feather';
+import {shallowEqual, useSelector} from 'react-redux';
+import Colors from 'src/constants/Colors';
+import useAttendance, {AttendanceCategory} from 'src/hooks/useAttendance';
+import {
+  useGotoAttendanceList,
+  useGotoCollectionEvent,
+  useGotoNewPost,
+} from 'src/hooks/useGoto';
+import apis from 'src/modules/apis';
 import {kmoment} from 'src/modules/constants';
-import {DEVICE_WIDTH} from 'src/modules/styles';
+import {useDeletePromiseFnWithToken} from 'src/redux/asyncReducer';
+import {RootState} from 'src/redux/rootReducer';
+import {PostOwnerType} from 'src/screens/NewPostScreen';
 import {Col} from './Col';
 import {Div} from './Div';
 import ImageSlideShow from './ImageSlideShow';
@@ -12,7 +23,44 @@ import {Row} from './Row';
 import {Span} from './Span';
 import TruncatedText from './TruncatedText';
 
-export default function CollectionEvent({collectionEvent, itemWidth}) {
+export default function CollectionEvent({
+  collectionEvent,
+  itemWidth,
+  full = false,
+  reposted = false,
+}) {
+  const {currentNft} = useSelector(
+    (root: RootState) => root.app.session,
+    shallowEqual,
+  );
+  const [deleted, setDeleted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const isAdmin =
+    collectionEvent.contract_address == currentNft.contract_address;
+  const deletePromiseFnWithToken = useDeletePromiseFnWithToken();
+  const menuOptions = [
+    {
+      id: 'DELETE',
+      title: 'Delete Post',
+      image: Platform.select({
+        ios: 'trash',
+        android: 'ic_menu_delete',
+      }),
+    },
+  ];
+  const deleteCollectionEvent = async () => {
+    setLoading(true);
+    const {data} = await deletePromiseFnWithToken({
+      url: apis.collectionEvent.collectionEventId(collectionEvent.id).url,
+    });
+    setLoading(false);
+    if (data.success) {
+      setDeleted(true);
+    }
+  };
+  const handlePressMenu = ({nativeEvent: {event}}) => {
+    if (event == 'DELETE') deleteCollectionEvent();
+  };
   const {
     willAttendCount,
     maybeAttendCount,
@@ -26,12 +74,36 @@ export default function CollectionEvent({collectionEvent, itemWidth}) {
     initialMaybeAttendCount: collectionEvent.maybe_attend_count,
     collectionEventId: collectionEvent.id,
   });
+  const gotoAttendanceList = useGotoAttendanceList({
+    collectionEventId: collectionEvent.id,
+  });
+  const gotoCollectionEvent = useGotoCollectionEvent({
+    collectionEvent,
+  });
+  const gotoNewPost = useGotoNewPost({
+    postOwnerType: PostOwnerType.Nft,
+  });
+  const handlePressCollectionEvent = () => {
+    if (full) return;
+    gotoCollectionEvent(reposted);
+  };
   const handlePressLocationLink = () => {
     Linking.openURL(collectionEvent.location_link);
   };
+  const attendable =
+    !collectionEvent.holder_only ||
+    collectionEvent.contract_address == currentNft.contract_address;
+
+  if (deleted) return null;
   return (
     <>
-      <Div mt16 mx15 overflowHidden rounded10 border={0.5} borderGray200>
+      <Div
+        mt16={!reposted || full}
+        mx15={!reposted}
+        overflowHidden
+        rounded10
+        border={0.5}
+        borderGray400>
         <Div relative>
           <ImageSlideShow
             roundedTopOnly
@@ -45,15 +117,23 @@ export default function CollectionEvent({collectionEvent, itemWidth}) {
             }
             sliderWidth={itemWidth}
           />
-          <Div m8 p8 bgRealBlack rounded100 absolute top0 right0>
-            <MoreHorizontal
-              strokeWidth={2}
-              color={'white'}
-              height={16}
-              width={16}
-            />
-          </Div>
-          <Row bottom0 absolute w={'100%'}>
+          {isAdmin && !reposted && (
+            <Div m8 p8 bgRealBlack rounded100 absolute top0 right0>
+              <MenuView onPressAction={handlePressMenu} actions={menuOptions}>
+                {loading ? (
+                  <ActivityIndicator />
+                ) : (
+                  <MoreHorizontal
+                    strokeWidth={2}
+                    color={'white'}
+                    height={16}
+                    width={16}
+                  />
+                )}
+              </MenuView>
+            </Div>
+          )}
+          <Row bottom0 absolute w={'100%'} onPress={handlePressCollectionEvent}>
             <Col
               auto
               relative
@@ -83,12 +163,12 @@ export default function CollectionEvent({collectionEvent, itemWidth}) {
                     {collectionEvent.title}
                   </Span>
                 </Div>
-                <Div mt8 zIndex={100}>
+                <Div mt2 zIndex={100}>
                   <Span fontSize={14} bold>
                     {collectionEvent.location_string}
                   </Span>
                 </Div>
-                <Div mt8>
+                <Div mt2>
                   <Span>
                     <Span bold fontSize={12}>
                       {kmoment(collectionEvent.start_time).format(
@@ -110,71 +190,103 @@ export default function CollectionEvent({collectionEvent, itemWidth}) {
             <Col itemsEnd justifyEnd></Col>
           </Row>
         </Div>
-        <Div px15 py8>
-          {collectionEvent.location_link ? (
-            <Row itemsCenter mb8>
-              <Span fontSize={14} info onPress={handlePressLocationLink}>
-                {collectionEvent.location_link}
+        {!reposted && (
+          <Div px15 py8>
+            {collectionEvent.location_link ? (
+              <Row itemsCenter mb8>
+                <Span fontSize={14} info onPress={handlePressLocationLink}>
+                  {collectionEvent.location_link}
+                </Span>
+              </Row>
+            ) : null}
+            <Row mb8>
+              {full ? (
+                <Span fontSize={14}>{collectionEvent.description}</Span>
+              ) : (
+                <TruncatedText
+                  text={collectionEvent.description}
+                  onPressTruncated={gotoCollectionEvent}
+                  maxLength={300}
+                  spanProps={{fontSize: 14}}
+                />
+              )}
+            </Row>
+            <Row>
+              <Span fontSize={14}>
+                {collectionEvent.holder_only
+                  ? '홀더에게 오픈'
+                  : '모두에게 오픈'}
               </Span>
             </Row>
-          ) : null}
-          <Row mb8>
-            <TruncatedText
-              text={collectionEvent.description}
-              maxLength={300}
-              spanProps={{fontSize: 14}}
-            />
-          </Row>
-          <Row>
-            <Span fontSize={14}>
-              {collectionEvent.holder_only ? '홀더에게 오픈' : '모두에게 오픈'}
-            </Span>
-          </Row>
-          <Row mt8 itemsCenter>
-            <Col auto mr16>
-              <Span fontSize={12} gray700>
-                Maybe{' '}
-                <Span realBlack bold>
-                  {maybeAttendCount}
+            <Row mt8 itemsCenter>
+              <Col
+                auto
+                py8
+                mr16
+                onPress={() => gotoNewPost(null, collectionEvent)}>
+                <Repeat
+                  strokeWidth={2}
+                  color={Colors.gray[700]}
+                  height={18}
+                  width={18}
+                />
+              </Col>
+              <Col
+                auto
+                mr16
+                py8
+                onPress={() => gotoAttendanceList(AttendanceCategory.Maybe)}>
+                <Span fontSize={12} gray700>
+                  Maybe{' '}
+                  <Span realBlack bold>
+                    {maybeAttendCount}
+                  </Span>
                 </Span>
-              </Span>
-            </Col>
-            <Col auto mr>
-              <Span fontSize={12} gray700>
-                Yes{' '}
-                <Span realBlack bold>
-                  {willAttendCount}
+              </Col>
+              <Col
+                auto
+                py8
+                onPress={() => gotoAttendanceList(AttendanceCategory.Yes)}>
+                <Span fontSize={12} gray700>
+                  Yes{' '}
+                  <Span realBlack bold>
+                    {willAttendCount}
+                  </Span>
                 </Span>
-              </Span>
-            </Col>
-            <Col />
-            <Col
-              bgRealBlack={!maybeAttend}
-              p8
-              rounded100
-              border1={maybeAttend}
-              borderGray400={maybeAttend}
-              itemsCenter
-              onPress={handlePressMaybeAttend}
-              mr8>
-              <Span bold white={!maybeAttend} fontSize={12}>
-                Maybe
-              </Span>
-            </Col>
-            <Col
-              bgRealBlack={!willAttend}
-              p8
-              rounded100
-              border1={willAttend}
-              borderGray400={willAttend}
-              onPress={handlePressWillAttend}
-              itemsCenter>
-              <Span bold white={!willAttend} fontSize={12}>
-                Yes
-              </Span>
-            </Col>
-          </Row>
-        </Div>
+              </Col>
+              <Col />
+              {attendable && (
+                <>
+                  <Col
+                    bgRealBlack={!maybeAttend}
+                    p8
+                    rounded100
+                    border1={maybeAttend}
+                    borderGray400={maybeAttend}
+                    itemsCenter
+                    onPress={handlePressMaybeAttend}
+                    mr8>
+                    <Span bold white={!maybeAttend} fontSize={12}>
+                      Maybe
+                    </Span>
+                  </Col>
+                  <Col
+                    bgRealBlack={!willAttend}
+                    p8
+                    rounded100
+                    border1={willAttend}
+                    borderGray400={willAttend}
+                    onPress={handlePressWillAttend}
+                    itemsCenter>
+                    <Span bold white={!willAttend} fontSize={12}>
+                      Yes
+                    </Span>
+                  </Col>
+                </>
+              )}
+            </Row>
+          </Div>
+        )}
       </Div>
     </>
   );

@@ -10,7 +10,11 @@ import ProfileDataTabs from '../ProfileDataTabs';
 import {DEVICE_WIDTH} from 'src/modules/styles';
 import useFollow from 'src/hooks/useFollow';
 import apis from 'src/modules/apis';
-import {useGotoFollowList, useGotoNewPost} from 'src/hooks/useGoto';
+import {
+  useGotoAffinity,
+  useGotoFollowList,
+  useGotoNewPost,
+} from 'src/hooks/useGoto';
 import {PostOwnerType} from 'src/screens/NewPostScreen';
 import {HAS_NOTCH} from 'src/modules/constants';
 import Animated, {
@@ -52,6 +56,9 @@ export default function NftCollectionProfile({
   const gotoFollowList = useGotoFollowList({
     followOwnerType: FollowOwnerType.NftCollection,
     contractAddress: nftCollectionCore.contract_address,
+  });
+  const gotoAffinity = useGotoAffinity({
+    nftCollection,
   });
   const translationY = useSharedValue(0);
   const scrollHandler = useAnimatedScrollHandler(event => {
@@ -250,10 +257,7 @@ export default function NftCollectionProfile({
                         {followerCount}
                       </Span>
                     </Col>
-                    <Col
-                      auto
-                      mr20
-                      onPress={() => gotoFollowList(FollowType.Followers)}>
+                    <Col auto mr20 onPress={gotoAffinity}>
                       <Span bold>
                         <Span gray700 regular>
                           멤버 친목도

@@ -38,6 +38,7 @@ import Colors from 'src/constants/Colors';
 import useAutoFocusRef from 'src/hooks/useAutoFocusRef';
 import TruncatedText from 'src/components/common/TruncatedText';
 import RepostedPost from 'src/components/common/RepostedPost';
+import CollectionEvent from 'src/components/common/CollectionEvent';
 
 const postTypes = [
   {
@@ -61,7 +62,7 @@ export enum PostOwnerType {
 
 const NewPostScreen = ({
   route: {
-    params: {postOwnerType, repostable},
+    params: {postOwnerType, repostable, collectionEvent},
   },
 }) => {
   const autoFocusRef = useAutoFocusRef();
@@ -113,6 +114,7 @@ const NewPostScreen = ({
       admin: postOwnerIsCollection,
       uploadSuccessCallback,
       repostId: repostable?.id,
+      collectionEventId: collectionEvent?.id,
     });
   };
 
@@ -244,6 +246,15 @@ const NewPostScreen = ({
                 </Div>
               )}
               {repostable && <RepostedPost repostedPost={repostable} />}
+              {collectionEvent && (
+                <Div mt8>
+                  <CollectionEvent
+                    collectionEvent={collectionEvent}
+                    reposted
+                    itemWidth={sliderWidth}
+                  />
+                </Div>
+              )}
             </Col>
           </Row>
         </Animated.ScrollView>

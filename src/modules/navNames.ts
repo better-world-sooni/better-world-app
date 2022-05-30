@@ -27,6 +27,9 @@ export const NAV_NAMES = {
     RepostList: "RepostList",
     CollectionEventList: "CollectionEventList",
     NewCollectionEvent: "NewCollectionEvent",
+    AttendanceList: "AttendanceList",
+    CollectionEvent: "CollectionEvent",
+    Affinity: "Affinity",
     Scan: "Scan",
     Qr: "Qr",
 };

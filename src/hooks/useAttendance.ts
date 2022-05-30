@@ -35,12 +35,12 @@ export default function useAttendance({initialAttendance, initialWillAttendCount
         handlePressVote(AttendanceCategory.Maybe)
     };
     const handlePressCancelAttend= () => {
-        deletePromiseFnWithToken({url: apis.attendance.collectionEventId(collectionEventId).url});
+        deletePromiseFnWithToken({url: apis.attendance.collectionEventId._(collectionEventId).url});
         setAttendance(null);
     };
     const handlePressVote = (attendanceCategory) => {
         smallBump();
-        putPromiseFnWithToken({url: apis.attendance.collectionEventId(collectionEventId).url, body: {
+        putPromiseFnWithToken({url: apis.attendance.collectionEventId._(collectionEventId).url, body: {
             category: attendanceCategory
         }});
         setAttendance(attendanceCategory);

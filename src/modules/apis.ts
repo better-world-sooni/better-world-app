@@ -124,8 +124,10 @@ const apis = {
     collectionEventId: (collectionEventId) => apiV1(`/collection_event/${collectionEventId}`),
   },
   attendance: {
-    list: () => apiV1(`/attendance/list`),
-    collectionEventId: (collectionEventId) => apiV1(`/attendance/${collectionEventId}`),
+    collectionEventId: {
+      _: (collectionEventId) => apiV1(`/attendance/${collectionEventId}`),
+      list: (collectionEventId, attendanceCategory) => apiV1(`/attendance/${collectionEventId}/list?attendance_category=${attendanceCategory}`),
+    },
   },
 }
 
