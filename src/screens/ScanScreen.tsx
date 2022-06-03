@@ -19,7 +19,7 @@ import {
   useReloadGETWithToken,
   useReloadPOSTWithToken,
 } from 'src/redux/asyncReducer';
-import {useLogin} from 'src/redux/appReducer';
+import {useQrLogin} from 'src/redux/appReducer';
 import {useGotoHome, useGotoOnboarding, useGotoScan} from 'src/hooks/useGoto';
 
 export enum ScanType {
@@ -41,7 +41,7 @@ export default function ScanScreen({
   const {goBack} = useNavigation();
   const gotoOnboarding = useGotoOnboarding(); 
   const gotoHome = useGotoHome();
-  const login = useLogin('qr');
+  const login = useQrLogin();
   const bottomPopupRef = useRef<BottomSheetModal>(null);
   const reloadGETWithToken = useReloadGETWithToken();
   const onSuccess = ({data}) => {
