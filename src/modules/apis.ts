@@ -33,7 +33,10 @@ const apis = {
     user: {
       _: () => apiV1('/auth/user')
     },
-    jwt: () => apiV1('/auth/jwt'),
+    jwt: {
+      _: () => apiV1('/auth/jwt'),
+      loginQr: (token) => apiV1(`/auth/jwt/qr/login?token=${token}`)
+    },
     qr: () => apiV1('/auth/jwt/qr')
   },
   pushNotificationSetting: {

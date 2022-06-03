@@ -215,10 +215,10 @@ export function useGotoRankSeason({cwyear, cweek}) {
   return useGotoRankSeason
 }
 
-export function useGotoScan(){
+export function useGotoScan({scanType}){
   const navigation = useNavigation()
   const gotoScan = () => {
-    navigation.navigate(NAV_NAMES.Scan)
+    navigation.navigate(NAV_NAMES.Scan, {scanType})
   }
   return gotoScan
 }

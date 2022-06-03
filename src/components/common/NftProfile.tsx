@@ -49,6 +49,7 @@ import Animated, {
 import {BlurView} from '@react-native-community/blur';
 import {ChatRoomType} from 'src/screens/ChatRoomScreen';
 import {FollowOwnerType, FollowType} from 'src/screens/FollowListScreen';
+import {ScanType} from 'src/screens/ScanScreen';
 
 export default function NftProfile({
   nft,
@@ -88,7 +89,7 @@ export default function NftProfile({
     tokenId: nftCore.token_id,
   });
   const gotoQr = useGotoQR();
-  const gotoScan = useGotoScan();
+  const gotoScan = useGotoScan({scanType: ScanType.Nft});
   const headerHeight = HAS_NOTCH ? 124 : 100;
   const gotoNewPost = useGotoNewPost({postOwnerType: PostOwnerType.Nft});
   const gotoChatRoom = useGotoChatRoom({

@@ -19,7 +19,8 @@ import Colors from 'src/constants/Colors';
 import {HAS_NOTCH} from 'src/modules/constants';
 import {DEVICE_WIDTH} from 'src/modules/styles';
 import Carousel from 'react-native-snap-carousel';
-import {useGotoHome, useGotoOnboarding} from 'src/hooks/useGoto';
+import {useGotoHome, useGotoOnboarding, useGotoScan} from 'src/hooks/useGoto';
+import {ScanType} from 'src/screens/ScanScreen';
 
 const SignInScreen = ({navigation}) => {
   const [address, setAddress] = useState('');
@@ -30,6 +31,7 @@ const SignInScreen = ({navigation}) => {
   const bottomPopupRef = useRef<BottomSheetModal>(null);
 
   const gotoHome = useGotoHome();
+  const gotoScan = useGotoScan({scanType: ScanType.Login});
   const gotoOnboarding = useGotoOnboarding();
   const handleAddressSignIn = useCallback(() => {
     Keyboard.dismiss();
@@ -62,6 +64,8 @@ const SignInScreen = ({navigation}) => {
       },
     );
   }, [address, password]);
+
+
 
   const handleChangeAddress = useCallback(text => setAddress(text), []);
   const handleChangePassword = useCallback(text => setPassword(text), []);
@@ -155,6 +159,23 @@ const SignInScreen = ({navigation}) => {
                       ) : (
                         '연결'
                       )}
+                    </Span>
+                  </Div>
+                </Col>
+                <Col />
+              </Row>
+              <Row
+                bgRealBlack
+                rounded100
+                h48
+                flex={1}
+                itemsCenter
+                onPress={gotoScan}>
+                <Col />
+                <Col auto>
+                  <Div>
+                    <Span white bold>
+                      Qr Login
                     </Span>
                   </Div>
                 </Col>

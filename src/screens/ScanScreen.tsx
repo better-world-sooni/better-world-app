@@ -20,19 +20,41 @@ import {
   useReloadPOSTWithToken,
 } from 'src/redux/asyncReducer';
 
-export default function ScanScreen() {
-  const {data: qrRes, isLoading: qrLoad, error} = useApiSelector(apis.nft.qr);
+export enum ScanType {
+  Nft,
+  Login,
+}
+
+export default function ScanScreen({
+  route: {
+    params: {scanType},
+  },
+}) {
+
+  const {data: qrRes, isLoading: qrLoad, error} = useApiSelector(
+    scanType == ScanType.Nft 
+    ? apis.nft.qr
+    : apis.auth.jwt.loginQr
+  );
   const {goBack} = useNavigation();
   const bottomPopupRef = useRef<BottomSheetModal>(null);
   const reloadGETWithToken = useReloadGETWithToken();
   const onSuccess = ({data}) => {
-    reloadGETWithToken(apis.nft.qr(data));
+    scanType == ScanType.Nft 
+    ? reloadGETWithToken(apis.nft.qr(data))
+    : reloadGETWithToken(apis.auth.jwt.loginQr(data))
   };
   useEffect(() => {
-    if (qrRes?.nft && !error) {
-      bottomPopupRef?.current.expand();
+    if(scanType == ScanType.Nft) {
+      if (qrRes?.nft && !error) {
+        bottomPopupRef?.current.expand();
+      }
     }
-  }, [qrRes?.nft, qrLoad, error]);
+    else {
+      console.log(qrRes)
+    }
+    
+  }, [qrRes, qrLoad, error]);
 
   const headerHeight = HAS_NOTCH ? 94 : 70;
 
