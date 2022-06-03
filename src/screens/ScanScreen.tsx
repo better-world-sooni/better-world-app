@@ -19,6 +19,8 @@ import {
   useReloadGETWithToken,
   useReloadPOSTWithToken,
 } from 'src/redux/asyncReducer';
+import {useLogin} from 'src/redux/appReducer';
+import {useGotoHome, useGotoOnboarding, useGotoScan} from 'src/hooks/useGoto';
 
 export enum ScanType {
   Nft,
@@ -34,15 +36,27 @@ export default function ScanScreen({
   const {data: qrRes, isLoading: qrLoad, error} = useApiSelector(
     scanType == ScanType.Nft 
     ? apis.nft.qr
-    : apis.auth.jwt.loginQr
+    : apis.auth.jwt.qrLogin
   );
   const {goBack} = useNavigation();
+  const gotoOnboarding = useGotoOnboarding(); 
+  const gotoHome = useGotoHome();
+  const login = useLogin('qr');
   const bottomPopupRef = useRef<BottomSheetModal>(null);
   const reloadGETWithToken = useReloadGETWithToken();
   const onSuccess = ({data}) => {
     scanType == ScanType.Nft 
     ? reloadGETWithToken(apis.nft.qr(data))
-    : reloadGETWithToken(apis.auth.jwt.loginQr(data))
+    : login(
+      data,
+      props => {
+        if (props.data.user.main_nft) {
+          gotoHome();
+          return;
+        }
+        gotoOnboarding();
+      },
+    );
   };
   useEffect(() => {
     if(scanType == ScanType.Nft) {

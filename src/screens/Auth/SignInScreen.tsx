@@ -27,7 +27,7 @@ const SignInScreen = ({navigation}) => {
   const [password, setPassword] = useState('');
   const [expandText, setExpandText] = useState('');
   const [loading, setLoading] = useState(false);
-  const login = useLogin();
+  const login = useLogin('password');
   const bottomPopupRef = useRef<BottomSheetModal>(null);
 
   const gotoHome = useGotoHome();

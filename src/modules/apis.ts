@@ -35,7 +35,7 @@ const apis = {
     },
     jwt: {
       _: () => apiV1('/auth/jwt'),
-      loginQr: (token) => apiV1(`/auth/jwt/qr/login?token=${token}`)
+      qrLogin: () => apiV1('/auth/jwt/qr/login')
     },
     qr: () => apiV1('/auth/jwt/qr')
   },
