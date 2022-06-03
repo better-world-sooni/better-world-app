@@ -15,8 +15,8 @@ export default function useUploadImage({uri, attachedRecord, url, property, succ
         try {
           const {assets} = await launchImageLibrary({
             mediaType: 'photo',
-            maxWidth: 600,
-            maxHeight: 600,
+            maxHeight: 1600,
+            maxWidth: 1600
           });
           if(assets[0]){
               setImage(assets[0])
