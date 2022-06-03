@@ -7,6 +7,7 @@ const BASE_URL = 'http://192.168.1.185:3000';
 const toUrl = (...args) => ({url: urljoin(...args)});
 const base = path => toUrl(BASE_URL, path);
 const apiV1 = path => toUrl(BASE_URL, '/api/v1', path);
+
 export const urlParams = (obj, nullable?) => {
   if (nullable) {
     return isEmpty(obj) ? '' : '?' + querystring.stringify(obj)
@@ -69,7 +70,7 @@ const apis = {
   follow: {
     contractAddressAndTokenId: (contractAddress, tokenId?) => tokenId ? apiV1(`/follow/${contractAddress}/${tokenId}`) : apiV1(`/follow/${contractAddress}`),
     contractAddress: (contractAddress) => apiV1(`/follow/${contractAddress}`),
-    list: (getFollowers, contractAddress, tokenId?) => !tokenId ? apiV1(`/follow/list?get_followers=${getFollowers}&contract_address=${contractAddress}`): apiV1(`/follow/list?get_followers=${getFollowers}&contract_address=${contractAddress}&token_id=${tokenId}`),
+    list: (getFollowers, contractAddress, tokenId?, page?) => apiV1(`/follow/list${urlParams({get_followers: getFollowers, contract_address: contractAddress, token_id: tokenId, page})}`)
   },
   nft_collection: {
     profile: () => apiV1(`/nft_collection/profile`),
@@ -89,7 +90,7 @@ const apis = {
   },
   vote: {
     postId: (postId) => apiV1(`/vote/${postId}`),
-    list: (voteCategory, postId) => apiV1(`/vote/list?vote_category=${voteCategory}&post_id=${postId}`),
+    list: (voteCategory, postId, page?) => apiV1(`/vote/list${urlParams({page, post_id: postId, vote_category: voteCategory})}`),
   },
   rank:{
     all: (cwyear?, cweek?, keyword?) => cwyear && cweek ?  (keyword ? apiV1(`/rank/all?cwyear=${cwyear}&cweek=${cweek}&keyword=${keyword}`) : apiV1(`/rank/all?cwyear=${cwyear}&cweek=${cweek}`)) : apiV1(`/rank/all`)
@@ -101,8 +102,8 @@ const apis = {
       comment: (postId) => apiV1(`/post/${postId}/comment`),
       repost: {
         list: {
-          _: (postId, page) => apiV1(`/post/${postId}/repost/list?page=${page}`),
-          proposal: (postId, page) => apiV1(`/post/${postId}/repost/list/proposal?page=${page}`),
+          _: (postId, page?) => apiV1(`/post/${postId}/repost/list${urlParams({page})}`),
+          proposal: (postId, page?) => apiV1(`/post/${postId}/repost/list/proposal${urlParams({page})}`),
         }
       }
     }

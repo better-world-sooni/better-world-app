@@ -16,13 +16,13 @@ export default function AffinityScreen({
   const headerHeight = HAS_NOTCH ? 94 : 70;
   const {goBack} = useNavigation();
   return (
-    <Div flex={1}>
+    <Div flex={1} bgWhite>
       <Div h={headerHeight} zIndex={100}>
         <Row
           itemsCenter
           py5
           h40
-          px15
+          px8
           zIndex={100}
           absolute
           w={DEVICE_WIDTH}
