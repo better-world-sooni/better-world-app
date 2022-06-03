@@ -33,7 +33,7 @@ export default function CollectionEventScreen({
           itemsCenter
           py5
           h40
-          px15
+          px8
           zIndex={100}
           absolute
           w={DEVICE_WIDTH}
