@@ -9,26 +9,19 @@ const OtherProfileScreen = ({
     params: {nft},
   },
 }) => {
-  const {data: profileData, isLoading: loading} = useApiSelector(
-    apis.nft.contractAddressAndTokenId(nft.contract_address, nft.token_id),
-  );
-  const reloadGetWithToken = useReloadGETWithToken();
-  const handleRefresh = () => {
-    reloadGetWithToken(
-      apis.nft.contractAddressAndTokenId(nft.contract_address, nft.token_id),
-    );
+  const pageableNftPostFn = (page?) => {
+    return apis.post.list.nft(nft.contract_address, nft.token_id, page);
   };
-  const nftProfile = profileData?.nft;
   return (
     <Div flex={1} bgWhite>
-      {nft && (
-        <NftProfile
-          nft={nftProfile}
-          nftCore={nft}
-          refreshing={loading}
-          onRefresh={handleRefresh}
-        />
-      )}
+      <NftProfile
+        nftCore={nft}
+        nftProfileApiObject={apis.nft.contractAddressAndTokenId(
+          nft.contract_address,
+          nft.token_id,
+        )}
+        pageableNftPostFn={pageableNftPostFn}
+      />
     </Div>
   );
 };

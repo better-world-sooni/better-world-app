@@ -7,28 +7,23 @@ import {shallowEqual, useSelector} from 'react-redux';
 import {RootState} from 'src/redux/rootReducer';
 
 const ProfileScreen = ({route: {params}}) => {
-  const {data: profileData, isLoading: loading} = useApiSelector(apis.nft._);
-  const reloadGetWithToken = useReloadGETWithToken();
-  const handleRefresh = () => {
-    reloadGetWithToken(apis.nft._());
-  };
   const {currentNft} = useSelector(
     (root: RootState) => root.app.session,
     shallowEqual,
   );
-  const nft = profileData?.nft;
+  const pageableNftPostFn = (page?) => {
+    return apis.post.list.nft(null, null, page);
+  };
+
   return (
     <Div flex={1} bgWhite>
-      {nft && (
-        <NftProfile
-          qrScan
-          nftCore={currentNft}
-          nft={nft}
-          enableBack={false}
-          refreshing={loading}
-          onRefresh={handleRefresh}
-        />
-      )}
+      <NftProfile
+        qrScan
+        nftCore={currentNft}
+        enableBack={false}
+        nftProfileApiObject={apis.nft._()}
+        pageableNftPostFn={pageableNftPostFn}
+      />
     </Div>
   );
 };

@@ -68,7 +68,7 @@ const apis = {
   nft: {
     contractAddressAndTokenId: (contractAddress, tokenId) => apiV1(`/nft/${contractAddress}/${tokenId}`),
     qr: (token) => apiV1(`/nft/qr?token=${token}`),
-    _: () => apiV1(`/nft`)
+    _: () => apiV1(`/nft`),
   },
   follow: {
     contractAddressAndTokenId: (contractAddress, tokenId?) => tokenId ? apiV1(`/follow/${contractAddress}/${tokenId}`) : apiV1(`/follow/${contractAddress}`),
@@ -109,6 +109,10 @@ const apis = {
           proposal: (postId, page?) => apiV1(`/post/${postId}/repost/list/proposal${urlParams({page})}`),
         }
       }
+    },
+    list: {
+      nft: (contractAddress?, tokenId?, page?) => apiV1(`/post/list/nft${urlParams({contract_address: contractAddress, token_id: tokenId, page})}`),
+      nftCollection: (contractAddress, page?) => apiV1(`/post/list/nft_collection${urlParams({contract_address: contractAddress, page})}`)
     }
   },
   report: {

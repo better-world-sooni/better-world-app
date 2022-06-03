@@ -17,9 +17,12 @@ export function useGotoNftProfile({nft}){
               nft.token_id,
             ),
           );
-          navigation.navigate(NAV_NAMES.OtherProfile, {
+          apiGETWithToken(
+            apis.post.list.nft(nft.contract_address, nft.token_id)
+          )
+          navigation.navigate(NAV_NAMES.OtherProfile as never, {
             nft
-          });
+          }as never);
       }
       return gotoProfile
 }
@@ -27,7 +30,7 @@ export function useGotoNftProfile({nft}){
 export function useGotoProfile(){
   const navigation = useNavigation()
   const gotoProfile = () => {
-        navigation.navigate(NAV_NAMES.Profile);
+        navigation.navigate(NAV_NAMES.Profile as never);
     }
     return gotoProfile
 }
@@ -39,7 +42,7 @@ export function useGotoChatList(){
       apiGETWithToken(
         apis.chat.chatRoom.all()
       );
-      navigation.navigate(NAV_NAMES.ChatList);
+      navigation.navigate(NAV_NAMES.ChatList as never);
     }
     return gotoChatList
 }
@@ -54,12 +57,12 @@ export function useGotoChatRoom({chatRoomType}){
           roomId
       ),
     );
-      navigation.navigate(NAV_NAMES.ChatRoom, {
+      navigation.navigate(NAV_NAMES.ChatRoom as never, {
         roomName,
         roomImage,
         roomId,
         chatRoomType
-      });
+      } as never);
   }
   const gotoChatRoomAsDirectMessage = ({roomName, roomImage, contractAddress, tokenId}: any)  => {
     apiPOSTWithToken(
@@ -68,14 +71,13 @@ export function useGotoChatRoom({chatRoomType}){
         tokenId
       ),
     );
-      navigation.navigate(NAV_NAMES.ChatRoom, {
+      navigation.navigate(NAV_NAMES.ChatRoom as never, {
         roomName,
         roomImage,
         contractAddress,
         tokenId,
         chatRoomType
-        
-      });
+      } as never);
   }
   return chatRoomType == ChatRoomType.RoomId ? gotoChatRoomWithRoomId : gotoChatRoomAsDirectMessage
 }
@@ -85,9 +87,9 @@ export function useGotoNftCollectionProfile({nftCollection}){
     const navigation = useNavigation()
     const gotoProfile = () => {
       apiGETWithToken(apis.nft_collection.contractAddress.profile(nftCollection.contract_address));
-      navigation.navigate(NAV_NAMES.NftCollection, {
+      navigation.navigate(NAV_NAMES.NftCollection as never, {
         nftCollection
-      });
+      } as never);
     }
     return gotoProfile
 }
@@ -97,7 +99,7 @@ export function useGotoPost({postId}){
   const navigation = useNavigation()
   const gotoPost = (autoFocus=false) => {
     apiGETWithToken(apis.post.postId._(postId));
-    navigation.navigate(NAV_NAMES.Post, {postId, autoFocus});
+    navigation.navigate(NAV_NAMES.Post as never, {postId, autoFocus} as never);
   }
   return gotoPost
 }
@@ -105,7 +107,7 @@ export function useGotoPost({postId}){
 export function useGotoNewPost({postOwnerType}){
   const navigation = useNavigation()
   const gotoNewPost = (repostable = null, collectionEvent = null) => {
-    navigation.navigate(NAV_NAMES.NewPost, {postOwnerType, repostable, collectionEvent});
+    navigation.navigate(NAV_NAMES.NewPost as never, {postOwnerType, repostable, collectionEvent} as never);
   }
   return gotoNewPost
 }
@@ -113,9 +115,9 @@ export function useGotoNewPost({postOwnerType}){
 export function useGotoCapsule({nft}) {
   const navigation = useNavigation()
   const gotoCapsule = () => {
-    navigation.navigate(NAV_NAMES.Capsule, {
+    navigation.navigate(NAV_NAMES.Capsule as never, {
       nft,
-    })
+    } as never)
   };
   return gotoCapsule
 }
@@ -129,9 +131,9 @@ export function useGotoLikeList({likableType, likableId}) {
         likableType, likableId
       ),
     );
-    navigation.navigate(NAV_NAMES.LikeList, {
+    navigation.navigate(NAV_NAMES.LikeList as never, {
       likableType, likableId
-    })
+    } as never)
   };
   return gotoCapsule
 }
@@ -145,9 +147,9 @@ export function useGotoVoteList({postId}) {
         voteCategory, postId
       ),
     );
-    navigation.navigate(NAV_NAMES.VoteList, {
+    navigation.navigate(NAV_NAMES.VoteList as never, {
       voteCategory, postId
-    })
+    } as never)
   };
   return useGotoVoteList
 }
@@ -168,7 +170,7 @@ export function useGotoFollowList({followOwnerType, contractAddress, tokenId = n
             contractAddress,
           )
     );
-    navigation.navigate(NAV_NAMES.FollowList, {followOwnerType, followType, contractAddress, tokenId})
+    navigation.navigate(NAV_NAMES.FollowList as never, {followOwnerType, followType, contractAddress, tokenId} as never)
   };
   return gotoCapsule
 }
@@ -176,10 +178,10 @@ export function useGotoFollowList({followOwnerType, contractAddress, tokenId = n
 export function useGotoReport({id, reportType}){
   const navigation = useNavigation()
   const gotoReport = () => {
-    navigation.navigate(NAV_NAMES.Report, {
+    navigation.navigate(NAV_NAMES.Report as never, {
       id,
       reportType
-    })
+    } as never)
   }
   return gotoReport
 }
@@ -196,7 +198,7 @@ export function useGotoQR(){
       contract_address: currentNft.contract_address,
       token_id: currentNft.token_id
     })
-    navigation.navigate(NAV_NAMES.Qr)
+    navigation.navigate(NAV_NAMES.Qr as never)
   }
   return gotoReport
 }
@@ -210,7 +212,7 @@ export function useGotoRankSeason({cwyear, cweek}) {
         cwyear, cweek
       ),
     );
-    navigation.navigate(NAV_NAMES.RankSeason)
+    navigation.navigate(NAV_NAMES.RankSeason as never)
   };
   return useGotoRankSeason
 }
@@ -218,7 +220,7 @@ export function useGotoRankSeason({cwyear, cweek}) {
 export function useGotoScan({scanType}){
   const navigation = useNavigation()
   const gotoScan = () => {
-    navigation.navigate(NAV_NAMES.Scan, {scanType})
+    navigation.navigate(NAV_NAMES.Scan as never, {scanType} as never)
   }
   return gotoScan
 }
@@ -230,7 +232,7 @@ export function useGotoNotification() {
     apiGETWithToken(
       apis.notification.list._()
     );
-    navigation.navigate(NAV_NAMES.Notification)
+    navigation.navigate(NAV_NAMES.Notification as never)
   };
   return useGotoNotification
 }
@@ -268,7 +270,7 @@ export function useGotoRankDeltum({contractAddress, tokenId}) {
     apiGETWithToken(
       apis.rankDeltum.list(contractAddress, tokenId)
     );
-    navigation.navigate(NAV_NAMES.RankDeltum, {contractAddress, tokenId})
+    navigation.navigate(NAV_NAMES.RankDeltum as never, {contractAddress, tokenId} as never)
   };
   return gotoRankDeltum
 }
@@ -280,11 +282,11 @@ export function useGotoCollectionFeed({contractAddress}) {
     apiGETWithToken(
       apis.feed.collection(contractAddress, type)
     );
-    navigation.navigate(NAV_NAMES.CollectionFeed, {
+    navigation.navigate(NAV_NAMES.CollectionFeed as never, {
       contractAddress,
       title,
       type
-    })
+    } as never)
   };
   return gotoCollectionFeed
 }
@@ -296,10 +298,10 @@ export function useGotoForumFeed({postId}) {
     apiGETWithToken(
       apis.post.postId.repost.list.proposal(postId, 1)
     );
-    navigation.navigate(NAV_NAMES.ForumFeed, {
+    navigation.navigate(NAV_NAMES.ForumFeed as never, {
       postId,
       title
-    })
+    } as never)
   };
   return gotoCollectionFeed
 }
@@ -311,9 +313,9 @@ export function useGotoRepostList({postId}) {
     apiGETWithToken(
       apis.post.postId.repost.list._(postId, 1)
     );
-    navigation.navigate(NAV_NAMES.RepostList, {
+    navigation.navigate(NAV_NAMES.RepostList as never, {
       postId
-    })
+    } as never)
   };
   return gotoCollectionFeed
 }
@@ -338,9 +340,9 @@ export function useGotoCollectionEventList({nftCollection}){
     apiGETWithToken(
       apis.collectionEvent.contractAddress.list(nftCollection.contract_address)
     )
-    navigation.navigate(NAV_NAMES.CollectionEventList, {
+    navigation.navigate(NAV_NAMES.CollectionEventList as never, {
       nftCollection
-    })
+    } as never)
   }
   return gotoCollectionEventList
 }
@@ -355,10 +357,10 @@ export function useGotoAttendanceList({collectionEventId}){
         attendanceCategory,
       )
     )
-    navigation.navigate(NAV_NAMES.AttendanceList, {
+    navigation.navigate(NAV_NAMES.AttendanceList as never, {
       collectionEventId,
         attendanceCategory,
-    })
+    } as never)
   }
   return gotoAttendanceList
 }
@@ -366,9 +368,9 @@ export function useGotoAttendanceList({collectionEventId}){
 export function useGotoNewCollectionEvent({nftCollection}){
   const navigation = useNavigation()
   const gotoNewCollectionEvent = () => {
-    navigation.navigate(NAV_NAMES.NewCollectionEvent, {
+    navigation.navigate(NAV_NAMES.NewCollectionEvent as never, {
       nftCollection
-    })
+    } as never)
   }
   return gotoNewCollectionEvent
 }
@@ -376,9 +378,9 @@ export function useGotoNewCollectionEvent({nftCollection}){
 export function useGotoAffinity({nftCollection}){
   const navigation = useNavigation()
   const gotoAffinity = () => {
-    navigation.navigate(NAV_NAMES.Affinity, {
+    navigation.navigate(NAV_NAMES.Affinity as never, {
       nftCollection
-    })
+    } as never)
   }
   return gotoAffinity
 }
@@ -395,10 +397,10 @@ export function useGotoCollectionEvent({collectionEvent}){
         )
       )
     }
-    navigation.navigate(NAV_NAMES.CollectionEvent, {
+    navigation.navigate(NAV_NAMES.CollectionEvent as never, {
       collectionEvent,
       reload
-    })
+    } as never)
   }
   return gotoCollectionEvent
 }
