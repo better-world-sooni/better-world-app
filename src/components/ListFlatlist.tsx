@@ -1,0 +1,95 @@
+import {BlurView} from '@react-native-community/blur';
+import {useNavigation} from '@react-navigation/native';
+import React from 'react';
+import {ActivityIndicator, RefreshControl} from 'react-native';
+import {ChevronLeft} from 'react-native-feather';
+import Animated, {
+  useAnimatedScrollHandler,
+  useAnimatedStyle,
+  useSharedValue,
+} from 'react-native-reanimated';
+import {HAS_NOTCH} from 'src/modules/constants';
+import {DEVICE_WIDTH} from 'src/modules/styles';
+import {Col} from './common/Col';
+import {Div} from './common/Div';
+import {Row} from './common/Row';
+import {Span} from './common/Span';
+
+export default function ListFlatlist({
+  refreshing,
+  onRefresh,
+  onEndReached = null,
+  isPaginating = false,
+  renderItem,
+  data,
+  title,
+}) {
+  const {goBack} = useNavigation();
+  const translationY = useSharedValue(0);
+  const scrollHandler = useAnimatedScrollHandler(event => {
+    translationY.value = event.contentOffset.y;
+  });
+  const headerHeight = HAS_NOTCH ? 94 : 70;
+  const headerStyles = useAnimatedStyle(() => {
+    return {
+      width: DEVICE_WIDTH,
+      height: headerHeight,
+      opacity: Math.min(translationY.value / 50, 1),
+    };
+  });
+  return (
+    <Div flex={1} bgWhite>
+      <Div h={headerHeight} zIndex={100}>
+        <Animated.View style={headerStyles}>
+          <BlurView
+            blurType="xlight"
+            blurAmount={30}
+            blurRadius={20}
+            style={{
+              width: DEVICE_WIDTH,
+              height: '100%',
+              position: 'absolute',
+            }}
+            reducedTransparencyFallbackColor="white"></BlurView>
+        </Animated.View>
+        <Div zIndex={100} absolute w={DEVICE_WIDTH} top={HAS_NOTCH ? 49 : 25}>
+          <Row itemsCenter py5 h40 px8>
+            <Col itemsStart>
+              <Div auto rounded100 onPress={goBack}>
+                <ChevronLeft
+                  width={30}
+                  height={30}
+                  color="black"
+                  strokeWidth={2}
+                />
+              </Div>
+            </Col>
+            <Col auto onPress={goBack}>
+              <Span bold fontSize={19}>
+                {title}
+              </Span>
+            </Col>
+            <Col></Col>
+          </Row>
+        </Div>
+      </Div>
+      <Animated.FlatList
+        automaticallyAdjustContentInsets
+        showsVerticalScrollIndicator={false}
+        onScroll={scrollHandler}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+        onEndReached={onEndReached}
+        data={data}
+        renderItem={renderItem}
+        ListFooterComponent={
+          isPaginating && (
+            <Div itemsCenter py15>
+              <ActivityIndicator />
+            </Div>
+          )
+        }></Animated.FlatList>
+    </Div>
+  );
+}

@@ -53,7 +53,7 @@ const HomeScreen = () => {
     sideMenuRef?.current?.openMenu(true);
   };
   useFocusEffect(() => {
-    // updateUnreadMessageCount();
+    updateUnreadMessageCount();
   });
   return (
     <SideMenu
@@ -63,7 +63,7 @@ const HomeScreen = () => {
       menu={<MyNftCollectionMenu nftCollection={nftCollection} />}
       bounceBackOnOverdraw={false}
       openMenuOffset={DEVICE_WIDTH - 65}>
-    <StatusBar barStyle="dark-content"></StatusBar>
+      <StatusBar barStyle="dark-content"></StatusBar>
       <FeedFlatlist
         refreshing={feedLoading}
         onRefresh={handleRefresh}
@@ -106,51 +106,5 @@ const HomeScreen = () => {
     </SideMenu>
   );
 };
-
-function MyActiveCapsule() {
-  const {currentNft} = useSelector(
-    (root: RootState) => root.app.session,
-    shallowEqual,
-  );
-  const goToCapsule = useGotoCapsule({nft: currentNft});
-  return (
-    <Div ml15 relative onPress={goToCapsule}>
-      <Img uri={currentNft.capsule.image_uri} w92 h132 rounded10 />
-      <Img
-        absolute
-        top10
-        left10
-        w28
-        h28
-        rounded20
-        border1
-        borderWhite
-        uri={getNftProfileImage(currentNft, 50, 50)}></Img>
-    </Div>
-  );
-}
-
-function ActiveCapsule({nft}) {
-  const goToCapsule = useGotoCapsule({nft});
-  return (
-    <Div
-      ml8
-      relative
-      onPress={goToCapsule}
-      opacity={nft.capsule.is_active ? 1 : 0.8}>
-      <Img uri={nft.capsule.image_uri} w92 h132 rounded10 />
-      <Img
-        absolute
-        top10
-        left10
-        w28
-        h28
-        rounded20
-        border1
-        borderWhite
-        uri={getNftProfileImage(nft, 50, 50)}></Img>
-    </Div>
-  );
-}
 
 export default HomeScreen;
