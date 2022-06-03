@@ -4,21 +4,16 @@ import {HAS_NOTCH} from 'src/modules/constants';
 import {ActivityIndicator, RefreshControl} from 'react-native';
 import {Row} from 'src/components/common/Row';
 import {Col} from 'src/components/common/Col';
-import {
-  AtSign,
-  Award,
-  ChevronLeft,
-  ChevronRight,
-  HelpCircle,
-  Search,
-  Star,
-} from 'react-native-feather';
+import {ChevronLeft, ChevronRight, Search} from 'react-native-feather';
 import {Span} from 'src/components/common/Span';
 import apis from 'src/modules/apis';
-import {useApiSelector, useReloadGETWithToken} from 'src/redux/asyncReducer';
+import {
+  useApiSelector,
+  usePaginateGETWithToken,
+  useReloadGETWithToken,
+} from 'src/redux/asyncReducer';
 import {TextInput} from 'src/modules/viewComponents';
 import {Img} from 'src/components/common/Img';
-import {useIsCurrentNft} from 'src/modules/nftUtils';
 import {DEVICE_WIDTH} from 'src/modules/styles';
 import {useGotoNftProfile, useGotoRankSeason} from 'src/hooks/useGoto';
 import Animated, {
@@ -33,12 +28,31 @@ import Colors from 'src/constants/Colors';
 
 const SearchScreen = () => {
   const searchRef = useRef(null);
-  const {data: rankRes, isLoading: rankLoad} = useApiSelector(apis.rank.all);
+  const {
+    data: rankRes,
+    isLoading: rankLoad,
+    isPaginating: rankPaginating,
+    page,
+    isNotPaginatable,
+  } = useApiSelector(apis.rank.list);
   const reloadGetWithToken = useReloadGETWithToken();
-  const onRefresh = () => {
+  const paginateGetWithToken = usePaginateGETWithToken();
+  const handleRefresh = () => {
     if (rankLoad) return;
     reloadGetWithToken(
-      apis.rank.all(rankRes?.rank_season?.cwyear, rankRes?.rank_season?.cweek),
+      apis.rank.list(rankRes?.rank_season?.cwyear, rankRes?.rank_season?.cweek),
+    );
+  };
+  const handleEndReached = () => {
+    if (rankPaginating || isNotPaginatable) return;
+    paginateGetWithToken(
+      apis.rank.list(
+        rankRes?.rank_season?.cwyear,
+        rankRes?.rank_season?.cweek,
+        text,
+        page + 1,
+      ),
+      'ranks',
     );
   };
   const [text, textHasChanged, handleChangeText] = useEdittableText('');
@@ -47,13 +61,13 @@ const SearchScreen = () => {
   const onPressLeft = () => {
     if (!rankRes || rankLoad || !previousSeason) return;
     reloadGetWithToken(
-      apis.rank.all(previousSeason.cwyear, previousSeason.cweek, text),
+      apis.rank.list(previousSeason.cwyear, previousSeason.cweek, text),
     );
   };
   const onPressRight = () => {
     if (!rankRes || rankLoad || !nextSeason) return;
     reloadGetWithToken(
-      apis.rank.all(nextSeason.cwyear, nextSeason.cweek, text),
+      apis.rank.list(nextSeason.cwyear, nextSeason.cweek, text),
     );
   };
   const onPressSearch = () => {
@@ -63,14 +77,11 @@ const SearchScreen = () => {
     cwyear: rankRes?.rank_season?.cwyear,
     cweek: rankRes?.rank_season?.cweek,
   });
-
-  const translationY = useSharedValue(0);
-
   const handleChangeQuery = text => {
     handleChangeText(text);
     if (rankRes) {
       reloadGetWithToken(
-        apis.rank.all(
+        apis.rank.list(
           rankRes.rank_season.cwyear,
           rankRes.rank_season.cweek,
           text,
@@ -78,6 +89,8 @@ const SearchScreen = () => {
       );
     }
   };
+
+  const translationY = useSharedValue(0);
   const scrollHandler = useAnimatedScrollHandler(event => {
     translationY.value = event.contentOffset.y;
   });
@@ -138,6 +151,7 @@ const SearchScreen = () => {
         automaticallyAdjustContentInsets
         showsVerticalScrollIndicator={false}
         onScroll={scrollHandler}
+        onEndReached={handleEndReached}
         ListHeaderComponent={
           <>
             <Div h={headerHeight}></Div>
@@ -175,7 +189,8 @@ const SearchScreen = () => {
         refreshControl={
           <RefreshControl
             refreshing={rankLoad && !textHasChanged}
-            onRefresh={onRefresh}
+            onRefresh={handleRefresh}
+            progressViewOffset={headerHeight}
           />
         }
         data={rankRes ? rankRes.ranks : []}

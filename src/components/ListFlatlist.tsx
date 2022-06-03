@@ -39,7 +39,7 @@ export default function ListFlatlist({
   });
   return (
     <Div flex={1} bgWhite>
-      <Div h={headerHeight} zIndex={100}>
+      <Div h={headerHeight} zIndex={100} absolute top0>
         <Animated.View style={headerStyles}>
           <BlurView
             blurType="xlight"
@@ -77,18 +77,29 @@ export default function ListFlatlist({
         automaticallyAdjustContentInsets
         showsVerticalScrollIndicator={false}
         onScroll={scrollHandler}
+        contentContainerStyle={{
+          marginTop: headerHeight,
+          marginBottom: headerHeight,
+        }}
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            progressViewOffset={headerHeight}
+          />
         }
         onEndReached={onEndReached}
         data={data}
         renderItem={renderItem}
         ListFooterComponent={
-          isPaginating && (
-            <Div itemsCenter py15>
-              <ActivityIndicator />
-            </Div>
-          )
+          <>
+            {isPaginating && (
+              <Div itemsCenter py15>
+                <ActivityIndicator />
+              </Div>
+            )}
+            <Div h={headerHeight}></Div>
+          </>
         }></Animated.FlatList>
     </Div>
   );

@@ -3,7 +3,7 @@ import querystring from 'querystring'
 import {isEmpty, omitBy, isNil} from 'lodash'
 
 const BASE_URL = 'http://192.168.1.185:3000';
-// const BASE_URL = 'http://3.39.22.255:3000';
+// const BASE_URL = 'https://api.betterworldapp.io';
 const toUrl = (...args) => ({url: urljoin(...args)});
 const base = path => toUrl(BASE_URL, path);
 const apiV1 = path => toUrl(BASE_URL, '/api/v1', path);
@@ -96,7 +96,7 @@ const apis = {
     list: (voteCategory, postId, page?) => apiV1(`/vote/list${urlParams({page, post_id: postId, vote_category: voteCategory})}`),
   },
   rank:{
-    all: (cwyear?, cweek?, keyword?) => cwyear && cweek ?  (keyword ? apiV1(`/rank/all?cwyear=${cwyear}&cweek=${cweek}&keyword=${keyword}`) : apiV1(`/rank/all?cwyear=${cwyear}&cweek=${cweek}`)) : apiV1(`/rank/all`)
+    list: (cwyear?, cweek?, keyword?, page?) => apiV1(`/rank/list${urlParams({cwyear, cweek, page, keyword})}`)
   },
   post: {
     _: () => apiV1(`/post`),
