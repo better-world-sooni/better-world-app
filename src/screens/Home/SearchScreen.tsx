@@ -13,9 +13,8 @@ import {
   useReloadGETWithToken,
 } from 'src/redux/asyncReducer';
 import {TextInput} from 'src/modules/viewComponents';
-import {Img} from 'src/components/common/Img';
 import {DEVICE_WIDTH} from 'src/modules/styles';
-import {useGotoNftProfile, useGotoRankSeason} from 'src/hooks/useGoto';
+import {useGotoRankSeason} from 'src/hooks/useGoto';
 import Animated, {
   useAnimatedScrollHandler,
   useAnimatedStyle,
@@ -23,8 +22,8 @@ import Animated, {
 } from 'react-native-reanimated';
 import {BlurView} from '@react-native-community/blur';
 import useEdittableText from 'src/hooks/useEdittableText';
-import {resizeImageUri} from 'src/modules/uriUtils';
 import Colors from 'src/constants/Colors';
+import RankedOwner from 'src/components/RankOwner';
 
 const SearchScreen = () => {
   const searchRef = useRef(null);
@@ -195,69 +194,11 @@ const SearchScreen = () => {
         }
         data={rankRes ? rankRes.ranks : []}
         renderItem={({item, index}) => {
-          return <RankedNft rankItem={item} />;
+          return <RankedOwner rankItem={item} />;
         }}></Animated.FlatList>
     </Div>
   );
 };
 
-function RankedNft({rankItem}) {
-  const gotoNftProfile = useGotoNftProfile({
-    nft: {
-      contract_address: rankItem.contract_address,
-      token_id: rankItem.token_id,
-      name: rankItem.nft_name,
-      image_uri: rankItem.nft_image_uri || rankItem.nft_metadatum_image_uri,
-      nft_metadatum: {
-        name: rankItem.nft_metadatum_name,
-      },
-    },
-  });
-  return (
-    <Row itemsCenter h70 onPress={gotoNftProfile} px15 relative>
-      <Img
-        w50
-        h50
-        rounded100
-        uri={
-          rankItem.nft_image_uri
-            ? resizeImageUri(rankItem.nft_image_uri, 200, 200)
-            : rankItem.nft_metadatum_image_uri
-        }
-      />
-      <Col mx15>
-        <Div>
-          <Span medium fontSize={15} bold>
-            {rankItem.nft_name || rankItem.nft_metadatum_name}
-          </Span>
-        </Div>
-        {rankItem.nft_name && (
-          <Div mt3>
-            <Span gray600 fontSize={12}>
-              {rankItem.nft_metadatum_name}
-            </Span>
-          </Div>
-        )}
-      </Col>
-      <Col />
-      <Col auto mr10 itemsCenter justifyCenter>
-        <Span gray700>
-          <Span bold black>
-            {rankItem.rank}
-          </Span>{' '}
-          위
-        </Span>
-      </Col>
-      <Col auto mr10 itemsCenter justifyCenter>
-        <Span gray700>
-          <Span bold black>
-            {rankItem.rank_score}
-          </Span>{' '}
-          RP
-        </Span>
-      </Col>
-    </Row>
-  );
-}
 
 export default SearchScreen;

@@ -23,6 +23,7 @@ export default function ListFlatlist({
   renderItem,
   data,
   title,
+  enableBack = true,
 }) {
   const {goBack} = useNavigation();
   const translationY = useSharedValue(0);
@@ -55,14 +56,16 @@ export default function ListFlatlist({
         <Div zIndex={100} absolute w={DEVICE_WIDTH} top={HAS_NOTCH ? 49 : 25}>
           <Row itemsCenter py5 h40 px8>
             <Col itemsStart>
-              <Div auto rounded100 onPress={goBack}>
-                <ChevronLeft
-                  width={30}
-                  height={30}
-                  color="black"
-                  strokeWidth={2}
-                />
-              </Div>
+              {enableBack && (
+                <Div auto rounded100 onPress={goBack}>
+                  <ChevronLeft
+                    width={30}
+                    height={30}
+                    color="black"
+                    strokeWidth={2}
+                  />
+                </Div>
+              )}
             </Col>
             <Col auto onPress={goBack}>
               <Span bold fontSize={19}>

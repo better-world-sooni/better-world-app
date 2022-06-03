@@ -57,11 +57,11 @@ const apis = {
     qr: () => apiV1(`/hug/qr`),
   },
   rankDeltum: {
-    list: (contractAddress, tokenId) => apiV1(`/rank_deltum/${contractAddress}/${tokenId}/list`)
+    list: (contractAddress, tokenId, page?) => apiV1(`/rank_deltum/${contractAddress}/${tokenId}/list${urlParams({page})}`)
   },
   notification: {
     list: {
-      _: () => apiV1(`/notification/list`),
+      _: (page?) => apiV1(`/notification/list${urlParams({page})}`),
       unreadCount: () => apiV1(`/notification/list/unread_count`)
     }
   },
