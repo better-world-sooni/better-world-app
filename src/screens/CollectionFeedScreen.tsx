@@ -1,55 +1,49 @@
 import React from 'react';
-import {Col} from 'src/components/common/Col';
 import apis from 'src/modules/apis';
-import {useApiSelector, useReloadGETWithToken} from 'src/redux/asyncReducer';
+import {
+  useApiSelector,
+  usePaginateGETWithToken,
+  useReloadGETWithToken,
+} from 'src/redux/asyncReducer';
 import Post from 'src/components/common/Post';
-import {Div} from 'src/components/common/Div';
-import {useNavigation} from '@react-navigation/native';
-import {ChevronLeft} from 'react-native-feather';
-import FeedFlatlistWithHeader from 'src/components/FeedFlatlistWithHeader';
-import {Span} from 'src/components/common/Span';
+import ListFlatlist from 'src/components/ListFlatlist';
 
 export default function CollectionFeedScreen({
   route: {
     params: {contractAddress, title, type},
   },
 }) {
-  const {data: feedRes, isLoading: feedLoad} = useApiSelector(
-    apis.feed.collection,
-  );
-  const {goBack} = useNavigation();
+  const {
+    data: feedRes,
+    isLoading: feedLoading,
+    isPaginating: feedPaginating,
+    page,
+    isNotPaginatable,
+  } = useApiSelector(apis.feed.collection);
+  const paginateGetWithToken = usePaginateGETWithToken();
+  const handleEndReached = () => {
+    if (feedPaginating || isNotPaginatable) return;
+    paginateGetWithToken(
+      apis.feed.collection(contractAddress, type, page + 1),
+      'feed',
+    );
+  };
   const reloadGetWithToken = useReloadGETWithToken();
   const onRefresh = () => {
+    if (feedLoading) return;
     reloadGetWithToken(apis.feed.collection(contractAddress, type));
   };
   return (
-    <FeedFlatlistWithHeader
-      refreshing={feedLoad}
+    <ListFlatlist
       onRefresh={onRefresh}
-      renderItem={({item, index}) => {
+      data={feedRes ? feedRes.feed : []}
+      refreshing={feedLoading}
+      onEndReached={handleEndReached}
+      isPaginating={feedPaginating}
+      title={title}
+      renderItem={({item}) => {
         return <Post key={(item as any).id} post={item} />;
       }}
-      data={feedRes ? feedRes.feed : []}
-      HeaderComponent={
-        <>
-          <Col itemsStart>
-            <Div auto rounded100 onPress={goBack}>
-              <ChevronLeft
-                width={30}
-                height={30}
-                color="black"
-                strokeWidth={2}
-              />
-            </Div>
-          </Col>
-          <Col auto>
-            <Span bold fontSize={19}>
-              {title}
-            </Span>
-          </Col>
-          <Col></Col>
-        </>
-      }
     />
   );
 }

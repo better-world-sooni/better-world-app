@@ -1,7 +1,6 @@
 import React from 'react';
 import {Div} from 'src/components/common/Div';
 import apis from 'src/modules/apis';
-import {useApiSelector, useReloadGETWithToken} from 'src/redux/asyncReducer';
 import NftProfile from 'src/components/common/NftProfile';
 import {shallowEqual, useSelector} from 'react-redux';
 import {RootState} from 'src/redux/rootReducer';
@@ -12,7 +11,7 @@ const ProfileScreen = ({route: {params}}) => {
     shallowEqual,
   );
   const pageableNftPostFn = (page?) => {
-    return apis.post.list.nft(null, null, page);
+    return apis.post.list._(page);
   };
 
   return (

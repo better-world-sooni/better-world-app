@@ -51,6 +51,7 @@ export default function NftProfile({
   const reloadGetWithToken = useReloadGETWithToken();
   const handleRefresh = () => {
     reloadGetWithToken(nftProfileApiObject);
+    reloadGetWithToken(pageableNftPostFn());
   };
   const nft = profileData?.nft;
   const translationY = useSharedValue(0);
@@ -153,17 +154,6 @@ export default function NftProfile({
             bottomPopupRef={bottomPopupRef}
             qrScan={qrScan}
           />
-        }
-        ListEmptyComponent={
-          <Div>
-            <Row py15>
-              <Col></Col>
-              <Col auto>
-                <Span>아직 게시물이 없습니다.</Span>
-              </Col>
-              <Col></Col>
-            </Row>
-          </Div>
         }
         ListFooterComponent={
           <>

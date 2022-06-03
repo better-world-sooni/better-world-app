@@ -111,7 +111,8 @@ const apis = {
       }
     },
     list: {
-      nft: (contractAddress?, tokenId?, page?) => apiV1(`/post/list/nft${urlParams({contract_address: contractAddress, token_id: tokenId, page})}`),
+      _: (page?) => apiV1(`/post/list/nft${urlParams({page})}`),
+      nft: (contractAddress, tokenId, page?) => apiV1(`/post/list/nft${urlParams({contract_address: contractAddress, token_id: tokenId, page})}`),
       nftCollection: (contractAddress, page?) => apiV1(`/post/list/nft_collection${urlParams({contract_address: contractAddress, page})}`)
     }
   },
@@ -125,7 +126,7 @@ const apis = {
   },
   feed: {
     _: (page?) => apiV1(`/feed${urlParams({page})}`),
-    collection: (contractAddress, type?) => apiV1(`/feed/collection?contract_address${urlParams({contract_address: contractAddress, type: type})}`),
+    collection: (contractAddress, type?, page?) => apiV1(`/feed/collection?contract_address${urlParams({contract_address: contractAddress, type, page})}`),
   },
   presignedUrl: {
     _: () => apiV1(`/presigned_url`)
@@ -140,14 +141,14 @@ const apis = {
   collectionEvent: {
     _: () => apiV1(`/collection_event`),
     contractAddress: {
-      list: (collectionEventId) => apiV1(`/collection_event/${collectionEventId}/list`),
+      list: (collectionEventId, page?) => apiV1(`/collection_event/${collectionEventId}/list${urlParams({page})}`),
     },
     collectionEventId: (collectionEventId) => apiV1(`/collection_event/${collectionEventId}`),
   },
   attendance: {
     collectionEventId: {
       _: (collectionEventId) => apiV1(`/attendance/${collectionEventId}`),
-      list: (collectionEventId, attendanceCategory) => apiV1(`/attendance/${collectionEventId}/list?attendance_category=${attendanceCategory}`),
+      list: (collectionEventId, attendanceCategory, page?) => apiV1(`/attendance/${collectionEventId}/list${urlParams({attendance_category: attendanceCategory, page})}`),
     },
   },
 }

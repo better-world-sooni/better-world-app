@@ -24,6 +24,7 @@ export default function ListFlatlist({
   data,
   title,
   enableBack = true,
+  HeaderRightComponent = null,
 }) {
   const {goBack} = useNavigation();
   const translationY = useSharedValue(0);
@@ -72,7 +73,9 @@ export default function ListFlatlist({
                 {title}
               </Span>
             </Col>
-            <Col></Col>
+            <Col items pr7>
+              {HeaderRightComponent}
+            </Col>
           </Row>
         </Div>
       </Div>
@@ -80,6 +83,10 @@ export default function ListFlatlist({
         automaticallyAdjustContentInsets
         showsVerticalScrollIndicator={false}
         onScroll={scrollHandler}
+        keyExtractor={item =>
+          (item as any).id ||
+          `${(item as any).contract_address}-${(item as any).token_id}`
+        }
         contentContainerStyle={{
           marginTop: headerHeight,
           marginBottom: headerHeight,
@@ -102,6 +109,7 @@ export default function ListFlatlist({
               </Div>
             )}
             <Div h={headerHeight}></Div>
+            <Div h={HAS_NOTCH ? 27 : 12} />
           </>
         }></Animated.FlatList>
     </Div>

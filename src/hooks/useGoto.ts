@@ -87,6 +87,7 @@ export function useGotoNftCollectionProfile({nftCollection}){
     const navigation = useNavigation()
     const gotoProfile = () => {
       apiGETWithToken(apis.nft_collection.contractAddress.profile(nftCollection.contract_address));
+      apiGETWithToken(apis.post.list.nftCollection(nftCollection.contract_address))
       navigation.navigate(NAV_NAMES.NftCollection as never, {
         nftCollection
       } as never);

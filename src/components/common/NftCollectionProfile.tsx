@@ -6,7 +6,6 @@ import {Img} from './Img';
 import {Row} from './Row';
 import {Span} from './Span';
 import {resizeImageUri} from 'src/modules/uriUtils';
-import ProfileDataTabs from '../ProfileDataTabs';
 import {DEVICE_WIDTH} from 'src/modules/styles';
 import useFollow from 'src/hooks/useFollow';
 import apis from 'src/modules/apis';
@@ -24,22 +23,48 @@ import Animated, {
 } from 'react-native-reanimated';
 import {BlurView} from '@react-native-community/blur';
 import {useNavigation} from '@react-navigation/native';
-import {RefreshControl} from 'react-native';
+import {ActivityIndicator, RefreshControl} from 'react-native';
 import {FollowOwnerType, FollowType} from 'src/screens/FollowListScreen';
 import {shallowEqual, useSelector} from 'react-redux';
 import {RootState} from 'src/redux/rootReducer';
 import TruncatedMarkdown from './TruncatedMarkdown';
 import Post from './Post';
 import {getNftName, getNftProfileImage} from 'src/modules/nftUtils';
+import {
+  useApiSelector,
+  usePaginateGETWithToken,
+  useReloadGETWithToken,
+} from 'src/redux/asyncReducer';
 
 export default function NftCollectionProfile({
   nftCollectionCore,
-  nftCollection,
   isAdmin,
   onPressEditProfile,
-  refreshing,
-  onRefresh,
+  nftCollectionProfileApiObject,
+  pageableNftCollectionPostFn,
 }) {
+  const {
+    data: nftCollectionProfileRes,
+    isLoading: nftCollectionProfileLoading,
+  } = useApiSelector(nftCollectionProfileApiObject);
+  const {
+    data: nftCollectionPostListRes,
+    isLoading: nftCollectionPostListLoading,
+    isPaginating: nftCollectionPostListPaginating,
+    page,
+    isNotPaginatable,
+  } = useApiSelector(pageableNftCollectionPostFn());
+  const reloadGetWithToken = useReloadGETWithToken();
+  const handleRefresh = () => {
+    reloadGetWithToken(nftCollectionProfileApiObject);
+    reloadGetWithToken(pageableNftCollectionPostFn());
+  };
+  const paginateGetWithToken = usePaginateGETWithToken();
+  const handleEndReached = () => {
+    if (nftCollectionPostListPaginating || isNotPaginatable) return;
+    paginateGetWithToken(pageableNftCollectionPostFn(page + 1), 'posts');
+  };
+  const nftCollection = nftCollectionProfileRes?.nft_collection;
   const {currentNft} = useSelector(
     (root: RootState) => root.app.session,
     shallowEqual,
@@ -147,19 +172,9 @@ export default function NftCollectionProfile({
       <Animated.FlatList
         showsVerticalScrollIndicator={false}
         onScroll={scrollHandler}
+        onEndReached={handleEndReached}
         style={{marginTop: -30}}
-        data={nftCollection?.posts}
-        ListEmptyComponent={
-          <Div>
-            <Row py15>
-              <Col></Col>
-              <Col auto>
-                <Span>아직 게시물이 없습니다.</Span>
-              </Col>
-              <Col></Col>
-            </Row>
-          </Div>
-        }
+        data={nftCollectionPostListRes?.posts || []}
         ListHeaderComponent={
           <>
             <Row zIndex={100} px15 relative>
@@ -275,15 +290,17 @@ export default function NftCollectionProfile({
                     </Col>
                     <Col />
                   </Row>
-                  <Row mt10 itemsCenter>
-                    <Col auto>
-                      <AdminProfiles admin={nftCollection.admin_nfts} />
-                    </Col>
-                    <Col auto>
-                      <AdminNames admin={nftCollection.admin_nfts} />
-                    </Col>
-                    <Col />
-                  </Row>
+                  {nftCollection.admin_nfts.length > 0 && (
+                    <Row mt10 itemsCenter>
+                      <Col auto>
+                        <AdminProfiles admin={nftCollection.admin_nfts} />
+                      </Col>
+                      <Col auto>
+                        <AdminNames admin={nftCollection.admin_nfts} />
+                      </Col>
+                      <Col />
+                    </Row>
+                  )}
                   {nftCollection.about ? (
                     <Div mt16>
                       <TruncatedMarkdown
@@ -298,9 +315,27 @@ export default function NftCollectionProfile({
           </>
         }
         renderItem={({item}) => <Post post={item} />}
-        ListFooterComponent={<Div h={HAS_NOTCH ? 27 : 12} />}
+        ListFooterComponent={
+          <>
+            {(nftCollectionPostListPaginating ||
+              nftCollectionPostListLoading) && (
+              <Div itemsCenter py15>
+                <ActivityIndicator />
+              </Div>
+            )}
+            {isNotPaginatable && (
+              <Div itemsCenter py15>
+                <Span textCenter>게시물을 모두 확인했습니다.</Span>
+              </Div>
+            )}
+            <Div h={HAS_NOTCH ? 27 : 12} />
+          </>
+        }
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          <RefreshControl
+            refreshing={nftCollectionProfileLoading}
+            onRefresh={handleRefresh}
+          />
         }></Animated.FlatList>
     </>
   );

@@ -408,7 +408,7 @@ const asyncSlice = createSlice({
         isNotPaginatable,
         error: null,
       };
-      state[key].data[concatKey] = [...state[key].data[concatKey],...(data[concatKey])]
+      if(!isNotPaginatable) state[key].data[concatKey] = [...state[key].data[concatKey],...(data[concatKey])]
     },
     error(state, action) {
       const {key, error, status, elapsedTime} = action.payload;

@@ -13,9 +13,10 @@ export default function RankedOwner({rankItem}) {
       contract_address: rankItem.contract_address,
       token_id: rankItem.token_id,
       name: rankItem.nft_name,
-      image_uri: rankItem.nft_image_uri || rankItem.nft_metadatum_image_uri,
+      image_uri: rankItem.nft_image_uri,
       nft_metadatum: {
         name: rankItem.nft_metadatum_name,
+        image_uri: rankItem.nft_metadatum_image_uri,
       },
     },
   });
