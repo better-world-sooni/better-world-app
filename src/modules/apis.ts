@@ -1,10 +1,23 @@
 import urljoin from 'url-join';
+import querystring from 'querystring'
+import {isEmpty, omitBy, isNil} from 'lodash'
 
-const BASE_URL = 'http://localhost:3000';
-// const BASE_URL = 'http://localhost:3000';
+const BASE_URL = 'http://192.168.1.185:3000';
+// const BASE_URL = 'http://3.39.22.255:3000';
 const toUrl = (...args) => ({url: urljoin(...args)});
 const base = path => toUrl(BASE_URL, path);
 const apiV1 = path => toUrl(BASE_URL, '/api/v1', path);
+export const urlParams = (obj, nullable?) => {
+  if (nullable) {
+    return isEmpty(obj) ? '' : '?' + querystring.stringify(obj)
+  }
+  const nilRemoved = omitBy(obj, isNil)
+  if (isEmpty(nilRemoved)) {
+    return ''
+  }
+  return '?' + querystring.stringify(nilRemoved)
+}
+
 const apis = {
   auth: {
     kaikas: {
@@ -72,7 +85,7 @@ const apis = {
   like: {
     post: (postId) => apiV1(`/like/post/${postId}`),
     comment: (commentId) => apiV1(`/like/comment/${commentId}`),
-    list: (likableType, likableId) => apiV1(`/like/${likableType}/${likableId}/list`),
+    list: (likableType, likableId, page?) => apiV1(`/like/${likableType}/${likableId}/list${urlParams({page})}`),
   },
   vote: {
     postId: (postId) => apiV1(`/vote/${postId}`),
@@ -103,8 +116,8 @@ const apis = {
     }
   },
   feed: {
-    _: () => apiV1(`/feed`),
-    collection: (contractAddress, type?) => type ? apiV1(`/feed/collection?contract_address=${contractAddress}&type=${type}`) : apiV1(`/feed/collection?contract_address=${contractAddress}`),
+    _: (page?) => apiV1(`/feed${urlParams({page})}`),
+    collection: (contractAddress, type?) => apiV1(`/feed/collection?contract_address${urlParams({contract_address: contractAddress, type: type})}`),
   },
   presignedUrl: {
     _: () => apiV1(`/presigned_url`)

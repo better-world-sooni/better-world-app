@@ -1,5 +1,6 @@
 import React from 'react';
 import {Div} from 'src/components/common/Div';
+import FullPost from 'src/components/common/FullPost';
 import Post from 'src/components/common/Post';
 import NotFound from 'src/components/error/NotFound';
 import PostLoading from 'src/components/loading/PostLoading';
@@ -32,12 +33,12 @@ export default function PostScreen({
     <>
       <KeyboardAvoidingView flex={1} bgWhite relative behavior="padding">
         {postRes?.post ? (
-          <Post
+          <FullPost
             autoFocus={autoFocus}
             post={postRes?.post}
             refreshing={postLoad}
             onRefresh={handleRefresh}
-            full></Post>
+            full></FullPost>
         ) : null}
       </KeyboardAvoidingView>
       <Div h={HAS_NOTCH ? 27 : 12} bgWhite />

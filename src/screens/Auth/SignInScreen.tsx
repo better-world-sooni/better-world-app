@@ -1,6 +1,6 @@
 import { CommonActions } from '@react-navigation/native';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {ActivityIndicator, Alert, Keyboard} from 'react-native';
+import {ActivityIndicator, Alert, Keyboard, StatusBar} from 'react-native';
 import {Col} from 'src/components/common/Col';
 import {Div} from 'src/components/common/Div';
 import {Img} from 'src/components/common/Img';

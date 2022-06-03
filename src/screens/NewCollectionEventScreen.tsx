@@ -175,52 +175,40 @@ const NewCollectionEventScreen = ({
                 onPressRemove={handleRemoveImage}
                 disablePagination
               />
-              <Row bottom0 absolute w={'100%'}>
-                <Col
-                  auto
-                  relative
-                  borderTopRightRadius={10}
-                  overflowHidden
-                  maxW={((DEVICE_WIDTH - 30) * 5) / 6}>
-                  <Div
-                    style={{
-                      width: '100%',
-                      height: '100%',
-                      position: 'absolute',
-                      overflow: 'hidden',
-                    }}>
-                    <BlurView
-                      blurType="light"
-                      blurAmount={5}
-                      blurRadius={5}
-                      style={{
-                        width: '100%',
-                        height: '100%',
-                      }}
-                      reducedTransparencyFallbackColor="white"></BlurView>
-                  </Div>
-                  <Div px15 py8>
+              <Row bottom0 absolute w={'100%'} itemsEnd>
+                <Div bottom0 absolute w={'100%'} h70 bgWhite itemsEnd></Div>
+                <Col auto ml15>
+                  <Img
+                    border3
+                    borderWhite
+                    rounded100
+                    h100
+                    w100
+                    uri={getNftProfileImage(nftCollection)}></Img>
+                </Col>
+                <Col relative ml8 mr15 mb8nj>
+                  <Div>
                     <Div zIndex={100}>
                       <TextInput
                         innerRef={autoFocusRef}
                         value={title}
                         placeholder={'제목'}
-                        fontSize={20}
+                        fontSize={16}
                         w={'100%'}
                         style={{fontWeight: 'bold'}}
                         onChangeText={handleTitleChange}></TextInput>
                     </Div>
-                    <Div mt8 zIndex={100}>
+                    <Div mt4 zIndex={100}>
                       <TextInput
                         value={locationString}
                         placeholder={'위치'}
-                        fontSize={14}
+                        fontSize={12}
                         w={'100%'}
-                        style={{fontWeight: 'bold'}}
+                        style={{fontWeight: 'bold', color: Colors.gray[700]}}
                         onChangeText={setLocationString}></TextInput>
                     </Div>
-                    <Div mt8>
-                      <Span>
+                    <Div mt4>
+                      <Span gray700 numberOfLines={1} ellipsizeMode="tail">
                         <Span
                           bold
                           fontSize={12}
@@ -240,7 +228,6 @@ const NewCollectionEventScreen = ({
                     </Div>
                   </Div>
                 </Col>
-                <Col itemsEnd justifyEnd></Col>
               </Row>
             </Div>
             <Div px15 py8>

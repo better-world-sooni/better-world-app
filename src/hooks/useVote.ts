@@ -4,15 +4,15 @@ import { smallBump } from "src/modules/hapticFeedBackUtils";
 import { usePostPromiseFnWithToken } from "src/redux/asyncReducer";
 
 export enum VoteCategory {
-    Against,
-    For,
-    Abstain
+    Against = 0,
+    For = 1,
+    Abstain = 2
 }
 export default function useVote({initialVote, initialForVotesCount, initialAgainstVotesCount, initialAbstainVotesCount, postId}) {
     const [vote, setVote] = useState(initialVote)
-    const forVoteOffset = !initialVote && VoteCategory.For == vote ? 1 : 0;
-    const againstVoteOffset = !initialVote && VoteCategory.Against == vote ? 1 : 0;
-    const abstainVoteOffset = !initialVote && VoteCategory.Abstain == vote ? 1 : 0;
+    const forVoteOffset = initialVote == null && VoteCategory.For == vote ? 1 : 0;
+    const againstVoteOffset = initialVote == null && VoteCategory.Against == vote ? 1 : 0;
+    const abstainVoteOffset = initialVote == null && VoteCategory.Abstain == vote ? 1 : 0;
     
     const postPromiseFnWithToken = usePostPromiseFnWithToken();
     useEffect(() => {

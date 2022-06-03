@@ -108,7 +108,7 @@ function CommentContent({
             <Col mr10>
               <Span>
                 <Span bold fontSize={14} onPress={goToProfile}>
-                  {nftName}{' '}
+                  {nftName || nftMetadatumName}{' '}
                 </Span>{' '}
                 <Span fontSize={14}>{content}</Span>
               </Span>

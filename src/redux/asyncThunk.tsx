@@ -1,6 +1,12 @@
 import elapsed from '@f/elapsed-time';
 import {asyncActions} from './asyncReducer';
 
+export enum FetchType {
+  Normal,
+  Reload,
+  Paginate,
+}
+
 export const asyncThunk =
   ({
     key,
@@ -9,12 +15,15 @@ export const asyncThunk =
     successHandler,
     errHandler,
     navigation,
-    reload = false,
+    fetchType = FetchType.Normal,
+    concatKey = null,
   }) =>
   async dispatch => {
     const time = elapsed();
     try {
-      if (reload) {
+      if (fetchType == FetchType.Paginate) {
+        dispatch(asyncActions.fetchPaginate({key: key, args: args}));
+      } else if (fetchType == FetchType.Reload) {
         dispatch(asyncActions.fetchReload({key: key, args: args}));
       } else {
         dispatch(asyncActions.fetchEvery({key: key, args: args}));
@@ -23,10 +32,15 @@ export const asyncThunk =
       const {ok, data, status} = ret;
       if (ok && (data.success === undefined || data.success)) {
         const elapsedTime = time();
+        const successFn =
+          fetchType == FetchType.Paginate
+            ? asyncActions.successConcat
+            : asyncActions.success;
         dispatch(
-          asyncActions.success({
+          successFn({
             key: key,
             data: data,
+            concatKey,
             status: status,
             elapsedTime: elapsedTime,
           }),

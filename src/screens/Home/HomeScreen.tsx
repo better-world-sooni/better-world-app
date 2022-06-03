@@ -3,7 +3,11 @@ import {Div} from 'src/components/common/Div';
 import {Col} from 'src/components/common/Col';
 import {Send} from 'react-native-feather';
 import apis from 'src/modules/apis';
-import {useApiSelector, useReloadGETWithToken} from 'src/redux/asyncReducer';
+import {
+  useApiSelector,
+  usePaginateGETWithToken,
+  useReloadGETWithToken,
+} from 'src/redux/asyncReducer';
 import Post from 'src/components/common/Post';
 import {Img} from 'src/components/common/Img';
 import {shallowEqual, useSelector} from 'react-redux';
@@ -17,26 +21,39 @@ import {IMAGES} from 'src/modules/images';
 import SideMenu from 'react-native-side-menu-updated';
 import MyNftCollectionMenu from '../../components/common/MyNftCollectionMenu';
 import FeedFlatlist from 'src/components/FeedFlatlist';
+import {StatusBar} from 'native-base';
 
 const HomeScreen = () => {
-  const {data: feedRes, isLoading: feedLoad} = useApiSelector(apis.feed._);
+  const {
+    data: feedRes,
+    isLoading: feedLoading,
+    isPaginating: feedPaginating,
+    page,
+    isNotPaginatable,
+  } = useApiSelector(apis.feed._);
   const {data: nftCollectionRes, isLoading: nftCollectionLoad} = useApiSelector(
     apis.nft_collection.profile(),
   );
   const nftCollection = nftCollectionRes?.nft_collection;
   const gotoChatList = useGotoChatList();
-  const reloadGetWithToken = useReloadGETWithToken();
+  const reloadGETWithToken = useReloadGETWithToken();
+  const paginateGetWithToken = usePaginateGETWithToken();
   const updateUnreadMessageCount = useUpdateUnreadMessageCount();
-  const onRefresh = () => {
-    reloadGetWithToken(apis.feed._());
-    reloadGetWithToken(apis.nft_collection.profile());
+  const handleRefresh = () => {
+    if (feedLoading) return;
+    reloadGETWithToken(apis.feed._());
+    reloadGETWithToken(apis.nft_collection.profile());
+  };
+  const handleEndReached = () => {
+    if (feedPaginating || isNotPaginatable) return;
+    paginateGetWithToken(apis.feed._(page + 1), 'feed');
   };
   const sideMenuRef = useRef(null);
   const openSideMenu = () => {
     sideMenuRef?.current?.openMenu(true);
   };
   useFocusEffect(() => {
-    updateUnreadMessageCount();
+    // updateUnreadMessageCount();
   });
   return (
     <SideMenu
@@ -46,9 +63,13 @@ const HomeScreen = () => {
       menu={<MyNftCollectionMenu nftCollection={nftCollection} />}
       bounceBackOnOverdraw={false}
       openMenuOffset={DEVICE_WIDTH - 65}>
+    <StatusBar barStyle="dark-content"></StatusBar>
       <FeedFlatlist
-        refreshing={feedLoad}
-        onRefresh={onRefresh}
+        refreshing={feedLoading}
+        onRefresh={handleRefresh}
+        isPaginating={feedPaginating}
+        onEndReached={handleEndReached}
+        isNotPaginatable={isNotPaginatable}
         renderItem={({item, index}) => {
           return <Post key={(item as any).id} post={item} />;
         }}

@@ -27,7 +27,7 @@ export default function CollectionEventScreen({
     ? collectionEventRes?.collection_event
     : collectionEvent;
   return (
-    <Div flex={1} justifyCenter>
+    <Div flex={1} justifyCenter bgRealBlack>
       <Div h={headerHeight} zIndex={100} absolute top0 bgWhite>
         <Row
           itemsCenter
@@ -43,13 +43,13 @@ export default function CollectionEventScreen({
               <ChevronLeft
                 width={30}
                 height={30}
-                color="black"
+                color="white"
                 strokeWidth={2}
               />
             </Div>
           </Col>
           <Col auto>
-            <Span bold fontSize={19}>
+            <Span bold fontSize={19} white>
               {collectionEvent.title}
             </Span>
           </Col>

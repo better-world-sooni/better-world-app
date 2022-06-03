@@ -13,12 +13,14 @@ import {
 } from 'src/hooks/useGoto';
 import apis from 'src/modules/apis';
 import {kmoment} from 'src/modules/constants';
+import {getNftProfileImage} from 'src/modules/nftUtils';
 import {useDeletePromiseFnWithToken} from 'src/redux/asyncReducer';
 import {RootState} from 'src/redux/rootReducer';
 import {PostOwnerType} from 'src/screens/NewPostScreen';
 import {Col} from './Col';
 import {Div} from './Div';
 import ImageSlideShow from './ImageSlideShow';
+import {Img} from './Img';
 import {Row} from './Row';
 import {Span} from './Span';
 import TruncatedText from './TruncatedText';
@@ -133,52 +135,60 @@ export default function CollectionEvent({
               </MenuView>
             </Div>
           )}
-          <Row bottom0 absolute w={'100%'} onPress={handlePressCollectionEvent}>
-            <Col
-              auto
-              relative
-              borderTopRightRadius={10}
-              overflowHidden
-              maxW={(itemWidth * 5) / 6}>
-              <Div
-                style={{
-                  width: '100%',
-                  height: '100%',
-                  position: 'absolute',
-                  overflow: 'hidden',
-                }}>
-                <BlurView
-                  blurType="light"
-                  blurAmount={5}
-                  blurRadius={5}
-                  style={{
-                    width: '100%',
-                    height: '100%',
-                  }}
-                  reducedTransparencyFallbackColor="white"></BlurView>
-              </Div>
-              <Div px15 py8>
+          <Row
+            bottom0
+            absolute
+            w={'100%'}
+            onPress={handlePressCollectionEvent}
+            itemsEnd>
+            <Div
+              bottom0
+              absolute
+              w={'100%'}
+              h={reposted ? 78 : 70}
+              bgWhite
+              itemsEnd></Div>
+            <Col auto ml15 mb8={reposted}>
+              <Img
+                border3
+                borderWhite
+                rounded100
+                h100
+                w100
+                uri={getNftProfileImage(collectionEvent.nft_collection)}></Img>
+            </Col>
+            <Col relative ml8 mr15 mb={reposted ? 16 : 8}>
+              <Div>
                 <Div zIndex={100}>
-                  <Span fontSize={20} bold>
+                  <Span
+                    fontSize={16}
+                    bold
+                    numberOfLines={1}
+                    ellipsizeMode="tail">
                     {collectionEvent.title}
                   </Span>
                 </Div>
-                <Div mt2 zIndex={100}>
-                  <Span fontSize={14} bold>
+                <Div mt4 zIndex={100}>
+                  <Span
+                    fontSize={12}
+                    bold
+                    gray700
+                    numberOfLines={1}
+                    ellipsizeMode="tail">
                     {collectionEvent.location_string}
                   </Span>
                 </Div>
-                <Div mt2>
-                  <Span>
-                    <Span bold fontSize={12}>
+                <Div mt4>
+                  <Span numberOfLines={1} ellipsizeMode="tail" gray700>
+                    <Span bold fontSize={reposted ? 10 : 12}>
                       {kmoment(collectionEvent.start_time).format(
                         'YY.M.D a h:mm',
                       )}
                     </Span>{' '}
-                    <Span bold fontSize={12}>
+                    <Span bold fontSize={reposted ? 10 : 12}>
                       ~
                     </Span>{' '}
-                    <Span bold fontSize={12}>
+                    <Span bold fontSize={reposted ? 10 : 12}>
                       {kmoment(collectionEvent.end_time).format(
                         'YY.M.D a h:mm',
                       )}
@@ -187,11 +197,10 @@ export default function CollectionEvent({
                 </Div>
               </Div>
             </Col>
-            <Col itemsEnd justifyEnd></Col>
           </Row>
         </Div>
         {!reposted && (
-          <Div px15 py8>
+          <Div px15 py8 bgWhite>
             {collectionEvent.location_link ? (
               <Row itemsCenter mb8>
                 <Span fontSize={14} info onPress={handlePressLocationLink}>

@@ -11,6 +11,7 @@ import {Span} from 'src/components/common/Span';
 import {useGotoNewCollectionEvent} from 'src/hooks/useGoto';
 import CollectionEvent from 'src/components/common/CollectionEvent';
 import {DEVICE_WIDTH} from 'src/modules/styles';
+import {useIsAdmin} from 'src/modules/nftUtils';
 
 export default function CollectionEventListScreen({
   route: {
@@ -27,6 +28,7 @@ export default function CollectionEventListScreen({
       apis.collectionEvent.contractAddress.list(nftCollection.contract_address),
     );
   };
+  const isAdmin = useIsAdmin(nftCollection);
   return (
     <FeedFlatlistWithHeader
       refreshing={collectionEventLoad}
@@ -58,11 +60,13 @@ export default function CollectionEventListScreen({
             </Span>
           </Col>
           <Col itemsEnd pr7>
-            <Div onPress={gotoNewCollectionEvent}>
-              <Span info bold fontSize={14}>
-                추가
-              </Span>
-            </Div>
+            {isAdmin && (
+              <Div onPress={gotoNewCollectionEvent}>
+                <Span info bold fontSize={14}>
+                  추가
+                </Span>
+              </Div>
+            )}
           </Col>
         </>
       }

@@ -64,9 +64,8 @@ export default function NftProfile({
   });
   const bottomPopupRef = useRef<BottomSheetModal>(null);
   const isCurrentNft = useIsCurrentNft(nftCore);
-
   const gotoNftCollectionProfile = useGotoNftCollectionProfile({
-    nftCollection: nftCore,
+    nftCollection: nft?.nft_collection,
   });
   const goToCapsule = useGotoCapsule({nft});
   const editProfile = () => {
@@ -195,7 +194,7 @@ export default function NftProfile({
                   bgGray200
                   h85
                   w85
-                  uri={getNftProfileImage(nftCore, 100, 100)}></Img>
+                  uri={getNftProfileImage(nftCore, 200, 200)}></Img>
                 {isCurrentNft && (
                   <Div
                     absolute
@@ -260,8 +259,8 @@ export default function NftProfile({
                         border1={isFollowing}
                         borderGray400={isFollowing}
                         onPress={handlePressFollowing}>
-                        <Span white={!isFollowing} bold mt3 px5>
-                          {nft
+                        <Span white={!isFollowing} bold mt2 px5>
+                          {!nft
                             ? '불러오는 중'
                             : isFollowing
                             ? '언팔로우'
@@ -334,9 +333,11 @@ export default function NftProfile({
                   {getNftName(nftCore)}
                 </Span>
               </Div>
-              <Div pt3 onPress={gotoNftCollectionProfile}>
-                <Span gray700>{nftCore.nft_metadatum.name}</Span>
-              </Div>
+              {nft && (
+                <Div pt3 onPress={gotoNftCollectionProfile}>
+                  <Span gray700>{nftCore.nft_metadatum.name}</Span>
+                </Div>
+              )}
               {nftCore.story ? (
                 <Div mt8 bgWhite>
                   <TruncatedMarkdown text={nftCore.story} maxLength={500} />
