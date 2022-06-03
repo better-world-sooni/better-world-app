@@ -28,11 +28,11 @@ const usePreloadData = () => {
   }
 }
 
-export const useLogin = (loginType) => {
+export const useLogin = () => {
   const dispatch = useDispatch();
   const apiPOSTWithToken = useApiPOSTWithToken();
   const preloadData = usePreloadData()
-  const passwordLogin = (address, password, successHandler?, errHandler?) => {
+  return (address, password, successHandler?, errHandler?) => {
     apiPOSTWithToken(
       apis.auth.password._(),
       {
@@ -59,7 +59,13 @@ export const useLogin = (loginType) => {
       },
     );
   };
-  const qrLogin = (token, successHandler?, errHandler?) => {
+};
+
+export const useQrLogin = () => {
+  const dispatch = useDispatch();
+  const apiPOSTWithToken = useApiPOSTWithToken();
+  const preloadData = usePreloadData()
+  return (token, successHandler?, errHandler?) => {
     apiPOSTWithToken(
       apis.auth.jwt.qrLogin(),
       {
@@ -85,7 +91,6 @@ export const useLogin = (loginType) => {
       },
     );
   }
-  return loginType == 'password' ? passwordLogin : qrLogin
 };
 
 export const useChangeAccount = () => {
