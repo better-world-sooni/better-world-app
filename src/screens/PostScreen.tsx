@@ -1,13 +1,12 @@
 import React from 'react';
 import {Div} from 'src/components/common/Div';
 import FullPost from 'src/components/common/FullPost';
-import Post from 'src/components/common/Post';
 import NotFound from 'src/components/error/NotFound';
 import PostLoading from 'src/components/loading/PostLoading';
 import apis from 'src/modules/apis';
 import {HAS_NOTCH} from 'src/modules/constants';
 import {KeyboardAvoidingView} from 'src/modules/viewComponents';
-import {useApiSelector, useReloadGETWithToken} from 'src/redux/asyncReducer';
+import {useApiSelector} from 'src/redux/asyncReducer';
 
 export default function PostScreen({
   route: {
@@ -19,10 +18,6 @@ export default function PostScreen({
     isLoading: postLoad,
     error,
   } = useApiSelector(apis.post.postId._(postId));
-  const reloadGetWithToken = useReloadGETWithToken();
-  const handleRefresh = () => {
-    reloadGetWithToken(apis.post.postId._(postId));
-  };
 
   if (postLoad) return <PostLoading />;
 
@@ -33,12 +28,7 @@ export default function PostScreen({
     <>
       <KeyboardAvoidingView flex={1} bgWhite relative behavior="padding">
         {postRes?.post ? (
-          <FullPost
-            autoFocus={autoFocus}
-            post={postRes?.post}
-            refreshing={postLoad}
-            onRefresh={handleRefresh}
-            full></FullPost>
+          <FullPost autoFocus={autoFocus} post={postRes?.post}></FullPost>
         ) : null}
       </KeyboardAvoidingView>
       <Div h={HAS_NOTCH ? 27 : 12} bgWhite />

@@ -231,7 +231,7 @@ export default function Post({post}) {
                 w47
                 h47
                 rounded100
-                uri={getNftProfileImage(post.nft, 100, 100)}
+                uri={getNftProfileImage(post.nft, 200, 200)}
               />
             </Div>
           </Col>
@@ -287,7 +287,10 @@ export default function Post({post}) {
                   imageUris={post.image_uris}
                   sliderHeight={
                     post.image_width && post.image_height
-                      ? (post.image_height / post.image_width) * itemWidth
+                      ? Math.min(
+                          (post.image_height / post.image_width) * itemWidth,
+                          1.5 * itemWidth,
+                        )
                       : itemWidth
                   }
                   sliderWidth={itemWidth}

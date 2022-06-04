@@ -24,6 +24,7 @@ export default function ListFlatlist({
   data,
   title,
   enableBack = true,
+  keyExtractor = item => (item as any).id,
   HeaderRightComponent = null,
 }) {
   const {goBack} = useNavigation();
@@ -83,10 +84,7 @@ export default function ListFlatlist({
         automaticallyAdjustContentInsets
         showsVerticalScrollIndicator={false}
         onScroll={scrollHandler}
-        keyExtractor={item =>
-          (item as any).id ||
-          `${(item as any).contract_address}-${(item as any).token_id}`
-        }
+        keyExtractor={keyExtractor}
         contentContainerStyle={{
           marginTop: headerHeight,
           marginBottom: headerHeight,

@@ -1,6 +1,9 @@
 import React from 'react';
 import useFollow from 'src/hooks/useFollow';
-import {useGotoNftProfile} from 'src/hooks/useGoto';
+import {
+  useGotoNftCollectionProfile,
+  useGotoNftProfile,
+} from 'src/hooks/useGoto';
 import apis from 'src/modules/apis';
 import {
   getNftName,
@@ -24,9 +27,20 @@ export default function PolymorphicOwner({nft, isFollowing}) {
   const gotoNftProfile = useGotoNftProfile({
     nft,
   });
+  const gotoNftCollectionProfile = useGotoNftCollectionProfile({
+    nftCollection: nft,
+  });
+  const handlePressRow = () => {
+    if (nft.token_id) {
+      gotoNftProfile();
+      return;
+    }
+    gotoNftCollectionProfile();
+  };
+  
   return (
-    <Row itemsCenter h70 onPress={gotoNftProfile} px15 relative>
-      <Img w50 h50 rounded100 uri={getNftProfileImage(nft, 100, 100)} />
+    <Row itemsCenter h70 onPress={handlePressRow} px15 relative>
+      <Img w50 h50 rounded100 uri={getNftProfileImage(nft, 200, 200)} />
       <Col mx15>
         <Div>
           <Span medium fontSize={15} bold>

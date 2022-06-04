@@ -18,6 +18,9 @@ export default function PolymorphicOwnerListFlatlist({
       onEndReached={onEndReached}
       isPaginating={isPaginating}
       title={title}
+      keyExtractor={item =>
+        `${(item as any).nft?.contract_address}-${(item as any).nft?.token_id}`
+      }
       renderItem={({item}) => {
         return (
           <PolymorphicOwner

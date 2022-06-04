@@ -190,8 +190,8 @@ export default function NftCollectionProfile({
                   uri={resizeImageUri(
                     nftCollectionCore.image_uri ||
                       nftCollectionCore.nft_metadatum.image_uri,
-                    100,
-                    100,
+                    400,
+                    400,
                   )}></Img>
               </Col>
               <Col justifyEnd>

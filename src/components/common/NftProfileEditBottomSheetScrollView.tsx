@@ -45,7 +45,7 @@ export default function NftProfileEditBottomSheetScrollView({nft}) {
     attachedRecord: 'nft',
     url: apis.nft._().url,
     property: 'background_image_uri',
-    successReloadKey: apis.post.list.nft(),
+    successReloadKey: apis.nft._(),
   });
   return (
     <BottomSheetScrollView>

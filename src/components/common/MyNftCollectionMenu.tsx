@@ -58,7 +58,7 @@ const MyNftCollectionMenu = ({nftCollection}) => {
                 bgGray200
                 h60
                 w60
-                uri={resizeImageUri(nftCollection.image_uri, 100, 100)}></Img>
+                uri={resizeImageUri(nftCollection.image_uri, 200, 200)}></Img>
             </Col>
           </Row>
           <Div py10>

@@ -113,8 +113,12 @@ export default function CollectionEvent({
             imageUris={collectionEvent.image_uris}
             sliderHeight={
               collectionEvent.image_width && collectionEvent.image_height
-                ? (collectionEvent.image_height / collectionEvent.image_width) *
-                  itemWidth
+                ? Math.min(
+                    (collectionEvent.image_height /
+                      collectionEvent.image_width) *
+                      itemWidth,
+                    itemWidth * 1.5,
+                  )
                 : itemWidth
             }
             sliderWidth={itemWidth}

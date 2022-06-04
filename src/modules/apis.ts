@@ -2,8 +2,8 @@ import urljoin from 'url-join';
 import querystring from 'querystring'
 import {isEmpty, omitBy, isNil} from 'lodash'
 
-const BASE_URL = 'http://192.168.1.185:3000';
-// const BASE_URL = 'https://api.betterworldapp.io';
+// const BASE_URL = 'http://192.168.1.185:3000';
+const BASE_URL = 'https://api.betterworldapp.io';
 const toUrl = (...args) => ({url: urljoin(...args)});
 const base = path => toUrl(BASE_URL, path);
 const apiV1 = path => toUrl(BASE_URL, '/api/v1', path);

@@ -64,13 +64,7 @@ enum PostEventTypes {
   Report = 'REPORT',
 }
 
-export default function FullPost({
-  post,
-  full = false,
-  refreshing = false,
-  autoFocus = false,
-  onRefresh = null,
-}) {
+export default function FullPost({post, autoFocus = false}) {
   const scrollToEndRef = useScrollToEndRef();
   const {goBack} = useNavigation();
   const [deleted, setDeleted] = useState(false);
@@ -240,12 +234,6 @@ export default function FullPost({
       type: ReplyToType.Comment,
     });
   }, []);
-  const scrollviewProps = full
-    ? {
-        scrollEnabled: true,
-        ref: scrollToEndRef,
-      }
-    : {};
   const deletePost = async () => {
     setLoading(true);
     const {data} = await deletePromiseFnWithToken({
@@ -304,55 +292,44 @@ export default function FullPost({
 
   return (
     <>
-      {full && (
-        <Div h={headerHeight} zIndex={100} absolute top0>
-          <Animated.View style={headerStyles}>
-            <BlurView
-              blurType="xlight"
-              blurAmount={30}
-              blurRadius={20}
-              style={{
-                width: DEVICE_WIDTH,
-                height: '100%',
-                position: 'absolute',
-              }}
-              reducedTransparencyFallbackColor="white"></BlurView>
-          </Animated.View>
-          <Div zIndex={100} absolute w={DEVICE_WIDTH} top={HAS_NOTCH ? 49 : 25}>
-            <Row itemsCenter py5 h40 px8>
-              <Col itemsStart>
-                <Div auto rounded100 onPress={goBack}>
-                  <ChevronLeft
-                    width={30}
-                    height={30}
-                    color="black"
-                    strokeWidth={2}
-                  />
-                </Div>
-              </Col>
-              <Col auto onPress={goBack}>
-                <Span bold fontSize={19}>
-                  게시물
-                </Span>
-              </Col>
-              <Col itemsEnd></Col>
-            </Row>
-          </Div>
+      <Div h={headerHeight} zIndex={100} absolute top0>
+        <Animated.View style={headerStyles}>
+          <BlurView
+            blurType="xlight"
+            blurAmount={30}
+            blurRadius={20}
+            style={{
+              width: DEVICE_WIDTH,
+              height: '100%',
+              position: 'absolute',
+            }}
+            reducedTransparencyFallbackColor="white"></BlurView>
+        </Animated.View>
+        <Div zIndex={100} absolute w={DEVICE_WIDTH} top={HAS_NOTCH ? 49 : 25}>
+          <Row itemsCenter py5 h40 px8>
+            <Col itemsStart>
+              <Div auto rounded100 onPress={goBack}>
+                <ChevronLeft
+                  width={30}
+                  height={30}
+                  color="black"
+                  strokeWidth={2}
+                />
+              </Div>
+            </Col>
+            <Col auto onPress={goBack}>
+              <Span bold fontSize={19}>
+                게시물
+              </Span>
+            </Col>
+            <Col itemsEnd></Col>
+          </Row>
         </Div>
-      )}
-      <Div
-        py5
-        borderBottom={full ? 0 : 0.5}
-        borderGray200
-        bgWhite
-        {...(full && {flex: 1})}>
-        <Animated.ScrollView
-          {...scrollviewProps}
-          onScroll={scrollHandler}
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          }>
-          {full && <Div h={headerHeight}></Div>}
+      </Div>
+
+      <Div py5 borderGray200 bgWhite flex={1}>
+        <Animated.ScrollView ref={scrollToEndRef} onScroll={scrollHandler}>
+          <Div h={headerHeight}></Div>
           <Row px15 pt5>
             <Col auto mr10>
               <Div onPress={goToProfile}>
@@ -403,16 +380,7 @@ export default function FullPost({
               <Row>
                 {post.content ? (
                   <Div>
-                    {full ? (
-                      <Span>{post.content}</Span>
-                    ) : (
-                      <TruncatedText
-                        text={post.content}
-                        maxLength={500}
-                        spanProps={{fontSize: 14}}
-                        onPressTruncated={gotoPost}
-                      />
-                    )}
+                    <Span>{post.content}</Span>
                   </Div>
                 ) : null}
               </Row>
@@ -422,7 +390,10 @@ export default function FullPost({
                     imageUris={post.image_uris}
                     sliderHeight={
                       post.image_width && post.image_height
-                        ? (post.image_height / post.image_width) * itemWidth
+                        ? Math.min(
+                            (post.image_height / post.image_width) * itemWidth,
+                            1.5 * itemWidth,
+                          )
                         : itemWidth
                     }
                     sliderWidth={itemWidth}
@@ -441,7 +412,7 @@ export default function FullPost({
                   />
                 </Div>
               )}
-              <Row itemsCenter mb8 mt8 mb10={full}>
+              <Row itemsCenter mb8 mt8 mb10>
                 {!post.type ? (
                   <>
                     {likesCount > 0 && (
@@ -502,7 +473,7 @@ export default function FullPost({
                         <Col auto mr16 onPress={handlePressVoteAgainst}>
                           {<ThumbsDown {...againstVoteProps}></ThumbsDown>}
                         </Col>
-                        <Col auto mr16={!full} onPress={handlePressVoteFor}>
+                        <Col auto onPress={handlePressVoteFor}>
                           {<ThumbsUp {...forVoteProps}></ThumbsUp>}
                         </Col>
                       </>
@@ -532,45 +503,26 @@ export default function FullPost({
                       </Col>
                     )
                   : !post.type && (
-                      <Col auto onPress={() => gotoNewPost(post)} mr16={!full}>
+                      <Col auto onPress={() => gotoNewPost(post)}>
                         <Repeat {...actionIconDefaultProps} />
                       </Col>
                     )}
-                {!full && post.type !== 'Forum' && (
-                  <>
-                    <Col auto onPress={() => gotoPost(true)}>
-                      <MessageCircle {...actionIconDefaultProps} />
-                    </Col>
-                  </>
-                )}
               </Row>
             </Col>
           </Row>
-          {full ? (
-            <Div borderTop={0.5} borderGray200 pt5>
-              {cachedComments.map(comment => {
-                return (
-                  <Comment
-                    key={comment.id}
-                    comment={comment}
-                    onPressReplyTo={handlePressReplyTo}></Comment>
-                );
-              })}
-            </Div>
-          ) : (
-            cachedComments.length > 0 && (
-              <Div onPress={gotoPost}>
+          <Div borderTop={0.5} borderGray200 pt5>
+            {cachedComments.map(comment => {
+              return (
                 <Comment
-                  hot
-                  key={cachedComments[0].id}
-                  comment={cachedComments[0]}
+                  key={comment.id}
+                  comment={comment}
                   onPressReplyTo={handlePressReplyTo}></Comment>
-              </Div>
-            )
-          )}
-          {full && <Div h100></Div>}
+              );
+            })}
+          </Div>
+          <Div h100></Div>
         </Animated.ScrollView>
-        {full && post.type !== 'Forum' && (
+        {post.type !== 'Forum' && (
           <NewComment
             autoFocus={autoFocus}
             replyToObject={replyTo.object}

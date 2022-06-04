@@ -17,7 +17,10 @@ export default function UploadImageSlideShow({
   const [currentPage, setCurrentPage] = useState(0);
   const imageHeight =
     images[0]?.uri && images[0].width && images[0].height
-      ? (images[0].height / images[0].width) * sliderWidth
+      ? Math.min(
+          (images[0].height / images[0].width) * sliderWidth,
+          1.5 * sliderWidth,
+        )
       : sliderWidth;
   return (
     <>

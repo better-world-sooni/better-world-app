@@ -28,7 +28,13 @@ const FollowListScreen = ({
     isPaginating: followPaginating,
     page,
     isNotPaginatable,
-  } = useApiSelector(apis.follow.list);
+  } = useApiSelector(
+    apis.follow.list(
+      followType == FollowType.Followers ? true : false,
+      contractAddress,
+      followOwnerType == FollowOwnerType.Nft ? tokenId : null,
+    ),
+  );
   const reloadGetWithToken = useReloadGETWithToken();
   const paginateGetWithToken = usePaginateGETWithToken();
   const handleRefresh = () => {
@@ -60,7 +66,7 @@ const FollowListScreen = ({
       refreshing={followListLoading}
       onEndReached={handleEndReached}
       isPaginating={followPaginating}
-      title={'리포스트'}
+      title={FollowType.Followers == followType ? '팔로워' : '팔로잉'}
     />
   );
 };

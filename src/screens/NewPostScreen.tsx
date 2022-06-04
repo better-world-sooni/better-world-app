@@ -83,11 +83,10 @@ const NewPostScreen = ({
   const uploadSuccessCallback = () => {
     reloadGetWithToken(
       postOwnerIsCollection
-        ? apis.nft_collection.contractAddress.profile(
-            currentNft.contract_address,
-          )
-        : apis.nft._(),
+        ? apis.post.list.nftCollection(currentNft.contract_address)
+        : apis.post.list._(),
     );
+    reloadGetWithToken(apis.feed._());
     goBack();
   };
   const {
