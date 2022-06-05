@@ -1,3 +1,4 @@
+import moment from "moment";
 import { kmoment } from "./constants";
 
 export function createdAtText(createdAt) {
@@ -17,3 +18,8 @@ export function createdAtText(createdAt) {
     }
     return null;
 };
+
+export function getCalendarDay(time){
+  if(!time) return null
+  return kmoment(time).calendar()
+}

@@ -156,6 +156,7 @@ export default function FeedFlatlist({
               </Div>
             )}
             <Div h={headerHeight}></Div>
+            <Div h={HAS_NOTCH ? 27 : 12} />
           </>
         }
         data={data}

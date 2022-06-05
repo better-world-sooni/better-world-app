@@ -12,12 +12,13 @@ import {useApiSelector} from 'src/redux/asyncReducer';
 import {RootState} from 'src/redux/rootReducer';
 import {cable} from 'src/modules/cable';
 import {ChatChannel} from 'src/components/ChatChannel';
-import {HAS_NOTCH} from 'src/modules/constants';
+import {HAS_NOTCH, kmoment} from 'src/modules/constants';
 import {DEVICE_WIDTH} from 'src/modules/styles';
 import {BlurView} from '@react-native-community/blur';
 import {KeyboardAvoidingView} from 'src/modules/viewComponents';
 import {Img} from 'src/components/common/Img';
 import NewMessage from 'src/components/common/NewMessage';
+import {createdAtText, getCalendarDay} from 'src/modules/timeUtils';
 
 export enum ChatRoomType {
   RoomId,
@@ -133,20 +134,41 @@ function ChatRoomScreen({
     flatListRef?.current?.scrollToEnd({animated: false});
   };
   const headerHeight = HAS_NOTCH ? 94 : 70;
-  const isSameNft = (nft1, nft2) => {
+  const isSameNft = useCallback((nft1, nft2) => {
     return (
       nft1?.token_id === nft2?.token_id &&
       nft1?.contract_address === nft2?.contract_address
     );
-  };
+  }, []);
+  const hasMintuesChanged = useCallback((createdAt1, createdAt2) => {
+    if (!createdAt2) return true;
+    return (
+      Math.round(
+        (new Date(createdAt1).getTime() - new Date(createdAt2).getTime()) /
+          60000,
+      ) !== 0
+    );
+  }, []);
+  const hasDateChanged = useCallback((createdAt1, createdAt2) => {
+    if (!createdAt2) return true;
+    return (
+      Math.round(
+        (new Date(createdAt1).getTime() - new Date(createdAt2).getTime()) /
+          (60000 * 60 * 24),
+      ) !== 0
+    );
+  }, []);
   useEffect(() => {
+    console.log(chatRoomRes);
     if (chatRoomRes) {
+      console.log(chatRoomRes);
       setMessages(chatRoomRes.init_messages);
       setConnectRoomId(chatRoomRes.room_id);
       setIsNew(chatRoomRes.init_messages.length == 0);
       setNumNfts(chatRoomRes.num_nfts);
     }
   }, [chatRoomRes]);
+  console.log(chatRoomRes);
 
   return (
     <>
@@ -165,7 +187,7 @@ function ChatRoomScreen({
           itemsCenter
           py5
           h40
-          px15
+          px8
           zIndex={100}
           absolute
           w={DEVICE_WIDTH}
@@ -199,8 +221,21 @@ function ChatRoomScreen({
           keyExtractor={item => item._id.$oid}
           renderItem={({item: message, index}) => {
             const author = (message as any).nft;
-            const isConsecutive = isSameNft(messages[index - 1]?.nft, author);
             const isMine = isSameNft(author, currentNftId);
+            const isConsecutive = isSameNft(author, messages[index - 1]?.nft);
+            const showTime =
+              hasMintuesChanged(
+                message.created_at,
+                messages[index - 1]?.created_at,
+              ) || !isConsecutive;
+            const showAuthor = hasMintuesChanged(
+              message.created_at,
+              messages[index + 1]?.created_at,
+            );
+            const showDate = hasDateChanged(
+              message.created_at,
+              messages[index + 1]?.created_at,
+            );
             return (
               <MessageMemo
                 key={message._id.$oid}
@@ -208,9 +243,12 @@ function ChatRoomScreen({
                 avatar={message.avatar}
                 createdAt={message.created_at}
                 readNftIdLength={message.read_nft_ids.length}
-                isConsecutive={isConsecutive}
                 isMine={isMine}
                 numNfts={numNfts}
+                showTime={showTime}
+                showAuthor={showAuthor}
+                showDate={showDate}
+                roomName={roomName}
               />
             );
           }}></FlatList>
@@ -228,44 +266,83 @@ function ChatRoomScreen({
 const Message = ({
   text,
   avatar,
-  isConsecutive,
   isMine,
   numNfts,
   createdAt,
   readNftIdLength,
+  showTime,
+  showAuthor,
+  showDate,
+  roomName,
 }) => {
-  const time = new Date(createdAt);
   const unreadCount = numNfts - readNftIdLength;
   return (
-    <Row
-      px15
-      {...(isMine && {style: {flexDirection: 'row-reverse'}})}
-      my3
-      itemsStart>
-      <Col auto w31 h31 px0>
-        {!isConsecutive && <Img rounded100 uri={avatar} h31 w31 />}
-      </Col>
-      <Col auto={!isMine} style={{flex: 5, wordBreak: 'break-all'}}>
-        <Row {...(isMine && {style: {flexDirection: 'row-reverse'}})} itemsEnd>
-          <Col
-            bgGray100={!isMine}
-            bgPrimary={isMine}
-            rounded30
-            p8
-            px16
-            mx10
-            auto>
-            <Span fontSize={16} white={isMine}>
-              {text}
+    <>
+      <Row
+        px15
+        {...(isMine && {style: {flexDirection: 'row-reverse'}})}
+        my2
+        mb12={showTime}
+        itemsStart>
+        {!isMine && (
+          <Col auto w32 h32 px0>
+            {showAuthor && <Img rounded100 uri={avatar} h32 w32 />}
+          </Col>
+        )}
+        <Col auto={!isMine} style={{flex: 3, wordBreak: 'break-all'}}>
+          {showAuthor && !isMine && (
+            <Row itemsEnd>
+              <Col auto px8 pb8>
+                <Span fontSize={14} medium>
+                  {roomName}
+                </Span>
+              </Col>
+              <Col></Col>
+            </Row>
+          )}
+          <Row
+            {...(isMine && {style: {flexDirection: 'row-reverse'}})}
+            itemsEnd>
+            <Col
+              bgGray100={!isMine}
+              bgPrimary={isMine}
+              rounded30
+              p8
+              px16
+              mx10
+              mr0={isMine}
+              maxW={(DEVICE_WIDTH - 30) / 2}
+              auto>
+              <Span fontSize={16} white={isMine}>
+                {text}
+              </Span>
+            </Col>
+            {unreadCount > 0 && (
+              <Col auto pl8={isMine} pr8={!isMine}>
+                <Span primary>{unreadCount}</Span>
+              </Col>
+            )}
+            <Col itemsEnd={isMine} auto>
+              {showTime && (
+                <Span gray700 fontSize={12}>
+                  {kmoment(createdAt).format('a h:mm')}
+                </Span>
+              )}
+            </Col>
+          </Row>
+        </Col>
+        <Col style={{flex: 1}}></Col>
+      </Row>
+      {showDate && (
+        <Div itemsCenter py16>
+          <Div rounded100 bgRealBlack>
+            <Span py8 px16 white>
+              {getCalendarDay(createdAt)}
             </Span>
-          </Col>
-          <Col fontSize={10}>
-            <Span primary>{unreadCount > 0 ? unreadCount : null}</Span>
-          </Col>
-        </Row>
-      </Col>
-      <Col style={{flex: 1}}></Col>
-    </Row>
+          </Div>
+        </Div>
+      )}
+    </>
   );
 };
 const MessageMemo = React.memo(Message);

@@ -74,7 +74,7 @@ export default function ListFlatlist({
                 {title}
               </Span>
             </Col>
-            <Col items pr7>
+            <Col itemsEnd pr7>
               {HeaderRightComponent}
             </Col>
           </Row>
