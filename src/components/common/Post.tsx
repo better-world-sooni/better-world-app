@@ -1,5 +1,5 @@
 import {useNavigation} from '@react-navigation/native';
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {memo, useCallback, useEffect, useState} from 'react';
 import {ActivityIndicator, Platform, RefreshControl} from 'react-native';
 import {
   ChevronLeft,
@@ -37,7 +37,6 @@ import Comment from './Comment';
 import {Div} from './Div';
 import ImageSlideShow from './ImageSlideShow';
 import {Img} from './Img';
-import NewComment, {ReplyToType} from './NewComment';
 import {Row} from './Row';
 import {Span} from './Span';
 import {MenuView} from '@react-native-menu/menu';
@@ -45,15 +44,7 @@ import {useDeletePromiseFnWithToken} from 'src/redux/asyncReducer';
 import {ReportTypes} from 'src/screens/ReportScreen';
 import useVote, {VoteCategory} from 'src/hooks/useVote';
 import {LikeListType} from 'src/screens/LikeListScreen';
-import {HAS_NOTCH} from 'src/modules/constants';
 import {DEVICE_WIDTH} from 'src/modules/styles';
-import Animated, {
-  useAnimatedScrollHandler,
-  useAnimatedStyle,
-  useSharedValue,
-} from 'react-native-reanimated';
-import {BlurView} from '@react-native-community/blur';
-import useScrollToEndRef from 'src/hooks/useScrollToEndRef';
 import {PostOwnerType} from 'src/screens/NewPostScreen';
 import TruncatedText from './TruncatedText';
 import RepostedPost from './RepostedPost';
@@ -65,7 +56,7 @@ enum PostEventTypes {
   Report = 'REPORT',
 }
 
-export default function Post({post}) {
+function PostContent({post}) {
   const [deleted, setDeleted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [liked, likesCount, handlePressLike] = useLike(
@@ -220,6 +211,8 @@ export default function Post({post}) {
 
   const itemWidth = DEVICE_WIDTH - 30 - 50;
 
+  // console.log('rerendered');
+
   if (deleted) return null;
 
   return (
@@ -369,10 +362,10 @@ export default function Post({post}) {
                   <Col />
                   {isCurrentCollection && (
                     <>
-                      <Col auto mr12 onPress={handlePressVoteAgainst}>
+                      <Col auto pr12 onPress={handlePressVoteAgainst}>
                         {<ThumbsDown {...againstVoteProps}></ThumbsDown>}
                       </Col>
-                      <Col auto mr12 onPress={handlePressVoteFor}>
+                      <Col auto pr12 onPress={handlePressVoteFor}>
                         {<ThumbsUp {...forVoteProps}></ThumbsUp>}
                       </Col>
                     </>
@@ -380,7 +373,7 @@ export default function Post({post}) {
                 </>
               ) : (
                 <>
-                  <Col auto mr12>
+                  <Col auto pr12>
                     <Span
                       fontSize={12}
                       style={{fontWeight: '600'}}
@@ -402,7 +395,7 @@ export default function Post({post}) {
                     </Col>
                   )
                 : !post.type && (
-                    <Col auto onPress={() => gotoNewPost(post)} mr16>
+                    <Col auto onPress={() => gotoNewPost(post)} pr16>
                       <Repeat {...actionIconDefaultProps} />
                     </Col>
                   )}
@@ -426,3 +419,7 @@ export default function Post({post}) {
     </>
   );
 }
+
+const PostMemo = memo(PostContent);
+
+export default PostMemo;

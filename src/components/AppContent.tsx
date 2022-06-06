@@ -68,10 +68,10 @@ const MainBottomTabs = () => {
   return (
     <Tab.Navigator
       tabBar={tabBarFunc}
-      initialRouteName={NAV_NAMES.Home}
+      initialRouteName={NAV_NAMES.Home + 'bottom'}
       lazy={false}>
       <Tab.Screen
-        name={NAV_NAMES.Home}
+        name={NAV_NAMES.Home + 'bottom'}
         component={HomeScreen}
         options={{
           tabBarIcon: ({focused}) => (
