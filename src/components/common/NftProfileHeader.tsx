@@ -1,5 +1,5 @@
 import React from 'react';
-import {Edit3, Grid, Maximize, MessageCircle} from 'react-native-feather';
+import {Edit3, Grid, Maximize} from 'react-native-feather';
 import useFollow from 'src/hooks/useFollow';
 import {
   useGotoCapsule,
@@ -100,33 +100,6 @@ export default function NftProfileHeader({
                 <Col />
                 <Col
                   auto
-                  bgRealBlack
-                  p8
-                  rounded100
-                  onPress={() =>
-                    gotoChatRoom({
-                      roomName: getNftName(nftCore),
-                      roomImage: [getNftProfileImage(nftCore)],
-                      contractAddress: nftCore.contract_address,
-                      tokenId: nftCore.token_id,
-                    })
-                  }>
-                  <Div>
-                    <MessageCircle
-                      strokeWidth={2}
-                      color={'white'}
-                      height={16}
-                      width={16}
-                    />
-                  </Div>
-                </Col>
-                <Col auto bgRealBlack p9 rounded100 onPress={goToCapsule} mx8>
-                  <Div>
-                    <Img w16 h16 source={ICONS.capsuleIconWhite}></Img>
-                  </Div>
-                </Col>
-                <Col
-                  auto
                   bgRealBlack={!isFollowing}
                   p8
                   rounded100
@@ -143,7 +116,7 @@ export default function NftProfileHeader({
             <Div>
               <Row py10>
                 <Col />
-                {qrScan ? (
+                {qrScan && (
                   <Col auto bgRealBlack p8 rounded100 onPress={gotoScan}>
                     <Div>
                       <Maximize
@@ -152,12 +125,6 @@ export default function NftProfileHeader({
                         height={16}
                         width={16}
                       />
-                    </Div>
-                  </Col>
-                ) : (
-                  <Col auto bgRealBlack p8 rounded100 onPress={goToCapsule}>
-                    <Div>
-                      <Img w16 h16 source={ICONS.capsuleIconWhite}></Img>
                     </Div>
                   </Col>
                 )}

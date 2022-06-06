@@ -1,8 +1,6 @@
 import React, {useState} from 'react';
 import Carousel, {Pagination} from 'react-native-snap-carousel';
 import Colors from 'src/constants/Colors';
-import {DEVICE_WIDTH} from 'src/modules/styles';
-import {resizeImageUri} from 'src/modules/uriUtils';
 import {Div} from './Div';
 import {Img} from './Img';
 

@@ -13,7 +13,7 @@ import {Div} from './Div';
 import {Img} from './Img';
 import {Row} from './Row';
 import {Span} from './Span';
-import {Heart, MessageCircle} from 'react-native-feather';
+import {Heart} from 'react-native-feather';
 import useUploadImage from 'src/hooks/useUploadImage';
 import apis from 'src/modules/apis';
 import {useApiPOSTWithToken, useApiSelector} from 'src/redux/asyncReducer';
@@ -173,21 +173,7 @@ export function NftProfileSummary({nft, token = null}) {
                       contractAddress: nft.contract_address,
                       tokenId: nft.token_id,
                     })
-                  }>
-                  <Div>
-                    <MessageCircle
-                      strokeWidth={2}
-                      color={'white'}
-                      height={16}
-                      width={16}
-                    />
-                  </Div>
-                </Col>
-                <Col auto bgRealBlack p9 rounded100 onPress={goToCapsule} mx8>
-                  <Div>
-                    <Img w16 h16 source={ICONS.capsuleIconWhite}></Img>
-                  </Div>
-                </Col>
+                  }></Col>
                 {token && (
                   <Col
                     auto

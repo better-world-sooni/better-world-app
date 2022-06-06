@@ -19,11 +19,10 @@ import {NativeBaseProvider} from 'native-base';
 import {ICONS} from 'src/modules/icons';
 import {Img} from './common/Img';
 import {getNftProfileImage} from 'src/modules/nftUtils';
-import {Bell, Home, Search} from 'react-native-feather';
+import {Bell, Home, Search, Send} from 'react-native-feather';
 import Colors from 'src/constants/Colors';
 import OtherProfileScreen from 'src/screens/OtherProfileScreen';
 import NftCollectionScreen from 'src/screens/NftCollectionScreen';
-import CapsuleScreen from 'src/screens/Home/CapsuleScreen';
 import NewPostScreen from 'src/screens/NewPostScreen';
 import ReportScreen from 'src/screens/ReportScreen';
 import SearchScreen from 'src/screens/Home/SearchScreen';
@@ -44,6 +43,7 @@ import NewCollectionEventScreen from 'src/screens/NewCollectionEventScreen';
 import AttendanceListScreen from 'src/screens/AttendanceListScreen';
 import CollectionEventScreen from 'src/screens/CollectionEventScreen';
 import AffinityScreen from 'src/screens/AffinityScreen';
+import PasswordSigninScreen from 'src/screens/Auth/PasswordSigninScreen';
 
 const RootStack = createNativeStackNavigator();
 
@@ -96,19 +96,6 @@ const MainBottomTabs = () => {
         }}
       />
       <Tab.Screen
-        name={NAV_NAMES.Capsule}
-        component={CapsuleScreen}
-        options={{
-          unmountOnBlur: true,
-          tabBarIcon: ({focused}) =>
-            focused ? (
-              <Img h20 w20 source={ICONS.capsuleIconWhite}></Img>
-            ) : (
-              <Img h20 w20 source={ICONS.capsuleIconGray}></Img>
-            ),
-        }}
-      />
-      <Tab.Screen
         name={NAV_NAMES.Notification}
         component={NotificationScreen}
         options={{
@@ -152,7 +139,14 @@ export const AppContent = () => {
     {
       name: NAV_NAMES.SignIn,
       component: SignInScreen,
+      options: props => ({
+        gestureEnabled: false,
+      }),
     } as any,
+    {
+      name: NAV_NAMES.PasswordSignIn,
+      component: PasswordSigninScreen,
+    },
     {
       name: NAV_NAMES.Home,
       component: MainBottomTabs,
@@ -190,10 +184,6 @@ export const AppContent = () => {
       component: NewPostScreen,
     },
     {
-      name: NAV_NAMES.ChatList,
-      component: ChatListScreen,
-    },
-    {
       name: NAV_NAMES.LikeList,
       component: LikeListScreen,
     },
@@ -204,10 +194,6 @@ export const AppContent = () => {
     {
       name: NAV_NAMES.VoteList,
       component: VoteListScreen,
-    },
-    {
-      name: NAV_NAMES.ChatRoom,
-      component: ChatRoomScreen,
     },
     {
       name: NAV_NAMES.Onboarding,

@@ -3,6 +3,7 @@ import {ActivityIndicator} from 'react-native';
 import {Trash, Upload} from 'react-native-feather';
 import Carousel, {Pagination} from 'react-native-snap-carousel';
 import Colors from 'src/constants/Colors';
+import {getAdjustedHeightFromDimensions} from 'src/modules/imageUtils';
 import {DEVICE_WIDTH} from 'src/modules/styles';
 import {Div} from './Div';
 import {Img} from './Img';
@@ -17,11 +18,12 @@ export default function UploadImageSlideShow({
   const [currentPage, setCurrentPage] = useState(0);
   const imageHeight =
     images[0]?.uri && images[0].width && images[0].height
-      ? Math.min(
-          (images[0].height / images[0].width) * sliderWidth,
-          1.5 * sliderWidth,
-        )
-      : sliderWidth;
+      ? getAdjustedHeightFromDimensions({
+          width: images[0].width,
+          height: images[0].height,
+          frameWidth: sliderWidth,
+        })
+      : sliderWidth * 0.7;
   return (
     <>
       <Div

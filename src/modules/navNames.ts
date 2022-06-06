@@ -1,5 +1,6 @@
 export const NAV_NAMES = {
     SignIn: 'SignIn',
+    PasswordSignIn: "PasswordSignin",
     Onboarding: 'Onboarding',
     Home: 'Home',
     HomeMain: 'HomeMain',

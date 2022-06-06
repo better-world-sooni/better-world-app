@@ -1,7 +1,6 @@
 import {BottomSheetModal} from '@gorhom/bottom-sheet';
 import {useNavigation} from '@react-navigation/native';
 import React, {useEffect, useRef} from 'react';
-import {Text, TouchableOpacity, Linking} from 'react-native';
 import {ChevronLeft} from 'react-native-feather';
 import QRCodeScanner from 'react-native-qrcode-scanner';
 import BottomPopup from 'src/components/common/BottomPopup';
@@ -32,42 +31,38 @@ export default function ScanScreen({
     params: {scanType},
   },
 }) {
-
-  const {data: qrRes, isLoading: qrLoad, error} = useApiSelector(
-    scanType == ScanType.Nft 
-    ? apis.nft.qr
-    : apis.auth.jwt.qrLogin
+  const {
+    data: qrRes,
+    isLoading: qrLoad,
+    error,
+  } = useApiSelector(
+    scanType == ScanType.Nft ? apis.nft.qr : apis.auth.jwt.qrLogin,
   );
   const {goBack} = useNavigation();
-  const gotoOnboarding = useGotoOnboarding(); 
+  const gotoOnboarding = useGotoOnboarding();
   const gotoHome = useGotoHome();
   const login = useQrLogin();
   const bottomPopupRef = useRef<BottomSheetModal>(null);
   const reloadGETWithToken = useReloadGETWithToken();
   const onSuccess = ({data}) => {
-    scanType == ScanType.Nft 
-    ? reloadGETWithToken(apis.nft.qr(data))
-    : login(
-      data,
-      props => {
-        if (props.data.user.main_nft) {
-          gotoHome();
-          return;
-        }
-        gotoOnboarding();
-      },
-    );
+    scanType == ScanType.Nft
+      ? reloadGETWithToken(apis.nft.qr(data))
+      : login(data, props => {
+          if (props.data.user.main_nft) {
+            gotoHome();
+            return;
+          }
+          gotoOnboarding();
+        });
   };
   useEffect(() => {
-    if(scanType == ScanType.Nft) {
+    if (scanType == ScanType.Nft) {
       if (qrRes?.nft && !error) {
         bottomPopupRef?.current.expand();
       }
+    } else {
+      console.log(qrRes);
     }
-    else {
-      console.log(qrRes)
-    }
-    
   }, [qrRes, qrLoad, error]);
 
   const headerHeight = HAS_NOTCH ? 94 : 70;
@@ -96,7 +91,7 @@ export default function ScanScreen({
           </Col>
           <Col auto>
             <Span bold fontSize={19}>
-              인증코드 스캔
+              {ScanType.Login == scanType ? '큐알로 연결' : '인증코드 스캔'}
             </Span>
           </Col>
           <Col />

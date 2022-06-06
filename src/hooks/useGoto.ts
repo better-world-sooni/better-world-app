@@ -35,6 +35,14 @@ export function useGotoProfile(){
     return gotoProfile
 }
 
+export function useGotoPasswordSignIn(){
+  const navigation = useNavigation()
+  const gotoPasswordSignIn = () => {
+        navigation.navigate(NAV_NAMES.PasswordSignIn as never);
+    }
+    return gotoPasswordSignIn
+}
+
 export function useGotoChatList(){
   const navigation = useNavigation()
   const apiGETWithToken = useApiGETWithToken()

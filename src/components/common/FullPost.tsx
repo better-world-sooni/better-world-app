@@ -4,7 +4,6 @@ import {ActivityIndicator, Platform, RefreshControl} from 'react-native';
 import {
   ChevronLeft,
   Heart,
-  MessageCircle,
   MoreHorizontal,
   Repeat,
   ThumbsDown,
@@ -58,6 +57,7 @@ import {PostOwnerType} from 'src/screens/NewPostScreen';
 import TruncatedText from './TruncatedText';
 import RepostedPost from './RepostedPost';
 import CollectionEvent from './CollectionEvent';
+import {getAdjustedHeightFromDimensions} from 'src/modules/imageUtils';
 
 enum PostEventTypes {
   Delete = 'DELETE',
@@ -390,11 +390,12 @@ export default function FullPost({post, autoFocus = false}) {
                     imageUris={post.image_uris}
                     sliderHeight={
                       post.image_width && post.image_height
-                        ? Math.min(
-                            (post.image_height / post.image_width) * itemWidth,
-                            1.5 * itemWidth,
-                          )
-                        : itemWidth
+                        ? getAdjustedHeightFromDimensions({
+                            width: post.image_width,
+                            height: post.image_height,
+                            frameWidth: itemWidth,
+                          })
+                        : itemWidth * 0.7
                     }
                     sliderWidth={itemWidth}
                   />

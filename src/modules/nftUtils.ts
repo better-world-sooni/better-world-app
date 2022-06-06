@@ -53,8 +53,6 @@ export function useIsCurrentNft(nft) {
     return isCurrentNft
 }
 
-
-
 export function useIsCurrentCollection(nftCollection) {
     const {currentNft} = useSelector(
         (root: RootState) => root.app.session,

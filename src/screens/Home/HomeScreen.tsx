@@ -1,7 +1,7 @@
 import React, {useRef} from 'react';
 import {Div} from 'src/components/common/Div';
 import {Col} from 'src/components/common/Col';
-import {Send} from 'react-native-feather';
+import {Bell, Plus, Send} from 'react-native-feather';
 import apis from 'src/modules/apis';
 import {
   useApiSelector,
@@ -10,18 +10,14 @@ import {
 } from 'src/redux/asyncReducer';
 import Post from 'src/components/common/Post';
 import {Img} from 'src/components/common/Img';
-import {shallowEqual, useSelector} from 'react-redux';
-import {RootState} from 'src/redux/rootReducer';
-import {getNftProfileImage} from 'src/modules/nftUtils';
 import {DEVICE_WIDTH} from 'src/modules/styles';
-import {useGotoCapsule, useGotoChatList} from 'src/hooks/useGoto';
-import {useFocusEffect} from '@react-navigation/native';
-import {useUpdateUnreadMessageCount} from 'src/redux/appReducer';
+import {useGotoNewPost, useGotoNotification} from 'src/hooks/useGoto';
 import {IMAGES} from 'src/modules/images';
 import SideMenu from 'react-native-side-menu-updated';
 import MyNftCollectionMenu from '../../components/common/MyNftCollectionMenu';
 import FeedFlatlist from 'src/components/FeedFlatlist';
 import {StatusBar} from 'native-base';
+import {PostOwnerType} from '../NewPostScreen';
 
 const HomeScreen = () => {
   const {
@@ -35,10 +31,9 @@ const HomeScreen = () => {
     apis.nft_collection.profile(),
   );
   const nftCollection = nftCollectionRes?.nft_collection;
-  const gotoChatList = useGotoChatList();
+  const gotoNewPost = useGotoNewPost({postOwnerType: PostOwnerType.Nft});
   const reloadGETWithToken = useReloadGETWithToken();
   const paginateGetWithToken = usePaginateGETWithToken();
-  const updateUnreadMessageCount = useUpdateUnreadMessageCount();
   const handleRefresh = () => {
     if (feedLoading) return;
     reloadGETWithToken(apis.feed._());
@@ -52,9 +47,6 @@ const HomeScreen = () => {
   const openSideMenu = () => {
     sideMenuRef?.current?.openMenu(true);
   };
-  useFocusEffect(() => {
-    updateUnreadMessageCount();
-  });
   return (
     <SideMenu
       ref={sideMenuRef}
@@ -90,9 +82,9 @@ const HomeScreen = () => {
             <Col auto>
               <Img h40 w40 source={IMAGES.betterWorldBlueLogo}></Img>
             </Col>
-            <Col itemsEnd rounded100 onPress={gotoChatList}>
+            <Col itemsEnd rounded100 onPress={() => gotoNewPost()}>
               <Div>
-                <Send
+                <Plus
                   strokeWidth={1.7}
                   color={'black'}
                   height={24}

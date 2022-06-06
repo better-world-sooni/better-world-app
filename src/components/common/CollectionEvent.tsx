@@ -13,6 +13,7 @@ import {
 } from 'src/hooks/useGoto';
 import apis from 'src/modules/apis';
 import {kmoment} from 'src/modules/constants';
+import {getAdjustedHeightFromDimensions} from 'src/modules/imageUtils';
 import {getNftProfileImage} from 'src/modules/nftUtils';
 import {useDeletePromiseFnWithToken} from 'src/redux/asyncReducer';
 import {RootState} from 'src/redux/rootReducer';
@@ -113,13 +114,12 @@ export default function CollectionEvent({
             imageUris={collectionEvent.image_uris}
             sliderHeight={
               collectionEvent.image_width && collectionEvent.image_height
-                ? Math.min(
-                    (collectionEvent.image_height /
-                      collectionEvent.image_width) *
-                      itemWidth,
-                    itemWidth * 1.5,
-                  )
-                : itemWidth
+                ? getAdjustedHeightFromDimensions({
+                    width: collectionEvent.image_width,
+                    height: collectionEvent.image_height,
+                    frameWidth: itemWidth,
+                  })
+                : itemWidth * 0.7
             }
             sliderWidth={itemWidth}
           />
