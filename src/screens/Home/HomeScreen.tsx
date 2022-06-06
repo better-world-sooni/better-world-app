@@ -1,9 +1,13 @@
-import React, {useRef, useState} from 'react';
+import React, {useRef} from 'react';
 import {Div} from 'src/components/common/Div';
 import {Col} from 'src/components/common/Col';
-import {Bell, Plus, Send} from 'react-native-feather';
+import {Plus} from 'react-native-feather';
 import apis from 'src/modules/apis';
-import {useApiSelector} from 'src/redux/asyncReducer';
+import {
+  useApiSelector,
+  usePaginateGETWithToken,
+  useReloadGETWithToken,
+} from 'src/redux/asyncReducer';
 import Post from 'src/components/common/Post';
 import {Img} from 'src/components/common/Img';
 import {DEVICE_WIDTH} from 'src/modules/styles';
@@ -14,27 +18,31 @@ import MyNftCollectionMenu from '../../components/common/MyNftCollectionMenu';
 import FeedFlatlist from 'src/components/FeedFlatlist';
 import {StatusBar} from 'native-base';
 import {PostOwnerType} from '../NewPostScreen';
-import usePaginatedQuery from 'src/hooks/usePaginatedQuery';
 
 const HomeScreen = () => {
+  const {
+    data: feedRes,
+    isLoading: feedLoading,
+    isPaginating: feedPaginating,
+    page,
+    isNotPaginatable,
+  } = useApiSelector(apis.feed._);
   const {data: nftCollectionRes, isLoading: nftCollectionLoad} = useApiSelector(
     apis.nft_collection.profile(),
   );
   const nftCollection = nftCollectionRes?.nft_collection;
-  const pageableApiKeyFn = (page?) => {
-    return apis.feed._(page ? page + 1 : 1);
-  };
-  const {
-    isLoading,
-    isError,
-    error,
-    data,
-    isFetchingNextPage,
-    hasNextPage,
-    handleRefresh,
-    handleLoadMore,
-  } = usePaginatedQuery({pageableApiKeyFn, listKey: 'feed'});
   const gotoNewPost = useGotoNewPost({postOwnerType: PostOwnerType.Nft});
+  const reloadGETWithToken = useReloadGETWithToken();
+  const paginateGetWithToken = usePaginateGETWithToken();
+  const handleRefresh = () => {
+    if (feedLoading) return;
+    reloadGETWithToken(apis.feed._());
+    reloadGETWithToken(apis.nft_collection.profile());
+  };
+  const handleEndReached = () => {
+    if (feedPaginating || isNotPaginatable) return;
+    paginateGetWithToken(apis.feed._(page + 1), 'feed');
+  };
   const sideMenuRef = useRef(null);
   const openSideMenu = () => {
     sideMenuRef?.current?.openMenu(true);
@@ -49,15 +57,15 @@ const HomeScreen = () => {
       openMenuOffset={DEVICE_WIDTH - 65}>
       <StatusBar barStyle="dark-content"></StatusBar>
       <FeedFlatlist
-        refreshing={isLoading}
+        refreshing={feedLoading}
         onRefresh={handleRefresh}
-        isPaginating={isFetchingNextPage}
-        onEndReached={handleLoadMore}
-        isNotPaginatable={!hasNextPage}
+        isPaginating={feedPaginating}
+        onEndReached={handleEndReached}
+        isNotPaginatable={isNotPaginatable}
         renderItem={({item, index}) => {
           return <Post key={(item as any).id} post={item} />;
         }}
-        data={data?.pages?.flat() || []}
+        data={feedRes ? feedRes.feed : []}
         HeaderComponent={
           <>
             <Col itemsStart rounded100 onPress={openSideMenu}>
