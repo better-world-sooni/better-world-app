@@ -28,6 +28,15 @@ export const useDeletePromiseFnWithToken = () => {
   return async(args) => deletePromiseFn({...args, token: userToken})
 };
 
+export const useGetPromiseFnWithToken = () => {
+  const {userToken} = useSelector(
+    (root: RootState) => ({userToken: root.app.session.token}),
+    shallowEqual,
+  );
+  return async(args) => await getPromiseFn({...args, token: userToken})
+};
+
+
 
 export const usePromiseFnWithToken = () => {
   const {userToken} = useSelector(
@@ -57,8 +66,7 @@ export const putPromiseFn = async args => {
   return await promiseFn({...args, method: "PUT"})
 };
 
-export const promiseFn = async args => {
-  const {url, body, token, method} = args;
+export const promiseFn = async ({url, body, token, method}) => {
   const res = await fetch(url, {
     method: method,
     headers: {
