@@ -18,6 +18,7 @@ import MyNftCollectionMenu from '../../components/common/MyNftCollectionMenu';
 import FeedFlatlist from 'src/components/FeedFlatlist';
 import {StatusBar} from 'native-base';
 import {PostOwnerType} from '../NewPostScreen';
+import {useScrollToTop} from '@react-navigation/native';
 
 const HomeScreen = () => {
   const {
@@ -47,6 +48,8 @@ const HomeScreen = () => {
   const openSideMenu = () => {
     sideMenuRef?.current?.openMenu(true);
   };
+  const flatlistRef = useRef(null);
+  useScrollToTop(flatlistRef);
   return (
     <SideMenu
       ref={sideMenuRef}
@@ -57,6 +60,7 @@ const HomeScreen = () => {
       openMenuOffset={DEVICE_WIDTH - 65}>
       <StatusBar barStyle="dark-content"></StatusBar>
       <FeedFlatlist
+        ref={flatlistRef}
         refreshing={feedLoading}
         onRefresh={handleRefresh}
         isPaginating={feedPaginating}

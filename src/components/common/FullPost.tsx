@@ -21,7 +21,7 @@ import {
   useGotoRepostList,
   useGotoVoteList,
 } from 'src/hooks/useGoto';
-import useLike from 'src/hooks/useLike';
+import useLike, {LikableType} from 'src/hooks/useLike';
 import apis from 'src/modules/apis';
 import {
   getNftName,
@@ -72,7 +72,8 @@ export default function FullPost({post, autoFocus = false}) {
   const [liked, likesCount, handlePressLike] = useLike(
     post.is_liked,
     post.likes_count,
-    apis.like.post(post.id).url,
+    LikableType.Post,
+    post.id,
   );
   const [cachedComments, setCachedComments] = useState(post.comments || []);
   useEffect(() => {

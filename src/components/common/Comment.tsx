@@ -1,6 +1,6 @@
 import {Heart} from 'react-native-feather';
 import Colors from 'src/constants/Colors';
-import useLike from 'src/hooks/useLike';
+import useLike, {LikableType} from 'src/hooks/useLike';
 import apis from 'src/modules/apis';
 import React from 'react';
 import {getNftName, getNftProfileImage} from 'src/modules/nftUtils';
@@ -60,7 +60,8 @@ function CommentContent({
   const [liked, likesCount, handlePressLike] = useLike(
     is_liked,
     likes_count,
-    apis.like.comment(id).url,
+    LikableType.Comment,
+    id,
   );
   const cachedComments = comments || [];
   const profileImageSize = nested ? 25 : 30;

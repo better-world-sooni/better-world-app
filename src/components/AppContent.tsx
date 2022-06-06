@@ -44,7 +44,6 @@ import AttendanceListScreen from 'src/screens/AttendanceListScreen';
 import CollectionEventScreen from 'src/screens/CollectionEventScreen';
 import AffinityScreen from 'src/screens/AffinityScreen';
 import PasswordSigninScreen from 'src/screens/Auth/PasswordSigninScreen';
-import {QueryClient, QueryClientProvider} from 'react-query';
 
 const RootStack = createNativeStackNavigator();
 
@@ -131,8 +130,6 @@ export const AppContent = () => {
     isLoggedIn,
     session: {token},
   } = useSelector((root: RootState) => root.app, shallowEqual);
-  
-  const queryClient = new QueryClient();
 
   const Navs = [
     {
@@ -254,24 +251,22 @@ export const AppContent = () => {
 
   return (
     <Div flex={1} relative>
-      <QueryClientProvider client={queryClient}>
-        <NavigationContainer>
-          <NativeBaseProvider>
-            <BottomSheetModalProvider>
-              <RootStack.Navigator screenOptions={{headerShown: false}}>
-                {Navs.map((item, i) => (
-                  <RootStack.Screen
-                    key={i}
-                    name={item.name}
-                    component={item.component}
-                    options={item.options}
-                  />
-                ))}
-              </RootStack.Navigator>
-            </BottomSheetModalProvider>
-          </NativeBaseProvider>
-        </NavigationContainer>
-      </QueryClientProvider>
+      <NavigationContainer>
+        <NativeBaseProvider>
+          <BottomSheetModalProvider>
+            <RootStack.Navigator screenOptions={{headerShown: false}}>
+              {Navs.map((item, i) => (
+                <RootStack.Screen
+                  key={i}
+                  name={item.name}
+                  component={item.component}
+                  options={item.options}
+                />
+              ))}
+            </RootStack.Navigator>
+          </BottomSheetModalProvider>
+        </NativeBaseProvider>
+      </NavigationContainer>
     </Div>
   );
 };
