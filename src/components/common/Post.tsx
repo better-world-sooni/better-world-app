@@ -341,10 +341,12 @@ function PostContent({post}) {
                       style={{fontWeight: '600'}}
                       onPress={() => gotoVoteList(VoteCategory.Against)}>
                       반대 <Span realBlack>{againstVotesCount}</Span>표 (
-                      {(againstVotesCount + forVotesCount > 0
-                        ? againstVotesCount /
-                          (againstVotesCount + forVotesCount)
-                        : 0) * 100}
+                      {Math.round(
+                        (againstVotesCount + forVotesCount > 0
+                          ? againstVotesCount /
+                            (againstVotesCount + forVotesCount)
+                          : 0) * 100,
+                      )}
                       %)
                     </Span>
                   </Col>
@@ -354,9 +356,11 @@ function PostContent({post}) {
                       style={{fontWeight: '600'}}
                       onPress={() => gotoVoteList(VoteCategory.For)}>
                       찬성 <Span realBlack>{forVotesCount}</Span>표 (
-                      {(againstVotesCount + forVotesCount > 0
-                        ? forVotesCount / (againstVotesCount + forVotesCount)
-                        : 0) * 100}
+                      {Math.round(
+                        (againstVotesCount + forVotesCount > 0
+                          ? forVotesCount / (againstVotesCount + forVotesCount)
+                          : 0) * 100,
+                      )}
                       %)
                     </Span>
                   </Col>

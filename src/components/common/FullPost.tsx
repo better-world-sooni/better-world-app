@@ -178,7 +178,6 @@ export default function FullPost({post, autoFocus = false}) {
         strokeWidth: 1.7,
       }
     : actionIconDefaultProps;
-  const gotoPost = useGotoPost({postId: post.id});
 
   const gotoNftProfile = useGotoNftProfile({
     nft: post.nft,
@@ -450,10 +449,12 @@ export default function FullPost({post, autoFocus = false}) {
                         style={{fontWeight: '600'}}
                         onPress={() => gotoVoteList(VoteCategory.Against)}>
                         반대 <Span realBlack>{againstVotesCount}</Span>표 (
-                        {(againstVotesCount + forVotesCount > 0
-                          ? againstVotesCount /
-                            (againstVotesCount + forVotesCount)
-                          : 0) * 100}
+                        {Math.round(
+                          (againstVotesCount + forVotesCount > 0
+                            ? againstVotesCount /
+                              (againstVotesCount + forVotesCount)
+                            : 0) * 100,
+                        )}
                         %)
                       </Span>
                     </Col>
@@ -463,9 +464,12 @@ export default function FullPost({post, autoFocus = false}) {
                         style={{fontWeight: '600'}}
                         onPress={() => gotoVoteList(VoteCategory.For)}>
                         찬성 <Span realBlack>{forVotesCount}</Span>표 (
-                        {(againstVotesCount + forVotesCount > 0
-                          ? forVotesCount / (againstVotesCount + forVotesCount)
-                          : 0) * 100}
+                        {Math.round(
+                          (againstVotesCount + forVotesCount > 0
+                            ? forVotesCount /
+                              (againstVotesCount + forVotesCount)
+                            : 0) * 100,
+                        )}
                         %)
                       </Span>
                     </Col>

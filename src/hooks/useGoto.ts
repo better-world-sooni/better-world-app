@@ -2,7 +2,7 @@ import { CommonActions, useNavigation } from "@react-navigation/native";
 import { shallowEqual, useSelector } from "react-redux";
 import apis from "src/modules/apis";
 import { NAV_NAMES } from "src/modules/navNames";
-import { useApiGETWithToken, useApiPOSTWithToken, useReloadGETWithToken } from "src/redux/asyncReducer";
+import { useApiGETWithToken, useApiPOSTWithToken } from "src/redux/asyncReducer";
 import { RootState } from "src/redux/rootReducer";
 import { ChatRoomType } from "src/screens/ChatRoomScreen";
 import { FollowOwnerType, FollowType } from "src/screens/FollowListScreen";
@@ -165,9 +165,9 @@ export function useGotoVoteList({postId}) {
 
 export function useGotoFollowList({followOwnerType, contractAddress, tokenId = null}) {
   const navigation = useNavigation()
-  const reloadGetWithToken = useReloadGETWithToken()
+  const apiGetWithToken = useApiGETWithToken()
   const gotoFollowList= (followType) => {
-    reloadGetWithToken(
+    apiGetWithToken(
       followOwnerType == FollowOwnerType.Nft
         ? apis.follow.list(
             followType == FollowType.Followers,

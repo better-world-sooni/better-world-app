@@ -3,6 +3,6 @@ export function getAdjustedHeightFromDimensions({width, height, frameWidth}){
         (height /
         width) *
           frameWidth,
-          frameWidth * 0.8,
+          frameWidth * 2,
       )
 }

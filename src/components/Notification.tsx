@@ -77,6 +77,7 @@ const NotificationContent = ({
       image_uri: profileImgUri,
       nft_metadatum: {
         name: nftMetadatumName,
+        image_uri: profileImgUri,
       },
     },
   });
@@ -220,7 +221,7 @@ const NotificationContent = ({
           <Span gray700>{createdAtText(createdAt)}</Span>
         </Span>
       </Col>
-      {!isCurrentNft && (
+      {!isCurrentNft && !following && (
         <Col
           auto
           bgRealBlack={!following}
