@@ -1,11 +1,6 @@
-<<<<<<< HEAD
-import React from 'react';
-import {ActivityIndicator, RefreshControl} from 'react-native';
-=======
 import {BlurView} from '@react-native-community/blur';
 import React, {forwardRef} from 'react';
 import {ActivityIndicator, FlatList, RefreshControl} from 'react-native';
->>>>>>> 50f4223c5995c96eabda4f08a9223cf3485e536f
 import Animated, {
   Extrapolate,
   interpolate,
