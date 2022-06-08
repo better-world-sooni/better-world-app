@@ -1,4 +1,5 @@
 import {BlurView} from '@react-native-community/blur';
+import {CustomBlurView} from 'src/components/common/CustomBlurView';
 import React from 'react';
 import {RefreshControl} from 'react-native';
 import Animated, {
@@ -75,7 +76,7 @@ export default function FeedFlatlistWithHeader({
         ListHeaderComponent={
           <Animated.View style={topBarStyles}>
             <Animated.View style={headerStyles}>
-              <BlurView
+              <CustomBlurView
                 blurType="xlight"
                 blurAmount={30}
                 blurRadius={20}
@@ -84,7 +85,7 @@ export default function FeedFlatlistWithHeader({
                   height: '100%',
                   position: 'absolute',
                 }}
-                reducedTransparencyFallbackColor="white"></BlurView>
+                reducedTransparencyFallbackColor="white"></CustomBlurView>
             </Animated.View>
             <Row
               itemsCenter

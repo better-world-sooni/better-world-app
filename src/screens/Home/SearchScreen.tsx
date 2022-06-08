@@ -21,6 +21,7 @@ import Animated, {
   useSharedValue,
 } from 'react-native-reanimated';
 import {BlurView} from '@react-native-community/blur';
+import {CustomBlurView} from 'src/components/common/CustomBlurView';
 import useEdittableText from 'src/hooks/useEdittableText';
 import Colors from 'src/constants/Colors';
 import RankedOwner from 'src/components/RankOwner';
@@ -105,7 +106,7 @@ const SearchScreen = () => {
     <Div flex={1} bgWhite>
       <Div h={headerHeight} zIndex={100}>
         <Animated.View style={headerStyles}>
-          <BlurView
+          <CustomBlurView
             blurType="xlight"
             blurAmount={30}
             blurRadius={20}
@@ -114,7 +115,7 @@ const SearchScreen = () => {
               height: '100%',
               position: 'absolute',
             }}
-            reducedTransparencyFallbackColor="white"></BlurView>
+            ></CustomBlurView>
         </Animated.View>
         <Div zIndex={100} absolute w={DEVICE_WIDTH} top={HAS_NOTCH ? 49 : 25}>
           <Row itemsCenter py5 h40 px15>

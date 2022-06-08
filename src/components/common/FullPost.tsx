@@ -52,6 +52,7 @@ import Animated, {
   useSharedValue,
 } from 'react-native-reanimated';
 import {BlurView} from '@react-native-community/blur';
+import {CustomBlurView} from 'src/components/common/CustomBlurView';
 import useScrollToEndRef from 'src/hooks/useScrollToEndRef';
 import {PostOwnerType} from 'src/screens/NewPostScreen';
 import TruncatedText from './TruncatedText';
@@ -294,7 +295,7 @@ export default function FullPost({post, autoFocus = false}) {
     <>
       <Div h={headerHeight} zIndex={100} absolute top0>
         <Animated.View style={headerStyles}>
-          <BlurView
+          <CustomBlurView
             blurType="xlight"
             blurAmount={30}
             blurRadius={20}
@@ -303,7 +304,7 @@ export default function FullPost({post, autoFocus = false}) {
               height: '100%',
               position: 'absolute',
             }}
-            reducedTransparencyFallbackColor="white"></BlurView>
+            reducedTransparencyFallbackColor="white"></CustomBlurView>
         </Animated.View>
         <Div zIndex={100} absolute w={DEVICE_WIDTH} top={HAS_NOTCH ? 49 : 25}>
           <Row itemsCenter py5 h40 px8>

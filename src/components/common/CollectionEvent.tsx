@@ -1,4 +1,5 @@
 import {BlurView} from '@react-native-community/blur';
+import {CustomBlurView} from 'src/components/common/CustomBlurView';
 import {MenuView} from '@react-native-menu/menu';
 import React, {useState} from 'react';
 import {ActivityIndicator, Linking, Platform} from 'react-native';

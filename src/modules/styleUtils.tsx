@@ -139,6 +139,7 @@ export const addLayoutStyles = (props, arr: Array<any>, key) => {
     shadowOffset,
     shadowOpacity,
     shadowRadius,
+    blur,
   } = props;
   const ctx = {props, arr, key, isActive};
 
@@ -396,6 +397,7 @@ export const addLayoutStyles = (props, arr: Array<any>, key) => {
   if (addIf(ctx, {shadowRadius}, v => ({shadowRadius: v}))) {
     return;
   }
+
 };
 
 export const addBorderStyles = (props, arr: Array<any>, key) => {

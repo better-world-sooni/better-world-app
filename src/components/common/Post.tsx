@@ -45,6 +45,14 @@ import {ReportTypes} from 'src/screens/ReportScreen';
 import useVote, {VoteCategory} from 'src/hooks/useVote';
 import {LikeListType} from 'src/screens/LikeListScreen';
 import {DEVICE_WIDTH} from 'src/modules/styles';
+import Animated, {
+  useAnimatedScrollHandler,
+  useAnimatedStyle,
+  useSharedValue,
+} from 'react-native-reanimated';
+import {BlurView} from '@react-native-community/blur';
+import {CustomBlurView} from 'src/components/common/CustomBlurView';
+import useScrollToEndRef from 'src/hooks/useScrollToEndRef';
 import {PostOwnerType} from 'src/screens/NewPostScreen';
 import TruncatedText from './TruncatedText';
 import RepostedPost from './RepostedPost';

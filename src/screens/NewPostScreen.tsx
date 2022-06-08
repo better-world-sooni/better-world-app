@@ -34,6 +34,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import {DEVICE_HEIGHT, DEVICE_WIDTH} from 'src/modules/styles';
 import {BlurView} from '@react-native-community/blur';
+import {CustomBlurView} from 'src/components/common/CustomBlurView';
 import Colors from 'src/constants/Colors';
 import useAutoFocusRef from 'src/hooks/useAutoFocusRef';
 import TruncatedText from 'src/components/common/TruncatedText';
@@ -149,7 +150,7 @@ const NewPostScreen = ({
       <KeyboardAvoidingView behavior="padding" flex={1} bgWhite relative>
         <Div h={headerHeight} zIndex={100} borderBottom={0.5} borderGray200>
           <Animated.View style={headerStyles}>
-            <BlurView
+            <CustomBlurView
               blurType="xlight"
               blurAmount={30}
               blurRadius={20}
@@ -158,7 +159,7 @@ const NewPostScreen = ({
                 height: '100%',
                 position: 'absolute',
               }}
-              reducedTransparencyFallbackColor="white"></BlurView>
+              ></CustomBlurView>
           </Animated.View>
           <Div zIndex={100} absolute w={DEVICE_WIDTH} top={HAS_NOTCH ? 49 : 25}>
             <Row itemsCenter py5 h40 px15>
