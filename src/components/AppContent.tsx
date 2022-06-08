@@ -45,8 +45,9 @@ import CollectionEventScreen from 'src/screens/CollectionEventScreen';
 import AffinityScreen from 'src/screens/AffinityScreen';
 import PasswordSigninScreen from 'src/screens/Auth/PasswordSigninScreen';
 import ImageModal from './modal/ImageModal';
+import {createStackNavigator} from '@react-navigation/stack';
 
-const RootStack = createNativeStackNavigator();
+const RootStack = createStackNavigator();
 
 const Tab = createBottomTabNavigator();
 

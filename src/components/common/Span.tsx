@@ -39,6 +39,7 @@ export const Span = props => {
       style={[
         {
           // fontFamily: 'UniSans',
+          color: 'black',
           fontSize: 13,
           flexDirection: 'row',
           flexWrap: 'wrap',
