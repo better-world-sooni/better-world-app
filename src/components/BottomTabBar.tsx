@@ -1,6 +1,7 @@
 import {NativeBaseProvider, Box, HStack, Center} from 'native-base';
 import React, {useCallback, useRef} from 'react';
 import {Div} from './common/Div';
+import { Row } from "src/components/common/Row"
 import BottomPopup from './common/BottomPopup';
 import NftChooseBottomSheetScrollView from './common/NftChooseBottomSheetScrollView';
 import {shallowEqual, useSelector} from 'react-redux';
@@ -80,9 +81,7 @@ const BottomTabBar = ({state, descriptors, navigation}) => {
           title={'Identity 변경하기'}
         />
       </BottomPopup>
-      <Div
-        h80={HAS_NOTCH}
-        h60={!HAS_NOTCH}
+      <Row
         borderTopColor={isFocusedOnCapsule ? 'black' : Colors.gray[100]}
         borderTopWidth={0.2}>
         <NativeBaseProvider>
@@ -94,7 +93,7 @@ const BottomTabBar = ({state, descriptors, navigation}) => {
             {List}
           </HStack>
         </NativeBaseProvider>
-      </Div>
+      </Row>
     </>
   );
 };
