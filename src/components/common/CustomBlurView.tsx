@@ -11,8 +11,10 @@ export const CustomBlurView = props => {
     blurAmount,
     blurRadius,
     style,
+    overlayColor,
     reducedTransparencyFallbackColor,
   } = props;
+  console.log(blurType)
 
   return Platform.OS === 'ios' ? (
     <BlurView
@@ -20,10 +22,21 @@ export const CustomBlurView = props => {
       blurAmount={blurAmount}
       blurRadius={blurRadius}
       style={style}
+      overlayColor={overlayColor}
       reducedTransparencyFallbackColor={
         reducedTransparencyFallbackColor
       }></BlurView>
   ) : (
-    <Div bgWhite opacity={0.9} {...props}></Div>
-  );
+    <BlurView
+      blurType={blurType}
+      blurAmount={blurAmount}
+      blurRadius={blurRadius}
+      style={style}
+      overlayColor={overlayColor}
+      reducedTransparencyFallbackColor={
+        reducedTransparencyFallbackColor
+      }
+    ></BlurView>
+
+    );
 };

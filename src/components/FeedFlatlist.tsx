@@ -30,7 +30,7 @@ function FeedFlatlist(
   },
   ref,
 ) {
-  const notchHeight = HAS_NOTCH ? 44 : 20;
+  const notchHeight = HAS_NOTCH ? 44 : 0;
   const headerHeight = notchHeight + 48;
   const translationY = useSharedValue(0);
   const scrollClamp = useSharedValue(0);
@@ -74,6 +74,7 @@ function FeedFlatlist(
   const headerStyles = useAnimatedStyle(() => {
     return {
       width: DEVICE_WIDTH,
+      top: 0,
       height: headerHeight,
       opacity: Math.min(translationY.value / 50, 1),
     };
@@ -86,6 +87,7 @@ function FeedFlatlist(
       Extrapolate.CLAMP,
     );
     return {
+      top: 0,
       height: headerHeight,
       zIndex: 100,
       position: 'absolute',
@@ -102,10 +104,10 @@ function FeedFlatlist(
         <CustomBlurView
           blurType="xlight"
           blurAmount={30}
-          blurRadius={20}
+          blurRadius={25}
           style={{
             width: DEVICE_WIDTH,
-            height: '100%',
+            height: notchHeight,
             position: 'absolute',
           }}
           reducedTransparencyFallbackColor="white"></CustomBlurView>
@@ -115,10 +117,12 @@ function FeedFlatlist(
           <CustomBlurView
             blurType="xlight"
             blurAmount={30}
-            blurRadius={20}
+            blurRadius={25}
+            overlayColor=""
             style={{
               width: DEVICE_WIDTH,
-              height: '100%',
+              top: 0,
+              height: headerHeight,
               position: 'absolute',
             }}
             reducedTransparencyFallbackColor="white"></CustomBlurView>
@@ -130,7 +134,7 @@ function FeedFlatlist(
           zIndex={100}
           absolute
           w={DEVICE_WIDTH}
-          top={notchHeight + 5}>
+          top={notchHeight+5}>
           {HeaderComponent}
         </Row>
       </Animated.View>

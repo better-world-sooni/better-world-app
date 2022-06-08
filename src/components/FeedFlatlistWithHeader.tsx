@@ -21,7 +21,7 @@ export default function FeedFlatlistWithHeader({
   data,
   HeaderComponent,
 }) {
-  const notchHeight = HAS_NOTCH ? 44 : 20;
+  const notchHeight = HAS_NOTCH ? 44 : 0;
   const headerHeight = notchHeight + 48;
   const translationY = useSharedValue(0);
   const scrollHandler = useAnimatedScrollHandler({

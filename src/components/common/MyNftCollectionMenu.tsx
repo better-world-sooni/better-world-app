@@ -42,7 +42,7 @@ const MyNftCollectionMenu = ({nftCollection}) => {
   const gotoAffinity = useGotoAffinity({
     nftCollection,
   });
-  const notchHeight = HAS_NOTCH ? 44 : 20;
+  const notchHeight = HAS_NOTCH ? 44 : 0;
   const headerHeight = notchHeight + 18;
 
   return (
