@@ -35,12 +35,12 @@ android_library(
 
 android_build_config(
     name = "build_config",
-    package = "com.sungan",
+    package = "com.BetterWorld",
 )
 
 android_resource(
     name = "res",
-    package = "com.sungan",
+    package = "com.BetterWorld",
     res = "src/main/res",
 )
 
