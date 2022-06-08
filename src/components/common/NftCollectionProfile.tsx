@@ -22,6 +22,7 @@ import Animated, {
   useSharedValue,
 } from 'react-native-reanimated';
 import {BlurView} from '@react-native-community/blur';
+import {CustomBlurView} from 'src/components/common/CustomBlurView';
 import {useNavigation} from '@react-navigation/native';
 import {ActivityIndicator, RefreshControl} from 'react-native';
 import {FollowOwnerType, FollowType} from 'src/screens/FollowListScreen';
@@ -124,7 +125,7 @@ export default function NftCollectionProfile({
           <Div absolute top0 h={headerHeight} bgGray400 w={DEVICE_WIDTH}></Div>
         )}
         <Animated.View style={headerStyles}>
-          <BlurView
+          <CustomBlurView
             blurType="light"
             blurAmount={20}
             blurRadius={10}
@@ -133,7 +134,7 @@ export default function NftCollectionProfile({
               height: '100%',
               position: 'absolute',
             }}
-            reducedTransparencyFallbackColor="white"></BlurView>
+            reducedTransparencyFallbackColor="white"></CustomBlurView>
           <Row
             itemsCenter
             justifyCenter

@@ -25,6 +25,7 @@ import {ChevronLeft, RefreshCw} from 'react-native-feather';
 import {useNavigation} from '@react-navigation/native';
 import {Row} from 'src/components/common/Row';
 import {BlurView} from '@react-native-community/blur';
+import {CustomBlurView} from 'src/components/common/CustomBlurView';
 
 const QrScreen = () => {
   const {data: qrRes, isLoading: qrLoad, error} = useApiSelector(apis.auth.qr);
@@ -115,7 +116,7 @@ const QrScreen = () => {
             )}
             {error && (
               <>
-                <BlurView
+                <CustomBlurView
                   blurType="xlight"
                   blurAmount={5}
                   blurRadius={5}
@@ -125,7 +126,7 @@ const QrScreen = () => {
                     height: 200,
                     position: 'absolute',
                   }}
-                  reducedTransparencyFallbackColor="white"></BlurView>
+                  ></CustomBlurView>
                 <Img
                   source={IMAGES.betterWorldBlueLogo}
                   h100

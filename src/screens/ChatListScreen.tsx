@@ -23,6 +23,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import {DEVICE_WIDTH} from 'src/modules/styles';
 import {BlurView} from '@react-native-community/blur';
+import {CustomBlurView} from 'src/components/common/CustomBlurView';
 import {createdAtText} from 'src/modules/timeUtils';
 import {useGotoChatRoom} from 'src/hooks/useGoto';
 import {ChatRoomType} from './ChatRoomScreen';
@@ -130,7 +131,7 @@ function ChatListScreen() {
           <>
             <Div h={headerHeight} zIndex={100}>
               <Animated.View style={headerStyles}>
-                <BlurView
+                <CustomBlurView
                   blurType="xlight"
                   blurAmount={30}
                   blurRadius={20}
@@ -139,7 +140,7 @@ function ChatListScreen() {
                     height: '100%',
                     position: 'absolute',
                   }}
-                  reducedTransparencyFallbackColor="white"></BlurView>
+                  reducedTransparencyFallbackColor="white"></CustomBlurView>
               </Animated.View>
               <Row
                 itemsCenter

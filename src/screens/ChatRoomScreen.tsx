@@ -15,6 +15,7 @@ import {ChatChannel} from 'src/components/ChatChannel';
 import {HAS_NOTCH, kmoment} from 'src/modules/constants';
 import {DEVICE_WIDTH} from 'src/modules/styles';
 import {BlurView} from '@react-native-community/blur';
+import {CustomBlurView} from 'src/components/common/CustomBlurView';
 import {KeyboardAvoidingView} from 'src/modules/viewComponents';
 import {Img} from 'src/components/common/Img';
 import NewMessage from 'src/components/common/NewMessage';
@@ -173,7 +174,7 @@ function ChatRoomScreen({
   return (
     <>
       <Div h={headerHeight} zIndex={100}>
-        <BlurView
+        <CustomBlurView
           blurType="xlight"
           blurAmount={30}
           blurRadius={20}
@@ -182,7 +183,7 @@ function ChatRoomScreen({
             height: headerHeight,
             position: 'absolute',
           }}
-          reducedTransparencyFallbackColor="white"></BlurView>
+          ></CustomBlurView>
         <Row
           itemsCenter
           py5

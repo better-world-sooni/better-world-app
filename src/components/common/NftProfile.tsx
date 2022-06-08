@@ -20,6 +20,7 @@ import Animated, {
   useSharedValue,
 } from 'react-native-reanimated';
 import {BlurView} from '@react-native-community/blur';
+import {CustomBlurView} from 'src/components/common/CustomBlurView';
 import {
   useApiSelector,
   usePaginateGETWithToken,
@@ -96,7 +97,7 @@ export default function NftProfile({
           <Div absolute top0 h={headerHeight} bgGray400 w={DEVICE_WIDTH}></Div>
         )}
         <Animated.View style={headerStyles}>
-          <BlurView
+          <CustomBlurView
             blurType="light"
             blurAmount={20}
             blurRadius={10}
@@ -105,7 +106,7 @@ export default function NftProfile({
               height: '100%',
               position: 'absolute',
             }}
-            reducedTransparencyFallbackColor="white"></BlurView>
+            reducedTransparencyFallbackColor="white"></CustomBlurView>
           <Row
             itemsCenter
             justifyCenter

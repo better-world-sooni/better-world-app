@@ -1,4 +1,3 @@
-import {BlurView} from '@react-native-community/blur';
 import React from 'react';
 import {ActivityIndicator, RefreshControl} from 'react-native';
 import Animated, {
@@ -13,6 +12,7 @@ import {DEVICE_WIDTH} from 'src/modules/styles';
 import {Div} from './common/Div';
 import {Row} from './common/Row';
 import {Span} from './common/Span';
+import {CustomBlurView} from 'src/components/common/CustomBlurView';
 
 export default function FeedFlatlist({
   refreshing,
@@ -93,7 +93,7 @@ export default function FeedFlatlist({
   return (
     <Div flex={1} bgWhite>
       <Animated.View style={notchStyles}>
-        <BlurView
+        <CustomBlurView
           blurType="xlight"
           blurAmount={30}
           blurRadius={20}
@@ -102,11 +102,11 @@ export default function FeedFlatlist({
             height: '100%',
             position: 'absolute',
           }}
-          reducedTransparencyFallbackColor="white"></BlurView>
+          reducedTransparencyFallbackColor="white"></CustomBlurView>
       </Animated.View>
       <Animated.View style={topBarStyles}>
         <Animated.View style={headerStyles}>
-          <BlurView
+          <CustomBlurView
             blurType="xlight"
             blurAmount={30}
             blurRadius={20}
@@ -115,7 +115,7 @@ export default function FeedFlatlist({
               height: '100%',
               position: 'absolute',
             }}
-            reducedTransparencyFallbackColor="white"></BlurView>
+            reducedTransparencyFallbackColor="white"></CustomBlurView>
         </Animated.View>
         <Row
           itemsCenter

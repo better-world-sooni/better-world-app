@@ -1,4 +1,5 @@
 import {BlurView} from '@react-native-community/blur';
+import {CustomBlurView} from 'src/components/common/CustomBlurView';
 import {useNavigation} from '@react-navigation/native';
 import React from 'react';
 import {ActivityIndicator, RefreshControl} from 'react-native';
@@ -44,7 +45,7 @@ export default function ListFlatlist({
     <Div flex={1} bgWhite>
       <Div h={headerHeight} zIndex={100} absolute top0>
         <Animated.View style={headerStyles}>
-          <BlurView
+          <CustomBlurView
             blurType="xlight"
             blurAmount={30}
             blurRadius={20}
@@ -53,7 +54,7 @@ export default function ListFlatlist({
               height: '100%',
               position: 'absolute',
             }}
-            reducedTransparencyFallbackColor="white"></BlurView>
+            reducedTransparencyFallbackColor="white"></CustomBlurView>
         </Animated.View>
         <Div zIndex={100} absolute w={DEVICE_WIDTH} top={HAS_NOTCH ? 49 : 25}>
           <Row itemsCenter py5 h40 px8>

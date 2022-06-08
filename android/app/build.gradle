@@ -213,6 +213,11 @@ dependencies {
 
     implementation 'com.google.android.gms:play-services-base:17.2.1'
 
+    implementation('com.eightbitlab:blurview:1.6.6') {
+        force = true
+    }
+
+
     if (enableHermes) {
         def hermesPath = "../../node_modules/hermes-engine/android/";
         debugImplementation files(hermesPath + "hermes-debug.aar")

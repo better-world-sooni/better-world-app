@@ -16,6 +16,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import {DEVICE_WIDTH} from 'src/modules/styles';
 import {BlurView} from '@react-native-community/blur';
+import {CustomBlurView} from 'src/components/common/CustomBlurView';
 import {
   useApiSelector,
   usePaginateGETWithToken,
