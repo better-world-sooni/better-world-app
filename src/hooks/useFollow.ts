@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react";
+import { EventRegister } from "react-native-event-listeners";
 import { usePromiseFnWithToken } from "src/redux/asyncReducer";
+
+const followEventId = (url) => `follow-${url}`
 
 export default function useFollow(initialIsFollowing, initialFollowingCount, url) {
     const [isFollowing, setIsFollowing] = useState(initialIsFollowing);
@@ -8,11 +11,17 @@ export default function useFollow(initialIsFollowing, initialFollowingCount, url
     const promiseFnWithToken = usePromiseFnWithToken();
     useEffect(() => {
         setIsFollowing(initialIsFollowing);
+        EventRegister.addEventListener(followEventId(url), (data) => {
+            setIsFollowing(data)
+        })
+        return () => {
+            EventRegister.removeEventListener(followEventId(url));
+        }
     }, [initialIsFollowing]);
     const handlePressFollowing = () => {
-        setIsFollowing(!isFollowing);
         const method = isFollowing ? 'DELETE' : 'POST';
         promiseFnWithToken({url, method});
+        EventRegister.emit(followEventId(url), !isFollowing)
       };
     return [isFollowing, followerCount, handlePressFollowing];
 };

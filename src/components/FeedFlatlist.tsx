@@ -1,5 +1,11 @@
+<<<<<<< HEAD
 import React from 'react';
 import {ActivityIndicator, RefreshControl} from 'react-native';
+=======
+import {BlurView} from '@react-native-community/blur';
+import React, {forwardRef} from 'react';
+import {ActivityIndicator, FlatList, RefreshControl} from 'react-native';
+>>>>>>> 50f4223c5995c96eabda4f08a9223cf3485e536f
 import Animated, {
   Extrapolate,
   interpolate,
@@ -14,16 +20,21 @@ import {Row} from './common/Row';
 import {Span} from './common/Span';
 import {CustomBlurView} from 'src/components/common/CustomBlurView';
 
-export default function FeedFlatlist({
-  refreshing,
-  onRefresh,
-  onEndReached = null,
-  isPaginating = false,
-  isNotPaginatable = false,
-  renderItem,
-  data,
-  HeaderComponent,
-}) {
+const ReanimatedFlatList = Animated.createAnimatedComponent(FlatList);
+
+function FeedFlatlist(
+  {
+    refreshing,
+    onRefresh,
+    onEndReached = null,
+    isPaginating = false,
+    isNotPaginatable = false,
+    renderItem,
+    data,
+    HeaderComponent,
+  },
+  ref,
+) {
   const notchHeight = HAS_NOTCH ? 44 : 20;
   const headerHeight = notchHeight + 48;
   const translationY = useSharedValue(0);
@@ -128,7 +139,8 @@ export default function FeedFlatlist({
           {HeaderComponent}
         </Row>
       </Animated.View>
-      <Animated.FlatList
+      <ReanimatedFlatList
+        ref={ref}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{
           marginTop: headerHeight,
@@ -161,7 +173,9 @@ export default function FeedFlatlist({
         }
         data={data}
         onEndReached={onEndReached}
-        renderItem={renderItem}></Animated.FlatList>
+        renderItem={renderItem}></ReanimatedFlatList>
     </Div>
   );
 }
+
+export default forwardRef(FeedFlatlist);

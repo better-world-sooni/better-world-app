@@ -44,6 +44,7 @@ import AttendanceListScreen from 'src/screens/AttendanceListScreen';
 import CollectionEventScreen from 'src/screens/CollectionEventScreen';
 import AffinityScreen from 'src/screens/AffinityScreen';
 import PasswordSigninScreen from 'src/screens/Auth/PasswordSigninScreen';
+import ImageModal from './modal/ImageModal';
 
 const RootStack = createNativeStackNavigator();
 
@@ -67,10 +68,10 @@ const MainBottomTabs = () => {
   return (
     <Tab.Navigator
       tabBar={tabBarFunc}
-      initialRouteName={NAV_NAMES.Home}
+      initialRouteName={NAV_NAMES.Home + 'bottom'}
       lazy={false}>
       <Tab.Screen
-        name={NAV_NAMES.Home}
+        name={NAV_NAMES.Home + 'bottom'}
         component={HomeScreen}
         options={{
           tabBarIcon: ({focused}) => (

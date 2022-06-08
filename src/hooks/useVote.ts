@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { EventRegister } from "react-native-event-listeners";
 import apis from "src/modules/apis";
 import { smallBump } from "src/modules/hapticFeedBackUtils";
 import { usePostPromiseFnWithToken } from "src/redux/asyncReducer";
@@ -8,6 +9,9 @@ export enum VoteCategory {
     For = 1,
     Abstain = 2
 }
+
+const voteEventId = (postId) => `like-${postId}`
+
 export default function useVote({initialVote, initialForVotesCount, initialAgainstVotesCount, initialAbstainVotesCount, postId}) {
     const [vote, setVote] = useState(initialVote)
     const forVoteOffset = initialVote == null && VoteCategory.For == vote ? 1 : 0;
@@ -17,6 +21,12 @@ export default function useVote({initialVote, initialForVotesCount, initialAgain
     const postPromiseFnWithToken = usePostPromiseFnWithToken();
     useEffect(() => {
         setVote(initialVote);
+        EventRegister.addEventListener(voteEventId(postId), (voteCategory) => {
+            setVote(voteCategory)
+        })
+        return () => {
+            EventRegister.removeEventListener(voteEventId(postId));
+        }
     }, [initialVote]);
     const handlePressVoteFor = () => {
         handlePressVote(VoteCategory.For)
@@ -34,6 +44,7 @@ export default function useVote({initialVote, initialForVotesCount, initialAgain
                 category: voteCategory
             }});
             setVote(voteCategory);
+            EventRegister.emit(voteEventId(postId), voteCategory)
         }
     }
     return {

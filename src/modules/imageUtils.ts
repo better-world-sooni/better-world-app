@@ -1,8 +1,8 @@
 export function getAdjustedHeightFromDimensions({width, height, frameWidth}){
     return Math.min(
-        (width /
-        height) *
+        (height /
+        width) *
           frameWidth,
-          frameWidth * 0.8,
+          frameWidth * 2,
       )
 }
