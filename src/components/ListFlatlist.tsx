@@ -74,7 +74,7 @@ export default function ListFlatlist({
                 {title}
               </Span>
             </Col>
-            <Col itemsEnd pr7>
+            <Col itemsEnd pr7={enableBack}>
               {HeaderRightComponent}
             </Col>
           </Row>
