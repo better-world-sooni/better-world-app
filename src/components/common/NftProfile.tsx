@@ -66,17 +66,18 @@ export default function NftProfile({
   const headerStyles = useAnimatedStyle(() => {
     return {
       width: DEVICE_WIDTH,
-      height: headerHeight,
+      height: headerHeight-30,
       position: 'absolute',
       zIndex: 100,
       opacity: Math.min((translationY.value - 150) / 100, 1),
     };
   });
   const titleStyles = useAnimatedStyle(() => {
+    console.log(translationY.value - 150)
     return {
       transform: [
         {
-          translateY: Math.max(0, headerHeight - (translationY.value - 150)),
+          translateY: Math.max(0, 30 - 0.3*(translationY.value - 150)),
         },
       ],
     };
@@ -101,6 +102,7 @@ export default function NftProfile({
             blurType="light"
             blurAmount={20}
             blurRadius={10}
+            overlayColor=""
             style={{
               width: DEVICE_WIDTH,
               height: '100%',
@@ -112,9 +114,9 @@ export default function NftProfile({
             justifyCenter
             width={DEVICE_WIDTH}
             absolute
-            top={HAS_NOTCH ? 42 : 18}>
+          >
             <Animated.View style={titleStyles}>
-              <Span bold fontSize={19} mt18>
+              <Span bold fontSize={19} mt19>
                 {getNftName(nftCore)}
               </Span>
             </Animated.View>

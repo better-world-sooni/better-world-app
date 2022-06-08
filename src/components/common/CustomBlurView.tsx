@@ -14,7 +14,6 @@ export const CustomBlurView = props => {
     overlayColor,
     reducedTransparencyFallbackColor,
   } = props;
-  console.log(blurType)
 
   return Platform.OS === 'ios' ? (
     <BlurView

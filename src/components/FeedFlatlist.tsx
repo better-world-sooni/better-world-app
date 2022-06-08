@@ -105,6 +105,7 @@ function FeedFlatlist(
           blurType="xlight"
           blurAmount={30}
           blurRadius={25}
+          overlayColor=""
           style={{
             width: DEVICE_WIDTH,
             height: notchHeight,

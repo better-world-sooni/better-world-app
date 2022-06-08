@@ -129,6 +129,7 @@ export default function NftCollectionProfile({
             blurType="light"
             blurAmount={20}
             blurRadius={10}
+            overlayColor=""
             style={{
               width: DEVICE_WIDTH,
               height: '100%',
