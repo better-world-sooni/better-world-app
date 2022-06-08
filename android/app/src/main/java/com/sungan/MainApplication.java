@@ -57,10 +57,6 @@ public class MainApplication extends Application implements ReactApplication {
   @Override
   public void onCreate() {
     super.onCreate();
-    try {
-      getActivity().getSupportActionBar().hide();
-    } catch (NullPointerException e) {
-    }
     SoLoader.init(this, /* native exopackage */ false);
     initializeFlipper(this, getReactNativeHost().getReactInstanceManager());
   }
