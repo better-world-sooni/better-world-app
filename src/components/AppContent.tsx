@@ -99,15 +99,15 @@ const MainBottomTabs = () => {
         }}
       />
       <Tab.Screen
-        name={NAV_NAMES.Notification}
-        component={NotificationScreen}
+        name={NAV_NAMES.ChatList}
+        component={ChatListScreen}
         options={{
           tabBarIcon: ({focused}) => (
-            <Bell
+            <Send
               width={22}
               height={22}
               strokeWidth={2}
-              color={focused ? 'black' : Colors.gray[400]}></Bell>
+              color={focused ? 'black' : Colors.gray[400]}></Send>
           ),
         }}
       />

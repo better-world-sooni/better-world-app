@@ -1,7 +1,8 @@
 import React, {useRef} from 'react';
 import {Div} from 'src/components/common/Div';
 import {Col} from 'src/components/common/Col';
-import {Plus} from 'react-native-feather';
+import {Row} from 'src/components/common/Row';
+import {Plus, Bell, Home, Search, Send} from 'react-native-feather';
 import apis from 'src/modules/apis';
 import {
   useApiSelector,
@@ -11,7 +12,7 @@ import {
 import Post from 'src/components/common/Post';
 import {Img} from 'src/components/common/Img';
 import {DEVICE_WIDTH} from 'src/modules/styles';
-import {useGotoNewPost} from 'src/hooks/useGoto';
+import {useGotoNewPost, useGotoNotification} from 'src/hooks/useGoto';
 import {IMAGES} from 'src/modules/images';
 import SideMenu from 'react-native-side-menu-updated';
 import MyNftCollectionMenu from '../../components/common/MyNftCollectionMenu';
@@ -32,6 +33,7 @@ const HomeScreen = () => {
     apis.nft_collection.profile(),
   );
   const nftCollection = nftCollectionRes?.nft_collection;
+  const gotoNotifications = useGotoNotification()
   const gotoNewPost = useGotoNewPost({postOwnerType: PostOwnerType.Nft});
   const reloadGETWithToken = useReloadGETWithToken();
   const paginateGetWithToken = usePaginateGETWithToken();
@@ -71,32 +73,38 @@ const HomeScreen = () => {
         }}
         data={feedRes ? feedRes.feed : []}
         HeaderComponent={
-          <>
-            <Col itemsStart rounded100 onPress={openSideMenu}>
+          <Row itemsCenter>
+            <Div flex={1} itemsStart rounded100 onPress={openSideMenu}>
               {nftCollectionRes?.nft_collection && (
-                <Div>
-                  <Img
-                    h30
-                    w30
-                    rounded100
-                    uri={nftCollectionRes.nft_collection.image_uri}></Img>
-                </Div>
+                <Img
+                  h30
+                  w30
+                  rounded100
+                  uri={nftCollectionRes.nft_collection.image_uri}></Img>
               )}
-            </Col>
-            <Col auto>
-              <Img h40 w40 source={IMAGES.betterWorldBlueLogo}></Img>
-            </Col>
-            <Col itemsEnd rounded100 onPress={() => gotoNewPost()}>
-              <Div>
-                <Plus
-                  strokeWidth={1.7}
-                  color={'black'}
-                  height={24}
-                  width={24}
-                />
+            </Div>
+            <Div flex={1} itemsCenter>
+              <Img h40 w40 source={IMAGES.betterWorldBlueLogo}/>
+            </Div>
+            <Row flex={1} justifyEnd>
+              <Div auto px10 itemsEnd rounded100 onPress={() => gotoNotifications()}>
+                  <Bell
+                    strokeWidth={1.7}
+                    color={'black'}
+                    height={24}
+                    width={24}
+                  />
               </Div>
-            </Col>
-          </>
+              <Div auto pl10 rounded100 onPress={() => gotoNewPost()}>
+                  <Plus
+                    strokeWidth={1.7}
+                    color={'black'}
+                    height={24}
+                    width={24}
+                  />
+              </Div>
+            </Row>
+          </Row>
         }
       />
     </SideMenu>
