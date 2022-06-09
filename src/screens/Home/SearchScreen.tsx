@@ -110,6 +110,7 @@ const SearchScreen = () => {
             blurType="xlight"
             blurAmount={30}
             blurRadius={20}
+            overlayColor=""
             style={{
               width: DEVICE_WIDTH,
               height: '100%',

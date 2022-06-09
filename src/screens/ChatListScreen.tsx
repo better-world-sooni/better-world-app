@@ -90,7 +90,9 @@ function ChatListScreen() {
       };
       wsConnect();
       return () => {
+        console.log("hi")
         if (channel) {
+          console.log("hi")
           channel.disconnect();
           channel.close();
         }
@@ -135,6 +137,7 @@ function ChatListScreen() {
                   blurType="xlight"
                   blurAmount={30}
                   blurRadius={20}
+                  overlayColor=""
                   style={{
                     width: DEVICE_WIDTH,
                     height: '100%',

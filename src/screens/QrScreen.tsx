@@ -120,6 +120,7 @@ const QrScreen = () => {
                   blurType="xlight"
                   blurAmount={5}
                   blurRadius={5}
+                  overlayColor=""
                   style={{
                     top: 0,
                     width: 200,

@@ -250,6 +250,10 @@ export const AppContent = () => {
       name: NAV_NAMES.Qr,
       component: QrScreen,
     },
+    {
+      name: NAV_NAMES.ChatRoom,
+      component: ChatRoomScreen,
+    },
   ];
 
   return (
