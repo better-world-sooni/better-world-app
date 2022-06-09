@@ -53,7 +53,7 @@ const SplashScreen = ({route}) => {
         <Img w134 h134 source={IMAGES.betterWorldWhiteLogo} />
         <Span white fontSize={20} mt={-15} fontFamily={'UniSans'}>
           BetterWorld{' '}
-          <Span bold fontSize={20}>
+          <Span white bold fontSize={20}>
             alpha
           </Span>
         </Span>

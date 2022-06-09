@@ -73,7 +73,7 @@ export default function NftProfile({
     };
   });
   const titleStyles = useAnimatedStyle(() => {
-    console.log(translationY.value - 150)
+
     return {
       transform: [
         {

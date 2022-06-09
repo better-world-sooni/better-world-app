@@ -31,7 +31,7 @@ function FeedFlatlist(
   ref,
 ) {
   const notchHeight = HAS_NOTCH ? 44 : 0;
-  const headerHeight = notchHeight + 48;
+  const headerHeight = notchHeight + 50;
   const translationY = useSharedValue(0);
   const scrollClamp = useSharedValue(0);
   const clamp = (value, lowerBound, upperBound) => {
