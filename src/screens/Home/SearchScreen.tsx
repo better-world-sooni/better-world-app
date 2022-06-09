@@ -123,10 +123,12 @@ const SearchScreen = () => {
               <TextInput
                 innerRef={searchRef}
                 value={text}
-                placeholder={'NFT를 찾아보세요'}
+                placeholder="NFT를 찾아보세요"
                 fontSize={16}
                 bgGray200
                 rounded100
+                m0
+                p0
                 px8
                 h32
                 bold
