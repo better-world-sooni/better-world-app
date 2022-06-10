@@ -87,16 +87,8 @@ const HomeScreen = () => {
               <Img h40 w40 source={IMAGES.betterWorldBlueLogo}/>
             </Div>
             <Row flex={1} justifyEnd>
-              <Div auto px10 itemsEnd rounded100 onPress={() => gotoNotifications()}>
+              <Div auto itemsEnd rounded100 onPress={() => gotoNotifications()}>
                   <Bell
-                    strokeWidth={1.7}
-                    color={'black'}
-                    height={24}
-                    width={24}
-                  />
-              </Div>
-              <Div auto pl10 rounded100 onPress={() => gotoNewPost()}>
-                  <Plus
                     strokeWidth={1.7}
                     color={'black'}
                     height={24}

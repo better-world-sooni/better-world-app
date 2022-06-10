@@ -1,5 +1,5 @@
 import React from 'react';
-import {Edit3, Grid, Maximize} from 'react-native-feather';
+import {Edit3, Grid, Maximize, MessageCircle} from 'react-native-feather';
 import useFollow from 'src/hooks/useFollow';
 import {
   useGotoCapsule,
@@ -98,6 +98,16 @@ export default function NftProfileHeader({
             <Div>
               <Row py8>
                 <Col />
+                <Col auto bgPrimary p8 rounded100 mx8>
+                  <Div>
+                    <MessageCircle
+                      strokeWidth={2}
+                      color={'white'}
+                      height={18}
+                      width={18}
+                    />
+                  </Div>
+                </Col>
                 <Col
                   auto
                   bgRealBlack={!isFollowing}

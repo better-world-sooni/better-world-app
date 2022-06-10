@@ -11,20 +11,20 @@ export function useGotoNftProfile({nft}){
     const apiGETWithToken = useApiGETWithToken()
     const navigation = useNavigation()
     const gotoProfile = () => {
-        apiGETWithToken(
-            apis.nft.contractAddressAndTokenId(
-              nft.contract_address,
-              nft.token_id,
-            ),
-          );
-          apiGETWithToken(
-            apis.post.list.nft(nft.contract_address, nft.token_id)
-          )
-          navigation.navigate(NAV_NAMES.OtherProfile as never, {
-            nft
-          }as never);
-      }
-      return gotoProfile
+      apiGETWithToken(
+        apis.nft.contractAddressAndTokenId(
+          nft.contract_address,
+          nft.token_id,
+        ),
+      );
+      apiGETWithToken(
+        apis.post.list.nft(nft.contract_address, nft.token_id)
+      )
+      navigation.navigate(NAV_NAMES.OtherProfile as never, {
+        nft
+      } as never);
+    }
+    return gotoProfile
 }
 
 export function useGotoProfile(){

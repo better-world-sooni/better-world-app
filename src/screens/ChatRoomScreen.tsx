@@ -1,6 +1,6 @@
 import {useNavigation} from '@react-navigation/core';
 import React, {useCallback, useEffect, useLayoutEffect, useState, useRef} from 'react';
-import {Alert, FlatList} from 'react-native';
+import {Alert, FlatList, Platform} from 'react-native';
 import {ChevronLeft} from 'react-native-feather';
 import {shallowEqual, useSelector} from 'react-redux';
 import {Col} from 'src/components/common/Col';
@@ -169,7 +169,6 @@ function ChatRoomScreen({
       setNumNfts(chatRoomRes.num_nfts);
     }
   }, [chatRoomRes]);
-  console.log(chatRoomRes);
 
   return (
     <>
@@ -212,7 +211,7 @@ function ChatRoomScreen({
           <Col />
         </Row>
       </Div>
-      <KeyboardAvoidingView flex={1} bgWhite behavior="padding">
+      <KeyboardAvoidingView flex={1} bgWhite behavior={Platform.OS === "ios" ? "padding" : "height"}>
         <FlatList
           ref={flatListRef}
           showsVerticalScrollIndicator={false}
