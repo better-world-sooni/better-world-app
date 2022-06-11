@@ -105,13 +105,11 @@ function ChatRoomScreen({
         await cable(token).subscribe(channel);
         setChatSocket(channel);
         channel.on('enter', res => {
-          console.log('enter', res)
           setEnterNfts(res['new_nfts']);
           setMessages(res['update_msgs']);
         });
         let _ = await channel.enter(connectRoomId);
         channel.on('message', res => {
-          console.log('message', res['data'])
           setMessages(m => [res['data'], ...m]);
         });
         channel.on('leave', res => {

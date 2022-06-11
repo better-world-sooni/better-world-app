@@ -77,7 +77,6 @@ function ChatListScreen() {
         await cable(token).subscribe(channel);
         setChatSocket(channel);
         channel.on('fetch', res => {
-          console.log(res['data'])
           setChatRooms(res['data']);
         });
         let _ = await channel.fetchList();
@@ -95,7 +94,7 @@ function ChatListScreen() {
           channel.close();
         }
       };
-    }, []),
+    }, [currentNft]),
   );
 
   const translationY = useSharedValue(0);

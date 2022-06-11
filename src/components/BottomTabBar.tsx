@@ -1,5 +1,5 @@
 import {NativeBaseProvider, Box, HStack, Center} from 'native-base';
-import React, {useCallback, useRef} from 'react';
+import React, {useCallback, useRef, useState, useEffect} from 'react';
 import {Div} from './common/Div';
 import { Row } from "src/components/common/Row"
 import BottomPopup from './common/BottomPopup';
@@ -21,10 +21,27 @@ const BottomTabBar = ({state, descriptors, navigation}) => {
     state.history[state.history.length - 1].key
   ]?.navigation?.isFocused();
   const bottomPopupRef = useRef<BottomSheetModal>(null);
+  const [enableClose, setEnableClose] = useState(true);
   const {currentUser} = useSelector(
     (root: RootState) => root.app.session,
     shallowEqual,
   );
+
+  useEffect(()=>{
+    console.log("enableClose = ", enableClose);
+  }, [enableClose])
+
+  const changeNftLoading = (isLoading) => {
+    if(isLoading) {
+      console.log("here start")
+      setEnableClose(false);
+    }
+    else {
+      console.log("here fin")
+      setEnableClose(true);
+    }
+  }
+
   const List = useCallback(
     state.routes.map((route, index) => {
       const {key, name} = route;
@@ -75,10 +92,13 @@ const BottomTabBar = ({state, descriptors, navigation}) => {
       <BottomPopup
         ref={bottomPopupRef}
         snapPoints={getSnapPoints(currentUser?.nfts?.length || 0)}
-        index={-1}>
+        index={-1}
+        enablePanDownToClose={enableClose}
+      >
         <NftChooseBottomSheetScrollView
           nfts={currentUser?.nfts}
           title={'Identity 변경하기'}
+          setCloseDisable={changeNftLoading}
         />
       </BottomPopup>
       <Row

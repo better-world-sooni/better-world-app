@@ -78,7 +78,6 @@ export class ChatChannel extends Channel<Params, Message, Events> {
   }
 
   receive(message: Message) {
-    console.log(message)
     if (message.type === 'enter') {
       return this.emit('enter', message);
     } else if (message.type === 'leave') {
