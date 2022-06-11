@@ -25,7 +25,7 @@ const BottomPopup = (
 
   return (
     <BottomSheet
-      enablePanDownToClose={true}
+      enablePanDownToClose={enablePanDownToClose}
       enableHandlePanningGesture={false}
       handleComponent={handleComponent}
       ref={ref}
