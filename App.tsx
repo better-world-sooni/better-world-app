@@ -35,7 +35,6 @@ const App = () => {
             token: fcmToken,
           },
         });
-        console.log('console.log(fcmToken)', fcmToken);
       } else {
         await firebaseMessaging.requestPermission();
         const fcmToken = await getToken();
@@ -45,7 +44,6 @@ const App = () => {
             token: fcmToken,
           },
         });
-        console.log('console.log(fcmToken)', fcmToken);
       }
     } catch (error) {
       console.log(`Error while saving fcm token: ${error}`);

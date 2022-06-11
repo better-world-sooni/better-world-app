@@ -28,7 +28,6 @@ export default function ImageModal() {
       (data: ImageModalEventDataType) => {
         if (data.action == 'open') {
           imageModalRef?.current?.open();
-          console.log('hello', imageModalRef);
           setImage(data.image);
         } else {
           imageModalRef?.current?.close();
