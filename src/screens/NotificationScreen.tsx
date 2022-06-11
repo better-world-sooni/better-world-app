@@ -69,7 +69,6 @@ export default function NotificationScreen() {
       onEndReached={handleEndReached}
       isPaginating={notificationPaginating}
       title={'알림'}
-      enableBack={false}
       renderItem={({item}) => (
         <Notification key={(item as any).id} notification={item} />
       )}

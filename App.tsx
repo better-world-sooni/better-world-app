@@ -35,7 +35,6 @@ const App = () => {
             token: fcmToken,
           },
         });
-        console.log('console.log(fcmToken)', fcmToken);
       } else {
         await firebaseMessaging.requestPermission();
         const fcmToken = await getToken();
@@ -45,11 +44,8 @@ const App = () => {
             token: fcmToken,
           },
         });
-        console.log('console.log(fcmToken)', fcmToken);
       }
-    } catch (error) {
-      console.log(`Error while saving fcm token: ${error}`);
-    }
+    } catch {}
   }, [token, isLoggedIn]);
 
   useEffect(() => {
@@ -60,15 +56,16 @@ const App = () => {
     if (isLoggedIn) {
       setFCMToken();
       const unsubscribe = firebaseMessaging.onMessage(async remoteMessage => {
-        const notification = {
-          foreground: true, // BOOLEAN: If the notification was received in foreground or not
-          userInteraction: false, // BOOLEAN: If the notification was opened by the user from the notification area or not
-          message: remoteMessage.notification.body, // STRING: The notification message
-          title: remoteMessage.notification.title, // STRING: The notification title
-          data: remoteMessage.data, // OBJECT: The push data or the defined userInfo in local notifications
-          vibrate: false,
-        };
-        PushNotification.localNotification(notification);
+        // const notification = {
+        //   foreground: true, // BOOLEAN: If the notification was received in foreground or not
+        //   userInteraction: false, // BOOLEAN: If the notification was opened by the user from the notification area or not
+        //   message: remoteMessage.notification.body, // STRING: The notification message
+        //   title: remoteMessage.notification.title, // STRING: The notification title
+        //   data: remoteMessage.data, // OBJECT: The push data or the defined userInfo in local notifications
+        //   vibrate: false,
+        // };
+        // PushNotification.localNotification(notification);
+        console.log(remoteMessage);
       });
 
       return unsubscribe;

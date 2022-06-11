@@ -33,6 +33,11 @@ export default function NftChooseBottomSheetScrollView({
     <BottomSheetScrollView>
       <Row px20 itemsCenter>
         <Col />
+        <Col auto onPress={logout} mr16>
+          <Span info bold>
+            새로고침
+          </Span>
+        </Col>
         <Col auto onPress={logout}>
           <Span info bold>
             로그아웃

@@ -1,4 +1,5 @@
 import React from 'react';
+import {Edit, Heart, MessageCircle, UserCheck} from 'react-native-feather';
 import {createdAtText} from 'src/modules/timeUtils';
 import {Col} from './common/Col';
 import {Row} from './common/Row';
@@ -16,6 +17,32 @@ enum RankDeltumEventType {
 export default function RankDeltum({rankDeltum}) {
   const event = rankDeltum.event;
   const point = rankDeltum.point;
+  const actionIconDefaultProps = {
+    width: 18,
+    height: 18,
+    color: 'black',
+    strokeWidth: 1.7,
+  };
+  const getNotificationIcon = () => {
+    if (event == RankDeltumEventType.Comment) {
+      return <MessageCircle {...actionIconDefaultProps} />;
+    }
+    if (event == RankDeltumEventType.Post) {
+      return <Edit {...actionIconDefaultProps} />;
+    }
+    if (event == RankDeltumEventType.LikePost) {
+      return <Heart {...actionIconDefaultProps} />;
+    }
+    if (event == RankDeltumEventType.LikeComment) {
+      return <Heart {...actionIconDefaultProps} />;
+    }
+    if (event == RankDeltumEventType.Follow) {
+      return <UserCheck {...actionIconDefaultProps} />;
+    }
+    if (event == RankDeltumEventType.Hug) {
+      return <Heart {...actionIconDefaultProps} />;
+    }
+  };
   const getNotificationContent = () => {
     if (event == RankDeltumEventType.Comment) {
       return (
@@ -44,6 +71,9 @@ export default function RankDeltum({rankDeltum}) {
   };
   return (
     <Row itemsCenter py15 px15>
+      <Col auto mr16>
+        {getNotificationIcon()}
+      </Col>
       <Col auto>
         <Span bold fontSize={16}>
           {getNotificationContent()}

@@ -13,10 +13,8 @@ import {
   useGotoScan,
 } from 'src/hooks/useGoto';
 import apis from 'src/modules/apis';
-import {ICONS} from 'src/modules/icons';
 import {getNftName, getNftProfileImage} from 'src/modules/nftUtils';
 import {DEVICE_WIDTH} from 'src/modules/styles';
-import {ChatRoomEnterType} from 'src/screens/ChatRoomScreen';
 import {FollowOwnerType, FollowType} from 'src/screens/FollowListScreen';
 import {PostOwnerType} from 'src/screens/NewPostScreen';
 import {ScanType} from 'src/screens/ScanScreen';
@@ -37,7 +35,6 @@ export default function NftProfileHeader({
   const gotoNftCollectionProfile = useGotoNftCollectionProfile({
     nftCollection: nft?.nft_collection,
   });
-  const goToCapsule = useGotoCapsule({nft});
   const editProfile = () => {
     bottomPopupRef?.current?.expand();
   };
@@ -78,7 +75,7 @@ export default function NftProfileHeader({
             h85
             w85
             uri={getNftProfileImage(nftCore, 200, 200)}></Img>
-          {isCurrentNft && (
+          {isCurrentNft && qrScan && (
             <Div
               absolute
               bottom0
@@ -96,26 +93,26 @@ export default function NftProfileHeader({
             <Div>
               <Row py8>
                 <Col />
-                <Col 
-                  auto 
-                  bgPrimary 
-                  p8 
-                  rounded100 
-                  mx8 
-                  onPress={() => gotoChatRoom(
-                    getNftName(nftCore), 
-                    [getNftProfileImage(nftCore)], 
-                    nftCore.contract_address, 
-                    nftCore.token_id
-                  )}>
-                  <Div>
-                    <MessageCircle
-                      strokeWidth={2}
-                      color={'white'}
-                      height={18}
-                      width={18}
-                    />
-                  </Div>
+                <Col
+                  auto
+                  bgRealBlack
+                  p8
+                  rounded100
+                  mx8
+                  onPress={() =>
+                    gotoChatRoom(
+                      getNftName(nftCore),
+                      [getNftProfileImage(nftCore)],
+                      nftCore.contract_address,
+                      nftCore.token_id,
+                    )
+                  }>
+                  <MessageCircle
+                    strokeWidth={2}
+                    color={'white'}
+                    height={18}
+                    width={18}
+                  />
                 </Col>
                 <Col
                   auto

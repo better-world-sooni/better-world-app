@@ -44,7 +44,6 @@ import AttendanceListScreen from 'src/screens/AttendanceListScreen';
 import CollectionEventScreen from 'src/screens/CollectionEventScreen';
 import AffinityScreen from 'src/screens/AffinityScreen';
 import PasswordSigninScreen from 'src/screens/Auth/PasswordSigninScreen';
-import ImageModal from './modal/ImageModal';
 import {createStackNavigator} from '@react-navigation/stack';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 
