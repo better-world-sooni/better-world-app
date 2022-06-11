@@ -3,8 +3,8 @@ import {Edit3, Grid, Maximize, MessageCircle} from 'react-native-feather';
 import useFollow from 'src/hooks/useFollow';
 import {
   useGotoCapsule,
-  useGotoChatRoom,
   useGotoFollowList,
+  useGotoChatRoomFromProfile,
   useGotoNewPost,
   useGotoNftCollectionProfile,
   useGotoQR,
@@ -16,7 +16,7 @@ import apis from 'src/modules/apis';
 import {ICONS} from 'src/modules/icons';
 import {getNftName, getNftProfileImage} from 'src/modules/nftUtils';
 import {DEVICE_WIDTH} from 'src/modules/styles';
-import {ChatRoomType} from 'src/screens/ChatRoomScreen';
+import {ChatRoomEnterType} from 'src/screens/ChatRoomScreen';
 import {FollowOwnerType, FollowType} from 'src/screens/FollowListScreen';
 import {PostOwnerType} from 'src/screens/NewPostScreen';
 import {ScanType} from 'src/screens/ScanScreen';
@@ -59,9 +59,7 @@ export default function NftProfileHeader({
   const gotoQr = useGotoQR();
   const gotoScan = useGotoScan({scanType: ScanType.Nft});
   const gotoNewPost = useGotoNewPost({postOwnerType: PostOwnerType.Nft});
-  const gotoChatRoom = useGotoChatRoom({
-    chatRoomType: ChatRoomType.DirectMessage,
-  });
+  const gotoChatRoom = useGotoChatRoomFromProfile();
   const gotoRankSeason = useGotoRankSeason({
     cwyear: null,
     cweek: null,
@@ -98,7 +96,18 @@ export default function NftProfileHeader({
             <Div>
               <Row py8>
                 <Col />
-                <Col auto bgPrimary p8 rounded100 mx8>
+                <Col 
+                  auto 
+                  bgPrimary 
+                  p8 
+                  rounded100 
+                  mx8 
+                  onPress={() => gotoChatRoom(
+                    getNftName(nftCore), 
+                    [getNftProfileImage(nftCore)], 
+                    nftCore.contract_address, 
+                    nftCore.token_id
+                  )}>
                   <Div>
                     <MessageCircle
                       strokeWidth={2}

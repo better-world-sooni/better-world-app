@@ -21,9 +21,9 @@ import {Img} from 'src/components/common/Img';
 import NewMessage from 'src/components/common/NewMessage';
 import {createdAtText, getCalendarDay} from 'src/modules/timeUtils';
 
-export enum ChatRoomType {
-  RoomId,
-  DirectMessage,
+export enum ChatRoomEnterType {
+  List,
+  Profile,
 }
 function ChatRoomScreen({
   route: {
@@ -33,7 +33,7 @@ function ChatRoomScreen({
       roomId,
       contractAddress,
       tokenId,
-      chatRoomType,
+      chatRoomEnterType,
     },
   },
 }) {
@@ -43,7 +43,7 @@ function ChatRoomScreen({
     shallowEqual,
   );
   const {data: chatRoomRes, isLoading: chatRoomLoad} = useApiSelector(
-    chatRoomType == ChatRoomType.RoomId
+    chatRoomEnterType == ChatRoomEnterType.List
       ? apis.chat.chatRoom.roomId(roomId)
       : apis.chat.chatRoom.contractAddressAndTokenId(contractAddress, tokenId),
   );

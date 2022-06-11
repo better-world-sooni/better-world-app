@@ -19,7 +19,7 @@ import apis from 'src/modules/apis';
 import {useApiPOSTWithToken, useApiSelector} from 'src/redux/asyncReducer';
 import {
   useGotoCapsule,
-  useGotoChatRoom,
+  useGotoChatRoomFromProfile,
   useGotoFollowList,
   useGotoNftCollectionProfile,
   useGotoNftProfile,
@@ -29,7 +29,7 @@ import {
 import {ICONS} from 'src/modules/icons';
 import useFollow from 'src/hooks/useFollow';
 import TruncatedMarkdown from './TruncatedMarkdown';
-import {ChatRoomType} from 'src/screens/ChatRoomScreen';
+import {ChatRoomEnterType} from 'src/screens/ChatRoomScreen';
 import {HAS_NOTCH} from 'src/modules/constants';
 import {FollowOwnerType, FollowType} from 'src/screens/FollowListScreen';
 import Colors from 'src/constants/Colors';
@@ -114,9 +114,7 @@ export function NftProfileSummary({nft, token = null}) {
   const gotoNftCollectionProfile = useGotoNftCollectionProfile({
     nftCollection: nft,
   });
-  const gotoChatRoom = useGotoChatRoom({
-    chatRoomType: ChatRoomType.DirectMessage,
-  });
+  const gotoChatRoom = useGotoChatRoomFromProfile();
   const gotoRankDeltum = useGotoRankDeltum({
     contractAddress: nft.contract_address,
     tokenId: nft.token_id,
@@ -160,20 +158,19 @@ export function NftProfileSummary({nft, token = null}) {
           {!isCurrentNft && (
             <Div>
               <Row py8>
-                <Col />
+                <Col/>
                 <Col
                   auto
                   bgRealBlack
                   p8
                   rounded100
-                  onPress={() =>
-                    gotoChatRoom({
-                      roomName: getNftName(nft),
-                      roomImage: [getNftProfileImage(nft)],
-                      contractAddress: nft.contract_address,
-                      tokenId: nft.token_id,
-                    })
-                  }></Col>
+                  onPress={() => gotoChatRoom(
+                    getNftName(nft), 
+                    [getNftProfileImage(nft)], 
+                    nft.contract_address, 
+                    nft.token_id
+                  )}>
+                </Col>
                 {token && (
                   <Col
                     auto

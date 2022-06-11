@@ -75,6 +75,7 @@ export default function NftProfile({
   const titleStyles = useAnimatedStyle(() => {
 
     return {
+      position: 'absolute',
       transform: [
         {
           translateY: Math.max(0, 30 - 0.3*(translationY.value - 150)),

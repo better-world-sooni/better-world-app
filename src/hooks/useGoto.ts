@@ -4,7 +4,7 @@ import apis from "src/modules/apis";
 import { NAV_NAMES } from "src/modules/navNames";
 import { useApiGETWithToken, useApiPOSTWithToken } from "src/redux/asyncReducer";
 import { RootState } from "src/redux/rootReducer";
-import { ChatRoomType } from "src/screens/ChatRoomScreen";
+import { ChatRoomEnterType } from "src/screens/ChatRoomScreen";
 import { FollowOwnerType, FollowType } from "src/screens/FollowListScreen";
 
 export function useGotoNftProfile({nft}){
@@ -55,39 +55,42 @@ export function useGotoChatList(){
     return gotoChatList
 }
 
-export function useGotoChatRoom({chatRoomType}){
+export function useGotoChatRoomFromList() {
   const navigation = useNavigation()
   const apiGETWithToken = useApiGETWithToken()
-  const apiPOSTWithToken = useApiPOSTWithToken()
-  const gotoChatRoomWithRoomId = ({roomName, roomImage, roomId}: any) => {
+  const gotoChatRoomFromList = (roomName, roomImage, roomId) => {
     apiGETWithToken(
-      apis.chat.chatRoom.roomId(
-          roomId
-      ),
+      apis.chat.chatRoom.roomId(roomId),
     );
-      navigation.navigate(NAV_NAMES.ChatRoom as never, {
-        roomName,
-        roomImage,
-        roomId,
-        chatRoomType
-      } as never);
-  }
-  const gotoChatRoomAsDirectMessage = ({roomName, roomImage, contractAddress, tokenId}: any)  => {
+    navigation.navigate(NAV_NAMES.ChatRoom as never, {
+      roomName,
+      roomImage,
+      roomId,
+      chatRoomEnterType: ChatRoomEnterType.List
+    } as never);
+  };
+  return gotoChatRoomFromList
+}
+
+export function useGotoChatRoomFromProfile() {
+  const navigation = useNavigation()
+  const apiPOSTWithToken = useApiPOSTWithToken()
+  const gotoChatRoomFromProfile = (roomName, roomImage, contractAddress, tokenId)  => {
     apiPOSTWithToken(
       apis.chat.chatRoom.contractAddressAndTokenId(
         contractAddress,
         tokenId
       ),
     );
-      navigation.navigate(NAV_NAMES.ChatRoom as never, {
-        roomName,
-        roomImage,
-        contractAddress,
-        tokenId,
-        chatRoomType
-      } as never);
+    navigation.navigate(NAV_NAMES.ChatRoom as never, {
+      roomName,
+      roomImage,
+      contractAddress,
+      tokenId,
+      chatRoomEnterType: ChatRoomEnterType.Profile
+    } as never);
   }
-  return chatRoomType == ChatRoomType.RoomId ? gotoChatRoomWithRoomId : gotoChatRoomAsDirectMessage
+  return gotoChatRoomFromProfile
 }
 
 export function useGotoNftCollectionProfile({nftCollection}){

@@ -25,8 +25,8 @@ import {DEVICE_WIDTH} from 'src/modules/styles';
 import {BlurView} from '@react-native-community/blur';
 import {CustomBlurView} from 'src/components/common/CustomBlurView';
 import {createdAtText} from 'src/modules/timeUtils';
-import {useGotoChatRoom} from 'src/hooks/useGoto';
-import {ChatRoomType} from './ChatRoomScreen';
+import {useGotoChatRoomFromList} from 'src/hooks/useGoto';
+import {ChatRoomEnterType} from './ChatRoomScreen';
 
 function ChatListScreen() {
   const {data: chatListRes, isLoading: chatListLoad} = useApiSelector(
@@ -37,9 +37,7 @@ function ChatListScreen() {
     shallowEqual,
   );
   const {goBack} = useNavigation();
-  const gotoChatRoom = useGotoChatRoom({
-    chatRoomType: ChatRoomType.RoomId,
-  });
+  const gotoChatRoom = useGotoChatRoomFromList();
   const currentNftId = {
     token_id: currentNft.token_id,
     contract_address: currentNft.contract_address,
@@ -91,6 +89,7 @@ function ChatListScreen() {
       };
       wsConnect();
       return () => {
+
         if (channel) {
           channel.disconnect();
           channel.close();
@@ -172,7 +171,7 @@ function ChatListScreen() {
             <ChatRoomItem
               key={index}
               onPress={(roomName, roomImage, roomId) =>
-                gotoChatRoom({roomName, roomImage, roomId})
+                gotoChatRoom(roomName, roomImage, roomId)
               }
               room={item}
             />
