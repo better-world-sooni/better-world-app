@@ -63,7 +63,9 @@ export default function NftProfile({
   const isCurrentNft = useIsCurrentNft(nftCore);
   const keyExtractor = item => (item as any).id;
   const {goBack} = useNavigation();
-  const headerHeight = HAS_NOTCH ? 124 : 100;
+  const notchHeight = HAS_NOTCH ? 44 : 0;
+  //After scroll down height : 80 - 30 = 50 (homescreen header same)
+  const headerHeight = notchHeight + 80;
   const headerStyles = useAnimatedStyle(() => {
     return {
       width: DEVICE_WIDTH,
@@ -74,13 +76,14 @@ export default function NftProfile({
     };
   });
   const titleStyles = useAnimatedStyle(() => {
+    const middlePoint = (headerHeight-30-19)/2
+    const startPoint = headerHeight-30-19
+    const moveLengthScrollRatio = (startPoint - middlePoint)/100
     return {
+      position: 'absolute',
       transform: [
         {
-          translateY: Math.max(
-            (headerHeight - 52) / 2,
-            headerHeight - 52 - 0.3 * (translationY.value - 150),
-          ),
+          translateY: Math.max(middlePoint, startPoint-moveLengthScrollRatio*(translationY.value - 150)),
         },
       ],
     };
@@ -115,7 +118,7 @@ export default function NftProfile({
             reducedTransparencyFallbackColor="white"></CustomBlurView>
           <Row itemsCenter justifyCenter width={DEVICE_WIDTH} absolute>
             <Animated.View style={titleStyles}>
-              <Span bold fontSize={19} mt19>
+              <Span bold fontSize={19} mt-6>
                 {getNftName(nftCore)}
               </Span>
             </Animated.View>
