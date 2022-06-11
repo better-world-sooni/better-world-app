@@ -25,7 +25,7 @@ import {Span} from './Span';
 export default function NftChooseBottomSheetScrollView({
   nfts,
   title,
-  setCloseDisable,
+  setCloseDisable = null,
   onSuccess = null,
 }) {
   const gotoSignIn = useGotoSignIn();
@@ -66,20 +66,18 @@ function NftIdentity({nft, setCloseDisable, onSuccess}) {
   const changeAccount = useChangeAccount();
   const handlePressIdentity = async () => {
     setStateType(StateType.Loading);
-    console.log("load start")
-    setCloseDisable(true);
+    if (setCloseDisable) setCloseDisable(true);
     await changeAccount(
       contract_address,
       token_id,
       props => {
         setStateType(StateType.Success);
-        console.log("load fin")
-        setCloseDisable(false);
+        if (setCloseDisable) setCloseDisable(false);
         if (onSuccess) onSuccess();
       },
       props => {
         setStateType(StateType.Error);
-        setCloseDisable(false);
+        if (setCloseDisable) setCloseDisable(false);
       },
     );
   };
