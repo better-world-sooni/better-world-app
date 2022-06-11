@@ -78,7 +78,7 @@ export default function NftProfile({
       position: 'absolute',
       transform: [
         {
-          translateY: Math.max(0, 30 - 0.3*(translationY.value - 150)),
+          translateY: Math.max((headerHeight-52)/2,  headerHeight-52- 0.3*(translationY.value - 150)),
         },
       ],
     };
