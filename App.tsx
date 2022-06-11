@@ -8,15 +8,25 @@ import {RootState} from 'src/redux/rootReducer';
 import messaging from '@react-native-firebase/messaging';
 import {postPromiseFn, usePostPromiseFnWithToken} from 'src/redux/asyncReducer';
 import apis from 'src/modules/apis';
-import PushNotification from 'react-native-push-notification';
+import PushNotification, {Importance} from 'react-native-push-notification';
 import 'react-native-url-polyfill/auto';
+import {BETTER_WORLD_MAIN_PUSH_CHANNEL} from 'src/modules/constants';
+const firebaseMessaging = messaging();
+PushNotification.createChannel({
+  channelId: BETTER_WORLD_MAIN_PUSH_CHANNEL, // (required)
+  channelName: BETTER_WORLD_MAIN_PUSH_CHANNEL, // (required)
+  channelDescription: 'Main Channel', // (optional) default: undefined.
+  playSound: false, // (optional) default: true
+  soundName: 'default', // (optional) See `soundName` parameter of `localNotification` function
+  importance: Importance.HIGH, // (optional) default: Importance.HIGH. Int value of the Android notification importance
+  vibrate: true, // (optional) default: true. Creates the default vibration pattern if true.
+});
 
 const App = () => {
   const {
     isLoggedIn,
     session: {token},
   } = useSelector((root: RootState) => root.app, shallowEqual);
-  const firebaseMessaging = messaging();
   const postPromiseFnWithToken = usePostPromiseFnWithToken();
   const getToken = useCallback(async () => {
     try {
@@ -35,6 +45,7 @@ const App = () => {
             token: fcmToken,
           },
         });
+        console.log(fcmToken);
       } else {
         await firebaseMessaging.requestPermission();
         const fcmToken = await getToken();
@@ -56,16 +67,16 @@ const App = () => {
     if (isLoggedIn) {
       setFCMToken();
       const unsubscribe = firebaseMessaging.onMessage(async remoteMessage => {
-        // const notification = {
-        //   foreground: true, // BOOLEAN: If the notification was received in foreground or not
-        //   userInteraction: false, // BOOLEAN: If the notification was opened by the user from the notification area or not
-        //   message: remoteMessage.notification.body, // STRING: The notification message
-        //   title: remoteMessage.notification.title, // STRING: The notification title
-        //   data: remoteMessage.data, // OBJECT: The push data or the defined userInfo in local notifications
-        //   vibrate: false,
-        // };
-        // PushNotification.localNotification(notification);
-        console.log(remoteMessage);
+        const notification = {
+          channelId: BETTER_WORLD_MAIN_PUSH_CHANNEL,
+          foreground: true, // BOOLEAN: If the notification was received in foreground or not
+          userInteraction: false, // BOOLEAN: If the notification was opened by the user from the notification area or not
+          message: remoteMessage.notification.body, // STRING: The notification message
+          title: remoteMessage.notification.title, // STRING: The notification title
+          data: remoteMessage.data, // OBJECT: The push data or the defined userInfo in local notifications
+          vibrate: false,
+        };
+        PushNotification.localNotification(notification);
       });
 
       return unsubscribe;
@@ -78,6 +89,19 @@ const App = () => {
 const codePushOptions = {
   checkFrequency: codePush.CheckFrequency.ON_APP_RESUME,
 };
+
+firebaseMessaging.setBackgroundMessageHandler(async remoteMessage => {
+  const notification = {
+    channelId: BETTER_WORLD_MAIN_PUSH_CHANNEL,
+    foreground: false, // BOOLEAN: If the notification was received in foreground or not
+    userInteraction: false, // BOOLEAN: If the notification was opened by the user from the notification area or not
+    message: remoteMessage.notification.body, // STRING: The notification message
+    title: remoteMessage.notification.title, // STRING: The notification title
+    data: remoteMessage.data, // OBJECT: The push data or the defined userInfo in local notifications
+    vibrate: false,
+  };
+  PushNotification.localNotification(notification);
+});
 
 export default codePush(codePushOptions)(withRootReducer(App));
 // export default withRootReducer(App);

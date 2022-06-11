@@ -61,28 +61,31 @@ export default function NftProfile({
   });
   const bottomPopupRef = useRef<BottomSheetModal>(null);
   const isCurrentNft = useIsCurrentNft(nftCore);
+  const keyExtractor = item => (item as any).id;
   const {goBack} = useNavigation();
   const headerHeight = HAS_NOTCH ? 124 : 100;
   const headerStyles = useAnimatedStyle(() => {
     return {
       width: DEVICE_WIDTH,
-      height: headerHeight-30,
+      height: headerHeight - 30,
       position: 'absolute',
       zIndex: 100,
       opacity: Math.min((translationY.value - 150) / 100, 1),
     };
   });
   const titleStyles = useAnimatedStyle(() => {
-
     return {
-      position: 'absolute',
       transform: [
         {
-          translateY: Math.max((headerHeight-52)/2,  headerHeight-52- 0.3*(translationY.value - 150)),
+          translateY: Math.max(
+            (headerHeight - 52) / 2,
+            headerHeight - 52 - 0.3 * (translationY.value - 150),
+          ),
         },
       ],
     };
   });
+  const renderItem = ({item}) => <Post post={item} />;
 
   return (
     <>
@@ -110,12 +113,7 @@ export default function NftProfile({
               position: 'absolute',
             }}
             reducedTransparencyFallbackColor="white"></CustomBlurView>
-          <Row
-            itemsCenter
-            justifyCenter
-            width={DEVICE_WIDTH}
-            absolute
-          >
+          <Row itemsCenter justifyCenter width={DEVICE_WIDTH} absolute>
             <Animated.View style={titleStyles}>
               <Span bold fontSize={19} mt19>
                 {getNftName(nftCore)}
@@ -150,6 +148,11 @@ export default function NftProfile({
         onScroll={scrollHandler}
         data={nftPostListRes?.posts || []}
         onEndReached={handleEndReached}
+        keyExtractor={keyExtractor}
+        initialNumToRender={5}
+        removeClippedSubviews
+        updateCellsBatchingPeriod={100}
+        windowSize={11}
         ListHeaderComponent={
           <NftProfileHeader
             nftCore={nftCore}
@@ -174,7 +177,7 @@ export default function NftProfile({
             <Div h={HAS_NOTCH ? 27 : 12} />
           </>
         }
-        renderItem={({item}) => <Post post={item} />}
+        renderItem={renderItem}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
         }></Animated.FlatList>

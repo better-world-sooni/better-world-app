@@ -9,6 +9,7 @@ export const HAS_NOTCH = hasNotch();
 export const LINE2_COLOR = 'rgb(255, 219, 120)';
 
 export const JWT = 'jwt';
+export const BETTER_WORLD_MAIN_PUSH_CHANNEL = 'better-world-main-push-channel';
 
 export const shadowProp = {
   shadowOffset: {height: 1, width: 1},
