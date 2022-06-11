@@ -94,7 +94,7 @@ function ChatListScreen() {
           channel.close();
         }
       };
-    }, []),
+    }, [currentNft]),
   );
 
   const translationY = useSharedValue(0);

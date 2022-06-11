@@ -25,6 +25,7 @@ import {Span} from './Span';
 export default function NftChooseBottomSheetScrollView({
   nfts,
   title,
+  setCloseDisable,
   onSuccess = null,
 }) {
   const gotoSignIn = useGotoSignIn();
@@ -42,7 +43,7 @@ export default function NftChooseBottomSheetScrollView({
       <Div px20>
         <Div>
           {nfts?.map((nft, index) => {
-            return <NftIdentity key={index} nft={nft} onSuccess={onSuccess} />;
+            return <NftIdentity key={index} nft={nft} setCloseDisable={setCloseDisable} onSuccess={onSuccess} />;
           })}
         </Div>
       </Div>
@@ -50,7 +51,7 @@ export default function NftChooseBottomSheetScrollView({
   );
 }
 
-function NftIdentity({nft, onSuccess}) {
+function NftIdentity({nft, setCloseDisable, onSuccess}) {
   const isCurrentNft = useIsCurrentNft(nft);
   enum StateType {
     None,
@@ -65,15 +66,20 @@ function NftIdentity({nft, onSuccess}) {
   const changeAccount = useChangeAccount();
   const handlePressIdentity = async () => {
     setStateType(StateType.Loading);
+    console.log("load start")
+    setCloseDisable(true);
     await changeAccount(
       contract_address,
       token_id,
       props => {
         setStateType(StateType.Success);
+        console.log("load fin")
+        setCloseDisable(false);
         if (onSuccess) onSuccess();
       },
       props => {
         setStateType(StateType.Error);
+        setCloseDisable(false);
       },
     );
   };
