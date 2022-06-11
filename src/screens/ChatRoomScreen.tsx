@@ -105,11 +105,13 @@ function ChatRoomScreen({
         await cable(token).subscribe(channel);
         setChatSocket(channel);
         channel.on('enter', res => {
+          console.log('enter', res)
           setEnterNfts(res['new_nfts']);
           setMessages(res['update_msgs']);
         });
         let _ = await channel.enter(connectRoomId);
         channel.on('message', res => {
+          console.log('message', res['data'])
           setMessages(m => [res['data'], ...m]);
         });
         channel.on('leave', res => {
@@ -160,9 +162,7 @@ function ChatRoomScreen({
     );
   }, []);
   useEffect(() => {
-    console.log(chatRoomRes);
     if (chatRoomRes) {
-      console.log(chatRoomRes);
       setMessages(chatRoomRes.init_messages);
       setConnectRoomId(chatRoomRes.room_id);
       setIsNew(chatRoomRes.init_messages.length == 0);

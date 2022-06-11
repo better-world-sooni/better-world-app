@@ -91,9 +91,7 @@ function ChatListScreen() {
       };
       wsConnect();
       return () => {
-        console.log("hi")
         if (channel) {
-          console.log("hi")
           channel.disconnect();
           channel.close();
         }
