@@ -1,6 +1,6 @@
 import {BottomSheetScrollView} from '@gorhom/bottom-sheet';
 import React from 'react';
-import {ActivityIndicator} from 'react-native';
+import {ActivityIndicator, Platform} from 'react-native';
 import useName, {NameOwnerType} from 'src/hooks/useName';
 import useStory, {StoryOwnerType} from 'src/hooks/useStory';
 import {getNftCollectionProfileImage} from 'src/modules/nftUtils';
@@ -71,7 +71,7 @@ export default function NftCollectionProfileEditBottomSheetScrollView({
   });
   return (
     <BottomSheetScrollView>
-      <KeyboardAvoidingView behavior="padding">
+      <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"}>
         <Div h150 relative onPress={handleAddImage}>
           {image?.uri ? (
             <>

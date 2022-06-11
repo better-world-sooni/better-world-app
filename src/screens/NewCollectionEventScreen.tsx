@@ -25,7 +25,7 @@ import {
   TextInput,
 } from 'src/modules/viewComponents';
 import {useApiSelector, useReloadGETWithToken} from 'src/redux/asyncReducer';
-import {ActivityIndicator} from 'react-native';
+import {ActivityIndicator, Platform} from 'react-native';
 import {MenuView} from '@react-native-menu/menu';
 import Animated, {
   useAnimatedScrollHandler,
@@ -125,7 +125,7 @@ const NewCollectionEventScreen = ({
   const sliderWidth = DEVICE_WIDTH - 47 - 30;
   return (
     <>
-      <KeyboardAvoidingView behavior="padding" flex={1} bgWhite relative>
+      <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} flex={1} bgWhite relative>
         <Div h={headerHeight} zIndex={100} borderBottom={0.5} borderGray200>
           <Animated.View style={headerStyles}>
             <CustomBlurView

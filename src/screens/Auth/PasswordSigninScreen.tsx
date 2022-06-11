@@ -1,5 +1,5 @@
 import React, {useCallback, useRef, useState} from 'react';
-import {ActivityIndicator, Keyboard} from 'react-native';
+import {ActivityIndicator, Keyboard, Platform} from 'react-native';
 import {Col} from 'src/components/common/Col';
 import {Div} from 'src/components/common/Div';
 import {Img} from 'src/components/common/Img';
@@ -73,7 +73,7 @@ const PasswordSigninScreen = () => {
   const headerHeight = HAS_NOTCH ? 94 : 70;
 
   return (
-    <KeyboardAvoidingView behavior="padding" flex={1} bgWhite>
+    <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} flex={1} bgWhite>
       <Div h={headerHeight} zIndex={100} absolute top0>
         <Row
           itemsCenter

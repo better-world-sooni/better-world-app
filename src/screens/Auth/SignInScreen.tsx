@@ -1,4 +1,5 @@
 import React from 'react';
+import {Platform} from 'react-native';
 import {Col} from 'src/components/common/Col';
 import {Div} from 'src/components/common/Div';
 import {Img} from 'src/components/common/Img';
@@ -17,7 +18,7 @@ const SignInScreen = () => {
   const gotoPasswordSignIn = useGotoPasswordSignIn();
 
   return (
-    <KeyboardAvoidingView behavior="padding" flex={1} bgWhite>
+    <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} flex={1} bgWhite>
       <Div
         top={HAS_NOTCH ? 44 : 20}
         zIndex={100}

@@ -16,7 +16,7 @@ import {useNavigation} from '@react-navigation/native';
 import {Col} from 'src/components/common/Col';
 import {ChevronLeft} from 'react-native-feather';
 import {Span} from 'src/components/common/Span';
-import {ActivityIndicator} from 'react-native';
+import {ActivityIndicator, Platform} from 'react-native';
 import Animated, {
   useAnimatedScrollHandler,
   useAnimatedStyle,
@@ -80,7 +80,7 @@ export default function ReportScreen({
     };
   });
   return (
-    <KeyboardAvoidingView behavior="padding" flex={1} bgWhite relative>
+    <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} flex={1} bgWhite relative>
       <Div h={headerHeight} zIndex={100}>
         <Animated.View style={headerStyles}>
           <CustomBlurView

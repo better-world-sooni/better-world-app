@@ -18,7 +18,7 @@ import {
 import apis from 'src/modules/apis';
 import {shallowEqual, useSelector} from 'react-redux';
 import {RootState} from 'src/redux/rootReducer';
-import {ActivityIndicator} from 'react-native';
+import {ActivityIndicator, Platform} from 'react-native';
 import {getNftName, getNftProfileImage} from 'src/modules/nftUtils';
 import {Col} from 'src/components/common/Col';
 import {ChevronLeft, RefreshCw} from 'react-native-feather';
@@ -72,7 +72,7 @@ const QrScreen = () => {
   }, [qrRes?.exp]);
 
   return (
-    <KeyboardAvoidingView behavior="padding" flex={1} bgRealBlack>
+    <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} flex={1} bgRealBlack>
       <Div h={headerHeight} zIndex={100} absolute top0>
         <Row
           itemsCenter

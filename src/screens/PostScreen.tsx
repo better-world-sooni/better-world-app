@@ -7,6 +7,7 @@ import apis from 'src/modules/apis';
 import {HAS_NOTCH} from 'src/modules/constants';
 import {KeyboardAvoidingView} from 'src/modules/viewComponents';
 import {useApiSelector} from 'src/redux/asyncReducer';
+import {Platform} from 'react-native';
 
 export default function PostScreen({
   route: {
@@ -26,7 +27,7 @@ export default function PostScreen({
 
   return (
     <>
-      <KeyboardAvoidingView flex={1} bgWhite relative behavior="padding">
+      <KeyboardAvoidingView flex={1} bgWhite relative behavior={Platform.OS === "ios" ? "padding" : "height"}>
         {postRes?.post ? (
           <FullPost autoFocus={autoFocus} post={postRes?.post}></FullPost>
         ) : null}
