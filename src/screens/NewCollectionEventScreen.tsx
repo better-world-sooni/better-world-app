@@ -41,6 +41,7 @@ import TruncatedText from 'src/components/common/TruncatedText';
 import RepostedPost from 'src/components/common/RepostedPost';
 import useUploadCollectionEvent from 'src/hooks/useUploadCollectionEvent';
 import DatePicker from 'react-native-date-picker';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const postTypes = [
   {
@@ -114,7 +115,7 @@ const NewCollectionEventScreen = ({
   const scrollHandler = useAnimatedScrollHandler(event => {
     translationY.value = event.contentOffset.y;
   });
-  const notchHeight = HAS_NOTCH ? 44 : 0;
+  const notchHeight = useSafeAreaInsets().top;
   const headerHeight = notchHeight + 50;
   const headerStyles = useAnimatedStyle(() => {
     return {

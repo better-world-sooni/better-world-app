@@ -64,6 +64,7 @@ import RepostedPost from './RepostedPost';
 import CollectionEvent from './CollectionEvent';
 import {getAdjustedHeightFromDimensions} from 'src/modules/imageUtils';
 import {PostEventTypes} from './Post';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function FullPost({post, autoFocus = false}) {
   const scrollToEndRef = useScrollToEndRef();
@@ -328,7 +329,7 @@ export default function FullPost({post, autoFocus = false}) {
   const scrollHandler = useAnimatedScrollHandler(event => {
     translationY.value = event.contentOffset.y * 20;
   });
-  const notchHeight = HAS_NOTCH ? 44 : 0;
+  const notchHeight = useSafeAreaInsets().top;
   const headerHeight = notchHeight + 50;
   const headerStyles = useAnimatedStyle(() => {
     return {

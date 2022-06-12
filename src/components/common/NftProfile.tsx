@@ -27,6 +27,7 @@ import {
   useReloadGETWithToken,
 } from 'src/redux/asyncReducer';
 import NftProfileHeader from './NftProfileHeader';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function NftProfile({
   nftCore,
@@ -64,7 +65,8 @@ export default function NftProfile({
   const isCurrentNft = useIsCurrentNft(nftCore);
   const keyExtractor = item => (item as any).id;
   const {goBack} = useNavigation();
-  const notchHeight = HAS_NOTCH ? 44 : 0;
+  console.log("here", useSafeAreaInsets().top)
+  const notchHeight = useSafeAreaInsets().top;
   //After scroll down height : 80 - 30 = 50 (homescreen header same)
   const headerHeight = notchHeight + 80;
   const headerStyles = useAnimatedStyle(() => {
@@ -91,7 +93,7 @@ export default function NftProfile({
     };
   });
   const titleStyles = useAnimatedStyle(() => {
-    const middlePoint = headerHeight / 2;
+    const middlePoint = notchHeight + (headerHeight - 30) / 2;
     const startPoint = headerHeight - 30;
     const moveLengthScrollRatio = (startPoint - middlePoint) / 100;
     return {
@@ -99,9 +101,9 @@ export default function NftProfile({
       transform: [
         {
           translateY: Math.max(
-            middlePoint,
-            startPoint - moveLengthScrollRatio * (translationY.value - 150),
-          ),
+            middlePoint - 9,
+            startPoint - 18 - moveLengthScrollRatio * (translationY.value - 150),
+          )
         },
       ],
     };
@@ -132,11 +134,9 @@ export default function NftProfile({
             reducedTransparencyFallbackColor="white"></CustomBlurView>
           <Row itemsCenter justifyCenter width={DEVICE_WIDTH} absolute>
             <Animated.View style={titleStyles}>
-              <Div>
-                <Span bold fontSize={19}>
+                <Span bold fontSize={19} style={{...(Platform.OS === 'android' && {marginVertical: -5})}}>
                   {getNftName(nftCore)}
                 </Span>
-              </Div>
             </Animated.View>
           </Row>
         </Animated.View>

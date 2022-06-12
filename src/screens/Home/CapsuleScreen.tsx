@@ -18,6 +18,7 @@ import BottomPopup from 'src/components/common/BottomPopup';
 import NftProfileSummaryBottomSheetScrollView from 'src/components/common/NftProfileSummaryBottomSheetScrollView';
 import {useApiGETWithToken} from 'src/redux/asyncReducer';
 import apis from 'src/modules/apis';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 function CapsuleScreen({route: {params = null}}) {
   const bottomPopupRef = useRef<BottomSheetModal>(null);
@@ -57,7 +58,7 @@ function CapsuleScreen({route: {params = null}}) {
     setPressedNftAvatar(payload);
     bottomPopupRef?.current?.expand();
   };
-  const notchHeight = HAS_NOTCH ? 44 : 0;
+  const notchHeight = useSafeAreaInsets().top;
   const headerHeight = notchHeight + 50;
 
   const menu = [

@@ -35,6 +35,7 @@ import {FollowOwnerType, FollowType} from 'src/screens/FollowListScreen';
 import Colors from 'src/constants/Colors';
 import {shallowEqual, useSelector} from 'react-redux';
 import {RootState} from 'src/redux/rootReducer';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function NftProfileSummaryBottomSheetScrollView({
   contractAddress,
@@ -128,7 +129,7 @@ export function NftProfileSummary({nft, token = null}) {
     cwyear: null,
     cweek: null,
   });
-  const notchHeight = HAS_NOTCH ? 44 : 0;
+  const notchHeight = useSafeAreaInsets().top;
   const headerHeight = notchHeight + 80;
   return (
     <BottomSheetScrollView>

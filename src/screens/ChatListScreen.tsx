@@ -27,6 +27,7 @@ import {CustomBlurView} from 'src/components/common/CustomBlurView';
 import {createdAtText} from 'src/modules/timeUtils';
 import {useGotoChatRoomFromList} from 'src/hooks/useGoto';
 import {ChatRoomEnterType} from './ChatRoomScreen';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 function ChatListScreen() {
   const {data: chatListRes, isLoading: chatListLoad} = useApiSelector(
@@ -101,7 +102,7 @@ function ChatListScreen() {
   const scrollHandler = useAnimatedScrollHandler(event => {
     translationY.value = event.contentOffset.y;
   });
-  const notchHeight = HAS_NOTCH ? 44 : 0;
+  const notchHeight = useSafeAreaInsets().top;
   const headerHeight = notchHeight + 50;
   const headerStyles = useAnimatedStyle(() => {
     return {

@@ -36,6 +36,7 @@ import {
   usePaginateGETWithToken,
   useReloadGETWithToken,
 } from 'src/redux/asyncReducer';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function NftCollectionProfile({
   nftCollectionCore,
@@ -90,7 +91,7 @@ export default function NftCollectionProfile({
   const scrollHandler = useAnimatedScrollHandler(event => {
     translationY.value = event.contentOffset.y;
   });
-  const notchHeight = HAS_NOTCH ? 44 : 0;
+  const notchHeight = useSafeAreaInsets().top;
   //After scroll down height : 80 - 30 = 50 (homescreen header same)
   const headerHeight = notchHeight + 80;
   const headerStyles = useAnimatedStyle(() => {

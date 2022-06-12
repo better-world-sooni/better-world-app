@@ -26,6 +26,7 @@ import {useNavigation} from '@react-navigation/native';
 import {Row} from 'src/components/common/Row';
 import {BlurView} from '@react-native-community/blur';
 import {CustomBlurView} from 'src/components/common/CustomBlurView';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const QrScreen = () => {
   const {data: qrRes, isLoading: qrLoad, error} = useApiSelector(apis.auth.qr);
@@ -45,7 +46,7 @@ const QrScreen = () => {
       token_id: currentNft.token_id,
     });
   };
-  const notchHeight = HAS_NOTCH ? 44 : 0;
+  const notchHeight = useSafeAreaInsets().top;
   const headerHeight = notchHeight + 50;
   useEffect(() => {
     if (qrRes) {

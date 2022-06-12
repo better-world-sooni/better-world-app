@@ -19,6 +19,7 @@ import {useGotoHome, useGotoOnboarding, useGotoScan} from 'src/hooks/useGoto';
 import {ScanType} from 'src/screens/ScanScreen';
 import {ChevronLeft} from 'react-native-feather';
 import {useNavigation} from '@react-navigation/native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const PasswordSigninScreen = () => {
   const [address, setAddress] = useState('');
@@ -70,7 +71,7 @@ const PasswordSigninScreen = () => {
     setExpandText(text);
     bottomPopupRef?.current?.expand();
   };
-  const notchHeight = HAS_NOTCH ? 44 : 0;
+  const notchHeight = useSafeAreaInsets().top;
   const headerHeight = notchHeight + 50;
 
   return (

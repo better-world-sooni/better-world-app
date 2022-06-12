@@ -11,6 +11,7 @@ import apis from 'src/modules/apis';
 import {HAS_NOTCH} from 'src/modules/constants';
 import {DEVICE_WIDTH} from 'src/modules/styles';
 import {useApiSelector} from 'src/redux/asyncReducer';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function CollectionEventScreen({
   route: {
@@ -19,7 +20,7 @@ export default function CollectionEventScreen({
 }) {
   const {data: collectionEventRes, isLoading: collectionEventLoad} = 
     useApiSelector(apis.collectionEvent.collectionEventId);
-  const notchHeight = HAS_NOTCH ? 44 : 0;
+  const notchHeight = useSafeAreaInsets().top;
   const headerHeight = notchHeight + 50;
   const itemWidth = DEVICE_WIDTH - 30;
   const {goBack} = useNavigation();
