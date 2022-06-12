@@ -7,7 +7,7 @@ import {Img} from './Img';
 import {Row} from './Row';
 import {Span} from './Span';
 import {useNavigation} from '@react-navigation/native';
-import {ActivityIndicator, RefreshControl} from 'react-native';
+import {ActivityIndicator, RefreshControl, StatusBar} from 'react-native';
 import Post from './Post';
 import {HAS_NOTCH} from 'src/modules/constants';
 import {DEVICE_WIDTH} from 'src/modules/styles';
@@ -55,6 +55,7 @@ export default function NftProfile({
     reloadGetWithToken(pageableNftPostFn());
   };
   const nft = profileData?.nft;
+  // const [statusBarColor, setStatusBarColor] = useState()
   const translationY = useSharedValue(0);
   const scrollHandler = useAnimatedScrollHandler(event => {
     translationY.value = event.contentOffset.y;
@@ -161,7 +162,7 @@ export default function NftProfile({
       </Div>
       <Animated.FlatList
         bounces
-        style={{marginTop: -30}}
+        style={{marginTop: -30, paddingTop: 30}}
         showsVerticalScrollIndicator={false}
         onScroll={scrollHandler}
         data={nftPostListRes?.posts || []}

@@ -17,7 +17,7 @@ import {IMAGES} from 'src/modules/images';
 import SideMenu from 'react-native-side-menu-updated';
 import MyNftCollectionMenu from '../../components/common/MyNftCollectionMenu';
 import FeedFlatlist from 'src/components/FeedFlatlist';
-import {StatusBar} from 'native-base';
+import {StatusBar, Platform} from 'react-native';
 import {PostOwnerType} from '../NewPostScreen';
 import {useScrollToTop} from '@react-navigation/native';
 
@@ -60,7 +60,7 @@ const HomeScreen = () => {
       menu={<MyNftCollectionMenu nftCollection={nftCollection} />}
       bounceBackOnOverdraw={false}
       openMenuOffset={DEVICE_WIDTH - 65}>
-      <StatusBar barStyle="dark-content"></StatusBar>
+      {/* <StatusBar barStyle="dark-content" translucent={true}></StatusBar> */}
       <FeedFlatlist
         ref={flatlistRef}
         refreshing={feedLoading}

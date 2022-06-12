@@ -1,6 +1,6 @@
 import {BlurView} from '@react-native-community/blur';
 import React, {forwardRef} from 'react';
-import {ActivityIndicator, FlatList, RefreshControl} from 'react-native';
+import {ActivityIndicator, FlatList, RefreshControl, Platform, StatusBar} from 'react-native';
 import Animated, {
   Extrapolate,
   interpolate,
@@ -115,18 +115,31 @@ function FeedFlatlist(
       </Animated.View>
       <Animated.View style={topBarStyles}>
         <Animated.View style={headerStyles}>
-          <CustomBlurView
-            blurType="xlight"
-            blurAmount={30}
-            blurRadius={25}
-            overlayColor=""
-            style={{
-              width: DEVICE_WIDTH,
-              top: 0,
-              height: headerHeight,
-              position: 'absolute',
-            }}
-            reducedTransparencyFallbackColor="white"></CustomBlurView>
+          {Platform.OS === 'ios' ?
+            <CustomBlurView
+              blurType="xlight"
+              blurAmount={30}
+              blurRadius={25}
+              overlayColor=""
+              style={{
+                width: DEVICE_WIDTH,
+                top: 0,
+                height: headerHeight,
+                position: 'absolute',
+              }}
+              reducedTransparencyFallbackColor="white">
+            </CustomBlurView>
+          :
+            <Div 
+              style={{
+                width: DEVICE_WIDTH,
+                top: 0,
+                height: headerHeight,
+                position: 'absolute',
+              }}
+              bgWhite 
+            />
+        } 
         </Animated.View>
         <Row
           itemsCenter

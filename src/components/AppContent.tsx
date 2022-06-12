@@ -258,7 +258,6 @@ export const AppContent = () => {
   ];
 
   return (
-    <SafeAreaProvider>
       <NavigationContainer>
         <NativeBaseProvider>
           <BottomSheetModalProvider>
@@ -275,6 +274,5 @@ export const AppContent = () => {
           </BottomSheetModalProvider>
         </NativeBaseProvider>
       </NavigationContainer>
-    </SafeAreaProvider>
   );
 };

@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect} from 'react';
-import {LogBox} from 'react-native';
+import {LogBox, StatusBar} from 'react-native';
 import codePush from 'react-native-code-push';
 import {withRootReducer} from './src/redux/withRootReducer';
 import {AppContent} from 'src/components/AppContent';
@@ -86,6 +86,7 @@ const App = () => {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
+      <StatusBar barStyle="dark-content" backgroundColor='#FFFFFF'></StatusBar>
       <AppContent />
     </GestureHandlerRootView>
   );
