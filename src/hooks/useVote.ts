@@ -10,7 +10,8 @@ export enum VoteCategory {
     Abstain = 2
 }
 
-const voteEventId = (postId) => `like-${postId}`
+const voteEventId = (postId) => `vote-${postId}`
+const voteableEventId = (postId) => `votable-${postId}`
 
 export default function useVote({initialVote, initialForVotesCount, initialAgainstVotesCount, initialAbstainVotesCount, votingDeadline, postId}) {
     const [vote, setVote] = useState(initialVote)
@@ -30,6 +31,16 @@ export default function useVote({initialVote, initialForVotesCount, initialAgain
             EventRegister.removeEventListener(voteEventId(postId));
         }
     }, [initialVote]);
+    useEffect(() => {
+        setVotable(!votingDeadline ||
+            new Date(votingDeadline) > new Date());
+        EventRegister.addEventListener(voteableEventId(postId), (votable) => {
+            setVotable(votable)
+        })
+        return () => {
+            EventRegister.removeEventListener(voteableEventId(postId));
+        }
+    }, [votingDeadline]);
     const handlePressVoteFor = () => {
         handlePressVote(VoteCategory.For)
     };
@@ -50,7 +61,7 @@ export default function useVote({initialVote, initialForVotesCount, initialAgain
         }
     }
     const handleSetVotable = (value) => {
-        setVotable(value)
+        EventRegister.emit(voteableEventId(postId), value)
     }
     return {
         votable,

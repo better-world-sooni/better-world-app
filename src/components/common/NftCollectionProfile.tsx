@@ -1,4 +1,4 @@
-import {ChevronLeft, Edit, Edit3} from 'react-native-feather';
+import {ChevronLeft, Edit, Edit3, Settings} from 'react-native-feather';
 import React, {useRef} from 'react';
 import {Col} from './Col';
 import {Div} from './Div';
@@ -240,7 +240,7 @@ export default function NftCollectionProfile({
                           mr8
                           onPress={onPressEditProfile}>
                           <Div>
-                            <Edit3
+                            <Settings
                               strokeWidth={2}
                               color={'white'}
                               height={15}
@@ -255,7 +255,7 @@ export default function NftCollectionProfile({
                           rounded100
                           onPress={() => gotoNewPost(null)}>
                           <Span white bold mt1 px5 fontSize={12}>
-                            게시물 업로드
+                            게시물 작성
                           </Span>
                         </Col>
                       </Row>

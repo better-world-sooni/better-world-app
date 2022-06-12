@@ -6,11 +6,12 @@ import {AppContent} from 'src/components/AppContent';
 import {shallowEqual, useSelector} from 'react-redux';
 import {RootState} from 'src/redux/rootReducer';
 import messaging from '@react-native-firebase/messaging';
-import {postPromiseFn, usePostPromiseFnWithToken} from 'src/redux/asyncReducer';
+import {usePostPromiseFnWithToken} from 'src/redux/asyncReducer';
 import apis from 'src/modules/apis';
 import PushNotification, {Importance} from 'react-native-push-notification';
 import 'react-native-url-polyfill/auto';
 import {BETTER_WORLD_MAIN_PUSH_CHANNEL} from 'src/modules/constants';
+
 const firebaseMessaging = messaging();
 PushNotification.createChannel({
   channelId: BETTER_WORLD_MAIN_PUSH_CHANNEL, // (required)
@@ -104,4 +105,3 @@ firebaseMessaging.setBackgroundMessageHandler(async remoteMessage => {
 });
 
 export default codePush(codePushOptions)(withRootReducer(App));
-// export default withRootReducer(App);

@@ -34,11 +34,6 @@ export default function NftChooseBottomSheetScrollView({
     <BottomSheetScrollView>
       <Row px20 itemsCenter>
         <Col />
-        <Col auto onPress={logout} mr16>
-          <Span info bold>
-            새로고침
-          </Span>
-        </Col>
         <Col auto onPress={logout}>
           <Span info bold>
             로그아웃
@@ -48,7 +43,14 @@ export default function NftChooseBottomSheetScrollView({
       <Div px20>
         <Div>
           {nfts?.map((nft, index) => {
-            return <NftIdentity key={index} nft={nft} setCloseDisable={setCloseDisable} onSuccess={onSuccess} />;
+            return (
+              <NftIdentity
+                key={index}
+                nft={nft}
+                setCloseDisable={setCloseDisable}
+                onSuccess={onSuccess}
+              />
+            );
           })}
         </Div>
       </Div>

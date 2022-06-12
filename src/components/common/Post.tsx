@@ -324,7 +324,7 @@ function PostContent({post}) {
                 <Div>
                   <TruncatedText
                     text={post.content}
-                    maxLength={500}
+                    maxLength={300}
                     spanProps={{fontSize: 14}}
                     onPressTruncated={gotoPost}
                   />

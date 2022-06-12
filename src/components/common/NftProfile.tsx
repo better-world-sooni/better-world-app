@@ -199,9 +199,9 @@ export default function NftProfile({
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
         }></Animated.FlatList>
-      {isCurrentNft && qrScan && (
+      {isCurrentNft && qrScan && nft && (
         <BottomPopup ref={bottomPopupRef} snapPoints={['90%']} index={-1}>
-          <NftProfileEditBottomSheetScrollView nft={nftCore} />
+          <NftProfileEditBottomSheetScrollView nft={nft} />
         </BottomPopup>
       )}
     </>

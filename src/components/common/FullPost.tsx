@@ -436,6 +436,11 @@ export default function FullPost({post, autoFocus = false}) {
                   </Div>
                 ) : null}
               </Row>
+              {post.reposted_post && (
+                <Div mt5>
+                  <RepostedPost repostedPost={post.reposted_post} enablePress />
+                </Div>
+              )}
               {post.image_uris.length > 0 ? (
                 <Div mt5>
                   <ImageSlideShow
@@ -453,9 +458,7 @@ export default function FullPost({post, autoFocus = false}) {
                   />
                 </Div>
               ) : null}
-              {post.reposted_post && (
-                <RepostedPost repostedPost={post.reposted_post} enablePress />
-              )}
+
               {post.collection_event && (
                 <Div mt5>
                   <CollectionEvent
