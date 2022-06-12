@@ -82,10 +82,10 @@ export default function NftProfile({
       position: 'absolute',
       top: 0,
       width: DEVICE_WIDTH,
-      height: headerHeight + 50,
+      height: headerHeight + 30,
       transform: [
         {
-          scale: Math.max(-(translationY.value - 150) / 100, 1),
+          scale: Math.max(-(translationY.value - headerHeight) / 100, 1),
         },
       ],
     };
@@ -200,9 +200,9 @@ export default function NftProfile({
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
         }></Animated.FlatList>
-      {isCurrentNft && qrScan && (
+      {isCurrentNft && qrScan && nft && (
         <BottomPopup ref={bottomPopupRef} snapPoints={['90%']} index={-1}>
-          <NftProfileEditBottomSheetScrollView nft={nftCore} />
+          <NftProfileEditBottomSheetScrollView nft={nft} />
         </BottomPopup>
       )}
     </>

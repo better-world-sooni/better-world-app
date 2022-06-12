@@ -1,5 +1,11 @@
 import React from 'react';
-import {Edit3, Grid, Maximize, MessageCircle} from 'react-native-feather';
+import {
+  Edit3,
+  Grid,
+  Maximize,
+  MessageCircle,
+  Settings,
+} from 'react-native-feather';
 import useFollow from 'src/hooks/useFollow';
 import {
   useGotoCapsule,
@@ -146,7 +152,7 @@ export default function NftProfileHeader({
                 )}
                 <Col auto bgRealBlack p8 rounded100 onPress={editProfile} mx8>
                   <Div>
-                    <Edit3
+                    <Settings
                       strokeWidth={2}
                       color={'white'}
                       height={15}
@@ -161,7 +167,7 @@ export default function NftProfileHeader({
                   rounded100
                   onPress={() => gotoNewPost()}>
                   <Span white bold fontSize={12} px5>
-                    게시물 업로드
+                    게시물 작성
                   </Span>
                 </Col>
               </Row>

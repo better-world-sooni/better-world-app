@@ -1,6 +1,6 @@
 import {BottomSheetScrollView} from '@gorhom/bottom-sheet';
-import React from 'react';
-import {ActivityIndicator, Platform} from 'react-native';
+import React, {useState} from 'react';
+import {ActivityIndicator, Platform, Switch} from 'react-native';
 import useName, {NameOwnerType} from 'src/hooks/useName';
 import useStory, {StoryOwnerType} from 'src/hooks/useStory';
 import {getNftProfileImage} from 'src/modules/nftUtils';
@@ -15,6 +15,10 @@ import {Check, Tool, Trash, Upload} from 'react-native-feather';
 import useUploadImage from 'src/hooks/useUploadImage';
 import apis from 'src/modules/apis';
 import Colors from 'src/constants/Colors';
+import {
+  usePutPromiseFnWithToken,
+  useReloadGETWithToken,
+} from 'src/redux/asyncReducer';
 
 export default function NftProfileEditBottomSheetScrollView({nft}) {
   const {
@@ -47,9 +51,27 @@ export default function NftProfileEditBottomSheetScrollView({nft}) {
     property: 'background_image_uri',
     successReloadKey: apis.nft._(),
   });
+  const reloadGetWithToken = useReloadGETWithToken();
+  const putPromiseFnWithToken = usePutPromiseFnWithToken();
+  const [pushNotificationEnabled, setPushNotificationEnabled] = useState(
+    !nft.is_push_notification_disabled,
+  );
+  const handleSwitchPushNotification = async bool => {
+    setPushNotificationEnabled(bool);
+    const body = {
+      property: 'is_disabled_globally',
+      value: !bool,
+    };
+    const {data} = await putPromiseFnWithToken({
+      url: apis.pushNotificationSetting._().url,
+      body,
+    });
+    reloadGetWithToken(apis.nft._());
+  };
   return (
     <BottomSheetScrollView>
-      <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
         <Div h150 relative onPress={handleAddImage}>
           {image?.uri ? (
             <>
@@ -132,6 +154,21 @@ export default function NftProfileEditBottomSheetScrollView({nft}) {
               ) : null}
             </Row>
             <Row h40></Row>
+          </Col>
+        </Row>
+        <Row px15 py12 itemsCenter borderTop={0.5} borderGray200>
+          <Col auto w50 m5>
+            <Span fontSize={16} bold>
+              알림
+            </Span>
+          </Col>
+          <Col></Col>
+          <Col auto>
+            <Switch
+              value={pushNotificationEnabled}
+              onValueChange={handleSwitchPushNotification}
+              style={{transform: [{scaleX: 0.8}, {scaleY: 0.8}]}}
+            />
           </Col>
         </Row>
         <Row px15 py15 itemsCenter borderTop={0.5} borderGray200>

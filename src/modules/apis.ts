@@ -42,6 +42,7 @@ const apis = {
     qr: () => apiV1('/auth/jwt/qr')
   },
   pushNotificationSetting: {
+    _: () => apiV1(`/push_notification_setting`),
     registrationToken: () => apiV1(`/push_notification_setting/registration_token`)
   },
   profile: {

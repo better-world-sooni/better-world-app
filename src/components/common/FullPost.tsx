@@ -2,6 +2,7 @@ import {useNavigation} from '@react-navigation/native';
 import React, {useCallback, useEffect, useState} from 'react';
 import {ActivityIndicator, Platform, RefreshControl} from 'react-native';
 import {
+  Check,
   ChevronLeft,
   Heart,
   MoreHorizontal,
@@ -40,7 +41,10 @@ import NewComment, {ReplyToType} from './NewComment';
 import {Row} from './Row';
 import {Span} from './Span';
 import {MenuView} from '@react-native-menu/menu';
-import {useDeletePromiseFnWithToken} from 'src/redux/asyncReducer';
+import {
+  useDeletePromiseFnWithToken,
+  usePutPromiseFnWithToken,
+} from 'src/redux/asyncReducer';
 import {ReportTypes} from 'src/screens/ReportScreen';
 import useVote, {VoteCategory} from 'src/hooks/useVote';
 import {LikeListType} from 'src/screens/LikeListScreen';
@@ -59,11 +63,7 @@ import TruncatedText from './TruncatedText';
 import RepostedPost from './RepostedPost';
 import CollectionEvent from './CollectionEvent';
 import {getAdjustedHeightFromDimensions} from 'src/modules/imageUtils';
-
-enum PostEventTypes {
-  Delete = 'DELETE',
-  Report = 'REPORT',
-}
+import {PostEventTypes} from './Post';
 
 export default function FullPost({post, autoFocus = false}) {
   const scrollToEndRef = useScrollToEndRef();
@@ -81,12 +81,14 @@ export default function FullPost({post, autoFocus = false}) {
     setCachedComments(post.comments || []);
   }, [post.comments?.length]);
   const {
+    votable,
     forVotesCount,
     againstVotesCount,
     abstainVotesCount,
     hasVotedFor,
     hasVotedAgainst,
     hasVotedAbstain,
+    handleSetVotable,
     handlePressVoteAbstain,
     handlePressVoteFor,
     handlePressVoteAgainst,
@@ -96,45 +98,62 @@ export default function FullPost({post, autoFocus = false}) {
     initialForVotesCount: post.for_votes_count,
     initialAgainstVotesCount: post.against_votes_count,
     postId: post.id,
+    votingDeadline: post.voting_deadline,
   });
   const isCurrentNft = useIsCurrentNft(post.nft);
   const isCurrentCollection = useIsCurrentCollection(post.nft);
   const isAdmin = !post.nft.token_id && useIsAdmin(post.nft);
   const deletePromiseFnWithToken = useDeletePromiseFnWithToken();
-  const menuOptions =
-    isCurrentNft || isAdmin
-      ? [
-          {
-            id: 'REPORT',
-            title: '게시물 신고',
-            titleColor: '#46F289',
-            subtitle: 'Share action on SNS',
-            image: Platform.select({
-              ios: 'flag',
-              android: 'stat_sys_warning',
-            }),
-          },
-          {
-            id: PostEventTypes.Delete,
-            title: '게시물 삭제',
-            image: Platform.select({
-              ios: 'trash',
-              android: 'ic_menu_delete',
-            }),
-          },
-        ]
-      : [
-          {
-            id: PostEventTypes.Report,
-            title: '게시물 신고',
-            titleColor: '#46F289',
-            subtitle: 'Share action on SNS',
-            image: Platform.select({
-              ios: 'flag',
-              android: 'stat_sys_warning',
-            }),
-          },
-        ];
+  const putPromiseFnWithToken = usePutPromiseFnWithToken();
+  const menuOptions = [
+    {
+      id: PostEventTypes.Report,
+      title: '게시물 신고',
+      titleColor: '#46F289',
+      subtitle: 'Share action on SNS',
+      image: Platform.select({
+        ios: 'flag',
+        android: 'stat_sys_warning',
+      }),
+    },
+    (isCurrentNft || (!post.nft.token_id && isAdmin)) && {
+      id: PostEventTypes.Delete,
+      title: '게시물 삭제',
+      image: Platform.select({
+        ios: 'trash',
+        android: 'ic_menu_delete',
+      }),
+    },
+    isAdmin &&
+      post.type == 'Proposal' &&
+      post.reposted_post && {
+        id: PostEventTypes.SetWinningProposal,
+        title: '이 제안을 해당 포럼에 참조',
+        image: Platform.select({
+          ios: 'checkmark',
+          android: 'ic_menu_agenda',
+        }),
+      },
+    isAdmin &&
+      post.type == 'Proposal' &&
+      !post.reposted_post && {
+        id: PostEventTypes.SetVotingDeadline,
+        title: '투표 마무리',
+        image: Platform.select({
+          ios: 'checkmark',
+          android: 'ic_menu_agenda',
+        }),
+      },
+    isAdmin &&
+      post.type == 'Forum' && {
+        id: PostEventTypes.SetVotingDeadline,
+        title: '포럼 마무리',
+        image: Platform.select({
+          ios: 'checkmark',
+          android: 'ic_menu_agenda',
+        }),
+      },
+  ].filter(option => option);
 
   const actionIconDefaultProps = {
     width: 18,
@@ -245,13 +264,44 @@ export default function FullPost({post, autoFocus = false}) {
       setDeleted(true);
     }
   };
+
   const gotoReport = useGotoReport({
     id: post.id,
     reportType: ReportTypes.Post,
   });
+
+  const setVotingDeadline = async () => {
+    setLoading(true);
+    const {data} = await putPromiseFnWithToken({
+      url: apis.post.postId._(post.id).url,
+      body: {
+        property: 'voting_deadline',
+        value: new Date(),
+      },
+    });
+    setLoading(false);
+    if (data.success) {
+      handleSetVotable(false);
+    }
+  };
+  const setWinningProposal = async () => {
+    if (!post.reposted_post.id) return;
+    setLoading(true);
+    const {data} = await putPromiseFnWithToken({
+      url: apis.post.postId._(post.reposted_post?.id).url,
+      body: {
+        property: 'repost_id',
+        value: post.id,
+      },
+    });
+    setLoading(false);
+  };
+
   const handlePressMenu = ({nativeEvent: {event}}) => {
     if (event == PostEventTypes.Delete) deletePost();
     if (event == PostEventTypes.Report) gotoReport();
+    if (event == PostEventTypes.SetVotingDeadline) setVotingDeadline();
+    if (event == PostEventTypes.SetWinningProposal) setWinningProposal();
   };
 
   const gotoLikeList = useGotoLikeList({
@@ -387,6 +437,11 @@ export default function FullPost({post, autoFocus = false}) {
                   </Div>
                 ) : null}
               </Row>
+              {post.reposted_post && (
+                <Div mt5>
+                  <RepostedPost repostedPost={post.reposted_post} enablePress />
+                </Div>
+              )}
               {post.image_uris.length > 0 ? (
                 <Div mt5>
                   <ImageSlideShow
@@ -404,9 +459,7 @@ export default function FullPost({post, autoFocus = false}) {
                   />
                 </Div>
               ) : null}
-              {post.reposted_post && (
-                <RepostedPost repostedPost={post.reposted_post} enablePress />
-              )}
+
               {post.collection_event && (
                 <Div mt5>
                   <CollectionEvent
@@ -477,7 +530,7 @@ export default function FullPost({post, autoFocus = false}) {
                       </Span>
                     </Col>
                     <Col />
-                    {isCurrentCollection && (
+                    {isCurrentCollection && votable && (
                       <>
                         <Col auto mr16 onPress={handlePressVoteAgainst}>
                           {<ThumbsDown {...againstVoteProps}></ThumbsDown>}
@@ -503,8 +556,10 @@ export default function FullPost({post, autoFocus = false}) {
                     <Col />
                   </>
                 )}
+
                 {post.type == 'Forum'
-                  ? isCurrentCollection && (
+                  ? isCurrentCollection &&
+                    votable && (
                       <Col auto onPress={() => gotoNewPost(post)}>
                         <Span info bold fontSize={12}>
                           제안하기
@@ -516,6 +571,23 @@ export default function FullPost({post, autoFocus = false}) {
                         <Repeat {...actionIconDefaultProps} />
                       </Col>
                     )}
+                {!votable && (
+                  <>
+                    <Col auto mr8>
+                      <Span bold fontSize={12}>
+                        완료됨
+                      </Span>
+                    </Col>
+                    <Col auto rounded100 bgRealBlack p3 bgSuccess>
+                      <Check
+                        strokeWidth={2}
+                        height={15}
+                        width={15}
+                        color={'white'}
+                      />
+                    </Col>
+                  </>
+                )}
               </Row>
             </Col>
           </Row>

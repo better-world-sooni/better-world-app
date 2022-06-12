@@ -59,7 +59,7 @@ export default function RepostedPost({repostedPost, enablePress = false}) {
           <TruncatedText
             spanProps={{fontSize: 14}}
             text={repostedPost.content}
-            maxLength={500}
+            maxLength={300}
           />
         </Div>
       ) : null}
