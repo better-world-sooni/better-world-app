@@ -23,7 +23,7 @@ const OnboardingScreen = ({navigation}) => {
           <Row itemsCenter>
             <Col auto>
               <Span fontSize={20} white>
-                <Span bold fontSize={30}>
+                <Span bold fontSize={30} white>
                   곰즈를 시작으로{'\n'}PFP에게 생명을 불어넣어요{'\n'}
                 </Span>
                 BetterWorld alpha{'\n'}

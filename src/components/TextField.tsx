@@ -40,7 +40,7 @@ export const TextField = (props) => {
             autoCorrect={false}
             h48
             border={0.5}
-            borderGray200
+            borderGray400
             rounded10
             p12
             {...others}

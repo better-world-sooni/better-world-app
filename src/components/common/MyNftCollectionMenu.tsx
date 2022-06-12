@@ -16,7 +16,7 @@ import {
 } from 'src/hooks/useGoto';
 import {shallowEqual, useSelector} from 'react-redux';
 import {RootState} from 'src/redux/rootReducer';
-import {Calendar, Layers, PieChart} from 'react-native-feather';
+import {Calendar, Layers, PieChart, ThumbsUp} from 'react-native-feather';
 import {ICONS} from 'src/modules/icons';
 
 const MyNftCollectionMenu = ({nftCollection}) => {
@@ -155,6 +155,29 @@ const MyNftCollectionMenu = ({nftCollection}) => {
             <Col>
               <Span fontSize={16} color={textColor}>
                 진행중인 포럼
+              </Span>
+            </Col>
+          </Row>
+          <Row
+            itemsCenter
+            py16
+            onPress={() =>
+              gotoCollectionFeed(
+                `${nftCollection.name} 진행중인 투표`,
+                'Proposal',
+              )
+            }>
+            <Col auto mr16>
+              <ThumbsUp
+                strokeWidth={1.3}
+                color={textColor}
+                height={24}
+                width={24}
+              />
+            </Col>
+            <Col>
+              <Span fontSize={16} color={textColor}>
+                진행중인 투표
               </Span>
             </Col>
           </Row>

@@ -2,6 +2,7 @@ import apis from "src/modules/apis";
 import { fileChecksum } from "src/modules/fileHelper";
 import { getKeyFromUri, removeQueryFromUri } from "src/modules/uriUtils";
 import { promiseFnPure, usePostPromiseFnWithToken } from "src/redux/asyncReducer";
+import { Buffer } from 'buffer'
 
 export enum FileUploadReturnType {
     Key,
@@ -24,16 +25,15 @@ export default function useFileUpload({attachedRecord}){
         const res = await postPromiseFnWithToken({url: apis.presignedUrl._().url, body})
         return res
     }
-    const uploadToPresignedUrl = async (presignedUrlObject, file) => {
-        const res = await promiseFnPure({url: presignedUrlObject.direct_upload.url, body: file, method: 'PUT', headers: presignedUrlObject.direct_upload.headers })
+    const uploadToPresignedUrl = async (presignedUrlObject, base64) => {
+        const res = await promiseFnPure({url: presignedUrlObject.direct_upload.url, body: Buffer.from(base64, 'base64'), method: 'PUT', headers: {...presignedUrlObject.direct_upload.headers, "Content-Encoding": 'base64'} })
         if(res.status == 200) return res.url
         return false
     }
     const uploadFile = async (file, returnType= FileUploadReturnType.Key) => {
-        const blob = await (await fetch(file.uri)).blob()
         const checksum = await fileChecksum(file);
         const {data} = await createPresignedUrl(file.fileName, file.type, file.fileSize, checksum, attachedRecord);
-        const uploadToPresignedUrlRes = await uploadToPresignedUrl(data.presigned_url_object, blob);
+        const uploadToPresignedUrlRes = await uploadToPresignedUrl(data.presigned_url_object, file.base64);
         if (!uploadToPresignedUrlRes) throw new Error();
         return returnType == FileUploadReturnType.Key ? getKeyFromUri(uploadToPresignedUrlRes) : data.presigned_url_object.blob_signed_id;
     }

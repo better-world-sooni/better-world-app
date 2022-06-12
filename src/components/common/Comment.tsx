@@ -97,8 +97,8 @@ function CommentContent({
     <Div py3={!nested}>
       <Row
         py6
-        pr20
-        mr10
+        pr15={hot}
+        mr15
         ml16
         pl16
         border={hot ? 0.5 : 0}

@@ -221,7 +221,7 @@ const NotificationContent = ({
           <Span gray700>{createdAtText(createdAt)}</Span>
         </Span>
       </Col>
-      {!isCurrentNft && !following && (
+      {!isCurrentNft && (
         <Col
           auto
           bgRealBlack={!following}

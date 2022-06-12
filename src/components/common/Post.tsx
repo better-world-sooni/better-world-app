@@ -2,6 +2,7 @@ import {useNavigation} from '@react-navigation/native';
 import React, {memo, useCallback, useEffect, useState} from 'react';
 import {ActivityIndicator, Platform, RefreshControl} from 'react-native';
 import {
+  Check,
   ChevronLeft,
   Heart,
   MessageCircle,
@@ -220,8 +221,6 @@ function PostContent({post}) {
 
   const itemWidth = DEVICE_WIDTH - 30 - 50;
 
-  // console.log('rerendered');
-
   if (deleted) return null;
 
   return (
@@ -401,7 +400,9 @@ function PostContent({post}) {
                 </>
               )}
               {post.type == 'Forum'
-                ? isCurrentCollection && (
+                ? isCurrentCollection &&
+                  (!post.voting_deadline ||
+                    new Date(post.voting_deadline) > new Date()) && (
                     <Col auto onPress={() => gotoNewPost(post)}>
                       <Span info bold fontSize={12}>
                         제안하기
@@ -413,6 +414,18 @@ function PostContent({post}) {
                       <Repeat {...actionIconDefaultProps} />
                     </Col>
                   )}
+              {post.type == 'Forum' &&
+                post.voting_deadline &&
+                new Date(post.voting_deadline) <= new Date() && (
+                  <Col auto rounded100 bgRealBlack p3 bgSuccess>
+                    <Check
+                      strokeWidth={2}
+                      height={18}
+                      width={18}
+                      color={'white'}
+                    />
+                  </Col>
+                )}
               {post.type !== 'Forum' && (
                 <Col auto onPress={() => gotoPost(true)}>
                   <MessageCircle {...actionIconDefaultProps} />

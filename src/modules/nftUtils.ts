@@ -49,7 +49,7 @@ export function useIsCurrentNft(nft) {
         (root: RootState) => root.app.session,
         shallowEqual,
     );
-    const isCurrentNft = currentNft && nft ? currentNft.contract_address == nft.contract_address && currentNft.token_id == nft.token_id : false
+    const isCurrentNft = currentNft && nft ? (currentNft.contract_address == nft.contract_address && currentNft.token_id == nft.token_id) : false
     return isCurrentNft
 }
 
