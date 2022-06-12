@@ -11,6 +11,8 @@ import apis from 'src/modules/apis';
 import PushNotification, {Importance} from 'react-native-push-notification';
 import 'react-native-url-polyfill/auto';
 import {BETTER_WORLD_MAIN_PUSH_CHANNEL} from 'src/modules/constants';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+
 const firebaseMessaging = messaging();
 PushNotification.createChannel({
   channelId: BETTER_WORLD_MAIN_PUSH_CHANNEL, // (required)
@@ -78,12 +80,15 @@ const App = () => {
         };
         PushNotification.localNotification(notification);
       });
-
       return unsubscribe;
     }
   }, [isLoggedIn]);
 
-  return <AppContent />;
+  return (
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <AppContent />
+    </GestureHandlerRootView>
+  );
 };
 
 const codePushOptions = {
