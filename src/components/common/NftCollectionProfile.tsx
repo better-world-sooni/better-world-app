@@ -118,10 +118,17 @@ export default function NftCollectionProfile({
     };
   });
   const titleStyles = useAnimatedStyle(() => {
+    const middlePoint = notchHeight + (headerHeight - 30) / 2;
+    const startPoint = headerHeight - 30;
+    const moveLengthScrollRatio = (startPoint - middlePoint) / 100;
     return {
+      position: 'relative',
       transform: [
         {
-          translateY: Math.max(0, headerHeight - (translationY.value - 150)),
+          translateY: Math.max(
+            middlePoint-9,
+            startPoint-moveLengthScrollRatio*(translationY.value - 150)-18 ,
+          )
         },
       ],
     };
@@ -149,15 +156,9 @@ export default function NftCollectionProfile({
               position: 'absolute',
             }}
             reducedTransparencyFallbackColor="white"></CustomBlurView>
-          <Row
-            itemsCenter
-            justifyCenter
-            width={DEVICE_WIDTH}
-            zIndex={100}
-            absolute
-            top={HAS_NOTCH ? 42 : 18}>
+          <Row itemsCenter justifyCenter width={DEVICE_WIDTH} absolute>
             <Animated.View style={titleStyles}>
-              <Span bold fontSize={19} mt18>
+              <Span bold fontSize={19} style={{...(Platform.OS === 'android' && {marginVertical: -5})}}>
                 {nftCollectionCore.name}
               </Span>
             </Animated.View>
