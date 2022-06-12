@@ -65,7 +65,6 @@ export default function NftProfile({
   const isCurrentNft = useIsCurrentNft(nftCore);
   const keyExtractor = item => (item as any).id;
   const {goBack} = useNavigation();
-  console.log("here", useSafeAreaInsets().top)
   const notchHeight = useSafeAreaInsets().top;
   //After scroll down height : 80 - 30 = 50 (homescreen header same)
   const headerHeight = notchHeight + 80;
@@ -101,8 +100,8 @@ export default function NftProfile({
       transform: [
         {
           translateY: Math.max(
-            middlePoint - 9,
-            startPoint - 18 - moveLengthScrollRatio * (translationY.value - 150),
+            middlePoint-9,
+            startPoint-moveLengthScrollRatio*(translationY.value - 150)-18 ,
           )
         },
       ],
