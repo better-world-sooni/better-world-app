@@ -14,10 +14,10 @@ export default function useUploadImage({uri, attachedRecord, url, property, succ
     const handleAddImage = async () => {
         try {
           const {assets} = await launchImageLibrary({
+            includeBase64: true,
             mediaType: 'photo',
             maxHeight: 1600,
             maxWidth: 1600,
-            includeBase64: true,
           });
           if(assets[0]){
               setImage(assets[0])

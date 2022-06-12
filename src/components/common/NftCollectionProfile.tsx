@@ -106,10 +106,10 @@ export default function NftCollectionProfile({
       position: 'absolute',
       top: 0,
       width: DEVICE_WIDTH,
-      height: headerHeight + 50,
+      height: headerHeight + 30,
       transform: [
         {
-          scale: Math.max(-(translationY.value - 150) / 100, 1),
+          scale: Math.max(-(translationY.value - headerHeight) / 100, 1),
         },
       ],
     };

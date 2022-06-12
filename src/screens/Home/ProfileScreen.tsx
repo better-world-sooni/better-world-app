@@ -15,7 +15,7 @@ const ProfileScreen = ({route: {params}}) => {
   };
 
   return (
-    <Div flex={1} bgWhite>
+    <Div flex={1} bgWhite overflowHidden>
       <NftProfile
         qrScan
         nftCore={currentNft}

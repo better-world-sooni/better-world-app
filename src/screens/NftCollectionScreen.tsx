@@ -21,7 +21,7 @@ const NftCollectionScreen = ({
     return apis.post.list.nftCollection(nftCollection.contract_address, page);
   };
   return (
-    <Div flex={1} bgWhite relative>
+    <Div flex={1} bgWhite relative overflowHidden>
       <NftCollectionProfile
         nftCollectionCore={nftCollection}
         nftCollectionProfileApiObject={apis.nft_collection.contractAddress.profile(

@@ -12,8 +12,10 @@ export enum VoteCategory {
 
 const voteEventId = (postId) => `like-${postId}`
 
-export default function useVote({initialVote, initialForVotesCount, initialAgainstVotesCount, initialAbstainVotesCount, postId}) {
+export default function useVote({initialVote, initialForVotesCount, initialAgainstVotesCount, initialAbstainVotesCount, votingDeadline, postId}) {
     const [vote, setVote] = useState(initialVote)
+    const [votable, setVotable] = useState(!votingDeadline ||
+        new Date(votingDeadline) > new Date());
     const forVoteOffset = initialVote == null && VoteCategory.For == vote ? 1 : 0;
     const againstVoteOffset = initialVote == null && VoteCategory.Against == vote ? 1 : 0;
     const abstainVoteOffset = initialVote == null && VoteCategory.Abstain == vote ? 1 : 0;
@@ -47,13 +49,18 @@ export default function useVote({initialVote, initialForVotesCount, initialAgain
             EventRegister.emit(voteEventId(postId), voteCategory)
         }
     }
+    const handleSetVotable = (value) => {
+        setVotable(value)
+    }
     return {
+        votable,
         forVotesCount: initialForVotesCount + forVoteOffset, 
         againstVotesCount: initialAgainstVotesCount + againstVoteOffset, 
         abstainVotesCount: initialAbstainVotesCount+ abstainVoteOffset,
         hasVotedFor: vote == VoteCategory.For,
         hasVotedAgainst: vote == VoteCategory.Against,
         hasVotedAbstain: vote == VoteCategory.Abstain,
+        handleSetVotable,
         handlePressVoteFor,
         handlePressVoteAgainst,
         handlePressVoteAbstain

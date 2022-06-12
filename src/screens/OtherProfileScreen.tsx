@@ -13,7 +13,7 @@ const OtherProfileScreen = ({
     return apis.post.list.nft(nft.contract_address, nft.token_id, page);
   };
   return (
-    <Div flex={1} bgWhite>
+    <Div flex={1} bgWhite overflowHidden>
       <NftProfile
         nftCore={nft}
         nftProfileApiObject={apis.nft.contractAddressAndTokenId(
