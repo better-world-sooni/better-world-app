@@ -39,8 +39,8 @@ export const TextField = (props) => {
             innerRef={autoFocus && autoFocusRef}
             autoCorrect={false}
             h48
-            border
-            borderGray400
+            border={0.5}
+            borderGray200
             rounded10
             p12
             {...others}

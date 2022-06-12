@@ -100,6 +100,20 @@ export default function NftCollectionProfile({
       opacity: Math.min((translationY.value - 150) / 100, 1),
     };
   });
+  const backgroundImageStyles = useAnimatedStyle(() => {
+    return {
+      zIndex: -10,
+      position: 'absolute',
+      top: 0,
+      width: DEVICE_WIDTH,
+      height: headerHeight + 50,
+      transform: [
+        {
+          scale: Math.max(-(translationY.value - 150) / 100, 1),
+        },
+      ],
+    };
+  });
   const titleStyles = useAnimatedStyle(() => {
     return {
       transform: [
@@ -114,13 +128,9 @@ export default function NftCollectionProfile({
     <>
       <Div h={headerHeight}>
         {nftCollection?.background_image_uri ? (
-          <Img
-            zIndex={-10}
-            uri={nftCollection.background_image_uri}
-            absolute
-            top0
-            w={DEVICE_WIDTH}
-            h={headerHeight}></Img>
+          <Animated.Image
+            style={backgroundImageStyles}
+            source={{uri: nftCollection.background_image_uri}}></Animated.Image>
         ) : (
           <Div absolute top0 h={headerHeight} bgGray400 w={DEVICE_WIDTH}></Div>
         )}
@@ -163,8 +173,8 @@ export default function NftCollectionProfile({
               <ChevronLeft
                 strokeWidth={2.4}
                 color={'white'}
-                height={16}
-                width={16}
+                height={15}
+                width={15}
               />
             </Div>
           </Col>
@@ -180,15 +190,15 @@ export default function NftCollectionProfile({
         ListHeaderComponent={
           <>
             <Row zIndex={100} px15 relative>
-              <Div absolute bottom0 w={DEVICE_WIDTH} bgWhite h={55}></Div>
+              <Div absolute bottom0 w={DEVICE_WIDTH} bgWhite h={48}></Div>
               <Col auto mr10 relative>
                 <Img
                   rounded100
-                  border3
+                  border4
                   borderWhite
                   bgGray200
-                  h85
-                  w85
+                  h75
+                  w75
                   uri={resizeImageUri(
                     nftCollectionCore.image_uri ||
                       nftCollectionCore.nft_metadatum.image_uri,
@@ -233,8 +243,8 @@ export default function NftCollectionProfile({
                             <Edit3
                               strokeWidth={2}
                               color={'white'}
-                              height={16}
-                              width={16}
+                              height={15}
+                              width={15}
                             />
                           </Div>
                         </Col>
@@ -244,7 +254,7 @@ export default function NftCollectionProfile({
                           p8
                           rounded100
                           onPress={() => gotoNewPost(null)}>
-                          <Span white bold mt1 px5>
+                          <Span white bold mt1 px5 fontSize={12}>
                             게시물 업로드
                           </Span>
                         </Col>
@@ -262,21 +272,21 @@ export default function NftCollectionProfile({
               </Div>
               {nftCollection && (
                 <>
-                  <Row mt5>
+                  <Row mt12>
                     <Col
                       auto
-                      mr20
+                      mr12
                       onPress={() => gotoFollowList(FollowType.Followers)}>
-                      <Span bold>
-                        <Span gray700 regular>
+                      <Span bold fontSize={13}>
+                        <Span gray700 regular fontSize={13}>
                           팔로워
                         </Span>{' '}
                         {followerCount}
                       </Span>
                     </Col>
-                    <Col auto mr20 onPress={gotoAffinity}>
-                      <Span bold>
-                        <Span gray700 regular>
+                    <Col auto mr12 onPress={gotoAffinity}>
+                      <Span bold fontSize={13}>
+                        <Span gray700 regular fontSize={13}>
                           멤버 친목도
                         </Span>{' '}
                         {nftCollection.affinity.total_possible_follows

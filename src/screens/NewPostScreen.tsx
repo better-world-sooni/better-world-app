@@ -147,7 +147,11 @@ const NewPostScreen = ({
   const sliderWidth = DEVICE_WIDTH - 47 - 30;
   return (
     <>
-      <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} flex={1} bgWhite relative>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        flex={1}
+        bgWhite
+        relative>
         <Div h={headerHeight} zIndex={100} borderBottom={0.5} borderGray200>
           <Animated.View style={headerStyles}>
             <CustomBlurView
@@ -159,8 +163,7 @@ const NewPostScreen = ({
                 width: DEVICE_WIDTH,
                 height: '100%',
                 position: 'absolute',
-              }}
-              ></CustomBlurView>
+              }}></CustomBlurView>
           </Animated.View>
           <Div zIndex={100} absolute w={DEVICE_WIDTH} top={HAS_NOTCH ? 49 : 25}>
             <Row itemsCenter py5 h40 px15>
@@ -205,19 +208,20 @@ const NewPostScreen = ({
               <Row>
                 <Col auto>
                   <Span>
-                    <Span fontSize={15} bold>
+                    <Span fontSize={14} bold>
                       {getNftName(postOwner)}{' '}
-                    </Span>{' '}
+                    </Span>
                     {!postOwnerIsCollection &&
                       currentNft.token_id &&
                       currentNft.nft_metadatum.name !=
                         getNftName(currentNft) && (
-                        <Span fontSize={12} gray700>
+                        <Span fontSize={14} gray700>
+                          {' '}
                           {currentNft.nft_metadatum.name}
-                          {' · '}
                         </Span>
                       )}
-                    <Span fontSize={12} gray700>
+                    <Span fontSize={14} gray700>
+                      {' · '}
                       {createdAtText(new Date())}
                     </Span>
                   </Span>

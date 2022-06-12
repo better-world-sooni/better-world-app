@@ -75,15 +75,32 @@ export default function NftProfile({
       opacity: Math.min((translationY.value - 150) / 100, 1),
     };
   });
-  const titleStyles = useAnimatedStyle(() => {
-    const middlePoint = (headerHeight-30-19)/2
-    const startPoint = headerHeight-30-19
-    const moveLengthScrollRatio = (startPoint - middlePoint)/100
+  const backgroundImageStyles = useAnimatedStyle(() => {
     return {
+      zIndex: -10,
       position: 'absolute',
+      top: 0,
+      width: DEVICE_WIDTH,
+      height: headerHeight + 50,
       transform: [
         {
-          translateY: Math.max(middlePoint, startPoint-moveLengthScrollRatio*(translationY.value - 150)),
+          scale: Math.max(-(translationY.value - 150) / 100, 1),
+        },
+      ],
+    };
+  });
+  const titleStyles = useAnimatedStyle(() => {
+    const middlePoint = headerHeight / 2;
+    const startPoint = headerHeight - 30;
+    const moveLengthScrollRatio = (startPoint - middlePoint) / 100;
+    return {
+      position: 'relative',
+      transform: [
+        {
+          translateY: Math.max(
+            middlePoint,
+            startPoint - moveLengthScrollRatio * (translationY.value - 150),
+          ),
         },
       ],
     };
@@ -94,13 +111,9 @@ export default function NftProfile({
     <>
       <Div h={headerHeight}>
         {nft?.background_image_uri ? (
-          <Img
-            zIndex={-10}
-            uri={nft.background_image_uri}
-            absolute
-            top0
-            w={DEVICE_WIDTH}
-            h={headerHeight}></Img>
+          <Animated.Image
+            style={backgroundImageStyles}
+            source={{uri: nft.background_image_uri}}></Animated.Image>
         ) : (
           <Div absolute top0 h={headerHeight} bgGray400 w={DEVICE_WIDTH}></Div>
         )}
@@ -118,9 +131,11 @@ export default function NftProfile({
             reducedTransparencyFallbackColor="white"></CustomBlurView>
           <Row itemsCenter justifyCenter width={DEVICE_WIDTH} absolute>
             <Animated.View style={titleStyles}>
-              <Span bold fontSize={19} mt-6>
-                {getNftName(nftCore)}
-              </Span>
+              <Div>
+                <Span bold fontSize={19}>
+                  {getNftName(nftCore)}
+                </Span>
+              </Div>
             </Animated.View>
           </Row>
         </Animated.View>

@@ -87,6 +87,10 @@ export default function ListFlatlist({
         showsVerticalScrollIndicator={false}
         onScroll={scrollHandler}
         keyExtractor={keyExtractor}
+        initialNumToRender={5}
+        removeClippedSubviews
+        updateCellsBatchingPeriod={100}
+        windowSize={11}
         contentContainerStyle={{
           marginTop: headerHeight,
           marginBottom: headerHeight,

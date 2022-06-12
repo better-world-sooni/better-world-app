@@ -38,11 +38,11 @@ const SplashScreen = ({route}) => {
             );
           },
           props => {
-            navigation.navigate(NAV_NAMES.SignIn);
+            navigation.navigate(NAV_NAMES.SignIn as never);
           },
         );
       } else {
-        navigation.navigate(NAV_NAMES.SignIn);
+        navigation.navigate(NAV_NAMES.SignIn as never);
       }
     });
   };
@@ -50,7 +50,7 @@ const SplashScreen = ({route}) => {
   return (
     <Div bgPrimary flex={1} itemsCenter justifyCenter>
       <Div itemsCenter pb50>
-        <Img w134 h134 source={IMAGES.betterWorldWhiteLogo} />
+        <Img w134 h134 source={IMAGES.betterWorldWhiteLogo} legacy />
         <Span white fontSize={20} mt={-15} fontFamily={'UniSans'}>
           BetterWorld{' '}
           <Span white bold fontSize={20}>

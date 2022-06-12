@@ -242,17 +242,18 @@ function PostContent({post}) {
             <Row>
               <Col auto>
                 <Span>
-                  <Span fontSize={15} bold onPress={goToProfile}>
-                    {getNftName(post.nft)}{' '}
+                  <Span fontSize={14} bold onPress={goToProfile}>
+                    {getNftName(post.nft)}
                   </Span>{' '}
                   {post.nft.token_id &&
                     post.nft.nft_metadatum.name != getNftName(post.nft) && (
-                      <Span fontSize={12} gray700 onPress={goToProfile}>
+                      <Span fontSize={14} gray700 onPress={goToProfile}>
+                        {' '}
                         {post.nft.nft_metadatum.name}
-                        {' · '}
                       </Span>
                     )}
-                  <Span fontSize={12} gray700>
+                  <Span fontSize={14} gray700>
+                    {' · '}
                     {createdAtText(post.updated_at)}
                   </Span>
                 </Span>

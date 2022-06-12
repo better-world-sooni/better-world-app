@@ -40,7 +40,7 @@ export default function PolymorphicOwner({nft, isFollowing}) {
   
   return (
     <Row itemsCenter h70 onPress={handlePressRow} px15 relative>
-      <Img w50 h50 rounded100 uri={getNftProfileImage(nft, 200, 200)} />
+      <Img w50 h50 rounded100 uri={getNftProfileImage(nft, 150, 150)} />
       <Col mx15>
         <Div>
           <Span medium fontSize={15} bold>

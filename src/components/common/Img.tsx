@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {StyleSheet} from 'react-native';
+import {Image, StyleSheet} from 'react-native';
 import {
   addBackgroundStyles,
   addBorderStyles,
@@ -35,6 +35,7 @@ export const Img = props => {
     a_source,
     isActive,
     enablePlaceholder = false,
+    legacy = false,
   } = props;
   const mergedProps = mergePropsWithStyleComp(props);
   const imageStyles = getImageStyles(mergedProps);
@@ -50,6 +51,17 @@ export const Img = props => {
     : isActive
     ? a_source
     : source;
+  if (legacy) {
+    return (
+      <Image
+        ref={innerRef}
+        {...mergedProps}
+        style={sheet.style}
+        source={error ? IMAGES.placeholder : s}
+        onError={() => setError(true)}
+      />
+    );
+  }
   return (
     <FastImage
       ref={innerRef}

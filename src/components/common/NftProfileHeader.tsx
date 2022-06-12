@@ -65,15 +65,15 @@ export default function NftProfileHeader({
   return (
     <>
       <Row zIndex={100} px15 relative>
-        <Div absolute bottom0 w={DEVICE_WIDTH} bgWhite h={55}></Div>
+        <Div absolute bottom0 w={DEVICE_WIDTH} bgWhite h={48}></Div>
         <Col auto mr10 relative>
           <Img
             rounded100
-            border3
+            border4
             borderWhite
             bgGray200
-            h85
-            w85
+            h75
+            w75
             uri={getNftProfileImage(nftCore, 200, 200)}></Img>
           {isCurrentNft && qrScan && (
             <Div
@@ -84,7 +84,7 @@ export default function NftProfileHeader({
               rounded100
               p8
               onPress={gotoQr}>
-              <Grid strokeWidth={2} color={'white'} height={16} width={16} />
+              <Grid strokeWidth={2} color={'white'} height={15} width={15} />
             </Div>
           )}
         </Col>
@@ -110,8 +110,8 @@ export default function NftProfileHeader({
                   <MessageCircle
                     strokeWidth={2}
                     color={'white'}
-                    height={18}
-                    width={18}
+                    height={15}
+                    width={15}
                   />
                 </Col>
                 <Col
@@ -122,7 +122,7 @@ export default function NftProfileHeader({
                   border1={isFollowing}
                   borderGray400={isFollowing}
                   onPress={handlePressFollowing}>
-                  <Span white={!isFollowing} bold mt2 px5>
+                  <Span white={!isFollowing} bold mt2 px5 fontSize={12}>
                     {!nft ? '불러오는 중' : isFollowing ? '언팔로우' : '팔로우'}
                   </Span>
                 </Col>
@@ -138,8 +138,8 @@ export default function NftProfileHeader({
                       <Maximize
                         strokeWidth={2}
                         color={'white'}
-                        height={16}
-                        width={16}
+                        height={15}
+                        width={15}
                       />
                     </Div>
                   </Col>
@@ -149,8 +149,8 @@ export default function NftProfileHeader({
                     <Edit3
                       strokeWidth={2}
                       color={'white'}
-                      height={16}
-                      width={16}
+                      height={15}
+                      width={15}
                     />
                   </Div>
                 </Col>
@@ -160,7 +160,7 @@ export default function NftProfileHeader({
                   p8
                   rounded100
                   onPress={() => gotoNewPost()}>
-                  <Span white bold mt1 px5>
+                  <Span white bold fontSize={12} px5>
                     게시물 업로드
                   </Span>
                 </Col>
@@ -186,10 +186,10 @@ export default function NftProfileHeader({
           </Div>
         ) : null}
         {nft && (
-          <Row mt8>
-            <Col auto mr20 onPress={() => gotoFollowList(FollowType.Followers)}>
-              <Span bold>
-                <Span gray700 regular>
+          <Row mt12>
+            <Col auto mr12 onPress={() => gotoFollowList(FollowType.Followers)}>
+              <Span bold fontSize={13}>
+                <Span gray700 regular fontSize={13}>
                   팔로워
                 </Span>{' '}
                 {followerCount}
@@ -197,26 +197,26 @@ export default function NftProfileHeader({
             </Col>
             <Col
               auto
-              mr20
+              mr12
               onPress={() => gotoFollowList(FollowType.Followings)}>
-              <Span bold>
-                <Span gray700 regular>
+              <Span bold fontSize={13}>
+                <Span gray700 regular fontSize={13}>
                   팔로잉
                 </Span>{' '}
                 {nft.following_count}
               </Span>
             </Col>
-            <Col auto mr20 onPress={gotoRankSeason}>
-              <Span bold>
-                <Span gray700 regular>
+            <Col auto mr12 onPress={gotoRankSeason}>
+              <Span bold fontSize={13}>
+                <Span gray700 regular fontSize={13}>
                   랭크
                 </Span>{' '}
                 {nft.current_rank}
               </Span>
             </Col>
-            <Col auto mr20 onPress={gotoRankDeltum}>
-              <Span bold>
-                <Span gray700 regular>
+            <Col auto mr12 onPress={gotoRankDeltum}>
+              <Span bold fontSize={13}>
+                <Span gray700 regular fontSize={13}>
                   랭크 스코어
                 </Span>{' '}
                 {nft.current_rank_score}

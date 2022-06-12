@@ -47,7 +47,7 @@ import PasswordSigninScreen from 'src/screens/Auth/PasswordSigninScreen';
 import {createStackNavigator} from '@react-navigation/stack';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 
-const RootStack = createStackNavigator();
+const RootStack = createNativeStackNavigator();
 
 const Tab = createBottomTabNavigator();
 

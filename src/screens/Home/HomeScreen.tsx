@@ -84,16 +84,16 @@ const HomeScreen = () => {
               )}
             </Div>
             <Div flex={1} itemsCenter>
-              <Img h40 w40 source={IMAGES.betterWorldBlueLogo}/>
+              <Img h40 w40 source={IMAGES.betterWorldBlueLogo} legacy />
             </Div>
             <Row flex={1} justifyEnd>
               <Div auto itemsEnd rounded100 onPress={() => gotoNotifications()}>
-                  <Bell
-                    strokeWidth={1.7}
-                    color={'black'}
-                    height={24}
-                    width={24}
-                  />
+                <Bell
+                  strokeWidth={1.7}
+                  color={'black'}
+                  height={24}
+                  width={24}
+                />
               </Div>
             </Row>
           </Row>

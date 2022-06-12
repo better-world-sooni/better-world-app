@@ -71,13 +71,13 @@ const MyNftCollectionMenu = ({nftCollection}) => {
                 </Span>
               </Col>
             </Row>
-            <Row mt10 itemsEnd>
+            <Row mt12 itemsEnd>
               <Col
                 auto
                 mr20
                 onPress={() => gotoFollowList(FollowType.Followers)}>
-                <Span bold>
-                  <Span gray700 regular>
+                <Span bold fontSize={13}>
+                  <Span gray700 regular fontSize={13}>
                     팔로워
                   </Span>{' '}
                   {nftCollection.follower_count}
@@ -87,8 +87,8 @@ const MyNftCollectionMenu = ({nftCollection}) => {
             </Row>
             <Row mt10 itemsEnd>
               <Col auto mr20 onPress={gotoAffinity}>
-                <Span bold>
-                  <Span gray700 regular>
+                <Span bold fontSize={13}>
+                  <Span gray700 regular fontSize={13}>
                     멤버 친목도
                   </Span>{' '}
                   {nftCollection.affinity.total_possible_follows
@@ -105,67 +105,56 @@ const MyNftCollectionMenu = ({nftCollection}) => {
               <Col />
             </Row>
           </Div>
-          <Div h10 />
-          <Row itemsCenter py15 onPress={gotoCollectionEventList}>
-            <Col auto mr20>
+          <Row itemsCenter py16 onPress={gotoCollectionEventList}>
+            <Col auto mr16>
               <Calendar
                 strokeWidth={1.3}
                 color={'black'}
-                height={28}
-                width={28}
+                height={24}
+                width={24}
               />
             </Col>
             <Col>
-              <Span fontSize={18}>일정</Span>
+              <Span fontSize={16}>일정</Span>
             </Col>
           </Row>
           <Row
             itemsCenter
-            py15
+            py16
             onPress={() =>
               gotoCollectionFeed(`${nftCollection.name} 멤버 피드`)
             }>
-            <Col auto mr20>
+            <Col auto mr16>
               <Layers
                 strokeWidth={1.3}
                 color={textColor}
-                height={28}
-                width={28}
+                height={24}
+                width={24}
               />
             </Col>
             <Col>
-              <Span fontSize={18} color={textColor}>
+              <Span fontSize={16} color={textColor}>
                 모든 멤버들의 게시물
               </Span>
             </Col>
           </Row>
           <Row
             itemsCenter
-            py15
+            py16
             onPress={() =>
               gotoCollectionFeed(`${nftCollection.name} 진행중인 포럼`, 'Forum')
             }>
-            <Col auto mr20>
+            <Col auto mr16>
               <PieChart
                 strokeWidth={1.3}
                 color={textColor}
-                height={28}
-                width={28}
+                height={24}
+                width={24}
               />
             </Col>
             <Col>
-              <Span fontSize={18} color={textColor}>
+              <Span fontSize={16} color={textColor}>
                 진행중인 포럼
-              </Span>
-            </Col>
-          </Row>
-          <Row itemsCenter py15>
-            <Col auto mr20>
-              <Img h28 w28 source={ICONS.discordIcon} opacity={0.5} />
-            </Col>
-            <Col>
-              <Span fontSize={18} gray400>
-                디스코드
               </Span>
             </Col>
           </Row>

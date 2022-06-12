@@ -20,7 +20,6 @@ import Animated, {
   useAnimatedStyle,
   useSharedValue,
 } from 'react-native-reanimated';
-import {BlurView} from '@react-native-community/blur';
 import {CustomBlurView} from 'src/components/common/CustomBlurView';
 import useEdittableText from 'src/hooks/useEdittableText';
 import Colors from 'src/constants/Colors';
@@ -115,8 +114,7 @@ const SearchScreen = () => {
               width: DEVICE_WIDTH,
               height: '100%',
               position: 'absolute',
-            }}
-            ></CustomBlurView>
+            }}></CustomBlurView>
         </Animated.View>
         <Div zIndex={100} absolute w={DEVICE_WIDTH} top={HAS_NOTCH ? 49 : 25}>
           <Row itemsCenter py5 h40 px15>
@@ -141,8 +139,8 @@ const SearchScreen = () => {
                 <Search
                   strokeWidth={2}
                   color={'white'}
-                  height={16}
-                  width={16}
+                  height={15}
+                  width={15}
                 />
               </Div>
             </Col>
@@ -197,6 +195,9 @@ const SearchScreen = () => {
           />
         }
         data={rankRes ? rankRes.ranks : []}
+        keyExtractor={item =>
+          `${(item as any)?.contract_address}-${(item as any)?.token_id}`
+        }
         renderItem={({item, index}) => {
           return <RankedOwner rankItem={item} />;
         }}></Animated.FlatList>

@@ -65,7 +65,7 @@ function CommentContent({
   );
   const cachedComments = comments || [];
   const profileImageSize = nested ? 25 : 30;
-  const heartSize = 15;
+  const heartSize = hot ? 15 : 15;
   const heartProps = liked
     ? {
         fill: Colors.danger.DEFAULT,
@@ -95,7 +95,16 @@ function CommentContent({
   });
   return (
     <Div py3={!nested}>
-      <Row py6 pr20 pl32>
+      <Row
+        py6
+        pr20
+        mr10
+        ml16
+        pl16
+        border={hot ? 0.5 : 0}
+        py12={hot}
+        rounded10
+        borderGray200>
         <Col auto mr10 onPress={goToProfile}>
           <Img
             rounded={100}
@@ -114,11 +123,9 @@ function CommentContent({
                 <Span fontSize={14}>{content}</Span>
               </Span>
             </Col>
-            {!hot && (
-              <Col auto onPress={handlePressLike}>
-                <Heart {...heartProps}></Heart>
-              </Col>
-            )}
+            <Col auto onPress={handlePressLike} mt4={hot}>
+              <Heart {...heartProps}></Heart>
+            </Col>
           </Row>
           <Row mt5>
             <Col auto mr10>

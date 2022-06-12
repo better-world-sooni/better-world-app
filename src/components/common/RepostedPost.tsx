@@ -35,18 +35,19 @@ export default function RepostedPost({repostedPost, enablePress = false}) {
         </Col>
         <Col auto>
           <Span>
-            <Span fontSize={15} bold>
-              {getNftName(repostedPost.nft)}{' '}
+            <Span fontSize={14} bold>
+              {getNftName(repostedPost.nft)}
             </Span>{' '}
             {repostedPost.nft.token_id &&
               repostedPost.nft.nft_metadatum.name !=
                 getNftName(repostedPost.nft) && (
-                <Span fontSize={12} gray700>
+                <Span fontSize={14} gray700>
+                  {' '}
                   {repostedPost.nft.nft_metadatum?.name}
-                  {' · '}
                 </Span>
               )}
-            <Span fontSize={12} gray700>
+            <Span fontSize={14} gray700>
+              {' · '}
               {createdAtText(repostedPost.updated_at)}
             </Span>
           </Span>
