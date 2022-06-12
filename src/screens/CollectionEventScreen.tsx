@@ -17,9 +17,10 @@ export default function CollectionEventScreen({
     params: {collectionEvent, reload},
   },
 }) {
-  const {data: collectionEventRes, isLoading: collectionEventLoad} =
+  const {data: collectionEventRes, isLoading: collectionEventLoad} = 
     useApiSelector(apis.collectionEvent.collectionEventId);
-  const headerHeight = HAS_NOTCH ? 94 : 70;
+  const notchHeight = HAS_NOTCH ? 44 : 0;
+  const headerHeight = notchHeight + 50;
   const itemWidth = DEVICE_WIDTH - 30;
   const {goBack} = useNavigation();
   const loading = reload && collectionEventLoad;
@@ -37,7 +38,7 @@ export default function CollectionEventScreen({
           zIndex={100}
           absolute
           w={DEVICE_WIDTH}
-          top={HAS_NOTCH ? 49 : 25}>
+          top={notchHeight+5}>
           <Col justifyStart>
             <Div auto rounded100 onPress={goBack}>
               <ChevronLeft

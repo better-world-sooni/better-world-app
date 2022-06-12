@@ -9,12 +9,13 @@ import {Div} from '../common/Div';
 import {Row} from '../common/Row';
 
 export default function PostLoading() {
-  const headerHeight = HAS_NOTCH ? 94 : 70;
+  const notchHeight = HAS_NOTCH ? 44 : 0;
+  const headerHeight = notchHeight + 50;
   const {goBack} = useNavigation();
   return (
     <Div flex={1}>
       <Div h={headerHeight} zIndex={100}>
-        <Div zIndex={100} absolute w={DEVICE_WIDTH} top={HAS_NOTCH ? 49 : 25}>
+        <Div zIndex={100} absolute w={DEVICE_WIDTH} top={notchHeight+5}>
           <Row itemsCenter py5 h40 px8>
             <Col itemsStart>
               <Div auto rounded100 onPress={goBack}>

@@ -33,7 +33,8 @@ export default function ListFlatlist({
   const scrollHandler = useAnimatedScrollHandler(event => {
     translationY.value = event.contentOffset.y;
   });
-  const headerHeight = HAS_NOTCH ? 94 : 70;
+  const notchHeight = HAS_NOTCH ? 44 : 0;
+  const headerHeight = notchHeight + 50;
   const headerStyles = useAnimatedStyle(() => {
     return {
       width: DEVICE_WIDTH,
@@ -57,7 +58,7 @@ export default function ListFlatlist({
             }}
             reducedTransparencyFallbackColor="white"></CustomBlurView>
         </Animated.View>
-        <Div zIndex={100} absolute w={DEVICE_WIDTH} top={HAS_NOTCH ? 49 : 25}>
+        <Div zIndex={100} absolute w={DEVICE_WIDTH} top={notchHeight+5}>
           <Row itemsCenter py5 h40 px8>
             <Col itemsStart>
               {enableBack && (

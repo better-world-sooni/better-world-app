@@ -7,7 +7,7 @@ import {Img} from './Img';
 import {Row} from './Row';
 import {Span} from './Span';
 import {useNavigation} from '@react-navigation/native';
-import {ActivityIndicator, RefreshControl, StatusBar} from 'react-native';
+import {ActivityIndicator, RefreshControl, StatusBar, Platform} from 'react-native';
 import Post from './Post';
 import {HAS_NOTCH} from 'src/modules/constants';
 import {DEVICE_WIDTH} from 'src/modules/styles';
@@ -146,7 +146,7 @@ export default function NftProfile({
           h40
           zIndex={100}
           absolute
-          top={HAS_NOTCH ? 49 : 25}>
+          top={notchHeight+5}>
           {enableBack && (
             <Col auto ml15 bgRealBlack p5 rounded100 onPress={goBack}>
               <ChevronLeft
@@ -162,7 +162,7 @@ export default function NftProfile({
       </Div>
       <Animated.FlatList
         bounces
-        style={{marginTop: -30, paddingTop: 30}}
+        style={{marginTop: -30, ...(Platform.OS === 'android' && {paddingTop: 30})}}
         showsVerticalScrollIndicator={false}
         onScroll={scrollHandler}
         data={nftPostListRes?.posts || []}
@@ -193,7 +193,7 @@ export default function NftProfile({
                 <Span textCenter>게시물을 모두 확인했습니다.</Span>
               </Div>
             )}
-            <Div h={HAS_NOTCH ? 27 : 12} />
+            <Div h={27} />
           </>
         }
         renderItem={renderItem}

@@ -24,7 +24,7 @@ import Animated, {
 import {BlurView} from '@react-native-community/blur';
 import {CustomBlurView} from 'src/components/common/CustomBlurView';
 import {useNavigation} from '@react-navigation/native';
-import {ActivityIndicator, RefreshControl} from 'react-native';
+import {ActivityIndicator, RefreshControl, Platform} from 'react-native';
 import {FollowOwnerType, FollowType} from 'src/screens/FollowListScreen';
 import {shallowEqual, useSelector} from 'react-redux';
 import {RootState} from 'src/redux/rootReducer';
@@ -90,11 +90,13 @@ export default function NftCollectionProfile({
   const scrollHandler = useAnimatedScrollHandler(event => {
     translationY.value = event.contentOffset.y;
   });
-  const headerHeight = HAS_NOTCH ? 124 : 100;
+  const notchHeight = HAS_NOTCH ? 44 : 0;
+  //After scroll down height : 80 - 30 = 50 (homescreen header same)
+  const headerHeight = notchHeight + 80;
   const headerStyles = useAnimatedStyle(() => {
     return {
       width: DEVICE_WIDTH,
-      height: headerHeight,
+      height: headerHeight-30,
       position: 'absolute',
       zIndex: 100,
       opacity: Math.min((translationY.value - 150) / 100, 1),
@@ -167,7 +169,7 @@ export default function NftCollectionProfile({
           px15
           zIndex={100}
           absolute
-          top={HAS_NOTCH ? 49 : 25}>
+          top={notchHeight+5}>
           <Col auto bg={'black'} p8 rounded100 mr12 onPress={goBack}>
             <Div>
               <ChevronLeft
@@ -185,7 +187,7 @@ export default function NftCollectionProfile({
         showsVerticalScrollIndicator={false}
         onScroll={scrollHandler}
         onEndReached={handleEndReached}
-        style={{marginTop: -30}}
+        style={{marginTop: -30, ...(Platform.OS === 'android' && {paddingTop: 30})}}
         data={nftCollectionPostListRes?.posts || []}
         ListHeaderComponent={
           <>

@@ -12,13 +12,14 @@ import {Row} from '../common/Row';
 import {Span} from '../common/Span';
 
 export default function NotFound({text}) {
-  const headerHeight = HAS_NOTCH ? 94 : 70;
+  const notchHeight = HAS_NOTCH ? 44 : 0;
+  const headerHeight = notchHeight + 50;
   const {goBack} = useNavigation();
   const gotoHome = useGotoHome();
   return (
     <Div flex={1} itemsCenter justifyCenter>
       <Div h={headerHeight} absolute top0 zIndex={100} w={DEVICE_WIDTH}>
-        <Div zIndex={100} absolute w={DEVICE_WIDTH} top={HAS_NOTCH ? 49 : 25}>
+        <Div zIndex={100} absolute w={DEVICE_WIDTH} top={notchHeight+5}>
           <Row itemsCenter py5 h40 px8>
             <Col itemsStart>
               <Div auto rounded100 onPress={goBack}>

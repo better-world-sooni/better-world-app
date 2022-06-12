@@ -45,7 +45,8 @@ const QrScreen = () => {
       token_id: currentNft.token_id,
     });
   };
-  const headerHeight = HAS_NOTCH ? 94 : 70;
+  const notchHeight = HAS_NOTCH ? 44 : 0;
+  const headerHeight = notchHeight + 50;
   useEffect(() => {
     if (qrRes) {
       const dateInt = qrRes?.exp * 1000;
@@ -82,7 +83,7 @@ const QrScreen = () => {
           zIndex={100}
           absolute
           w={DEVICE_WIDTH}
-          top={HAS_NOTCH ? 49 : 25}>
+          top={notchHeight+5}>
           <Col justifyStart>
             <Div auto rounded100 onPress={goBack}>
               <ChevronLeft

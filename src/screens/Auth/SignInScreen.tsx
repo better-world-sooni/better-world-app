@@ -20,7 +20,7 @@ const SignInScreen = () => {
   return (
     <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} flex={1} bgWhite>
       <Div
-        top={HAS_NOTCH ? 44 : 20}
+        top={HAS_NOTCH ? 44 : 10}
         zIndex={100}
         itemsCenter
         justifyEnd

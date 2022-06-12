@@ -101,7 +101,8 @@ function ChatListScreen() {
   const scrollHandler = useAnimatedScrollHandler(event => {
     translationY.value = event.contentOffset.y;
   });
-  const headerHeight = HAS_NOTCH ? 94 : 70;
+  const notchHeight = HAS_NOTCH ? 44 : 0;
+  const headerHeight = notchHeight + 50;
   const headerStyles = useAnimatedStyle(() => {
     return {
       width: DEVICE_WIDTH,
@@ -150,7 +151,7 @@ function ChatListScreen() {
                 zIndex={100}
                 absolute
                 w={DEVICE_WIDTH}
-                top={HAS_NOTCH ? 49 : 25}>
+                top={notchHeight+5}>
                 <Col justifyStart mr10></Col>
                 <Col auto>
                   <Span bold fontSize={19}>

@@ -13,7 +13,8 @@ export default function AffinityScreen({
     params: {nftCollection},
   },
 }) {
-  const headerHeight = HAS_NOTCH ? 94 : 70;
+  const notchHeight = HAS_NOTCH ? 44 : 0;
+  const headerHeight = notchHeight + 50;
   const {goBack} = useNavigation();
   return (
     <Div flex={1} bgWhite>
@@ -26,7 +27,7 @@ export default function AffinityScreen({
           zIndex={100}
           absolute
           w={DEVICE_WIDTH}
-          top={HAS_NOTCH ? 49 : 25}>
+          top={notchHeight+5}>
           <Col justifyStart mr10>
             <Div auto rounded100 onPress={goBack}>
               <ChevronLeft

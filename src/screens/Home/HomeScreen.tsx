@@ -60,7 +60,7 @@ const HomeScreen = () => {
       menu={<MyNftCollectionMenu nftCollection={nftCollection} />}
       bounceBackOnOverdraw={false}
       openMenuOffset={DEVICE_WIDTH - 65}>
-      {/* <StatusBar barStyle="dark-content" translucent={true}></StatusBar> */}
+      <StatusBar barStyle="dark-content" backgroundColor='White'></StatusBar>
       <FeedFlatlist
         ref={flatlistRef}
         refreshing={feedLoading}

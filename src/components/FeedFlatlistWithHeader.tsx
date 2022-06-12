@@ -22,7 +22,7 @@ export default function FeedFlatlistWithHeader({
   HeaderComponent,
 }) {
   const notchHeight = HAS_NOTCH ? 44 : 0;
-  const headerHeight = notchHeight + 48;
+  const headerHeight = notchHeight + 50;
   const translationY = useSharedValue(0);
   const scrollHandler = useAnimatedScrollHandler({
     onScroll: (event, ctx) => {
@@ -72,7 +72,7 @@ export default function FeedFlatlistWithHeader({
         automaticallyAdjustContentInsets
         showsVerticalScrollIndicator={false}
         onScroll={scrollHandler}
-        ListFooterComponent={<Div h={HAS_NOTCH ? 27 : 12} />}
+        ListFooterComponent={<Div h={27} />}
         ListHeaderComponent={
           <Animated.View style={topBarStyles}>
             <Animated.View style={headerStyles}>

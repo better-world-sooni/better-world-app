@@ -134,7 +134,8 @@ function ChatRoomScreen({
   const scrollToEnd = () => {
     flatListRef?.current?.scrollToEnd({animated: false});
   };
-  const headerHeight = HAS_NOTCH ? 94 : 70;
+  const notchHeight = HAS_NOTCH ? 44 : 0;
+  const headerHeight = notchHeight + 50;
   const isSameNft = useCallback((nft1, nft2) => {
     return (
       nft1?.token_id === nft2?.token_id &&
@@ -190,7 +191,7 @@ function ChatRoomScreen({
           zIndex={100}
           absolute
           w={DEVICE_WIDTH}
-          top={HAS_NOTCH ? 49 : 25}>
+          top={notchHeight+5}>
           <Col justifyStart mr10>
             <Div auto rounded100 onPress={goBack}>
               <ChevronLeft

@@ -57,7 +57,8 @@ function CapsuleScreen({route: {params = null}}) {
     setPressedNftAvatar(payload);
     bottomPopupRef?.current?.expand();
   };
-  const headerHeight = HAS_NOTCH ? 84 : 60;
+  const notchHeight = HAS_NOTCH ? 44 : 0;
+  const headerHeight = notchHeight + 50;
 
   const menu = [
     {
@@ -98,7 +99,7 @@ function CapsuleScreen({route: {params = null}}) {
             absolute
             px15
             w={DEVICE_WIDTH}
-            top={HAS_NOTCH ? 44 : 20}>
+            top={notchHeight}>
             {isCurrentNft ? (
               <>
                 <Col auto mr5>

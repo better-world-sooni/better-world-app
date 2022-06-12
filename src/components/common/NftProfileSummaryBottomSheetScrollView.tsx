@@ -128,7 +128,8 @@ export function NftProfileSummary({nft, token = null}) {
     cwyear: null,
     cweek: null,
   });
-  const headerHeight = HAS_NOTCH ? 124 : 100;
+  const notchHeight = HAS_NOTCH ? 44 : 0;
+  const headerHeight = notchHeight + 80;
   return (
     <BottomSheetScrollView>
       {nft.background_image_uri ? (

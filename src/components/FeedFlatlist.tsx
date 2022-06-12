@@ -181,7 +181,7 @@ function FeedFlatlist(
               </Div>
             )}
             <Div h={headerHeight}></Div>
-            <Div h={HAS_NOTCH ? 27 : 12} />
+            <Div h={27} />
           </>
         }
         data={data}
