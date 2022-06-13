@@ -176,7 +176,7 @@ export default function NftCollectionProfile({
                 style={{
                   ...(Platform.OS === 'android' && {marginVertical: -5}),
                 }}>
-                {nftCollectionCore.name}
+                {(nftCollection || nftCollectionCore).name}
               </Span>
             </Animated.View>
           </Row>
@@ -223,9 +223,8 @@ export default function NftCollectionProfile({
                   bgGray200
                   h75
                   w75
-                  uri={resizeImageUri(
-                    nftCollectionCore.image_uri ||
-                      nftCollectionCore.nft_metadatum.image_uri,
+                  uri={getNftProfileImage(
+                    nftCollection || nftCollectionCore,
                     400,
                     400,
                   )}></Img>
@@ -291,7 +290,7 @@ export default function NftCollectionProfile({
             <Div px15 py10 bgWhite borderBottom={0.5} borderGray200>
               <Div>
                 <Span fontSize={20} bold>
-                  {nftCollectionCore.name}
+                  {(nftCollection || nftCollectionCore).name}
                 </Span>
               </Div>
               {nftCollection && (

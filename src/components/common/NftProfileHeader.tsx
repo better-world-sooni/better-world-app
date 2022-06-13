@@ -80,7 +80,7 @@ export default function NftProfileHeader({
             bgGray200
             h75
             w75
-            uri={getNftProfileImage(nftCore, 200, 200)}></Img>
+            uri={getNftProfileImage(nft || nftCore, 200, 200)}></Img>
           {isCurrentNft && qrScan && (
             <Div
               absolute
@@ -178,7 +178,7 @@ export default function NftProfileHeader({
       <Div px15 py10 bgWhite borderBottom={0.5} borderGray200>
         <Div>
           <Span fontSize={20} bold>
-            {getNftName(nftCore)}
+            {getNftName(nft || nftCore)}
           </Span>
         </Div>
         {nft && (
@@ -188,7 +188,7 @@ export default function NftProfileHeader({
         )}
         {nftCore.story ? (
           <Div mt8 bgWhite>
-            <TruncatedMarkdown text={nftCore.story} maxLength={500} />
+            <TruncatedMarkdown text={(nft || nftCore).story} maxLength={500} />
           </Div>
         ) : null}
         {nft && (

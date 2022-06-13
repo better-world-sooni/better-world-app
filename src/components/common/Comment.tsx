@@ -76,7 +76,17 @@ function CommentContent({
       }
     : {width: heartSize, height: heartSize, color: 'black', strokeWidth: 1.5};
   const handlePressReplyTo = () => {
-    onPressReplyTo({id, is_liked, comments, nft: {name: nftName}});
+    onPressReplyTo({
+      id,
+      is_liked,
+      comments,
+      nft: {
+        name: nftName,
+        nft_metadatum: {
+          name: nftMetadatumName,
+        },
+      },
+    });
   };
   const goToProfile = useGotoNftProfile({
     nft: {
