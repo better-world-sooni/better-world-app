@@ -421,8 +421,12 @@ PODS:
     - React-Core
   - react-native-menu (0.5.2):
     - React
-  - react-native-safe-area-context (3.4.1):
-    - React-Core
+  - react-native-safe-area-context (4.3.1):
+    - RCT-Folly
+    - RCTRequired
+    - RCTTypeSafety
+    - React
+    - ReactCommon/turbomodule/core
   - react-native-sms (1.11.0):
     - React
   - react-native-webview (11.18.1):
@@ -903,7 +907,7 @@ SPEC CHECKSUMS:
   react-native-get-random-values: 237bffb1c7e05fb142092681531810a29ba53015
   react-native-image-picker: e95b4785b685cfc06609bc50ed6fb55b59990c99
   react-native-menu: 52089949cbe30b035c51e54f92a7d99136c2fed4
-  react-native-safe-area-context: 9e40fb181dac02619414ba1294d6c2a807056ab9
+  react-native-safe-area-context: 6c12e3859b6f27b25de4fee8201cfb858432d8de
   react-native-sms: 31fbb9d6ebb565ad32e409eaf9dc70329936a129
   react-native-webview: 0b7bd2bffced115aefd393e1841babd9b9a557b1
   React-perflogger: fd28ee1f2b5b150b00043f0301d96bd417fdc339

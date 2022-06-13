@@ -29,7 +29,11 @@ import {CustomBlurView} from 'src/components/common/CustomBlurView';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const QrScreen = () => {
-  const {data: qrRes, isLoading: qrLoad, error} = useApiSelector(apis.auth.qr);
+  const {
+    data: qrRes,
+    isLoading: qrLoad,
+    error,
+  } = useApiSelector(apis.auth.jwt.qr._);
   const {currentNft} = useSelector(
     (root: RootState) => root.app.session,
     shallowEqual,
@@ -41,7 +45,7 @@ const QrScreen = () => {
   });
   const reloadPostWithToken = useReloadPOSTWithToken();
   const handleRefresh = () => {
-    reloadPostWithToken(apis.auth.qr(), {
+    reloadPostWithToken(apis.auth.jwt.qr._(), {
       contract_address: currentNft.contract_address,
       token_id: currentNft.token_id,
     });

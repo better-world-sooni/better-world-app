@@ -38,14 +38,20 @@ import {
   useReloadGETWithToken,
 } from 'src/redux/asyncReducer';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import BottomPopup from 'src/components/common/BottomPopup';
+import NftCollectionProfileEditBottomSheetScrollView from 'src/components/common/NftCollectionProfileEditBottomSheetScrollView';
+import {BottomSheetModal} from '@gorhom/bottom-sheet';
 
 export default function NftCollectionProfile({
   nftCollectionCore,
   isAdmin,
-  onPressEditProfile,
   nftCollectionProfileApiObject,
   pageableNftCollectionPostFn,
 }) {
+  const bottomPopupRef = useRef<BottomSheetModal>(null);
+  const editProfile = () => {
+    bottomPopupRef?.current?.expand();
+  };
   const {
     data: nftCollectionProfileRes,
     isLoading: nftCollectionProfileLoading,
@@ -256,7 +262,7 @@ export default function NftCollectionProfile({
                           p8
                           rounded100
                           mr8
-                          onPress={onPressEditProfile}>
+                          onPress={editProfile}>
                           <Div>
                             <Settings
                               strokeWidth={2}
@@ -367,6 +373,13 @@ export default function NftCollectionProfile({
             onRefresh={handleRefresh}
           />
         }></Animated.FlatList>
+      {isAdmin && nftCollection && (
+        <BottomPopup ref={bottomPopupRef} snapPoints={['90%']} index={-1}>
+          <NftCollectionProfileEditBottomSheetScrollView
+            nftCollection={nftCollection}
+          />
+        </BottomPopup>
+      )}
     </>
   );
 }

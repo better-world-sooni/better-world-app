@@ -206,14 +206,14 @@ export function useGotoQR(){
     (root: RootState) => root.app.session,
     shallowEqual,
 );
-  const gotoReport = () => {
-    apiPOSTWithToken(apis.auth.qr(), {
+  const gotoQR = () => {
+    apiPOSTWithToken(apis.auth.jwt.qr._(), {
       contract_address: currentNft.contract_address,
       token_id: currentNft.token_id
     })
     navigation.navigate(NAV_NAMES.Qr as never)
   }
-  return gotoReport
+  return gotoQR
 }
 
 export function useGotoRankSeason({cwyear, cweek}) {
@@ -338,7 +338,7 @@ export function useGotoSignIn(){
   const gotoSignIn = () => {
     navigation.dispatch(
       CommonActions.reset({
-        index: 0,
+        index: 1,
         routes: [{name: NAV_NAMES.SignIn}],
       }),
     );
