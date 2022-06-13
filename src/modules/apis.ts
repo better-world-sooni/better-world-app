@@ -3,8 +3,8 @@ import querystring from 'querystring'
 import {isEmpty, omitBy, isNil} from 'lodash'
 
 // const BASE_URL = 'http://3.39.22.255:3000';
-// const BASE_URL = 'http://192.168.31.148:3000';
-const BASE_URL = 'https://api.betterworldapp.io';
+const BASE_URL = 'http://192.168.31.148:3000';
+// const BASE_URL = 'https://api.betterworldapp.io';
 const toUrl = (...args) => ({url: urljoin(...args)});
 const base = path => toUrl(BASE_URL, path);
 const apiV1 = path => toUrl(BASE_URL, '/api/v1', path);
@@ -81,8 +81,11 @@ const apis = {
     profile: () => apiV1(`/nft_collection/profile`),
     contractAddress: {
       _: (contractAddress) => apiV1(`/nft_collection/${contractAddress}`),
-      profile: (contractAddress) => apiV1(`/nft_collection/${contractAddress}/profile`)
-    }
+      profile: (contractAddress) => apiV1(`/nft_collection/${contractAddress}/profile`),
+      nft: {
+        list: (contractAddress, keyword?, page?) => apiV1(`/nft_collection/${contractAddress}/nft/list${urlParams({keyword, page})}`)
+      }
+    },
   },
   comment: {
     post: (postId) => apiV1(`/comment/post/${postId}`),

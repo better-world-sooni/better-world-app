@@ -30,6 +30,7 @@ export const NAV_NAMES = {
     NewCollectionEvent: "NewCollectionEvent",
     AttendanceList: "AttendanceList",
     CollectionEvent: "CollectionEvent",
+    CollectionSearch: "CollectionSearch",
     Affinity: "Affinity",
     Scan: "Scan",
     Qr: "Qr",

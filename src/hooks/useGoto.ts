@@ -417,3 +417,17 @@ export function useGotoCollectionEvent({collectionEvent}){
   }
   return gotoCollectionEvent
 }
+
+export function useGotoCollectionSearch({contractAddress}){
+  const navigation = useNavigation()
+  const apiGETWithToken = useApiGETWithToken()
+  const gotoCollectionEvent = () => {
+    apiGETWithToken(
+      apis.nft_collection.contractAddress.nft.list(contractAddress)
+    )
+    navigation.navigate(NAV_NAMES.CollectionSearch as never, {
+      contractAddress
+    } as never)
+  }
+  return gotoCollectionEvent
+}

@@ -46,10 +46,10 @@ import AffinityScreen from 'src/screens/AffinityScreen';
 import PasswordSigninScreen from 'src/screens/Auth/PasswordSigninScreen';
 import {createStackNavigator} from '@react-navigation/stack';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import CollectionSearchScreen from 'src/screens/CollectionSearchScreen';
 
 // const RootStack = createNativeStackNavigator();
 const RootStack = createStackNavigator();
-
 
 const Tab = createBottomTabNavigator();
 
@@ -255,24 +255,28 @@ export const AppContent = () => {
       name: NAV_NAMES.ChatRoom,
       component: ChatRoomScreen,
     },
+    {
+      name: NAV_NAMES.CollectionSearch,
+      component: CollectionSearchScreen,
+    },
   ];
 
   return (
-      <NavigationContainer>
-        <NativeBaseProvider>
-          <BottomSheetModalProvider>
-            <RootStack.Navigator screenOptions={{headerShown: false}}>
-              {Navs.map((item, i) => (
-                <RootStack.Screen
-                  key={i}
-                  name={item.name}
-                  component={item.component}
-                  options={item.options}
-                />
-              ))}
-            </RootStack.Navigator>
-          </BottomSheetModalProvider>
-        </NativeBaseProvider>
-      </NavigationContainer>
+    <NavigationContainer>
+      <NativeBaseProvider>
+        <BottomSheetModalProvider>
+          <RootStack.Navigator screenOptions={{headerShown: false}}>
+            {Navs.map((item, i) => (
+              <RootStack.Screen
+                key={i}
+                name={item.name}
+                component={item.component}
+                options={item.options}
+              />
+            ))}
+          </RootStack.Navigator>
+        </BottomSheetModalProvider>
+      </NativeBaseProvider>
+    </NavigationContainer>
   );
 };

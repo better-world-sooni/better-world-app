@@ -61,11 +61,12 @@ export function useIsCurrentCollection(nftCollection) {
     const isCurrentCollection = currentNft && nftCollection && currentNft.contract_address == nftCollection.contract_address
     return isCurrentCollection
 }
-export function useIsAdmin(nftCollection) {
+export function useIsAdmin(nftCollection?) {
     const {currentNft} = useSelector(
         (root: RootState) => root.app.session,
         shallowEqual,
     );
+    if(!nftCollection) return !currentNft.privilege
     const isAdmin = currentNft && nftCollection && currentNft.contract_address == nftCollection.contract_address && currentNft.privilege == NftPrivilege.ROOT
     return isAdmin
 }
