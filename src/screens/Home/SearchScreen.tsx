@@ -24,6 +24,7 @@ import {CustomBlurView} from 'src/components/common/CustomBlurView';
 import useEdittableText from 'src/hooks/useEdittableText';
 import Colors from 'src/constants/Colors';
 import RankedOwner from 'src/components/RankOwner';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const SearchScreen = () => {
   const searchRef = useRef(null);
@@ -93,7 +94,7 @@ const SearchScreen = () => {
   const scrollHandler = useAnimatedScrollHandler(event => {
     translationY.value = event.contentOffset.y;
   });
-  const notchHeight = HAS_NOTCH ? 44 : 0;
+  const notchHeight = useSafeAreaInsets().top;
   const headerHeight = notchHeight + 50;
   const headerStyles = useAnimatedStyle(() => {
     return {

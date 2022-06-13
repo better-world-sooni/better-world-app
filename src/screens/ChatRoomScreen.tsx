@@ -20,6 +20,7 @@ import {KeyboardAvoidingView} from 'src/modules/viewComponents';
 import {Img} from 'src/components/common/Img';
 import NewMessage from 'src/components/common/NewMessage';
 import {createdAtText, getCalendarDay} from 'src/modules/timeUtils';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export enum ChatRoomEnterType {
   List,
@@ -134,7 +135,7 @@ function ChatRoomScreen({
   const scrollToEnd = () => {
     flatListRef?.current?.scrollToEnd({animated: false});
   };
-  const notchHeight = HAS_NOTCH ? 44 : 0;
+  const notchHeight = useSafeAreaInsets().top;
   const headerHeight = notchHeight + 50;
   const isSameNft = useCallback((nft1, nft2) => {
     return (

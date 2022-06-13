@@ -10,9 +10,10 @@ import {Div} from '../common/Div';
 import {Img} from '../common/Img';
 import {Row} from '../common/Row';
 import {Span} from '../common/Span';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function NotFound({text}) {
-  const notchHeight = HAS_NOTCH ? 44 : 0;
+  const notchHeight = useSafeAreaInsets().top;
   const headerHeight = notchHeight + 50;
   const {goBack} = useNavigation();
   const gotoHome = useGotoHome();

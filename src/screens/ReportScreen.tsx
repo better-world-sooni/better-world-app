@@ -25,6 +25,7 @@ import Animated, {
 import {DEVICE_WIDTH} from 'src/modules/styles';
 import {BlurView} from '@react-native-community/blur';
 import {CustomBlurView} from 'src/components/common/CustomBlurView';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export enum ReportTypes {
   Post,
@@ -71,7 +72,7 @@ export default function ReportScreen({
   const scrollHandler = useAnimatedScrollHandler(event => {
     translationY.value = event.contentOffset.y;
   });
-  const notchHeight = HAS_NOTCH ? 44 : 0;
+  const notchHeight = useSafeAreaInsets().top;
   const headerHeight = notchHeight + 50;
   const headerStyles = useAnimatedStyle(() => {
     return {

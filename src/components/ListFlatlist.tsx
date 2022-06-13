@@ -15,6 +15,7 @@ import {Col} from './common/Col';
 import {Div} from './common/Div';
 import {Row} from './common/Row';
 import {Span} from './common/Span';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function ListFlatlist({
   refreshing,
@@ -33,7 +34,7 @@ export default function ListFlatlist({
   const scrollHandler = useAnimatedScrollHandler(event => {
     translationY.value = event.contentOffset.y;
   });
-  const notchHeight = HAS_NOTCH ? 44 : 0;
+  const notchHeight = useSafeAreaInsets().top;
   const headerHeight = notchHeight + 50;
   const headerStyles = useAnimatedStyle(() => {
     return {

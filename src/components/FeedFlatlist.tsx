@@ -14,6 +14,7 @@ import {Div} from './common/Div';
 import {Row} from './common/Row';
 import {Span} from './common/Span';
 import {CustomBlurView} from 'src/components/common/CustomBlurView';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const ReanimatedFlatList = Animated.createAnimatedComponent(FlatList);
 
@@ -30,7 +31,7 @@ function FeedFlatlist(
   },
   ref,
 ) {
-  const notchHeight = HAS_NOTCH ? 44 : 0;
+  const notchHeight = useSafeAreaInsets().top;
   const headerHeight = notchHeight + 50;
   const translationY = useSharedValue(0);
   const scrollClamp = useSharedValue(0);

@@ -7,9 +7,10 @@ import {DEVICE_WIDTH} from 'src/modules/styles';
 import {Col} from '../common/Col';
 import {Div} from '../common/Div';
 import {Row} from '../common/Row';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function PostLoading() {
-  const notchHeight = HAS_NOTCH ? 44 : 0;
+  const notchHeight = useSafeAreaInsets().top;
   const headerHeight = notchHeight + 50;
   const {goBack} = useNavigation();
   return (

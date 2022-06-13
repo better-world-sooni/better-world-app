@@ -7,11 +7,11 @@ import {Row} from 'src/components/common/Row';
 import {Span} from 'src/components/common/Span';
 import {IMAGES} from 'src/modules/images';
 import {KeyboardAvoidingView} from 'src/modules/viewComponents';
-import {HAS_NOTCH} from 'src/modules/constants';
 import {DEVICE_WIDTH} from 'src/modules/styles';
 import Carousel from 'react-native-snap-carousel';
 import {useGotoPasswordSignIn, useGotoScan} from 'src/hooks/useGoto';
 import {ScanType} from 'src/screens/ScanScreen';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 const SignInScreen = () => {
   const gotoScan = useGotoScan({scanType: ScanType.Login});
@@ -20,7 +20,7 @@ const SignInScreen = () => {
   return (
     <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} flex={1} bgWhite>
       <Div
-        top={HAS_NOTCH ? 44 : 10}
+        top={useSafeAreaInsets().top}
         zIndex={100}
         itemsCenter
         justifyEnd

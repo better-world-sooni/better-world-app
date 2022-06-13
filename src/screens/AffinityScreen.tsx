@@ -7,13 +7,14 @@ import {Row} from 'src/components/common/Row';
 import {Span} from 'src/components/common/Span';
 import {HAS_NOTCH} from 'src/modules/constants';
 import {DEVICE_WIDTH} from 'src/modules/styles';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function AffinityScreen({
   route: {
     params: {nftCollection},
   },
 }) {
-  const notchHeight = HAS_NOTCH ? 44 : 0;
+  const notchHeight = useSafeAreaInsets().top;
   const headerHeight = notchHeight + 50;
   const {goBack} = useNavigation();
   return (

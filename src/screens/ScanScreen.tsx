@@ -20,6 +20,7 @@ import {
 } from 'src/redux/asyncReducer';
 import {useQrLogin} from 'src/redux/appReducer';
 import {useGotoHome, useGotoOnboarding, useGotoScan} from 'src/hooks/useGoto';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export enum ScanType {
   Nft,
@@ -65,7 +66,7 @@ export default function ScanScreen({
     }
   }, [qrRes, qrLoad, error]);
 
-  const notchHeight = HAS_NOTCH ? 44 : 0;
+  const notchHeight = useSafeAreaInsets().top;
   const headerHeight = notchHeight + 50;
 
   return (
