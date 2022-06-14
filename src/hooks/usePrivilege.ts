@@ -18,14 +18,14 @@ export default function usePrivilege(nft) {
             EventRegister.removeEventListener(eventId);
         }
     }, [nft.privilege]);
-    const handlePressPrivilege = (value) => {
+    const handlePressPrivilege = () => {
         putPromiseFnWithToken({
             url: apis.nft.contractAddressAndTokenId(nft.contract_address, nft.token_id).url, 
             body: {
             property: 'privilege',
-            value
+            value: !privilege
         }});
-        EventRegister.emit(eventId, value)
+        EventRegister.emit(eventId, !privilege)
       };
     return {privilege, handlePressPrivilege};
 };

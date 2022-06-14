@@ -27,20 +27,13 @@ const BottomTabBar = ({state, descriptors, navigation}) => {
     shallowEqual,
   );
 
-  useEffect(()=>{
-    console.log("enableClose = ", enableClose);
-  }, [enableClose])
-
-  const changeNftLoading = (isLoading) => {
-    if(isLoading) {
-      console.log("here start")
+  const changeNftLoading = isLoading => {
+    if (isLoading) {
       setEnableClose(false);
-    }
-    else {
-      console.log("here fin")
+    } else {
       setEnableClose(true);
     }
-  }
+  };
 
   const List = useCallback(
     state.routes.map((route, index) => {
@@ -85,7 +78,7 @@ const BottomTabBar = ({state, descriptors, navigation}) => {
     const fullHeight = 0.9 * DEVICE_HEIGHT;
     const unceilingedHeight = itemsLength * 70 + (HAS_NOTCH ? 130 : 110);
     if (unceilingedHeight > fullHeight) return [fullHeight];
-    return [fullHeight, unceilingedHeight];
+    return [unceilingedHeight];
   };
   return (
     <>

@@ -57,7 +57,7 @@ export default function PolymorphicOwner({
   return (
     <Row itemsCenter h70 onPress={handlePressRow} px15 relative>
       <Img w50 h50 rounded100 uri={getNftProfileImage(nft, 150, 150)} />
-      <Col mx15 auto>
+      <Col mx15>
         <Div>
           <Span medium fontSize={15} bold>
             {getNftName(nft)}
@@ -71,8 +71,7 @@ export default function PolymorphicOwner({
           </Div>
         )}
       </Col>
-      <Col />
-      {showPrivilege && !privilege && (!isAdmin || isCurrentNft) && (
+      {showPrivilege && privilege && (!isAdmin || isCurrentNft) && (
         <Col auto p8 rounded100 bgRealBlack mx5>
           <Shield strokeWidth={2} color={'white'} height={15} width={15} />
         </Col>
@@ -80,16 +79,16 @@ export default function PolymorphicOwner({
       {showPrivilege && isAdmin && !isCurrentNft && (
         <Col
           auto
-          bgInfo={privilege}
+          bgInfo={!privilege}
           px8
           py6
           rounded100
           mx5
-          border1={!privilege}
-          borderDanger={!privilege}
-          onPress={() => handlePressPrivilege(!privilege)}>
-          <Span white={privilege} danger={!privilege} bold px5>
-            {privilege ? '권한 부여' : '권한 취소'}
+          border1={privilege}
+          borderDanger={privilege}
+          onPress={handlePressPrivilege}>
+          <Span white={!privilege} danger={privilege} bold px5>
+            {!privilege ? '권한 부여' : '권한 취소'}
           </Span>
         </Col>
       )}
