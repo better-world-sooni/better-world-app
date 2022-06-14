@@ -19,7 +19,7 @@ import {NativeBaseProvider} from 'native-base';
 import {ICONS} from 'src/modules/icons';
 import {Img} from './common/Img';
 import {getNftProfileImage} from 'src/modules/nftUtils';
-import {Bell, Home, Search, Send} from 'react-native-feather';
+import {Bell, Home, Search, Send, Star} from 'react-native-feather';
 import Colors from 'src/constants/Colors';
 import OtherProfileScreen from 'src/screens/OtherProfileScreen';
 import NftCollectionScreen from 'src/screens/NftCollectionScreen';
@@ -45,8 +45,9 @@ import CollectionEventScreen from 'src/screens/CollectionEventScreen';
 import AffinityScreen from 'src/screens/AffinityScreen';
 import PasswordSigninScreen from 'src/screens/Auth/PasswordSigninScreen';
 import {createStackNavigator} from '@react-navigation/stack';
-import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context';
 import CollectionSearchScreen from 'src/screens/CollectionSearchScreen';
+import FollowFeedScreen from 'src/screens/FollowFeedScreen';
 
 // const RootStack = createNativeStackNavigator();
 const RootStack = createStackNavigator();
@@ -83,6 +84,19 @@ const MainBottomTabs = () => {
               height={22}
               strokeWidth={2}
               color={focused ? 'black' : Colors.gray[400]}></Home>
+          ),
+        }}
+      />
+      <Tab.Screen
+        name={NAV_NAMES.FollowFeed}
+        component={FollowFeedScreen}
+        options={{
+          tabBarIcon: ({focused}) => (
+            <Star
+              width={22}
+              height={22}
+              strokeWidth={2}
+              color={focused ? 'black' : Colors.gray[400]}></Star>
           ),
         }}
       />

@@ -28,23 +28,22 @@ const HomeScreen = () => {
     isPaginating: feedPaginating,
     page,
     isNotPaginatable,
-  } = useApiSelector(apis.feed._);
+  } = useApiSelector(apis.feed.collection);
   const {data: nftCollectionRes, isLoading: nftCollectionLoad} = useApiSelector(
     apis.nft_collection.profile(),
   );
   const nftCollection = nftCollectionRes?.nft_collection;
-  const gotoNotifications = useGotoNotification()
-  const gotoNewPost = useGotoNewPost({postOwnerType: PostOwnerType.Nft});
+  const gotoNotifications = useGotoNotification();
   const reloadGETWithToken = useReloadGETWithToken();
   const paginateGetWithToken = usePaginateGETWithToken();
   const handleRefresh = () => {
     if (feedLoading) return;
-    reloadGETWithToken(apis.feed._());
+    reloadGETWithToken(apis.feed.collection());
     reloadGETWithToken(apis.nft_collection.profile());
   };
   const handleEndReached = () => {
     if (feedPaginating || isNotPaginatable) return;
-    paginateGetWithToken(apis.feed._(page + 1), 'feed');
+    paginateGetWithToken(apis.feed.collection(null, null, page + 1), 'posts');
   };
   const sideMenuRef = useRef(null);
   const openSideMenu = () => {

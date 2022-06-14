@@ -135,7 +135,7 @@ const apis = {
   },
   feed: {
     _: (page?) => apiV1(`/feed${urlParams({page})}`),
-    collection: (contractAddress, type?, page?) => apiV1(`/feed/collection?contract_address${urlParams({contract_address: contractAddress, type, page})}`),
+    collection: (contractAddress?, type?, page?) => apiV1(`/feed/collection?contract_address${urlParams({contract_address: contractAddress, type, page})}`),
   },
   presignedUrl: {
     _: () => apiV1(`/presigned_url`)
