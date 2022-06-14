@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {LogBox, StatusBar} from 'react-native';
 import codePush from 'react-native-code-push';
 import {withRootReducer} from './src/redux/withRootReducer';
@@ -12,6 +12,7 @@ import PushNotification, {Importance} from 'react-native-push-notification';
 import 'react-native-url-polyfill/auto';
 import {BETTER_WORLD_MAIN_PUSH_CHANNEL} from 'src/modules/constants';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import notifee, { AndroidImportance } from '@notifee/react-native';
 
 const firebaseMessaging = messaging();
 PushNotification.createChannel({
@@ -23,6 +24,9 @@ PushNotification.createChannel({
   importance: Importance.HIGH, // (optional) default: Importance.HIGH. Int value of the Android notification importance
   vibrate: true, // (optional) default: true. Creates the default vibration pattern if true.
 });
+
+
+
 
 const App = () => {
   const {
@@ -64,6 +68,50 @@ const App = () => {
     LogBox.ignoreAllLogs();
   });
 
+
+  const onDisplayNotification = async() => {
+    const channelId  = await notifee.createChannel({
+      id: BETTER_WORLD_MAIN_PUSH_CHANNEL,
+      name: BETTER_WORLD_MAIN_PUSH_CHANNEL,
+      lights: false,
+      vibration: true,
+      importance: AndroidImportance.HIGH,
+    });
+    await notifee.displayNotification({
+      title: 'Notification Title',
+      body: 'Main body content of the notification',
+      android: {
+        channelId,
+      },
+    });
+  }
+
+  useEffect(() => {
+    // Assume a message-notification contains a "type" property in the data payload of the screen to open
+
+    messaging().onNotificationOpenedApp(remoteMessage => {
+      console.log(
+        'Notification caused app to open from background state:',
+        remoteMessage.notification,
+      );
+      
+
+    });
+
+    // Check whether an initial notification is available
+    messaging()
+      .getInitialNotification()
+      .then(remoteMessage => {
+        if (remoteMessage) {
+          console.log(
+            'Notification caused app to open from quit state:',
+            remoteMessage.notification,
+          );
+        }
+        console.log("error")
+      });
+  }, []);
+
   useEffect(() => {
     if (isLoggedIn) {
       setFCMToken();
@@ -78,8 +126,8 @@ const App = () => {
           data: remoteMessage.data, // OBJECT: The push data or the defined userInfo in local notifications
           vibrate: false,
         };
-        PushNotification.localNotification(notification);
-
+        // PushNotification.localNotification(notification);
+        onDisplayNotification();
       });
       return unsubscribe;
     }
@@ -97,18 +145,18 @@ const codePushOptions = {
   checkFrequency: codePush.CheckFrequency.ON_APP_RESUME,
 };
 
-firebaseMessaging.setBackgroundMessageHandler(async remoteMessage => {
-  console.log("back", remoteMessage)
-  const notification = {
-    channelId: BETTER_WORLD_MAIN_PUSH_CHANNEL,
-    foreground: false, // BOOLEAN: If the notification was received in foreground or not
-    userInteraction: false, // BOOLEAN: If the notification was opened by the user from the notification area or not
-    message: remoteMessage.notification.body, // STRING: The notification message
-    title: remoteMessage.notification.title, // STRING: The notification title
-    data: remoteMessage.data, // OBJECT: The push data or the defined userInfo in local notifications
-    vibrate: false,
-  };
-  // PushNotification.localNotification(notification);
-});
+// firebaseMessaging.setBackgroundMessageHandler(async remoteMessage => {
+//   console.log("back", remoteMessage)
+//   const notification = {
+//     channelId: BETTER_WORLD_MAIN_PUSH_CHANNEL,
+//     foreground: false, // BOOLEAN: If the notification was received in foreground or not
+//     userInteraction: false, // BOOLEAN: If the notification was opened by the user from the notification area or not
+//     message: remoteMessage.notification.body, // STRING: The notification message
+//     title: remoteMessage.notification.title, // STRING: The notification title
+//     data: remoteMessage.data, // OBJECT: The push data or the defined userInfo in local notifications
+//     vibrate: false,
+//   };
+//   // PushNotification.localNotification(notification);
+// });
 
 export default codePush(codePushOptions)(withRootReducer(App));

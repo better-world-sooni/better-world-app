@@ -113,7 +113,12 @@ export function useGotoPost({postId}){
   const gotoPost = (autoFocus=false, notificationOpened=false, jwt=null) => {
     if(notificationOpened) {
       apiGET(apis.post.postId._(postId), jwt)
-      navigation.navigate(NAV_NAMES.Post as never, {postId, autoFocus} as never);
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 1,
+          routes:[{name: NAV_NAMES.Home},{name: NAV_NAMES.Post, params: {postId, autoFocus}}]
+        })
+      );
     }
     else{
       apiGETWithToken(apis.post.postId._(postId));
