@@ -2,7 +2,7 @@ import { CommonActions, useNavigation } from "@react-navigation/native";
 import { shallowEqual, useSelector } from "react-redux";
 import apis from "src/modules/apis";
 import { NAV_NAMES } from "src/modules/navNames";
-import { useApiGETWithToken, useApiPOSTWithToken } from "src/redux/asyncReducer";
+import { useApiGETWithToken, useApiPOSTWithToken, useApiGET } from "src/redux/asyncReducer";
 import { RootState } from "src/redux/rootReducer";
 import { ChatRoomEnterType } from "src/screens/ChatRoomScreen";
 import { FollowOwnerType, FollowType } from "src/screens/FollowListScreen";
@@ -108,10 +108,17 @@ export function useGotoNftCollectionProfile({nftCollection}){
 
 export function useGotoPost({postId}){
   const apiGETWithToken = useApiGETWithToken()
+  const apiGET = useApiGET()
   const navigation = useNavigation()
-  const gotoPost = (autoFocus=false) => {
-    apiGETWithToken(apis.post.postId._(postId));
-    navigation.navigate(NAV_NAMES.Post as never, {postId, autoFocus} as never);
+  const gotoPost = (autoFocus=false, notificationOpened=false, jwt=null) => {
+    if(notificationOpened) {
+      apiGET(apis.post.postId._(postId), jwt)
+      navigation.navigate(NAV_NAMES.Post as never, {postId, autoFocus} as never);
+    }
+    else{
+      apiGETWithToken(apis.post.postId._(postId));
+      navigation.navigate(NAV_NAMES.Post as never, {postId, autoFocus} as never);
+    }
   }
   return gotoPost
 }

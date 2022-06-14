@@ -1,5 +1,5 @@
 import {ChevronLeft} from 'react-native-feather';
-import React, {useRef} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {getNftName, useIsCurrentNft} from 'src/modules/nftUtils';
 import {Col} from './Col';
 import {Div} from './Div';
@@ -28,6 +28,7 @@ import {
 } from 'src/redux/asyncReducer';
 import NftProfileHeader from './NftProfileHeader';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import ImageColors from 'react-native-image-colors'
 
 export default function NftProfile({
   nftCore,
@@ -56,7 +57,7 @@ export default function NftProfile({
     reloadGetWithToken(pageableNftPostFn());
   };
   const nft = profileData?.nft;
-  // const [statusBarColor, setStatusBarColor] = useState()
+  const [statusBarColor, setStatusBarColor] = useState('#FFFFFF')
   const translationY = useSharedValue(0);
   const scrollHandler = useAnimatedScrollHandler(event => {
     translationY.value = event.contentOffset.y;
@@ -92,7 +93,7 @@ export default function NftProfile({
     };
   });
   const titleStyles = useAnimatedStyle(() => {
-    const middlePoint = notchHeight + (headerHeight - 30) / 2;
+    const middlePoint = (notchHeight + (headerHeight - 30)) / 2;
     const startPoint = headerHeight - 30;
     const moveLengthScrollRatio = (startPoint - middlePoint) / 100;
     return {
@@ -108,6 +109,18 @@ export default function NftProfile({
     };
   });
   const renderItem = ({item}) => <Post post={item} />;
+
+  useEffect(() => {
+    if(nft?.background_image_uri) {
+      ImageColors.getColors(nft.background_image_uri, {
+        fallback: '#228B22',
+        cache: true,
+        key: 'unique_key',
+      }).then(colors => {
+        console.log(colors)
+      })
+    }
+  },[nft])
 
   return (
     <>

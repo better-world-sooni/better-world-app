@@ -14,6 +14,7 @@ export default function PostScreen({
     params: {postId, autoFocus = false},
   },
 }) {
+  console.log("postscreen", postId, autoFocus)
   const {
     data: postRes,
     isLoading: postLoad,

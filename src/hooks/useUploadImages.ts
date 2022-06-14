@@ -12,8 +12,7 @@ export default function useUploadImages({attachedRecord = "post"}){
             mediaType: 'photo',
             selectionLimit: 0,
             maxHeight: 1600,
-            maxWidth: 1600,
-            includeBase64: true,
+            maxWidth: 1600
           });
           const targetFilesLength = assets.length;
             if (targetFilesLength === 0) {

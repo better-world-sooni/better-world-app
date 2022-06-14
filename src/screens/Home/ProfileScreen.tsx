@@ -1,4 +1,5 @@
 import React from 'react';
+import {StatusBar, Platform} from 'react-native';
 import {Div} from 'src/components/common/Div';
 import apis from 'src/modules/apis';
 import NftProfile from 'src/components/common/NftProfile';
@@ -16,6 +17,7 @@ const ProfileScreen = ({route: {params}}) => {
 
   return (
     <Div flex={1} bgWhite overflowHidden>
+      <StatusBar barStyle="dark-content" backgroundColor='#283018'></StatusBar>
       <NftProfile
         qrScan
         nftCore={currentNft}

@@ -27,17 +27,11 @@ const BottomTabBar = ({state, descriptors, navigation}) => {
     shallowEqual,
   );
 
-  useEffect(()=>{
-    console.log("enableClose = ", enableClose);
-  }, [enableClose])
-
   const changeNftLoading = (isLoading) => {
     if(isLoading) {
-      console.log("here start")
       setEnableClose(false);
     }
     else {
-      console.log("here fin")
       setEnableClose(true);
     }
   }

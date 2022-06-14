@@ -47,7 +47,6 @@ const App = () => {
             token: fcmToken,
           },
         });
-        console.log(fcmToken);
       } else {
         await firebaseMessaging.requestPermission();
         const fcmToken = await getToken();
@@ -69,6 +68,7 @@ const App = () => {
     if (isLoggedIn) {
       setFCMToken();
       const unsubscribe = firebaseMessaging.onMessage(async remoteMessage => {
+        console.log("fore", JSON.parse(remoteMessage.data.target_id))
         const notification = {
           channelId: BETTER_WORLD_MAIN_PUSH_CHANNEL,
           foreground: true, // BOOLEAN: If the notification was received in foreground or not
@@ -79,6 +79,7 @@ const App = () => {
           vibrate: false,
         };
         PushNotification.localNotification(notification);
+
       });
       return unsubscribe;
     }
@@ -97,6 +98,7 @@ const codePushOptions = {
 };
 
 firebaseMessaging.setBackgroundMessageHandler(async remoteMessage => {
+  console.log("back", remoteMessage)
   const notification = {
     channelId: BETTER_WORLD_MAIN_PUSH_CHANNEL,
     foreground: false, // BOOLEAN: If the notification was received in foreground or not
@@ -106,7 +108,7 @@ firebaseMessaging.setBackgroundMessageHandler(async remoteMessage => {
     data: remoteMessage.data, // OBJECT: The push data or the defined userInfo in local notifications
     vibrate: false,
   };
-  PushNotification.localNotification(notification);
+  // PushNotification.localNotification(notification);
 });
 
 export default codePush(codePushOptions)(withRootReducer(App));

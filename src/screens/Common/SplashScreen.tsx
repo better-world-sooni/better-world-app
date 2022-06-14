@@ -10,12 +10,15 @@ import { IMAGES } from 'src/modules/images';
 import {JWT} from 'src/modules/constants';
 import {Span} from 'src/components/common/Span';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import {useGotoHome} from 'src/hooks/useGoto';
+import {useGotoHome, useGotoPost} from 'src/hooks/useGoto';
 
 const SplashScreen = ({route}) => {
   const navigation = useNavigation();
   const autoLogin = useAutoLogin();
   const gotoHome = useGotoHome();
+  const routeParams = route.params
+  const gotoPost = useGotoPost({postId: routeParams.routeDestination.id});
+  console.log("splash", routeParams.routeDestination.id)
 
   useEffect(() => {
     isAutoLoginChecked();
@@ -28,6 +31,10 @@ const SplashScreen = ({route}) => {
           value,
           props => {
             if (props.data.user.main_nft) {
+              if(routeParams.notificationOpened){
+                gotoPost(false, true, props.data.jwt)
+                return;
+              }
               gotoHome();
               return;
             }

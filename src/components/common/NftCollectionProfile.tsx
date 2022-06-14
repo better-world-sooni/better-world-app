@@ -118,7 +118,7 @@ export default function NftCollectionProfile({
     };
   });
   const titleStyles = useAnimatedStyle(() => {
-    const middlePoint = notchHeight + (headerHeight - 30) / 2;
+    const middlePoint = (notchHeight + (headerHeight - 30)) / 2;
     const startPoint = headerHeight - 30;
     const moveLengthScrollRatio = (startPoint - middlePoint) / 100;
     return {

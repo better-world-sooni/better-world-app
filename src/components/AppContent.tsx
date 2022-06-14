@@ -135,10 +135,20 @@ export const AppContent = () => {
     session: {token},
   } = useSelector((root: RootState) => root.app, shallowEqual);
 
+  const testConst = NAV_NAMES.Post
+  const testConst2 = 135
+
   const Navs = [
     {
       name: NAV_NAMES.Splash,
       component: SplashScreen,
+      initialParams: {
+        notificationOpened: true,
+        routeDestination: {
+          navName: testConst,
+          id: testConst2
+        }
+      }
     },
     {
       name: NAV_NAMES.SignIn,
@@ -268,6 +278,7 @@ export const AppContent = () => {
                   name={item.name}
                   component={item.component}
                   options={item.options}
+                  initialParams={item.initialParams}
                 />
               ))}
             </RootStack.Navigator>
