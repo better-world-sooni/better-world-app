@@ -12,7 +12,7 @@ import PushNotification, {Importance} from 'react-native-push-notification';
 import 'react-native-url-polyfill/auto';
 import {BETTER_WORLD_MAIN_PUSH_CHANNEL} from 'src/modules/constants';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import notifee, { AndroidImportance } from '@notifee/react-native';
+import notifee, { AndroidImportance, EventType } from '@notifee/react-native';
 
 const firebaseMessaging = messaging();
 PushNotification.createChannel({
@@ -69,7 +69,7 @@ const App = () => {
   });
 
 
-  const onDisplayNotification = async() => {
+  const onDisplayNotification = async(title, body, data) => {
     const channelId  = await notifee.createChannel({
       id: BETTER_WORLD_MAIN_PUSH_CHANNEL,
       name: BETTER_WORLD_MAIN_PUSH_CHANNEL,
@@ -78,13 +78,27 @@ const App = () => {
       importance: AndroidImportance.HIGH,
     });
     await notifee.displayNotification({
-      title: 'Notification Title',
-      body: 'Main body content of the notification',
+      title,
+      body,
       android: {
         channelId,
       },
+      data
     });
   }
+
+  useEffect(() => {
+    return notifee.onForegroundEvent(({ type, detail }) => {
+      switch (type) {
+        case EventType.DISMISSED:
+          console.log('User dismissed notification', detail.notification);
+          break;
+        case EventType.PRESS:
+          console.log('User pressed notification', detail.notification);
+          break;
+      }
+    });
+  }, []);
 
   useEffect(() => {
     // Assume a message-notification contains a "type" property in the data payload of the screen to open
@@ -116,18 +130,10 @@ const App = () => {
     if (isLoggedIn) {
       setFCMToken();
       const unsubscribe = firebaseMessaging.onMessage(async remoteMessage => {
-        console.log("fore", JSON.parse(remoteMessage.data.target_id))
-        const notification = {
-          channelId: BETTER_WORLD_MAIN_PUSH_CHANNEL,
-          foreground: true, // BOOLEAN: If the notification was received in foreground or not
-          userInteraction: false, // BOOLEAN: If the notification was opened by the user from the notification area or not
-          message: remoteMessage.notification.body, // STRING: The notification message
-          title: remoteMessage.notification.title, // STRING: The notification title
-          data: remoteMessage.data, // OBJECT: The push data or the defined userInfo in local notifications
-          vibrate: false,
-        };
-        // PushNotification.localNotification(notification);
-        onDisplayNotification();
+        const dataJSONWithStrings = JSON.parse(remoteMessage.data.data, (key, val) => (
+          typeof val !== 'object' && val !== null ? String(val) : val
+        ));
+        onDisplayNotification(remoteMessage.data.title, remoteMessage.data.body, dataJSONWithStrings);
       });
       return unsubscribe;
     }

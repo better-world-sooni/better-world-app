@@ -136,7 +136,7 @@ export const AppContent = () => {
   } = useSelector((root: RootState) => root.app, shallowEqual);
 
   const testConst = NAV_NAMES.Post
-  const testConst2 = 135
+  const testConst2 = 128
 
   const Navs = [
     {

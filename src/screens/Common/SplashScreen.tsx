@@ -30,7 +30,6 @@ const SplashScreen = ({route}) => {
         autoLogin(
           value,
           props => {
-            console.log(props.data.user)
             if (props.data.user.main_nft) {
               if(routeParams.notificationOpened){
                 gotoPost(false, true, props.data.jwt)
