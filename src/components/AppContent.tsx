@@ -46,6 +46,7 @@ import AffinityScreen from 'src/screens/AffinityScreen';
 import PasswordSigninScreen from 'src/screens/Auth/PasswordSigninScreen';
 import {createStackNavigator} from '@react-navigation/stack';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import { navigationRef } from 'src/modules/rootNavagation';
 
 // const RootStack = createNativeStackNavigator();
 const RootStack = createStackNavigator();
@@ -137,6 +138,7 @@ export const AppContent = () => {
 
   const testConst = NAV_NAMES.Post
   const testConst2 = 128
+  
 
   const Navs = [
     {
@@ -268,7 +270,7 @@ export const AppContent = () => {
   ];
 
   return (
-      <NavigationContainer>
+      <NavigationContainer >
         <NativeBaseProvider>
           <BottomSheetModalProvider>
             <RootStack.Navigator screenOptions={{headerShown: false}}>

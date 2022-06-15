@@ -13,6 +13,7 @@ import 'react-native-url-polyfill/auto';
 import {BETTER_WORLD_MAIN_PUSH_CHANNEL} from 'src/modules/constants';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import notifee, { AndroidImportance, EventType } from '@notifee/react-native';
+import {useGotoWithNotification} from 'src/hooks/useNotificationGoto'
 
 const firebaseMessaging = messaging();
 PushNotification.createChannel({
@@ -25,14 +26,12 @@ PushNotification.createChannel({
   vibrate: true, // (optional) default: true. Creates the default vibration pattern if true.
 });
 
-
-
-
 const App = () => {
   const {
     isLoggedIn,
     session: {token},
   } = useSelector((root: RootState) => root.app, shallowEqual);
+  // const gotoWithNotification = useGotoWithNotification();
   const postPromiseFnWithToken = usePostPromiseFnWithToken();
   const getToken = useCallback(async () => {
     try {
@@ -87,17 +86,15 @@ const App = () => {
     });
   }
 
+  const unsubscribe = notifee.onForegroundEvent(({ type, detail }) => {
+    if(type === EventType.PRESS) {
+      console.log('User pressed notification', detail.notification.data.post_id);
+      // gotoWithNotification(detail.notification.data)
+    }
+  })
+
   useEffect(() => {
-    return notifee.onForegroundEvent(({ type, detail }) => {
-      switch (type) {
-        case EventType.DISMISSED:
-          console.log('User dismissed notification', detail.notification);
-          break;
-        case EventType.PRESS:
-          console.log('User pressed notification', detail.notification);
-          break;
-      }
-    });
+    return unsubscribe();
   }, []);
 
   useEffect(() => {
