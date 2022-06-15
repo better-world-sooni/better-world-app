@@ -38,8 +38,8 @@ const MyNftMenu = ({nft}) => {
     nft,
   });
   const gotoRankDeltum = useGotoRankDeltum({
-    contractAddress: nft.contract_address,
-    tokenId: nft.token_id,
+    contractAddress: nft?.contract_address,
+    tokenId: nft?.token_id,
   });
   const gotoQr = useGotoQR();
   const gotoScan = useGotoScan({scanType: ScanType.Nft});

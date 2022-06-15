@@ -43,12 +43,12 @@ export default function HomeScreen() {
   const paginateGetWithToken = usePaginateGETWithToken();
   const handleRefresh = () => {
     if (feedLoading) return;
-    reloadGETWithToken(apis.feed._());
+    reloadGETWithToken(apis.feed.forum());
     reloadGETWithToken(apis.nft_collection.profile());
   };
   const handleEndReached = () => {
     if (feedPaginating || isNotPaginatable) return;
-    paginateGetWithToken(apis.feed._(page + 1), 'feed');
+    paginateGetWithToken(apis.feed.forum(page + 1), 'feed');
   };
   const sideMenuRef = useRef(null);
   const openSideMenu = () => {
