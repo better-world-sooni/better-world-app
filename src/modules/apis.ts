@@ -37,9 +37,11 @@ const apis = {
     },
     jwt: {
       _: () => apiV1('/auth/jwt'),
-      qrLogin: () => apiV1('/auth/jwt/qr/login')
+      qr: {
+        _: () => apiV1('/auth/jwt/qr'),
+        login: (token) => apiV1(`/auth/jwt/qr/login${urlParams({token})}`)
+      }
     },
-    qr: () => apiV1('/auth/jwt/qr')
   },
   pushNotificationSetting: {
     _: () => apiV1(`/push_notification_setting`),
@@ -81,8 +83,11 @@ const apis = {
     profile: () => apiV1(`/nft_collection/profile`),
     contractAddress: {
       _: (contractAddress) => apiV1(`/nft_collection/${contractAddress}`),
-      profile: (contractAddress) => apiV1(`/nft_collection/${contractAddress}/profile`)
-    }
+      profile: (contractAddress) => apiV1(`/nft_collection/${contractAddress}/profile`),
+      nft: {
+        list: (contractAddress, keyword?, page?) => apiV1(`/nft_collection/${contractAddress}/nft/list${urlParams({keyword, page})}`)
+      }
+    },
   },
   comment: {
     post: (postId) => apiV1(`/comment/post/${postId}`),
@@ -104,7 +109,9 @@ const apis = {
     _: () => apiV1(`/post`),
     postId: {
       _: (postId) => apiV1(`/post/${postId}`),
-      comment: (postId) => apiV1(`/post/${postId}/comment`),
+      comment: {
+        list: (postId, page?) => apiV1(`/post/${postId}/comment/list${urlParams({page})}`)
+      },
       repost: {
         list: {
           _: (postId, page?) => apiV1(`/post/${postId}/repost/list${urlParams({page})}`),

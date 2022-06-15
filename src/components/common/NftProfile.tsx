@@ -3,13 +3,11 @@ import React, {useEffect, useRef, useState} from 'react';
 import {getNftName, useIsCurrentNft} from 'src/modules/nftUtils';
 import {Col} from './Col';
 import {Div} from './Div';
-import {Img} from './Img';
 import {Row} from './Row';
 import {Span} from './Span';
 import {useNavigation} from '@react-navigation/native';
-import {ActivityIndicator, RefreshControl, StatusBar, Platform} from 'react-native';
+import {ActivityIndicator, RefreshControl, Platform} from 'react-native';
 import Post from './Post';
-import {HAS_NOTCH} from 'src/modules/constants';
 import {DEVICE_WIDTH} from 'src/modules/styles';
 import BottomPopup from './BottomPopup';
 import {BottomSheetModal} from '@gorhom/bottom-sheet';
@@ -19,7 +17,6 @@ import Animated, {
   useAnimatedStyle,
   useSharedValue,
 } from 'react-native-reanimated';
-import {BlurView} from '@react-native-community/blur';
 import {CustomBlurView} from 'src/components/common/CustomBlurView';
 import {
   useApiSelector,
@@ -27,7 +24,7 @@ import {
   useReloadGETWithToken,
 } from 'src/redux/asyncReducer';
 import NftProfileHeader from './NftProfileHeader';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import ImageColors from 'react-native-image-colors'
 
 export default function NftProfile({
@@ -101,9 +98,11 @@ export default function NftProfile({
       transform: [
         {
           translateY: Math.max(
-            middlePoint-9,
-            startPoint-moveLengthScrollRatio*(translationY.value - 150)-18 ,
-          )
+            middlePoint - 9,
+            startPoint -
+              moveLengthScrollRatio * (translationY.value - 150) -
+              18,
+          ),
         },
       ],
     };
@@ -146,19 +145,18 @@ export default function NftProfile({
             reducedTransparencyFallbackColor="white"></CustomBlurView>
           <Row itemsCenter justifyCenter width={DEVICE_WIDTH} absolute>
             <Animated.View style={titleStyles}>
-                <Span bold fontSize={19} style={{...(Platform.OS === 'android' && {marginVertical: -5})}}>
-                  {getNftName(nftCore)}
-                </Span>
+              <Span
+                bold
+                fontSize={19}
+                style={{
+                  ...(Platform.OS === 'android' && {marginVertical: -5}),
+                }}>
+                {getNftName(nftCore)}
+              </Span>
             </Animated.View>
           </Row>
         </Animated.View>
-        <Row
-          itemsCenter
-          py5
-          h40
-          zIndex={100}
-          absolute
-          top={notchHeight+5}>
+        <Row itemsCenter py5 h40 zIndex={100} absolute top={notchHeight + 5}>
           {enableBack && (
             <Col auto ml15 bgRealBlack p5 rounded100 onPress={goBack}>
               <ChevronLeft
@@ -174,7 +172,10 @@ export default function NftProfile({
       </Div>
       <Animated.FlatList
         bounces
-        style={{marginTop: -30, ...(Platform.OS === 'android' && {paddingTop: 30})}}
+        style={{
+          marginTop: -30,
+          ...(Platform.OS === 'android' && {paddingTop: 30}),
+        }}
         showsVerticalScrollIndicator={false}
         onScroll={scrollHandler}
         data={nftPostListRes?.posts || []}

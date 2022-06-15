@@ -3,8 +3,6 @@ import React from 'react';
 import {ActivityIndicator, Platform} from 'react-native';
 import useName, {NameOwnerType} from 'src/hooks/useName';
 import useStory, {StoryOwnerType} from 'src/hooks/useStory';
-import {getNftCollectionProfileImage} from 'src/modules/nftUtils';
-import {DEVICE_WIDTH} from 'src/modules/styles';
 import {KeyboardAvoidingView, TextInput} from 'src/modules/viewComponents';
 import {Col} from './Col';
 import {Div} from './Div';
@@ -71,11 +69,12 @@ export default function NftCollectionProfileEditBottomSheetScrollView({
   });
   return (
     <BottomSheetScrollView>
-      <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"}>
-        <Div h150 relative onPress={handleAddImage}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+        <Div h100 relative onPress={handleAddImage}>
           {image?.uri ? (
             <>
-              <Img uri={image.uri} top0 absolute w={'100%'} h150></Img>
+              <Img uri={image.uri} top0 absolute w={'100%'} h100></Img>
               <Div flex={1} itemsEnd justifyEnd px15 zIndex={100} py15></Div>
             </>
           ) : (
@@ -96,11 +95,10 @@ export default function NftCollectionProfileEditBottomSheetScrollView({
           <Col auto mr10 relative>
             <Div
               rounded100
-              border3
               borderWhite
               bgGray200
-              h110
-              w110
+              h75
+              w75
               overflowHidden
               onPress={handleAddProfileImage}>
               {profileImage?.uri ? (
@@ -109,9 +107,11 @@ export default function NftCollectionProfileEditBottomSheetScrollView({
                   top0
                   absolute
                   w={'100%'}
-                  h110
-                  rounded100
-                  w110></Img>
+                  border3
+                  borderWhite
+                  h75
+                  w75
+                  rounded100></Img>
               ) : (
                 <Div flex={1} itemsCenter justifyCenter bgGray400 rounded100>
                   <Div bgRealBlack p8 rounded100>
@@ -127,8 +127,7 @@ export default function NftCollectionProfileEditBottomSheetScrollView({
             </Div>
           </Col>
           <Col>
-            <Row mb20>
-              <Col />
+            <Row mb10>
               <Col />
               {image?.uri ? (
                 <Col

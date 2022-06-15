@@ -11,6 +11,7 @@ import useFollow from 'src/hooks/useFollow';
 import apis from 'src/modules/apis';
 import {
   useGotoAffinity,
+  useGotoCollectionSearch,
   useGotoFollowList,
   useGotoNewPost,
 } from 'src/hooks/useGoto';
@@ -36,15 +37,21 @@ import {
   usePaginateGETWithToken,
   useReloadGETWithToken,
 } from 'src/redux/asyncReducer';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import BottomPopup from 'src/components/common/BottomPopup';
+import NftCollectionProfileEditBottomSheetScrollView from 'src/components/common/NftCollectionProfileEditBottomSheetScrollView';
+import {BottomSheetModal} from '@gorhom/bottom-sheet';
 
 export default function NftCollectionProfile({
   nftCollectionCore,
   isAdmin,
-  onPressEditProfile,
   nftCollectionProfileApiObject,
   pageableNftCollectionPostFn,
 }) {
+  const bottomPopupRef = useRef<BottomSheetModal>(null);
+  const editProfile = () => {
+    bottomPopupRef?.current?.expand();
+  };
   const {
     data: nftCollectionProfileRes,
     isLoading: nftCollectionProfileLoading,
@@ -87,6 +94,9 @@ export default function NftCollectionProfile({
   const gotoAffinity = useGotoAffinity({
     nftCollection,
   });
+  const gotoCollectionSearch = useGotoCollectionSearch({
+    contractAddress: nftCollectionCore.contract_address,
+  });
   const translationY = useSharedValue(0);
   const scrollHandler = useAnimatedScrollHandler(event => {
     translationY.value = event.contentOffset.y;
@@ -97,7 +107,7 @@ export default function NftCollectionProfile({
   const headerStyles = useAnimatedStyle(() => {
     return {
       width: DEVICE_WIDTH,
-      height: headerHeight-30,
+      height: headerHeight - 30,
       position: 'absolute',
       zIndex: 100,
       opacity: Math.min((translationY.value - 150) / 100, 1),
@@ -126,9 +136,11 @@ export default function NftCollectionProfile({
       transform: [
         {
           translateY: Math.max(
-            middlePoint-9,
-            startPoint-moveLengthScrollRatio*(translationY.value - 150)-18 ,
-          )
+            middlePoint - 9,
+            startPoint -
+              moveLengthScrollRatio * (translationY.value - 150) -
+              18,
+          ),
         },
       ],
     };
@@ -158,8 +170,13 @@ export default function NftCollectionProfile({
             reducedTransparencyFallbackColor="white"></CustomBlurView>
           <Row itemsCenter justifyCenter width={DEVICE_WIDTH} absolute>
             <Animated.View style={titleStyles}>
-              <Span bold fontSize={19} style={{...(Platform.OS === 'android' && {marginVertical: -5})}}>
-                {nftCollectionCore.name}
+              <Span
+                bold
+                fontSize={19}
+                style={{
+                  ...(Platform.OS === 'android' && {marginVertical: -5}),
+                }}>
+                {(nftCollection || nftCollectionCore).name}
               </Span>
             </Animated.View>
           </Row>
@@ -171,7 +188,7 @@ export default function NftCollectionProfile({
           px15
           zIndex={100}
           absolute
-          top={notchHeight+5}>
+          top={notchHeight + 5}>
           <Col auto bg={'black'} p8 rounded100 mr12 onPress={goBack}>
             <Div>
               <ChevronLeft
@@ -189,7 +206,10 @@ export default function NftCollectionProfile({
         showsVerticalScrollIndicator={false}
         onScroll={scrollHandler}
         onEndReached={handleEndReached}
-        style={{marginTop: -30, ...(Platform.OS === 'android' && {paddingTop: 30})}}
+        style={{
+          marginTop: -30,
+          ...(Platform.OS === 'android' && {paddingTop: 30}),
+        }}
         data={nftCollectionPostListRes?.posts || []}
         ListHeaderComponent={
           <>
@@ -203,9 +223,8 @@ export default function NftCollectionProfile({
                   bgGray200
                   h75
                   w75
-                  uri={resizeImageUri(
-                    nftCollectionCore.image_uri ||
-                      nftCollectionCore.nft_metadatum.image_uri,
+                  uri={getNftProfileImage(
+                    nftCollection || nftCollectionCore,
                     400,
                     400,
                   )}></Img>
@@ -242,7 +261,7 @@ export default function NftCollectionProfile({
                           p8
                           rounded100
                           mr8
-                          onPress={onPressEditProfile}>
+                          onPress={editProfile}>
                           <Div>
                             <Settings
                               strokeWidth={2}
@@ -271,7 +290,7 @@ export default function NftCollectionProfile({
             <Div px15 py10 bgWhite borderBottom={0.5} borderGray200>
               <Div>
                 <Span fontSize={20} bold>
-                  {nftCollectionCore.name}
+                  {(nftCollection || nftCollectionCore).name}
                 </Span>
               </Div>
               {nftCollection && (
@@ -307,7 +326,7 @@ export default function NftCollectionProfile({
                     <Col />
                   </Row>
                   {nftCollection.admin_nfts.length > 0 && (
-                    <Row mt10 itemsCenter>
+                    <Row mt10 itemsCenter onPress={gotoCollectionSearch}>
                       <Col auto>
                         <AdminProfiles admin={nftCollection.admin_nfts} />
                       </Col>
@@ -353,6 +372,13 @@ export default function NftCollectionProfile({
             onRefresh={handleRefresh}
           />
         }></Animated.FlatList>
+      {isAdmin && nftCollection && (
+        <BottomPopup ref={bottomPopupRef} snapPoints={['90%']} index={-1}>
+          <NftCollectionProfileEditBottomSheetScrollView
+            nftCollection={nftCollection}
+          />
+        </BottomPopup>
+      )}
     </>
   );
 }

@@ -1,10 +1,9 @@
 import React, {useRef} from 'react';
 import {Div} from 'src/components/common/Div';
-import {ActivityIndicator, RefreshControl} from 'react-native';
+import {RefreshControl} from 'react-native';
 import {Row} from 'src/components/common/Row';
 import {Col} from 'src/components/common/Col';
-import {ChevronLeft, ChevronRight, Search} from 'react-native-feather';
-import {Span} from 'src/components/common/Span';
+import {ChevronLeft, Search} from 'react-native-feather';
 import apis from 'src/modules/apis';
 import {
   useApiSelector,
@@ -13,7 +12,6 @@ import {
 } from 'src/redux/asyncReducer';
 import {TextInput} from 'src/modules/viewComponents';
 import {DEVICE_WIDTH} from 'src/modules/styles';
-import {useGotoRankSeason} from 'src/hooks/useGoto';
 import Animated, {
   useAnimatedScrollHandler,
   useAnimatedStyle,
@@ -21,74 +19,52 @@ import Animated, {
 } from 'react-native-reanimated';
 import {CustomBlurView} from 'src/components/common/CustomBlurView';
 import useEdittableText from 'src/hooks/useEdittableText';
-import Colors from 'src/constants/Colors';
-import RankedOwner from 'src/components/RankOwner';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import PolymorphicOwner from 'src/components/PolymorphicOwner';
+import {useNavigation} from '@react-navigation/native';
 
-const SearchScreen = () => {
+const CollectionSearchScreen = ({
+  route: {
+    params: {contractAddress},
+  },
+}) => {
   const searchRef = useRef(null);
   const {
-    data: rankRes,
-    isLoading: rankLoad,
-    isPaginating: rankPaginating,
+    data: memberRes,
+    isLoading: memberLoading,
+    isPaginating: memberPaginating,
     page,
     isNotPaginatable,
-  } = useApiSelector(apis.rank.list);
+  } = useApiSelector(apis.nft_collection.contractAddress.nft.list);
+  const {goBack} = useNavigation();
   const reloadGetWithToken = useReloadGETWithToken();
   const paginateGetWithToken = usePaginateGETWithToken();
   const handleRefresh = () => {
-    if (rankLoad) return;
+    if (memberLoading) return;
     reloadGetWithToken(
-      apis.rank.list(
-        rankRes?.rank_season?.cwyear,
-        rankRes?.rank_season?.cweek,
-        text,
-      ),
+      apis.nft_collection.contractAddress.nft.list(contractAddress, text),
     );
   };
   const handleEndReached = () => {
-    if (rankPaginating || isNotPaginatable) return;
+    if (memberPaginating || isNotPaginatable) return;
     paginateGetWithToken(
-      apis.rank.list(
-        rankRes?.rank_season?.cwyear,
-        rankRes?.rank_season?.cweek,
+      apis.nft_collection.contractAddress.nft.list(
+        contractAddress,
         text,
         page + 1,
       ),
-      'ranks',
+      'nfts',
     );
   };
   const [text, textHasChanged, handleChangeText] = useEdittableText('');
-  const previousSeason = rankRes?.previous_season;
-  const nextSeason = rankRes?.next_season;
-  const onPressLeft = () => {
-    if (!rankRes || rankLoad || !previousSeason) return;
-    reloadGetWithToken(
-      apis.rank.list(previousSeason.cwyear, previousSeason.cweek, text),
-    );
-  };
-  const onPressRight = () => {
-    if (!rankRes || rankLoad || !nextSeason) return;
-    reloadGetWithToken(
-      apis.rank.list(nextSeason.cwyear, nextSeason.cweek, text),
-    );
-  };
   const onPressSearch = () => {
     searchRef?.current?.focus();
   };
-  const gotoRankSeason = useGotoRankSeason({
-    cwyear: rankRes?.rank_season?.cwyear,
-    cweek: rankRes?.rank_season?.cweek,
-  });
   const handleChangeQuery = text => {
     handleChangeText(text);
-    if (rankRes) {
+    if (memberRes) {
       reloadGetWithToken(
-        apis.rank.list(
-          rankRes.rank_season.cwyear,
-          rankRes.rank_season.cweek,
-          text,
-        ),
+        apis.nft_collection.contractAddress.nft.list(contractAddress, text),
       );
     }
   };
@@ -121,13 +97,23 @@ const SearchScreen = () => {
               position: 'absolute',
             }}></CustomBlurView>
         </Animated.View>
-        <Div zIndex={100} absolute w={DEVICE_WIDTH} top={notchHeight+5}>
+        <Div zIndex={100} absolute w={DEVICE_WIDTH} top={notchHeight + 5}>
           <Row itemsCenter py5 h40 px15>
-            <Col mr10>
+            <Col auto bgRealBlack p8 rounded100 onPress={goBack}>
+              <Div>
+                <ChevronLeft
+                  strokeWidth={2}
+                  color={'white'}
+                  height={15}
+                  width={15}
+                />
+              </Div>
+            </Col>
+            <Col mx10>
               <TextInput
                 innerRef={searchRef}
                 value={text}
-                placeholder="NFT를 찾아보세요"
+                placeholder="컬렉션의 NFT를 찾아보세요"
                 fontSize={16}
                 bgGray200
                 rounded100
@@ -158,57 +144,31 @@ const SearchScreen = () => {
         showsVerticalScrollIndicator={false}
         onScroll={scrollHandler}
         onEndReached={handleEndReached}
-        ListHeaderComponent={
-          <>
-            <Div h={headerHeight}></Div>
-            <Row px15 py5 itemsCenter>
-              <Col itemsStart>
-                <Div auto p4 rounded100 onPress={onPressLeft}>
-                  <ChevronLeft
-                    strokeWidth={2}
-                    color={!previousSeason ? Colors.gray[200] : 'black'}
-                    height={20}
-                    width={20}></ChevronLeft>
-                </Div>
-              </Col>
-              <Col auto onPress={gotoRankSeason}>
-                {!rankLoad && rankRes ? (
-                  <Span fontSize={16} bold>
-                    {`${rankRes.rank_season.cwyear}년 ${rankRes.rank_season.cweek}번째 주`}
-                  </Span>
-                ) : (
-                  <ActivityIndicator />
-                )}
-              </Col>
-              <Col itemsEnd>
-                <Div auto p4 rounded100 onPress={onPressRight}>
-                  <ChevronRight
-                    strokeWidth={2}
-                    color={!nextSeason ? Colors.gray[200] : 'black'}
-                    height={20}
-                    width={20}></ChevronRight>
-                </Div>
-              </Col>
-            </Row>
-          </>
-        }
         refreshControl={
           <RefreshControl
-            refreshing={rankLoad && !textHasChanged}
+            refreshing={memberLoading && !textHasChanged}
             onRefresh={handleRefresh}
             progressViewOffset={headerHeight}
           />
         }
-        data={rankRes ? rankRes.ranks : []}
+        ListHeaderComponent={<Div h={headerHeight}></Div>}
+        data={memberRes ? memberRes.nfts : []}
         keyExtractor={item =>
-          `${(item as any)?.contract_address}-${(item as any)?.token_id}`
+          `${(item as any)?.nft?.contract_address}-${
+            (item as any)?.nft?.token_id
+          }`
         }
         renderItem={({item, index}) => {
-          return <RankedOwner rankItem={item} />;
+          return (
+            <PolymorphicOwner
+              showPrivilege
+              nft={(item as any).nft}
+              isFollowing={(item as any).is_following}
+            />
+          );
         }}></Animated.FlatList>
     </Div>
   );
 };
 
-
-export default SearchScreen;
+export default CollectionSearchScreen;

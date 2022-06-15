@@ -12,6 +12,7 @@ import {
   useApiPOSTWithToken,
   useApiPUTWithToken,
 } from 'src/redux/asyncReducer';
+import { useGotoHome, useGotoOnboarding } from 'src/hooks/useGoto';
 
 const usePreloadData = () => {
   const apiGETAsync = useApiGETAsync();
@@ -44,6 +45,7 @@ export const useLogin = () => {
         dispatch(async () => {
           const { jwt, user } = props.data;
           await AsyncStorage.setItem(JWT, jwt);
+          console.log(props.data)
           await preloadData(jwt)
           await dispatch(appActions.login({
             token: jwt,
@@ -64,33 +66,21 @@ export const useLogin = () => {
 
 export const useQrLogin = () => {
   const dispatch = useDispatch();
-  const apiPOSTWithToken = useApiPOSTWithToken();
   const preloadData = usePreloadData()
-  return (token, successHandler?, errHandler?) => {
-    apiPOSTWithToken(
-      apis.auth.jwt.qrLogin(),
-      {
-        token
-      },
-      props => {
-        dispatch(async () => {
-          const { jwt, user } = props.data;
-          await AsyncStorage.setItem(JWT, jwt);
-          await preloadData(jwt)
-          await dispatch(appActions.login({
-            token: jwt,
-            currentUser: user,
-            currentNft: user.main_nft
-          }));
-          if (successHandler) {
-            await successHandler(props);
-          }
-        });
-      },
-      async props => {
-        await errHandler(props);
-      },
-    );
+  return (props, successHandler?) => {
+    dispatch(async () => {
+      const { jwt, user } = props;
+      await AsyncStorage.setItem(JWT, jwt);
+      await preloadData(jwt)
+      await dispatch(appActions.login({
+        token: jwt,
+        currentUser: user,
+        currentNft: user.main_nft
+      }));
+      if (successHandler) {
+        await successHandler(props);
+      }
+    });
   }
 };
 
@@ -181,16 +171,13 @@ export const useUpdateUnreadMessageCount = () => {
 };
 
 export const useLogout = (callback?) => {
-  const dispatch = useDispatch();
-  return () => {
-    dispatch(async () => {
-      if (callback) {
-        await callback();
-      }
-      appActions.logout()
-      asyncActions.reset()
-      AsyncStorage.removeItem(JWT)
-    });
+  return async () => {
+    await appActions.logout()
+    await asyncActions.reset()
+    await AsyncStorage.removeItem(JWT)
+    if (callback) {
+      await callback();
+    }
   };
 };
 

@@ -61,17 +61,12 @@ export function useIsCurrentCollection(nftCollection) {
     const isCurrentCollection = currentNft && nftCollection && currentNft.contract_address == nftCollection.contract_address
     return isCurrentCollection
 }
-export function useIsAdmin(nftCollection) {
+export function useIsAdmin(nftCollection?) {
     const {currentNft} = useSelector(
         (root: RootState) => root.app.session,
         shallowEqual,
     );
-    const isAdmin = currentNft && nftCollection && currentNft.contract_address == nftCollection.contract_address && currentNft.privilege == NftPrivilege.ROOT
+    if(!nftCollection) return currentNft.privilege
+    const isAdmin = currentNft && nftCollection && currentNft.contract_address == nftCollection.contract_address && currentNft.privilege == true
     return isAdmin
-}
-
-export enum NftPrivilege {
-    ROOT = null,
-    NONE = 1,
-    ADDER = 2
 }

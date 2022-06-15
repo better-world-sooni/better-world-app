@@ -359,7 +359,7 @@ export default function FullPost({post, autoFocus = false}) {
             }}
             reducedTransparencyFallbackColor="white"></CustomBlurView>
         </Animated.View>
-        <Div zIndex={100} absolute w={DEVICE_WIDTH} top={notchHeight+5}>
+        <Div zIndex={100} absolute w={DEVICE_WIDTH} top={notchHeight + 5}>
           <Row itemsCenter py5 h40 px8>
             <Col itemsStart>
               <Div auto rounded100 onPress={goBack}>
@@ -380,230 +380,238 @@ export default function FullPost({post, autoFocus = false}) {
           </Row>
         </Div>
       </Div>
-
-      <Div py5 borderGray200 bgWhite flex={1}>
-        <Animated.ScrollView ref={scrollToEndRef} onScroll={scrollHandler}>
-          <Div h={headerHeight}></Div>
-          <Row px15 pt5>
-            <Col auto mr10>
-              <Div onPress={goToProfile}>
-                <Img
-                  w47
-                  h47
-                  rounded100
-                  uri={getNftProfileImage(post.nft, 100, 100)}
-                />
-              </Div>
-            </Col>
-            <Col>
-              <Row>
-                <Col auto>
-                  <Span>
-                    <Span fontSize={15} bold onPress={goToProfile}>
-                      {getNftName(post.nft)}{' '}
-                    </Span>{' '}
-                    {post.nft.token_id &&
-                      post.nft.nft_metadatum.name != getNftName(post.nft) && (
-                        <Span fontSize={12} gray700 onPress={goToProfile}>
-                          {post.nft.nft_metadatum.name}
-                          {' · '}
-                        </Span>
-                      )}
-                    <Span fontSize={12} gray700>
-                      {createdAtText(post.updated_at)}
-                    </Span>
-                  </Span>
-                </Col>
-                <Col />
-                <Col auto>
-                  <MenuView
-                    onPressAction={handlePressMenu}
-                    actions={menuOptions}>
-                    {loading ? (
-                      <ActivityIndicator />
-                    ) : (
-                      <MoreHorizontal
-                        color={Colors.gray[400]}
-                        width={20}
-                        height={20}
-                      />
-                    )}
-                  </MenuView>
-                </Col>
-              </Row>
-              <Row>
-                {post.content ? (
-                  <Div>
-                    <Span>{post.content}</Span>
+      <Div py5 bgWhite flex={1}>
+        <Animated.FlatList
+          contentContainerStyle={{paddingBottom: 100}}
+          ref={scrollToEndRef}
+          onScroll={scrollHandler}
+          ListHeaderComponent={
+            <>
+              <Div h={headerHeight}></Div>
+              <Row px15 pt5 borderGray200 borderBottom={0.5}>
+                <Col auto mr10>
+                  <Div onPress={goToProfile}>
+                    <Img
+                      w47
+                      h47
+                      rounded100
+                      uri={getNftProfileImage(post.nft, 100, 100)}
+                    />
                   </Div>
-                ) : null}
-              </Row>
-              {post.reposted_post && (
-                <Div mt5>
-                  <RepostedPost repostedPost={post.reposted_post} enablePress />
-                </Div>
-              )}
-              {post.image_uris.length > 0 ? (
-                <Div mt5>
-                  <ImageSlideShow
-                    imageUris={post.image_uris}
-                    sliderHeight={
-                      post.image_width && post.image_height
-                        ? getAdjustedHeightFromDimensions({
-                            width: post.image_width,
-                            height: post.image_height,
-                            frameWidth: itemWidth,
-                          })
-                        : itemWidth * 0.7
-                    }
-                    sliderWidth={itemWidth}
-                  />
-                </Div>
-              ) : null}
+                </Col>
+                <Col>
+                  <Row>
+                    <Col auto>
+                      <Span>
+                        <Span fontSize={15} bold onPress={goToProfile}>
+                          {getNftName(post.nft)}{' '}
+                        </Span>{' '}
+                        {post.nft.token_id &&
+                          post.nft.nft_metadatum.name !=
+                            getNftName(post.nft) && (
+                            <Span fontSize={12} gray700 onPress={goToProfile}>
+                              {post.nft.nft_metadatum.name}
+                              {' · '}
+                            </Span>
+                          )}
+                        <Span fontSize={12} gray700>
+                          {createdAtText(post.updated_at)}
+                        </Span>
+                      </Span>
+                    </Col>
+                    <Col />
+                    <Col auto>
+                      <MenuView
+                        onPressAction={handlePressMenu}
+                        actions={menuOptions}>
+                        {loading ? (
+                          <ActivityIndicator />
+                        ) : (
+                          <MoreHorizontal
+                            color={Colors.gray[400]}
+                            width={20}
+                            height={20}
+                          />
+                        )}
+                      </MenuView>
+                    </Col>
+                  </Row>
+                  <Row>
+                    {post.content ? (
+                      <Div>
+                        <Span>{post.content}</Span>
+                      </Div>
+                    ) : null}
+                  </Row>
+                  {post.reposted_post && (
+                    <Div mt5>
+                      <RepostedPost
+                        repostedPost={post.reposted_post}
+                        enablePress
+                      />
+                    </Div>
+                  )}
+                  {post.image_uris.length > 0 ? (
+                    <Div mt5>
+                      <ImageSlideShow
+                        imageUris={post.image_uris}
+                        sliderHeight={
+                          post.image_width && post.image_height
+                            ? getAdjustedHeightFromDimensions({
+                                width: post.image_width,
+                                height: post.image_height,
+                                frameWidth: itemWidth,
+                              })
+                            : itemWidth * 0.7
+                        }
+                        sliderWidth={itemWidth}
+                      />
+                    </Div>
+                  ) : null}
 
-              {post.collection_event && (
-                <Div mt5>
-                  <CollectionEvent
-                    collectionEvent={post.collection_event}
-                    reposted
-                    itemWidth={itemWidth}
-                  />
-                </Div>
-              )}
-              <Row itemsCenter mb8 mt8 mb10>
-                {!post.type ? (
-                  <>
-                    {likesCount > 0 && (
-                      <Col auto mr12>
-                        <Span
-                          fontSize={12}
-                          style={{fontWeight: '600'}}
-                          onPress={gotoLikeList}>
-                          좋아요 <Span realBlack>{likesCount}</Span>개
-                        </Span>
-                      </Col>
-                    )}
-                    {post.repost_count > 0 && (
-                      <Col auto mr12>
-                        <Span
-                          fontSize={12}
-                          style={{fontWeight: '600'}}
-                          onPress={gotoRepostList}>
-                          리포스트 <Span realBlack>{post.repost_count}</Span>번
-                        </Span>
-                      </Col>
-                    )}
-                    <Col />
-                    <Col auto mr16 onPress={handlePressLike}>
-                      {<Heart {...heartProps}></Heart>}
-                    </Col>
-                  </>
-                ) : post.type == 'Proposal' ? (
-                  <>
-                    <Col auto mr12 gray800>
-                      <Span
-                        fontSize={12}
-                        style={{fontWeight: '600'}}
-                        onPress={() => gotoVoteList(VoteCategory.Against)}>
-                        반대 <Span realBlack>{againstVotesCount}</Span>표 (
-                        {Math.round(
-                          (againstVotesCount + forVotesCount > 0
-                            ? againstVotesCount /
-                              (againstVotesCount + forVotesCount)
-                            : 0) * 100,
-                        )}
-                        %)
-                      </Span>
-                    </Col>
-                    <Col auto mr12 gray800>
-                      <Span
-                        fontSize={12}
-                        style={{fontWeight: '600'}}
-                        onPress={() => gotoVoteList(VoteCategory.For)}>
-                        찬성 <Span realBlack>{forVotesCount}</Span>표 (
-                        {Math.round(
-                          (againstVotesCount + forVotesCount > 0
-                            ? forVotesCount /
-                              (againstVotesCount + forVotesCount)
-                            : 0) * 100,
-                        )}
-                        %)
-                      </Span>
-                    </Col>
-                    <Col />
-                    {isCurrentCollection && votable && (
+                  {post.collection_event && (
+                    <Div mt5>
+                      <CollectionEvent
+                        collectionEvent={post.collection_event}
+                        reposted
+                        itemWidth={itemWidth}
+                      />
+                    </Div>
+                  )}
+                  <Row itemsCenter mb8 mt8 mb10>
+                    {!post.type ? (
                       <>
-                        <Col auto mr16 onPress={handlePressVoteAgainst}>
-                          {<ThumbsDown {...againstVoteProps}></ThumbsDown>}
+                        {likesCount > 0 && (
+                          <Col auto mr12>
+                            <Span
+                              fontSize={12}
+                              style={{fontWeight: '600'}}
+                              onPress={gotoLikeList}>
+                              좋아요 <Span realBlack>{likesCount}</Span>개
+                            </Span>
+                          </Col>
+                        )}
+                        {post.repost_count > 0 && (
+                          <Col auto mr12>
+                            <Span
+                              fontSize={12}
+                              style={{fontWeight: '600'}}
+                              onPress={gotoRepostList}>
+                              리포스트{' '}
+                              <Span realBlack>{post.repost_count}</Span>번
+                            </Span>
+                          </Col>
+                        )}
+                        <Col />
+                        <Col auto mr16 onPress={handlePressLike}>
+                          {<Heart {...heartProps}></Heart>}
                         </Col>
-                        <Col auto onPress={handlePressVoteFor}>
-                          {<ThumbsUp {...forVoteProps}></ThumbsUp>}
+                      </>
+                    ) : post.type == 'Proposal' ? (
+                      <>
+                        <Col auto mr12 gray800>
+                          <Span
+                            fontSize={12}
+                            style={{fontWeight: '600'}}
+                            onPress={() => gotoVoteList(VoteCategory.Against)}>
+                            반대 <Span realBlack>{againstVotesCount}</Span>표 (
+                            {Math.round(
+                              (againstVotesCount + forVotesCount > 0
+                                ? againstVotesCount /
+                                  (againstVotesCount + forVotesCount)
+                                : 0) * 100,
+                            )}
+                            %)
+                          </Span>
+                        </Col>
+                        <Col auto mr12 gray800>
+                          <Span
+                            fontSize={12}
+                            style={{fontWeight: '600'}}
+                            onPress={() => gotoVoteList(VoteCategory.For)}>
+                            찬성 <Span realBlack>{forVotesCount}</Span>표 (
+                            {Math.round(
+                              (againstVotesCount + forVotesCount > 0
+                                ? forVotesCount /
+                                  (againstVotesCount + forVotesCount)
+                                : 0) * 100,
+                            )}
+                            %)
+                          </Span>
+                        </Col>
+                        <Col />
+                        {isCurrentCollection && votable && (
+                          <>
+                            <Col auto mr16 onPress={handlePressVoteAgainst}>
+                              {<ThumbsDown {...againstVoteProps}></ThumbsDown>}
+                            </Col>
+                            <Col auto onPress={handlePressVoteFor}>
+                              {<ThumbsUp {...forVoteProps}></ThumbsUp>}
+                            </Col>
+                          </>
+                        )}
+                      </>
+                    ) : (
+                      <>
+                        <Col auto mr12>
+                          <Span
+                            fontSize={12}
+                            style={{fontWeight: '600'}}
+                            onPress={() =>
+                              gotoForumFeed(`${getNftName(post.nft)} 포럼`)
+                            }>
+                            제안 <Span realBlack>{post.repost_count}</Span>개
+                          </Span>
+                        </Col>
+                        <Col />
+                      </>
+                    )}
+
+                    {post.type == 'Forum'
+                      ? isCurrentCollection &&
+                        votable && (
+                          <Col auto onPress={() => gotoNewPost(post)}>
+                            <Span info bold fontSize={12}>
+                              제안하기
+                            </Span>
+                          </Col>
+                        )
+                      : !post.type && (
+                          <Col auto onPress={() => gotoNewPost(post)}>
+                            <Repeat {...actionIconDefaultProps} />
+                          </Col>
+                        )}
+                    {!votable && (
+                      <>
+                        <Col auto mr8>
+                          <Span bold fontSize={12}>
+                            완료됨
+                          </Span>
+                        </Col>
+                        <Col auto rounded100 bgRealBlack p3 bgSuccess>
+                          <Check
+                            strokeWidth={2}
+                            height={15}
+                            width={15}
+                            color={'white'}
+                          />
                         </Col>
                       </>
                     )}
-                  </>
-                ) : (
-                  <>
-                    <Col auto mr12>
-                      <Span
-                        fontSize={12}
-                        style={{fontWeight: '600'}}
-                        onPress={() =>
-                          gotoForumFeed(`${getNftName(post.nft)} 포럼`)
-                        }>
-                        제안 <Span realBlack>{post.repost_count}</Span>개
-                      </Span>
-                    </Col>
-                    <Col />
-                  </>
-                )}
-
-                {post.type == 'Forum'
-                  ? isCurrentCollection &&
-                    votable && (
-                      <Col auto onPress={() => gotoNewPost(post)}>
-                        <Span info bold fontSize={12}>
-                          제안하기
-                        </Span>
-                      </Col>
-                    )
-                  : !post.type && (
-                      <Col auto onPress={() => gotoNewPost(post)}>
-                        <Repeat {...actionIconDefaultProps} />
-                      </Col>
-                    )}
-                {!votable && (
-                  <>
-                    <Col auto mr8>
-                      <Span bold fontSize={12}>
-                        완료됨
-                      </Span>
-                    </Col>
-                    <Col auto rounded100 bgRealBlack p3 bgSuccess>
-                      <Check
-                        strokeWidth={2}
-                        height={15}
-                        width={15}
-                        color={'white'}
-                      />
-                    </Col>
-                  </>
-                )}
+                  </Row>
+                </Col>
               </Row>
-            </Col>
-          </Row>
-          <Div borderTop={0.5} borderGray200 pt5>
-            {cachedComments.map(comment => {
-              return (
-                <Comment
-                  key={comment.id}
-                  comment={comment}
-                  onPressReplyTo={handlePressReplyTo}></Comment>
-              );
-            })}
-          </Div>
-          <Div h100></Div>
-        </Animated.ScrollView>
+            </>
+          }
+          data={cachedComments}
+          renderItem={({item}) => {
+            return (
+              <Comment
+                key={(item as any).id}
+                comment={item}
+                onPressReplyTo={handlePressReplyTo}></Comment>
+            );
+          }}></Animated.FlatList>
         {post.type !== 'Forum' && (
           <NewComment
             autoFocus={autoFocus}

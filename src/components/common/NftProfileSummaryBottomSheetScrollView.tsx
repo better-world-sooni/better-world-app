@@ -13,7 +13,7 @@ import {Div} from './Div';
 import {Img} from './Img';
 import {Row} from './Row';
 import {Span} from './Span';
-import {Heart} from 'react-native-feather';
+import {Heart, MessageCircle} from 'react-native-feather';
 import useUploadImage from 'src/hooks/useUploadImage';
 import apis from 'src/modules/apis';
 import {useApiPOSTWithToken, useApiSelector} from 'src/redux/asyncReducer';
@@ -35,7 +35,7 @@ import {FollowOwnerType, FollowType} from 'src/screens/FollowListScreen';
 import Colors from 'src/constants/Colors';
 import {shallowEqual, useSelector} from 'react-redux';
 import {RootState} from 'src/redux/rootReducer';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 export default function NftProfileSummaryBottomSheetScrollView({
   contractAddress,
@@ -105,8 +105,8 @@ export function NftProfileSummary({nft, token = null}) {
     huggable == HugState.UnHuggable
       ? '내일 다시 허그를 해주세요.'
       : huggable == HugState.Huggable
-      ? '허그를 해서 NFT 친구에게 랭크 포인트를 선물해요.'
-      : `축하드려요! ${getNftName(currentNft)}의 허그가 ${getNftName(
+      ? '허그를 하여 친구에게 랭크 포인트를 선물해요.'
+      : `${getNftName(currentNft)}가 허그로 ${getNftName(
           nft,
         )}에게 2RP를 선물했습니다.`;
   const gotoNftProfile = useGotoNftProfile({
@@ -160,18 +160,27 @@ export function NftProfileSummary({nft, token = null}) {
           {!isCurrentNft && (
             <Div>
               <Row py8>
-                <Col/>
+                <Col />
                 <Col
                   auto
                   bgRealBlack
                   p8
+                  mr8
                   rounded100
-                  onPress={() => gotoChatRoom(
-                    getNftName(nft), 
-                    [getNftProfileImage(nft)], 
-                    nft.contract_address, 
-                    nft.token_id
-                  )}>
+                  onPress={() =>
+                    gotoChatRoom(
+                      getNftName(nft),
+                      [getNftProfileImage(nft)],
+                      nft.contract_address,
+                      nft.token_id,
+                    )
+                  }>
+                  <MessageCircle
+                    strokeWidth={2}
+                    color={'white'}
+                    height={15}
+                    width={15}
+                  />
                 </Col>
                 {token && (
                   <Col
@@ -191,8 +200,8 @@ export function NftProfileSummary({nft, token = null}) {
                             : Colors.danger.DEFAULT
                         }
                         fill={'white'}
-                        height={16}
-                        width={16}
+                        height={15}
+                        width={15}
                       />
                     </Div>
                   </Col>
@@ -205,7 +214,7 @@ export function NftProfileSummary({nft, token = null}) {
                   border1={isFollowing}
                   borderGray400={isFollowing}
                   onPress={handlePressFollowing}>
-                  <Span white={!isFollowing} bold mt3 px5>
+                  <Span white={!isFollowing} bold px5>
                     {isFollowing ? '언팔로우' : '팔로우'}
                   </Span>
                 </Col>

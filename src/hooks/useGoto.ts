@@ -218,14 +218,14 @@ export function useGotoQR(){
     (root: RootState) => root.app.session,
     shallowEqual,
 );
-  const gotoReport = () => {
-    apiPOSTWithToken(apis.auth.qr(), {
+  const gotoQR = () => {
+    apiPOSTWithToken(apis.auth.jwt.qr._(), {
       contract_address: currentNft.contract_address,
       token_id: currentNft.token_id
     })
     navigation.navigate(NAV_NAMES.Qr as never)
   }
-  return gotoReport
+  return gotoQR
 }
 
 export function useGotoRankSeason({cwyear, cweek}) {
@@ -350,7 +350,7 @@ export function useGotoSignIn(){
   const gotoSignIn = () => {
     navigation.dispatch(
       CommonActions.reset({
-        index: 0,
+        index: 1,
         routes: [{name: NAV_NAMES.SignIn}],
       }),
     );
@@ -425,6 +425,20 @@ export function useGotoCollectionEvent({collectionEvent}){
     navigation.navigate(NAV_NAMES.CollectionEvent as never, {
       collectionEvent,
       reload
+    } as never)
+  }
+  return gotoCollectionEvent
+}
+
+export function useGotoCollectionSearch({contractAddress}){
+  const navigation = useNavigation()
+  const apiGETWithToken = useApiGETWithToken()
+  const gotoCollectionEvent = () => {
+    apiGETWithToken(
+      apis.nft_collection.contractAddress.nft.list(contractAddress)
+    )
+    navigation.navigate(NAV_NAMES.CollectionSearch as never, {
+      contractAddress
     } as never)
   }
   return gotoCollectionEvent

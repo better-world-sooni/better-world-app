@@ -488,12 +488,9 @@ function PostContent({post}) {
             </Row>
           </Col>
         </Row>
-        {post.comments.length > 0 && !post.type && (
+        {post.comment && !post.type && (
           <Div onPress={gotoPost}>
-            <Comment
-              hot
-              key={post.comments[0].id}
-              comment={post.comments[0]}></Comment>
+            <Comment hot key={post.comment.id} comment={post.comment}></Comment>
           </Div>
         )}
       </Div>
