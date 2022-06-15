@@ -25,6 +25,7 @@ export const NAV_NAMES = {
     RankDeltum: "RankDeltum",
     CollectionFeed: "CollectionFeed",
     ForumFeed: "ForumFeed",
+    Social: "Social",
     RepostList: "RepostList",
     CollectionEventList: "CollectionEventList",
     NewCollectionEvent: "NewCollectionEvent",

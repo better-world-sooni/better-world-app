@@ -152,8 +152,17 @@ function ChatListScreen() {
                 zIndex={100}
                 absolute
                 w={DEVICE_WIDTH}
-                top={notchHeight+5}>
-                <Col justifyStart mr10></Col>
+                top={notchHeight + 5}>
+                <Col itemsStart>
+                  <Div auto rounded100 onPress={goBack}>
+                    <ChevronLeft
+                      width={30}
+                      height={30}
+                      color="black"
+                      strokeWidth={2}
+                    />
+                  </Div>
+                </Col>
                 <Col auto>
                   <Span bold fontSize={19}>
                     채팅

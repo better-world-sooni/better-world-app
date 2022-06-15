@@ -20,12 +20,10 @@ const usePreloadData = () => {
     await Promise.all([
       apiGETAsync(apis.profile._(), jwt),
       apiGETAsync(apis.nft._(), jwt),
-      apiGETAsync(apis.feed._(), jwt),
-      apiGETAsync(apis.post.list._(), jwt),
+      apiGETAsync(apis.feed.forum(), jwt),
+      apiGETAsync(apis.feed.social(), jwt),
       apiGETAsync(apis.rank.list(), jwt),
-      apiGETAsync(apis.chat.chatRoom.all(), jwt),
       apiGETAsync(apis.nft_collection.profile(), jwt),
-      apiGETAsync(apis.notification.list._(), jwt)
     ])
   }
 }

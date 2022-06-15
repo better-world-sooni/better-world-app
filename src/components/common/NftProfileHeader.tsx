@@ -212,14 +212,6 @@ export default function NftProfileHeader({
                 {nft.following_count}
               </Span>
             </Col>
-            <Col auto mr12 onPress={gotoRankSeason}>
-              <Span bold fontSize={13}>
-                <Span gray700 regular fontSize={13}>
-                  랭크
-                </Span>{' '}
-                {nft.current_rank}
-              </Span>
-            </Col>
             <Col auto mr12 onPress={gotoRankDeltum}>
               <Span bold fontSize={13}>
                 <Span gray700 regular fontSize={13}>

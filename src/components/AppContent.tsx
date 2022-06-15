@@ -19,7 +19,7 @@ import {NativeBaseProvider} from 'native-base';
 import {ICONS} from 'src/modules/icons';
 import {Img} from './common/Img';
 import {getNftProfileImage} from 'src/modules/nftUtils';
-import {Bell, Home, Search, Send} from 'react-native-feather';
+import {Bell, Home, Search, Send, Star} from 'react-native-feather';
 import Colors from 'src/constants/Colors';
 import OtherProfileScreen from 'src/screens/OtherProfileScreen';
 import NftCollectionScreen from 'src/screens/NftCollectionScreen';
@@ -45,8 +45,9 @@ import CollectionEventScreen from 'src/screens/CollectionEventScreen';
 import AffinityScreen from 'src/screens/AffinityScreen';
 import PasswordSigninScreen from 'src/screens/Auth/PasswordSigninScreen';
 import {createStackNavigator} from '@react-navigation/stack';
-import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context';
 import CollectionSearchScreen from 'src/screens/CollectionSearchScreen';
+import SocialScreen from 'src/screens/Home/SocialScreen';
 
 // const RootStack = createNativeStackNavigator();
 const RootStack = createStackNavigator();
@@ -100,23 +101,10 @@ const MainBottomTabs = () => {
         }}
       />
       <Tab.Screen
-        name={NAV_NAMES.ChatList}
-        component={ChatListScreen}
+        name={NAV_NAMES.Social}
+        component={SocialScreen}
         options={{
-          tabBarIcon: ({focused}) => (
-            <Send
-              width={22}
-              height={22}
-              strokeWidth={2}
-              color={focused ? 'black' : Colors.gray[400]}></Send>
-          ),
-        }}
-      />
-      <Tab.Screen
-        name={NAV_NAMES.Profile}
-        component={ProfileScreen}
-        options={{
-          tabBarLabel: NAV_NAMES.Profile,
+          tabBarLabel: NAV_NAMES.Social,
           tabBarIcon: ({focused}) => (
             <Img
               {...profileTabIconProps}
@@ -254,6 +242,10 @@ export const AppContent = () => {
     {
       name: NAV_NAMES.ChatRoom,
       component: ChatRoomScreen,
+    },
+    {
+      name: NAV_NAMES.ChatList,
+      component: ChatListScreen,
     },
     {
       name: NAV_NAMES.CollectionSearch,

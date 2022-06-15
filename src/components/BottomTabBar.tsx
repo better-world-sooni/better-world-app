@@ -12,6 +12,9 @@ import Colors from 'src/constants/Colors';
 import {mediumBump} from 'src/modules/hapticFeedBackUtils';
 import {HAS_NOTCH} from 'src/modules/constants';
 import {DEVICE_HEIGHT} from 'src/modules/styles';
+import {EventRegister} from 'react-native-event-listeners';
+
+export const nftListEvent = () => `nft-list`;
 
 const BottomTabBar = ({state, descriptors, navigation}) => {
   const isFocusedOnCapsule = state.history[
@@ -39,7 +42,7 @@ const BottomTabBar = ({state, descriptors, navigation}) => {
     state.routes.map((route, index) => {
       const {key, name} = route;
       const {options} = descriptors[key];
-      const changeProfileOnLongPress = options.tabBarLabel == NAV_NAMES.Profile;
+      const changeProfileOnLongPress = options.tabBarLabel == NAV_NAMES.Social;
       const isFocused = state.index === index;
       const image = options.tabBarIcon({focused: isFocused});
       const handlePress = () => {
@@ -54,7 +57,7 @@ const BottomTabBar = ({state, descriptors, navigation}) => {
       };
       const handleLongPress = () => {
         mediumBump();
-        bottomPopupRef?.current?.expand();
+        EventRegister.emit(nftListEvent());
       };
       const conditionalProps = changeProfileOnLongPress
         ? {onLongPress: handleLongPress}
@@ -80,14 +83,22 @@ const BottomTabBar = ({state, descriptors, navigation}) => {
     if (unceilingedHeight > fullHeight) return [fullHeight];
     return [unceilingedHeight];
   };
+
+  useEffect(() => {
+    EventRegister.addEventListener(nftListEvent(), () => {
+      bottomPopupRef?.current?.expand();
+    });
+    return () => {
+      EventRegister.removeEventListener(nftListEvent());
+    };
+  }, []);
   return (
     <>
       <BottomPopup
         ref={bottomPopupRef}
         snapPoints={getSnapPoints(currentUser?.nfts?.length || 0)}
         index={-1}
-        enablePanDownToClose={enableClose}
-      >
+        enablePanDownToClose={enableClose}>
         <NftChooseBottomSheetScrollView
           nfts={currentUser?.nfts}
           title={'Identity 변경하기'}
