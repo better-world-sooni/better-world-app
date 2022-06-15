@@ -46,11 +46,7 @@ import AffinityScreen from 'src/screens/AffinityScreen';
 import PasswordSigninScreen from 'src/screens/Auth/PasswordSigninScreen';
 import {createStackNavigator} from '@react-navigation/stack';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
-<<<<<<< HEAD
-import { navigationRef } from 'src/modules/rootNavagation';
-=======
 import CollectionSearchScreen from 'src/screens/CollectionSearchScreen';
->>>>>>> develop
 
 // const RootStack = createNativeStackNavigator();
 const RootStack = createStackNavigator();
@@ -139,10 +135,6 @@ export const AppContent = () => {
     session: {token},
   } = useSelector((root: RootState) => root.app, shallowEqual);
 
-  const testConst = NAV_NAMES.Post
-  const testConst2 = 128
-  
-
   const Navs = [
     {
       name: NAV_NAMES.Splash,
@@ -150,8 +142,8 @@ export const AppContent = () => {
       initialParams: {
         notificationOpened: true,
         routeDestination: {
-          navName: testConst,
-          id: testConst2
+          navName: NAV_NAMES.Post,
+          id: 128
         }
       }
     },
@@ -277,21 +269,16 @@ export const AppContent = () => {
   ];
 
   return (
-    <NavigationContainer>
-      <NativeBaseProvider>
-        <BottomSheetModalProvider>
-          <RootStack.Navigator screenOptions={{headerShown: false}}>
-            {Navs.map((item, i) => (
-              <RootStack.Screen
-                key={i}
-                name={item.name}
-                component={item.component}
-                options={item.options}
-              />
-            ))}
-          </RootStack.Navigator>
-        </BottomSheetModalProvider>
-      </NativeBaseProvider>
-    </NavigationContainer>
+    <RootStack.Navigator screenOptions={{headerShown: false}}>
+      {Navs.map((item, i) => (
+        <RootStack.Screen
+          key={i}
+          name={item.name}
+          component={item.component}
+          options={item.options}
+          initialParams={item.initialParams}
+        />
+      ))}
+    </RootStack.Navigator>
   );
 };

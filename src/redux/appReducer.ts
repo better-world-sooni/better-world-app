@@ -45,7 +45,6 @@ export const useLogin = () => {
         dispatch(async () => {
           const { jwt, user } = props.data;
           await AsyncStorage.setItem(JWT, jwt);
-          console.log(props.data)
           await preloadData(jwt)
           await dispatch(appActions.login({
             token: jwt,

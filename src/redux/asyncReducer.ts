@@ -130,7 +130,6 @@ export const useApiGETWithToken = (props = {}) => {
   );
   const finalToken = token ? token : userToken;
   const dispatch = useDispatch();
-  const navigation = useNavigation();
   return (api, successHandler?, errHandler?) => {
     const key = getKeyByApi(api, scope);
     dispatch(
@@ -140,7 +139,6 @@ export const useApiGETWithToken = (props = {}) => {
         promiseFn: getPromiseFn,
         successHandler,
         errHandler,
-        navigation,
       }),
     );
   };
@@ -149,7 +147,6 @@ export const useApiGETWithToken = (props = {}) => {
 export const useApiGET = (props = {}) => {
   const {scope} = props as any;
   const dispatch = useDispatch();
-  const navigation = useNavigation();
   const route = useRoute();
   return (api, token, successHandler?, errHandler?) => {
     const key = getKeyByApi(api, scope);
@@ -160,7 +157,6 @@ export const useApiGET = (props = {}) => {
         promiseFn: getPromiseFn,
         successHandler,
         errHandler,
-        navigation,
       }),
     );
   };
@@ -168,7 +164,6 @@ export const useApiGET = (props = {}) => {
 
 export const useApiGETAsync = (props = {}) => {
   const {scope} = props as any;
-  const navigation = useNavigation();
   const dispatch = useDispatch();
   return async (api, token, successHandler?, errHandler?) => {
     const key = getKeyByApi(api, scope);
@@ -178,7 +173,6 @@ export const useApiGETAsync = (props = {}) => {
       promiseFn: getPromiseFn,
       successHandler,
       errHandler,
-      navigation,
     }))
   };
 };
@@ -191,7 +185,6 @@ export const useReloadGETWithToken = (props = {}) => {
   );
   const finalToken = token ? token : userToken;
   const dispatch = useDispatch();
-  const navigation = useNavigation();
   return (api, successHandler?, errHandler?) => {
     const key = getKeyByApi(api, scope);
     dispatch(
@@ -201,7 +194,6 @@ export const useReloadGETWithToken = (props = {}) => {
         promiseFn: getPromiseFn,
         successHandler,
         errHandler,
-        navigation,
         fetchType: FetchType.Reload,
       }),
     );
@@ -215,7 +207,6 @@ export const usePaginateGETWithToken = (props = {}) => {
   );
   const finalToken = token ? token : userToken;
   const dispatch = useDispatch();
-  const navigation = useNavigation();
   return (api, concatKey, successHandler?, errHandler?) => {
     const key = getKeyByApi(api, scope);
     dispatch(
@@ -226,7 +217,6 @@ export const usePaginateGETWithToken = (props = {}) => {
         concatKey,
         successHandler,
         errHandler,
-        navigation,
         fetchType: FetchType.Paginate,
       }),
     );
@@ -241,7 +231,6 @@ export const useApiPOSTWithToken = (props = {}) => {
   );
   const finalToken = token ? token : userToken;
   const dispatch = useDispatch();
-  const navigation = useNavigation();
   return (api, body?, successHandler?, errHandler?) => {
     const key = getKeyByApi(api, scope);
     dispatch(
@@ -255,7 +244,6 @@ export const useApiPOSTWithToken = (props = {}) => {
         promiseFn: postPromiseFn,
         successHandler,
         errHandler,
-        navigation,
       }),
     );
   };
@@ -269,7 +257,6 @@ export const useApiPUTWithToken = (props = {}) => {
   );
   const finalToken = token ? token : userToken;
   const dispatch = useDispatch();
-  const navigation = useNavigation();
   return (api, body?, successHandler?, errHandler?) => {
     const key = getKeyByApi(api, scope);
     dispatch(
@@ -283,7 +270,6 @@ export const useApiPUTWithToken = (props = {}) => {
         promiseFn: putPromiseFn,
         successHandler,
         errHandler,
-        navigation,
       }),
     );
   };
@@ -297,7 +283,6 @@ export const useReloadPOSTWithToken = (props = {}) => {
   );
   const finalToken = token ? token : userToken;
   const dispatch = useDispatch();
-  const navigation = useNavigation();
   return (api, body?, successHandler?, errHandler?) => {
     const key = getKeyByApi(api, scope);
     dispatch(
@@ -311,7 +296,6 @@ export const useReloadPOSTWithToken = (props = {}) => {
         promiseFn: postPromiseFn,
         successHandler,
         errHandler,
-        navigation,
         fetchType: FetchType.Reload,
       }),
     );

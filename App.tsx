@@ -13,7 +13,11 @@ import 'react-native-url-polyfill/auto';
 import {BETTER_WORLD_MAIN_PUSH_CHANNEL} from 'src/modules/constants';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import notifee, { AndroidImportance, EventType } from '@notifee/react-native';
-import {useGotoWithNotification} from 'src/hooks/useNotificationGoto'
+import {useGotoWithNotification} from 'src/hooks/useGotoWithNotification'
+import {BottomSheetModalProvider} from '@gorhom/bottom-sheet';
+import {NativeBaseProvider} from 'native-base';
+import {NavigationContainer} from '@react-navigation/native';
+import { navigationRef } from 'src/modules/rootNavagation';
 
 const firebaseMessaging = messaging();
 PushNotification.createChannel({
@@ -31,7 +35,7 @@ const App = () => {
     isLoggedIn,
     session: {token},
   } = useSelector((root: RootState) => root.app, shallowEqual);
-  // const gotoWithNotification = useGotoWithNotification();
+  const gotoWithNotification = useGotoWithNotification();
   const postPromiseFnWithToken = usePostPromiseFnWithToken();
   const getToken = useCallback(async () => {
     try {
@@ -89,7 +93,7 @@ const App = () => {
   const unsubscribe = notifee.onForegroundEvent(({ type, detail }) => {
     if(type === EventType.PRESS) {
       console.log('User pressed notification', detail.notification.data.post_id);
-      // gotoWithNotification(detail.notification.data)
+      gotoWithNotification(detail.notification.data)
     }
   })
 
@@ -139,7 +143,13 @@ const App = () => {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <StatusBar barStyle="dark-content" backgroundColor='#FFFFFF'></StatusBar>
-      <AppContent />
+      <NavigationContainer ref={navigationRef}>
+        <NativeBaseProvider>
+          <BottomSheetModalProvider>
+            <AppContent />
+          </BottomSheetModalProvider>
+        </NativeBaseProvider>
+      </NavigationContainer>
     </GestureHandlerRootView>
   );
 };

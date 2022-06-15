@@ -14,7 +14,6 @@ export const asyncThunk =
     args,
     successHandler,
     errHandler,
-    navigation,
     fetchType = FetchType.Normal,
     concatKey = null,
   }) =>
@@ -51,7 +50,6 @@ export const asyncThunk =
             error: null,
             data: data,
             status: status,
-            navigation,
             dispatch,
           });
         }
@@ -77,7 +75,6 @@ export const asyncThunk =
           error: error.message,
           status: error.name,
           data: null,
-          navigation,
           dispatch,
         });
       }
