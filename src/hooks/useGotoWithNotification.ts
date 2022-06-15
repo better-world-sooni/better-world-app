@@ -17,12 +17,9 @@ export function useGotoWithNotification() {
             meta_name,
             meta_image_uri,
         } = notificationData
-        console.log(event)
         if(event === 'like_post' || event === 'like_comment' || event === 'comment' ){
-            
-            // const gotoPost = useGotoPost({postId: post_id})
-            // gotoPost()
-            console.log("hi")
+            apiGETWithToken(apis.post.postId._(post_id));
+            notificationNavigate(NAV_NAMES.Post, {post_id, autoFocus: false})
         } 
         else if(event === 'follow' || event === 'hug') {
             const nft = {
@@ -45,7 +42,6 @@ export function useGotoWithNotification() {
                 apis.post.list.nft(nft.contract_address, nft.token_id)
             );
             notificationNavigate(NAV_NAMES.OtherProfile, {nft})
-
         }
     }
     return gotoWithNotification
