@@ -17,8 +17,11 @@ const SplashScreen = ({route}) => {
   const autoLogin = useAutoLogin();
   const gotoHome = useGotoHome();
   const routeParams = route.params
-  const gotoPost = useGotoPost({postId: routeParams.routeDestination.id});
-  console.log("splash", routeParams.routeDestination.id)
+  let gotoPost = null
+  if(routeParams.notificationOpened) {
+    gotoPost = useGotoPost(routeParams?.routeDestination?.id);
+  }
+  console.log("splash", routeParams)
 
   useEffect(() => {
     isAutoLoginChecked();

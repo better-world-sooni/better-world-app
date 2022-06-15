@@ -17,11 +17,11 @@ export function useGotoWithNotification() {
             meta_name,
             meta_image_uri,
         } = notificationData
-        if(event === 'like_post' || event === 'like_comment' || event === 'comment' ){
+        if(['like_post', 'like_comment', 'comment'].includes(event)){
             apiGETWithToken(apis.post.postId._(post_id));
             notificationNavigate(NAV_NAMES.Post, {post_id, autoFocus: false})
         } 
-        else if(event === 'follow' || event === 'hug') {
+        else if(['follow', 'hug'].includes(event)) {
             const nft = {
                 contract_address: contract_address,
                 token_id: token_id,

@@ -129,23 +129,59 @@ const MainBottomTabs = () => {
   );
 };
 
-export const AppContent = () => {
+const setInitialRouteParams = (notificationOpenData) => {
+  if(notificationOpenData){
+    if(['like_post', 'like_comment', 'comment'].includes(notificationOpenData.event)){    
+      return {
+        notificationOpened: true,
+        routeDestination: {
+          navName: NAV_NAMES.Post,
+          id: {
+            postId: notificationOpenData.post_id
+          }
+        }
+      }
+    }
+    else if(['follow', 'hug'].includes(notificationOpenData.event)) {
+      return {
+        notificationOpened: true,
+        routeDestination: {
+          navName: NAV_NAMES.OtherProfile,
+          id: {
+            contract_address: notificationOpenData.contract_address,
+            token_id: notificationOpenData.token_id,
+            name: notificationOpenData.name,
+            image_uri: notificationOpenData.image_uri,
+            nft_metadatum: {
+              name: notificationOpenData.meta_name,
+              image_uri: notificationOpenData.meta_image_uri,
+            }
+          }
+        }
+      }
+    }
+  } 
+  else{
+    return {
+      notificationOpened: false
+    }
+  }
+}
+
+export const AppContent = ({notificationOpenData}) => {
   const {
     isLoggedIn,
     session: {token},
   } = useSelector((root: RootState) => root.app, shallowEqual);
 
+  console.log("appcontent", notificationOpenData)
+  const initialRouteParams = setInitialRouteParams(notificationOpenData)
+
   const Navs = [
     {
       name: NAV_NAMES.Splash,
       component: SplashScreen,
-      initialParams: {
-        notificationOpened: true,
-        routeDestination: {
-          navName: NAV_NAMES.Post,
-          id: 128
-        }
-      }
+      initialParams: initialRouteParams
     },
     {
       name: NAV_NAMES.SignIn,
