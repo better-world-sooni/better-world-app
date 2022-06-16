@@ -31,7 +31,6 @@ import LikeListScreen from 'src/screens/LikeListScreen';
 import FollowListScreen from 'src/screens/FollowListScreen';
 import VoteListScreen from 'src/screens/VoteListScreen';
 import QrScreen from 'src/screens/QrScreen';
-import RankSeasonScreen from 'src/screens/RankSeasonScreen';
 import ScanScreen from 'src/screens/ScanScreen';
 import NotificationScreen from 'src/screens/NotificationScreen';
 import RankDeltumScreen from 'src/screens/RankDeltumScreen';
@@ -190,10 +189,6 @@ export const AppContent = () => {
     {
       name: NAV_NAMES.Onboarding,
       component: OnboardingScreen,
-    },
-    {
-      name: NAV_NAMES.RankSeason,
-      component: RankSeasonScreen,
     },
     {
       name: NAV_NAMES.Scan,

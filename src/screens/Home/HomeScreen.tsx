@@ -1,7 +1,6 @@
 import React, {useRef} from 'react';
-import {Div} from 'src/components/common/Div';
 import {Row} from 'src/components/common/Row';
-import {Bell, Send} from 'react-native-feather';
+import {Send} from 'react-native-feather';
 import apis from 'src/modules/apis';
 import {
   useApiSelector,
@@ -11,20 +10,16 @@ import {
 import Post from 'src/components/common/Post';
 import {Img} from 'src/components/common/Img';
 import {DEVICE_WIDTH} from 'src/modules/styles';
-import {
-  useGotoChatList,
-  useGotoNewPost,
-  useGotoNotification,
-} from 'src/hooks/useGoto';
+import {useGotoChatList} from 'src/hooks/useGoto';
 import {IMAGES} from 'src/modules/images';
 import SideMenu from 'react-native-side-menu-updated';
 import MyNftCollectionMenu from '../../components/common/MyNftCollectionMenu';
 import FeedFlatlist from 'src/components/FeedFlatlist';
 import {StatusBar} from 'react-native';
-import {PostOwnerType} from '../NewPostScreen';
 import {useScrollToTop} from '@react-navigation/native';
 import {Span} from 'src/components/common/Span';
 import {Col} from 'src/components/common/Col';
+import CommunityWalletSlideShow from 'src/components/common/CommunityWalletSlideShow';
 
 export default function HomeScreen() {
   const {
@@ -37,6 +32,9 @@ export default function HomeScreen() {
   const {data: nftCollectionRes, isLoading: nftCollectionLoad} = useApiSelector(
     apis.nft_collection.profile(),
   );
+  const {data: communityWalletsRes, isLoading: communityWalletLoading} =
+    useApiSelector(apis.community_wallet.list());
+  const communityWallets = communityWalletsRes?.community_wallets || [];
   const nftCollection = nftCollectionRes?.nft_collection;
   const gotoChatList = useGotoChatList();
   const reloadGETWithToken = useReloadGETWithToken();
@@ -44,6 +42,7 @@ export default function HomeScreen() {
   const handleRefresh = () => {
     if (feedLoading) return;
     reloadGETWithToken(apis.feed.forum());
+    reloadGETWithToken(apis.community_wallet.list());
     reloadGETWithToken(apis.nft_collection.profile());
   };
   const handleEndReached = () => {
@@ -76,7 +75,7 @@ export default function HomeScreen() {
           return <Post key={(item as any).id} post={item} />;
         }}
         data={feedRes ? feedRes.feed : []}
-        HeaderComponent={
+        TopComponent={
           <Row itemsCenter>
             <Col itemsStart rounded100 onPress={openSideMenu}>
               {nftCollectionRes?.nft_collection && (
@@ -101,8 +100,13 @@ export default function HomeScreen() {
             </Col>
           </Row>
         }
+        HeaderComponent={
+          <CommunityWalletSlideShow
+            communityWallets={communityWallets}
+            sliderWidth={DEVICE_WIDTH}
+          />
+        }
       />
     </SideMenu>
   );
-};
-
+}

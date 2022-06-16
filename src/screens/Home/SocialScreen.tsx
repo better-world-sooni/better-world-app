@@ -72,7 +72,7 @@ export default function SocialScreen() {
           return <Post key={(item as any).id} post={item} />;
         }}
         data={feedRes ? feedRes.feed : []}
-        HeaderComponent={
+        TopComponent={
           <Row itemsCenter>
             <Col itemsStart rounded100 onPress={openSideMenu}>
               {nft && (

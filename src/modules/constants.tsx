@@ -22,6 +22,7 @@ export const WS_URL = 'https://ws.metasgid.com';
 // export const WS_URL = 'http://localhost:8000';
 
 export function truncateKlaytnAddress(fullStr, strLen = 12, separator = '...') {
+  if (!fullStr) return;
   if (fullStr.length <= strLen) return fullStr;
 
   var sepLen = separator.length,

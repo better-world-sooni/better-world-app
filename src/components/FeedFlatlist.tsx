@@ -27,7 +27,8 @@ function FeedFlatlist(
     isNotPaginatable = false,
     renderItem,
     data,
-    HeaderComponent,
+    TopComponent,
+    HeaderComponent = null,
   },
   ref,
 ) {
@@ -116,7 +117,7 @@ function FeedFlatlist(
       </Animated.View>
       <Animated.View style={topBarStyles}>
         <Animated.View style={headerStyles}>
-          {Platform.OS === 'ios' ?
+          {Platform.OS === 'ios' ? (
             <CustomBlurView
               blurType="xlight"
               blurAmount={30}
@@ -128,19 +129,18 @@ function FeedFlatlist(
                 height: headerHeight,
                 position: 'absolute',
               }}
-              reducedTransparencyFallbackColor="white">
-            </CustomBlurView>
-          :
-            <Div 
+              reducedTransparencyFallbackColor="white"></CustomBlurView>
+          ) : (
+            <Div
               style={{
                 width: DEVICE_WIDTH,
                 top: 0,
                 height: headerHeight,
                 position: 'absolute',
               }}
-              bgWhite 
+              bgWhite
             />
-        } 
+          )}
         </Animated.View>
         <Row
           itemsCenter
@@ -149,8 +149,8 @@ function FeedFlatlist(
           zIndex={100}
           absolute
           w={DEVICE_WIDTH}
-          top={notchHeight+5}>
-          {HeaderComponent}
+          top={notchHeight + 5}>
+          {TopComponent}
         </Row>
       </Animated.View>
       <ReanimatedFlatList
@@ -185,6 +185,7 @@ function FeedFlatlist(
             <Div h={27} />
           </>
         }
+        ListHeaderComponent={HeaderComponent}
         data={data}
         onEndReached={onEndReached}
         renderItem={renderItem}></ReanimatedFlatList>

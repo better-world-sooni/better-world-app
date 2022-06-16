@@ -21,7 +21,6 @@ export const NAV_NAMES = {
     LikeList: "LikeList",
     FollowList: "FollowList",
     VoteList: "VoteList",
-    RankSeason: "RankSeason",
     RankDeltum: "RankDeltum",
     CollectionFeed: "CollectionFeed",
     ForumFeed: "ForumFeed",

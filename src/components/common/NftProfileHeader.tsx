@@ -15,7 +15,6 @@ import {
   useGotoNftCollectionProfile,
   useGotoQR,
   useGotoRankDeltum,
-  useGotoRankSeason,
   useGotoScan,
 } from 'src/hooks/useGoto';
 import apis from 'src/modules/apis';
@@ -63,11 +62,6 @@ export default function NftProfileHeader({
   const gotoScan = useGotoScan({scanType: ScanType.Nft});
   const gotoNewPost = useGotoNewPost({postOwnerType: PostOwnerType.Nft});
   const gotoChatRoom = useGotoChatRoomFromProfile();
-  const gotoRankSeason = useGotoRankSeason({
-    cwyear: null,
-    cweek: null,
-  });
-
   return (
     <>
       <Row zIndex={100} px15 relative>
