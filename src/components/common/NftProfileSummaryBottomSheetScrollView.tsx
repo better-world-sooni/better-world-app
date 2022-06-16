@@ -7,14 +7,12 @@ import {
   useIsCurrentNft,
 } from 'src/modules/nftUtils';
 import {DEVICE_WIDTH} from 'src/modules/styles';
-import {KeyboardAvoidingView, TextInput} from 'src/modules/viewComponents';
 import {Col} from './Col';
 import {Div} from './Div';
 import {Img} from './Img';
 import {Row} from './Row';
 import {Span} from './Span';
 import {Heart, MessageCircle} from 'react-native-feather';
-import useUploadImage from 'src/hooks/useUploadImage';
 import apis from 'src/modules/apis';
 import {useApiPOSTWithToken, useApiSelector} from 'src/redux/asyncReducer';
 import {
@@ -24,13 +22,8 @@ import {
   useGotoNftCollectionProfile,
   useGotoNftProfile,
   useGotoRankDeltum,
-  useGotoRankSeason,
 } from 'src/hooks/useGoto';
-import {ICONS} from 'src/modules/icons';
 import useFollow from 'src/hooks/useFollow';
-import TruncatedMarkdown from './TruncatedMarkdown';
-import {ChatRoomEnterType} from 'src/screens/ChatRoomScreen';
-import {HAS_NOTCH} from 'src/modules/constants';
 import {FollowOwnerType, FollowType} from 'src/screens/FollowListScreen';
 import Colors from 'src/constants/Colors';
 import {shallowEqual, useSelector} from 'react-redux';
@@ -105,10 +98,8 @@ export function NftProfileSummary({nft, token = null}) {
     huggable == HugState.UnHuggable
       ? '내일 다시 허그를 해주세요.'
       : huggable == HugState.Huggable
-      ? '허그를 하여 친구에게 랭크 포인트를 선물해요.'
-      : `${getNftName(currentNft)}가 허그로 ${getNftName(
-          nft,
-        )}에게 2RP를 선물했습니다.`;
+      ? '허그로 상대의 존재감을 높여줘요.'
+      : `${getNftName(currentNft)}가 ${getNftName(nft)}를 허그했습니다!`;
   const gotoNftProfile = useGotoNftProfile({
     nft,
   });
@@ -124,10 +115,6 @@ export function NftProfileSummary({nft, token = null}) {
     followOwnerType: FollowOwnerType.Nft,
     contractAddress: nft.contract_address,
     tokenId: nft.token_id,
-  });
-  const gotoRankSeason = useGotoRankSeason({
-    cwyear: null,
-    cweek: null,
   });
   const notchHeight = useSafeAreaInsets().top;
   const headerHeight = notchHeight + 80;
@@ -146,7 +133,7 @@ export function NftProfileSummary({nft, token = null}) {
       )}
       <Row zIndex={100} px15 relative mt40>
         <Div absolute bottom0 w={DEVICE_WIDTH} bgWhite h={50}></Div>
-        <Col auto mr10 relative onPress={gotoNftProfile}>
+        <Col auto mr10 relative onPress={() => gotoNftProfile()}>
           <Img
             rounded100
             border4
@@ -249,20 +236,12 @@ export function NftProfileSummary({nft, token = null}) {
               {nft.following_count}
             </Span>
           </Col>
-          <Col auto mr20 onPress={gotoRankSeason}>
-            <Span bold>
-              <Span gray700 regular>
-                랭크
-              </Span>{' '}
-              {nft.current_rank}
-            </Span>
-          </Col>
           <Col auto mr20 onPress={gotoRankDeltum}>
             <Span bold>
+              {nft.contribution}{' '}
               <Span gray700 regular>
-                랭크 스코어
-              </Span>{' '}
-              {nft.current_rank_score}
+                인분
+              </Span>
             </Span>
           </Col>
           <Col />

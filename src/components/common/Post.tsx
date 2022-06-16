@@ -40,7 +40,6 @@ import {Row} from './Row';
 import {Span} from './Span';
 import {MenuView} from '@react-native-menu/menu';
 import {
-  putPromiseFn,
   useDeletePromiseFnWithToken,
   usePutPromiseFnWithToken,
 } from 'src/redux/asyncReducer';

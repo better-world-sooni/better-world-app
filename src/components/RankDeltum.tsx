@@ -1,5 +1,14 @@
 import React from 'react';
-import {Edit, Heart, MessageCircle, UserCheck} from 'react-native-feather';
+import {
+  ChevronsDown,
+  ChevronsUp,
+  Edit,
+  Heart,
+  MessageCircle,
+  ThumbsDown,
+  ThumbsUp,
+  UserCheck,
+} from 'react-native-feather';
 import {createdAtText} from 'src/modules/timeUtils';
 import {Col} from './common/Col';
 import {Row} from './common/Row';
@@ -10,6 +19,7 @@ enum RankDeltumEventType {
   Post = 'post',
   Comment = 'comment',
   LikePost = 'like_post',
+  VotePost = 'vote_post',
   LikeComment = 'like_comment',
   Hug = 'hug',
 }
@@ -33,6 +43,13 @@ export default function RankDeltum({rankDeltum}) {
     if (event == RankDeltumEventType.LikePost) {
       return <Heart {...actionIconDefaultProps} />;
     }
+    if (event == RankDeltumEventType.VotePost) {
+      return point > 0 ? (
+        <ThumbsUp {...actionIconDefaultProps} />
+      ) : (
+        <ThumbsDown {...actionIconDefaultProps} />
+      );
+    }
     if (event == RankDeltumEventType.LikeComment) {
       return <Heart {...actionIconDefaultProps} />;
     }
@@ -55,6 +72,13 @@ export default function RankDeltum({rankDeltum}) {
     if (event == RankDeltumEventType.LikePost) {
       return (
         <Span fontSize={14}>게시물에 좋아요 {point < 0 ? '취소' : '받음'}</Span>
+      );
+    }
+    if (event == RankDeltumEventType.VotePost) {
+      return (
+        <Span fontSize={14}>
+          제안에 {point < 0 ? '동의 받음' : '반대 받음'}
+        </Span>
       );
     }
     if (event == RankDeltumEventType.LikeComment) {
@@ -84,7 +108,11 @@ export default function RankDeltum({rankDeltum}) {
       </Col>
       <Col />
       <Col auto>
-        <Span>{point} RP</Span>
+        {point > 0 ? (
+          <ChevronsUp {...actionIconDefaultProps} />
+        ) : (
+          <ChevronsDown {...actionIconDefaultProps} />
+        )}
       </Col>
     </Row>
   );

@@ -20,14 +20,13 @@ export default function RankedOwner({rankItem}) {
       },
     },
   });
-  return <RankMemo {...rankItem} gotoNftProfile={gotoNftProfile} />;
+  return <RankMemo {...rankItem} gotoNftProfile={() => gotoNftProfile()} />;
 }
 
 const RankMemo = memo(RankOwnerContent);
 
 function RankOwnerContent({
-  rank_score,
-  rank,
+  contribution,
   nft_metadatum_name,
   nft_name,
   nft_image_uri,
@@ -64,17 +63,9 @@ function RankOwnerContent({
       <Col auto mr10 itemsCenter justifyCenter>
         <Span gray700>
           <Span bold black>
-            {rank}
+            {Math.round(contribution * 10) / 10}
           </Span>{' '}
-          위
-        </Span>
-      </Col>
-      <Col auto mr10 itemsCenter justifyCenter>
-        <Span gray700>
-          <Span bold black>
-            {rank_score}
-          </Span>{' '}
-          RP
+          인분
         </Span>
       </Col>
     </Row>

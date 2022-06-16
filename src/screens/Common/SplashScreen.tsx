@@ -9,7 +9,6 @@ import {useAutoLogin} from 'src/redux/appReducer';
 import { IMAGES } from 'src/modules/images';
 import {JWT} from 'src/modules/constants';
 import {Span} from 'src/components/common/Span';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import {useGotoHome, useGotoPost, useGotoNftProfile} from 'src/hooks/useGoto';
 
 const getInitialRoute = (routeParams) => {

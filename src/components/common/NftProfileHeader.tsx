@@ -208,10 +208,10 @@ export default function NftProfileHeader({
             </Col>
             <Col auto mr12 onPress={gotoRankDeltum}>
               <Span bold fontSize={13}>
+                {nft.contribution}{' '}
                 <Span gray700 regular fontSize={13}>
-                  랭크 스코어
-                </Span>{' '}
-                {nft.current_rank_score}
+                  인분
+                </Span>
               </Span>
             </Col>
             <Col />

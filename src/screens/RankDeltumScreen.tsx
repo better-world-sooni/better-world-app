@@ -40,7 +40,7 @@ export default function RankDeltumScreen({
       refreshing={rankDeltumLoading}
       onEndReached={handleEndReached}
       isPaginating={rankDeltumPaginating}
-      title={'랭크 포인트 로그'}
+      title={'활동 로그'}
       renderItem={({item}) => {
         return <RankDeltum rankDeltum={item} />;
       }}

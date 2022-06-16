@@ -56,7 +56,7 @@ const MyNftMenu = ({nft}) => {
       {nft && (
         <Div px30>
           <Row zIndex={100} itemsCenter>
-            <Col auto mr10 onPress={gotoNftProfile}>
+            <Col auto mr10 onPress={() => gotoNftProfile()}>
               <Img
                 rounded100
                 borderWhite
@@ -71,7 +71,7 @@ const MyNftMenu = ({nft}) => {
           </Row>
           <Div py10>
             <Row itemsCenter>
-              <Col auto mr10 onPress={gotoNftProfile}>
+              <Col auto mr10 onPress={() => gotoNftProfile()}>
                 <Span>
                   <Span fontSize={20} bold color={textColor}>
                     {getNftName(nft)}
@@ -110,10 +110,10 @@ const MyNftMenu = ({nft}) => {
             <Row mt10 itemsEnd onPress={gotoRankDeltum}>
               <Col auto mr20>
                 <Span bold fontSize={13}>
+                  {nft.contribution}{' '}
                   <Span gray700 regular fontSize={13}>
-                    랭크 스코어
-                  </Span>{' '}
-                  {nft.current_rank_score}
+                    인분
+                  </Span>
                 </Span>
               </Col>
               <Col />

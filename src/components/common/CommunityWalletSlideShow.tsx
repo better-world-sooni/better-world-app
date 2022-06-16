@@ -5,6 +5,7 @@ import Carousel, {Pagination} from 'react-native-snap-carousel';
 import Colors from 'src/constants/Colors';
 import {useGotoNftCollectionProfile} from 'src/hooks/useGoto';
 import {truncateKlaytnAddress} from 'src/modules/constants';
+import {smallBump} from 'src/modules/hapticFeedBackUtils';
 import {ICONS} from 'src/modules/icons';
 import {getNftCollectionProfileImage, getNftName} from 'src/modules/nftUtils';
 import {Col} from './Col';
@@ -74,6 +75,7 @@ function CommunityWalletItem({communityWallet, width}) {
     strokeWidth: 1.7,
   };
   const copyToClipboard = () => {
+    smallBump();
     Clipboard.setString(communityWallet.address);
   };
   return (

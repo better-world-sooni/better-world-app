@@ -1,5 +1,4 @@
 import React, {useRef} from 'react';
-import {Div} from 'src/components/common/Div';
 import {Row} from 'src/components/common/Row';
 import {Bell} from 'react-native-feather';
 import apis from 'src/modules/apis';
@@ -12,7 +11,6 @@ import Post from 'src/components/common/Post';
 import {Img} from 'src/components/common/Img';
 import {DEVICE_WIDTH} from 'src/modules/styles';
 import {useGotoNotification} from 'src/hooks/useGoto';
-import {IMAGES} from 'src/modules/images';
 import SideMenu from 'react-native-side-menu-updated';
 import MyNftMenu from '../../components/common/MyNftMenu';
 import FeedFlatlist from 'src/components/FeedFlatlist';
@@ -39,6 +37,7 @@ export default function SocialScreen() {
   const paginateGetWithToken = usePaginateGETWithToken();
   const handleRefresh = () => {
     if (feedLoading) return;
+    reloadGETWithToken(apis.nft._());
     reloadGETWithToken(apis.feed.social());
     reloadGETWithToken(apis.nft_collection.profile());
   };

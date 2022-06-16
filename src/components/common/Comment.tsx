@@ -106,7 +106,7 @@ function CommentContent({
   return (
     <Div py3={!nested}>
       <Row py6 mr15 ml16 pl16 rounded10 borderGray200>
-        <Col auto mr10 onPress={goToProfile}>
+        <Col auto mr10 onPress={() => goToProfile()}>
           <Img
             rounded={100}
             h={profileImageSize}
@@ -118,7 +118,7 @@ function CommentContent({
           <Row>
             <Col mr10>
               <Span>
-                <Span bold fontSize={14} onPress={goToProfile}>
+                <Span bold fontSize={14} onPress={() => goToProfile()}>
                   {nftName || nftMetadatumName}{' '}
                 </Span>{' '}
                 <Span fontSize={14}>{content}</Span>

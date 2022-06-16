@@ -17,7 +17,6 @@ import {
   useGotoNewPost,
   useGotoNftCollectionProfile,
   useGotoNftProfile,
-  useGotoPost,
   useGotoReport,
   useGotoRepostList,
   useGotoVoteList,
