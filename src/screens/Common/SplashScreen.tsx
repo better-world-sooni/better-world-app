@@ -10,18 +10,37 @@ import { IMAGES } from 'src/modules/images';
 import {JWT} from 'src/modules/constants';
 import {Span} from 'src/components/common/Span';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import {useGotoHome, useGotoPost} from 'src/hooks/useGoto';
+import {useGotoHome, useGotoPost, useGotoNftProfile} from 'src/hooks/useGoto';
+
+const getInitialRoute = (routeParams) => {
+  if(routeParams.notificationOpened) {
+    if(routeParams.routeDestination.navName === NAV_NAMES.Post) {
+      return {
+        gotoInitial: useGotoPost(routeParams.routeDestination.id),
+        params: [false, true]
+      }
+
+    }
+    else if(routeParams.routeDestination.navName === NAV_NAMES.OtherProfile) {
+      return {
+        gotoInitial: useGotoNftProfile({nft: routeParams.routeDestination.id}),
+        params: [true]
+      }
+    }
+  }
+  else {
+    return {
+      gotoInitial: useGotoHome(),
+      params: []
+    }
+  }
+}
 
 const SplashScreen = ({route}) => {
   const navigation = useNavigation();
   const autoLogin = useAutoLogin();
-  const gotoHome = useGotoHome();
   const routeParams = route.params
-  let gotoPost = null
-  if(routeParams.notificationOpened) {
-    gotoPost = useGotoPost(routeParams?.routeDestination?.id);
-  }
-  console.log("splash", routeParams)
+  const initialRoute = getInitialRoute(routeParams)
 
   useEffect(() => {
     isAutoLoginChecked();
@@ -34,11 +53,7 @@ const SplashScreen = ({route}) => {
           value,
           props => {
             if (props.data.user.main_nft) {
-              if(routeParams.notificationOpened){
-                gotoPost(false, true, props.data.jwt)
-                return;
-              }
-              gotoHome();
+              initialRoute.gotoInitial(...initialRoute.params, props.data.jwt)
               return;
             }
             navigation.dispatch(

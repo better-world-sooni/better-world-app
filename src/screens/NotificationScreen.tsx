@@ -44,7 +44,6 @@ import ListFlatlist from 'src/components/ListFlatlist';
 import Notification from 'src/components/Notification';
 
 export default function NotificationScreen() {
-  console.log("not")
   const {
     data: notificationRes,
     isLoading: notificationLoading,

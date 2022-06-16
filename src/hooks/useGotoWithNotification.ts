@@ -19,7 +19,7 @@ export function useGotoWithNotification() {
         } = notificationData
         if(['like_post', 'like_comment', 'comment'].includes(event)){
             apiGETWithToken(apis.post.postId._(post_id));
-            notificationNavigate(NAV_NAMES.Post, {post_id, autoFocus: false})
+            notificationNavigate(NAV_NAMES.Post, {postId: post_id, autoFocus: false})
         } 
         else if(['follow', 'hug'].includes(event)) {
             const nft = {

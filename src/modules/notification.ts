@@ -23,8 +23,14 @@ const onDisplayNotification = async(title, body, data) => {
     });
 }
 export async function onMessageReceived(message) {
-    const dataJSONWithStrings = JSON.parse(message.data.data, (key, val) => (
-        typeof val !== 'object' && val !== null ? String(val) : val
-    ));
-    onDisplayNotification(message.data.title, message.data.body, dataJSONWithStrings);
+    const notificationData = JSON.parse(message.data.data)
+    Object.keys(notificationData).forEach(key => {
+        if (notificationData[key] === null) {
+          delete notificationData[key];
+        }
+        else{
+            notificationData[key] = String(notificationData[key]);
+        }
+    });
+    onDisplayNotification(message.data.title, message.data.body, notificationData);
 }

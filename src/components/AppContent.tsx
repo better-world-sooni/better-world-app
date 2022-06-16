@@ -150,8 +150,8 @@ const setInitialRouteParams = (notificationOpenData) => {
           id: {
             contract_address: notificationOpenData.contract_address,
             token_id: notificationOpenData.token_id,
-            name: notificationOpenData.name,
-            image_uri: notificationOpenData.image_uri,
+            name: notificationOpenData?.name,
+            image_uri: notificationOpenData?.image_uri,
             nft_metadatum: {
               name: notificationOpenData.meta_name,
               image_uri: notificationOpenData.meta_image_uri,
@@ -174,7 +174,6 @@ export const AppContent = ({notificationOpenData}) => {
     session: {token},
   } = useSelector((root: RootState) => root.app, shallowEqual);
 
-  console.log("appcontent", notificationOpenData)
   const initialRouteParams = setInitialRouteParams(notificationOpenData)
 
   const Navs = [

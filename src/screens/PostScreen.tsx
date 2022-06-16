@@ -19,7 +19,7 @@ export default function PostScreen({
     isLoading: postLoad,
     error,
   } = useApiSelector(apis.post.postId._(postId));
-
+  
   if (postLoad) return <PostLoading />;
 
   if (!postRes && error)

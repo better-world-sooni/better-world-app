@@ -29,6 +29,7 @@ const App = () => {
   const gotoWithNotification = useGotoWithNotification();
   const postPromiseFnWithToken = usePostPromiseFnWithToken();
   const [notificationOpenData, setNotificationOpenData] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   const getToken = useCallback(async () => {
     try {
@@ -64,12 +65,6 @@ const App = () => {
     LogBox.ignoreAllLogs();
   });
 
-  const unsubscribe = notifee.onForegroundEvent(({ type, detail }) => {
-    if(type === EventType.PRESS) {
-      gotoWithNotification(detail.notification.data)
-    }
-  })
-
   async function initialOpened() {
     const initialNotification = await notifee.getInitialNotification();
     if (initialNotification) {
@@ -78,9 +73,14 @@ const App = () => {
   }
 
   useEffect(() => {
-    initialOpened();
-    return unsubscribe();
-  }, []);
+    initialOpened().then(() => setLoading(false)).catch(console.error);
+    return notifee.onForegroundEvent(({ type, detail }) => {
+      if (type === EventType.PRESS) {
+        gotoWithNotification(detail.notification.data)
+      }
+    });
+  }, [token]);
+
 
   useEffect(() => {
     if (isLoggedIn) {
@@ -89,6 +89,10 @@ const App = () => {
       return unsubscribe;
     }
   }, [isLoggedIn]);
+
+  if (loading) {
+    return null;
+  }
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>

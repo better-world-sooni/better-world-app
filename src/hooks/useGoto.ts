@@ -9,20 +9,42 @@ import { FollowOwnerType, FollowType } from "src/screens/FollowListScreen";
 
 export function useGotoNftProfile({nft}){
     const apiGETWithToken = useApiGETWithToken()
+    const apiGET = useApiGET()
     const navigation = useNavigation()
-    const gotoProfile = () => {
-      apiGETWithToken(
-        apis.nft.contractAddressAndTokenId(
-          nft.contract_address,
-          nft.token_id,
-        ),
-      );
-      apiGETWithToken(
-        apis.post.list.nft(nft.contract_address, nft.token_id)
-      )
-      navigation.navigate(NAV_NAMES.OtherProfile as never, {
-        nft
-      } as never);
+    const gotoProfile = (notificationOpened=false, jwt=null) => {
+      if(notificationOpened) {
+        apiGET(
+          apis.nft.contractAddressAndTokenId(
+            nft.contract_address,
+            nft.token_id,
+          ),
+          jwt
+        );
+        apiGET(
+          apis.post.list.nft(nft.contract_address, nft.token_id),
+          jwt
+        );
+        navigation.dispatch(
+          CommonActions.reset({
+            index: 1,
+            routes:[{name: NAV_NAMES.Home},{name: NAV_NAMES.OtherProfile, params: {nft}}]
+          })
+        );
+      }
+      else {
+        apiGETWithToken(
+          apis.nft.contractAddressAndTokenId(
+            nft.contract_address,
+            nft.token_id,
+          ),
+        );
+        apiGETWithToken(
+          apis.post.list.nft(nft.contract_address, nft.token_id)
+        )
+        navigation.navigate(NAV_NAMES.OtherProfile as never, {
+          nft
+        } as never);
+      }
     }
     return gotoProfile
 }
