@@ -4,6 +4,7 @@ import { Div } from "src/components/common/Div"
 import { Row } from "src/components/common/Row"
 import { Span } from "src/components/common/Span"
 import { Style } from "src/components/common/Style"
+import useAutoFocusRef from 'src/hooks/useAutoFocusRef';
 import { TextInput  } from "src/modules/viewComponents"
 
 export const TextField = (props) => {
@@ -16,27 +17,32 @@ export const TextField = (props) => {
     value,
     onChangeText,
     disabled,
-    placeHolder,
+    placeholder,
     password,
     leftComp,
     rightComp,
+    autoFocus,
     ...others
-  } = props
+  } = props;
+  const autoFocusRef = useAutoFocusRef();
   return (
     <Div w="100%" mt={mt}>
-      <Span header6 black styleComp={labelStyle}>
-        {label}
-      </Span>
+      {label ? (
+        <Span notice styleComp={labelStyle}>
+          {label}
+        </Span>
+      ) : null}
       <Row itemsCenter mt4>
         {leftComp && <Col auto>{leftComp}</Col>}
         <Col>
           <TextInput
+            innerRef={autoFocus && autoFocusRef}
             autoCorrect={false}
-            h52
-            border
+            h48
+            border={0.5}
             borderGray400
-            rounded4
-            p16
+            rounded10
+            p12
             {...others}
             styleComp={[
               <Style borderDanger isActive={error} />,
@@ -44,7 +50,7 @@ export const TextField = (props) => {
             ]}
             editable={!disabled}
             secureTextEntry={password}
-            placeholder={placeHolder}
+            placeholder={placeholder}
             onChangeText={onChangeText}
             value={value}
             color={'#000000'}

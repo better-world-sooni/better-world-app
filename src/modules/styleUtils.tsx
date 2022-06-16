@@ -11,7 +11,6 @@ export const COLOR_PALETTE = [
   {name: 'Secondary2', color: varStyle.secondary2},
   {name: 'Secondary2Soft', color: varStyle.secondary2Soft},
   {name: 'Gray700', color: varStyle.gray700},
-  {name: 'Gray700Soft', color: varStyle.gray700Soft},
   {name: 'Gray600', color: varStyle.gray600},
   {name: 'Gray500', color: varStyle.gray500},
   {name: 'Gray400', color: varStyle.gray400},
@@ -140,6 +139,7 @@ export const addLayoutStyles = (props, arr: Array<any>, key) => {
     shadowOffset,
     shadowOpacity,
     shadowRadius,
+    blur,
   } = props;
   const ctx = {props, arr, key, isActive};
 
@@ -397,6 +397,7 @@ export const addLayoutStyles = (props, arr: Array<any>, key) => {
   if (addIf(ctx, {shadowRadius}, v => ({shadowRadius: v}))) {
     return;
   }
+
 };
 
 export const addBorderStyles = (props, arr: Array<any>, key) => {
@@ -887,12 +888,6 @@ export const addImageStyles = (props, arr: Array<any>, key) => {
   if (addIf(ctx, {aspectRatio}, v => ({aspectRatio: v}))) {
     return;
   }
-  // if (addIf(ctx, { resizeMode }, (v) => ({ resizeMode: v }))) return
-  // if (addIf(ctx, { resizeCover }, (v) => ({ resizeMode: 'cover' }))) return
-  // if (addIf(ctx, { resizeContain }, (v) => ({ resizeMode: 'contain' }))) return
-  // if (addIf(ctx, { resizeRepeat }, (v) => ({ resizeMode: 'repeat' }))) return
-  // if (addIf(ctx, { resizeStretch }, (v) => ({ resizeMode: 'stretch' }))) return
-  // if (addIf(ctx, { resizeCenter }, (v) => ({ resizeMode: 'center' }))) return
   if (addIf(ctx, {tintColor}, v => ({tintColor: v}))) {
     return;
   }

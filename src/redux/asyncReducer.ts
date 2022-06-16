@@ -3,57 +3,72 @@ import {createSlice} from '@reduxjs/toolkit';
 import _ from 'lodash';
 import {shallowEqual, useDispatch, useSelector} from 'react-redux';
 import {RootState} from 'src/redux/rootReducer';
-import {asyncThunk} from './asyncThunk';
+import {asyncThunk, FetchType} from './asyncThunk';
+
+
+export const usePutPromiseFnWithToken = () => {
+  const {userToken} = useSelector(
+    (root: RootState) => ({userToken: root.app.session.token}),
+    shallowEqual,
+  );
+  return async(args) => putPromiseFn({...args, token: userToken})
+};
+export const usePostPromiseFnWithToken = () => {
+  const {userToken} = useSelector(
+    (root: RootState) => ({userToken: root.app.session.token}),
+    shallowEqual,
+  );
+  return async(args) => postPromiseFn({...args, token: userToken})
+};
+export const useDeletePromiseFnWithToken = () => {
+  const {userToken} = useSelector(
+    (root: RootState) => ({userToken: root.app.session.token}),
+    shallowEqual,
+  );
+  return async(args) => deletePromiseFn({...args, token: userToken})
+};
+
+export const useGetPromiseFnWithToken = () => {
+  const {userToken} = useSelector(
+    (root: RootState) => ({userToken: root.app.session.token}),
+    shallowEqual,
+  );
+  return async(args) => await getPromiseFn({...args, token: userToken})
+};
+
+
+
+export const usePromiseFnWithToken = () => {
+  const {userToken} = useSelector(
+    (root: RootState) => ({userToken: root.app.session.token}),
+    shallowEqual,
+  );
+  return async(args) => promiseFn({...args, token: userToken,})
+};
 
 export const getPromiseFn = async args => {
-  const {url, token} = args;
-  const res = await fetch(url, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-      ...(token && {Authorization: 'Bearer ' + token}),
-    },
-  });
-  const json = await res.json();
-  return {ok: res.ok, data: json, status: res.status};
+  return await promiseFn({...args, method: "GET"})
 };
 
 export const postPromiseFn = async args => {
-  const {url, body, token} = args;
-  const res = await fetch(url, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      ...(token && {Authorization: 'Bearer ' + token}),
-    },
-    ...(body && {body: JSON.stringify(body)}),
-  });
-  const json = await res.json();
-
-
-  return {ok: res.ok, data: json, status: res.status};
+  return await promiseFn({...args, method: "POST"})
 };
 
 export const deletePromiseFn = async args => {
-  const {url, body, token} = args;
-  const res = await fetch(url, {
-    method: 'DELETE',
-    headers: {
-      'Content-Type': 'application/json',
-      ...(token && {Authorization: 'Bearer ' + token}),
-    },
-    ...(body && {body: JSON.stringify(body)}),
-  });
-  const json = await res.json();
-
-
-  return {ok: res.ok, data: json, status: res.status};
+  return await promiseFn({...args, method: "DELETE"})
 };
 
 export const patchPromiseFn = async args => {
-  const {url, body, token} = args;
+  return await promiseFn({...args, method: "PATCH"})
+};
+
+export const putPromiseFn = async args => {
+  return await promiseFn({...args, method: "PUT"})
+};
+
+export const promiseFn = async ({url, body, token, method}) => {
   const res = await fetch(url, {
-    method: 'PATCH',
+    method: method,
     headers: {
       'Content-Type': 'application/json',
       ...(token && {Authorization: 'Bearer ' + token}),
@@ -61,16 +76,27 @@ export const patchPromiseFn = async args => {
     ...(body && {body: JSON.stringify(body)}),
   });
   const json = await res.json();
-
-
   return {ok: res.ok, data: json, status: res.status};
-};
+}
+
+export const promiseFnPure = async args => {
+  const {url, body, method, headers} = args;
+  const res = await fetch(url, {
+    method: method,
+    headers: {
+      'Content-Type': 'application/json',
+      ...headers,
+    },
+    body,
+  });
+  return res
+}
 
 const keyWithScope = (key, scope?) => {
   return scope ? `${scope}/${key}` : key;
 };
 
-const getKeyByApi = (api, scope?) => {
+export const getKeyByApi = (api, scope?) => {
   if (typeof api === 'function') {
     return keyWithScope(api._apiKey, scope);
   } else if (typeof api === 'object') {
@@ -96,7 +122,7 @@ export const useApiResetByScope = scope => {
   return () => dispatch(asyncActions.resetByScope({scope}));
 };
 
-export const useApiGET = (props = {}) => {
+export const useApiGETWithToken = (props = {}) => {
   const {scope, token} = props as any;
   const {userToken} = useSelector(
     (root: RootState) => ({userToken: root.app.session.token}),
@@ -104,7 +130,6 @@ export const useApiGET = (props = {}) => {
   );
   const finalToken = token ? token : userToken;
   const dispatch = useDispatch();
-  const navigation = useNavigation();
   return (api, successHandler?, errHandler?) => {
     const key = getKeyByApi(api, scope);
     dispatch(
@@ -114,16 +139,14 @@ export const useApiGET = (props = {}) => {
         promiseFn: getPromiseFn,
         successHandler,
         errHandler,
-        navigation,
       }),
     );
   };
 };
 
-export const useApiGETWithToken = (props = {}) => {
+export const useApiGET = (props = {}) => {
   const {scope} = props as any;
   const dispatch = useDispatch();
-  const navigation = useNavigation();
   const route = useRoute();
   return (api, token, successHandler?, errHandler?) => {
     const key = getKeyByApi(api, scope);
@@ -134,13 +157,27 @@ export const useApiGETWithToken = (props = {}) => {
         promiseFn: getPromiseFn,
         successHandler,
         errHandler,
-        navigation,
       }),
     );
   };
 };
 
-export const useReloadGET = (props = {}) => {
+export const useApiGETAsync = (props = {}) => {
+  const {scope} = props as any;
+  const dispatch = useDispatch();
+  return async (api, token, successHandler?, errHandler?) => {
+    const key = getKeyByApi(api, scope);
+    await dispatch(await asyncThunk({
+      key: key,
+      args: {url: api.url, ...(token && {token: token})},
+      promiseFn: getPromiseFn,
+      successHandler,
+      errHandler,
+    }))
+  };
+};
+
+export const useReloadGETWithToken = (props = {}) => {
   const {scope, token} = props as any;
   const { userToken } = useSelector(
     (root: RootState) => ({ userToken: root.app.session.token }),
@@ -148,7 +185,6 @@ export const useReloadGET = (props = {}) => {
   );
   const finalToken = token ? token : userToken;
   const dispatch = useDispatch();
-  const navigation = useNavigation();
   return (api, successHandler?, errHandler?) => {
     const key = getKeyByApi(api, scope);
     dispatch(
@@ -158,14 +194,12 @@ export const useReloadGET = (props = {}) => {
         promiseFn: getPromiseFn,
         successHandler,
         errHandler,
-        navigation,
-        reload: true,
+        fetchType: FetchType.Reload,
       }),
     );
   };
 };
-
-export const useApiPOST = (props = {}) => {
+export const usePaginateGETWithToken = (props = {}) => {
   const {scope, token} = props as any;
   const { userToken } = useSelector(
     (root: RootState) => ({ userToken: root.app.session.token }),
@@ -173,7 +207,30 @@ export const useApiPOST = (props = {}) => {
   );
   const finalToken = token ? token : userToken;
   const dispatch = useDispatch();
-  const navigation = useNavigation();
+  return (api, concatKey, successHandler?, errHandler?) => {
+    const key = getKeyByApi(api, scope);
+    dispatch(
+      asyncThunk({
+        key: key,
+        args: { url: api.url, ...(finalToken && { token: finalToken }) },
+        promiseFn: getPromiseFn,
+        concatKey,
+        successHandler,
+        errHandler,
+        fetchType: FetchType.Paginate,
+      }),
+    );
+  };
+};
+
+export const useApiPOSTWithToken = (props = {}) => {
+  const {scope, token} = props as any;
+  const { userToken } = useSelector(
+    (root: RootState) => ({ userToken: root.app.session.token }),
+    shallowEqual,
+  );
+  const finalToken = token ? token : userToken;
+  const dispatch = useDispatch();
   return (api, body?, successHandler?, errHandler?) => {
     const key = getKeyByApi(api, scope);
     dispatch(
@@ -187,13 +244,38 @@ export const useApiPOST = (props = {}) => {
         promiseFn: postPromiseFn,
         successHandler,
         errHandler,
-        navigation,
       }),
     );
   };
 };
 
-export const useReloadPOST = (props = {}) => {
+export const useApiPUTWithToken = (props = {}) => {
+  const {scope, token} = props as any;
+  const { userToken } = useSelector(
+    (root: RootState) => ({ userToken: root.app.session.token }),
+    shallowEqual,
+  );
+  const finalToken = token ? token : userToken;
+  const dispatch = useDispatch();
+  return (api, body?, successHandler?, errHandler?) => {
+    const key = getKeyByApi(api, scope);
+    dispatch(
+      asyncThunk({
+        key: key,
+        args: {
+          url: api.url,
+          ...(body && {body}),
+          ...(finalToken && {token: finalToken}),
+        },
+        promiseFn: putPromiseFn,
+        successHandler,
+        errHandler,
+      }),
+    );
+  };
+};
+
+export const useReloadPOSTWithToken = (props = {}) => {
   const {scope, token} = props as any;
   const {userToken} = useSelector(
     (root: RootState) => ({userToken: root.app.session.token}),
@@ -201,7 +283,6 @@ export const useReloadPOST = (props = {}) => {
   );
   const finalToken = token ? token : userToken;
   const dispatch = useDispatch();
-  const navigation = useNavigation();
   return (api, body?, successHandler?, errHandler?) => {
     const key = getKeyByApi(api, scope);
     dispatch(
@@ -215,8 +296,7 @@ export const useReloadPOST = (props = {}) => {
         promiseFn: postPromiseFn,
         successHandler,
         errHandler,
-        navigation,
-        reload: true,
+        fetchType: FetchType.Reload,
       }),
     );
   };
@@ -224,18 +304,24 @@ export const useReloadPOST = (props = {}) => {
 
 export const useApiSelector = (api, scope?) => {
   const newKey = getKeyByApi(api, scope);
-  const {data, isLoading, error} = useSelector(
+  const {data, isLoading, error, page, isPaginating, isNotPaginatable} = useSelector(
     (root: RootState) => ({
       data: root.async[newKey]?.data,
       isLoading: root.async[newKey]?.isLoading,
+      isPaginating: root.async[newKey]?.isPaginating,
       error: root.async[newKey]?.error,
+      page: root.async[newKey]?.page,
+      isNotPaginatable: root.async[newKey]?.isNotPaginatable
     }),
     shallowEqual,
   );
   return {
     data,
     isLoading,
+    isPaginating,
     error,
+    page,
+    isNotPaginatable
   };
 };
 
@@ -267,22 +353,25 @@ const asyncSlice = createSlice({
         startedAt: new Date().toString(),
         finishedAt: null,
         elapedTime: 0,
+        page: 1,
         error: null,
+        isNotPaginatable: false,
       };
     },
     fetchReload(state, action) {
-      const {key, args} = action.payload;
-      const prevData = state[key] && state[key].data;
-      state[key] = {
-        args: args,
-        data: null,
-        // ...(prevData && {data: prevData}),
-        isLoading: true,
-        startedAt: new Date().toString(),
-        finishedAt: null,
-        elapedTime: 0,
-        error: null,
-      };
+      const {key} = action.payload;
+      state[key].isLoading = true
+      state[key].startedAt = new Date().toString()
+      state[key].page = 1
+      state[key].error = null
+      state[key].isNotPaginatable = false
+    },
+    fetchPaginate(state, action) {
+      const {key} = action.payload;
+      state[key].isPaginating = true
+      state[key].startedAt = new Date().toString()
+      state[key].error = null
+      state[key].isNotPaginatable = false
     },
     success(state, action) {
       const {key, data, status, elapsedTime} = action.payload;
@@ -296,6 +385,23 @@ const asyncSlice = createSlice({
         error: null,
       };
     },
+    successConcat(state, action) {
+      const {key, data, status, elapsedTime, concatKey} = action.payload;
+      const prevPage = state[key] && state[key].page;
+      const isNotPaginatable = (data[concatKey]?.length || 0) == 0
+      state[key] = {
+        ...state[key],
+        status: status,
+        isLoading: false,
+        isPaginating: false,
+        finishedAt: new Date().toString(),
+        elapsedTime: elapsedTime,
+        page: prevPage ? prevPage + 1 : 1,
+        isNotPaginatable,
+        error: null,
+      };
+      if(!isNotPaginatable) state[key].data[concatKey] = [...state[key].data[concatKey],...(data[concatKey])]
+    },
     error(state, action) {
       const {key, error, status, elapsedTime} = action.payload;
       state[key] = {
@@ -303,6 +409,7 @@ const asyncSlice = createSlice({
         data: null,
         status: status,
         isLoading: false,
+        isPaginating: false,
         finishedAt: new Date().toString(),
         elapsedTime: elapsedTime,
         error: error,

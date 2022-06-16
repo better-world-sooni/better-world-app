@@ -3,8 +3,17 @@ require_relative '../node_modules/@react-native-community/cli-platform-ios/nativ
 
 platform :ios, '11.0'
 
-target 'sungan' do
+target 'BetterWorld' do
   config = use_native_modules!
+
+  permissions_path = '../node_modules/react-native-permissions/ios'
+
+  pod 'Permission-AppTrackingTransparency', :path => "#{permissions_path}/AppTrackingTransparency"
+  pod 'Permission-Camera', :path => "#{permissions_path}/Camera"
+  pod 'Permission-MediaLibrary', :path => "#{permissions_path}/MediaLibrary"
+  pod 'Permission-Microphone', :path => "#{permissions_path}/Microphone"
+  pod 'Permission-Notifications', :path => "#{permissions_path}/Notifications"
+  pod 'Permission-PhotoLibrary', :path => "#{permissions_path}/PhotoLibrary"
 
   # rn_maps_path = '../node_modules/react-native-maps'
 
@@ -19,7 +28,7 @@ target 'sungan' do
     :hermes_enabled => true
   )
 
-  target 'sunganTests' do
+  target 'BetterWorldTests' do
     inherit! :complete
     # Pods for testing
   end
@@ -35,7 +44,7 @@ target 'sungan' do
   # end
 
   post_install do |installer|
-    # $RNMBGL.post_install(installer)
     react_native_post_install(installer)
+    flipper_post_install(installer)
   end
 end

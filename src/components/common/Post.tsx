@@ -1,0 +1,503 @@
+import React, {memo, useState} from 'react';
+import {ActivityIndicator, Platform} from 'react-native';
+import {
+  Check,
+  Heart,
+  MessageCircle,
+  MoreHorizontal,
+  Repeat,
+  ThumbsDown,
+  ThumbsUp,
+} from 'react-native-feather';
+import Colors from 'src/constants/Colors';
+import {
+  useGotoForumFeed,
+  useGotoLikeList,
+  useGotoNewPost,
+  useGotoNftCollectionProfile,
+  useGotoNftProfile,
+  useGotoPost,
+  useGotoReport,
+  useGotoRepostList,
+  useGotoVoteList,
+} from 'src/hooks/useGoto';
+import useLike, {LikableType} from 'src/hooks/useLike';
+import apis from 'src/modules/apis';
+import {
+  getNftName,
+  getNftProfileImage,
+  useIsAdmin,
+  useIsCurrentCollection,
+  useIsCurrentNft,
+} from 'src/modules/nftUtils';
+import {createdAtText} from 'src/modules/timeUtils';
+import {Col} from './Col';
+import Comment from './Comment';
+import {Div} from './Div';
+import ImageSlideShow from './ImageSlideShow';
+import {Img} from './Img';
+import {Row} from './Row';
+import {Span} from './Span';
+import {MenuView} from '@react-native-menu/menu';
+import {
+  putPromiseFn,
+  useDeletePromiseFnWithToken,
+  usePutPromiseFnWithToken,
+} from 'src/redux/asyncReducer';
+import {ReportTypes} from 'src/screens/ReportScreen';
+import useVote, {VoteCategory} from 'src/hooks/useVote';
+import {LikeListType} from 'src/screens/LikeListScreen';
+import {DEVICE_WIDTH} from 'src/modules/styles';
+import {PostOwnerType} from 'src/screens/NewPostScreen';
+import TruncatedText from './TruncatedText';
+import RepostedPost from './RepostedPost';
+import CollectionEvent from './CollectionEvent';
+import {getAdjustedHeightFromDimensions} from 'src/modules/imageUtils';
+
+export enum PostEventTypes {
+  Delete = 'DELETE',
+  Report = 'REPORT',
+  SetVotingDeadline = 'SET_VOTING_DEADLINE',
+  SetWinningProposal = 'SET_WINNING_PROPOSAL',
+}
+
+function PostContent({post}) {
+  const [deleted, setDeleted] = useState(false);
+
+  const [loading, setLoading] = useState(false);
+  const [liked, likesCount, handlePressLike] = useLike(
+    post.is_liked,
+    post.likes_count,
+    LikableType.Post,
+    post.id,
+  );
+  const {
+    votable,
+    forVotesCount,
+    againstVotesCount,
+    abstainVotesCount,
+    hasVotedFor,
+    hasVotedAgainst,
+    hasVotedAbstain,
+    handleSetVotable,
+    handlePressVoteAbstain,
+    handlePressVoteFor,
+    handlePressVoteAgainst,
+  } = useVote({
+    initialVote: post.vote_category,
+    initialAbstainVotesCount: post.abstain_votes_count,
+    initialForVotesCount: post.for_votes_count,
+    initialAgainstVotesCount: post.against_votes_count,
+    postId: post.id,
+    votingDeadline: post.voting_deadline,
+  });
+  const isCurrentNft = useIsCurrentNft(post.nft);
+  const isCurrentCollection = useIsCurrentCollection(post.nft);
+  const isAdmin = useIsAdmin(post.nft);
+  const deletePromiseFnWithToken = useDeletePromiseFnWithToken();
+  const putPromiseFnWithToken = usePutPromiseFnWithToken();
+  const menuOptions = [
+    {
+      id: PostEventTypes.Report,
+      title: '게시물 신고',
+      titleColor: '#46F289',
+      subtitle: 'Share action on SNS',
+      image: Platform.select({
+        ios: 'flag',
+        android: 'stat_sys_warning',
+      }),
+    },
+    (isCurrentNft || (!post.nft.token_id && isAdmin)) && {
+      id: PostEventTypes.Delete,
+      title: '게시물 삭제',
+      image: Platform.select({
+        ios: 'trash',
+        android: 'ic_menu_delete',
+      }),
+    },
+    isAdmin &&
+      post.type == 'Proposal' &&
+      post.reposted_post && {
+        id: PostEventTypes.SetWinningProposal,
+        title: '이 제안을 해당 포럼에 참조',
+        image: Platform.select({
+          ios: 'checkmark',
+          android: 'ic_menu_agenda',
+        }),
+      },
+    isAdmin &&
+      post.type == 'Proposal' &&
+      !post.reposted_post && {
+        id: PostEventTypes.SetVotingDeadline,
+        title: '투표 마무리',
+        image: Platform.select({
+          ios: 'checkmark',
+          android: 'ic_menu_agenda',
+        }),
+      },
+    isAdmin &&
+      post.type == 'Forum' && {
+        id: PostEventTypes.SetVotingDeadline,
+        title: '포럼 마무리',
+        image: Platform.select({
+          ios: 'checkmark',
+          android: 'ic_menu_agenda',
+        }),
+      },
+  ].filter(option => option);
+
+  const actionIconDefaultProps = {
+    width: 18,
+    height: 18,
+    color: Colors.gray[700],
+    strokeWidth: 1.7,
+  };
+  const heartProps = liked
+    ? {
+        fill: Colors.danger.DEFAULT,
+        width: 18,
+        height: 18,
+        color: Colors.danger.DEFAULT,
+        strokeWidth: 1.7,
+      }
+    : actionIconDefaultProps;
+
+  const forVoteProps = hasVotedFor
+    ? {
+        fill: Colors.primary.DEFAULT,
+        width: 18,
+        height: 18,
+        color: Colors.primary.DEFAULT,
+        strokeWidth: 1.7,
+      }
+    : actionIconDefaultProps;
+  const againstVoteProps = hasVotedAgainst
+    ? {
+        fill: Colors.danger.DEFAULT,
+        width: 18,
+        height: 18,
+        color: Colors.danger.DEFAULT,
+        strokeWidth: 1.7,
+      }
+    : actionIconDefaultProps;
+  const gotoPost = useGotoPost({postId: post.id});
+
+  const gotoNftProfile = useGotoNftProfile({
+    nft: post.nft,
+  });
+  const gotoNftCollectionProfile = useGotoNftCollectionProfile({
+    nftCollection: post.nft,
+  });
+  const goToProfile = () => {
+    if (post.nft.token_id) {
+      gotoNftProfile();
+    } else {
+      gotoNftCollectionProfile();
+    }
+  };
+  const deletePost = async () => {
+    setLoading(true);
+    const {data} = await deletePromiseFnWithToken({
+      url: apis.post.postId._(post.id).url,
+    });
+    setLoading(false);
+    if (data.success) {
+      setDeleted(true);
+    }
+  };
+
+  const gotoReport = useGotoReport({
+    id: post.id,
+    reportType: ReportTypes.Post,
+  });
+
+  const setVotingDeadline = async () => {
+    setLoading(true);
+    const {data} = await putPromiseFnWithToken({
+      url: apis.post.postId._(post.id).url,
+      body: {
+        property: 'voting_deadline',
+        value: new Date(),
+      },
+    });
+    setLoading(false);
+    if (data.success) {
+      handleSetVotable(false);
+    }
+  };
+  const setWinningProposal = async () => {
+    if (!post.reposted_post.id) return;
+    setLoading(true);
+    const {data} = await putPromiseFnWithToken({
+      url: apis.post.postId._(post.reposted_post?.id).url,
+      body: {
+        property: 'repost_id',
+        value: post.id,
+      },
+    });
+    setLoading(false);
+  };
+
+  const handlePressMenu = ({nativeEvent: {event}}) => {
+    if (event == PostEventTypes.Delete) deletePost();
+    if (event == PostEventTypes.Report) gotoReport();
+    if (event == PostEventTypes.SetVotingDeadline) setVotingDeadline();
+    if (event == PostEventTypes.SetWinningProposal) setWinningProposal();
+  };
+
+  const gotoLikeList = useGotoLikeList({
+    likableId: post.id,
+    likableType: LikeListType.Post,
+  });
+
+  const gotoVoteList = useGotoVoteList({
+    postId: post.id,
+  });
+
+  const gotoNewPost = useGotoNewPost({
+    postOwnerType: PostOwnerType.Nft,
+  });
+
+  const gotoForumFeed = useGotoForumFeed({
+    postId: post.id,
+  });
+
+  const gotoRepostList = useGotoRepostList({
+    postId: post.id,
+  });
+
+  const itemWidth = DEVICE_WIDTH - 30 - 50;
+
+  if (deleted) return null;
+
+  return (
+    <>
+      <Div py5 borderBottom={0.5} borderGray200 bgWhite>
+        <Row px15 pt5>
+          <Col auto mr10>
+            <Div onPress={goToProfile}>
+              <Img
+                w47
+                h47
+                rounded100
+                uri={getNftProfileImage(post.nft, 200, 200)}
+              />
+            </Div>
+          </Col>
+          <Col>
+            <Row>
+              <Col auto>
+                <Span>
+                  <Span fontSize={14} bold onPress={goToProfile}>
+                    {getNftName(post.nft)}
+                  </Span>{' '}
+                  {post.nft.token_id &&
+                    post.nft.nft_metadatum.name != getNftName(post.nft) && (
+                      <Span fontSize={14} gray700 onPress={goToProfile}>
+                        {' '}
+                        {post.nft.nft_metadatum.name}
+                      </Span>
+                    )}
+                  <Span fontSize={14} gray700>
+                    {' · '}
+                    {createdAtText(post.updated_at)}
+                  </Span>
+                </Span>
+              </Col>
+              <Col />
+              <Col auto>
+                <MenuView onPressAction={handlePressMenu} actions={menuOptions}>
+                  {loading ? (
+                    <ActivityIndicator />
+                  ) : (
+                    <MoreHorizontal
+                      color={Colors.gray[400]}
+                      width={20}
+                      height={20}
+                    />
+                  )}
+                </MenuView>
+              </Col>
+            </Row>
+            <Row>
+              {post.content ? (
+                <Div>
+                  <TruncatedText
+                    text={post.content}
+                    maxLength={300}
+                    spanProps={{fontSize: 14}}
+                    onPressTruncated={gotoPost}
+                  />
+                </Div>
+              ) : null}
+            </Row>
+            {post.reposted_post && (
+              <Div mt5>
+                <RepostedPost repostedPost={post.reposted_post} enablePress />
+              </Div>
+            )}
+            {post.image_uris.length > 0 ? (
+              <Div mt5>
+                <ImageSlideShow
+                  imageUris={post.image_uris}
+                  sliderHeight={
+                    post.image_width && post.image_height
+                      ? getAdjustedHeightFromDimensions({
+                          width: post.image_width,
+                          height: post.image_height,
+                          frameWidth: itemWidth,
+                        })
+                      : itemWidth * 0.7
+                  }
+                  sliderWidth={itemWidth}
+                />
+              </Div>
+            ) : null}
+
+            {post.collection_event && (
+              <Div mt5>
+                <CollectionEvent
+                  collectionEvent={post.collection_event}
+                  reposted
+                  itemWidth={itemWidth}
+                />
+              </Div>
+            )}
+            <Row itemsCenter mb8 mt8>
+              {!post.type ? (
+                <>
+                  {likesCount > 0 && (
+                    <Col auto mr12>
+                      <Span
+                        fontSize={12}
+                        style={{fontWeight: '600'}}
+                        onPress={gotoLikeList}>
+                        좋아요 <Span realBlack>{likesCount}</Span>개
+                      </Span>
+                    </Col>
+                  )}
+                  {post.repost_count > 0 && (
+                    <Col auto mr12>
+                      <Span
+                        fontSize={12}
+                        style={{fontWeight: '600'}}
+                        onPress={gotoRepostList}>
+                        리포스트 <Span realBlack>{post.repost_count}</Span>번
+                      </Span>
+                    </Col>
+                  )}
+                  <Col />
+                  <Col auto mr16 onPress={handlePressLike}>
+                    {<Heart {...heartProps}></Heart>}
+                  </Col>
+                </>
+              ) : post.type == 'Proposal' ? (
+                <>
+                  <Col auto mr12 gray800>
+                    <Span
+                      fontSize={12}
+                      style={{fontWeight: '600'}}
+                      onPress={() => gotoVoteList(VoteCategory.Against)}>
+                      반대 <Span realBlack>{againstVotesCount}</Span>표 (
+                      {Math.round(
+                        (againstVotesCount + forVotesCount > 0
+                          ? againstVotesCount /
+                            (againstVotesCount + forVotesCount)
+                          : 0) * 100,
+                      )}
+                      %)
+                    </Span>
+                  </Col>
+                  <Col auto mr12 gray800>
+                    <Span
+                      fontSize={12}
+                      style={{fontWeight: '600'}}
+                      onPress={() => gotoVoteList(VoteCategory.For)}>
+                      찬성 <Span realBlack>{forVotesCount}</Span>표 (
+                      {Math.round(
+                        (againstVotesCount + forVotesCount > 0
+                          ? forVotesCount / (againstVotesCount + forVotesCount)
+                          : 0) * 100,
+                      )}
+                      %)
+                    </Span>
+                  </Col>
+                  <Col />
+                  {isCurrentCollection && votable && (
+                    <>
+                      <Col auto pr12 onPress={handlePressVoteAgainst}>
+                        {<ThumbsDown {...againstVoteProps}></ThumbsDown>}
+                      </Col>
+                      <Col auto pr12 onPress={handlePressVoteFor}>
+                        {<ThumbsUp {...forVoteProps}></ThumbsUp>}
+                      </Col>
+                    </>
+                  )}
+                </>
+              ) : (
+                <>
+                  <Col auto pr12>
+                    <Span
+                      fontSize={12}
+                      style={{fontWeight: '600'}}
+                      onPress={() =>
+                        gotoForumFeed(`${getNftName(post.nft)} 포럼`)
+                      }>
+                      제안 <Span realBlack>{post.repost_count}</Span>개
+                    </Span>
+                  </Col>
+                  <Col />
+                </>
+              )}
+              {post.type == 'Forum'
+                ? isCurrentCollection &&
+                  votable && (
+                    <Col auto onPress={() => gotoNewPost(post)}>
+                      <Span info bold fontSize={12}>
+                        제안하기
+                      </Span>
+                    </Col>
+                  )
+                : !post.type && (
+                    <Col auto onPress={() => gotoNewPost(post)} pr16>
+                      <Repeat {...actionIconDefaultProps} />
+                    </Col>
+                  )}
+              {!votable && (
+                <>
+                  <Col auto mr8>
+                    <Span bold fontSize={12}>
+                      완료됨
+                    </Span>
+                  </Col>
+                  <Col auto rounded100 bgRealBlack p3 bgSuccess>
+                    <Check
+                      strokeWidth={2}
+                      height={15}
+                      width={15}
+                      color={'white'}
+                    />
+                  </Col>
+                </>
+              )}
+              {post.type !== 'Forum' && votable && (
+                <Col auto onPress={() => gotoPost(true)}>
+                  <MessageCircle {...actionIconDefaultProps} />
+                </Col>
+              )}
+            </Row>
+          </Col>
+        </Row>
+        {post.comment && !post.type && (
+          <Div onPress={gotoPost}>
+            <Comment hot key={post.comment.id} comment={post.comment}></Comment>
+          </Div>
+        )}
+      </Div>
+    </>
+  );
+}
+
+const PostMemo = memo(PostContent);
+
+export default PostMemo;

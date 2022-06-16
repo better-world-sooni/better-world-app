@@ -3,21 +3,21 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>390936318985-u66pubg8r0dqml9nq4n03hlvh920r32r.apps.googleusercontent.com</string>
+	<string>949042849309-3hvs4908757u254c8jbufbr4ngnsml5g.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.390936318985-u66pubg8r0dqml9nq4n03hlvh920r32r</string>
+	<string>com.googleusercontent.apps.949042849309-3hvs4908757u254c8jbufbr4ngnsml5g</string>
 	<key>API_KEY</key>
-	<string>AIzaSyAWw0m4YELVv-nOxcVlftIlwqJ36sHPIsY</string>
+	<string>AIzaSyAR1tlGM-HwuAGJCIHJeZxP3moMu4AOKCE</string>
 	<key>GCM_SENDER_ID</key>
-	<string>390936318985</string>
+	<string>949042849309</string>
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>org.reactjs.native.app.sungan</string>
+	<string>org.reactjs.native.app.betterworld</string>
 	<key>PROJECT_ID</key>
-	<string>sungan-7570a</string>
+	<string>betterworld-51ad5</string>
 	<key>STORAGE_BUCKET</key>
-	<string>sungan-7570a.appspot.com</string>
+	<string>betterworld-51ad5.appspot.com</string>
 	<key>IS_ADS_ENABLED</key>
 	<false></false>
 	<key>IS_ANALYTICS_ENABLED</key>
@@ -29,6 +29,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:390936318985:ios:e7a3eaeb2f9241087194d8</string>
+	<string>1:949042849309:ios:8d0819ac4b3a337531c8f4</string>
 </dict>
 </plist>

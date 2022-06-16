@@ -1,4 +1,4 @@
-package com.sungan;
+package com.betterworld;
 
 import android.app.Application;
 import android.content.Context;
@@ -11,6 +11,9 @@ import com.facebook.soloader.SoLoader;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import com.microsoft.codepush.react.CodePush;
+import com.facebook.react.bridge.JSIModulePackage;
+import com.swmansion.reanimated.ReanimatedJSIModulePackage;
+import com.cmcewen.blurview.BlurViewPackage;
 
 public class MainApplication extends Application implements ReactApplication {
 
@@ -39,7 +42,7 @@ public class MainApplication extends Application implements ReactApplication {
         protected String getJSBundleFile() {
             return CodePush.getJSBundleFile();
         }
-        
+
       };
 
   @Override
@@ -69,7 +72,7 @@ public class MainApplication extends Application implements ReactApplication {
          We use reflection here to pick up the class that initializes Flipper,
         since Flipper library is not available in release mode
         */
-        Class<?> aClass = Class.forName("com.sungan.ReactNativeFlipper");
+        Class<?> aClass = Class.forName("com.BetterWorld.ReactNativeFlipper");
         aClass
             .getMethod("initializeFlipper", Context.class, ReactInstanceManager.class)
             .invoke(null, context, reactInstanceManager);

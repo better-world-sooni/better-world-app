@@ -1,6 +1,16 @@
 import { KlaytnAccount } from "./constants";
 
 export const ICONS = {
+  homeIcon: require('assets/icons/homeIcon.png'),
+  capsuleIcon: require('assets/icons/capsuleIcon.png'),
+  capsuleIconBlack: require('assets/icons/capsuleIconBlack.png'),
+  capsuleIconGray: require('assets/icons/capsuleIconGray.png'),
+  capsuleIconWhite: require('assets/icons/capsuleIconWhite.png'),
+  capsuleIconPrimary: require('assets/icons/capsuleIconPrimary.png'),
+  profileIcon: require('assets/icons/profileIcon.png'),
+  searchIcon: require('assets/icons/searchIcon.png'),
+  messageIcon: require('assets/icons/messageIcon.png'),
+  bellIcon: require('assets/icons/bellIcon.png'),
   icChveronLeftWhite100: require('assets/icons/icChveronLeftWhite100.png'),
   iconChevronLeftBold: require('assets/icons/iconChevronLeftBold.png'),
   iconMapMarker: require('assets/icons/mapMarker.png'),
@@ -8,6 +18,9 @@ export const ICONS = {
   iconKlip: require('assets/icons/klipLogo.png'),
   kasLogo: require('assets/icons/kasLogo.png'),
   iconKaikas: require('assets/icons/kaikasLogo.png'),
+  klayIcon: require('assets/icons/klayIcon.png'),
+  discordIcon: require('assets/icons/discordIcon.png'),
+  openseaIcon: require('assets/icons/openseaIcon.png'),
   [KlaytnAccount.KASAccount]: require('assets/icons/kasLogo.png'),
   [KlaytnAccount.KlipAccount]: require('assets/icons/klipLogo.png'),
   [KlaytnAccount.KaikasAccount]: require('assets/icons/kaikasGrayLogo.jpeg'),

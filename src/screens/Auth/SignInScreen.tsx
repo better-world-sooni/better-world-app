@@ -1,166 +1,101 @@
-import { CommonActions } from '@react-navigation/native';
-import React, { useCallback, useEffect, useState } from 'react';
-import { Alert } from 'react-native';
-import { Col } from 'src/components/common/Col';
-import { Div } from 'src/components/common/Div';
-import { Img } from 'src/components/common/Img';
-import { Row } from 'src/components/common/Row';
-import { Span } from 'src/components/common/Span';
-import { TextField } from 'src/components/TextField';
-import { NAV_NAMES } from 'src/modules/navNames';
-import {ScrollView} from 'src/modules/viewComponents';
-import {useLogin} from 'src/redux/appReducer';
+import React from 'react';
+import {Platform} from 'react-native';
+import {Col} from 'src/components/common/Col';
+import {Div} from 'src/components/common/Div';
+import {Img} from 'src/components/common/Img';
+import {Row} from 'src/components/common/Row';
+import {Span} from 'src/components/common/Span';
 import {IMAGES} from 'src/modules/images';
-import LinearGradient from 'react-native-linear-gradient';
-import {ICONS} from 'src/modules/icons';
+import {KeyboardAvoidingView} from 'src/modules/viewComponents';
+import {DEVICE_WIDTH} from 'src/modules/styles';
+import Carousel from 'react-native-snap-carousel';
+import {useGotoPasswordSignIn, useGotoScan} from 'src/hooks/useGoto';
+import {ScanType} from 'src/screens/ScanScreen';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-const SignInScreen = ({navigation}) => {
-  const [email, setEmail] = useState('');
-  const [emailError, setEmailError] = useState(false);
-  const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(false);
-  const login = useLogin();
-
-  useEffect(() => {
-    setLoading(false);
-  }, []);
-
-  const isEmail = useCallback(str => {
-    return /.+\@.+\..+/.test(str);
-  }, []);
-  const goToHome = useCallback(() => {
-    navigation.dispatch(
-      CommonActions.reset({
-        index: 0,
-        routes: [{name: NAV_NAMES.Home}],
-      }),
-    );
-  }, []);
-  const handleEmailSignIn = useCallback(() => {
-    if (email === '') {
-      Alert.alert('이메일을 입력해 주세요');
-      return;
-    }
-    if (password === '') {
-      Alert.alert('비밀번호를 입력해 주세요');
-      return;
-    }
-    setLoading(true);
-    login(
-      email,
-      password,
-      props => {
-        setLoading(false);
-        //#1
-        goToHome();
-      },
-      props => {
-        setLoading(false);
-        Alert.alert('Error', '이메일, 비밀번호를 확인해 주세요.', [
-          {text: '네'},
-        ]);
-      },
-    );
-  }, [email, password]);
-
-  const handleChangeEmail = useCallback(text => setEmail(text), []);
-  const handleBlurEmail = useCallback(
-    () => setEmailError(!isEmail(email)),
-    [email],
-  );
-  const handleChangePassword = useCallback(text => setPassword(text), []);
+const SignInScreen = () => {
+  const gotoScan = useGotoScan({scanType: ScanType.Login});
+  const gotoPasswordSignIn = useGotoPasswordSignIn();
 
   return (
-    <Div bgWhite flex justifyCenter>
-      <ScrollView>
-        <Div h100>
-          <Row>
-            <Col></Col>
-            <Col auto></Col>
-          </Row>
+    <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} flex={1} bgWhite>
+      <Div
+        top={useSafeAreaInsets().top}
+        zIndex={100}
+        itemsCenter
+        justifyEnd
+        w={DEVICE_WIDTH}>
+        <Img source={IMAGES.betterWorldBlueLogo} h40 w40></Img>
+      </Div>
+      <Div flex={1} justifyCenter>
+        <Div>
+          <Carousel
+            data={[
+              '신경쓰이는 인증과 가스비 없이 모바일에서 커뮤니티 거버넌스에 참여해요.',
+              '개인정보 노출 위험 없이 커뮤니티원들과 PFP 계정으로 쉽게 소통해요.',
+              'PFP의 인격을 개성에 맞게 만들어줘요.',
+            ]}
+            itemWidth={DEVICE_WIDTH}
+            autoplay
+            loop
+            autoplayInterval={8000}
+            sliderWidth={DEVICE_WIDTH}
+            renderItem={renderItem}
+          />
+          <Div px30>
+            <Div h20></Div>
+            <Div h48>
+              <Row
+                bgRealBlack
+                rounded100
+                h48
+                flex={1}
+                itemsCenter
+                onPress={gotoScan}>
+                <Col />
+                <Col auto>
+                  <Div>
+                    <Span white bold>
+                      큐알로 연결
+                    </Span>
+                  </Div>
+                </Col>
+                <Col />
+              </Row>
+            </Div>
+            <Div h48 my15>
+              <Row
+                border1
+                borderGray400
+                rounded100
+                h48
+                flex={1}
+                itemsCenter
+                onPress={gotoPasswordSignIn}>
+                <Col />
+                <Col auto>
+                  <Div>
+                    <Span bold>비밀번호로 연결</Span>
+                  </Div>
+                </Col>
+                <Col />
+              </Row>
+            </Div>
+          </Div>
         </Div>
-        <Div flex justifyCenter itemsCenter bgWhite px20>
-          <Row py20 justifyCenter itemsCenter>
-            <Col auto justifyCenter>
-              <Span bold fontSize={30}>
-                연결
-              </Span>
-            </Col>
-            <Col></Col>
-            <Col auto>
-              <Img w50 h50 source={IMAGES.mainLogo} />
-            </Col>
-          </Row>
-          <Row my15 bgColor="#216FEA" rounded4 h56 flex itemsCenter>
-            <Col />
-            <Col auto pr10>
-              <Div>
-                <Img h10 w20 source={ICONS.iconKlip}></Img>
-              </Div>
-            </Col>
-            <Col auto>
-              <Div>
-                <Span white bold>
-                  {'Klip으로 연결'}
-                </Span>
-              </Div>
-            </Col>
-            <Col />
-          </Row>
-          <Row flex itemsCenter>
-            <Col h={0.5} bgBlack>
-              <Div hrTag />
-            </Col>
-            <Col auto px10>
-              <Span>{'Or'}</Span>
-            </Col>
-            <Col h={0.5} bgBlack></Col>
-          </Row>
-          <Row mt15>
-            <TextField
-              label={'이메일'}
-              onChangeText={handleChangeEmail}
-              onChange={handleBlurEmail}
-              error={emailError && '이메일이 정확한지 확인해 주세요'}
-              autoCapitalize="none"
-            />
-          </Row>
-          <Row mb15>
-            <TextField
-              label={'비밀번호'}
-              onChangeText={handleChangePassword}
-              autoCapitalize="none"
-              password
-            />
-          </Row>
-          <Row
-            mb15
-            bgGray200
-            rounded4
-            h56
-            flex
-            itemsCenter
-            onPress={handleEmailSignIn}>
-            <Col />
-            <Col auto>
-              <Div>
-                <Span black bold>
-                  {'이메일로 연결'}
-                </Span>
-              </Div>
-            </Col>
-            <Col />
-          </Row>
-          <Row textCenter>
-            <Span black>
-              {
-                '카이카스 모바일 지갑은 인증 기능이 아직 부재하기 때문에, Kaikas 유저들은 www.betterworld.io > connect > kaikas > email login method 등록 후에 로그인 진행해 주시길 바랍니다.'
-              }
-            </Span>
-          </Row>
-        </Div>
-      </ScrollView>
+      </Div>
+    </KeyboardAvoidingView>
+  );
+};
+
+const renderItem = ({item, index}) => {
+  return (
+    <Div rounded10 overflowHidden itemsCenter justifyCenter px30>
+      <Span fontSize={28} bold style={{textAlign: 'center'}}>
+        {item}
+      </Span>
     </Div>
   );
 };
+
 export default SignInScreen;

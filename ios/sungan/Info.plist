@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
-	<string>순간이동</string>
+	<string>BetterWorld</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -23,13 +23,15 @@
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>CodePushDeploymentKey</key>
-	<string>otjAnyYo5KQlfuren1mFJcXYQlEl1HrlJuIVs</string>
+	<string>x22RqXy-1ncak7oRc-uDlukSCDuzObm0qvyDr</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSExceptionDomains</key>
 		<dict>
+			<key>NSAllowsArbitraryLoads</key>
+			<true/>
 			<key>localhost</key>
 			<dict>
 				<key>NSExceptionAllowsInsecureHTTPLoads</key>
@@ -37,6 +39,14 @@
 			</dict>
 		</dict>
 	</dict>
+	<key>NSAppleMusicUsageDescription</key>
+	<string>게시물 미디어 선택과 업로드를 위해 BetterWorld가 장치의 미디어 라이브러리를 사용하는 것을 허용하시겠습니까</string>
+	<key>NSCameraUsageDescription</key>
+	<string>NFT 소유권 증명을 위해 BetterWorld가 장치의 카메라를 사용하는 것을 허용하시겠습니까</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>음성 통화를 위해 BetterWorld가 장치의 마이크를 사용하는 것을 허용하시겠습니까</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>게시물 미디어 선택과 업로드를 위해 BetterWorld가 장치의 사진 라이브러리를 사용하는 것을 허용하시겠습니까</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>DroidSerif-Bold.ttf</string>
@@ -51,6 +61,20 @@
 		<string>NotoSansKR-Medium.otf</string>
 		<string>NotoSansKR-Regular.otf</string>
 		<string>NotoSansKR-Thin.otf</string>
+		<string>Uni Sans Bold Italic.otf</string>
+		<string>Uni Sans Bold.otf</string>
+		<string>Uni Sans Book Italic.otf</string>
+		<string>Uni Sans Book.otf</string>
+		<string>Uni Sans Heavy Italic.otf</string>
+		<string>Uni Sans Heavy.otf</string>
+		<string>Uni Sans Italic.otf</string>
+		<string>Uni Sans Light Italic.otf</string>
+		<string>Uni Sans Light.otf</string>
+		<string>Uni Sans Regular.otf</string>
+		<string>Uni Sans SemiBold Italic.otf</string>
+		<string>Uni Sans SemiBold.otf</string>
+		<string>Uni Sans Thin Italic.otf</string>
+		<string>Uni Sans Thin.otf</string>
 	</array>
 	<key>UIBackgroundModes</key>
 	<array>

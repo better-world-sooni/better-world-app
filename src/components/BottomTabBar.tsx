@@ -1,43 +1,48 @@
-import {
-  NativeBaseProvider,
-  Box,
-  Text,
-  Heading,
-  VStack,
-  FormControl,
-  Input,
-  Link,
-  Button,
-  Icon,
-  HStack,
-  Center,
-  Pressable,
-} from 'native-base';
-import React, {useCallback} from 'react';
-import {ICONS} from 'src/modules/icons';
+import {NativeBaseProvider, Box, HStack, Center} from 'native-base';
+import React, {useCallback, useRef, useState, useEffect} from 'react';
 import {Div} from './common/Div';
-import {Img} from './common/Img';
-import {Span} from './common/Span';
-import {Style} from './common/Style';
-import {IMAGES} from 'src/modules/images';
-import {Row} from './common/Row';
-import {Col} from './common/Col';
-import {GRAY_COLOR, LINE2_COLOR} from 'src/modules/constants';
+import { Row } from "src/components/common/Row"
+import BottomPopup from './common/BottomPopup';
+import NftChooseBottomSheetScrollView from './common/NftChooseBottomSheetScrollView';
+import {shallowEqual, useSelector} from 'react-redux';
+import {RootState} from 'src/redux/rootReducer';
+import {BottomSheetModal} from '@gorhom/bottom-sheet';
+import {NAV_NAMES} from 'src/modules/navNames';
+import Colors from 'src/constants/Colors';
+import {mediumBump} from 'src/modules/hapticFeedBackUtils';
+import {HAS_NOTCH} from 'src/modules/constants';
+import {DEVICE_HEIGHT} from 'src/modules/styles';
 
 const BottomTabBar = ({state, descriptors, navigation}) => {
+  const isFocusedOnCapsule = state.history[
+    state.history.length - 1
+  ].key.startsWith(NAV_NAMES.Capsule);
+  descriptors[
+    state.history[state.history.length - 1].key
+  ]?.navigation?.isFocused();
+  const bottomPopupRef = useRef<BottomSheetModal>(null);
+  const [enableClose, setEnableClose] = useState(true);
+  const {currentUser} = useSelector(
+    (root: RootState) => root.app.session,
+    shallowEqual,
+  );
+
+  const changeNftLoading = isLoading => {
+    if (isLoading) {
+      setEnableClose(false);
+    } else {
+      setEnableClose(true);
+    }
+  };
+
   const List = useCallback(
     state.routes.map((route, index) => {
       const {key, name} = route;
       const {options} = descriptors[key];
-      const label =
-        options.tabBarLabel !== undefined
-          ? options.tabBarLabel
-          : options.title !== undefined
-          ? options.title
-          : name;
+      const changeProfileOnLongPress = options.tabBarLabel == NAV_NAMES.Profile;
       const isFocused = state.index === index;
       const image = options.tabBarIcon({focused: isFocused});
-      const onPress = () => {
+      const handlePress = () => {
         const event = navigation.emit({
           type: 'tabPress',
           target: key,
@@ -47,37 +52,62 @@ const BottomTabBar = ({state, descriptors, navigation}) => {
           navigation.navigate(name);
         }
       };
+      const handleLongPress = () => {
+        mediumBump();
+        bottomPopupRef?.current?.expand();
+      };
+      const conditionalProps = changeProfileOnLongPress
+        ? {onLongPress: handleLongPress}
+        : {};
       return (
-        <Div key={key} onPress={onPress} flex itemsCenter justifyCenter pb10>
+        <Div
+          key={key}
+          onPress={handlePress}
+          {...conditionalProps}
+          flex={1}
+          itemsCenter
+          justifyCenter
+          pb10>
           {image}
-          {/* <Span
-            sectionBody2
-            styleComp={[
-              isFocused ? <Style color={LINE2_COLOR} bold /> : <Style black />,
-            ]}>
-            {label}
-          </Span> */}
         </Div>
       );
     }),
     [state, descriptors, navigation],
   );
+  const getSnapPoints = itemsLength => {
+    const fullHeight = 0.9 * DEVICE_HEIGHT;
+    const unceilingedHeight = itemsLength * 70 + (HAS_NOTCH ? 130 : 110);
+    if (unceilingedHeight > fullHeight) return [fullHeight];
+    return [unceilingedHeight];
+  };
   return (
-    <Div
-      h80
-      borderTopColor={GRAY_COLOR}
-      borderTopWidth={0.2}
-      overflowHidden
-      bgWhite>
-      <NativeBaseProvider>
-        <Box flex={1} safeAreaTop>
-          <Center flex={1}></Center>
-          <HStack bg={'white'} safeAreaBottom paddingTop={5} shadow={1}>
+    <>
+      <BottomPopup
+        ref={bottomPopupRef}
+        snapPoints={getSnapPoints(currentUser?.nfts?.length || 0)}
+        index={-1}
+        enablePanDownToClose={enableClose}
+      >
+        <NftChooseBottomSheetScrollView
+          nfts={currentUser?.nfts}
+          title={'Identity 변경하기'}
+          setCloseDisable={changeNftLoading}
+        />
+      </BottomPopup>
+      <Row
+        borderTopColor={isFocusedOnCapsule ? 'black' : Colors.gray[100]}
+        borderTopWidth={0.2}>
+        <NativeBaseProvider>
+          <HStack
+            bg={isFocusedOnCapsule ? 'black' : 'white'}
+            safeAreaBottom
+            paddingTop={4}
+            paddingBottom={0}>
             {List}
           </HStack>
-        </Box>
-      </NativeBaseProvider>
-    </Div>
+        </NativeBaseProvider>
+      </Row>
+    </>
   );
 };
 

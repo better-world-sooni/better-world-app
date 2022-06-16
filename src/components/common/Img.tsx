@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {StyleSheet} from 'react-native';
+import {Image, StyleSheet} from 'react-native';
 import {
   addBackgroundStyles,
   addBorderStyles,
@@ -27,13 +27,22 @@ const getImageStyles = props => {
 };
 
 export const Img = props => {
-  const {innerRef, uri, cache, source, a_source, isActive} = props;
+  const {
+    innerRef,
+    uri,
+    cache,
+    source,
+    a_source,
+    isActive,
+    enablePlaceholder = false,
+    legacy = false,
+  } = props;
   const mergedProps = mergePropsWithStyleComp(props);
   const imageStyles = getImageStyles(mergedProps);
   const sheet = StyleSheet.create({
     style: StyleSheet.flatten(imageStyles),
   });
-  const [error, setError] = useState(false);
+  const [error, setError] = useState(enablePlaceholder);
   const s = uri
     ? {
         uri: uri,
@@ -42,6 +51,17 @@ export const Img = props => {
     : isActive
     ? a_source
     : source;
+  if (legacy) {
+    return (
+      <Image
+        ref={innerRef}
+        {...mergedProps}
+        style={sheet.style}
+        source={error ? IMAGES.placeholder : s}
+        onError={() => setError(true)}
+      />
+    );
+  }
   return (
     <FastImage
       ref={innerRef}
