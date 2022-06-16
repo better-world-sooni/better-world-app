@@ -7,12 +7,11 @@ buildscript {
         compileSdkVersion = 31
         targetSdkVersion = 31
         ndkVersion = "21.4.7075529"
-        kotlinVersion = "1.5.20"
     }
     repositories {
         google()
-        jcenter()
         mavenCentral()
+        jcenter()
     }
     dependencies {
         classpath('com.android.tools.build:gradle:7.2.1')
@@ -35,9 +34,8 @@ allprojects {
         }
 
         google()
-        jcenter()
         mavenCentral()
         maven { url "https://jitpack.io" }
-
+        jcenter()
     }
 }
