@@ -51,9 +51,6 @@ const apis = {
     klaytnAddress: (klaytnAddress) => apiV1(`/profile/${klaytnAddress}`),
     _: () => apiV1(`/profile`)
   },
-  rankSeason: {
-    _: (cwyear?, cweek?) => cwyear && cweek ? apiV1(`/rank_season?cwyear=${cwyear}&cweek=${cweek}`) : apiV1(`/rank_season`),
-  },
   search: {
     nft: (keyword) => apiV1(`/search/nft/${keyword}`)
   },
@@ -89,6 +86,12 @@ const apis = {
       }
     },
   },
+  community_wallet: {
+    list: () => apiV1(`/community_wallet/list`),
+    contractAddress: {
+      list: (contractAddress) => apiV1(`/community_wallet/${contractAddress}/list`),
+    }
+  },
   comment: {
     post: (postId) => apiV1(`/comment/post/${postId}`),
     comment: (commentId) => apiV1(`/comment/comment/${commentId}`)
@@ -103,7 +106,7 @@ const apis = {
     list: (voteCategory, postId, page?) => apiV1(`/vote/list${urlParams({page, post_id: postId, vote_category: voteCategory})}`),
   },
   rank:{
-    list: (cwyear?, cweek?, keyword?, page?) => apiV1(`/rank/list${urlParams({cwyear, cweek, page, keyword})}`)
+    list: (keyword?, page?) => apiV1(`/rank/list${urlParams({page, keyword})}`)
   },
   post: {
     _: () => apiV1(`/post`),
@@ -135,6 +138,8 @@ const apis = {
   },
   feed: {
     _: (page?) => apiV1(`/feed${urlParams({page})}`),
+    forum: (page?) => apiV1(`/feed/forum${urlParams({page})}`),
+    social: (page?) => apiV1(`/feed/social${urlParams({page})}`),
     collection: (contractAddress, type?, page?) => apiV1(`/feed/collection?contract_address${urlParams({contract_address: contractAddress, type, page})}`),
   },
   presignedUrl: {

@@ -3,7 +3,7 @@ import {Div} from 'src/components/common/Div';
 import {ActivityIndicator, RefreshControl} from 'react-native';
 import {Row} from 'src/components/common/Row';
 import {Col} from 'src/components/common/Col';
-import {ChevronLeft, ChevronRight, Search} from 'react-native-feather';
+import {Search} from 'react-native-feather';
 import {Span} from 'src/components/common/Span';
 import apis from 'src/modules/apis';
 import {
@@ -13,7 +13,6 @@ import {
 } from 'src/redux/asyncReducer';
 import {TextInput} from 'src/modules/viewComponents';
 import {DEVICE_WIDTH} from 'src/modules/styles';
-import {useGotoRankSeason} from 'src/hooks/useGoto';
 import Animated, {
   useAnimatedScrollHandler,
   useAnimatedStyle,
@@ -23,7 +22,7 @@ import {CustomBlurView} from 'src/components/common/CustomBlurView';
 import useEdittableText from 'src/hooks/useEdittableText';
 import Colors from 'src/constants/Colors';
 import RankedOwner from 'src/components/RankOwner';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 const SearchScreen = () => {
   const searchRef = useRef(null);
@@ -38,58 +37,20 @@ const SearchScreen = () => {
   const paginateGetWithToken = usePaginateGETWithToken();
   const handleRefresh = () => {
     if (rankLoad) return;
-    reloadGetWithToken(
-      apis.rank.list(
-        rankRes?.rank_season?.cwyear,
-        rankRes?.rank_season?.cweek,
-        text,
-      ),
-    );
+    reloadGetWithToken(apis.rank.list(text));
   };
   const handleEndReached = () => {
     if (rankPaginating || isNotPaginatable) return;
-    paginateGetWithToken(
-      apis.rank.list(
-        rankRes?.rank_season?.cwyear,
-        rankRes?.rank_season?.cweek,
-        text,
-        page + 1,
-      ),
-      'ranks',
-    );
+    paginateGetWithToken(apis.rank.list(text, page + 1), 'ranks');
   };
   const [text, textHasChanged, handleChangeText] = useEdittableText('');
-  const previousSeason = rankRes?.previous_season;
-  const nextSeason = rankRes?.next_season;
-  const onPressLeft = () => {
-    if (!rankRes || rankLoad || !previousSeason) return;
-    reloadGetWithToken(
-      apis.rank.list(previousSeason.cwyear, previousSeason.cweek, text),
-    );
-  };
-  const onPressRight = () => {
-    if (!rankRes || rankLoad || !nextSeason) return;
-    reloadGetWithToken(
-      apis.rank.list(nextSeason.cwyear, nextSeason.cweek, text),
-    );
-  };
   const onPressSearch = () => {
     searchRef?.current?.focus();
   };
-  const gotoRankSeason = useGotoRankSeason({
-    cwyear: rankRes?.rank_season?.cwyear,
-    cweek: rankRes?.rank_season?.cweek,
-  });
   const handleChangeQuery = text => {
     handleChangeText(text);
     if (rankRes) {
-      reloadGetWithToken(
-        apis.rank.list(
-          rankRes.rank_season.cwyear,
-          rankRes.rank_season.cweek,
-          text,
-        ),
-      );
+      reloadGetWithToken(apis.rank.list(text));
     }
   };
 
@@ -121,7 +82,7 @@ const SearchScreen = () => {
               position: 'absolute',
             }}></CustomBlurView>
         </Animated.View>
-        <Div zIndex={100} absolute w={DEVICE_WIDTH} top={notchHeight+5}>
+        <Div zIndex={100} absolute w={DEVICE_WIDTH} top={notchHeight + 5}>
           <Row itemsCenter py5 h40 px15>
             <Col mr10>
               <TextInput
@@ -158,40 +119,7 @@ const SearchScreen = () => {
         showsVerticalScrollIndicator={false}
         onScroll={scrollHandler}
         onEndReached={handleEndReached}
-        ListHeaderComponent={
-          <>
-            <Div h={headerHeight}></Div>
-            <Row px15 py5 itemsCenter>
-              <Col itemsStart>
-                <Div auto p4 rounded100 onPress={onPressLeft}>
-                  <ChevronLeft
-                    strokeWidth={2}
-                    color={!previousSeason ? Colors.gray[200] : 'black'}
-                    height={20}
-                    width={20}></ChevronLeft>
-                </Div>
-              </Col>
-              <Col auto onPress={gotoRankSeason}>
-                {!rankLoad && rankRes ? (
-                  <Span fontSize={16} bold>
-                    {`${rankRes.rank_season.cwyear}년 ${rankRes.rank_season.cweek}번째 주`}
-                  </Span>
-                ) : (
-                  <ActivityIndicator />
-                )}
-              </Col>
-              <Col itemsEnd>
-                <Div auto p4 rounded100 onPress={onPressRight}>
-                  <ChevronRight
-                    strokeWidth={2}
-                    color={!nextSeason ? Colors.gray[200] : 'black'}
-                    height={20}
-                    width={20}></ChevronRight>
-                </Div>
-              </Col>
-            </Row>
-          </>
-        }
+        ListHeaderComponent={<Div h={headerHeight}></Div>}
         refreshControl={
           <RefreshControl
             refreshing={rankLoad && !textHasChanged}

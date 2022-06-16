@@ -15,7 +15,6 @@ import {
   useGotoNftCollectionProfile,
   useGotoQR,
   useGotoRankDeltum,
-  useGotoRankSeason,
   useGotoScan,
 } from 'src/hooks/useGoto';
 import apis from 'src/modules/apis';
@@ -63,11 +62,6 @@ export default function NftProfileHeader({
   const gotoScan = useGotoScan({scanType: ScanType.Nft});
   const gotoNewPost = useGotoNewPost({postOwnerType: PostOwnerType.Nft});
   const gotoChatRoom = useGotoChatRoomFromProfile();
-  const gotoRankSeason = useGotoRankSeason({
-    cwyear: null,
-    cweek: null,
-  });
-
   return (
     <>
       <Row zIndex={100} px15 relative>
@@ -210,14 +204,6 @@ export default function NftProfileHeader({
                   팔로잉
                 </Span>{' '}
                 {nft.following_count}
-              </Span>
-            </Col>
-            <Col auto mr12 onPress={gotoRankSeason}>
-              <Span bold fontSize={13}>
-                <Span gray700 regular fontSize={13}>
-                  랭크
-                </Span>{' '}
-                {nft.current_rank}
               </Span>
             </Col>
             <Col auto mr12 onPress={gotoRankDeltum}>
