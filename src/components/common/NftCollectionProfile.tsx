@@ -287,7 +287,7 @@ export default function NftCollectionProfile({
                 )}
               </Col>
             </Row>
-            <Div px15 py10 bgWhite borderBottom={0.5} borderGray200>
+            <Div px15 bgWhite borderBottom={0.5} borderGray200 pb8>
               <Div>
                 <Span fontSize={20} bold>
                   {(nftCollection || nftCollectionCore).name}
