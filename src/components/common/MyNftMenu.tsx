@@ -10,7 +10,6 @@ import {
   useGotoFollowList,
   useGotoNftProfile,
   useGotoQR,
-  useGotoRankDeltum,
   useGotoScan,
 } from 'src/hooks/useGoto';
 import {shallowEqual, useSelector} from 'react-redux';
@@ -20,7 +19,10 @@ import {getNftName, getNftProfileImage} from 'src/modules/nftUtils';
 import {ScanType} from 'src/screens/ScanScreen';
 import {mediumBump} from 'src/modules/hapticFeedBackUtils';
 import {EventRegister} from 'react-native-event-listeners';
-import {nftListEvent} from '../BottomTabBar';
+import {
+  handlePressContribution,
+  openNftList,
+} from 'src/modules/bottomPopupUtils';
 
 const MyNftMenu = ({nft}) => {
   const {currentNft} = useSelector(
@@ -37,18 +39,10 @@ const MyNftMenu = ({nft}) => {
   const gotoNftProfile = useGotoNftProfile({
     nft,
   });
-  const gotoRankDeltum = useGotoRankDeltum({
-    contractAddress: nft?.contract_address,
-    tokenId: nft?.token_id,
-  });
   const gotoQr = useGotoQR();
   const gotoScan = useGotoScan({scanType: ScanType.Nft});
   const notchHeight = HAS_NOTCH ? 44 : 0;
   const headerHeight = notchHeight + 18;
-  const handlePressUsers = () => {
-    mediumBump();
-    EventRegister.emit(nftListEvent());
-  };
 
   return (
     <Div flex={1} bg={backgroundColor} relative borderRight={0.5} borderGray200>
@@ -65,7 +59,7 @@ const MyNftMenu = ({nft}) => {
                 w60
                 uri={getNftProfileImage(nft, 200, 200)}></Img>
             </Col>
-            <Col itemsEnd onPress={handlePressUsers}>
+            <Col itemsEnd onPress={openNftList}>
               <Users strokeWidth={1.3} color={'black'} height={24} width={24} />
             </Col>
           </Row>
@@ -107,19 +101,19 @@ const MyNftMenu = ({nft}) => {
               </Col>
               <Col />
             </Row>
-            <Row mt10 itemsEnd onPress={gotoRankDeltum}>
+            <Row mt10 itemsEnd onPress={handlePressContribution}>
               <Col auto mr20>
                 <Span bold fontSize={13}>
                   {nft.contribution}{' '}
                   <Span gray700 regular fontSize={13}>
-                    인분
+                    인분 기여
                   </Span>
                 </Span>
               </Col>
               <Col />
             </Row>
           </Div>
-          <Row itemsCenter py16 onPress={gotoNftProfile}>
+          <Row itemsCenter py16 onPress={() => gotoNftProfile()}>
             <Col auto mr16>
               <User strokeWidth={1.3} color={'black'} height={24} width={24} />
             </Col>

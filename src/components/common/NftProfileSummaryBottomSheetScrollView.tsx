@@ -21,7 +21,6 @@ import {
   useGotoFollowList,
   useGotoNftCollectionProfile,
   useGotoNftProfile,
-  useGotoRankDeltum,
 } from 'src/hooks/useGoto';
 import useFollow from 'src/hooks/useFollow';
 import {FollowOwnerType, FollowType} from 'src/screens/FollowListScreen';
@@ -29,6 +28,7 @@ import Colors from 'src/constants/Colors';
 import {shallowEqual, useSelector} from 'react-redux';
 import {RootState} from 'src/redux/rootReducer';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {handlePressContribution} from 'src/modules/bottomPopupUtils';
 
 export default function NftProfileSummaryBottomSheetScrollView({
   contractAddress,
@@ -107,10 +107,6 @@ export function NftProfileSummary({nft, token = null}) {
     nftCollection: nft,
   });
   const gotoChatRoom = useGotoChatRoomFromProfile();
-  const gotoRankDeltum = useGotoRankDeltum({
-    contractAddress: nft.contract_address,
-    tokenId: nft.token_id,
-  });
   const gotoFollowList = useGotoFollowList({
     followOwnerType: FollowOwnerType.Nft,
     contractAddress: nft.contract_address,
@@ -236,11 +232,11 @@ export function NftProfileSummary({nft, token = null}) {
               {nft.following_count}
             </Span>
           </Col>
-          <Col auto mr20 onPress={gotoRankDeltum}>
+          <Col auto mr20 onPress={handlePressContribution}>
             <Span bold>
               {nft.contribution}{' '}
               <Span gray700 regular>
-                인분
+                인분 기여
               </Span>
             </Span>
           </Col>

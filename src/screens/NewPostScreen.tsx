@@ -86,9 +86,10 @@ const NewPostScreen = ({
     reloadGetWithToken(
       postOwnerIsCollection
         ? apis.post.list.nftCollection(currentNft.contract_address)
-        : apis.post.list._(),
+        : apis.post.list.nft(currentNft.contract_address, currentNft.token_id),
     );
-    reloadGetWithToken(apis.feed._());
+    reloadGetWithToken(apis.feed.forum());
+    reloadGetWithToken(apis.feed.social());
     goBack();
   };
   const {

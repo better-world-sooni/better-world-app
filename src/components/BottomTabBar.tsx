@@ -13,8 +13,8 @@ import {mediumBump} from 'src/modules/hapticFeedBackUtils';
 import {HAS_NOTCH} from 'src/modules/constants';
 import {DEVICE_HEIGHT} from 'src/modules/styles';
 import {EventRegister} from 'react-native-event-listeners';
-
-export const nftListEvent = () => `nft-list`;
+import {Span} from './common/Span';
+import {infoBottomPopupEvent, openNftList} from 'src/modules/bottomPopupUtils';
 
 const BottomTabBar = ({state, descriptors, navigation}) => {
   const isFocusedOnCapsule = state.history[
@@ -23,20 +23,6 @@ const BottomTabBar = ({state, descriptors, navigation}) => {
   descriptors[
     state.history[state.history.length - 1].key
   ]?.navigation?.isFocused();
-  const bottomPopupRef = useRef<BottomSheetModal>(null);
-  const [enableClose, setEnableClose] = useState(true);
-  const {currentUser} = useSelector(
-    (root: RootState) => root.app.session,
-    shallowEqual,
-  );
-
-  const changeNftLoading = isLoading => {
-    if (isLoading) {
-      setEnableClose(false);
-    } else {
-      setEnableClose(true);
-    }
-  };
 
   const List = useCallback(
     state.routes.map((route, index) => {
@@ -55,12 +41,9 @@ const BottomTabBar = ({state, descriptors, navigation}) => {
           navigation.navigate(name);
         }
       };
-      const handleLongPress = () => {
-        mediumBump();
-        EventRegister.emit(nftListEvent());
-      };
+
       const conditionalProps = changeProfileOnLongPress
-        ? {onLongPress: handleLongPress}
+        ? {onLongPress: openNftList}
         : {};
       return (
         <Div
@@ -77,34 +60,9 @@ const BottomTabBar = ({state, descriptors, navigation}) => {
     }),
     [state, descriptors, navigation],
   );
-  const getSnapPoints = itemsLength => {
-    const fullHeight = 0.9 * DEVICE_HEIGHT;
-    const unceilingedHeight = itemsLength * 70 + (HAS_NOTCH ? 130 : 110);
-    if (unceilingedHeight > fullHeight) return [fullHeight];
-    return [unceilingedHeight];
-  };
 
-  useEffect(() => {
-    EventRegister.addEventListener(nftListEvent(), () => {
-      bottomPopupRef?.current?.expand();
-    });
-    return () => {
-      EventRegister.removeEventListener(nftListEvent());
-    };
-  }, []);
   return (
     <>
-      <BottomPopup
-        ref={bottomPopupRef}
-        snapPoints={getSnapPoints(currentUser?.nfts?.length || 0)}
-        index={-1}
-        enablePanDownToClose={enableClose}>
-        <NftChooseBottomSheetScrollView
-          nfts={currentUser?.nfts}
-          title={'Identity 변경하기'}
-          setCloseDisable={changeNftLoading}
-        />
-      </BottomPopup>
       <Row
         borderTopColor={isFocusedOnCapsule ? 'black' : Colors.gray[100]}
         borderTopWidth={0.2}>

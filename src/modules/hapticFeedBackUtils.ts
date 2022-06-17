@@ -4,6 +4,11 @@ const options = {
     enableVibrateFallback: true,
     ignoreAndroidSystemSettings: false,
 };
+
+export function largeBump(){
+    ReactNativeHapticFeedback.trigger('impactHeavy', options);
+}
+
 export function mediumBump(){
     ReactNativeHapticFeedback.trigger('impactMedium', options);
 }

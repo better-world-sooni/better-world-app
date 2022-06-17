@@ -19,7 +19,7 @@ import {NativeBaseProvider} from 'native-base';
 import {ICONS} from 'src/modules/icons';
 import {Img} from './common/Img';
 import {getNftProfileImage} from 'src/modules/nftUtils';
-import {Bell, Home, Search, Send, Star} from 'react-native-feather';
+import {Bell, Home, Search, Send, Star, User} from 'react-native-feather';
 import Colors from 'src/constants/Colors';
 import OtherProfileScreen from 'src/screens/OtherProfileScreen';
 import NftCollectionScreen from 'src/screens/NftCollectionScreen';
@@ -44,9 +44,9 @@ import CollectionEventScreen from 'src/screens/CollectionEventScreen';
 import AffinityScreen from 'src/screens/AffinityScreen';
 import PasswordSigninScreen from 'src/screens/Auth/PasswordSigninScreen';
 import {createStackNavigator} from '@react-navigation/stack';
-import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context';
 import CollectionSearchScreen from 'src/screens/CollectionSearchScreen';
 import SocialScreen from 'src/screens/Home/SocialScreen';
+import BottomPopups from './common/BottomPopups';
 
 // const RootStack = createNativeStackNavigator();
 const RootStack = createStackNavigator();
@@ -60,14 +60,12 @@ const MainBottomTabs = () => {
     (root: RootState) => root.app.session,
     shallowEqual,
   );
-  const profileTabIconProps = currentNft
-    ? {
-        uri: getNftProfileImage(currentNft, 50, 50),
-        w: 24,
-        h: 24,
-        rounded: 100,
-      }
-    : {source: ICONS.profileIcon, h: 20, w: 20};
+  const profileTabIconProps = {
+    uri: getNftProfileImage(currentNft, 50, 50),
+    w: 24,
+    h: 24,
+    rounded: 100,
+  };
   return (
     <Tab.Navigator
       tabBar={tabBarFunc}
@@ -104,32 +102,42 @@ const MainBottomTabs = () => {
         component={SocialScreen}
         options={{
           tabBarLabel: NAV_NAMES.Social,
-          tabBarIcon: ({focused}) => (
-            <Img
-              {...profileTabIconProps}
-              border1={focused}
-              borderBlack={focused}></Img>
-          ),
+          tabBarIcon: ({focused}) =>
+            currentNft ? (
+              <Img
+                {...profileTabIconProps}
+                border1={focused}
+                borderBlack={focused}></Img>
+            ) : (
+              <User
+                width={22}
+                height={22}
+                strokeWidth={2}
+                color={focused ? 'black' : Colors.gray[400]}></User>
+            ),
         }}
       />
     </Tab.Navigator>
   );
 };
 
-const setInitialRouteParams = (notificationOpenData) => {
-  if(notificationOpenData){
-    if(['like_post', 'like_comment', 'comment'].includes(notificationOpenData.event)){    
+const setInitialRouteParams = notificationOpenData => {
+  if (notificationOpenData) {
+    if (
+      ['like_post', 'like_comment', 'comment'].includes(
+        notificationOpenData.event,
+      )
+    ) {
       return {
         notificationOpened: true,
         routeDestination: {
           navName: NAV_NAMES.Post,
           id: {
-            postId: notificationOpenData.post_id
-          }
-        }
-      }
-    }
-    else if(['follow', 'hug'].includes(notificationOpenData.event)) {
+            postId: notificationOpenData.post_id,
+          },
+        },
+      };
+    } else if (['follow', 'hug'].includes(notificationOpenData.event)) {
       return {
         notificationOpened: true,
         routeDestination: {
@@ -142,18 +150,17 @@ const setInitialRouteParams = (notificationOpenData) => {
             nft_metadatum: {
               name: notificationOpenData.meta_name,
               image_uri: notificationOpenData.meta_image_uri,
-            }
-          }
-        }
-      }
+            },
+          },
+        },
+      };
     }
-  } 
-  else{
+  } else {
     return {
-      notificationOpened: false
-    }
+      notificationOpened: false,
+    };
   }
-}
+};
 
 export const AppContent = ({notificationOpenData}) => {
   const {
@@ -161,13 +168,13 @@ export const AppContent = ({notificationOpenData}) => {
     session: {token},
   } = useSelector((root: RootState) => root.app, shallowEqual);
 
-  const initialRouteParams = setInitialRouteParams(notificationOpenData)
+  const initialRouteParams = setInitialRouteParams(notificationOpenData);
 
   const Navs = [
     {
       name: NAV_NAMES.Splash,
       component: SplashScreen,
-      initialParams: initialRouteParams
+      initialParams: initialRouteParams,
     },
     {
       name: NAV_NAMES.SignIn,

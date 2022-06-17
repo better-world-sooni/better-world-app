@@ -64,8 +64,8 @@ export default function useName(nameOwner, nameOwnerType) {
 		if (value.split(" ").length > 5) {
 			return "이름은 다섯 단어 이하여야 합니다.";
 		}
-		if (value.length > 20) {
-			return "이름은 길이는 스무 글자 이하여야 합니다.";
+		if (value.length > 19) {
+			return "이름은 길이는 스무 글자 미만여야 합니다.";
 		}
 		return "";
 	};

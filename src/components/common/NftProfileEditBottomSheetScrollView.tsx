@@ -49,7 +49,10 @@ export default function NftProfileEditBottomSheetScrollView({nft}) {
     attachedRecord: 'nft',
     url: apis.nft._().url,
     property: 'background_image_uri',
-    successReloadKey: apis.nft._(),
+    successReloadKey: apis.nft.contractAddressAndTokenId(
+      nft.contract_address,
+      nft.token_id,
+    ),
   });
   const reloadGetWithToken = useReloadGETWithToken();
   const putPromiseFnWithToken = usePutPromiseFnWithToken();
@@ -66,7 +69,9 @@ export default function NftProfileEditBottomSheetScrollView({nft}) {
       url: apis.pushNotificationSetting._().url,
       body,
     });
-    reloadGetWithToken(apis.nft._());
+    reloadGetWithToken(
+      apis.nft.contractAddressAndTokenId(nft.contract_address, nft.token_id),
+    );
   };
   return (
     <BottomSheetScrollView>

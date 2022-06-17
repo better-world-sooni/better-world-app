@@ -18,7 +18,10 @@ const SignInScreen = () => {
   const gotoPasswordSignIn = useGotoPasswordSignIn();
 
   return (
-    <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} flex={1} bgWhite>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      flex={1}
+      bgWhite>
       <Div
         top={useSafeAreaInsets().top}
         zIndex={100}
@@ -31,9 +34,9 @@ const SignInScreen = () => {
         <Div>
           <Carousel
             data={[
-              '신경쓰이는 인증과 가스비 없이 모바일에서 커뮤니티 거버넌스에 참여해요.',
-              '개인정보 노출 위험 없이 커뮤니티원들과 PFP 계정으로 쉽게 소통해요.',
-              'PFP의 인격을 개성에 맞게 만들어줘요.',
+              '가스비 없이 모바일에서 포럼과 거버넌스에 참여해요.',
+              '커뮤니티 지갑을 투명하고 편리하게 모니터해요.',
+              '커뮤니티원들과 PFP 계정으로 쉽고 재밌게 소통해요.',
             ]}
             itemWidth={DEVICE_WIDTH}
             autoplay

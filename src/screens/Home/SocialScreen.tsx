@@ -67,6 +67,7 @@ export default function SocialScreen() {
         isPaginating={feedPaginating}
         onEndReached={handleEndReached}
         isNotPaginatable={isNotPaginatable}
+        enableAdd
         renderItem={({item, index}) => {
           return <Post key={(item as any).id} post={item} />;
         }}

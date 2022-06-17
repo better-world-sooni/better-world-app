@@ -42,9 +42,6 @@ const OnboardingScreen = ({navigation}) => {
         <Span bold fontSize={30} white>
           사용하실 PFP를{'\n'}선택해 주세요{'\n'}
         </Span>
-        <Span fontSize={14} white>
-          앱 내 프로필을 길게 누를시 변경 가능합니다.{'\n'}
-        </Span>
       </Div>
       <FlatList
         px20

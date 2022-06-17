@@ -8,16 +8,15 @@ import {
 } from 'react-native-feather';
 import useFollow from 'src/hooks/useFollow';
 import {
-  useGotoCapsule,
   useGotoFollowList,
   useGotoChatRoomFromProfile,
   useGotoNewPost,
   useGotoNftCollectionProfile,
   useGotoQR,
-  useGotoRankDeltum,
   useGotoScan,
 } from 'src/hooks/useGoto';
 import apis from 'src/modules/apis';
+import {handlePressContribution} from 'src/modules/bottomPopupUtils';
 import {getNftName, getNftProfileImage} from 'src/modules/nftUtils';
 import {DEVICE_WIDTH} from 'src/modules/styles';
 import {FollowOwnerType, FollowType} from 'src/screens/FollowListScreen';
@@ -49,10 +48,6 @@ export default function NftProfileHeader({
     apis.follow.contractAddressAndTokenId(nft?.contract_address, nft?.token_id)
       .url,
   );
-  const gotoRankDeltum = useGotoRankDeltum({
-    contractAddress: nftCore.contract_address,
-    tokenId: nftCore.token_id,
-  });
   const gotoFollowList = useGotoFollowList({
     followOwnerType: FollowOwnerType.Nft,
     contractAddress: nftCore.contract_address,
@@ -206,11 +201,11 @@ export default function NftProfileHeader({
                 {nft.following_count}
               </Span>
             </Col>
-            <Col auto mr12 onPress={gotoRankDeltum}>
+            <Col auto mr12 onPress={handlePressContribution}>
               <Span bold fontSize={13}>
                 {nft.contribution}{' '}
                 <Span gray700 regular fontSize={13}>
-                  인분
+                  인분 기여
                 </Span>
               </Span>
             </Col>

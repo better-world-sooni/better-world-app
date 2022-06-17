@@ -15,6 +15,9 @@ import {Row} from './common/Row';
 import {Span} from './common/Span';
 import {CustomBlurView} from 'src/components/common/CustomBlurView';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import {Plus} from 'react-native-feather';
+import {useGotoNewPost} from 'src/hooks/useGoto';
+import {PostOwnerType} from 'src/screens/NewPostScreen';
 
 const ReanimatedFlatList = Animated.createAnimatedComponent(FlatList);
 
@@ -29,6 +32,7 @@ function FeedFlatlist(
     data,
     TopComponent,
     HeaderComponent = null,
+    enableAdd = false,
   },
   ref,
 ) {
@@ -36,6 +40,7 @@ function FeedFlatlist(
   const headerHeight = notchHeight + 50;
   const translationY = useSharedValue(0);
   const scrollClamp = useSharedValue(0);
+  const gotoNewPost = useGotoNewPost({postOwnerType: PostOwnerType.Nft});
   const clamp = (value, lowerBound, upperBound) => {
     'worklet';
     return Math.min(Math.max(lowerBound, value), upperBound);
@@ -54,7 +59,7 @@ function FeedFlatlist(
   });
   const notchStyles = useAnimatedStyle(() => {
     const translateY = interpolate(
-      scrollClamp.value,
+      translationY.value > 200 ? scrollClamp.value : 0,
       [0, headerHeight],
       [-headerHeight, 0],
       Extrapolate.CLAMP,
@@ -83,7 +88,7 @@ function FeedFlatlist(
   });
   const topBarStyles = useAnimatedStyle(() => {
     const translateY = interpolate(
-      scrollClamp.value,
+      translationY.value > 200 ? scrollClamp.value : 0,
       [0, headerHeight],
       [0, -headerHeight],
       Extrapolate.CLAMP,
@@ -101,7 +106,7 @@ function FeedFlatlist(
     };
   });
   return (
-    <Div flex={1} bgWhite>
+    <Div flex={1} bgWhite relative>
       <Animated.View style={notchStyles}>
         <CustomBlurView
           blurType="xlight"
@@ -189,6 +194,29 @@ function FeedFlatlist(
         data={data}
         onEndReached={onEndReached}
         renderItem={renderItem}></ReanimatedFlatList>
+      {enableAdd && (
+        <Div
+          rounded100
+          bgPrimary
+          absolute
+          w54
+          h54
+          p12
+          bottom15
+          right15
+          onPress={() => gotoNewPost()}
+          style={{
+            shadowOffset: {
+              width: 0,
+              height: 2,
+            },
+            shadowOpacity: 0.25,
+            shadowRadius: 4,
+            elevation: 4,
+          }}>
+          <Plus strokeWidth={1.7} color={'white'} height={30} width={30}></Plus>
+        </Div>
+      )}
     </Div>
   );
 }

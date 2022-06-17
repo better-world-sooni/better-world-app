@@ -65,7 +65,7 @@ function RankOwnerContent({
           <Span bold black>
             {Math.round(contribution * 10) / 10}
           </Span>{' '}
-          인분
+          인분 기여
         </Span>
       </Col>
     </Row>
