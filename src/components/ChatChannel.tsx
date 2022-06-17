@@ -51,7 +51,7 @@ interface Events extends ChannelEvents<Message> {
 }
 
 export class ChatChannel extends Channel<Params, Message, Events> {
-  static identifier = 'ChatChannelWeb';
+  static identifier = 'ChatChannel';
 
   async send(message, room) {
     return this.perform('send_message', {message, room});
