@@ -1,13 +1,17 @@
 import React, {memo, useState} from 'react';
 import {ActivityIndicator, Platform} from 'react-native';
 import {
+  Anchor,
   Check,
   Heart,
   MessageCircle,
   MoreHorizontal,
+  Pocket,
   Repeat,
+  Star,
   ThumbsDown,
   ThumbsUp,
+  Zap,
 } from 'react-native-feather';
 import Colors from 'src/constants/Colors';
 import {
@@ -274,6 +278,16 @@ function PostContent({post}) {
       <Div py5 borderBottom={0.5} borderGray200 bgWhite>
         <Row px15 pt5>
           <Col auto mr10>
+            {post.type ? (
+              <Div itemsEnd mb5>
+                <Zap
+                  height={18}
+                  width={18}
+                  fill={Colors.warning.DEFAULT}
+                  color={Colors.warning.DEFAULT}
+                />
+              </Div>
+            ) : null}
             <Div onPress={goToProfile}>
               <Img
                 w47
@@ -284,6 +298,13 @@ function PostContent({post}) {
             </Div>
           </Col>
           <Col>
+            {post.type ? (
+              <Div mt1 mb4>
+                <Span bold gray700 fontSize={13}>
+                  포럼 게시물
+                </Span>
+              </Div>
+            ) : null}
             <Row>
               <Col auto>
                 <Span>

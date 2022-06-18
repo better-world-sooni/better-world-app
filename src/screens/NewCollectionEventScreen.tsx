@@ -1,29 +1,16 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useState} from 'react';
 import {Div} from 'src/components/common/Div';
 import {HAS_NOTCH, kmoment} from 'src/modules/constants';
 import {Row} from 'src/components/common/Row';
 import {Col} from 'src/components/common/Col';
-import {
-  ChevronDown,
-  ChevronLeft,
-  Image,
-  MoreHorizontal,
-} from 'react-native-feather';
+import {ChevronLeft} from 'react-native-feather';
 import apis from 'src/modules/apis';
 import {Img} from 'src/components/common/Img';
 import {useNavigation} from '@react-navigation/native';
-import {getNftName, getNftProfileImage} from 'src/modules/nftUtils';
-import {shallowEqual, useSelector} from 'react-redux';
-import {RootState} from 'src/redux/rootReducer';
+import {getNftProfileImage} from 'src/modules/nftUtils';
 import {Span} from 'src/components/common/Span';
-import {createdAtText} from 'src/modules/timeUtils';
-import useUploadPost from 'src/hooks/useUploadPost';
 import UploadImageSlideShow from 'src/components/common/UploadImageSlideShow';
-import {
-  KeyboardAvoidingView,
-  ScrollView,
-  TextInput,
-} from 'src/modules/viewComponents';
+import {KeyboardAvoidingView, TextInput} from 'src/modules/viewComponents';
 import {useApiSelector, useReloadGETWithToken} from 'src/redux/asyncReducer';
 import {ActivityIndicator, Platform} from 'react-native';
 import {MenuView} from '@react-native-menu/menu';
@@ -32,13 +19,13 @@ import Animated, {
   useAnimatedStyle,
   useSharedValue,
 } from 'react-native-reanimated';
-import {DEVICE_HEIGHT, DEVICE_WIDTH} from 'src/modules/styles';
+import {DEVICE_WIDTH} from 'src/modules/styles';
 import {CustomBlurView} from 'src/components/common/CustomBlurView';
 import Colors from 'src/constants/Colors';
 import useAutoFocusRef from 'src/hooks/useAutoFocusRef';
 import useUploadCollectionEvent from 'src/hooks/useUploadCollectionEvent';
 import DatePicker from 'react-native-date-picker';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 const postTypes = [
   {
@@ -62,9 +49,7 @@ const NewCollectionEventScreen = () => {
   );
   const nftCollection = nftCollectionRes?.nft_collection;
   const uploadSuccessCallback = () => {
-    reloadGetWithToken(
-      apis.nft_collection.collectionEvent.list(),
-    );
+    reloadGetWithToken(apis.nft_collection.collectionEvent.list());
     goBack();
   };
   const {
@@ -116,7 +101,11 @@ const NewCollectionEventScreen = () => {
   });
   return (
     <>
-      <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} flex={1} bgWhite relative>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        flex={1}
+        bgWhite
+        relative>
         <Div h={headerHeight} zIndex={100} borderBottom={0.5} borderGray200>
           <Animated.View style={headerStyles}>
             <CustomBlurView
@@ -128,10 +117,9 @@ const NewCollectionEventScreen = () => {
                 width: DEVICE_WIDTH,
                 height: '100%',
                 position: 'absolute',
-              }}
-              ></CustomBlurView>
+              }}></CustomBlurView>
           </Animated.View>
-          <Div zIndex={100} absolute w={DEVICE_WIDTH} top={notchHeight+5}>
+          <Div zIndex={100} absolute w={DEVICE_WIDTH} top={notchHeight + 5}>
             <Row itemsCenter py5 h40 px15>
               <Col itemsStart>
                 <Div auto rounded100 onPress={goBack}>

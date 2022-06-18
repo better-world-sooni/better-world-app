@@ -44,6 +44,7 @@ import TransactionListScreen from 'src/screens/CommunityWalletProfileScreen';
 import CommunityWalletListScreen from 'src/screens/CommunityWalletListScreen';
 import CommunityWalletProfile from './common/CommunityWalletProfile';
 import CommunityWalletProfileScreen from 'src/screens/CommunityWalletProfileScreen';
+import NewCommunityWalletScreen from 'src/screens/NewCommunityWalletScreen';
 
 const RootStack = createStackNavigator();
 
@@ -293,6 +294,10 @@ export const AppContent = ({notificationOpenData}) => {
     {
       name: NAV_NAMES.CommunityWalletList,
       component: CommunityWalletListScreen,
+    },
+    {
+      name: NAV_NAMES.NewCommunityWallet,
+      component: NewCommunityWalletScreen,
     },
   ];
 

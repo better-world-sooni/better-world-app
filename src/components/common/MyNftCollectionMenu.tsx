@@ -14,6 +14,7 @@ import {
   useGotoMyCollectionEventList,
   useGotoMyCommunityWalletList,
   useGotoNewCollectionEvent,
+  useGotoNewCommunityWallet,
   useGotoNewPost,
   useGotoNftCollectionProfile,
 } from 'src/hooks/useGoto';
@@ -61,6 +62,7 @@ const MyNftCollectionMenu = ({nftCollection}) => {
   const gotoCommunityWalletList = useGotoMyCommunityWalletList();
   const gotoCollectionEventList = useGotoMyCollectionEventList();
   const gotoNewCollectionEvent = useGotoNewCollectionEvent();
+  const gotoNewCommunityWallet = useGotoNewCommunityWallet();
   const gotoNewPost = useGotoNewPost({
     postOwnerType: PostOwnerType.NftCollection,
   });
@@ -150,7 +152,7 @@ const MyNftCollectionMenu = ({nftCollection}) => {
             </Row>
           ) : (
             isAdmin && (
-              <Row itemsCenter py16 onPress={gotoCommunityWalletList}>
+              <Row itemsCenter py16 onPress={gotoNewCommunityWallet}>
                 <Col auto mr16>
                   <CreditCard
                     strokeWidth={1.3}

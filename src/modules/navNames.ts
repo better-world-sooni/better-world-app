@@ -33,6 +33,7 @@ export const NAV_NAMES = {
     CollectionSearch: "CollectionSearch",
     CommunityWalletProfile: "CommunityWalletProfile",
     CommunityWalletList: "CommunityWalletList",
+    NewCommunityWallet: "NewCommunityWallet",
     Affinity: "Affinity",
     Scan: "Scan",
     Qr: "Qr",

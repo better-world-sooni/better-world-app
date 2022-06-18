@@ -1,20 +1,12 @@
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Div} from 'src/components/common/Div';
 import {Img} from 'src/components/common/Img';
 import {Span} from 'src/components/common/Span';
 import {IMAGES} from 'src/modules/images';
-import BottomPopup from 'src/components/common/BottomPopup';
-import {BottomSheetModal} from '@gorhom/bottom-sheet';
 import {KeyboardAvoidingView} from 'src/modules/viewComponents';
-import {HAS_NOTCH, truncateKlaytnAddress} from 'src/modules/constants';
 import {DEVICE_WIDTH} from 'src/modules/styles';
-import Carousel from 'react-native-snap-carousel';
 import QRCode from 'react-native-qrcode-svg';
-import {
-  useApiSelector,
-  useReloadGETWithToken,
-  useReloadPOSTWithToken,
-} from 'src/redux/asyncReducer';
+import {useApiSelector, useReloadPOSTWithToken} from 'src/redux/asyncReducer';
 import apis from 'src/modules/apis';
 import {shallowEqual, useSelector} from 'react-redux';
 import {RootState} from 'src/redux/rootReducer';
@@ -24,9 +16,9 @@ import {Col} from 'src/components/common/Col';
 import {ChevronLeft, RefreshCw} from 'react-native-feather';
 import {useNavigation} from '@react-navigation/native';
 import {Row} from 'src/components/common/Row';
-import {BlurView} from '@react-native-community/blur';
 import {CustomBlurView} from 'src/components/common/CustomBlurView';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {truncateAddress} from 'src/modules/blockchainUtils';
 
 const QrScreen = () => {
   const {
@@ -78,7 +70,10 @@ const QrScreen = () => {
   }, [qrRes?.exp]);
 
   return (
-    <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} flex={1} bgRealBlack>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      flex={1}
+      bgRealBlack>
       <Div h={headerHeight} zIndex={100} absolute top0>
         <Row
           itemsCenter
@@ -88,7 +83,7 @@ const QrScreen = () => {
           zIndex={100}
           absolute
           w={DEVICE_WIDTH}
-          top={notchHeight+5}>
+          top={notchHeight + 5}>
           <Col justifyStart>
             <Div auto rounded100 onPress={goBack}>
               <ChevronLeft
@@ -132,8 +127,7 @@ const QrScreen = () => {
                     width: 200,
                     height: 200,
                     position: 'absolute',
-                  }}
-                  ></CustomBlurView>
+                  }}></CustomBlurView>
                 <Img
                   source={IMAGES.betterWorldBlueLogo}
                   h100
@@ -157,7 +151,7 @@ const QrScreen = () => {
           )}
           <Div mt10>
             <Span gray700 fontSize={14}>
-              컨트렉 주소: {truncateKlaytnAddress(currentNft.contract_address)}
+              컨트렉 주소: {truncateAddress(currentNft.contract_address)}
             </Span>
           </Div>
           <Div mt10>

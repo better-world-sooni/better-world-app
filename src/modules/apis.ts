@@ -98,6 +98,7 @@ const apis = {
     },
   },
   community_wallet: {
+    _: () => apiV1(`/community_wallet`),
     address: {
       _: (address) => apiV1(`/community_wallet/${address}`),
       transaction: {

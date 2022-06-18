@@ -14,6 +14,7 @@ import {useGotoHome, useGotoOnboarding} from 'src/hooks/useGoto';
 import {ChevronLeft} from 'react-native-feather';
 import {useNavigation} from '@react-navigation/native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import {isAddress} from 'src/modules/blockchainUtils';
 
 const PasswordSigninScreen = () => {
   const [address, setAddress] = useState('');
@@ -33,6 +34,10 @@ const PasswordSigninScreen = () => {
     }
     if (address === '') {
       expandBottomPopupWithText('클레이튼 주소를 입력해 주세요');
+      return;
+    }
+    if (!isAddress(address)) {
+      expandBottomPopupWithText('클레이튼 주소가 유효하지 않습니다.');
       return;
     }
     if (password === '') {
@@ -58,7 +63,9 @@ const PasswordSigninScreen = () => {
     );
   }, [address, password]);
 
-  const handleChangeAddress = useCallback(text => setAddress(text), []);
+  const handleChangeAddress = useCallback(text => {
+    setAddress(text);
+  }, []);
   const handleChangePassword = useCallback(text => setPassword(text), []);
 
   const expandBottomPopupWithText = text => {
@@ -69,7 +76,10 @@ const PasswordSigninScreen = () => {
   const headerHeight = notchHeight + 50;
 
   return (
-    <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} flex={1} bgWhite>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      flex={1}
+      bgWhite>
       <Div h={headerHeight} zIndex={100} absolute top0>
         <Row
           itemsCenter
@@ -79,7 +89,7 @@ const PasswordSigninScreen = () => {
           zIndex={100}
           absolute
           w={DEVICE_WIDTH}
-          top={notchHeight+5}>
+          top={notchHeight + 5}>
           <Col justifyStart>
             <Div auto rounded100 onPress={goBack}>
               <ChevronLeft

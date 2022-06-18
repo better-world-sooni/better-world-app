@@ -2,7 +2,6 @@ import {
   ChevronDown,
   ChevronLeft,
   MoreHorizontal,
-  MoreVertical,
   Repeat,
 } from 'react-native-feather';
 import React, {useRef} from 'react';
@@ -12,10 +11,8 @@ import {Img} from './Img';
 import {Row} from './Row';
 import {Span} from './Span';
 import {DEVICE_WIDTH} from 'src/modules/styles';
-import {HAS_NOTCH, kmoment, truncateKlaytnAddress} from 'src/modules/constants';
+import {HAS_NOTCH, kmoment} from 'src/modules/constants';
 import Animated, {
-  Extrapolate,
-  interpolate,
   useAnimatedScrollHandler,
   useAnimatedStyle,
   useSharedValue,
@@ -27,7 +24,6 @@ import {
   getNftCollectionProfileImage,
   getNftName,
   getNftProfileImage,
-  truncateAddress,
 } from 'src/modules/nftUtils';
 import {
   useApiSelector,
@@ -37,10 +33,11 @@ import {
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {BottomSheetModal} from '@gorhom/bottom-sheet';
 import {ICONS} from 'src/modules/icons';
-import CommunityWallet from './CommunityWallet';
 import {MenuView} from '@react-native-menu/menu';
 import Colors from 'src/constants/Colors';
 import {createdAtText} from 'src/modules/timeUtils';
+import {truncateAddress} from 'src/modules/blockchainUtils';
+import {resizeImageUri} from 'src/modules/uriUtils';
 
 export default function CommunityWalletProfile({
   communityWalletCore,
@@ -125,7 +122,7 @@ export default function CommunityWalletProfile({
         automaticallyAdjustContentInsets
         showsVerticalScrollIndicator={false}
         onScroll={scrollHandler}
-        // keyExtractor={keyExtractor}
+        keyExtractor={item => (item as any).transaction_hash}
         initialNumToRender={10}
         removeClippedSubviews
         updateCellsBatchingPeriod={100}
@@ -153,11 +150,7 @@ export default function CommunityWalletProfile({
                     w36
                     h36
                     rounded100
-                    uri={getNftCollectionProfileImage(
-                      communityWallet.nft_collection,
-                      100,
-                      100,
-                    )}
+                    uri={resizeImageUri(communityWallet.image_uri, 100, 100)}
                   />
                 )}
               </Col>
@@ -167,7 +160,7 @@ export default function CommunityWalletProfile({
                 </Span>
                 <Span fontSize={14} gray700>
                   at{' '}
-                  {truncateKlaytnAddress(
+                  {truncateAddress(
                     (communityWallet || communityWalletCore).address,
                   )}
                 </Span>
@@ -184,7 +177,7 @@ export default function CommunityWalletProfile({
             </Row>
             <Row mt15 mb8 itemsCenter>
               <Col></Col>
-              <Col auto rounded10 p8 border={0.5} borderGray200>
+              <Col auto>
                 <Row itemsCenter>
                   <Col />
                   <Col auto mr2>
@@ -277,7 +270,7 @@ function Transaction({transaction}) {
           <Span gray700>
             {kmoment(transaction.created_at).format('YY.M.D a h:mm')}
             {' · '}
-            Tx({truncateKlaytnAddress(transaction.transaction_hash)})
+            Tx({truncateAddress(transaction.transaction_hash)})
           </Span>
         </Col>
         <Col auto>

@@ -59,12 +59,7 @@ export enum PostType {
 
 const NewPostScreen = ({
   route: {
-    params: {
-      postOwnerType,
-      repostable,
-      collectionEvent,
-      postType = PostType.Default,
-    },
+    params: {postOwnerType, repostable, collectionEvent, postType},
   },
 }) => {
   const autoFocusRef = useAutoFocusRef();
@@ -241,6 +236,11 @@ const NewPostScreen = ({
                   bold
                   onChangeText={handleContentChange}></TextInput>
               </Row>
+              {repostable && (
+                <Div mt8>
+                  <RepostedPost repostedPost={repostable} />
+                </Div>
+              )}
               {addImages && (
                 <Div mt8>
                   <UploadImageSlideShow
@@ -251,7 +251,6 @@ const NewPostScreen = ({
                   />
                 </Div>
               )}
-              {repostable && <RepostedPost repostedPost={repostable} />}
               {collectionEvent && (
                 <Div mt8>
                   <CollectionEvent
@@ -292,9 +291,8 @@ const NewPostScreen = ({
                   <Col auto>
                     <Span>
                       {
-                        postTypes.filter(
-                          postType => postType.id == currentPostType,
-                        )[0].title
+                        postTypes.filter(pt => pt.id == currentPostType)[0]
+                          .title
                       }
                     </Span>
                   </Col>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {memo} from 'react';
 import {Clipboard} from 'react-native';
 import {ChevronRight, Copy} from 'react-native-feather';
 import Colors from 'src/constants/Colors';
@@ -6,17 +6,17 @@ import {
   useGotoCommunityWalletProfile,
   useGotoNftCollectionProfile,
 } from 'src/hooks/useGoto';
-import {truncateKlaytnAddress} from 'src/modules/constants';
+import {truncateAddress} from 'src/modules/blockchainUtils';
 import {smallBump} from 'src/modules/hapticFeedBackUtils';
 import {ICONS} from 'src/modules/icons';
-import {getNftCollectionProfileImage} from 'src/modules/nftUtils';
+import {resizeImageUri} from 'src/modules/uriUtils';
 import {Col} from './Col';
 import {Div} from './Div';
 import {Img} from './Img';
 import {Row} from './Row';
 import {Span} from './Span';
 
-export default function CommunityWallet({communityWallet, width}) {
+function CommunityWallet({communityWallet, width, verticalList = false}) {
   const gotoNftCollectionProfile = useGotoNftCollectionProfile(
     communityWallet.nft_collection,
   );
@@ -24,9 +24,9 @@ export default function CommunityWallet({communityWallet, width}) {
     communityWallet,
   });
   const actionIconDefaultProps = {
-    width: 18,
-    height: 18,
-    color: Colors.gray[700],
+    width: 12,
+    height: 12,
+    color: Colors.gray[500],
     strokeWidth: 1.7,
   };
   const copyToClipboard = () => {
@@ -34,35 +34,44 @@ export default function CommunityWallet({communityWallet, width}) {
     Clipboard.setString(communityWallet.address);
   };
   return (
-    <Div w={width - 30} border={0.5} borderGray200 rounded10 py8 px15 mx15 my8>
-      <Row pt5 itemsCenter>
+    <Div
+      w={width - 30}
+      border={0.5}
+      borderGray200
+      rounded10
+      py8
+      px15
+      mx15
+      mb8={verticalList}
+      onPress={gotoCommunityWalletProfile}>
+      <Row itemsCenter>
         <Col auto mr10>
           <Div onPress={gotoNftCollectionProfile}>
             <Img
               w30
               h30
               rounded100
-              uri={getNftCollectionProfileImage(
-                communityWallet.nft_collection,
-                100,
-                100,
-              )}
+              uri={resizeImageUri(communityWallet.image_uri, 100, 100)}
             />
           </Div>
         </Col>
         <Col auto>
-          <Span>
-            <Span fontSize={14} bold onPress={gotoNftCollectionProfile}>
-              {communityWallet.name}
-            </Span>{' '}
-            <Span fontSize={14} gray700>
-              {' '}
-              {truncateKlaytnAddress(communityWallet.address)}
-            </Span>
-          </Span>
+          <Row itemsCenter onPress={copyToClipboard}>
+            <Col auto mr8>
+              <Span fontSize={14} bold onPress={gotoNftCollectionProfile}>
+                {communityWallet.name}
+              </Span>
+            </Col>
+            <Col auto mr8>
+              <Span gray700>{truncateAddress(communityWallet.address)}</Span>
+            </Col>
+            <Col>
+              <Copy {...actionIconDefaultProps} />
+            </Col>
+          </Row>
         </Col>
       </Row>
-      <Row py15 itemsCenter justifyCenter>
+      <Row itemsCenter justifyCenter>
         <Col auto mr2>
           <Span fontSize={24} bold>
             {communityWallet.balance}
@@ -72,28 +81,8 @@ export default function CommunityWallet({communityWallet, width}) {
           <Img h20 w20 source={ICONS.klayIcon}></Img>
         </Col>
       </Row>
-      <Row mb8>
-        <Col itemsCenter>
-          <Row itemsCenter onPress={copyToClipboard}>
-            <Col auto mr8>
-              <Span gray700>주소 복사</Span>
-            </Col>
-            <Col auto>
-              <Copy {...actionIconDefaultProps} />
-            </Col>
-          </Row>
-        </Col>
-        <Col itemsCenter>
-          <Row itemsCenter onPress={gotoCommunityWalletProfile}>
-            <Col auto mr8>
-              <Span gray700>최근 기록 보기</Span>
-            </Col>
-            <Col auto>
-              <ChevronRight {...actionIconDefaultProps} />
-            </Col>
-          </Row>
-        </Col>
-      </Row>
     </Div>
   );
 }
+
+export default memo(CommunityWallet);

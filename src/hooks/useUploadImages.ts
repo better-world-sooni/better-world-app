@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import { launchImageLibrary } from 'react-native-image-picker';
 import useFileUpload, { FileUploadReturnType } from './useFileUpload';
 
-export default function useUploadImages({attachedRecord = "post"}){
+export default function useUploadImages({attachedRecord = "post", selectionLimit = 0}){
     const [images, setImages] = useState([])
     const [error, setError] = useState('')
     const {uploadFile} = useFileUpload({attachedRecord})
@@ -10,7 +10,7 @@ export default function useUploadImages({attachedRecord = "post"}){
         try {
           const {assets} = await launchImageLibrary({
             mediaType: 'photo',
-            selectionLimit: 0,
+            selectionLimit,
             maxHeight: 1600,
             maxWidth: 1600,
             includeBase64: true,

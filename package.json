@@ -53,6 +53,7 @@
     "babel-plugin-transform-remove-console": "^6.9.4",
     "buffer": "^6.0.3",
     "code-push-cli": "^3.0.0",
+    "ethereum-address": "^0.0.4",
     "immer": "^9.0.5",
     "jwt-decode": "^3.1.2",
     "module-resolver": "^1.0.0",

@@ -8,6 +8,10 @@ import {
 import ListFlatlist from 'src/components/ListFlatlist';
 import CommunityWallet from 'src/components/common/CommunityWallet';
 import {DEVICE_WIDTH} from 'src/modules/styles';
+import {useGotoNewCommunityWallet} from 'src/hooks/useGoto';
+import {useIsAdmin} from 'src/modules/nftUtils';
+import {Div} from 'src/components/common/Div';
+import {Span} from 'src/components/common/Span';
 
 export default function CommunityWalletListScreen() {
   const {
@@ -20,6 +24,7 @@ export default function CommunityWalletListScreen() {
   const communityWallets = communityWalletsRes?.community_wallets || [];
   const reloadGetWithToken = useReloadGETWithToken();
   const paginateGetWithToken = usePaginateGETWithToken();
+  const gotoNewCommunityWallet = useGotoNewCommunityWallet();
   const handleRefresh = () => {
     if (communityWalletsLoading) return;
     reloadGetWithToken(apis.nft_collection.communityWallet.list());
@@ -31,6 +36,7 @@ export default function CommunityWalletListScreen() {
       'community_wallets',
     );
   };
+  const isAdmin = useIsAdmin();
   return (
     <ListFlatlist
       onRefresh={handleRefresh}
@@ -38,9 +44,22 @@ export default function CommunityWalletListScreen() {
       refreshing={communityWalletsLoading}
       onEndReached={handleEndReached}
       isPaginating={communityWalletsPaginating}
+      HeaderRightComponent={
+        isAdmin && (
+          <Div onPress={gotoNewCommunityWallet}>
+            <Span info bold fontSize={14}>
+              추가
+            </Span>
+          </Div>
+        )
+      }
       title={'커뮤니티 지갑'}
       renderItem={({item}) => (
-        <CommunityWallet communityWallet={item} width={DEVICE_WIDTH} />
+        <CommunityWallet
+          communityWallet={item}
+          width={DEVICE_WIDTH}
+          verticalList
+        />
       )}
     />
   );

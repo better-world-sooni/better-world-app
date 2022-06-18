@@ -34,6 +34,7 @@ export default {
     DEFAULT:  '#2a97ff',
     ligth: '#2a97ff10'
   },
+  warning: {DEFAULT: '#f6c343',},
   success: { DEFAULT: '#3cd278', light: 'rgba(60, 210, 120, 0.1)' },
   danger: { DEFAULT: '#ff3051', light: 'rgba(255, 48, 81, 0.1)' },
 };

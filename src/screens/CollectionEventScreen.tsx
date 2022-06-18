@@ -8,7 +8,6 @@ import {Div} from 'src/components/common/Div';
 import {Row} from 'src/components/common/Row';
 import {Span} from 'src/components/common/Span';
 import apis from 'src/modules/apis';
-import {HAS_NOTCH} from 'src/modules/constants';
 import {DEVICE_WIDTH} from 'src/modules/styles';
 import {useApiSelector} from 'src/redux/asyncReducer';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';

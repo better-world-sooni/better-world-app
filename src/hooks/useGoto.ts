@@ -6,6 +6,7 @@ import { useApiGETWithToken, useApiPOSTWithToken, useApiGET } from "src/redux/as
 import { RootState } from "src/redux/rootReducer";
 import { ChatRoomEnterType } from "src/screens/ChatRoomScreen";
 import { FollowOwnerType, FollowType } from "src/screens/FollowListScreen";
+import { PostType } from "src/screens/NewPostScreen";
 
 export function useGotoNftProfile({nft}){
     const apiGETWithToken = useApiGETWithToken()
@@ -152,10 +153,18 @@ export function useGotoPost({postId}){
 
 export function useGotoNewPost({postOwnerType}){
   const navigation = useNavigation()
-  const gotoNewPost = (repostable = null, collectionEvent = null, postType=null) => {
+  const gotoNewPost = (repostable = null, collectionEvent = null, postType=PostType.Default) => {
     navigation.navigate(NAV_NAMES.NewPost as never, {postOwnerType, repostable, collectionEvent, postType} as never);
   }
   return gotoNewPost
+}
+
+export function useGotoNewCommunityWallet(){
+  const navigation = useNavigation()
+  const gotoNewCommunityWallet = () => {
+    navigation.navigate(NAV_NAMES.NewCommunityWallet as never);
+  }
+  return gotoNewCommunityWallet
 }
 
 export function useGotoCapsule({nft}) {

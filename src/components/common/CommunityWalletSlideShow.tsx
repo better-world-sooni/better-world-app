@@ -8,7 +8,7 @@ export default function CommunityWalletSlideShow({
   communityWallets,
   sliderWidth,
   roundedTopOnly = false,
-  enablePagination = true,
+  enablePagination = false,
 }) {
   const [currentPage, setCurrentPage] = useState(0);
   return (
