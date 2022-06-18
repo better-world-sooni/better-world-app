@@ -51,7 +51,7 @@ import {ReportTypes} from 'src/screens/ReportScreen';
 import useVote, {VoteCategory} from 'src/hooks/useVote';
 import {LikeListType} from 'src/screens/LikeListScreen';
 import {DEVICE_WIDTH} from 'src/modules/styles';
-import {PostOwnerType} from 'src/screens/NewPostScreen';
+import {PostOwnerType, PostType} from 'src/screens/NewPostScreen';
 import TruncatedText from './TruncatedText';
 import RepostedPost from './RepostedPost';
 import CollectionEvent from './CollectionEvent';
@@ -280,12 +280,21 @@ function PostContent({post}) {
           <Col auto mr10>
             {post.type ? (
               <Div itemsEnd mb5>
-                <Zap
-                  height={18}
-                  width={18}
-                  fill={Colors.warning.DEFAULT}
-                  color={Colors.warning.DEFAULT}
-                />
+                {post.type == PostType.Forum ? (
+                  <Zap
+                    height={18}
+                    width={18}
+                    fill={Colors.warning.DEFAULT}
+                    color={Colors.warning.DEFAULT}
+                  />
+                ) : (
+                  <ThumbsUp
+                    height={18}
+                    width={18}
+                    fill={Colors.info.DEFAULT}
+                    color={Colors.info.DEFAULT}
+                  />
+                )}
               </Div>
             ) : null}
             <Div onPress={goToProfile}>
@@ -301,7 +310,7 @@ function PostContent({post}) {
             {post.type ? (
               <Div mt1 mb4>
                 <Span bold gray700 fontSize={13}>
-                  포럼 게시물
+                  {post.type == PostType.Forum ? '홀더 포럼' : '홀더 투표'}
                 </Span>
               </Div>
             ) : null}
@@ -472,11 +481,21 @@ function PostContent({post}) {
               {post.type == 'Forum'
                 ? isCurrentCollection &&
                   votable && (
-                    <Col auto onPress={() => gotoNewPost(post)}>
-                      <Span info bold fontSize={12}>
-                        제안하기
-                      </Span>
-                    </Col>
+                    <>
+                      <Col auto onPress={() => gotoNewPost(post)} mr4>
+                        <Zap
+                          height={18}
+                          width={18}
+                          fill={Colors.warning.DEFAULT}
+                          color={Colors.warning.DEFAULT}
+                        />
+                      </Col>
+                      <Col auto onPress={() => gotoNewPost(post)}>
+                        <Span gray700 bold fontSize={12}>
+                          제안하기
+                        </Span>
+                      </Col>
+                    </>
                   )
                 : !post.type && (
                     <Col auto onPress={() => gotoNewPost(post)} pr16>

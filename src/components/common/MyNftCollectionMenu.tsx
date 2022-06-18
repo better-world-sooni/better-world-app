@@ -26,6 +26,7 @@ import {
   Layers,
   PieChart,
   ThumbsUp,
+  Zap,
 } from 'react-native-feather';
 import {useApiSelector} from 'src/redux/asyncReducer';
 import apis from 'src/modules/apis';
@@ -247,7 +248,7 @@ const MyNftCollectionMenu = ({nftCollection}) => {
                 )
               }>
               <Col auto mr16>
-                <PieChart
+                <Zap
                   strokeWidth={1.3}
                   color={textColor}
                   height={24}

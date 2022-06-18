@@ -9,6 +9,7 @@ import {
   Repeat,
   ThumbsDown,
   ThumbsUp,
+  Zap,
 } from 'react-native-feather';
 import Colors from 'src/constants/Colors';
 import {
@@ -63,7 +64,7 @@ import RepostedPost from './RepostedPost';
 import CollectionEvent from './CollectionEvent';
 import {getAdjustedHeightFromDimensions} from 'src/modules/imageUtils';
 import {PostEventTypes} from './Post';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 export default function FullPost({post, autoFocus = false}) {
   const scrollToEndRef = useScrollToEndRef();
@@ -569,11 +570,21 @@ export default function FullPost({post, autoFocus = false}) {
                     {post.type == 'Forum'
                       ? isCurrentCollection &&
                         votable && (
-                          <Col auto onPress={() => gotoNewPost(post)}>
-                            <Span info bold fontSize={12}>
-                              제안하기
-                            </Span>
-                          </Col>
+                          <>
+                            <Col auto onPress={() => gotoNewPost(post)} mr4>
+                              <Zap
+                                height={18}
+                                width={18}
+                                fill={Colors.warning.DEFAULT}
+                                color={Colors.warning.DEFAULT}
+                              />
+                            </Col>
+                            <Col auto onPress={() => gotoNewPost(post)}>
+                              <Span gray700 bold fontSize={12}>
+                                제안하기
+                              </Span>
+                            </Col>
+                          </>
                         )
                       : !post.type && (
                           <Col auto onPress={() => gotoNewPost(post)}>
