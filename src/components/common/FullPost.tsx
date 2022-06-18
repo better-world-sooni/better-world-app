@@ -174,10 +174,10 @@ export default function FullPost({post, autoFocus = false}) {
 
   const forVoteProps = hasVotedFor
     ? {
-        fill: Colors.primary.DEFAULT,
+        fill: Colors.info.DEFAULT,
         width: 18,
         height: 18,
-        color: Colors.primary.DEFAULT,
+        color: Colors.info.DEFAULT,
         strokeWidth: 1.7,
       }
     : actionIconDefaultProps;

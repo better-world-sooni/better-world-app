@@ -1,11 +1,8 @@
 import React, {memo} from 'react';
 import {Clipboard} from 'react-native';
-import {ChevronRight, Copy} from 'react-native-feather';
+import {Copy} from 'react-native-feather';
 import Colors from 'src/constants/Colors';
-import {
-  useGotoCommunityWalletProfile,
-  useGotoNftCollectionProfile,
-} from 'src/hooks/useGoto';
+import {useGotoCommunityWalletProfile} from 'src/hooks/useGoto';
 import {truncateAddress} from 'src/modules/blockchainUtils';
 import {smallBump} from 'src/modules/hapticFeedBackUtils';
 import {ICONS} from 'src/modules/icons';
@@ -17,9 +14,6 @@ import {Row} from './Row';
 import {Span} from './Span';
 
 function CommunityWallet({communityWallet, width, verticalList = false}) {
-  const gotoNftCollectionProfile = useGotoNftCollectionProfile(
-    communityWallet.nft_collection,
-  );
   const gotoCommunityWalletProfile = useGotoCommunityWalletProfile({
     communityWallet,
   });
@@ -46,7 +40,7 @@ function CommunityWallet({communityWallet, width, verticalList = false}) {
       onPress={gotoCommunityWalletProfile}>
       <Row itemsCenter>
         <Col auto mr10>
-          <Div onPress={gotoNftCollectionProfile}>
+          <Div>
             <Img
               w30
               h30
@@ -58,7 +52,7 @@ function CommunityWallet({communityWallet, width, verticalList = false}) {
         <Col auto>
           <Row itemsCenter onPress={copyToClipboard}>
             <Col auto mr8>
-              <Span fontSize={14} bold onPress={gotoNftCollectionProfile}>
+              <Span fontSize={14} bold>
                 {communityWallet.name}
               </Span>
             </Col>

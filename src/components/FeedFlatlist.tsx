@@ -197,7 +197,7 @@ function FeedFlatlist(
       {enableAdd && (
         <Div
           rounded100
-          bgPrimary
+          bgInfo
           absolute
           w54
           h54

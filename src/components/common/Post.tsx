@@ -167,10 +167,10 @@ function PostContent({post}) {
 
   const forVoteProps = hasVotedFor
     ? {
-        fill: Colors.primary.DEFAULT,
+        fill: Colors.info.DEFAULT,
         width: 18,
         height: 18,
-        color: Colors.primary.DEFAULT,
+        color: Colors.info.DEFAULT,
         strokeWidth: 1.7,
       }
     : actionIconDefaultProps;
@@ -361,9 +361,7 @@ function PostContent({post}) {
               ) : null}
             </Row>
             {post.reposted_post && (
-              <Div mt5>
-                <RepostedPost repostedPost={post.reposted_post} enablePress />
-              </Div>
+              <RepostedPost repostedPost={post.reposted_post} enablePress />
             )}
             {post.image_uris.length > 0 ? (
               <Div mt5>

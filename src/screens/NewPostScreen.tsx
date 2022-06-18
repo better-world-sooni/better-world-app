@@ -236,11 +236,7 @@ const NewPostScreen = ({
                   bold
                   onChangeText={handleContentChange}></TextInput>
               </Row>
-              {repostable && (
-                <Div mt8>
-                  <RepostedPost repostedPost={repostable} />
-                </Div>
-              )}
+              {repostable && <RepostedPost repostedPost={repostable} />}
               {addImages && (
                 <Div mt8>
                   <UploadImageSlideShow

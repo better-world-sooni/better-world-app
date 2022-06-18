@@ -62,7 +62,7 @@ export default function HomeScreen() {
     <SideMenu
       ref={sideMenuRef}
       toleranceX={0}
-      edgeHitWidth={100}
+      edgeHitWidth={70}
       menu={<MyNftCollectionMenu nftCollection={nftCollection} />}
       bounceBackOnOverdraw={false}
       openMenuOffset={DEVICE_WIDTH - 65}>
