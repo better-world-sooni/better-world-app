@@ -33,7 +33,8 @@ export default function HomeScreen() {
     apis.nft_collection.profile(),
   );
   const {data: communityWalletsRes, isLoading: communityWalletLoading} =
-    useApiSelector(apis.community_wallet.list());
+    useApiSelector(apis.community_wallet.list()
+  );
   const communityWallets = communityWalletsRes?.community_wallets || [];
   const nftCollection = nftCollectionRes?.nft_collection;
   const gotoChatList = useGotoChatList();

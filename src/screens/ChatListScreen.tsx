@@ -1,5 +1,5 @@
 import {useNavigation, useFocusEffect} from '@react-navigation/core';
-import React, {useCallback, useEffect, useState, useRef} from 'react';
+import React, {useCallback, useEffect, useState, useRef, memo} from 'react';
 import {Alert, RefreshControl} from 'react-native';
 import {ChevronLeft, CornerDownLeft, Search} from 'react-native-feather';
 import {shallowEqual, useSelector} from 'react-redux';
@@ -50,12 +50,6 @@ function ChatListScreen() {
   const updateListRef = useRef(null);
 
   useEffect(() => {
-    if (chatListRes) {
-      setChatRooms(chatListRes.chat_rooms);
-    }
-  }, [chatListRes]);
-
-  useEffect(() => {
     const updateList = newRoom => {
       const index = chatRooms.findIndex(x => x.room_id === newRoom.room_id);
       newRoom.unread_count = 1;
@@ -71,32 +65,32 @@ function ChatListScreen() {
     updateListRef.current = updateList;
   }, [chatRooms]);
 
-  useFocusEffect(
-    useCallback(() => {
-      const channel = new ChatChannel(currentNftId);
-      const wsConnect = async () => {
-        await cable(token).subscribe(channel);
-        setChatSocket(channel);
-        channel.on('fetch', res => {
-          setChatRooms(res['data']);
-        });
-        let _ = await channel.fetchList();
-        channel.on('message', res => {
-          updateListRef.current(res['room']);
-        });
-        channel.on('close', () => console.log('Disconnected from chat'));
-        channel.on('disconnect', () => console.log('check disconnect'));
-      };
-      wsConnect();
-      return () => {
+  // useFocusEffect(
+  //   useCallback(() => {
+  //     const channel = new ChatChannel(currentNftId);
+  //     const wsConnect = async () => {
+  //       await cable(token).subscribe(channel);
+  //       setChatSocket(channel);
+  //       channel.on('fetch', res => {
+  //         setChatRooms(res['data']);
+  //       });
+  //       let _ = await channel.fetchList();
+  //       channel.on('message', res => {r
+  //         updateListRef.current(res['room']);
+  //       });
+  //       channel.on('close', () => console.log('Disconnected from chat'));
+  //       channel.on('disconnect', () => console.log('check disconnect'));
+  //     };
+  //     wsConnect();
+  //     return () => {
 
-        if (channel) {
-          channel.disconnect();
-          channel.close();
-        }
-      };
-    }, [currentNft]),
-  );
+  //       if (channel) {
+  //         channel.disconnect();
+  //         channel.close();
+  //       }
+  //     };
+  //   }, [currentNft]),
+  // );
 
   const translationY = useSharedValue(0);
   const scrollHandler = useAnimatedScrollHandler(event => {
@@ -174,11 +168,10 @@ function ChatListScreen() {
           </>
         }
         stickyHeaderIndices={[0]}
-        refreshControl={<RefreshControl refreshing={chatListLoad} />}
         data={chatRooms}
         renderItem={({item, index}) => {
           return (
-            <ChatRoomItem
+            <ChatRoomItemMemo
               key={index}
               onPress={(roomName, roomImage, roomId) =>
                 gotoChatRoom(roomName, roomImage, roomId)
@@ -247,5 +240,6 @@ function ChatRoomItem({onPress, room}) {
     </Div>
   );
 }
+const ChatRoomItemMemo = memo(ChatRoomItem)
 
 export default ChatListScreen;

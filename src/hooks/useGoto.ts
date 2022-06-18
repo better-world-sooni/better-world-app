@@ -2,7 +2,7 @@ import { CommonActions, useNavigation } from "@react-navigation/native";
 import { shallowEqual, useSelector } from "react-redux";
 import apis from "src/modules/apis";
 import { NAV_NAMES } from "src/modules/navNames";
-import { useApiGETWithToken, useApiPOSTWithToken, useApiGET } from "src/redux/asyncReducer";
+import { useApiGETWithToken, useApiPOSTWithToken, useApiGET, useReloadGETWithToken } from "src/redux/asyncReducer";
 import { RootState } from "src/redux/rootReducer";
 import { ChatRoomEnterType } from "src/screens/ChatRoomScreen";
 import { FollowOwnerType, FollowType } from "src/screens/FollowListScreen";
@@ -67,14 +67,14 @@ export function useGotoPasswordSignIn(){
 
 export function useGotoChatList(){
   const navigation = useNavigation()
-  const apiGETWithToken = useApiGETWithToken()
+  const reloadGetWithToken = useReloadGETWithToken()
   const gotoChatList = () => {
-      apiGETWithToken(
-        apis.chat.chatRoom.all()
-      );
-      navigation.navigate(NAV_NAMES.ChatList as never);
-    }
-    return gotoChatList
+    reloadGetWithToken(
+      apis.chat.chatRoom.all()
+    );
+    navigation.navigate(NAV_NAMES.ChatList as never);
+  }
+  return gotoChatList
 }
 
 export function useGotoChatRoomFromList() {
