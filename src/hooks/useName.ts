@@ -21,8 +21,8 @@ export default function useName(nameOwner, nameOwnerType) {
         if (!nameError) {
             setNameLoading(true)
 			try {
-				const key = nameOwnerType == NameOwnerType.NftCollection ? apis.nft_collection.contractAddress.profile(nameOwner.contract_address) : apis.nft._();
-                const url = nameOwnerType == NameOwnerType.NftCollection ? apis.nft_collection.contractAddress._(nameOwner.contract_address).url : apis.nft._().url;
+				const key = nameOwnerType == NameOwnerType.NftCollection ? apis.nft_collection.contractAddress._(nameOwner.contract_address) : apis.nft._();
+                const url = key.url
                 const body = {
 					property: "name",
 					value: name,

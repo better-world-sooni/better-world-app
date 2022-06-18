@@ -5,7 +5,6 @@ import {
   usePaginateGETWithToken,
   useReloadGETWithToken,
 } from 'src/redux/asyncReducer';
-import Post from 'src/components/common/Post';
 import {Div} from 'src/components/common/Div';
 import {Span} from 'src/components/common/Span';
 import {useGotoNewCollectionEvent} from 'src/hooks/useGoto';
@@ -14,37 +13,30 @@ import ListFlatlist from 'src/components/ListFlatlist';
 import CollectionEvent from 'src/components/common/CollectionEvent';
 import {DEVICE_WIDTH} from 'src/modules/styles';
 
-export default function CollectionEventListScreen({
-  route: {
-    params: {nftCollection},
-  },
-}) {
+export default function CollectionEventListScreen() {
   const {
     data: collectionEventListRes,
     isLoading: collectionEventListLoading,
     isPaginating: collectionEventPaginating,
     page,
     isNotPaginatable,
-  } = useApiSelector(
-    apis.collectionEvent.contractAddress.list(nftCollection.contract_address),
+  } = useApiSelector(apis.nft_collection.collectionEvent.list());
+  const {data: nftCollectionRes, isLoading: nftCollectionLoad} = useApiSelector(
+    apis.nft_collection._(),
   );
+  const nftCollection = nftCollectionRes?.nft_collection;
   const paginateGetWithToken = usePaginateGETWithToken();
   const handleEndReached = () => {
     if (collectionEventPaginating || isNotPaginatable) return;
     paginateGetWithToken(
-      apis.collectionEvent.contractAddress.list(
-        nftCollection.contract_address,
-        page + 1,
-      ),
+      apis.nft_collection.collectionEvent.list(page + 1),
       'collection_events',
     );
   };
-  const gotoNewCollectionEvent = useGotoNewCollectionEvent({nftCollection});
+  const gotoNewCollectionEvent = useGotoNewCollectionEvent();
   const reloadGetWithToken = useReloadGETWithToken();
   const handleRefresh = () => {
-    reloadGetWithToken(
-      apis.collectionEvent.contractAddress.list(nftCollection.contract_address),
-    );
+    reloadGetWithToken(apis.nft_collection.collectionEvent.list());
   };
   const isAdmin = useIsAdmin(nftCollection);
   return (

@@ -119,7 +119,7 @@ export function useGotoNftCollectionProfile({nftCollection}){
     const apiGETWithToken = useApiGETWithToken()
     const navigation = useNavigation()
     const gotoProfile = () => {
-      apiGETWithToken(apis.nft_collection.contractAddress.profile(nftCollection.contract_address));
+      apiGETWithToken(apis.nft_collection.contractAddress._(nftCollection.contract_address));
       apiGETWithToken(apis.post.list.nftCollection(nftCollection.contract_address))
       navigation.navigate(NAV_NAMES.NftCollection as never, {
         nftCollection
@@ -152,8 +152,8 @@ export function useGotoPost({postId}){
 
 export function useGotoNewPost({postOwnerType}){
   const navigation = useNavigation()
-  const gotoNewPost = (repostable = null, collectionEvent = null) => {
-    navigation.navigate(NAV_NAMES.NewPost as never, {postOwnerType, repostable, collectionEvent} as never);
+  const gotoNewPost = (repostable = null, collectionEvent = null, postType=null) => {
+    navigation.navigate(NAV_NAMES.NewPost as never, {postOwnerType, repostable, collectionEvent, postType} as never);
   }
   return gotoNewPost
 }
@@ -182,6 +182,39 @@ export function useGotoLikeList({likableType, likableId}) {
     } as never)
   };
   return gotoCapsule
+}
+
+export function useGotoMyCommunityWalletList() {
+  const navigation = useNavigation()
+  const apiGETWithToken = useApiGETWithToken()
+  const gotoCommunityWalletList = () => {
+    apiGETWithToken(
+      apis.nft_collection.communityWallet.list(),
+    );
+    navigation.navigate(NAV_NAMES.CommunityWalletList as never)
+  };
+  return gotoCommunityWalletList
+}
+
+export function useGotoCommunityWalletProfile({communityWallet}) {
+  const navigation = useNavigation()
+  const apiGETWithToken = useApiGETWithToken()
+  const gotoCommunityWalletProfile = () => {
+    apiGETWithToken(
+      apis.community_wallet.address._(
+        communityWallet.address
+      ),
+    );
+    apiGETWithToken(
+      apis.community_wallet.address.transaction.list(
+        communityWallet.address
+      ),
+    );
+    navigation.navigate(NAV_NAMES.CommunityWalletProfile as never, {
+      communityWallet
+    } as never)
+  };
+  return gotoCommunityWalletProfile
 }
 
 export function useGotoVoteList({postId}) {
@@ -366,6 +399,18 @@ export function useGotoSignIn(){
   return gotoSignIn
 }
 
+export function useGotoMyCollectionEventList(){
+  const navigation = useNavigation()
+  const apiGETWithToken = useApiGETWithToken()
+  const gotoCollectionEventList = () => {
+    apiGETWithToken(
+      apis.nft_collection.collectionEvent.list()
+    )
+    navigation.navigate(NAV_NAMES.CollectionEventList as never)
+  }
+  return gotoCollectionEventList
+}
+
 export function useGotoCollectionEventList({nftCollection}){
   const navigation = useNavigation()
   const apiGETWithToken = useApiGETWithToken()
@@ -398,12 +443,10 @@ export function useGotoAttendanceList({collectionEventId}){
   return gotoAttendanceList
 }
 
-export function useGotoNewCollectionEvent({nftCollection}){
+export function useGotoNewCollectionEvent(){
   const navigation = useNavigation()
   const gotoNewCollectionEvent = () => {
-    navigation.navigate(NAV_NAMES.NewCollectionEvent as never, {
-      nftCollection
-    } as never)
+    navigation.navigate(NAV_NAMES.NewCollectionEvent as never)
   }
   return gotoNewCollectionEvent
 }

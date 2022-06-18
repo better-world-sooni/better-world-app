@@ -9,7 +9,7 @@ export const varStyle = {
   realBlack: '#000000',
   black: '#ffffff',
   primary: 'rgb(25, 110, 237)',
-  primarySoft: 'rgba(25, 110, 237, 0.1)',
+  primarySoft: 'rgb(88, 195, 252)',
   secondary: '#513ccd',
   secondarySoft: '#513ccd10',
   secondary2: '#3f3d88',
@@ -58,6 +58,9 @@ export const globalStyle = {
   },
   bgPrimary: {
     backgroundColor: varStyle.primary,
+  },
+  bgPrimarySoft: {
+    backgroundColor: varStyle.primarySoft,
   },
   bgSecondary: {
     backgroundColor: varStyle.secondary,

@@ -47,7 +47,7 @@ export default function NftCollectionProfileEditBottomSheetScrollView({
     url: apis.nft_collection.contractAddress._(nftCollection.contract_address)
       .url,
     property: 'background_image_uri',
-    successReloadKey: apis.nft_collection.contractAddress.profile(
+    successReloadKey: apis.nft_collection.contractAddress._(
       nftCollection.contract_address,
     ),
   });
@@ -64,7 +64,7 @@ export default function NftCollectionProfileEditBottomSheetScrollView({
     url: apis.nft_collection.contractAddress._(nftCollection.contract_address)
       .url,
     property: 'image_uri',
-    successReloadKey: apis.nft_collection.contractAddress.profile(
+    successReloadKey: apis.nft_collection.contractAddress._(
       nftCollection.contract_address,
     ),
   });

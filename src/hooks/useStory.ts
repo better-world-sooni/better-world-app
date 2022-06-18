@@ -21,8 +21,8 @@ export default function useStory(storyOwner, storyOwnerType) {
         if (!storyError) {
             setStoryLoading(true)
 			try {
-				const key = storyOwnerType == StoryOwnerType.NftCollection ? apis.nft_collection.contractAddress.profile(storyOwner.contract_address) : apis.nft._();
-                const url = storyOwnerType == StoryOwnerType.NftCollection ? apis.nft_collection.contractAddress._(storyOwner.contract_address).url : apis.nft._().url;
+				const key = storyOwnerType == StoryOwnerType.NftCollection ? apis.nft_collection.contractAddress._(storyOwner.contract_address) : apis.nft._();
+                const url = key.url
                 const body = {
 					property: "story",
 					value: story,

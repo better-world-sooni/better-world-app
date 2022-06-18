@@ -77,19 +77,32 @@ const apis = {
     list: (getFollowers, contractAddress, tokenId?, page?) => apiV1(`/follow/list${urlParams({get_followers: getFollowers, contract_address: contractAddress, token_id: tokenId, page})}`)
   },
   nft_collection: {
-    profile: () => apiV1(`/nft_collection/profile`),
+    _: () => apiV1(`/nft_collection`),
+    communityWallet: {
+      list: (page?) => apiV1(`/nft_collection/community_wallet/list${urlParams({page})}`),
+    },
+    collectionEvent: {
+      list: (page?) => apiV1(`/nft_collection/collection_event/list${urlParams({page})}`),
+    },
     contractAddress: {
       _: (contractAddress) => apiV1(`/nft_collection/${contractAddress}`),
-      profile: (contractAddress) => apiV1(`/nft_collection/${contractAddress}/profile`),
+      communityWallet: {
+        list: (contractAddress, page?) => apiV1(`nft_collection/${contractAddress}/community_wallet/list${urlParams({page})}`),
+      },
+      collectionEvent: {
+        list: (contractAddress, page?) => apiV1(`nft_collection/${contractAddress}/collection_event/list${urlParams({page})}`),
+      },
       nft: {
         list: (contractAddress, keyword?, page?) => apiV1(`/nft_collection/${contractAddress}/nft/list${urlParams({keyword, page})}`)
       }
     },
   },
   community_wallet: {
-    list: () => apiV1(`/community_wallet/list`),
-    contractAddress: {
-      list: (contractAddress) => apiV1(`/community_wallet/${contractAddress}/list`),
+    address: {
+      _: (address) => apiV1(`/community_wallet/${address}`),
+      transaction: {
+        list: (address, cursor?) => apiV1(`/community_wallet/${address}/transaction/list${urlParams({cursor})}`),
+      }
     }
   },
   comment: {
@@ -138,6 +151,7 @@ const apis = {
   },
   feed: {
     _: (page?) => apiV1(`/feed${urlParams({page})}`),
+    count: () => apiV1(`/feed/count`),
     forum: (page?) => apiV1(`/feed/forum${urlParams({page})}`),
     social: (page?) => apiV1(`/feed/social${urlParams({page})}`),
     collection: (contractAddress, type?, page?) => apiV1(`/feed/collection?contract_address${urlParams({contract_address: contractAddress, type, page})}`),

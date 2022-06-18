@@ -1,6 +1,4 @@
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {NavigationContainer} from '@react-navigation/native';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import React from 'react';
 import BottomTabBar from 'src/components/BottomTabBar';
 import {NAV_NAMES} from 'src/modules/navNames';
@@ -11,15 +9,11 @@ import SignInScreen from 'src/screens/Auth/SignInScreen';
 import PostScreen from 'src/screens/PostScreen';
 import {shallowEqual, useSelector} from 'react-redux';
 import {RootState} from 'src/redux/rootReducer';
-import {Div} from './common/Div';
 import ChatRoomScreen from 'src/screens/ChatRoomScreen';
 import OnboardingScreen from 'src/screens/Auth/OnboardingScreen';
-import {BottomSheetModalProvider} from '@gorhom/bottom-sheet';
-import {NativeBaseProvider} from 'native-base';
-import {ICONS} from 'src/modules/icons';
 import {Img} from './common/Img';
 import {getNftProfileImage} from 'src/modules/nftUtils';
-import {Bell, Home, Search, Send, Star, User} from 'react-native-feather';
+import {Home, Search, User} from 'react-native-feather';
 import Colors from 'src/constants/Colors';
 import OtherProfileScreen from 'src/screens/OtherProfileScreen';
 import NftCollectionScreen from 'src/screens/NftCollectionScreen';
@@ -46,9 +40,11 @@ import PasswordSigninScreen from 'src/screens/Auth/PasswordSigninScreen';
 import {createStackNavigator} from '@react-navigation/stack';
 import CollectionSearchScreen from 'src/screens/CollectionSearchScreen';
 import SocialScreen from 'src/screens/Home/SocialScreen';
-import BottomPopups from './common/BottomPopups';
+import TransactionListScreen from 'src/screens/CommunityWalletProfileScreen';
+import CommunityWalletListScreen from 'src/screens/CommunityWalletListScreen';
+import CommunityWalletProfile from './common/CommunityWalletProfile';
+import CommunityWalletProfileScreen from 'src/screens/CommunityWalletProfileScreen';
 
-// const RootStack = createNativeStackNavigator();
 const RootStack = createStackNavigator();
 
 const Tab = createBottomTabNavigator();
@@ -163,11 +159,6 @@ const setInitialRouteParams = notificationOpenData => {
 };
 
 export const AppContent = ({notificationOpenData}) => {
-  const {
-    isLoggedIn,
-    session: {token},
-  } = useSelector((root: RootState) => root.app, shallowEqual);
-
   const initialRouteParams = setInitialRouteParams(notificationOpenData);
 
   const Navs = [
@@ -294,6 +285,14 @@ export const AppContent = ({notificationOpenData}) => {
     {
       name: NAV_NAMES.CollectionSearch,
       component: CollectionSearchScreen,
+    },
+    {
+      name: NAV_NAMES.CommunityWalletProfile,
+      component: CommunityWalletProfileScreen,
+    },
+    {
+      name: NAV_NAMES.CommunityWalletList,
+      component: CommunityWalletListScreen,
     },
   ];
 

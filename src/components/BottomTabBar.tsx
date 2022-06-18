@@ -1,20 +1,10 @@
-import {NativeBaseProvider, Box, HStack, Center} from 'native-base';
-import React, {useCallback, useRef, useState, useEffect} from 'react';
+import {NativeBaseProvider, HStack} from 'native-base';
+import React, {useCallback} from 'react';
 import {Div} from './common/Div';
-import { Row } from "src/components/common/Row"
-import BottomPopup from './common/BottomPopup';
-import NftChooseBottomSheetScrollView from './common/NftChooseBottomSheetScrollView';
-import {shallowEqual, useSelector} from 'react-redux';
-import {RootState} from 'src/redux/rootReducer';
-import {BottomSheetModal} from '@gorhom/bottom-sheet';
+import {Row} from 'src/components/common/Row';
 import {NAV_NAMES} from 'src/modules/navNames';
 import Colors from 'src/constants/Colors';
-import {mediumBump} from 'src/modules/hapticFeedBackUtils';
-import {HAS_NOTCH} from 'src/modules/constants';
-import {DEVICE_HEIGHT} from 'src/modules/styles';
-import {EventRegister} from 'react-native-event-listeners';
-import {Span} from './common/Span';
-import {infoBottomPopupEvent, openNftList} from 'src/modules/bottomPopupUtils';
+import {openNftList} from 'src/modules/bottomPopupUtils';
 
 const BottomTabBar = ({state, descriptors, navigation}) => {
   const isFocusedOnCapsule = state.history[

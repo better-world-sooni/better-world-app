@@ -1,8 +1,7 @@
-import React, {useRef} from 'react';
+import React from 'react';
 import {Div} from 'src/components/common/Div';
 import apis from 'src/modules/apis';
 import NftCollectionProfile from 'src/components/common/NftCollectionProfile';
-import {BottomSheetModal} from '@gorhom/bottom-sheet';
 import {useIsAdmin} from 'src/modules/nftUtils';
 
 const NftCollectionScreen = ({
@@ -18,7 +17,7 @@ const NftCollectionScreen = ({
     <Div flex={1} bgWhite relative overflowHidden>
       <NftCollectionProfile
         nftCollectionCore={nftCollection}
-        nftCollectionProfileApiObject={apis.nft_collection.contractAddress.profile(
+        nftCollectionProfileApiObject={apis.nft_collection.contractAddress._(
           nftCollection.contract_address,
         )}
         pageableNftCollectionPostFn={pageableNftCollectionPostFn}

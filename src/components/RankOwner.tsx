@@ -59,7 +59,6 @@ function RankOwnerContent({
           </Div>
         )}
       </Col>
-      <Col />
       <Col auto mr10 itemsCenter justifyCenter>
         <Span gray700>
           <Span bold black>

@@ -31,6 +31,8 @@ export const NAV_NAMES = {
     AttendanceList: "AttendanceList",
     CollectionEvent: "CollectionEvent",
     CollectionSearch: "CollectionSearch",
+    CommunityWalletProfile: "CommunityWalletProfile",
+    CommunityWalletList: "CommunityWalletList",
     Affinity: "Affinity",
     Scan: "Scan",
     Qr: "Qr",

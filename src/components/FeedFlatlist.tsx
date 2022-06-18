@@ -36,11 +36,11 @@ function FeedFlatlist(
   },
   ref,
 ) {
+  const gotoNewPost = useGotoNewPost({postOwnerType: PostOwnerType.Nft});
   const notchHeight = useSafeAreaInsets().top;
   const headerHeight = notchHeight + 50;
   const translationY = useSharedValue(0);
-  const scrollClamp = useSharedValue(0);
-  const gotoNewPost = useGotoNewPost({postOwnerType: PostOwnerType.Nft});
+  const scrollClamp = useSharedValue(0); 
   const clamp = (value, lowerBound, upperBound) => {
     'worklet';
     return Math.min(Math.max(lowerBound, value), upperBound);

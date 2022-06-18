@@ -45,7 +45,7 @@ export default function CollectionEvent({
   const menuOptions = [
     {
       id: 'DELETE',
-      title: 'Delete Post',
+      title: '이벤트 삭제',
       image: Platform.select({
         ios: 'trash',
         android: 'ic_menu_delete',

@@ -20,6 +20,7 @@ import {useScrollToTop} from '@react-navigation/native';
 import {Span} from 'src/components/common/Span';
 import {Col} from 'src/components/common/Col';
 import CommunityWalletSlideShow from 'src/components/common/CommunityWalletSlideShow';
+import {Div} from 'src/components/common/Div';
 
 export default function HomeScreen() {
   const {
@@ -30,10 +31,10 @@ export default function HomeScreen() {
     isNotPaginatable,
   } = useApiSelector(apis.feed.forum);
   const {data: nftCollectionRes, isLoading: nftCollectionLoad} = useApiSelector(
-    apis.nft_collection.profile(),
+    apis.nft_collection._(),
   );
   const {data: communityWalletsRes, isLoading: communityWalletLoading} =
-    useApiSelector(apis.community_wallet.list());
+    useApiSelector(apis.nft_collection.communityWallet.list());
   const communityWallets = communityWalletsRes?.community_wallets || [];
   const nftCollection = nftCollectionRes?.nft_collection;
   const gotoChatList = useGotoChatList();
@@ -42,8 +43,10 @@ export default function HomeScreen() {
   const handleRefresh = () => {
     if (feedLoading) return;
     reloadGETWithToken(apis.feed.forum());
-    reloadGETWithToken(apis.community_wallet.list());
-    reloadGETWithToken(apis.nft_collection.profile());
+    reloadGETWithToken(apis.feed.count());
+    reloadGETWithToken(apis.nft_collection.communityWallet.list());
+    reloadGETWithToken(apis.nft_collection.collectionEvent.list());
+    reloadGETWithToken(apis.nft_collection._());
   };
   const handleEndReached = () => {
     if (feedPaginating || isNotPaginatable) return;
@@ -78,12 +81,15 @@ export default function HomeScreen() {
         TopComponent={
           <Row itemsCenter>
             <Col itemsStart rounded100 onPress={openSideMenu}>
-              {nftCollectionRes?.nft_collection && (
+              {nftCollectionRes?.nft_collection ? (
                 <Img
                   h30
                   w30
                   rounded100
+                  bgGray200
                   uri={nftCollectionRes.nft_collection.image_uri}></Img>
+              ) : (
+                <Div bgGray200 h30 w30 rounded100 />
               )}
             </Col>
             <Col auto itemsCenter>

@@ -33,12 +33,9 @@ import Animated, {
   useSharedValue,
 } from 'react-native-reanimated';
 import {DEVICE_HEIGHT, DEVICE_WIDTH} from 'src/modules/styles';
-import {BlurView} from '@react-native-community/blur';
 import {CustomBlurView} from 'src/components/common/CustomBlurView';
 import Colors from 'src/constants/Colors';
 import useAutoFocusRef from 'src/hooks/useAutoFocusRef';
-import TruncatedText from 'src/components/common/TruncatedText';
-import RepostedPost from 'src/components/common/RepostedPost';
 import useUploadCollectionEvent from 'src/hooks/useUploadCollectionEvent';
 import DatePicker from 'react-native-date-picker';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -54,25 +51,19 @@ const postTypes = [
   },
 ];
 
-const NewCollectionEventScreen = ({
-  route: {
-    params: {nftCollection},
-  },
-}) => {
+const NewCollectionEventScreen = () => {
   const autoFocusRef = useAutoFocusRef();
   const {goBack} = useNavigation();
   const reloadGetWithToken = useReloadGETWithToken();
   const [startTimeOpen, setStartTimeOpen] = useState(false);
   const [endTimeOpen, setEndTimeOpen] = useState(false);
-  const {currentNft} = useSelector(
-    (root: RootState) => ({
-      currentNft: root.app.session.currentNft,
-    }),
-    shallowEqual,
+  const {data: nftCollectionRes, isLoading: nftCollectionLoad} = useApiSelector(
+    apis.nft_collection._(),
   );
+  const nftCollection = nftCollectionRes?.nft_collection;
   const uploadSuccessCallback = () => {
     reloadGetWithToken(
-      apis.collectionEvent.contractAddress.list(nftCollection.contract_address),
+      apis.nft_collection.collectionEvent.list(),
     );
     goBack();
   };
@@ -106,7 +97,6 @@ const NewCollectionEventScreen = ({
   };
 
   const handlePressMenu = ({nativeEvent: {event}}) => {
-    // setPostType(event);
     if (event == '') setHolderOnly(false);
     if (event == '홀더') setHolderOnly(true);
   };
@@ -124,7 +114,6 @@ const NewCollectionEventScreen = ({
       opacity: Math.min(translationY.value / 50, 1),
     };
   });
-  const sliderWidth = DEVICE_WIDTH - 47 - 30;
   return (
     <>
       <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} flex={1} bgWhite relative>

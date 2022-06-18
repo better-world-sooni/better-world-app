@@ -1,14 +1,9 @@
-import React, {useEffect, useRef} from 'react';
+import React from 'react';
 import {Div} from 'src/components/common/Div';
 import {HAS_NOTCH} from 'src/modules/constants';
 import {Row} from 'src/components/common/Row';
 import {Col} from 'src/components/common/Col';
-import {
-  ChevronDown,
-  ChevronLeft,
-  Image,
-  MoreHorizontal,
-} from 'react-native-feather';
+import {ChevronDown, ChevronLeft, Image} from 'react-native-feather';
 import apis from 'src/modules/apis';
 import {Img} from 'src/components/common/Img';
 import {useNavigation} from '@react-navigation/native';
@@ -19,11 +14,7 @@ import {Span} from 'src/components/common/Span';
 import {createdAtText} from 'src/modules/timeUtils';
 import useUploadPost from 'src/hooks/useUploadPost';
 import UploadImageSlideShow from 'src/components/common/UploadImageSlideShow';
-import {
-  KeyboardAvoidingView,
-  ScrollView,
-  TextInput,
-} from 'src/modules/viewComponents';
+import {KeyboardAvoidingView, TextInput} from 'src/modules/viewComponents';
 import {useApiSelector, useReloadGETWithToken} from 'src/redux/asyncReducer';
 import {ActivityIndicator, Platform} from 'react-native';
 import {MenuView} from '@react-native-menu/menu';
@@ -32,15 +23,13 @@ import Animated, {
   useAnimatedStyle,
   useSharedValue,
 } from 'react-native-reanimated';
-import {DEVICE_HEIGHT, DEVICE_WIDTH} from 'src/modules/styles';
-import {BlurView} from '@react-native-community/blur';
+import {DEVICE_WIDTH} from 'src/modules/styles';
 import {CustomBlurView} from 'src/components/common/CustomBlurView';
 import Colors from 'src/constants/Colors';
 import useAutoFocusRef from 'src/hooks/useAutoFocusRef';
-import TruncatedText from 'src/components/common/TruncatedText';
 import RepostedPost from 'src/components/common/RepostedPost';
 import CollectionEvent from 'src/components/common/CollectionEvent';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 const postTypes = [
   {
@@ -62,9 +51,20 @@ export enum PostOwnerType {
   NftCollection,
 }
 
+export enum PostType {
+  Default = '',
+  Proposal = 'Proposal',
+  Forum = 'Forum',
+}
+
 const NewPostScreen = ({
   route: {
-    params: {postOwnerType, repostable, collectionEvent},
+    params: {
+      postOwnerType,
+      repostable,
+      collectionEvent,
+      postType = PostType.Default,
+    },
   },
 }) => {
   const autoFocusRef = useAutoFocusRef();
@@ -78,9 +78,7 @@ const NewPostScreen = ({
     shallowEqual,
   );
   const {data: nftCollectionData, isLoading: nftCollectionLoading} =
-    useApiSelector(
-      apis.nft_collection.contractAddress.profile(currentNft.contract_address),
-    );
+    useApiSelector(apis.nft_collection._());
   const postOwnerIsCollection = postOwnerType == PostOwnerType.NftCollection;
   const uploadSuccessCallback = () => {
     reloadGetWithToken(
@@ -108,7 +106,7 @@ const NewPostScreen = ({
     handleRemoveImage,
     uploadPost,
   } = useUploadPost({
-    initialPostType: repostable?.type == 'Forum' ? 'Proposal' : '',
+    initialPostType: repostable?.type == 'Forum' ? 'Proposal' : postType,
   });
 
   const handlePressUpload = () => {
@@ -168,7 +166,7 @@ const NewPostScreen = ({
                 position: 'absolute',
               }}></CustomBlurView>
           </Animated.View>
-          <Div zIndex={100} absolute w={DEVICE_WIDTH} top={notchHeight+5}>
+          <Div zIndex={100} absolute w={DEVICE_WIDTH} top={notchHeight + 5}>
             <Row itemsCenter py5 h40 px15>
               <Col itemsStart>
                 <Div auto rounded100 onPress={goBack}>

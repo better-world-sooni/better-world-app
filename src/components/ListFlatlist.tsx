@@ -28,6 +28,7 @@ export default function ListFlatlist({
   enableBack = true,
   keyExtractor = item => (item as any).id,
   HeaderRightComponent = null,
+  ListHeaderComponent = null,
 }) {
   const {goBack} = useNavigation();
   const translationY = useSharedValue(0);
@@ -59,7 +60,7 @@ export default function ListFlatlist({
             }}
             reducedTransparencyFallbackColor="white"></CustomBlurView>
         </Animated.View>
-        <Div zIndex={100} absolute w={DEVICE_WIDTH} top={notchHeight+5}>
+        <Div zIndex={100} absolute w={DEVICE_WIDTH} top={notchHeight + 5}>
           <Row itemsCenter py5 h40 px8>
             <Col itemsStart>
               {enableBack && (
@@ -73,7 +74,7 @@ export default function ListFlatlist({
                 </Div>
               )}
             </Col>
-            <Col auto onPress={goBack}>
+            <Col auto>
               <Span bold fontSize={19}>
                 {title}
               </Span>
@@ -89,7 +90,7 @@ export default function ListFlatlist({
         showsVerticalScrollIndicator={false}
         onScroll={scrollHandler}
         keyExtractor={keyExtractor}
-        initialNumToRender={5}
+        initialNumToRender={10}
         removeClippedSubviews
         updateCellsBatchingPeriod={100}
         windowSize={11}
@@ -107,6 +108,7 @@ export default function ListFlatlist({
         onEndReached={onEndReached}
         data={data}
         renderItem={renderItem}
+        ListHeaderComponent={ListHeaderComponent}
         ListFooterComponent={
           <>
             {isPaginating && (

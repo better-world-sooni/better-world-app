@@ -39,7 +39,6 @@ export default function SocialScreen() {
     if (feedLoading) return;
     reloadGETWithToken(apis.nft._());
     reloadGETWithToken(apis.feed.social());
-    reloadGETWithToken(apis.nft_collection.profile());
   };
   const handleEndReached = () => {
     if (feedPaginating || isNotPaginatable) return;
