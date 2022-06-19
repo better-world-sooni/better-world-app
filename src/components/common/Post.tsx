@@ -56,6 +56,7 @@ import TruncatedText from './TruncatedText';
 import RepostedPost from './RepostedPost';
 import CollectionEvent from './CollectionEvent';
 import {getAdjustedHeightFromDimensions} from 'src/modules/imageUtils';
+import RepostedTransaction from './RepostedTransaction';
 
 export enum PostEventTypes {
   Delete = 'DELETE',
@@ -268,7 +269,7 @@ function PostContent({post}) {
     postId: post.id,
   });
 
-  const itemWidth = DEVICE_WIDTH - 30 - 50;
+  const itemWidth = DEVICE_WIDTH - 30 - 62;
 
   if (deleted) return null;
 
@@ -366,6 +367,9 @@ function PostContent({post}) {
                 />
               </Div>
             ) : null}
+            {post.transaction && (
+              <RepostedTransaction transaction={post.transaction} />
+            )}
             {post.reposted_post && (
               <RepostedPost repostedPost={post.reposted_post} enablePress />
             )}

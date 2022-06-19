@@ -12,7 +12,7 @@ export default function useUploadPost({initialPostType = ''}){
     const { images, error, setError, handleAddImages, handleRemoveImage, uploadAllSelectedFiles } = useUploadImages({attachedRecord:"post"})
     const postPromiseFnWithToken = usePostPromiseFnWithToken()
 
-    const uploadPost = async ({admin, uploadSuccessCallback, repostId = null, collectionEventId = null}) => {
+    const uploadPost = async ({admin, uploadSuccessCallback, repostId = null, collectionEventId = null, transactionHash=null}) => {
 		if (loading) {
 			return;
 		}
@@ -30,7 +30,8 @@ export default function useUploadPost({initialPostType = ''}){
 			image_width: null,
 			image_height: null,
 			repost_id: repostId,
-			collection_event_id: collectionEventId
+			collection_event_id: collectionEventId,
+			blockchain_transaction_hash: transactionHash
 		}
 		if(addImages){
 			const signedIdArray = await uploadAllSelectedFiles();

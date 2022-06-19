@@ -3,11 +3,13 @@ import React, {memo} from 'react';
 import {Linking, Platform} from 'react-native';
 import {MoreHorizontal, Repeat, User} from 'react-native-feather';
 import Colors from 'src/constants/Colors';
+import {useGotoNewPost} from 'src/hooks/useGoto';
 import {truncateAddress} from 'src/modules/blockchainUtils';
 import {kmoment} from 'src/modules/constants';
 import {ICONS} from 'src/modules/icons';
 import {getNftName, getNftProfileImage, useIsAdmin} from 'src/modules/nftUtils';
 import {resizeImageUri} from 'src/modules/uriUtils';
+import {PostOwnerType, PostType} from 'src/screens/NewPostScreen';
 import {Col} from './Col';
 import {Div} from './Div';
 import {Img} from './Img';
@@ -48,6 +50,7 @@ function Transaction({transaction}) {
       }),
     },
   ].filter(option => option);
+  const gotoNewPost = useGotoNewPost({postOwnerType: PostOwnerType.Nft});
 
   const searchKlaytnfinder = () => {
     Linking.openURL(
@@ -136,21 +139,27 @@ function Transaction({transaction}) {
             </Col>
           </Row>
           <Row itemsCenter>
+            <Col auto mr8>
+              <Span normal danger={ownerIsFrom} info={!ownerIsFrom}>
+                {ownerIsFrom ? '출금' : '입금'}
+              </Span>
+            </Col>
             <Col auto mr2>
               <Span fontSize={24} bold>
-                <Span danger={ownerIsFrom} info={!ownerIsFrom}>
-                  {ownerIsFrom ? '출금' : '입금'}
-                </Span>{' '}
                 {transaction.value}
               </Span>
             </Col>
             <Col auto ml2>
-              <Img h20 w20 source={ICONS.klayIcon}></Img>
+              <Img h18 w18 source={ICONS.klayIcon}></Img>
             </Col>
           </Row>
           <Row mt4 itemsCenter>
             <Col />
-            <Col auto>
+            <Col
+              auto
+              onPress={() =>
+                gotoNewPost(null, null, transaction, PostType.Default)
+              }>
               <Repeat
                 color={Colors.gray[700]}
                 width={18}

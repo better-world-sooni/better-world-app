@@ -30,6 +30,7 @@ import useAutoFocusRef from 'src/hooks/useAutoFocusRef';
 import RepostedPost from 'src/components/common/RepostedPost';
 import CollectionEvent from 'src/components/common/CollectionEvent';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import RepostedTransactionForNewPost from 'src/components/common/RepostedTransactionForNewPost';
 
 const postTypes = [
   {
@@ -110,6 +111,7 @@ const NewPostScreen = ({
       uploadSuccessCallback,
       repostId: repostable?.id,
       collectionEventId: collectionEvent?.id,
+      transactionHash: transaction?.transaction_hash,
     });
   };
 
@@ -236,6 +238,9 @@ const NewPostScreen = ({
                   bold
                   onChangeText={handleContentChange}></TextInput>
               </Row>
+              {transaction && (
+                <RepostedTransactionForNewPost transaction={transaction} />
+              )}
               {repostable && <RepostedPost repostedPost={repostable} />}
               {addImages && (
                 <Div mt8>

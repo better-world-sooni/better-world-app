@@ -1,0 +1,77 @@
+import React, {memo} from 'react';
+import {shallowEqual, useSelector} from 'react-redux';
+import {ICONS} from 'src/modules/icons';
+import {createdAtText} from 'src/modules/timeUtils';
+import {resizeImageUri} from 'src/modules/uriUtils';
+import {RootState} from 'src/redux/rootReducer';
+import {Col} from './Col';
+import {Div} from './Div';
+import {Img} from './Img';
+import {Row} from './Row';
+import {Span} from './Span';
+
+function RepostedTransaction({transaction}) {
+  const {currentNft} = useSelector(
+    (root: RootState) => root.app.session,
+    shallowEqual,
+  );
+  const communityWallet =
+    transaction.from_community_wallet && transaction.to_community_wallet
+      ? transaction.to_community_wallet.contract_address ==
+        currentNft.contract_address
+        ? transaction.to_community_wallet
+        : transaction.from_community_wallet
+      : transaction.from_community_wallet || transaction.to_community_wallet;
+  const sent =
+    communityWallet.address == transaction.from_community_wallet?.address;
+  return (
+    <Div border={0.5} borderGray200 p12 rounded10 mt4>
+      <Row>
+        <Col auto mr8>
+          <Div>
+            <Img
+              w40
+              h40
+              border={0.5}
+              borderGray200
+              rounded100
+              uri={resizeImageUri(communityWallet.image_uri, 200, 200)}
+            />
+          </Div>
+        </Col>
+        <Col>
+          <Row>
+            <Col mr8>
+              <Span>
+                <Span fontSize={14} bold>
+                  {communityWallet.name}
+                </Span>
+                <Span gray700>
+                  {' · '}
+                  {createdAtText(transaction.created_at)}
+                </Span>
+              </Span>
+            </Col>
+          </Row>
+          <Row itemsCenter>
+            <Col auto mr8>
+              <Span normal danger={sent} info={!sent}>
+                {sent ? '출금' : '입금'}
+              </Span>
+            </Col>
+            <Col auto mr2>
+              <Span fontSize={24} bold>
+                {transaction.value}
+              </Span>
+            </Col>
+            <Col auto ml2>
+              <Img h18 w18 source={ICONS.klayIcon}></Img>
+            </Col>
+          </Row>
+        </Col>
+      </Row>
+    </Div>
+  );
+}
+
+export default memo(RepostedTransaction);

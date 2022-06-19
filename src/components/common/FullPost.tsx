@@ -339,7 +339,7 @@ export default function FullPost({post, autoFocus = false}) {
     };
   });
 
-  const itemWidth = DEVICE_WIDTH - 30 - 50;
+  const itemWidth = DEVICE_WIDTH - 30 - 62;
 
   if (deleted) return null;
 
