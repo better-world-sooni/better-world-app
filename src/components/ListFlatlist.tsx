@@ -26,6 +26,7 @@ export default function ListFlatlist({
   data,
   title,
   enableBack = true,
+  BackIcon = ChevronLeft,
   keyExtractor = item => (item as any).id,
   HeaderRightComponent = null,
   ListHeaderComponent = null,
@@ -61,11 +62,11 @@ export default function ListFlatlist({
             reducedTransparencyFallbackColor="white"></CustomBlurView>
         </Animated.View>
         <Div zIndex={100} absolute w={DEVICE_WIDTH} top={notchHeight + 5}>
-          <Row itemsCenter py5 h40 px8>
+          <Row itemsCenter py5 h40 px={BackIcon == ChevronLeft ? 8 : 15}>
             <Col itemsStart>
               {enableBack && (
                 <Div auto rounded100 onPress={goBack}>
-                  <ChevronLeft
+                  <BackIcon
                     width={30}
                     height={30}
                     color="black"
@@ -79,7 +80,7 @@ export default function ListFlatlist({
                 {title}
               </Span>
             </Col>
-            <Col itemsEnd pr7={enableBack}>
+            <Col itemsEnd pr={enableBack && BackIcon == ChevronLeft ? 8 : 0}>
               {HeaderRightComponent}
             </Col>
           </Row>

@@ -23,6 +23,7 @@ import {
   useGotoPost,
   useGotoReport,
   useGotoRepostList,
+  useGotoTransaction,
   useGotoVoteList,
 } from 'src/hooks/useGoto';
 import useLike, {LikableType} from 'src/hooks/useLike';
@@ -65,7 +66,7 @@ export enum PostEventTypes {
   SetWinningProposal = 'SET_WINNING_PROPOSAL',
 }
 
-function PostContent({post}) {
+function PostContent({post, selectableFn = null}) {
   const [deleted, setDeleted] = useState(false);
 
   const [loading, setLoading] = useState(false);
@@ -278,30 +279,32 @@ function PostContent({post}) {
       <Div py5 borderBottom={0.5} borderGray200 bgWhite>
         <Row px15 pt5>
           <Col auto mr8>
-            <Div itemsEnd mb5>
-              {post.type == PostType.Forum ? (
-                <Zap
-                  height={18}
-                  width={18}
-                  fill={Colors.warning.DEFAULT}
-                  color={Colors.warning.DEFAULT}
-                />
-              ) : post.type == PostType.Proposal ? (
-                <ThumbsUp
-                  height={18}
-                  width={18}
-                  fill={Colors.info.DEFAULT}
-                  color={Colors.info.DEFAULT}
-                />
-              ) : (
-                <Heart
-                  height={18}
-                  width={18}
-                  fill={Colors.danger.DEFAULT}
-                  color={Colors.danger.DEFAULT}
-                />
-              )}
-            </Div>
+            {!selectableFn && (
+              <Div itemsEnd mb5>
+                {post.type == PostType.Forum ? (
+                  <Zap
+                    height={16}
+                    width={16}
+                    // fill={Colors.gray[500]}
+                    color={Colors.gray[500]}
+                  />
+                ) : post.type == PostType.Proposal ? (
+                  <ThumbsUp
+                    height={16}
+                    width={16}
+                    // fill={Colors.gray[500]}
+                    color={Colors.gray[500]}
+                  />
+                ) : (
+                  <Heart
+                    height={16}
+                    width={16}
+                    // fill={Colors.gray[500]}
+                    color={Colors.gray[500]}
+                  />
+                )}
+              </Div>
+            )}
             <Div onPress={goToProfile}>
               <Img
                 w54
@@ -315,13 +318,23 @@ function PostContent({post}) {
           </Col>
           <Col>
             <Div mt1 mb4>
-              <Span bold gray700 fontSize={13}>
-                {post.type == PostType.Forum
-                  ? '홀더 포럼'
-                  : post.type == PostType.Proposal
-                  ? '홀더 투표'
-                  : '게시물'}
-              </Span>
+              {selectableFn ? (
+                <Span
+                  bold
+                  info
+                  fontSize={12}
+                  onPress={() => selectableFn(post.id)}>
+                  선택하기
+                </Span>
+              ) : (
+                <Span bold gray700 fontSize={12}>
+                  {post.type == PostType.Forum
+                    ? '홀더 포럼'
+                    : post.type == PostType.Proposal
+                    ? '홀더 투표'
+                    : '게시물'}
+                </Span>
+              )}
             </Div>
             <Row>
               <Col auto>
@@ -368,7 +381,7 @@ function PostContent({post}) {
               </Div>
             ) : null}
             {post.transaction && (
-              <RepostedTransaction transaction={post.transaction} />
+              <RepostedTransaction transaction={post.transaction} enablePress />
             )}
             {post.reposted_post && (
               <RepostedPost repostedPost={post.reposted_post} enablePress />

@@ -3,30 +3,28 @@ import React from 'react';
 import {ActivityIndicator} from 'react-native';
 import {ChevronLeft} from 'react-native-feather';
 import {Col} from 'src/components/common/Col';
-import CollectionEvent from 'src/components/common/CollectionEvent';
 import {Div} from 'src/components/common/Div';
 import {Row} from 'src/components/common/Row';
 import {Span} from 'src/components/common/Span';
 import apis from 'src/modules/apis';
 import {DEVICE_WIDTH} from 'src/modules/styles';
 import {useApiSelector} from 'src/redux/asyncReducer';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import Transaction from 'src/components/common/Transaction';
+import {truncateAddress} from 'src/modules/blockchainUtils';
 
-export default function CollectionEventScreen({
+export default function TransactionScreen({
   route: {
-    params: {collectionEvent, reload},
+    params: {transactionHash},
   },
 }) {
-  const {data: collectionEventRes, isLoading: collectionEventLoad} = 
-    useApiSelector(apis.collectionEvent.collectionEventId);
+  const {data: transactionRes, isLoading: transactionLoading} = useApiSelector(
+    apis.blockchain_transaction._,
+  );
+  const transaction = transactionRes?.transaction;
   const notchHeight = useSafeAreaInsets().top;
   const headerHeight = notchHeight + 50;
-  const itemWidth = DEVICE_WIDTH - 30;
   const {goBack} = useNavigation();
-  const loading = reload && collectionEventLoad;
-  const displayedCollectionEvent = reload
-    ? collectionEventRes?.collection_event
-    : collectionEvent;
   return (
     <Div flex={1} justifyCenter bgWhite>
       <Div h={headerHeight} zIndex={100} absolute top0 bgWhite>
@@ -51,21 +49,17 @@ export default function CollectionEventScreen({
           </Col>
           <Col auto>
             <Span bold fontSize={19}>
-              {collectionEvent.title}
+              tx({truncateAddress(transactionHash)})
             </Span>
           </Col>
           <Col />
         </Row>
       </Div>
       <Div>
-        {loading ? (
+        {transactionLoading || !transaction ? (
           <ActivityIndicator size={'large'} />
         ) : (
-          <CollectionEvent
-            collectionEvent={displayedCollectionEvent}
-            full
-            itemWidth={itemWidth}
-          />
+          <Transaction transaction={transaction} />
         )}
       </Div>
     </Div>

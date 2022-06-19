@@ -65,6 +65,7 @@ import CollectionEvent from './CollectionEvent';
 import {getAdjustedHeightFromDimensions} from 'src/modules/imageUtils';
 import {PostEventTypes} from './Post';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import RepostedTransaction from './RepostedTransaction';
 
 export default function FullPost({post, autoFocus = false}) {
   const scrollToEndRef = useScrollToEndRef();
@@ -445,6 +446,12 @@ export default function FullPost({post, autoFocus = false}) {
                       </Div>
                     ) : null}
                   </Row>
+                  {post.transaction && (
+                    <RepostedTransaction
+                      transaction={post.transaction}
+                      enablePress
+                    />
+                  )}
                   {post.reposted_post && (
                     <Div mt5>
                       <RepostedPost

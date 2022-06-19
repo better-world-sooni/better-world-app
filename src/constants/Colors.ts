@@ -32,9 +32,9 @@ export default {
   },
   info: {
     DEFAULT:  '#2a97ff',
-    ligth: '#2a97ff10'
+    light: '#2a97ff90'
   },
-  warning: {DEFAULT: '#f6c343',},
-  success: { DEFAULT: '#3cd278', light: 'rgba(60, 210, 120, 0.1)' },
-  danger: { DEFAULT: '#ff3051', light: 'rgba(255, 48, 81, 0.1)' },
+  warning: {DEFAULT: '#f6c343', light: '#f6c34390',},
+  success: { DEFAULT: '#3cd278', light: '#3cd27890' },
+  danger: { DEFAULT: '#ff3051', light: '#ff305190' },
 };

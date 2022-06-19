@@ -9,7 +9,6 @@ export default function CommunityWalletProfileScreen({
     params: {communityWallet},
   },
 }) {
-  const isAdmin = useIsAdmin(communityWallet.nft_collection);
   const pageableTransactionListFn = (cursor?) => {
     return apis.community_wallet.address.transaction.list(
       communityWallet.address,
@@ -24,7 +23,6 @@ export default function CommunityWalletProfileScreen({
           communityWallet.address,
         )}
         pageableTransactionListFn={pageableTransactionListFn}
-        isAdmin={isAdmin}
       />
     </Div>
   );

@@ -13,7 +13,7 @@ import {RootState} from 'src/redux/rootReducer';
 import {ActivityIndicator, Platform} from 'react-native';
 import {getNftName, getNftProfileImage} from 'src/modules/nftUtils';
 import {Col} from 'src/components/common/Col';
-import {ChevronLeft, RefreshCw} from 'react-native-feather';
+import {ChevronLeft, RefreshCw, X} from 'react-native-feather';
 import {useNavigation} from '@react-navigation/native';
 import {Row} from 'src/components/common/Row';
 import {CustomBlurView} from 'src/components/common/CustomBlurView';
@@ -86,12 +86,7 @@ const QrScreen = () => {
           top={notchHeight + 5}>
           <Col justifyStart>
             <Div auto rounded100 onPress={goBack}>
-              <ChevronLeft
-                width={30}
-                height={30}
-                color="white"
-                strokeWidth={2}
-              />
+              <X width={30} height={30} color="white" strokeWidth={2} />
             </Div>
           </Col>
           <Col auto>

@@ -1,7 +1,7 @@
 import {BottomSheetModal} from '@gorhom/bottom-sheet';
 import {useNavigation} from '@react-navigation/native';
 import React, {useEffect, useRef, useState} from 'react';
-import {ChevronLeft} from 'react-native-feather';
+import {ChevronLeft, X} from 'react-native-feather';
 import QRCodeScanner from 'react-native-qrcode-scanner';
 import BottomPopup from 'src/components/common/BottomPopup';
 import {Col} from 'src/components/common/Col';
@@ -92,12 +92,7 @@ export default function ScanScreen({
           top={notchHeight + 5}>
           <Col justifyStart mr10>
             <Div auto rounded100 onPress={goBack}>
-              <ChevronLeft
-                width={30}
-                height={30}
-                color="black"
-                strokeWidth={2}
-              />
+              <X width={30} height={30} color="black" strokeWidth={2} />
             </Div>
           </Col>
           <Col auto>

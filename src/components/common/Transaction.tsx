@@ -3,7 +3,10 @@ import React, {memo} from 'react';
 import {Linking, Platform} from 'react-native';
 import {MoreHorizontal, Repeat, User} from 'react-native-feather';
 import Colors from 'src/constants/Colors';
-import {useGotoNewPost} from 'src/hooks/useGoto';
+import {
+  useGotoCollectionFeedTagSelect,
+  useGotoNewPost,
+} from 'src/hooks/useGoto';
 import {truncateAddress} from 'src/modules/blockchainUtils';
 import {kmoment} from 'src/modules/constants';
 import {ICONS} from 'src/modules/icons';
@@ -19,18 +22,23 @@ import {Span} from './Span';
 enum TransactionEventTypes {
   Klaytnfinder = 'Klaytnfinder',
   Tag = 'Tag',
+  AdminShare = 'AdminShare',
 }
 
-function Transaction({transaction}) {
-  const ownerIsFrom = !!transaction.from_owner?.nft_collection;
-  const communityWallet = ownerIsFrom
-    ? transaction.from_owner
-    : transaction.to_owner;
-  const opponentAddress = ownerIsFrom ? transaction.to : transaction.from;
-  const opponentObject = ownerIsFrom
-    ? transaction.to_owner
-    : transaction.from_owner;
+function Transaction({transaction, mainAddress = null}) {
+  const communityWallet =
+    transaction.from_community_wallet && transaction.to_community_wallet
+      ? transaction.to_community_wallet.address == mainAddress
+        ? transaction.to_community_wallet
+        : transaction.from_community_wallet
+      : transaction.from_community_wallet || transaction.to_community_wallet;
+  const sent =
+    communityWallet.address == transaction.from_community_wallet?.address;
+  const recipientOrSender = sent
+    ? transaction.to_community_wallet || transaction.to_user
+    : transaction.from_community_wallet || transaction.from_user;
   const isAdmin = useIsAdmin(communityWallet?.nft_collection);
+
   const menuOptions = [
     {
       id: TransactionEventTypes.Klaytnfinder,
@@ -49,8 +57,20 @@ function Transaction({transaction}) {
         android: 'ic_input_get',
       }),
     },
+    isAdmin && {
+      id: TransactionEventTypes.AdminShare,
+      title: '커뮤니티 계정으로 리포스트',
+      image: Platform.select({
+        ios: 'square.and.arrow.up',
+        android: 'ic_menu_set_as',
+      }),
+    },
   ].filter(option => option);
   const gotoNewPost = useGotoNewPost({postOwnerType: PostOwnerType.Nft});
+  const gotoNewPostAsAdmin = useGotoNewPost({
+    postOwnerType: PostOwnerType.NftCollection,
+  });
+  const gotoNewCollectionFeedTagSelect = useGotoCollectionFeedTagSelect();
 
   const searchKlaytnfinder = () => {
     Linking.openURL(
@@ -58,17 +78,23 @@ function Transaction({transaction}) {
     );
   };
   const handlePressMenu = ({nativeEvent: {event}}) => {
-    // if (event == CommunityWalletEventTypes.Delete) deletePost();
     if (event == TransactionEventTypes.Klaytnfinder) searchKlaytnfinder();
+    if (event == TransactionEventTypes.AdminShare)
+      gotoNewPostAsAdmin(null, null, transaction, PostType.Default);
+    if (event == TransactionEventTypes.Tag)
+      gotoNewCollectionFeedTagSelect(
+        transaction.transaction_hash,
+        'blockchain_transaction_hash',
+      );
   };
   return (
-    <Div borderBottom={0.5} borderGray200 py8 px15>
+    <Div rounded10 border={0.5} borderGray200 p12 mx15 mt8>
       <Row>
         <Col auto mr8>
           <Div itemsEnd mb5>
             <Row itemsCenter>
-              {opponentObject ? (
-                <HolderNfts nftRanks={opponentObject.nft_ranks} />
+              {recipientOrSender ? (
+                <HolderNfts nftRanks={recipientOrSender.nft_ranks} />
               ) : (
                 <Div rounded100 border={0.5} borderGray200>
                   <User color={Colors.gray[500]} width={18} height={18} />
@@ -90,16 +116,16 @@ function Transaction({transaction}) {
         <Col>
           <Div itemsEnd mb5>
             <Row itemsCenter>
-              {opponentObject ? (
+              {recipientOrSender ? (
                 <>
                   <Col auto mr4>
-                    <AdminNames nftRanks={opponentObject.nft_ranks} />
+                    <AdminNames nftRanks={recipientOrSender.nft_ranks} />
                   </Col>
                   <Col>
                     <Span gray700 fontSize={13}>
                       (
                       {truncateAddress(
-                        ownerIsFrom ? transaction.to : transaction.from,
+                        sent ? transaction.to : transaction.from,
                       )}
                       )
                     </Span>
@@ -108,9 +134,7 @@ function Transaction({transaction}) {
               ) : (
                 <Col>
                   <Span gray700 bold fontSize={14}>
-                    {truncateAddress(
-                      ownerIsFrom ? transaction.to : transaction.from,
-                    )}
+                    {truncateAddress(sent ? transaction.to : transaction.from)}
                   </Span>
                 </Col>
               )}
@@ -140,8 +164,8 @@ function Transaction({transaction}) {
           </Row>
           <Row itemsCenter>
             <Col auto mr8>
-              <Span normal danger={ownerIsFrom} info={!ownerIsFrom}>
-                {ownerIsFrom ? '출금' : '입금'}
+              <Span bold danger={sent} info={!sent}>
+                {sent ? '출금' : '입금'}
               </Span>
             </Col>
             <Col auto mr2>

@@ -40,11 +40,12 @@ import PasswordSigninScreen from 'src/screens/Auth/PasswordSigninScreen';
 import {createStackNavigator} from '@react-navigation/stack';
 import CollectionSearchScreen from 'src/screens/CollectionSearchScreen';
 import SocialScreen from 'src/screens/Home/SocialScreen';
-import TransactionListScreen from 'src/screens/CommunityWalletProfileScreen';
 import CommunityWalletListScreen from 'src/screens/CommunityWalletListScreen';
-import CommunityWalletProfile from './common/CommunityWalletProfile';
 import CommunityWalletProfileScreen from 'src/screens/CommunityWalletProfileScreen';
 import NewCommunityWalletScreen from 'src/screens/NewCommunityWalletScreen';
+import CollectionFeedTagSelectScreen from 'src/screens/CollectionFeedTagSelectScreen';
+import {TransitionPresets} from '@react-navigation/stack';
+import TransactionScreen from 'src/screens/TransactionScreen';
 
 const RootStack = createStackNavigator();
 
@@ -234,6 +235,7 @@ export const AppContent = ({notificationOpenData}) => {
     {
       name: NAV_NAMES.Scan,
       component: ScanScreen,
+      options: TransitionPresets.ModalTransition,
     },
     {
       name: NAV_NAMES.Notification,
@@ -274,6 +276,7 @@ export const AppContent = ({notificationOpenData}) => {
     {
       name: NAV_NAMES.Qr,
       component: QrScreen,
+      options: TransitionPresets.ModalTransition,
     },
     {
       name: NAV_NAMES.ChatRoom,
@@ -298,6 +301,15 @@ export const AppContent = ({notificationOpenData}) => {
     {
       name: NAV_NAMES.NewCommunityWallet,
       component: NewCommunityWalletScreen,
+    },
+    {
+      name: NAV_NAMES.CollectionFeedTagSelect,
+      component: CollectionFeedTagSelectScreen,
+      options: TransitionPresets.ModalTransition,
+    },
+    {
+      name: NAV_NAMES.Transaction,
+      component: TransactionScreen,
     },
   ];
 

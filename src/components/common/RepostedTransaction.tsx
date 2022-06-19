@@ -1,5 +1,6 @@
 import React, {memo} from 'react';
 import {shallowEqual, useSelector} from 'react-redux';
+import {useGotoTransaction} from 'src/hooks/useGoto';
 import {ICONS} from 'src/modules/icons';
 import {createdAtText} from 'src/modules/timeUtils';
 import {resizeImageUri} from 'src/modules/uriUtils';
@@ -10,11 +11,14 @@ import {Img} from './Img';
 import {Row} from './Row';
 import {Span} from './Span';
 
-function RepostedTransaction({transaction}) {
+function RepostedTransaction({transaction, enablePress = false}) {
   const {currentNft} = useSelector(
     (root: RootState) => root.app.session,
     shallowEqual,
   );
+  const gotoTransaction = useGotoTransaction({
+    transactionHash: transaction.transaction_hash,
+  });
   const communityWallet =
     transaction.from_community_wallet && transaction.to_community_wallet
       ? transaction.to_community_wallet.contract_address ==
@@ -25,7 +29,13 @@ function RepostedTransaction({transaction}) {
   const sent =
     communityWallet.address == transaction.from_community_wallet?.address;
   return (
-    <Div border={0.5} borderGray200 p12 rounded10 mt4>
+    <Div
+      border={0.5}
+      borderGray200
+      p12
+      rounded10
+      mt4
+      onPress={enablePress && gotoTransaction}>
       <Row>
         <Col auto mr8>
           <Div>

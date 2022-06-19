@@ -150,6 +150,9 @@ const apis = {
       commentId: (commentId) => apiV1(`/report/comment/${commentId}`)
     }
   },
+  blockchain_transaction: {
+    _:(transactionHash) => apiV1(`/blockchain_transaction/${transactionHash}`),
+  },
   feed: {
     _: (page?) => apiV1(`/feed${urlParams({page})}`),
     count: () => apiV1(`/feed/count`),

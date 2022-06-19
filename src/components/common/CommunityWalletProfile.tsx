@@ -1,4 +1,4 @@
-import React, {useRef, useState} from 'react';
+import React, {useState} from 'react';
 import {Div} from './Div';
 import {DEVICE_WIDTH} from 'src/modules/styles';
 import {HAS_NOTCH} from 'src/modules/constants';
@@ -8,7 +8,6 @@ import Animated, {
   useSharedValue,
 } from 'react-native-reanimated';
 import {CustomBlurView} from 'src/components/common/CustomBlurView';
-import {useNavigation} from '@react-navigation/native';
 import {ActivityIndicator, RefreshControl} from 'react-native';
 import {
   useApiSelector,
@@ -16,7 +15,6 @@ import {
   useReloadGETWithToken,
 } from 'src/redux/asyncReducer';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import {BottomSheetModal} from '@gorhom/bottom-sheet';
 import Transaction from './Transaction';
 import CommunityWalletHeader from './CommunityWalletHeader';
 import CommunityWalletTopBar from './CommunityWalletTopBar';
@@ -26,11 +24,7 @@ export default function CommunityWalletProfile({
   communityWalletApiObject,
   pageableTransactionListFn,
 }) {
-  const bottomPopupRef = useRef<BottomSheetModal>(null);
   const [isAboutOpen, setIsAboutOpen] = useState(false);
-  const editProfile = () => {
-    bottomPopupRef?.current?.expand();
-  };
   const {data: communityWalletRes, isLoading: communityWalletLoading} =
     useApiSelector(communityWalletApiObject);
   const {
@@ -53,7 +47,6 @@ export default function CommunityWalletProfile({
   };
   const communityWallet =
     communityWalletRes?.community_wallet || communityWalletCore;
-  const {goBack} = useNavigation();
   const translationY = useSharedValue(0);
   const scrollHandler = useAnimatedScrollHandler(event => {
     translationY.value = event.contentOffset.y;
@@ -69,7 +62,13 @@ export default function CommunityWalletProfile({
   });
   return (
     <Div flex={1} bgWhite>
-      <Div h={headerHeight} zIndex={100} absolute top0>
+      <Div
+        h={headerHeight}
+        zIndex={100}
+        absolute
+        top0
+        borderBottom={0.5}
+        borderGray200>
         <Animated.View style={headerStyles}>
           <CustomBlurView
             blurType="xlight"
@@ -112,7 +111,12 @@ export default function CommunityWalletProfile({
         }
         onEndReached={handleEndReached}
         data={transactionListRes?.transactions || []}
-        renderItem={({item}) => <Transaction transaction={item} />}
+        renderItem={({item}) => (
+          <Transaction
+            transaction={item}
+            mainAddress={communityWalletCore.address}
+          />
+        )}
         ListHeaderComponent={
           isAboutOpen && (
             <CommunityWalletHeader

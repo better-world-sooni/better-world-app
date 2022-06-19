@@ -159,6 +159,21 @@ export function useGotoNewPost({postOwnerType}){
   return gotoNewPost
 }
 
+export function useGotoCollectionFeedTagSelect(){
+  const {currentNft} = useSelector(
+    (root: RootState) => root.app.session,
+    shallowEqual,
+);
+  const navigation = useNavigation()
+  const apiGETWithToken = useApiGETWithToken()
+  const gotoCollectionFeedTagSelect = (primaryKey, foreignKeyName) => {
+    apiGETWithToken(apis.feed.collection(currentNft.contract_address, 'all', ))
+    navigation.navigate(NAV_NAMES.CollectionFeedTagSelect as never, {contractAddress: currentNft.contract_address, primaryKey, foreignKeyName} as never);
+  }
+  return gotoCollectionFeedTagSelect
+}
+
+
 export function useGotoNewCommunityWallet(){
   const navigation = useNavigation()
   const gotoNewCommunityWallet = () => {
@@ -502,4 +517,18 @@ export function useGotoCollectionSearch({contractAddress}){
     } as never)
   }
   return gotoCollectionEvent
+}
+
+export function useGotoTransaction({transactionHash}){
+  const navigation = useNavigation()
+  const apiGETWithToken = useApiGETWithToken()
+  const gotoTransaction = () => {
+    apiGETWithToken(
+      apis.blockchain_transaction._(transactionHash)
+    )
+    navigation.navigate(NAV_NAMES.Transaction as never, {
+      transactionHash
+    } as never)
+  }
+  return gotoTransaction
 }
