@@ -174,7 +174,6 @@ function ChatListScreen() {
           </>
         }
         stickyHeaderIndices={[0]}
-        refreshControl={<RefreshControl refreshing={chatListLoad} />}
         data={chatRooms}
         renderItem={({item, index}) => {
           return (
