@@ -271,7 +271,7 @@ const MyNftCollectionMenu = ({nftCollection}) => {
               <Row
                 itemsCenter
                 py16
-                onPress={() => gotoNewPost(null, null, PostType.Forum)}>
+                onPress={() => gotoNewPost(null, null, null, PostType.Forum)}>
                 <Col auto mr16>
                   <PieChart
                     strokeWidth={1.3}
@@ -323,7 +323,9 @@ const MyNftCollectionMenu = ({nftCollection}) => {
               <Row
                 itemsCenter
                 py16
-                onPress={() => gotoNewPost(null, null, PostType.Proposal)}>
+                onPress={() =>
+                  gotoNewPost(null, null, null, PostType.Proposal)
+                }>
                 <Col auto mr16>
                   <ThumbsUp
                     strokeWidth={1.3}

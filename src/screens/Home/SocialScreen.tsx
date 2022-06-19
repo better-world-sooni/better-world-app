@@ -80,7 +80,7 @@ export default function SocialScreen() {
             </Col>
             <Col auto itemsCenter>
               <Span bold fontSize={19}>
-                {getNftName(nft)}의 소셜 피드
+                {getNftName(nft)}의 피드
               </Span>
             </Col>
             <Col itemsEnd rounded100 onPress={() => gotoNotifications()}>

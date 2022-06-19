@@ -59,7 +59,7 @@ export enum PostType {
 
 const NewPostScreen = ({
   route: {
-    params: {postOwnerType, repostable, collectionEvent, postType},
+    params: {postOwnerType, repostable, collectionEvent, transaction, postType},
   },
 }) => {
   const autoFocusRef = useAutoFocusRef();

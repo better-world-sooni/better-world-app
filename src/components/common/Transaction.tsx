@@ -1,15 +1,23 @@
 import {MenuView} from '@react-native-menu/menu';
 import React, {memo} from 'react';
-import {MoreHorizontal, Repeat} from 'react-native-feather';
+import {Linking, Platform} from 'react-native';
+import {MoreHorizontal, Repeat, User} from 'react-native-feather';
 import Colors from 'src/constants/Colors';
 import {truncateAddress} from 'src/modules/blockchainUtils';
 import {kmoment} from 'src/modules/constants';
-import {getNftName, getNftProfileImage} from 'src/modules/nftUtils';
+import {ICONS} from 'src/modules/icons';
+import {getNftName, getNftProfileImage, useIsAdmin} from 'src/modules/nftUtils';
+import {resizeImageUri} from 'src/modules/uriUtils';
 import {Col} from './Col';
 import {Div} from './Div';
 import {Img} from './Img';
 import {Row} from './Row';
 import {Span} from './Span';
+
+enum TransactionEventTypes {
+  Klaytnfinder = 'Klaytnfinder',
+  Tag = 'Tag',
+}
 
 function Transaction({transaction}) {
   const ownerIsFrom = !!transaction.from_owner?.nft_collection;
@@ -20,73 +28,137 @@ function Transaction({transaction}) {
   const opponentObject = ownerIsFrom
     ? transaction.to_owner
     : transaction.from_owner;
+  const isAdmin = useIsAdmin(communityWallet?.nft_collection);
+  const menuOptions = [
+    {
+      id: TransactionEventTypes.Klaytnfinder,
+      title: 'Klaytnfinder에서 확인',
+      titleColor: '#46F289',
+      image: Platform.select({
+        ios: 'magnifyingglass',
+        android: 'ic_search_category_default',
+      }),
+    },
+    isAdmin && {
+      id: TransactionEventTypes.Tag,
+      title: '커뮤니티 게시물에 참조',
+      image: Platform.select({
+        ios: 'tag',
+        android: 'ic_input_get',
+      }),
+    },
+  ].filter(option => option);
+
+  const searchKlaytnfinder = () => {
+    Linking.openURL(
+      `https://www.klaytnfinder.io/tx/${transaction.transaction_hash}`,
+    );
+  };
+  const handlePressMenu = ({nativeEvent: {event}}) => {
+    // if (event == CommunityWalletEventTypes.Delete) deletePost();
+    if (event == TransactionEventTypes.Klaytnfinder) searchKlaytnfinder();
+  };
   return (
-    <Div borderTop={0.5} borderGray200 py8 px15>
-      <Row itemsCenter mb4>
-        <Col>
-          <Span gray700>
-            {kmoment(transaction.created_at).format('YY.M.D a h:mm')}
-            {' · '}
-            Tx({truncateAddress(transaction.transaction_hash)})
-          </Span>
-        </Col>
-        <Col auto>
-          <MenuView onPressAction={null} actions={[]}>
-            <MoreHorizontal color={Colors.gray[400]} width={20} height={20} />
-          </MenuView>
-        </Col>
-      </Row>
-      <Row itemsCenter py2>
-        <Col auto>
-          <Div>
-            {opponentObject ? (
-              <Div>
+    <Div borderBottom={0.5} borderGray200 py8 px15>
+      <Row>
+        <Col auto mr8>
+          <Div itemsEnd mb5>
+            <Row itemsCenter>
+              {opponentObject ? (
                 <HolderNfts nftRanks={opponentObject.nft_ranks} />
-                <AdminNames nftRanks={opponentObject.nft_ranks} />
-                <Span bold fontSize={14}>
-                  {truncateAddress(
-                    ownerIsFrom ? transaction.to : transaction.from,
-                  )}
-                </Span>
-              </Div>
-            ) : (
-              <Span bold fontSize={14}>
-                {truncateAddress(
-                  ownerIsFrom ? transaction.to : transaction.from,
-                )}
-              </Span>
-            )}
+              ) : (
+                <Div rounded100 border={0.5} borderGray200>
+                  <User color={Colors.gray[500]} width={18} height={18} />
+                </Div>
+              )}
+            </Row>
+          </Div>
+          <Div>
+            <Img
+              w54
+              h54
+              border={0.5}
+              borderGray200
+              rounded100
+              uri={resizeImageUri(communityWallet.image_uri, 200, 200)}
+            />
           </Div>
         </Col>
-        <Col />
-        <Col auto>
+        <Col>
+          <Div itemsEnd mb5>
+            <Row itemsCenter>
+              {opponentObject ? (
+                <>
+                  <Col auto mr4>
+                    <AdminNames nftRanks={opponentObject.nft_ranks} />
+                  </Col>
+                  <Col>
+                    <Span gray700 fontSize={13}>
+                      (
+                      {truncateAddress(
+                        ownerIsFrom ? transaction.to : transaction.from,
+                      )}
+                      )
+                    </Span>
+                  </Col>
+                </>
+              ) : (
+                <Col>
+                  <Span gray700 bold fontSize={14}>
+                    {truncateAddress(
+                      ownerIsFrom ? transaction.to : transaction.from,
+                    )}
+                  </Span>
+                </Col>
+              )}
+            </Row>
+          </Div>
           <Row>
-            <Col />
-            <Col auto>
-              <Span danger={ownerIsFrom} info={!ownerIsFrom}>
-                {ownerIsFrom ? '출금' : '입금'}
+            <Col mr8>
+              <Span>
+                <Span fontSize={14} bold>
+                  {communityWallet.name}
+                </Span>
+                <Span gray700>
+                  {' · '}
+                  {kmoment(transaction.created_at).format('YY.M.D a h:mm')}
+                </Span>
               </Span>
             </Col>
-          </Row>
-          <Row mt2>
-            <Col />
             <Col auto>
-              <Span bold danger={ownerIsFrom} info={!ownerIsFrom} fontSize={18}>
-                {transaction.value} Klay
-              </Span>
+              <MenuView onPressAction={handlePressMenu} actions={menuOptions}>
+                <MoreHorizontal
+                  color={Colors.gray[200]}
+                  width={18}
+                  height={18}
+                />
+              </MenuView>
             </Col>
           </Row>
-        </Col>
-      </Row>
-      <Row mt4>
-        <Col />
-        <Col auto>
-          <Repeat
-            color={Colors.gray[700]}
-            width={18}
-            height={18}
-            strokeWidth={1.7}
-          />
+          <Row itemsCenter>
+            <Col auto mr2>
+              <Span fontSize={24} bold>
+                <Span danger={ownerIsFrom} info={!ownerIsFrom}>
+                  {ownerIsFrom ? '출금' : '입금'}
+                </Span>{' '}
+                {transaction.value}
+              </Span>
+            </Col>
+            <Col auto ml2>
+              <Img h20 w20 source={ICONS.klayIcon}></Img>
+            </Col>
+          </Row>
+          <Row mt4 itemsCenter>
+            <Col />
+            <Col auto>
+              <Repeat
+                color={Colors.gray[700]}
+                width={18}
+                height={18}
+                strokeWidth={1.7}
+              />
+            </Col>
+          </Row>
         </Col>
       </Row>
     </Div>
@@ -94,13 +166,13 @@ function Transaction({transaction}) {
 }
 
 function HolderNfts({nftRanks}) {
-  const firstCircleDiff = 20;
-  const diff = 20;
-  const firstCircleDiameter = 30;
-  const circleDiameter = 30;
+  const firstCircleDiff = 10;
+  const diff = 10;
+  const firstCircleDiameter = 20;
+  const circleDiameter = 20;
   return (
     <Div
-      w={(nftRanks.slice(0, 3).length - 1) * diff + circleDiameter}
+      w={(nftRanks.slice(0, 3).length - 1) * diff + circleDiameter - 8}
       relative
       h={firstCircleDiameter}
       mr5>
@@ -115,7 +187,7 @@ function HolderNfts({nftRanks}) {
             absolute
             bottom0
             left={index * diff + (index > 0 ? firstCircleDiff - diff : 0)}
-            border={4}
+            border={2}
             borderWhite></Img>
         );
       })}
@@ -126,11 +198,14 @@ function HolderNfts({nftRanks}) {
 function AdminNames({nftRanks}) {
   if (nftRanks.length == 0) return null;
   if (nftRanks.length == 1)
-    return <Span bold>{getNftName(nftRanks[0].nft)} 의 홀더</Span>;
+    return (
+      <Span gray700 bold fontSize={13}>
+        {getNftName(nftRanks[0].nft)}의 홀더
+      </Span>
+    );
   return (
-    <Span>
-      <Span bold>{getNftName(nftRanks[0].nft)} </Span>외{' '}
-      <Span bold>+{nftRanks.length - 1}</Span>의 홀더
+    <Span gray700 bold fontSize={13}>
+      {getNftName(nftRanks[0].nft)} 외 +{nftRanks.length - 1}의 홀더
     </Span>
   );
 }

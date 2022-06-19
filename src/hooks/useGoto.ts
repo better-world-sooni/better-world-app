@@ -153,8 +153,8 @@ export function useGotoPost({postId}){
 
 export function useGotoNewPost({postOwnerType}){
   const navigation = useNavigation()
-  const gotoNewPost = (repostable = null, collectionEvent = null, postType=PostType.Default) => {
-    navigation.navigate(NAV_NAMES.NewPost as never, {postOwnerType, repostable, collectionEvent, postType} as never);
+  const gotoNewPost = (repostable = null, collectionEvent = null, transaction = null, postType=PostType.Default) => {
+    navigation.navigate(NAV_NAMES.NewPost as never, {postOwnerType, repostable, collectionEvent, transaction, postType} as never);
   }
   return gotoNewPost
 }

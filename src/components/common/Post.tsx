@@ -104,7 +104,6 @@ function PostContent({post}) {
       id: PostEventTypes.Report,
       title: '게시물 신고',
       titleColor: '#46F289',
-      subtitle: 'Share action on SNS',
       image: Platform.select({
         ios: 'flag',
         android: 'stat_sys_warning',
@@ -277,49 +276,58 @@ function PostContent({post}) {
     <>
       <Div py5 borderBottom={0.5} borderGray200 bgWhite>
         <Row px15 pt5>
-          <Col auto mr10>
-            {post.type ? (
-              <Div itemsEnd mb5>
-                {post.type == PostType.Forum ? (
-                  <Zap
-                    height={18}
-                    width={18}
-                    fill={Colors.warning.DEFAULT}
-                    color={Colors.warning.DEFAULT}
-                  />
-                ) : (
-                  <ThumbsUp
-                    height={18}
-                    width={18}
-                    fill={Colors.info.DEFAULT}
-                    color={Colors.info.DEFAULT}
-                  />
-                )}
-              </Div>
-            ) : null}
+          <Col auto mr8>
+            <Div itemsEnd mb5>
+              {post.type == PostType.Forum ? (
+                <Zap
+                  height={18}
+                  width={18}
+                  fill={Colors.warning.DEFAULT}
+                  color={Colors.warning.DEFAULT}
+                />
+              ) : post.type == PostType.Proposal ? (
+                <ThumbsUp
+                  height={18}
+                  width={18}
+                  fill={Colors.info.DEFAULT}
+                  color={Colors.info.DEFAULT}
+                />
+              ) : (
+                <Heart
+                  height={18}
+                  width={18}
+                  fill={Colors.danger.DEFAULT}
+                  color={Colors.danger.DEFAULT}
+                />
+              )}
+            </Div>
             <Div onPress={goToProfile}>
               <Img
-                w47
-                h47
+                w54
+                h54
+                border={0.5}
+                borderGray200
                 rounded100
                 uri={getNftProfileImage(post.nft, 200, 200)}
               />
             </Div>
           </Col>
           <Col>
-            {post.type ? (
-              <Div mt1 mb4>
-                <Span bold gray700 fontSize={13}>
-                  {post.type == PostType.Forum ? '홀더 포럼' : '홀더 투표'}
-                </Span>
-              </Div>
-            ) : null}
+            <Div mt1 mb4>
+              <Span bold gray700 fontSize={13}>
+                {post.type == PostType.Forum
+                  ? '홀더 포럼'
+                  : post.type == PostType.Proposal
+                  ? '홀더 투표'
+                  : '게시물'}
+              </Span>
+            </Div>
             <Row>
               <Col auto>
                 <Span>
                   <Span fontSize={14} bold onPress={goToProfile}>
                     {getNftName(post.nft)}
-                  </Span>{' '}
+                  </Span>
                   {post.nft.token_id &&
                     post.nft.nft_metadatum.name != getNftName(post.nft) && (
                       <Span fontSize={14} gray700 onPress={goToProfile}>
@@ -340,26 +348,24 @@ function PostContent({post}) {
                     <ActivityIndicator />
                   ) : (
                     <MoreHorizontal
-                      color={Colors.gray[400]}
-                      width={20}
-                      height={20}
+                      color={Colors.gray[200]}
+                      width={18}
+                      height={18}
                     />
                   )}
                 </MenuView>
               </Col>
             </Row>
-            <Row>
-              {post.content ? (
-                <Div>
-                  <TruncatedText
-                    text={post.content}
-                    maxLength={300}
-                    spanProps={{fontSize: 14}}
-                    onPressTruncated={gotoPost}
-                  />
-                </Div>
-              ) : null}
-            </Row>
+            {post.content ? (
+              <Div>
+                <TruncatedText
+                  text={post.content}
+                  maxLength={300}
+                  spanProps={{fontSize: 14}}
+                  onPressTruncated={gotoPost}
+                />
+              </Div>
+            ) : null}
             {post.reposted_post && (
               <RepostedPost repostedPost={post.reposted_post} enablePress />
             )}
@@ -380,7 +386,6 @@ function PostContent({post}) {
                 />
               </Div>
             ) : null}
-
             {post.collection_event && (
               <Div mt5>
                 <CollectionEvent
@@ -502,18 +507,18 @@ function PostContent({post}) {
                   )}
               {!votable && (
                 <>
-                  <Col auto mr8>
-                    <Span bold fontSize={12}>
-                      완료됨
-                    </Span>
-                  </Col>
-                  <Col auto rounded100 bgRealBlack p3 bgSuccess>
+                  <Col auto rounded100 bgRealBlack p3 bgSuccess mr4>
                     <Check
                       strokeWidth={2}
                       height={15}
                       width={15}
                       color={'white'}
                     />
+                  </Col>
+                  <Col auto>
+                    <Span bold fontSize={12}>
+                      완료됨
+                    </Span>
                   </Col>
                 </>
               )}

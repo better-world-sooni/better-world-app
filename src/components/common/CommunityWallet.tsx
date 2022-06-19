@@ -1,19 +1,32 @@
-import React, {memo} from 'react';
-import {Clipboard} from 'react-native';
-import {Copy} from 'react-native-feather';
+import {MenuView} from '@react-native-menu/menu';
+import React, {memo, useState} from 'react';
+import {ActivityIndicator, Clipboard, Linking, Platform} from 'react-native';
+import {ChevronRight, Copy, MoreHorizontal} from 'react-native-feather';
 import Colors from 'src/constants/Colors';
-import {useGotoCommunityWalletProfile} from 'src/hooks/useGoto';
+import {useGotoCommunityWalletProfile, useGotoHome} from 'src/hooks/useGoto';
+import apis from 'src/modules/apis';
 import {truncateAddress} from 'src/modules/blockchainUtils';
 import {smallBump} from 'src/modules/hapticFeedBackUtils';
 import {ICONS} from 'src/modules/icons';
+import {useIsAdmin} from 'src/modules/nftUtils';
 import {resizeImageUri} from 'src/modules/uriUtils';
+import {
+  useDeletePromiseFnWithToken,
+  useReloadGETWithToken,
+} from 'src/redux/asyncReducer';
 import {Col} from './Col';
 import {Div} from './Div';
 import {Img} from './Img';
 import {Row} from './Row';
 import {Span} from './Span';
 
+enum CommunityWalletEventTypes {
+  Klaytnfinder = 'Klaytnfinder',
+  Delete = 'Delete',
+}
+
 function CommunityWallet({communityWallet, width, verticalList = false}) {
+  const [loading, setLoading] = useState(false);
   const gotoCommunityWalletProfile = useGotoCommunityWalletProfile({
     communityWallet,
   });
@@ -27,52 +40,102 @@ function CommunityWallet({communityWallet, width, verticalList = false}) {
     smallBump();
     Clipboard.setString(communityWallet.address);
   };
+  const isAdmin = useIsAdmin(communityWallet?.nft_collection);
+  const deletePromiseFnWithToken = useDeletePromiseFnWithToken();
+  const reloadGETWithToken = useReloadGETWithToken();
+  const gotoHome = useGotoHome();
+  const menuOptions = [
+    {
+      id: CommunityWalletEventTypes.Klaytnfinder,
+      title: 'Klaytnfinder에서 확인',
+      titleColor: '#46F289',
+      image: Platform.select({
+        ios: 'magnifyingglass',
+        android: 'ic_search_category_default',
+      }),
+    },
+    isAdmin && {
+      id: CommunityWalletEventTypes.Delete,
+      title: '커뮤니티 지갑 제거',
+      image: Platform.select({
+        ios: 'trash',
+        android: 'ic_menu_delete',
+      }),
+    },
+  ].filter(option => option);
+  const deletePost = async () => {
+    setLoading(true);
+    const {data} = await deletePromiseFnWithToken({
+      url: apis.community_wallet.address._(communityWallet.address).url,
+    });
+    setLoading(false);
+    if (data.success) {
+      reloadGETWithToken(apis.nft_collection.communityWallet.list());
+      gotoHome();
+    }
+  };
+  const searchKlaytnfinder = () => {
+    Linking.openURL(
+      `https://www.klaytnfinder.io/account/${communityWallet.address}`,
+    );
+  };
+  const handlePressMenu = ({nativeEvent: {event}}) => {
+    if (event == CommunityWalletEventTypes.Delete) deletePost();
+    if (event == CommunityWalletEventTypes.Klaytnfinder) searchKlaytnfinder();
+  };
   return (
-    <Div
-      w={width - 30}
-      border={0.5}
-      borderGray200
-      rounded10
-      py8
-      px15
-      mx15
-      mb8={verticalList}
-      onPress={gotoCommunityWalletProfile}>
+    <Div w={width} px15 py8>
       <Row itemsCenter>
-        <Col auto mr10>
+        <Col auto mr8 onPress={gotoCommunityWalletProfile}>
           <Div>
             <Img
-              w30
-              h30
+              w54
+              h54
+              border={0.5}
+              borderGray200
               rounded100
-              uri={resizeImageUri(communityWallet.image_uri, 100, 100)}
+              uri={resizeImageUri(communityWallet.image_uri, 200, 200)}
             />
           </Div>
         </Col>
-        <Col auto>
-          <Row itemsCenter onPress={copyToClipboard}>
-            <Col auto mr8>
+        <Col>
+          <Row itemsCenter>
+            <Col auto mr8 onPress={gotoCommunityWalletProfile}>
               <Span fontSize={14} bold>
                 {communityWallet.name}
               </Span>
             </Col>
             <Col auto mr8>
-              <Span gray700>{truncateAddress(communityWallet.address)}</Span>
+              <Span gray700 fontSize={14} onPress={copyToClipboard}>
+                {truncateAddress(communityWallet.address)}
+              </Span>
             </Col>
             <Col>
               <Copy {...actionIconDefaultProps} />
             </Col>
           </Row>
+          <Row itemsCenter onPress={gotoCommunityWalletProfile}>
+            <Col auto mr2>
+              <Span fontSize={24} bold>
+                {communityWallet.balance}
+              </Span>
+            </Col>
+            <Col auto ml2>
+              <Img h20 w20 source={ICONS.klayIcon}></Img>
+            </Col>
+            <Col auto ml2>
+              <ChevronRight color={Colors.gray[200]} width={20} height={20} />
+            </Col>
+          </Row>
         </Col>
-      </Row>
-      <Row itemsCenter justifyCenter>
-        <Col auto mr2>
-          <Span fontSize={24} bold>
-            {communityWallet.balance}
-          </Span>
-        </Col>
-        <Col auto ml2>
-          <Img h20 w20 source={ICONS.klayIcon}></Img>
+        <Col auto>
+          <MenuView onPressAction={handlePressMenu} actions={menuOptions}>
+            {loading ? (
+              <ActivityIndicator />
+            ) : (
+              <MoreHorizontal color={Colors.gray[200]} width={18} height={18} />
+            )}
+          </MenuView>
         </Col>
       </Row>
     </Div>

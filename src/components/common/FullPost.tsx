@@ -389,11 +389,13 @@ export default function FullPost({post, autoFocus = false}) {
             <>
               <Div h={headerHeight}></Div>
               <Row px15 pt5 borderGray200 borderBottom={0.5}>
-                <Col auto mr10>
+                <Col auto mr8>
                   <Div onPress={goToProfile}>
                     <Img
-                      w47
-                      h47
+                      w54
+                      h54
+                      border={0.5}
+                      borderGray200
                       rounded100
                       uri={getNftProfileImage(post.nft, 100, 100)}
                     />
@@ -404,7 +406,7 @@ export default function FullPost({post, autoFocus = false}) {
                     <Col auto>
                       <Span>
                         <Span fontSize={15} bold onPress={goToProfile}>
-                          {getNftName(post.nft)}{' '}
+                          {getNftName(post.nft)}
                         </Span>{' '}
                         {post.nft.token_id &&
                           post.nft.nft_metadatum.name !=
@@ -428,9 +430,9 @@ export default function FullPost({post, autoFocus = false}) {
                           <ActivityIndicator />
                         ) : (
                           <MoreHorizontal
-                            color={Colors.gray[400]}
-                            width={20}
-                            height={20}
+                            color={Colors.gray[200]}
+                            width={18}
+                            height={18}
                           />
                         )}
                       </MenuView>
@@ -468,7 +470,6 @@ export default function FullPost({post, autoFocus = false}) {
                       />
                     </Div>
                   ) : null}
-
                   {post.collection_event && (
                     <Div mt5>
                       <CollectionEvent
@@ -542,7 +543,7 @@ export default function FullPost({post, autoFocus = false}) {
                         <Col />
                         {isCurrentCollection && votable && (
                           <>
-                            <Col auto mr16 onPress={handlePressVoteAgainst}>
+                            <Col auto mr12 onPress={handlePressVoteAgainst}>
                               {<ThumbsDown {...againstVoteProps}></ThumbsDown>}
                             </Col>
                             <Col auto onPress={handlePressVoteFor}>
@@ -593,18 +594,18 @@ export default function FullPost({post, autoFocus = false}) {
                         )}
                     {!votable && (
                       <>
-                        <Col auto mr8>
-                          <Span bold fontSize={12}>
-                            완료됨
-                          </Span>
-                        </Col>
-                        <Col auto rounded100 bgRealBlack p3 bgSuccess>
+                        <Col auto rounded100 bgRealBlack p3 bgSuccess mr4>
                           <Check
                             strokeWidth={2}
                             height={15}
                             width={15}
                             color={'white'}
                           />
+                        </Col>
+                        <Col auto>
+                          <Span bold fontSize={12}>
+                            완료됨
+                          </Span>
                         </Col>
                       </>
                     )}

@@ -18,6 +18,8 @@ export default function ImageSlideShow({
         rounded10={!roundedTopOnly}
         borderBottomRight={10}
         borderBottomLeft={10}
+        border={0.5}
+        borderGray200
         overflowHidden>
         <Carousel
           data={imageUris}
