@@ -226,12 +226,12 @@ export function useGotoCommunityWalletProfile({communityWallet}) {
   const gotoCommunityWalletProfile = () => {
     apiGETWithToken(
       apis.community_wallet.address._(
-        communityWallet.address
+        communityWallet?.address
       ),
     );
     apiGETWithToken(
       apis.community_wallet.address.transaction.list(
-        communityWallet.address
+        communityWallet?.address
       ),
     );
     navigation.navigate(NAV_NAMES.CommunityWalletProfile as never, {

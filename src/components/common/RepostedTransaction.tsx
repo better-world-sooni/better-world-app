@@ -1,6 +1,9 @@
 import React, {memo} from 'react';
 import {shallowEqual, useSelector} from 'react-redux';
-import {useGotoTransaction} from 'src/hooks/useGoto';
+import {
+  useGotoCommunityWalletProfile,
+  useGotoTransaction,
+} from 'src/hooks/useGoto';
 import {ICONS} from 'src/modules/icons';
 import {createdAtText} from 'src/modules/timeUtils';
 import {resizeImageUri} from 'src/modules/uriUtils';
@@ -28,6 +31,9 @@ function RepostedTransaction({transaction, enablePress = false}) {
       : transaction.from_community_wallet || transaction.to_community_wallet;
   const sent =
     communityWallet.address == transaction.from_community_wallet?.address;
+  const gotoCommunityWalletProfile = useGotoCommunityWalletProfile({
+    communityWallet,
+  });
   return (
     <Div
       border={0.5}
@@ -37,7 +43,12 @@ function RepostedTransaction({transaction, enablePress = false}) {
       mt4
       onPress={enablePress && gotoTransaction}>
       <Row>
-        <Col auto mr8>
+        <Col
+          auto
+          mr8
+          onPress={
+            enablePress && communityWallet && gotoCommunityWalletProfile
+          }>
           <Div>
             <Img
               w40
@@ -65,7 +76,7 @@ function RepostedTransaction({transaction, enablePress = false}) {
           </Row>
           <Row itemsCenter>
             <Col auto mr8>
-              <Span normal danger={sent} info={!sent}>
+              <Span bold danger={sent} info={!sent}>
                 {sent ? '출금' : '입금'}
               </Span>
             </Col>

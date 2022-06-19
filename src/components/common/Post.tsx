@@ -282,26 +282,11 @@ function PostContent({post, selectableFn = null}) {
             {!selectableFn && (
               <Div itemsEnd mb5>
                 {post.type == PostType.Forum ? (
-                  <Zap
-                    height={16}
-                    width={16}
-                    // fill={Colors.gray[500]}
-                    color={Colors.gray[500]}
-                  />
+                  <Zap height={16} width={16} color={Colors.gray[500]} />
                 ) : post.type == PostType.Proposal ? (
-                  <ThumbsUp
-                    height={16}
-                    width={16}
-                    // fill={Colors.gray[500]}
-                    color={Colors.gray[500]}
-                  />
+                  <ThumbsUp height={16} width={16} color={Colors.gray[500]} />
                 ) : (
-                  <Heart
-                    height={16}
-                    width={16}
-                    // fill={Colors.gray[500]}
-                    color={Colors.gray[500]}
-                  />
+                  <Heart height={16} width={16} color={Colors.gray[500]} />
                 )}
               </Div>
             )}

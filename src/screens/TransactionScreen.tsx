@@ -59,7 +59,7 @@ export default function TransactionScreen({
         {transactionLoading || !transaction ? (
           <ActivityIndicator size={'large'} />
         ) : (
-          <Transaction transaction={transaction} />
+          <Transaction transaction={transaction} enablePress />
         )}
       </Div>
     </Div>

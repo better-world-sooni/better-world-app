@@ -5,6 +5,7 @@ import {MoreHorizontal, Repeat, User} from 'react-native-feather';
 import Colors from 'src/constants/Colors';
 import {
   useGotoCollectionFeedTagSelect,
+  useGotoCommunityWalletProfile,
   useGotoNewPost,
 } from 'src/hooks/useGoto';
 import {truncateAddress} from 'src/modules/blockchainUtils';
@@ -25,7 +26,7 @@ enum TransactionEventTypes {
   AdminShare = 'AdminShare',
 }
 
-function Transaction({transaction, mainAddress = null}) {
+function Transaction({transaction, mainAddress = null, enablePress = false}) {
   const communityWallet =
     transaction.from_community_wallet && transaction.to_community_wallet
       ? transaction.to_community_wallet.address == mainAddress
@@ -38,6 +39,9 @@ function Transaction({transaction, mainAddress = null}) {
     ? transaction.to_community_wallet || transaction.to_user
     : transaction.from_community_wallet || transaction.from_user;
   const isAdmin = useIsAdmin(communityWallet?.nft_collection);
+  const gotoCommunityWalletProfile = useGotoCommunityWalletProfile({
+    communityWallet,
+  });
 
   const menuOptions = [
     {
@@ -102,7 +106,10 @@ function Transaction({transaction, mainAddress = null}) {
               )}
             </Row>
           </Div>
-          <Div>
+          <Div
+            onPress={
+              enablePress && communityWallet && gotoCommunityWalletProfile
+            }>
             <Img
               w54
               h54
