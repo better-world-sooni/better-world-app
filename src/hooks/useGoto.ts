@@ -81,7 +81,7 @@ export function useGotoChatList(){
 export function useGotoChatRoomFromList() {
   const navigation = useNavigation()
   const apiGETWithToken = useApiGETWithToken()
-  const gotoChatRoomFromList = (roomName, roomImage, roomId) => {
+  const gotoChatRoomFromList = (roomName, roomImage, roomId, inRoomFunction) => {
     apiGETWithToken(
       apis.chat.chatRoom.roomId(roomId),
     );
@@ -89,7 +89,8 @@ export function useGotoChatRoomFromList() {
       roomName,
       roomImage,
       roomId,
-      chatRoomEnterType: ChatRoomEnterType.List
+      chatRoomEnterType: ChatRoomEnterType.List,
+      inRoomFunction,
     } as never);
   };
   return gotoChatRoomFromList

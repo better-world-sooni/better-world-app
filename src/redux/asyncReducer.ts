@@ -416,6 +416,10 @@ const asyncSlice = createSlice({
         error: error,
       };
     },
+    update(state, action) {
+      const {key, data} = action.payload;
+      state[key].data = data
+    }
   },
 });
 

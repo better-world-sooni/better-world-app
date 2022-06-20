@@ -35,6 +35,7 @@ function ChatRoomScreen({
       contractAddress,
       tokenId,
       chatRoomEnterType,
+      inRoomFunction
     },
   },
 }) {
@@ -92,7 +93,9 @@ function ChatRoomScreen({
         const _ = await chatSocket.sendNew(msg, room);
       } else {
         const _ = await chatSocket.send(msg, room);
+        console.log("1")
       }
+      
     } else {
       Alert.alert('네트워크가 불안정하여 메세지를 보내지 못했습니다');
     }
@@ -101,6 +104,10 @@ function ChatRoomScreen({
 
   useEffect(() => {
     if (connectRoomId) {
+      if(chatRoomEnterType == ChatRoomEnterType.List) {
+        inRoomFunction.inRoomUnreadCountUpdate(connectRoomId);
+        inRoomFunction.inRoomSetIsEntered(true);
+      }
       const channel = new ChatChannel({roomId: connectRoomId});
       const wsConnect = async () => {
         await cable(token).subscribe(channel);
@@ -111,7 +118,11 @@ function ChatRoomScreen({
         });
         let _ = await channel.enter(connectRoomId);
         channel.on('message', res => {
+          console.log("2")
           setMessages(m => [res['data'], ...m]);
+          if(chatRoomEnterType == ChatRoomEnterType.List) {
+            inRoomFunction.inRoomMessageUpdate(connectRoomId, res['data'])
+          }
         });
         channel.on('leave', res => {
           if (currentNftId != res['leave_nft']) {
@@ -127,6 +138,9 @@ function ChatRoomScreen({
         if (channel) {
           channel.disconnect();
           channel.close();
+        }
+        if(chatRoomEnterType == ChatRoomEnterType.List) {
+          inRoomFunction.inRoomSetIsEntered(false);
         }
       };
     }

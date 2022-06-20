@@ -6,6 +6,7 @@ import {Col} from './common/Col';
 import {Div} from './common/Div';
 import {Img} from './common/Img';
 import {Row} from './common/Row';
+import {resizeImageUri} from 'src/modules/uriUtils';
 
 const ChatRoomAvatars = ({
   firstUserAvatar = null,
@@ -26,72 +27,20 @@ const ChatRoomAvatars = ({
   ].filter(item => {
     return item;
   });
+  console.log(avatarArr)
 
   const avatarArrLength = avatarArr.length;
   if (avatarArrLength == 0) {
     return (
       <Img
-        source={IMAGES.imageProfileNull}
+        source={IMAGES.placeholder}
         w50
         h50
         rounded10></Img>
     );
   }
-  if (avatarArrLength == 1) {
-    return <Img uri={avatarArr[0]} w50 h50></Img>;
-  }
-  if (avatarArrLength == 2) {
-    return (
-      <Div w50 h50 itemsCenter justifyCenter>
-        <Row>
-          <Col auto>
-            <Img uri={avatarArr[0]} h25 w25></Img>
-          </Col>
-          <Col auto>
-            <Img uri={avatarArr[1]} h25 w25></Img>
-          </Col>
-        </Row>
-      </Div>
-    );
-  }
-  if (avatarArrLength == 3) {
-    return (
-      <Div w50 h50 itemsCenter justifyCenter>
-        <Row>
-          <Col auto>
-            <Img uri={avatarArr[0]} h25 w25></Img>
-          </Col>
-          <Col auto>
-            <Img uri={avatarArr[1]} h25 w25></Img>
-          </Col>
-        </Row>
-        <Row justifyCenter>
-          <Img uri={avatarArr[2]} h25 w25></Img>
-        </Row>
-      </Div>
-    );
-  }
-  
-  return (
-    <Div w50 h50 itemsCenter justifyCenter>
-      <Row>
-        <Col auto>
-          <Img uri={avatarArr[0]} h25 w25></Img>
-        </Col>
-        <Col auto>
-          <Img uri={avatarArr[1]} h25 w25></Img>
-        </Col>
-      </Row>
-      <Row>
-        <Col auto>
-          <Img uri={avatarArr[2]} h25 w25></Img>
-        </Col>
-        <Col auto>
-          <Img uri={avatarArr[3]} h25 w25></Img>
-        </Col>
-      </Row>
-    </Div>
-  );
+  return <Img uri={resizeImageUri(avatarArr[0], 200, 200)} w50 h50></Img>;
+
 };
 
 export default React.memo(ChatRoomAvatars);
