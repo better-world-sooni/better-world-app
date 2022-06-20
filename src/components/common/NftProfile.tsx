@@ -116,7 +116,7 @@ export default function NftProfile({
         cache: true,
         key: 'unique_key',
       }).then(colors => {
-        console.log(colors)
+        // console.log(colors)
       })
     }
   },[nft])

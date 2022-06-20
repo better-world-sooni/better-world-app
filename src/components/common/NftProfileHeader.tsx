@@ -23,7 +23,6 @@ import {handlePressContribution} from 'src/modules/bottomPopupUtils';
 import {getNftName, getNftProfileImage} from 'src/modules/nftUtils';
 import {DEVICE_WIDTH} from 'src/modules/styles';
 import {FollowOwnerType, FollowType} from 'src/screens/FollowListScreen';
-import {PostOwnerType} from 'src/screens/NewPostScreen';
 import {ScanType} from 'src/screens/ScanScreen';
 import {Col} from './Col';
 import {Div} from './Div';
@@ -58,7 +57,6 @@ export default function NftProfileHeader({
   });
   const gotoQr = useGotoQR();
   const gotoScan = useGotoScan({scanType: ScanType.Nft});
-  const gotoNewPost = useGotoNewPost({postOwnerType: PostOwnerType.Nft});
   const gotoChatRoom = useGotoChatRoomFromProfile();
   return (
     <>
@@ -124,23 +122,6 @@ export default function NftProfileHeader({
             <Div>
               <Row py10>
                 <Col />
-                <Col auto onPress={() => gotoNewPost()} px8>
-                  <Row itemsCenter>
-                    <Col auto>
-                      <Span bold fontSize={10}>
-                        게시하기
-                      </Span>
-                    </Col>
-                    <Col auto>
-                      <Feather
-                        width={22}
-                        height={22}
-                        strokeWidth={2}
-                        fill={Colors.info.DEFAULT}
-                        color={'black'}></Feather>
-                    </Col>
-                  </Row>
-                </Col>
                 {qrScan && (
                   <Col auto onPress={gotoScan} px8>
                     <Maximize

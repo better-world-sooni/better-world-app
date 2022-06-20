@@ -13,7 +13,15 @@ import ChatRoomScreen from 'src/screens/ChatRoomScreen';
 import OnboardingScreen from 'src/screens/Auth/OnboardingScreen';
 import {Img} from './common/Img';
 import {getNftProfileImage} from 'src/modules/nftUtils';
-import {Feather, Home, Search, Send, User, Zap} from 'react-native-feather';
+import {
+  Feather,
+  Heart,
+  Home,
+  Search,
+  Send,
+  User,
+  Zap,
+} from 'react-native-feather';
 import Colors from 'src/constants/Colors';
 import OtherProfileScreen from 'src/screens/OtherProfileScreen';
 import NftCollectionScreen from 'src/screens/NftCollectionScreen';
@@ -88,12 +96,11 @@ const MainBottomTabs = () => {
         component={SocialScreen}
         options={{
           tabBarIcon: ({focused}) => (
-            <Feather
+            <Home
               width={22}
               height={22}
               strokeWidth={2}
-              fill={focused ? Colors.info.DEFAULT : Colors.info.light}
-              color={focused ? 'black' : Colors.gray[400]}></Feather>
+              color={focused ? 'black' : Colors.gray[400]}></Home>
           ),
         }}
       />

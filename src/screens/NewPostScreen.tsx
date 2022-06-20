@@ -3,7 +3,14 @@ import {Div} from 'src/components/common/Div';
 import {HAS_NOTCH} from 'src/modules/constants';
 import {Row} from 'src/components/common/Row';
 import {Col} from 'src/components/common/Col';
-import {ChevronDown, ChevronLeft, Image} from 'react-native-feather';
+import {
+  ChevronDown,
+  ChevronLeft,
+  Feather,
+  Image,
+  Upload,
+  Zap,
+} from 'react-native-feather';
 import apis from 'src/modules/apis';
 import {Img} from 'src/components/common/Img';
 import {useNavigation} from '@react-navigation/native';
@@ -31,19 +38,16 @@ import RepostedPost from 'src/components/common/RepostedPost';
 import CollectionEvent from 'src/components/common/CollectionEvent';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import RepostedTransaction from 'src/components/common/RepostedTransaction';
+import {ICONS} from 'src/modules/icons';
 
 const postTypes = [
   {
     id: '',
-    title: '기본',
+    title: '게시물',
   },
   {
     id: 'Proposal',
-    title: '투표',
-  },
-  {
-    id: 'Forum',
-    title: '포럼',
+    title: '제안',
   },
 ];
 
@@ -55,7 +59,6 @@ export enum PostOwnerType {
 export enum PostType {
   Default = '',
   Proposal = 'Proposal',
-  Forum = 'Forum',
 }
 
 const NewPostScreen = ({
@@ -80,7 +83,7 @@ const NewPostScreen = ({
     reloadGetWithToken(
       postOwnerIsCollection
         ? apis.post.list.nftCollection(currentNft.contract_address)
-        : apis.post.list.nft(currentNft.contract_address, currentNft.token_id),
+        : apis.post.list._(),
     );
     reloadGetWithToken(apis.feed.forum());
     reloadGetWithToken(apis.feed.social());
@@ -102,7 +105,7 @@ const NewPostScreen = ({
     handleRemoveImage,
     uploadPost,
   } = useUploadPost({
-    initialPostType: repostable?.type == 'Forum' ? 'Proposal' : postType,
+    initialPostType: postType,
   });
 
   const handlePressUpload = () => {
@@ -167,14 +170,34 @@ const NewPostScreen = ({
             <Row itemsCenter py5 h40 px15>
               <Col itemsStart>
                 <Div auto rounded100 onPress={goBack}>
-                  <ChevronLeft height={30} color="black" strokeWidth={2} />
+                  <ChevronLeft
+                    width={22}
+                    height={22}
+                    color="black"
+                    strokeWidth={2}
+                  />
                 </Div>
               </Col>
               <Col auto></Col>
               <Col itemsEnd>
                 <Div onPress={handlePressUpload}>
                   <Span info bold fontSize={16}>
-                    {loading ? <ActivityIndicator /> : '게시'}
+                    {loading ? (
+                      <ActivityIndicator />
+                    ) : currentPostType == '' ? (
+                      <Upload
+                        width={22}
+                        height={22}
+                        strokeWidth={2}
+                        color={'black'}></Upload>
+                    ) : (
+                      <Zap
+                        width={22}
+                        height={22}
+                        strokeWidth={2}
+                        fill={Colors.warning.DEFAULT}
+                        color={'black'}></Zap>
+                    )}
                   </Span>
                 </Div>
               </Col>
@@ -206,19 +229,22 @@ const NewPostScreen = ({
               <Row>
                 <Col auto>
                   <Span>
-                    <Span fontSize={14} bold>
+                    <Span fontSize={15} bold>
                       {getNftName(postOwner)}{' '}
                     </Span>
-                    {!postOwnerIsCollection &&
+                    {!postOwnerIsCollection ? (
                       currentNft.token_id &&
                       currentNft.nft_metadatum.name !=
                         getNftName(currentNft) && (
-                        <Span fontSize={14} gray700>
+                        <Span fontSize={12} gray700 bold>
                           {' '}
                           {currentNft.nft_metadatum.name}
                         </Span>
-                      )}
-                    <Span fontSize={14} gray700>
+                      )
+                    ) : (
+                      <Img source={ICONS.sealCheck} h15 w15></Img>
+                    )}
+                    <Span fontSize={12} gray700>
                       {' · '}
                       {createdAtText(new Date())}
                     </Span>
@@ -280,25 +306,20 @@ const NewPostScreen = ({
               </Col>
             </Row>
           </Col>
-          {postOwnerIsCollection && (
-            <Col auto ml10>
-              <MenuView onPressAction={handlePressMenu} actions={postTypes}>
-                <Row itemsCenter>
-                  <Col auto mr5>
-                    <ChevronDown color={'black'} height={24} width={24} />
-                  </Col>
-                  <Col auto>
-                    <Span>
-                      {
-                        postTypes.filter(pt => pt.id == currentPostType)[0]
-                          .title
-                      }
-                    </Span>
-                  </Col>
-                </Row>
-              </MenuView>
-            </Col>
-          )}
+          <Col auto ml10>
+            <MenuView onPressAction={handlePressMenu} actions={postTypes}>
+              <Row itemsCenter>
+                <Col auto mr5>
+                  <ChevronDown color={'black'} height={24} width={24} />
+                </Col>
+                <Col auto>
+                  <Span>
+                    {postTypes.filter(pt => pt.id == currentPostType)[0].title}
+                  </Span>
+                </Col>
+              </Row>
+            </MenuView>
+          </Col>
         </Row>
       </KeyboardAvoidingView>
       <Div h={HAS_NOTCH ? 27 : 12} bgWhite />

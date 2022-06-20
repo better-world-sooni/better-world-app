@@ -9,31 +9,21 @@ import {Span} from './Span';
 import {FollowOwnerType, FollowType} from 'src/screens/FollowListScreen';
 import {
   useGotoAffinity,
-  useGotoCollectionFeed,
   useGotoFollowList,
   useGotoMyCollectionEventList,
   useGotoMyCommunityWalletList,
   useGotoNewCollectionEvent,
   useGotoNewCommunityWallet,
-  useGotoNewPost,
   useGotoNftCollectionProfile,
 } from 'src/hooks/useGoto';
 import {shallowEqual, useSelector} from 'react-redux';
 import {RootState} from 'src/redux/rootReducer';
-import {
-  Calendar,
-  CreditCard,
-  Layers,
-  PieChart,
-  ThumbsUp,
-  Zap,
-} from 'react-native-feather';
+import {Calendar, CreditCard} from 'react-native-feather';
 import {useApiSelector} from 'src/redux/asyncReducer';
 import apis from 'src/modules/apis';
 import {getSiPrefixedNumber} from 'src/modules/numberUtils';
 import {useIsAdmin} from 'src/modules/nftUtils';
 import Colors from 'src/constants/Colors';
-import {PostOwnerType, PostType} from 'src/screens/NewPostScreen';
 import {ICONS} from 'src/modules/icons';
 
 const MyNftCollectionMenu = ({nftCollection}) => {
@@ -44,9 +34,6 @@ const MyNftCollectionMenu = ({nftCollection}) => {
   const {data: feedCountRes, isLoading: feedCountLoading} = useApiSelector(
     apis.feed.count(),
   );
-  const allPostCount = feedCountRes?.all_post_count;
-  const activeForumCount = feedCountRes?.active_forum_count;
-  const activeProposalCount = feedCountRes?.active_proposal_count;
   const upcomingEventCount = feedCountRes?.upcoming_event_count;
   const communityWalletCount = feedCountRes?.community_wallet_count;
   const textColor = 'black';
@@ -58,16 +45,10 @@ const MyNftCollectionMenu = ({nftCollection}) => {
   const gotoNftCollectionProfile = useGotoNftCollectionProfile({
     nftCollection,
   });
-  const gotoCollectionFeed = useGotoCollectionFeed({
-    contractAddress: currentNft.contract_address,
-  });
   const gotoCommunityWalletList = useGotoMyCommunityWalletList();
   const gotoCollectionEventList = useGotoMyCollectionEventList();
   const gotoNewCollectionEvent = useGotoNewCollectionEvent();
   const gotoNewCommunityWallet = useGotoNewCommunityWallet();
-  const gotoNewPost = useGotoNewPost({
-    postOwnerType: PostOwnerType.NftCollection,
-  });
   const gotoAffinity = useGotoAffinity({
     nftCollection,
   });

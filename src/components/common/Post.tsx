@@ -534,7 +534,7 @@ function PostContent({post, selectableFn = null, displayLabel = false}) {
             </Row>
           </Col>
         </Row>
-        {post.comment && !post.type && (
+        {post.comment && (
           <Div onPress={gotoPost}>
             <Comment hot key={post.comment.id} comment={post.comment}></Comment>
           </Div>

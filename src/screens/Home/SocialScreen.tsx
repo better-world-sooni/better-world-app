@@ -8,26 +8,24 @@ import {
   useReloadGETWithToken,
 } from 'src/redux/asyncReducer';
 import Post from 'src/components/common/Post';
-import {Img} from 'src/components/common/Img';
-import {DEVICE_WIDTH} from 'src/modules/styles';
-import {useGotoNotification} from 'src/hooks/useGoto';
-import SideMenu from 'react-native-side-menu-updated';
-import MyNftMenu from '../../components/common/MyNftMenu';
+import {useGotoNewPost, useGotoNotification} from 'src/hooks/useGoto';
 import FeedFlatlist from 'src/components/FeedFlatlist';
-import {Platform, StatusBar} from 'react-native';
+import {Platform} from 'react-native';
 import {useScrollToTop} from '@react-navigation/native';
 import {Span} from 'src/components/common/Span';
-import {getNftName, getNftProfileImage} from 'src/modules/nftUtils';
 import {Col} from 'src/components/common/Col';
 import {MenuView} from '@react-native-menu/menu';
-import Colors from 'src/constants/Colors';
+import {PostOwnerType, PostType} from '../NewPostScreen';
+import {Div} from 'src/components/common/Div';
 
-enum SocialFilter {
-  All = '',
+enum SocialFeedFilter {
+  All = 'all',
   Following = 'following',
 }
 
 export default function SocialScreen() {
+  const flatlistRef = useRef(null);
+  useScrollToTop(flatlistRef);
   const {
     data: feedRes,
     isLoading: feedLoading,
@@ -35,30 +33,24 @@ export default function SocialScreen() {
     page,
     isNotPaginatable,
   } = useApiSelector(apis.feed.social);
-  const {data: nftProfileRes, isLoading: nftProfileLoad} = useApiSelector(
-    apis.nft._(),
-  );
-  const {data: nftCollectionRes, isLoading: nftCollectionLoad} = useApiSelector(
-    apis.nft_collection._(),
-  );
-  const nftCollection = nftCollectionRes?.nft_collection;
+  const {data: nftProfileRes} = useApiSelector(apis.nft._());
   const nft = nftProfileRes?.nft;
   const menuOptions = [
     {
-      id: SocialFilter.All,
+      id: SocialFeedFilter.All,
       title: `커뮤니티 피드`,
       titleColor: '#46F289',
       image: Platform.select({
-        ios: 'globe.asia.australia.fill',
+        ios: 'globe.asia.australia',
         android: 'ic_menu_mapmode',
       }),
     },
     {
-      id: SocialFilter.Following,
-      title: `${getNftName(nft)}의 피드`,
+      id: SocialFeedFilter.Following,
+      title: `팔로잉 피드`,
       titleColor: '#46F289',
       image: Platform.select({
-        ios: 'star.fill',
+        ios: 'star',
         android: 'star_big_on',
       }),
     },
@@ -66,21 +58,34 @@ export default function SocialScreen() {
   const gotoNotifications = useGotoNotification();
   const reloadGETWithToken = useReloadGETWithToken();
   const paginateGetWithToken = usePaginateGETWithToken();
+  const gotoNewPost = useGotoNewPost({
+    postOwnerType: PostOwnerType.Nft,
+  });
+  const handlePressMenu = ({nativeEvent: {event}}) => {
+    flatlistRef?.current
+      ?.getScrollResponder()
+      ?.scrollTo({x: 0, y: 0, animated: true});
+    if (
+      event == SocialFeedFilter.All &&
+      feedRes?.filter !== SocialFeedFilter.All
+    ) {
+      reloadGETWithToken(apis.feed.social(SocialFeedFilter.All));
+    }
+    if (
+      event == SocialFeedFilter.Following &&
+      feedRes?.filter !== SocialFeedFilter.Following
+    ) {
+      reloadGETWithToken(apis.feed.social(SocialFeedFilter.Following));
+    }
+  };
   const handleRefresh = () => {
     if (feedLoading) return;
-    reloadGETWithToken(apis.nft._());
-    reloadGETWithToken(apis.feed.social());
+    reloadGETWithToken(apis.feed.social(feedRes?.filter));
   };
   const handleEndReached = () => {
     if (feedPaginating || isNotPaginatable) return;
-    paginateGetWithToken(apis.feed.social(page + 1), 'feed');
+    paginateGetWithToken(apis.feed.social(feedRes?.filter, page + 1), 'feed');
   };
-  const sideMenuRef = useRef(null);
-  const openSideMenu = () => {
-    sideMenuRef?.current?.openMenu(true);
-  };
-  const flatlistRef = useRef(null);
-  useScrollToTop(flatlistRef);
   return (
     <FeedFlatlist
       ref={flatlistRef}
@@ -89,6 +94,7 @@ export default function SocialScreen() {
       isPaginating={feedPaginating}
       onEndReached={handleEndReached}
       isNotPaginatable={isNotPaginatable}
+      enableAdd
       renderItem={({item, index}) => {
         return <Post key={(item as any).id} post={item} />;
       }}
@@ -96,11 +102,13 @@ export default function SocialScreen() {
       TopComponent={
         <Row itemsCenter>
           <Col auto>
-            <MenuView onPressAction={null} actions={menuOptions}>
+            <MenuView onPressAction={handlePressMenu} actions={menuOptions}>
               <Row itemsCenter>
                 <Col auto>
                   <Span fontSize={19} bold>
-                    커뮤니티 피드
+                    {menuOptions.filter(
+                      menuOption => menuOption.id == feedRes?.filter,
+                    )[0]?.title || '피드를 다시 로드해주세요'}
                   </Span>
                 </Col>
                 <Col auto>
@@ -114,25 +122,10 @@ export default function SocialScreen() {
               </Row>
             </MenuView>
           </Col>
-          <Col itemsEnd rounded100 onPress={() => gotoNotifications()} pr15>
-            <Row itemsCenter>
-              <Col auto>
-                <Span bold fontSize={10}>
-                  게시하기
-                </Span>
-              </Col>
-              <Col auto>
-                <Feather
-                  width={22}
-                  height={22}
-                  strokeWidth={2}
-                  fill={Colors.info.DEFAULT}
-                  color={'black'}></Feather>
-              </Col>
-            </Row>
-          </Col>
-          <Col auto rounded100 onPress={() => gotoNotifications()}>
-            <Bell strokeWidth={2} color={'black'} height={22} width={22} />
+          <Col itemsEnd>
+            <Div onPress={() => gotoNotifications()}>
+              <Bell strokeWidth={2} color={'black'} height={22} width={22} />
+            </Div>
           </Col>
         </Row>
       }

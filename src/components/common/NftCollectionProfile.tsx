@@ -279,7 +279,6 @@ export default function NftCollectionProfile({
                                 width={22}
                                 height={22}
                                 strokeWidth={2}
-                                fill={Colors.info.DEFAULT}
                                 color={'black'}></Feather>
                             </Col>
                           </Row>
