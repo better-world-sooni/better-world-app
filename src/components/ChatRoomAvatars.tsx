@@ -27,7 +27,6 @@ const ChatRoomAvatars = ({
   ].filter(item => {
     return item;
   });
-  console.log(avatarArr)
 
   const avatarArrLength = avatarArr.length;
   if (avatarArrLength == 0) {

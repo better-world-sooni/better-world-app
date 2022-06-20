@@ -21,6 +21,7 @@ import {Img} from 'src/components/common/Img';
 import NewMessage from 'src/components/common/NewMessage';
 import {createdAtText, getCalendarDay} from 'src/modules/timeUtils';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import {getNftName, getNftProfileImage} from 'src/modules/nftUtils';
 
 export enum ChatRoomEnterType {
   List,
@@ -35,7 +36,9 @@ function ChatRoomScreen({
       contractAddress,
       tokenId,
       chatRoomEnterType,
-      inRoomFunction
+      inRoomSetIsEntered, 
+      inRoomUnreadCountUpdate, 
+      inRoomMessageUpdate
     },
   },
 }) {
@@ -54,7 +57,7 @@ function ChatRoomScreen({
     token_id: currentNft.token_id,
     contract_address: currentNft.contract_address,
   };
-  const currentAvatar = currentNft.nft_metadatum.image_uri;
+  const currentAvatar = getNftProfileImage(currentNft, 200, 200)
   const {goBack} = useNavigation();
 
   const [connectRoomId, setConnectRoomId] = useState(null);
@@ -89,24 +92,18 @@ function ChatRoomScreen({
         last_message: text,
         room_name: roomName,
       };
-      if (isNew) {
-        const _ = await chatSocket.sendNew(msg, room);
-      } else {
-        const _ = await chatSocket.send(msg, room);
-        console.log("1")
-      }
-      
-    } else {
-      Alert.alert('네트워크가 불안정하여 메세지를 보내지 못했습니다');
-    }
+      if (isNew) chatSocket.sendNew(msg, room);
+      else chatSocket.send(msg, room);
+    } 
+    else Alert.alert('네트워크가 불안정하여 메세지를 보내지 못했습니다');
     setText('');
   };
 
   useEffect(() => {
     if (connectRoomId) {
       if(chatRoomEnterType == ChatRoomEnterType.List) {
-        inRoomFunction.inRoomUnreadCountUpdate(connectRoomId);
-        inRoomFunction.inRoomSetIsEntered(true);
+        inRoomUnreadCountUpdate(connectRoomId);
+        inRoomSetIsEntered(true);
       }
       const channel = new ChatChannel({roomId: connectRoomId});
       const wsConnect = async () => {
@@ -118,10 +115,9 @@ function ChatRoomScreen({
         });
         let _ = await channel.enter(connectRoomId);
         channel.on('message', res => {
-          console.log("2")
           setMessages(m => [res['data'], ...m]);
           if(chatRoomEnterType == ChatRoomEnterType.List) {
-            inRoomFunction.inRoomMessageUpdate(connectRoomId, res['data'])
+            inRoomMessageUpdate(connectRoomId, res['data'])
           }
         });
         channel.on('leave', res => {
@@ -140,7 +136,7 @@ function ChatRoomScreen({
           channel.close();
         }
         if(chatRoomEnterType == ChatRoomEnterType.List) {
-          inRoomFunction.inRoomSetIsEntered(false);
+          inRoomSetIsEntered(false);
         }
       };
     }
@@ -237,16 +233,17 @@ function ChatRoomScreen({
           renderItem={({item: message, index}) => {
             const author = (message as any).nft;
             const isMine = isSameNft(author, currentNftId);
-            const isConsecutive = isSameNft(author, messages[index - 1]?.nft);
+            const isConsecutiveForward = isSameNft(author, messages[index-1]?.nft);
+            const isConsecutiveBackward = isSameNft(author, messages[index+1]?.nft)
             const showTime =
               hasMintuesChanged(
                 message.created_at,
                 messages[index - 1]?.created_at,
-              ) || !isConsecutive;
+              ) || !isConsecutiveForward;
             const showAuthor = hasMintuesChanged(
               message.created_at,
               messages[index + 1]?.created_at,
-            );
+            ) || !isConsecutiveBackward;
             const showDate = hasDateChanged(
               message.created_at,
               messages[index + 1]?.created_at,

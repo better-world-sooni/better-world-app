@@ -61,7 +61,7 @@ function ChatListScreen() {
 
   const inRoomUnreadCountUpdate = useCallback((roomId) => {
     const index = chatRooms.findIndex(x => x.room_id === roomId);
-    const room = chatRooms[index]; 
+    const room = Object.assign({}, chatRooms[index]);
     room.unread_count = 0;
     setChatRooms(prev => [...prev.slice(0, index), room, ...prev.slice(index+1)])
   }, [chatRooms, setChatRooms])
@@ -69,10 +69,8 @@ function ChatListScreen() {
   const inRoomMessageUpdate = useCallback((roomId, msg) => {
     const index = chatRooms.findIndex(x => x.room_id === roomId);
     const room = Object.assign({}, chatRooms[index]);
-
     room.last_message = msg.text;
     room.updated_at = msg.created_at;
-
     setChatRooms(prev => [room, ...prev.slice(0, index), ...prev.slice(index+1)])
   }, [chatRooms, setChatRooms])
 
@@ -94,17 +92,15 @@ function ChatListScreen() {
 
   useEffect(() => {
     const updateList = newRoom => {
-      console.log(isEntered)
       if(!isEntered) {
-        console.log("3")
         const index = chatRooms.findIndex(x => x.room_id === newRoom.room_id);
         newRoom.unread_count = 1;
-        if (index > -1) {
-          if (chatSocket) chatSocket.newRoomOpen(newRoom.room_id);
+        if (index > -1) {        
           newRoom.unread_count = chatRooms[index].unread_count + 1;
           newRoom.room_profile_imgs = chatRooms[index].room_profile_imgs;
           setChatRooms(prev => [newRoom, ...prev.filter((_, i) => i != index)]);
         } else {
+          if (chatSocket) chatSocket.newRoomOpen(newRoom.room_id);
           setChatRooms(prev => [newRoom, ...prev]);
         }
       }
@@ -113,41 +109,36 @@ function ChatListScreen() {
     chatRoomsRef.current = chatRooms;
   }, [chatRooms, chatSocket, isEntered]);
 
-
-    useEffect(() => {
-      const channel = new ChatChannel(currentNftId);
-      const wsConnect = async () => {
-        await cable(token).subscribe(channel);
-        setChatSocket(channel);
-        channel.on('fetch', res => {
-          setChatRooms(res['data']);
-        });
-        channel.on('message', res => {
-          console.log("1111")
-          updateListRef.current(res['room']);
-        });
-        channel.on('message', res => {
-          console.log("2222")
-        });
-        channel.on('close', () => console.log('Disconnected from chat'));
-        channel.on('disconnect', () => console.log('check disconnect'));
-      };
-      wsConnect();
-      channel.fetchList();
-      return () => {
-        if (channel) {
-          channel.disconnect();
-          channel.close();
+  useEffect(() => {
+    const channel = new ChatChannel(currentNftId);
+    const wsConnect = async () => {
+      await cable(token).subscribe(channel);
+      setChatSocket(channel);
+      channel.on('fetch', res => {
+        setChatRooms(res['data']);
+      });
+      channel.on('message', res => {
+        updateListRef.current(res['room']);
+      });
+      channel.on('close', () => console.log('Disconnected from chat'));
+      channel.on('disconnect', () => console.log('check disconnect'));
+    };
+    wsConnect();
+    channel.fetchList();
+    return () => {
+      if (channel) {
+        channel.disconnect();
+        channel.close();
+      }
+      dispatch(asyncActions.update({
+        key: getKeyByApi(apis.chat.chatRoom.all()),
+        data: {
+          success: true,
+          chat_rooms: chatRoomsRef.current,
         }
-        dispatch(asyncActions.update({
-          key: getKeyByApi(apis.chat.chatRoom.all()),
-          data: {
-            success: true,
-            chat_rooms: chatRoomsRef.current,
-          }
-        }))
-      };
-    }, [currentNft])
+      }))
+    };
+  }, [currentNft])
 
   useEffect(() => {
     if (chatListRes) {
@@ -238,7 +229,7 @@ function ChatListScreen() {
             <ChatRoomItemMemo
               key={index}
               onPress={(roomName, roomImage, roomId) =>
-                gotoChatRoom(roomName, roomImage, roomId, {inRoomSetIsEntered, inRoomUnreadCountUpdate, inRoomMessageUpdate})
+                gotoChatRoom(roomName, roomImage, roomId, inRoomSetIsEntered, inRoomUnreadCountUpdate, inRoomMessageUpdate)
               }
               room={item}
             />
@@ -290,7 +281,7 @@ function ChatRoomItem({onPress, room}) {
           <Row w={'100%'} pt2>
             <Col pr10>
               <Div>
-                <TruncatedText text={lastMessage} maxLength={30} />
+                {lastMessage && <TruncatedText text={lastMessage} maxLength={30} />}
               </Div>
             </Col>
           </Row>

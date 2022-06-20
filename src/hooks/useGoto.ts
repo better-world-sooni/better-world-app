@@ -81,7 +81,7 @@ export function useGotoChatList(){
 export function useGotoChatRoomFromList() {
   const navigation = useNavigation()
   const apiGETWithToken = useApiGETWithToken()
-  const gotoChatRoomFromList = (roomName, roomImage, roomId, inRoomFunction) => {
+  const gotoChatRoomFromList = (roomName, roomImage, roomId, inRoomSetIsEntered, inRoomUnreadCountUpdate, inRoomMessageUpdate) => {
     apiGETWithToken(
       apis.chat.chatRoom.roomId(roomId),
     );
@@ -90,7 +90,9 @@ export function useGotoChatRoomFromList() {
       roomImage,
       roomId,
       chatRoomEnterType: ChatRoomEnterType.List,
-      inRoomFunction,
+      inRoomSetIsEntered, 
+      inRoomUnreadCountUpdate, 
+      inRoomMessageUpdate
     } as never);
   };
   return gotoChatRoomFromList
