@@ -136,7 +136,7 @@ function ChatListScreen() {
         key: getKeyByApi(apis.chat.chatRoom.all()),
         data: {
           success: true,
-          chat_rooms: chatRoomsRef.current,
+          chat_list_data: chatRoomsRef.current,
         }
       }))
     };
