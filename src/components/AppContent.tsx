@@ -13,7 +13,7 @@ import ChatRoomScreen from 'src/screens/ChatRoomScreen';
 import OnboardingScreen from 'src/screens/Auth/OnboardingScreen';
 import {Img} from './common/Img';
 import {getNftProfileImage} from 'src/modules/nftUtils';
-import {Home, Search, User} from 'react-native-feather';
+import {Feather, Home, Search, Send, User, Zap} from 'react-native-feather';
 import Colors from 'src/constants/Colors';
 import OtherProfileScreen from 'src/screens/OtherProfileScreen';
 import NftCollectionScreen from 'src/screens/NftCollectionScreen';
@@ -67,18 +67,33 @@ const MainBottomTabs = () => {
   return (
     <Tab.Navigator
       tabBar={tabBarFunc}
-      initialRouteName={NAV_NAMES.Home + 'bottom'}
+      initialRouteName={NAV_NAMES.Social}
       lazy={false}>
       <Tab.Screen
         name={NAV_NAMES.Home + 'bottom'}
         component={HomeScreen}
         options={{
           tabBarIcon: ({focused}) => (
-            <Home
+            <Zap
               width={22}
               height={22}
               strokeWidth={2}
-              color={focused ? 'black' : Colors.gray[400]}></Home>
+              fill={focused ? Colors.warning.DEFAULT : Colors.warning.light}
+              color={focused ? 'black' : Colors.gray[400]}></Zap>
+          ),
+        }}
+      />
+      <Tab.Screen
+        name={NAV_NAMES.Social}
+        component={SocialScreen}
+        options={{
+          tabBarIcon: ({focused}) => (
+            <Feather
+              width={22}
+              height={22}
+              strokeWidth={2}
+              fill={focused ? Colors.info.DEFAULT : Colors.info.light}
+              color={focused ? 'black' : Colors.gray[400]}></Feather>
           ),
         }}
       />
@@ -96,15 +111,28 @@ const MainBottomTabs = () => {
         }}
       />
       <Tab.Screen
-        name={NAV_NAMES.Social}
-        component={SocialScreen}
+        name={NAV_NAMES.ChatList}
+        component={ChatListScreen}
+        options={{
+          tabBarIcon: ({focused}) => (
+            <Send
+              width={22}
+              height={22}
+              strokeWidth={2}
+              color={focused ? 'black' : Colors.gray[400]}></Send>
+          ),
+        }}
+      />
+      <Tab.Screen
+        name={NAV_NAMES.Profile}
+        component={ProfileScreen}
         options={{
           tabBarLabel: NAV_NAMES.Social,
           tabBarIcon: ({focused}) =>
             currentNft ? (
               <Img
                 {...profileTabIconProps}
-                border1={focused}
+                border2={focused}
                 borderBlack={focused}></Img>
             ) : (
               <User

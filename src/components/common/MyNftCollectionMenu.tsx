@@ -34,6 +34,7 @@ import {getSiPrefixedNumber} from 'src/modules/numberUtils';
 import {useIsAdmin} from 'src/modules/nftUtils';
 import Colors from 'src/constants/Colors';
 import {PostOwnerType, PostType} from 'src/screens/NewPostScreen';
+import {ICONS} from 'src/modules/icons';
 
 const MyNftCollectionMenu = ({nftCollection}) => {
   const {currentNft} = useSelector(
@@ -93,7 +94,8 @@ const MyNftCollectionMenu = ({nftCollection}) => {
             <Row itemsCenter>
               <Col auto mr10 onPress={gotoNftCollectionProfile}>
                 <Span fontSize={20} bold color={textColor}>
-                  {nftCollection.name}
+                  {nftCollection.name}{' '}
+                  <Img source={ICONS.sealCheck} h18 w18></Img>
                 </Span>
               </Col>
             </Row>
@@ -170,34 +172,6 @@ const MyNftCollectionMenu = ({nftCollection}) => {
               </Row>
             )
           )}
-          {allPostCount ? (
-            <Row
-              itemsCenter
-              py16
-              onPress={() =>
-                gotoCollectionFeed(`${nftCollection.name} 멤버 피드`)
-              }>
-              <Col auto mr16>
-                <Layers
-                  strokeWidth={1.3}
-                  color={textColor}
-                  height={24}
-                  width={24}
-                />
-              </Col>
-              <Col>
-                <Span fontSize={16} color={textColor}>
-                  모든 멤버들의 게시물
-                </Span>
-              </Col>
-
-              <Col auto>
-                <Span gray700 fontSize={14}>
-                  {getSiPrefixedNumber(allPostCount)}개
-                </Span>
-              </Col>
-            </Row>
-          ) : null}
           {upcomingEventCount ? (
             <Row itemsCenter py16 onPress={gotoCollectionEventList}>
               <Col auto mr16>
@@ -232,111 +206,6 @@ const MyNftCollectionMenu = ({nftCollection}) => {
                 <Col>
                   <Span fontSize={16} primary>
                     일정 추가
-                  </Span>
-                </Col>
-              </Row>
-            )
-          )}
-          {activeForumCount ? (
-            <Row
-              itemsCenter
-              py16
-              onPress={() =>
-                gotoCollectionFeed(
-                  `${nftCollection.name} 진행중인 포럼`,
-                  'Forum',
-                )
-              }>
-              <Col auto mr16>
-                <Zap
-                  strokeWidth={1.3}
-                  color={textColor}
-                  height={24}
-                  width={24}
-                />
-              </Col>
-              <Col>
-                <Span fontSize={16} color={textColor}>
-                  진행중인 포럼
-                </Span>
-              </Col>
-              <Col auto>
-                <Span gray700 fontSize={14}>
-                  {getSiPrefixedNumber(activeForumCount)}개
-                </Span>
-              </Col>
-            </Row>
-          ) : (
-            isAdmin && (
-              <Row
-                itemsCenter
-                py16
-                onPress={() => gotoNewPost(null, null, null, PostType.Forum)}>
-                <Col auto mr16>
-                  <PieChart
-                    strokeWidth={1.3}
-                    color={Colors.primary.DEFAULT}
-                    height={24}
-                    width={24}
-                  />
-                </Col>
-                <Col>
-                  <Span fontSize={16} primary>
-                    포럼 추가
-                  </Span>
-                </Col>
-              </Row>
-            )
-          )}
-          {activeProposalCount ? (
-            <Row
-              itemsCenter
-              py16
-              onPress={() =>
-                gotoCollectionFeed(
-                  `${nftCollection.name} 진행중인 투표`,
-                  'Proposal',
-                )
-              }>
-              <Col auto mr16>
-                <ThumbsUp
-                  strokeWidth={1.3}
-                  color={textColor}
-                  height={24}
-                  width={24}
-                />
-              </Col>
-              <Col>
-                <Span fontSize={16} color={textColor}>
-                  진행중인 투표
-                </Span>
-              </Col>
-
-              <Col auto>
-                <Span gray700 fontSize={14}>
-                  {getSiPrefixedNumber(activeProposalCount)}개
-                </Span>
-              </Col>
-            </Row>
-          ) : (
-            isAdmin && (
-              <Row
-                itemsCenter
-                py16
-                onPress={() =>
-                  gotoNewPost(null, null, null, PostType.Proposal)
-                }>
-                <Col auto mr16>
-                  <ThumbsUp
-                    strokeWidth={1.3}
-                    color={Colors.primary.DEFAULT}
-                    height={24}
-                    width={24}
-                  />
-                </Col>
-                <Col>
-                  <Span fontSize={16} primary>
-                    투표 추가
                   </Span>
                 </Col>
               </Row>

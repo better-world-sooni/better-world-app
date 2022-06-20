@@ -95,7 +95,7 @@ export default function NewComment({
               rounded100
               h={30}
               w={30}
-              uri={getNftProfileImage(currentNft, 50, 50)}
+              uri={getNftProfileImage(currentNft, 100, 100)}
             />
           }
           rightComp={

@@ -73,18 +73,14 @@ const SplashScreen = ({route}) => {
   };
 
   return (
-      <Div bgPrimary flex={1} itemsCenter justifyCenter>
-        <StatusBar barStyle="dark-content" backgroundColor='rgb(25, 110, 237)'></StatusBar>
-        <Div itemsCenter pb50>
-          <Img w134 h134 source={IMAGES.betterWorldWhiteLogo} legacy />
-          <Span white fontSize={20} mt={-15} fontFamily={'UniSans'}>
-            BetterWorld{' '}
-            <Span white bold fontSize={20}>
-              alpha
-            </Span>
-          </Span>
-        </Div>
+    <Div bgWhite flex={1} itemsCenter justifyCenter>
+      <StatusBar
+        barStyle="dark-content"
+        backgroundColor="rgb(25, 110, 237)"></StatusBar>
+      <Div itemsCenter>
+        <Img w150 h150 source={IMAGES.bW} legacy />
       </Div>
+    </Div>
   );
 };
 

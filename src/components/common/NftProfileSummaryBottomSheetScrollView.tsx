@@ -198,7 +198,7 @@ export function NftProfileSummary({nft, token = null}) {
                   borderGray400={isFollowing}
                   onPress={handlePressFollowing}>
                   <Span white={!isFollowing} bold px5>
-                    {isFollowing ? '언팔로우' : '팔로우'}
+                    {isFollowing ? '팔로잉' : '팔로우'}
                   </Span>
                 </Col>
               </Row>

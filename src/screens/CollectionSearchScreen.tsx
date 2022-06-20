@@ -99,15 +99,13 @@ const CollectionSearchScreen = ({
         </Animated.View>
         <Div zIndex={100} absolute w={DEVICE_WIDTH} top={notchHeight + 5}>
           <Row itemsCenter py5 h40 px15>
-            <Col auto bgRealBlack p8 rounded100 onPress={goBack}>
-              <Div>
-                <ChevronLeft
-                  strokeWidth={2}
-                  color={'white'}
-                  height={15}
-                  width={15}
-                />
-              </Div>
+            <Col auto onPress={goBack}>
+              <ChevronLeft
+                strokeWidth={2}
+                color={'black'}
+                height={22}
+                width={22}
+              />
             </Col>
             <Col mx10>
               <TextInput
@@ -125,15 +123,8 @@ const CollectionSearchScreen = ({
                 onChangeText={handleChangeQuery}
               />
             </Col>
-            <Col auto bgRealBlack p8 rounded100 onPress={onPressSearch}>
-              <Div>
-                <Search
-                  strokeWidth={2}
-                  color={'white'}
-                  height={15}
-                  width={15}
-                />
-              </Div>
+            <Col auto onPress={onPressSearch}>
+              <Search strokeWidth={2} color={'black'} height={22} width={22} />
             </Col>
           </Row>
         </Div>

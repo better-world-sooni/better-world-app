@@ -7,7 +7,7 @@ const followEventId = (url) => `follow-${url}`
 export default function useFollow(initialIsFollowing, initialFollowingCount, url) {
     const [isFollowing, setIsFollowing] = useState(initialIsFollowing);
     const followingOffset = initialIsFollowing == isFollowing ? 0 : !isFollowing ? -1 : 1;
-    const followerCount = initialFollowingCount + followingOffset;
+    const followerCount = Math.max(initialFollowingCount + followingOffset, 0);
     const promiseFnWithToken = usePromiseFnWithToken();
     useEffect(() => {
         setIsFollowing(initialIsFollowing);

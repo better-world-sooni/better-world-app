@@ -66,6 +66,7 @@ import {getAdjustedHeightFromDimensions} from 'src/modules/imageUtils';
 import {PostEventTypes} from './Post';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import RepostedTransaction from './RepostedTransaction';
+import {ICONS} from 'src/modules/icons';
 
 export default function FullPost({post, autoFocus = false}) {
   const scrollToEndRef = useScrollToEndRef();
@@ -398,7 +399,7 @@ export default function FullPost({post, autoFocus = false}) {
                       border={0.5}
                       borderGray200
                       rounded100
-                      uri={getNftProfileImage(post.nft, 100, 100)}
+                      uri={getNftProfileImage(post.nft, 200, 200)}
                     />
                   </Div>
                 </Col>
@@ -407,17 +408,25 @@ export default function FullPost({post, autoFocus = false}) {
                     <Col auto>
                       <Span>
                         <Span fontSize={15} bold onPress={goToProfile}>
-                          {getNftName(post.nft)}
-                        </Span>{' '}
-                        {post.nft.token_id &&
+                          {getNftName(post.nft)}{' '}
+                        </Span>
+                        {post.nft.token_id ? (
                           post.nft.nft_metadatum.name !=
                             getNftName(post.nft) && (
-                            <Span fontSize={12} gray700 onPress={goToProfile}>
+                            <Span
+                              fontSize={12}
+                              bold
+                              gray700
+                              onPress={goToProfile}>
+                              {' '}
                               {post.nft.nft_metadatum.name}
-                              {' · '}
                             </Span>
-                          )}
+                          )
+                        ) : (
+                          <Img source={ICONS.sealCheck} h15 w15></Img>
+                        )}
                         <Span fontSize={12} gray700>
+                          {' · '}
                           {createdAtText(post.updated_at)}
                         </Span>
                       </Span>
