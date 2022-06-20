@@ -8,6 +8,7 @@ import {Col} from 'src/components/common/Col';
 import {Div} from 'src/components/common/Div';
 import {Row} from 'src/components/common/Row';
 import {Span} from 'src/components/common/Span';
+import {Img} from 'src/components/common/Img';
 import apis from 'src/modules/apis';
 import {getPromiseFn, useApiSelector, asyncActions, getKeyByApi} from 'src/redux/asyncReducer';
 import {RootState} from 'src/redux/rootReducer';
@@ -28,6 +29,7 @@ import {createdAtText} from 'src/modules/timeUtils';
 import {useGotoChatRoomFromList} from 'src/hooks/useGoto';
 import {ChatRoomEnterType} from './ChatRoomScreen';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import {resizeImageUri} from 'src/modules/uriUtils';
 
 function ChatListScreen() {
   const {currentNft, token} = useSelector(
@@ -39,7 +41,7 @@ function ChatListScreen() {
   );
   
   const [chatRooms, setChatRooms] = useState(
-    chatListRes ? chatListRes.chat_rooms : [],
+    chatListRes ? chatListRes.chat_list_data : [],
   );
   const [chatSocket, setChatSocket] = useState(null);
   const [isEntered, setIsEntered] = useState(false);
@@ -97,7 +99,7 @@ function ChatListScreen() {
         newRoom.unread_count = 1;
         if (index > -1) {        
           newRoom.unread_count = chatRooms[index].unread_count + 1;
-          newRoom.room_profile_imgs = chatRooms[index].room_profile_imgs;
+          newRoom.room_image = chatRooms[index].room_image;
           setChatRooms(prev => [newRoom, ...prev.filter((_, i) => i != index)]);
         } else {
           if (chatSocket) chatSocket.newRoomOpen(newRoom.room_id);
@@ -142,7 +144,7 @@ function ChatListScreen() {
 
   useEffect(() => {
     if (chatListRes) {
-      setChatRooms(chatListRes.chat_rooms);
+      setChatRooms(chatListRes.chat_list_data);
     }
   }, [chatListRes]);
 
@@ -247,22 +249,19 @@ function ChatRoomItem({onPress, room}) {
   const roomName = room.room_name;
   const unreadMessageCount = room.unread_count;
   const lastMessage = room.last_message;
-  const profileImgArr = room.room_profile_imgs;
+  const roomImage = room.room_image;
 
   return (
     <Div px15>
       <Row
         bgWhite
-        onPress={() => onPress(roomName, profileImgArr, roomId)}
+        onPress={() => onPress(roomName, roomImage, roomId)}
         py5
         cursorPointer
         itemsCenter>
         <Col auto relative mr10>
           <Div rounded100 overflowHidden h50>
-            <ChatRoomAvatars
-              firstUserAvatar={profileImgArr[0]}
-              secondUserAvatar={profileImgArr[1]}
-            />
+            <Img uri={resizeImageUri(roomImage, 200, 200)} w50 h50></Img>
           </Div>
         </Col>
         <Col>
