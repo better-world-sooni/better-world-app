@@ -91,6 +91,11 @@ function ChatListScreen() {
   //   }
   // }, [chatRooms, chatSocket, setChatRooms])
 
+  useEffect(() => {
+    if (chatListRes) {
+      setChatRooms(chatListRes.chat_list_data);
+    }
+  }, [chatListRes]);
 
   useEffect(() => {
     const updateList = newRoom => {
@@ -111,22 +116,53 @@ function ChatListScreen() {
     chatRoomsRef.current = chatRooms;
   }, [chatRooms, chatSocket, isEntered]);
 
+  // useFocusEffect(
+  //   useCallback(() => {
+  //     const channel = new ChatChannel(currentNftId);
+  //     const wsConnect = async () => {
+  //       await cable(token).subscribe(channel);
+  //       setChatSocket(channel);
+  //       channel.on('fetch', res => {
+  //         setChatRooms(res['data']);
+  //       });
+  //       channel.on('message', res => {
+  //         updateListRef.current(res['room']);
+  //       });
+  //     };
+  //     wsConnect();
+  //     channel.fetchList();
+      
+  //     return () => {
+  //       if (channel) {
+  //         channel.disconnect();
+  //         channel.close();
+  //       }
+  //       dispatch(asyncActions.update({
+  //         key: getKeyByApi(apis.chat.chatRoom.all()),
+  //         data: {
+  //           success: true,
+  //           chat_list_data: chatRoomsRef.current,
+  //         }
+  //       }))
+  //     };
+  //   }, [currentNft]),
+  // );
+
   useEffect(() => {
     const channel = new ChatChannel(currentNftId);
     const wsConnect = async () => {
       await cable(token).subscribe(channel);
       setChatSocket(channel);
       channel.on('fetch', res => {
-        setChatRooms(res['data']);
+        setChatRooms(res.data.list_data);
       });
       channel.on('message', res => {
-        updateListRef.current(res['room']);
+        updateListRef.current(res.room);
       });
-      channel.on('close', () => console.log('Disconnected from chat'));
-      channel.on('disconnect', () => console.log('check disconnect'));
     };
     wsConnect();
     channel.fetchList();
+    
     return () => {
       if (channel) {
         channel.disconnect();
@@ -139,14 +175,9 @@ function ChatListScreen() {
           chat_list_data: chatRoomsRef.current,
         }
       }))
+      console.log("bye")
     };
-  }, [currentNft])
-
-  useEffect(() => {
-    if (chatListRes) {
-      setChatRooms(chatListRes.chat_list_data);
-    }
-  }, [chatListRes]);
+  }, [currentNft]);
 
 
   const translationY = useSharedValue(0);

@@ -115,10 +115,10 @@ function ChatRoomScreen({
         });
         let _ = await channel.enter(connectRoomId);
         channel.on('message', res => {
-          setMessages(m => [res['data'], ...m]);
-          if(chatRoomEnterType == ChatRoomEnterType.List) {
-            inRoomMessageUpdate(connectRoomId, res['data'])
-          }
+          setMessages(m => [res.message, ...m]);
+          // if(chatRoomEnterType == ChatRoomEnterType.List) {
+          //   inRoomMessageUpdate(connectRoomId, res.message)
+          // }
         });
         channel.on('leave', res => {
           if (currentNftId != res['leave_nft']) {
@@ -131,6 +131,7 @@ function ChatRoomScreen({
       };
       wsConnect();
       return () => {
+        
         if (channel) {
           channel.disconnect();
           channel.close();

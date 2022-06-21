@@ -28,12 +28,16 @@ type NewRoomOpen = {
 
 type ChatMessage = {
   type: 'send';
-  data: object;
+  room: object;
+  message: object;
 };
 
 type FetchMessage = {
   type: 'fetch';
-  data: object;
+  data: {
+    list_data: Array<object>;
+    total_unread: number;
+  }
 };
 
 type Message =
@@ -48,6 +52,7 @@ interface Events extends ChannelEvents<Message> {
   leave: (msg: LeavingMessage) => void;
   new: (msg: NewRoomOpen) => void;
   fetch: (msg: FetchMessage) => void;
+  message: (msg: ChatMessage) => void;
 }
 
 export class ChatChannel extends Channel<Params, Message, Events> {
@@ -87,6 +92,6 @@ export class ChatChannel extends Channel<Params, Message, Events> {
     } else if (message.type === 'fetch') {
       return this.emit('fetch', message);
     }
-    super.receive(message);
+    return this.emit('message', message);
   }
 }

@@ -53,10 +53,12 @@ import NewCommunityWalletScreen from 'src/screens/NewCommunityWalletScreen';
 import CollectionFeedTagSelectScreen from 'src/screens/CollectionFeedTagSelectScreen';
 import {TransitionPresets} from '@react-navigation/stack';
 import TransactionScreen from 'src/screens/TransactionScreen';
+import type { BottomTabNavigationOptions } from '@react-navigation/bottom-tabs'
 
 const RootStack = createStackNavigator();
 
 const Tab = createBottomTabNavigator();
+
 
 const tabBarFunc = props => <BottomTabBar {...props} />;
 
@@ -75,7 +77,11 @@ const MainBottomTabs = () => {
     <Tab.Navigator
       tabBar={tabBarFunc}
       initialRouteName={NAV_NAMES.Social}
-      lazy={false}>
+      screenOptions={{
+        lazy: false,
+        headerShown: false,
+      }}
+    >
       <Tab.Screen
         name={NAV_NAMES.Home + 'bottom'}
         component={HomeScreen}
@@ -127,6 +133,7 @@ const MainBottomTabs = () => {
               strokeWidth={2}
               color={focused ? 'black' : Colors.gray[400]}></Send>
           ),
+          tabBarBadge: "10", 
         }}
       />
       <Tab.Screen
@@ -150,6 +157,7 @@ const MainBottomTabs = () => {
         }}
       />
     </Tab.Navigator>
+    
   );
 };
 
@@ -220,6 +228,7 @@ export const AppContent = ({notificationOpenData}) => {
       options: props => ({
         gestureEnabled: false,
         cardStyle: {backgroundColor: 'white', presentation: 'screen'},
+        headershown: false,
       }),
     },
     {
