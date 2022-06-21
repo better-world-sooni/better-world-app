@@ -26,6 +26,7 @@ import {
 import NftProfileHeader from './NftProfileHeader';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import ImageColors from 'react-native-image-colors'
+import ListEmptyComponent from './ListEmptyComponent';
 
 export default function NftProfile({
   nftCore,
@@ -54,7 +55,7 @@ export default function NftProfile({
     reloadGetWithToken(pageableNftPostFn());
   };
   const nft = profileData?.nft;
-  const [statusBarColor, setStatusBarColor] = useState('#FFFFFF')
+  const [statusBarColor, setStatusBarColor] = useState('#FFFFFF');
   const translationY = useSharedValue(0);
   const scrollHandler = useAnimatedScrollHandler(event => {
     translationY.value = event.contentOffset.y;
@@ -110,16 +111,16 @@ export default function NftProfile({
   const renderItem = ({item}) => <Post post={item} displayLabel />;
 
   useEffect(() => {
-    if(nft?.background_image_uri) {
+    if (nft?.background_image_uri) {
       ImageColors.getColors(nft.background_image_uri, {
         fallback: '#228B22',
         cache: true,
         key: 'unique_key',
       }).then(colors => {
         // console.log(colors)
-      })
+      });
     }
-  },[nft])
+  }, [nft]);
 
   return (
     <>
@@ -185,6 +186,7 @@ export default function NftProfile({
         removeClippedSubviews
         updateCellsBatchingPeriod={100}
         windowSize={11}
+        ListEmptyComponent={<ListEmptyComponent h={450} />}
         ListHeaderComponent={
           <NftProfileHeader
             nftCore={nftCore}

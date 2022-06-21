@@ -11,7 +11,7 @@ export default function useFocusReloadWithTimeOut({reloadUriObject, cacheTimeout
     useFocusEffect(
         () => {
             if(!isLoading && !isPaginating && (!finishedAt || new Date(finishedAt.getTime() + cacheTimeoutInSeconds *1000) < new Date())){
-                onStart()
+                onStart && onStart()
                 reloadGET(reloadUriObject)
             }
           }

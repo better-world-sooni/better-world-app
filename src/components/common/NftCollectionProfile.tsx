@@ -50,6 +50,7 @@ import NftCollectionProfileEditBottomSheetScrollView from 'src/components/common
 import {BottomSheetModal} from '@gorhom/bottom-sheet';
 import Colors from 'src/constants/Colors';
 import {ICONS} from 'src/modules/icons';
+import ListEmptyComponent from './ListEmptyComponent';
 
 export default function NftCollectionProfile({
   nftCollectionCore,
@@ -220,6 +221,7 @@ export default function NftCollectionProfile({
           ...(Platform.OS === 'android' && {paddingTop: 30}),
         }}
         data={nftCollectionPostListRes?.posts || []}
+        ListEmptyComponent={<ListEmptyComponent h={450} />}
         ListHeaderComponent={
           <>
             <Row zIndex={100} px15 relative>

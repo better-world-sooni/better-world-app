@@ -8,6 +8,7 @@ import {RootState} from 'src/redux/rootReducer';
 import {Plus} from 'react-native-feather';
 import {useGotoNewPost} from 'src/hooks/useGoto';
 import {PostOwnerType} from '../NewPostScreen';
+import useFocusReloadWithTimeOut from 'src/hooks/useFocusReloadWithTimeout';
 
 const ProfileScreen = ({route: {params}}) => {
   const {currentNft} = useSelector(
@@ -18,6 +19,10 @@ const ProfileScreen = ({route: {params}}) => {
     return apis.post.list._(page);
   };
   const gotoNewPost = useGotoNewPost({postOwnerType: PostOwnerType.Nft});
+  useFocusReloadWithTimeOut({
+    reloadUriObject: pageableNftPostFn(),
+    cacheTimeoutInSeconds: 120,
+  });
 
   return (
     <Div flex={1} bgWhite overflowHidden>

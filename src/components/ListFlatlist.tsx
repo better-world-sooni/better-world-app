@@ -10,12 +10,13 @@ import Animated, {
   useSharedValue,
 } from 'react-native-reanimated';
 import {HAS_NOTCH} from 'src/modules/constants';
-import {DEVICE_WIDTH} from 'src/modules/styles';
+import {DEVICE_HEIGHT, DEVICE_WIDTH} from 'src/modules/styles';
 import {Col} from './common/Col';
 import {Div} from './common/Div';
 import {Row} from './common/Row';
 import {Span} from './common/Span';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import ListEmptyComponent from './common/ListEmptyComponent';
 
 export default function ListFlatlist({
   refreshing,
@@ -99,6 +100,9 @@ export default function ListFlatlist({
           marginTop: headerHeight,
           marginBottom: headerHeight,
         }}
+        ListEmptyComponent={
+          <ListEmptyComponent h={DEVICE_HEIGHT - headerHeight * 2} />
+        }
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
