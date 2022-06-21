@@ -129,7 +129,7 @@ export default function NftProfile({
             style={backgroundImageStyles}
             source={{uri: nft.background_image_uri}}></Animated.Image>
         ) : (
-          <Div absolute top0 h={headerHeight} bgGray400 w={DEVICE_WIDTH}></Div>
+          <Div absolute top0 h={headerHeight+30} bgGray400 w={DEVICE_WIDTH}></Div>
         )}
         <Animated.View style={headerStyles}>
           <CustomBlurView
