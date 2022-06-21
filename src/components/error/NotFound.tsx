@@ -18,9 +18,9 @@ export default function NotFound({text}) {
   const {goBack} = useNavigation();
   const gotoHome = useGotoHome();
   return (
-    <Div flex={1} itemsCenter justifyCenter>
+    <Div flex={1} itemsCenter justifyCenter bgWhite>
       <Div h={headerHeight} absolute top0 zIndex={100} w={DEVICE_WIDTH}>
-        <Div zIndex={100} absolute w={DEVICE_WIDTH} top={notchHeight+5}>
+        <Div zIndex={100} absolute w={DEVICE_WIDTH} top={notchHeight + 5}>
           <Row itemsCenter py5 h40 px8>
             <Col itemsStart>
               <Div auto rounded100 onPress={goBack}>
@@ -38,20 +38,21 @@ export default function NotFound({text}) {
         </Div>
       </Div>
       <Div itemsCenter>
-        <Img w134 h134 source={IMAGES.betterWorldBlueLogo} />
-        <Span bold primary fontSize={14}>
+        <Img w100 h100 source={IMAGES.bW} />
+        <Span bold fontSize={14}>
           {text}
         </Span>
         <Div
           h48
           my15
-          bgPrimary
-          rounded10
+          rounded100
+          border1
+          borderGray200
           itemsCenter
           justifyCenter
           px20
           onPress={gotoHome}>
-          <Span bold white fontSize={18}>
+          <Span bold fontSize={14}>
             홈으로 가기
           </Span>
         </Div>

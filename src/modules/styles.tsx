@@ -8,8 +8,8 @@ export const PADDINGED_HEIGHT = Dimensions.get('window').height - 40;
 export const varStyle = {
   realBlack: '#000000',
   black: '#ffffff',
-  primary: 'rgb(25, 110, 237)',
-  primarySoft: 'rgb(88, 195, 252)',
+  primary: 'rgb(0, 122, 255)',
+  primarySoft: 'rgb(10, 132, 255)',
   secondary: '#513ccd',
   secondarySoft: '#513ccd10',
   secondary2: '#3f3d88',

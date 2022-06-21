@@ -183,16 +183,6 @@ export function useGotoNewCommunityWallet(){
   return gotoNewCommunityWallet
 }
 
-export function useGotoCapsule({nft}) {
-  const navigation = useNavigation()
-  const gotoCapsule = () => {
-    navigation.navigate(NAV_NAMES.Capsule as never, {
-      nft,
-    } as never)
-  };
-  return gotoCapsule
-}
-
 export function useGotoLikeList({likableType, likableId}) {
   const navigation = useNavigation()
   const apiGETWithToken = useApiGETWithToken()
@@ -354,18 +344,6 @@ export function useGotoOnboarding() {
   return gotoOnboarding
 }
 
-export function useGotoRankDeltum({contractAddress, tokenId}) {
-  const navigation = useNavigation()
-  const apiGETWithToken = useApiGETWithToken()
-  const gotoRankDeltum = () => {
-    apiGETWithToken(
-      apis.rankDeltum.list(contractAddress, tokenId)
-    );
-    navigation.navigate(NAV_NAMES.RankDeltum as never, {contractAddress, tokenId} as never)
-  };
-  return gotoRankDeltum
-}
-
 export function useGotoCollectionFeed({contractAddress}) {
   const navigation = useNavigation()
   const apiGETWithToken = useApiGETWithToken()
@@ -377,21 +355,6 @@ export function useGotoCollectionFeed({contractAddress}) {
       contractAddress,
       title,
       type
-    } as never)
-  };
-  return gotoCollectionFeed
-}
-
-export function useGotoForumFeed({postId}) {
-  const navigation = useNavigation()
-  const apiGETWithToken = useApiGETWithToken()
-  const gotoCollectionFeed = (title) => {
-    apiGETWithToken(
-      apis.post.postId.repost.list.proposal(postId, 1)
-    );
-    navigation.navigate(NAV_NAMES.ForumFeed as never, {
-      postId,
-      title
     } as never)
   };
   return gotoCollectionFeed

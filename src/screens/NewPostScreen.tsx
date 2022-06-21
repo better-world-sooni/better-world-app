@@ -190,12 +190,7 @@ const NewPostScreen = ({
                     strokeWidth={2}
                     color={'black'}></Upload>
                 ) : (
-                  <Zap
-                    width={22}
-                    height={22}
-                    strokeWidth={2}
-                    fill={Colors.warning.DEFAULT}
-                    color={'black'}></Zap>
+                  <Img source={ICONS.lightBulb} h22 w22 />
                 )}
               </Col>
             </Row>

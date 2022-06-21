@@ -16,7 +16,6 @@ import {Heart, MessageCircle} from 'react-native-feather';
 import apis from 'src/modules/apis';
 import {useApiPOSTWithToken, useApiSelector} from 'src/redux/asyncReducer';
 import {
-  useGotoCapsule,
   useGotoChatRoomFromProfile,
   useGotoFollowList,
   useGotoNftCollectionProfile,
@@ -61,7 +60,6 @@ export function NftProfileSummary({nft, token = null}) {
     shallowEqual,
   );
   const isCurrentNft = useIsCurrentNft(nft);
-  const goToCapsule = useGotoCapsule({nft});
   const apiPOSTWithToken = useApiPOSTWithToken();
   const [isFollowing, followerCount, handlePressFollowing] = useFollow(
     nft.is_following,
@@ -195,7 +193,7 @@ export function NftProfileSummary({nft, token = null}) {
                   p8
                   rounded100
                   border1={isFollowing}
-                  borderGray400={isFollowing}
+                  borderGray200={isFollowing}
                   onPress={handlePressFollowing}>
                   <Span white={!isFollowing} bold px5>
                     {isFollowing ? '팔로잉' : '팔로우'}

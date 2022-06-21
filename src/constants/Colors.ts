@@ -3,8 +3,8 @@ const tintColorDark = '#fff';
 
 export default {
   primary: {
-    DEFAULT: 'rgb(25, 110, 237)',
-    light: 'rgba(25, 110, 237, 0.2)',
+    DEFAULT: 'rgb(0, 122, 255)',
+    light: 'rgb(10, 132, 255)',
   },
   light: {
     text: '#000',

@@ -1,5 +1,5 @@
 import React from 'react';
-import {StatusBar, Platform} from 'react-native';
+import {StatusBar} from 'react-native';
 import {Div} from 'src/components/common/Div';
 import apis from 'src/modules/apis';
 import NftProfile from 'src/components/common/NftProfile';
@@ -10,7 +10,7 @@ import {useGotoNewPost} from 'src/hooks/useGoto';
 import {PostOwnerType} from '../NewPostScreen';
 import useFocusReloadWithTimeOut from 'src/hooks/useFocusReloadWithTimeout';
 
-const ProfileScreen = ({route: {params}}) => {
+const ProfileScreen = () => {
   const {currentNft} = useSelector(
     (root: RootState) => root.app.session,
     shallowEqual,
@@ -36,7 +36,7 @@ const ProfileScreen = ({route: {params}}) => {
       />
       <Div
         rounded100
-        bgInfo
+        bgPrimary
         absolute
         w54
         h54
@@ -53,7 +53,7 @@ const ProfileScreen = ({route: {params}}) => {
           shadowRadius: 4,
           elevation: 4,
         }}>
-        <Plus strokeWidth={1.7} color={'white'} height={30} width={30}></Plus>
+        <Plus strokeWidth={2} color={'white'} height={30} width={30}></Plus>
       </Div>
     </Div>
   );

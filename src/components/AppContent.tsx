@@ -13,31 +13,21 @@ import ChatRoomScreen from 'src/screens/ChatRoomScreen';
 import OnboardingScreen from 'src/screens/Auth/OnboardingScreen';
 import {Img} from './common/Img';
 import {getNftProfileImage} from 'src/modules/nftUtils';
-import {
-  Feather,
-  Heart,
-  Home,
-  Search,
-  Send,
-  User,
-  Zap,
-} from 'react-native-feather';
+import {Home, Search, Send, User} from 'react-native-feather';
 import Colors from 'src/constants/Colors';
 import OtherProfileScreen from 'src/screens/OtherProfileScreen';
 import NftCollectionScreen from 'src/screens/NftCollectionScreen';
 import NewPostScreen from 'src/screens/NewPostScreen';
 import ReportScreen from 'src/screens/ReportScreen';
 import SearchScreen from 'src/screens/Home/SearchScreen';
-import ChatListScreen from 'src/screens/ChatListScreen';
+import ChatListScreen from 'src/screens/Home/ChatListScreen';
 import LikeListScreen from 'src/screens/LikeListScreen';
 import FollowListScreen from 'src/screens/FollowListScreen';
 import VoteListScreen from 'src/screens/VoteListScreen';
 import QrScreen from 'src/screens/QrScreen';
 import ScanScreen from 'src/screens/ScanScreen';
 import NotificationScreen from 'src/screens/NotificationScreen';
-import RankDeltumScreen from 'src/screens/RankDeltumScreen';
 import CollectionFeedScreen from 'src/screens/CollectionFeedScreen';
-import ForumFeedScreen from 'src/screens/ForumFeedScreen';
 import RepostListScreen from 'src/screens/RepostListScreen';
 import CollectionEventListScreen from 'src/screens/CollectionEventListScreen';
 import NewCollectionEventScreen from 'src/screens/NewCollectionEventScreen';
@@ -53,6 +43,7 @@ import NewCommunityWalletScreen from 'src/screens/NewCommunityWalletScreen';
 import CollectionFeedTagSelectScreen from 'src/screens/CollectionFeedTagSelectScreen';
 import {TransitionPresets} from '@react-navigation/stack';
 import TransactionScreen from 'src/screens/TransactionScreen';
+import {ICONS} from 'src/modules/icons';
 
 const RootStack = createStackNavigator();
 
@@ -77,20 +68,6 @@ const MainBottomTabs = () => {
       initialRouteName={NAV_NAMES.Social}
       lazy={false}>
       <Tab.Screen
-        name={NAV_NAMES.Home + 'bottom'}
-        component={HomeScreen}
-        options={{
-          tabBarIcon: ({focused}) => (
-            <Zap
-              width={22}
-              height={22}
-              strokeWidth={2}
-              fill={focused ? Colors.warning.DEFAULT : Colors.warning.light}
-              color={focused ? 'black' : Colors.gray[400]}></Zap>
-          ),
-        }}
-      />
-      <Tab.Screen
         name={NAV_NAMES.Social}
         component={SocialScreen}
         options={{
@@ -101,6 +78,18 @@ const MainBottomTabs = () => {
               strokeWidth={2}
               color={focused ? 'black' : Colors.gray[400]}></Home>
           ),
+        }}
+      />
+      <Tab.Screen
+        name={NAV_NAMES.Home + 'bottom'}
+        component={HomeScreen}
+        options={{
+          tabBarIcon: ({focused}) =>
+            focused ? (
+              <Img source={ICONS.lightBulb} h22 w22></Img>
+            ) : (
+              <Img source={ICONS.lightBulbGray} h22 w22></Img>
+            ),
         }}
       />
       <Tab.Screen
@@ -274,14 +263,6 @@ export const AppContent = ({notificationOpenData}) => {
     {
       name: NAV_NAMES.Notification,
       component: NotificationScreen,
-    },
-    {
-      name: NAV_NAMES.RankDeltum,
-      component: RankDeltumScreen,
-    },
-    {
-      name: NAV_NAMES.ForumFeed,
-      component: ForumFeedScreen,
     },
     {
       name: NAV_NAMES.RepostList,

@@ -1,33 +1,24 @@
 import {useNavigation, useFocusEffect} from '@react-navigation/core';
 import React, {useCallback, useEffect, useState, useRef} from 'react';
-import {Alert, RefreshControl} from 'react-native';
-import {ChevronLeft, CornerDownLeft, Search} from 'react-native-feather';
+import {RefreshControl} from 'react-native';
 import {shallowEqual, useSelector} from 'react-redux';
-import {Manager} from 'socket.io-client';
 import {Col} from 'src/components/common/Col';
 import {Div} from 'src/components/common/Div';
 import {Row} from 'src/components/common/Row';
 import {Span} from 'src/components/common/Span';
 import apis from 'src/modules/apis';
-import {getPromiseFn, useApiSelector} from 'src/redux/asyncReducer';
+import {useApiSelector} from 'src/redux/asyncReducer';
 import {RootState} from 'src/redux/rootReducer';
 import {cable} from 'src/modules/cable';
 import {ChatChannel} from 'src/components/ChatChannel';
 import ChatRoomAvatars from 'src/components/ChatRoomAvatars';
 import TruncatedText from 'src/components/common/TruncatedText';
-import {HAS_NOTCH, kmoment} from 'src/modules/constants';
-import Animated, {
-  useAnimatedScrollHandler,
-  useAnimatedStyle,
-  useSharedValue,
-} from 'react-native-reanimated';
-import {DEVICE_WIDTH} from 'src/modules/styles';
-import {BlurView} from '@react-native-community/blur';
-import {CustomBlurView} from 'src/components/common/CustomBlurView';
+import {DEVICE_HEIGHT, DEVICE_WIDTH} from 'src/modules/styles';
 import {createdAtText} from 'src/modules/timeUtils';
 import {useGotoChatRoomFromList} from 'src/hooks/useGoto';
-import {ChatRoomEnterType} from './ChatRoomScreen';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {FlatList} from 'native-base';
+import ListEmptyComponent from 'src/components/common/ListEmptyComponent';
 
 function ChatListScreen() {
   const {data: chatListRes, isLoading: chatListLoad} = useApiSelector(
@@ -43,9 +34,7 @@ function ChatListScreen() {
     token_id: currentNft.token_id,
     contract_address: currentNft.contract_address,
   };
-  const [chatRooms, setChatRooms] = useState(
-    chatListRes ? chatListRes.chat_rooms : [],
-  );
+  const [chatRooms, setChatRooms] = useState(chatListRes?.chat_rooms || []);
   const [chatSocket, setChatSocket] = useState(null);
   const updateListRef = useRef(null);
 
@@ -89,7 +78,6 @@ function ChatListScreen() {
       };
       wsConnect();
       return () => {
-
         if (channel) {
           channel.disconnect();
           channel.close();
@@ -98,73 +86,38 @@ function ChatListScreen() {
     }, [currentNft]),
   );
 
-  const translationY = useSharedValue(0);
-  const scrollHandler = useAnimatedScrollHandler(event => {
-    translationY.value = event.contentOffset.y;
-  });
   const notchHeight = useSafeAreaInsets().top;
   const headerHeight = notchHeight + 50;
-  const headerStyles = useAnimatedStyle(() => {
-    return {
-      width: DEVICE_WIDTH,
-      height: headerHeight,
-      opacity: Math.min(translationY.value / 50, 1),
-    };
-  });
   return (
     <Div flex={1} bgWhite>
-      <Animated.FlatList
-        automaticallyAdjustContentInsets
-        showsVerticalScrollIndicator={false}
-        onScroll={scrollHandler}
-        ListEmptyComponent={
-          <Div>
-            <Row py15>
-              <Col></Col>
+      <Div h={notchHeight}></Div>
+      <FlatList
+        ListHeaderComponent={
+          <Div
+            bgWhite
+            px15
+            h={50}
+            justifyCenter
+            borderBottom={0.5}
+            borderGray200>
+            <Row itemsCenter py5 h40 p8 zIndex={100}>
+              <Col itemsStart></Col>
               <Col auto>
-                <Span>채팅 기록이 없습니다.</Span>
+                <Span bold fontSize={19}>
+                  채팅
+                </Span>
               </Col>
-              <Col></Col>
+              <Col />
             </Row>
           </Div>
         }
-        ListHeaderComponent={
-          <>
-            <Div h={headerHeight} zIndex={100}>
-              <Animated.View style={headerStyles}>
-                <CustomBlurView
-                  blurType="xlight"
-                  blurAmount={30}
-                  blurRadius={20}
-                  overlayColor=""
-                  style={{
-                    width: DEVICE_WIDTH,
-                    height: '100%',
-                    position: 'absolute',
-                  }}
-                  reducedTransparencyFallbackColor="white"></CustomBlurView>
-              </Animated.View>
-              <Row
-                itemsCenter
-                py5
-                h40
-                p8
-                zIndex={100}
-                absolute
-                w={DEVICE_WIDTH}
-                top={notchHeight + 5}>
-                <Col itemsStart></Col>
-                <Col auto>
-                  <Span bold fontSize={19}>
-                    채팅
-                  </Span>
-                </Col>
-                <Col />
-              </Row>
-            </Div>
-          </>
+        // stickyHeaderIndices={[0]}
+        // @ts-ignore
+        stickyHeaderHiddenOnScroll
+        showsVerticalScrollIndicator={false}
+        ListEmptyComponent={
+          <ListEmptyComponent h={DEVICE_HEIGHT - headerHeight * 2} />
         }
-        stickyHeaderIndices={[0]}
         refreshControl={<RefreshControl refreshing={chatListLoad} />}
         data={chatRooms}
         renderItem={({item, index}) => {
@@ -177,7 +130,7 @@ function ChatListScreen() {
               room={item}
             />
           );
-        }}></Animated.FlatList>
+        }}></FlatList>
     </Div>
   );
 }

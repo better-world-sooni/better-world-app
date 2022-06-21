@@ -1,6 +1,6 @@
 import {useNavigation} from '@react-navigation/native';
 import React, {useCallback, useEffect, useState} from 'react';
-import {ActivityIndicator, Platform, RefreshControl} from 'react-native';
+import {ActivityIndicator, Platform} from 'react-native';
 import {
   Check,
   ChevronLeft,
@@ -13,7 +13,6 @@ import {
 } from 'react-native-feather';
 import Colors from 'src/constants/Colors';
 import {
-  useGotoForumFeed,
   useGotoLikeList,
   useGotoNewPost,
   useGotoNftCollectionProfile,
@@ -55,11 +54,9 @@ import Animated, {
   useAnimatedStyle,
   useSharedValue,
 } from 'react-native-reanimated';
-import {BlurView} from '@react-native-community/blur';
 import {CustomBlurView} from 'src/components/common/CustomBlurView';
 import useScrollToEndRef from 'src/hooks/useScrollToEndRef';
 import {PostOwnerType} from 'src/screens/NewPostScreen';
-import TruncatedText from './TruncatedText';
 import RepostedPost from './RepostedPost';
 import CollectionEvent from './CollectionEvent';
 import {getAdjustedHeightFromDimensions} from 'src/modules/imageUtils';
@@ -320,10 +317,6 @@ export default function FullPost({post, autoFocus = false}) {
     postOwnerType: PostOwnerType.Nft,
   });
 
-  const gotoForumFeed = useGotoForumFeed({
-    postId: post.id,
-  });
-
   const gotoRepostList = useGotoRepostList({
     postId: post.id,
   });
@@ -387,6 +380,7 @@ export default function FullPost({post, autoFocus = false}) {
           contentContainerStyle={{paddingBottom: 100}}
           ref={scrollToEndRef}
           onScroll={scrollHandler}
+          showsVerticalScrollIndicator={false}
           ListHeaderComponent={
             <>
               <Div h={headerHeight}></Div>
@@ -451,7 +445,7 @@ export default function FullPost({post, autoFocus = false}) {
                   <Row>
                     {post.content ? (
                       <Div>
-                        <Span>{post.content}</Span>
+                        <Span fontSize={14}>{post.content}</Span>
                       </Div>
                     ) : null}
                   </Row>
@@ -568,21 +562,7 @@ export default function FullPost({post, autoFocus = false}) {
                           </>
                         )}
                       </>
-                    ) : (
-                      <>
-                        <Col auto mr12>
-                          <Span
-                            fontSize={12}
-                            style={{fontWeight: '600'}}
-                            onPress={() =>
-                              gotoForumFeed(`${getNftName(post.nft)} 포럼`)
-                            }>
-                            제안 <Span realBlack>{post.repost_count}</Span>개
-                          </Span>
-                        </Col>
-                        <Col />
-                      </>
-                    )}
+                    ) : null}
 
                     {post.type == 'Forum'
                       ? isCurrentCollection &&

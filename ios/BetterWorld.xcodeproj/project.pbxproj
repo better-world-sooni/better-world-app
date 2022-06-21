@@ -29,6 +29,7 @@
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		84ED35E67A294CE58D67DD5B /* Uni Sans SemiBold Italic.otf in Resources */ = {isa = PBXBuildFile; fileRef = B21D244718064C408CDD1C9E /* Uni Sans SemiBold Italic.otf */; };
 		8C14521A273912FB009592BD /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8C145219273912FA009592BD /* GoogleService-Info.plist */; };
+		8C914AB92861AC15004DF33D /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C914AB82861AC15004DF33D /* AVFoundation.framework */; };
 		8C916B5126FF182F00AB49D1 /* libswiftWebKit.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C916B5026FF182F00AB49D1 /* libswiftWebKit.tbd */; };
 		913AC4605F064EFF9789DD91 /* Uni Sans Heavy.otf in Resources */ = {isa = PBXBuildFile; fileRef = C5DD4D96F0A54A3A960AE4E8 /* Uni Sans Heavy.otf */; };
 		A45D1B6C7CA477D4B4332FFF /* libPods-BetterWorld-BetterWorldTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FED37267FBF0515C26FCD68C /* libPods-BetterWorld-BetterWorldTests.a */; };
@@ -84,6 +85,7 @@
 		822E0F6174BB00DDAE08A9A8 /* Pods-sungan-sunganTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-sungan-sunganTests.debug.xcconfig"; path = "Target Support Files/Pods-sungan-sunganTests/Pods-sungan-sunganTests.debug.xcconfig"; sourceTree = "<group>"; };
 		8C145219273912FA009592BD /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "sungan/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		8C14521B273919B3009592BD /* sungan.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = sungan.entitlements; path = sungan/sungan.entitlements; sourceTree = "<group>"; };
+		8C914AB82861AC15004DF33D /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		8C916B4D26FF154A00AB49D1 /* libswiftWebKit.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libswiftWebKit.tbd; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk/System/iOSSupport/usr/lib/swift/libswiftWebKit.tbd; sourceTree = DEVELOPER_DIR; };
 		8C916B5026FF182F00AB49D1 /* libswiftWebKit.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libswiftWebKit.tbd; path = usr/lib/swift/libswiftWebKit.tbd; sourceTree = SDKROOT; };
 		95E05BA1A60845B7A8BF1840 /* DroidSerif-BoldItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "DroidSerif-BoldItalic.ttf"; path = "../assets/fonts/DroidSerif-BoldItalic.ttf"; sourceTree = "<group>"; };
@@ -121,6 +123,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8C914AB92861AC15004DF33D /* AVFoundation.framework in Frameworks */,
 				8C916B5126FF182F00AB49D1 /* libswiftWebKit.tbd in Frameworks */,
 				B140A97B9449868912C668DE /* libPods-BetterWorld.a in Frameworks */,
 			);
@@ -179,6 +182,7 @@
 		2D16E6871FA4F8E400B85C8A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				8C914AB82861AC15004DF33D /* AVFoundation.framework */,
 				8C916B4D26FF154A00AB49D1 /* libswiftWebKit.tbd */,
 				8C916B5026FF182F00AB49D1 /* libswiftWebKit.tbd */,
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
@@ -643,7 +647,7 @@
 					"$(inherited)",
 					"$(SDKROOT)/usr/lib/swift",
 				);
-				MARKETING_VERSION = 0.1.0;
+				MARKETING_VERSION = 0.2.0;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -677,7 +681,7 @@
 					"$(inherited)",
 					"$(SDKROOT)/usr/lib/swift",
 				);
-				MARKETING_VERSION = 0.1.0;
+				MARKETING_VERSION = 0.2.0;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",

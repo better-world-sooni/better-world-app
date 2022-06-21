@@ -1,26 +1,21 @@
-import {BlurView} from '@react-native-community/blur';
 import React, {forwardRef} from 'react';
-import {ActivityIndicator, FlatList, RefreshControl, Platform, StatusBar} from 'react-native';
-import Animated, {
-  Extrapolate,
-  interpolate,
-  useAnimatedScrollHandler,
-  useAnimatedStyle,
-  useSharedValue,
-} from 'react-native-reanimated';
-import {HAS_NOTCH} from 'src/modules/constants';
-import {DEVICE_HEIGHT, DEVICE_WIDTH} from 'src/modules/styles';
+import {ActivityIndicator, FlatList, RefreshControl} from 'react-native';
+import {DEVICE_HEIGHT} from 'src/modules/styles';
 import {Div} from './common/Div';
-import {Row} from './common/Row';
 import {Span} from './common/Span';
-import {CustomBlurView} from 'src/components/common/CustomBlurView';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import {Plus} from 'react-native-feather';
+import {Plus, Zap} from 'react-native-feather';
 import {useGotoNewPost} from 'src/hooks/useGoto';
-import {PostOwnerType} from 'src/screens/NewPostScreen';
+import {PostOwnerType, PostType} from 'src/screens/NewPostScreen';
 import ListEmptyComponent from './common/ListEmptyComponent';
+import Colors from 'src/constants/Colors';
+import {Img} from './common/Img';
+import {ICONS} from 'src/modules/icons';
 
-const ReanimatedFlatList = Animated.createAnimatedComponent(FlatList);
+export enum EnableAddType {
+  Post = 'post',
+  Proposal = 'proposal',
+}
 
 function FeedFlatlist(
   {
@@ -33,80 +28,16 @@ function FeedFlatlist(
     data,
     TopComponent,
     HeaderComponent = null,
+    enableAddType = EnableAddType.Post,
     enableAdd = false,
   },
   ref,
 ) {
   const gotoNewPost = useGotoNewPost({postOwnerType: PostOwnerType.Nft});
+  const gotoNewProposal = () =>
+    gotoNewPost(null, null, null, PostType.Proposal);
   const notchHeight = useSafeAreaInsets().top;
   const headerHeight = notchHeight + 50;
-  const translationY = useSharedValue(0);
-  const scrollClamp = useSharedValue(0);
-  const clamp = (value, lowerBound, upperBound) => {
-    'worklet';
-    return Math.min(Math.max(lowerBound, value), upperBound);
-  };
-  const scrollHandler = useAnimatedScrollHandler({
-    onScroll: (event, ctx) => {
-      translationY.value = event.contentOffset.y;
-      // @ts-ignore
-      const diff = 2 * (event.contentOffset.y - ctx.prevY);
-      scrollClamp.value = clamp(scrollClamp.value + diff, 0, headerHeight);
-    },
-    onBeginDrag: (event, ctx) => {
-      // @ts-ignore
-      ctx.prevY = event.contentOffset.y;
-    },
-  });
-  const notchStyles = useAnimatedStyle(() => {
-    const translateY = interpolate(
-      translationY.value > 200 ? scrollClamp.value : 0,
-      [0, headerHeight],
-      [-headerHeight, 0],
-      Extrapolate.CLAMP,
-    );
-    return {
-      width: DEVICE_WIDTH,
-      height: notchHeight,
-      zIndex: 200,
-      position: 'absolute',
-      top: 0,
-      backgroundColor: 'white',
-      transform: [
-        {
-          translateY: translateY,
-        },
-      ],
-    };
-  });
-  const headerStyles = useAnimatedStyle(() => {
-    return {
-      width: DEVICE_WIDTH,
-      top: 0,
-      height: headerHeight,
-      opacity: 1,
-      backgroundColor: 'white',
-    };
-  });
-  const topBarStyles = useAnimatedStyle(() => {
-    const translateY = interpolate(
-      translationY.value > 200 ? scrollClamp.value : 0,
-      [0, headerHeight],
-      [0, -headerHeight],
-      Extrapolate.CLAMP,
-    );
-    return {
-      top: 0,
-      height: headerHeight,
-      zIndex: 100,
-      position: 'absolute',
-      transform: [
-        {
-          translateY,
-        },
-      ],
-    };
-  });
   return (
     <Div flex={1} bgWhite relative>
       <Div h={notchHeight}></Div>
@@ -115,11 +46,7 @@ function FeedFlatlist(
         showsVerticalScrollIndicator={false}
         keyExtractor={item => (item as any).id}
         refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={onRefresh}
-            // progressViewOffset={headerHeight}
-          />
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
         ListFooterComponent={
           <>
@@ -157,29 +84,54 @@ function FeedFlatlist(
         data={data}
         onEndReached={onEndReached}
         renderItem={renderItem}></FlatList>
-      {enableAdd && (
-        <Div
-          rounded100
-          bgInfo
-          absolute
-          w54
-          h54
-          p12
-          bottom15
-          right15
-          onPress={() => gotoNewPost()}
-          style={{
-            shadowOffset: {
-              width: 0,
-              height: 2,
-            },
-            shadowOpacity: 0.25,
-            shadowRadius: 4,
-            elevation: 4,
-          }}>
-          <Plus strokeWidth={1.7} color={'white'} height={30} width={30}></Plus>
-        </Div>
-      )}
+      {enableAdd &&
+        (enableAddType == EnableAddType.Post ? (
+          <Div
+            rounded100
+            bgPrimary
+            absolute
+            w54
+            h54
+            p12
+            bottom15
+            right15
+            onPress={() => gotoNewPost()}
+            style={{
+              shadowOffset: {
+                width: 0,
+                height: 2,
+              },
+              shadowOpacity: 0.25,
+              shadowRadius: 4,
+              elevation: 4,
+            }}>
+            <Plus strokeWidth={2} color={'white'} height={30} width={30}></Plus>
+          </Div>
+        ) : (
+          <Div
+            rounded100
+            bgWhite
+            absolute
+            w54
+            h54
+            p12
+            bottom15
+            right15
+            itemsCenter
+            justifyCenter
+            onPress={gotoNewProposal}
+            style={{
+              shadowOffset: {
+                width: 0,
+                height: 2,
+              },
+              shadowOpacity: 0.25,
+              shadowRadius: 4,
+              elevation: 4,
+            }}>
+            <Img source={ICONS.lightBulb} h22 w22 />
+          </Div>
+        ))}
     </Div>
   );
 }

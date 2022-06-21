@@ -1,6 +1,6 @@
 import React, {useRef} from 'react';
 import {Row} from 'src/components/common/Row';
-import {ChevronDown, Zap} from 'react-native-feather';
+import {Bell, ChevronDown, Zap} from 'react-native-feather';
 import apis from 'src/modules/apis';
 import {
   useApiSelector,
@@ -10,10 +10,10 @@ import {
 import Post from 'src/components/common/Post';
 import {Img} from 'src/components/common/Img';
 import {DEVICE_WIDTH} from 'src/modules/styles';
-import {useGotoNewPost} from 'src/hooks/useGoto';
+import {useGotoNewPost, useGotoNotification} from 'src/hooks/useGoto';
 import SideMenu from 'react-native-side-menu-updated';
 import MyNftCollectionMenu from '../../components/common/MyNftCollectionMenu';
-import FeedFlatlist from 'src/components/FeedFlatlist';
+import FeedFlatlist, {EnableAddType} from 'src/components/FeedFlatlist';
 import {Platform, StatusBar} from 'react-native';
 import {useScrollToTop} from '@react-navigation/native';
 import {Span} from 'src/components/common/Span';
@@ -47,6 +47,7 @@ export default function HomeScreen() {
   });
   const reloadGETWithToken = useReloadGETWithToken();
   const paginateGetWithToken = usePaginateGETWithToken();
+  const gotoNotifications = useGotoNotification();
   const handleRefresh = () => {
     if (feedLoading) return;
     reloadGETWithToken(apis.feed.forum(feedRes?.filter));
@@ -139,6 +140,8 @@ export default function HomeScreen() {
         onRefresh={handleRefresh}
         isPaginating={feedPaginating}
         onEndReached={handleEndReached}
+        enableAdd
+        enableAddType={EnableAddType.Proposal}
         isNotPaginatable={isNotPaginatable}
         renderItem={({item, index}) => {
           return <Post key={(item as any).id} post={item} />;
@@ -179,25 +182,10 @@ export default function HomeScreen() {
                 </Row>
               </MenuView>
             </Col>
-            <Col
-              itemsEnd
-              rounded100
-              onPress={() => gotoNewPost(null, null, null, PostType.Proposal)}>
-              <Row itemsCenter>
-                <Col auto>
-                  <Span bold fontSize={10}>
-                    제안하기
-                  </Span>
-                </Col>
-                <Col auto>
-                  <Zap
-                    width={22}
-                    height={22}
-                    strokeWidth={2}
-                    fill={Colors.warning.DEFAULT}
-                    color={'black'}></Zap>
-                </Col>
-              </Row>
+            <Col itemsEnd>
+              <Div onPress={() => gotoNotifications()}>
+                <Bell strokeWidth={2} color={'black'} height={22} width={22} />
+              </Div>
             </Col>
           </Row>
         }

@@ -49,7 +49,7 @@ export default function PolymorphicOwner({
   };
 
   return (
-    <Row itemsCenter h70 onPress={handlePressRow} px15 relative>
+    <Row itemsCenter h64 onPress={handlePressRow} px15 relative>
       <Img w50 h50 rounded100 uri={getNftProfileImage(nft, 150, 150)} />
       <Col mx15>
         <Div>
@@ -93,7 +93,7 @@ export default function PolymorphicOwner({
           p8
           rounded100
           border1={following}
-          borderRealBlack
+          borderGray200
           onPress={handlePressFollowing}>
           <Span white={!following} bold px5 fontSize={14}>
             {!nft ? '불러오는 중' : following ? '팔로잉' : '팔로우'}

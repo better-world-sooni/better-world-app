@@ -32,7 +32,7 @@ const NftCollectionScreen = ({
       {isAdmin && (
         <Div
           rounded100
-          bgInfo
+          bgPrimary
           zIndex={200}
           absolute
           w54
@@ -50,7 +50,7 @@ const NftCollectionScreen = ({
             shadowRadius: 4,
             elevation: 4,
           }}>
-          <Plus strokeWidth={1.7} color={'white'} height={30} width={30}></Plus>
+          <Plus strokeWidth={2} color={'white'} height={30} width={30}></Plus>
         </Div>
       )}
     </Div>

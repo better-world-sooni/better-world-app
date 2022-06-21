@@ -28,7 +28,7 @@ const SignInScreen = () => {
         itemsCenter
         justifyEnd
         w={DEVICE_WIDTH}>
-        <Img source={IMAGES.betterWorldBlueLogo} h40 w40></Img>
+        <Img source={IMAGES.bW} h40 w40></Img>
       </Div>
       <Div flex={1} justifyCenter>
         <Div>
@@ -69,7 +69,7 @@ const SignInScreen = () => {
             <Div h48 my15>
               <Row
                 border1
-                borderGray400
+                borderGray200
                 rounded100
                 h48
                 flex={1}

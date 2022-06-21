@@ -1,6 +1,6 @@
 import React, {useRef} from 'react';
 import {Div} from 'src/components/common/Div';
-import {ActivityIndicator, RefreshControl} from 'react-native';
+import {FlatList, RefreshControl} from 'react-native';
 import {Row} from 'src/components/common/Row';
 import {Col} from 'src/components/common/Col';
 import {Search} from 'react-native-feather';
@@ -12,17 +12,11 @@ import {
   useReloadGETWithToken,
 } from 'src/redux/asyncReducer';
 import {TextInput} from 'src/modules/viewComponents';
-import {DEVICE_WIDTH} from 'src/modules/styles';
-import Animated, {
-  useAnimatedScrollHandler,
-  useAnimatedStyle,
-  useSharedValue,
-} from 'react-native-reanimated';
-import {CustomBlurView} from 'src/components/common/CustomBlurView';
+import {DEVICE_HEIGHT} from 'src/modules/styles';
 import useEdittableText from 'src/hooks/useEdittableText';
-import Colors from 'src/constants/Colors';
 import RankedOwner from 'src/components/RankOwner';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import ListEmptyComponent from 'src/components/common/ListEmptyComponent';
 
 const SearchScreen = () => {
   const searchRef = useRef(null);
@@ -53,66 +47,56 @@ const SearchScreen = () => {
       reloadGetWithToken(apis.rank.list(text));
     }
   };
-
-  const translationY = useSharedValue(0);
-  const scrollHandler = useAnimatedScrollHandler(event => {
-    translationY.value = event.contentOffset.y;
-  });
   const notchHeight = useSafeAreaInsets().top;
   const headerHeight = notchHeight + 50;
-  const headerStyles = useAnimatedStyle(() => {
-    return {
-      width: DEVICE_WIDTH,
-      height: headerHeight,
-      opacity: Math.min(translationY.value / 50, 1),
-    };
-  });
   return (
     <Div flex={1} bgWhite>
-      <Div h={headerHeight} zIndex={100}>
-        <Animated.View style={headerStyles}>
-          <CustomBlurView
-            blurType="xlight"
-            blurAmount={30}
-            blurRadius={20}
-            overlayColor=""
-            style={{
-              width: DEVICE_WIDTH,
-              height: '100%',
-              position: 'absolute',
-            }}></CustomBlurView>
-        </Animated.View>
-        <Div zIndex={100} absolute w={DEVICE_WIDTH} top={notchHeight + 5}>
-          <Row itemsCenter py5 h40 px15>
-            <Col mr10>
-              <TextInput
-                innerRef={searchRef}
-                value={text}
-                placeholder="NFT를 찾아보세요"
-                fontSize={16}
-                bgGray200
-                rounded100
-                m0
-                p0
-                px8
-                h32
-                bold
-                onChangeText={handleChangeQuery}
-              />
-            </Col>
-            <Col auto rounded100 onPress={onPressSearch}>
-              <Search strokeWidth={2} color={'black'} height={22} width={22} />
-            </Col>
-          </Row>
-        </Div>
-      </Div>
-      <Animated.FlatList
-        style={{marginTop: -headerHeight}}
-        automaticallyAdjustContentInsets
+      <Div h={notchHeight}></Div>
+      <FlatList
+        ListHeaderComponent={
+          <Div
+            bgWhite
+            px15
+            h={50}
+            justifyCenter
+            borderBottom={0.5}
+            borderGray200>
+            <Row itemsCenter py5 h40>
+              <Col mr10>
+                <TextInput
+                  innerRef={searchRef}
+                  value={text}
+                  placeholder="NFT를 찾아보세요"
+                  fontSize={16}
+                  bgGray200
+                  rounded100
+                  m0
+                  p0
+                  px8
+                  h32
+                  bold
+                  onChangeText={handleChangeQuery}
+                />
+              </Col>
+              <Col auto rounded100 onPress={onPressSearch}>
+                <Search
+                  strokeWidth={2}
+                  color={'black'}
+                  height={22}
+                  width={22}
+                />
+              </Col>
+            </Row>
+          </Div>
+        }
+        ListEmptyComponent={
+          <ListEmptyComponent h={DEVICE_HEIGHT - headerHeight * 2} />
+        }
+        stickyHeaderIndices={[0]}
+        // @ts-ignore
+        stickyHeaderHiddenOnScroll
         showsVerticalScrollIndicator={false}
-        onScroll={scrollHandler}
         onEndReached={handleEndReached}
-        ListHeaderComponent={<Div h={headerHeight}></Div>}
         refreshControl={
           <RefreshControl
             refreshing={rankLoad && !textHasChanged}
@@ -126,7 +110,7 @@ const SearchScreen = () => {
         }
         renderItem={({item, index}) => {
           return <RankedOwner rankItem={item} />;
-        }}></Animated.FlatList>
+        }}></FlatList>
     </Div>
   );
 };

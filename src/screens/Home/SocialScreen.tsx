@@ -20,6 +20,9 @@ import {Div} from 'src/components/common/Div';
 import {Img} from 'src/components/common/Img';
 import {IMAGES} from 'src/modules/images';
 import useFocusReloadWithTimeOut from 'src/hooks/useFocusReloadWithTimeout';
+import SideMenu from 'react-native-side-menu-updated';
+import MyNftCollectionMenu from 'src/components/common/MyNftCollectionMenu';
+import {DEVICE_WIDTH} from 'src/modules/styles';
 
 enum SocialFeedFilter {
   All = 'all',
@@ -38,6 +41,10 @@ export default function SocialScreen() {
   } = useApiSelector(apis.feed.social);
   const {data: nftProfileRes} = useApiSelector(apis.nft._());
   const nft = nftProfileRes?.nft;
+  const {data: nftCollectionRes, isLoading: nftCollectionLoad} = useApiSelector(
+    apis.nft_collection._(),
+  );
+  const nftCollection = nftCollectionRes?.nft_collection;
   const menuOptions = [
     {
       id: SocialFeedFilter.All,
@@ -84,63 +91,86 @@ export default function SocialScreen() {
   const handleRefresh = () => {
     if (feedLoading) return;
     reloadGETWithToken(apis.feed.social(feedRes?.filter));
+    reloadGETWithToken(apis.feed.count());
+    reloadGETWithToken(apis.nft_collection._());
   };
   const handleEndReached = () => {
     if (feedPaginating || isNotPaginatable) return;
     paginateGetWithToken(apis.feed.social(feedRes?.filter, page + 1), 'feed');
   };
 
+  const sideMenuRef = useRef(null);
+  const openSideMenu = () => {
+    sideMenuRef?.current?.openMenu(true);
+  };
   useFocusReloadWithTimeOut({
     reloadUriObject: apis.feed.social(feedRes?.filter),
     cacheTimeoutInSeconds: 120,
     onStart: scrollToTop,
   });
   return (
-    <FeedFlatlist
-      ref={flatlistRef}
-      refreshing={feedLoading}
-      onRefresh={handleRefresh}
-      isPaginating={feedPaginating}
-      onEndReached={handleEndReached}
-      isNotPaginatable={isNotPaginatable}
-      enableAdd
-      renderItem={({item, index}) => {
-        return <Post key={(item as any).id} post={item} />;
-      }}
-      data={feedRes ? feedRes.feed : []}
-      TopComponent={
-        <Row itemsCenter>
-          <Col itemsStart>
-            <Img source={IMAGES.bW} h40 w40 rounded100 p4 bgWhite></Img>
-          </Col>
-          <Col auto>
-            <MenuView onPressAction={handlePressMenu} actions={menuOptions}>
-              <Row itemsCenter>
-                <Col auto>
-                  <Span fontSize={19} bold mx4>
-                    {menuOptions.filter(
-                      menuOption => menuOption.id == feedRes?.filter,
-                    )[0]?.title || '피드를 다시 로드해주세요'}
-                  </Span>
-                </Col>
-                <Col auto>
-                  <ChevronDown
-                    strokeWidth={2}
-                    color={'black'}
-                    height={20}
-                    width={20}
-                  />
-                </Col>
-              </Row>
-            </MenuView>
-          </Col>
-          <Col itemsEnd>
-            <Div onPress={() => gotoNotifications()}>
-              <Bell strokeWidth={2} color={'black'} height={22} width={22} />
-            </Div>
-          </Col>
-        </Row>
-      }
-    />
+    <SideMenu
+      ref={sideMenuRef}
+      toleranceX={0}
+      edgeHitWidth={70}
+      menu={<MyNftCollectionMenu nftCollection={nftCollection} />}
+      bounceBackOnOverdraw={false}
+      openMenuOffset={DEVICE_WIDTH - 65}>
+      <FeedFlatlist
+        ref={flatlistRef}
+        refreshing={feedLoading}
+        onRefresh={handleRefresh}
+        isPaginating={feedPaginating}
+        onEndReached={handleEndReached}
+        isNotPaginatable={isNotPaginatable}
+        enableAdd
+        renderItem={({item, index}) => {
+          return <Post key={(item as any).id} post={item} />;
+        }}
+        data={feedRes ? feedRes.feed : []}
+        TopComponent={
+          <Row itemsCenter>
+            <Col itemsStart rounded100 onPress={openSideMenu}>
+              {nftCollectionRes?.nft_collection ? (
+                <Img
+                  h30
+                  w30
+                  rounded100
+                  bgGray200
+                  uri={nftCollectionRes.nft_collection.image_uri}></Img>
+              ) : (
+                <Div bgGray200 h30 w30 rounded100 />
+              )}
+            </Col>
+            <Col auto>
+              <MenuView onPressAction={handlePressMenu} actions={menuOptions}>
+                <Row itemsCenter>
+                  <Col auto>
+                    <Span fontSize={19} bold mx4>
+                      {menuOptions.filter(
+                        menuOption => menuOption.id == feedRes?.filter,
+                      )[0]?.title || '피드를 다시 로드해주세요'}
+                    </Span>
+                  </Col>
+                  <Col auto>
+                    <ChevronDown
+                      strokeWidth={2}
+                      color={'black'}
+                      height={20}
+                      width={20}
+                    />
+                  </Col>
+                </Row>
+              </MenuView>
+            </Col>
+            <Col itemsEnd>
+              <Div onPress={() => gotoNotifications()}>
+                <Bell strokeWidth={2} color={'black'} height={22} width={22} />
+              </Div>
+            </Col>
+          </Row>
+        }
+      />
+    </SideMenu>
   );
 }

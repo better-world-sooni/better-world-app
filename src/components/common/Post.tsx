@@ -1,21 +1,17 @@
 import React, {memo, useState} from 'react';
 import {ActivityIndicator, Platform} from 'react-native';
 import {
-  Anchor,
   Check,
   Heart,
   MessageCircle,
   MoreHorizontal,
-  Pocket,
   Repeat,
-  Star,
   ThumbsDown,
   ThumbsUp,
   Zap,
 } from 'react-native-feather';
 import Colors from 'src/constants/Colors';
 import {
-  useGotoForumFeed,
   useGotoLikeList,
   useGotoNewPost,
   useGotoNftCollectionProfile,
@@ -23,7 +19,6 @@ import {
   useGotoPost,
   useGotoReport,
   useGotoRepostList,
-  useGotoTransaction,
   useGotoVoteList,
 } from 'src/hooks/useGoto';
 import useLike, {LikableType} from 'src/hooks/useLike';
@@ -263,10 +258,6 @@ function PostContent({post, selectableFn = null, displayLabel = false}) {
     postOwnerType: PostOwnerType.Nft,
   });
 
-  const gotoForumFeed = useGotoForumFeed({
-    postId: post.id,
-  });
-
   const gotoRepostList = useGotoRepostList({
     postId: post.id,
   });
@@ -472,21 +463,7 @@ function PostContent({post, selectableFn = null, displayLabel = false}) {
                     </>
                   )}
                 </>
-              ) : (
-                <>
-                  <Col auto pr12>
-                    <Span
-                      fontSize={12}
-                      style={{fontWeight: '600'}}
-                      onPress={() =>
-                        gotoForumFeed(`${getNftName(post.nft)} 포럼`)
-                      }>
-                      제안 <Span realBlack>{post.repost_count}</Span>개
-                    </Span>
-                  </Col>
-                  <Col />
-                </>
-              )}
+              ) : null}
               {post.type == 'Forum'
                 ? isCurrentCollection &&
                   votable && (

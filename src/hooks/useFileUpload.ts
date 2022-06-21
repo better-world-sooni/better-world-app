@@ -42,7 +42,7 @@ export default function useFileUpload({attachedRecord}){
     const uploadFile = async (file, returnType= FileUploadReturnType.Key) => {
         let blob = null
         if(file.type && file.type.startsWith('video')){
-            if(file.type !== 'video/quicktime'){
+            if(file.type == 'video/quicktime'){
                 const url = await convert(file.uri)
                 file.uri = url
                 file.type = 'video/mp4'
@@ -51,8 +51,11 @@ export default function useFileUpload({attachedRecord}){
             blob = await (await fetch(file.uri)).blob()
             file.fileSize = blob._data.size
         }
+        console.log(file, 'pre-fileChecksum')
         const checksum = await fileChecksum(file);
+        console.log(checksum, 'pre-createPresignedUrl')
         const {data} = await createPresignedUrl(file.fileName, file.type, file.fileSize, checksum, attachedRecord);
+        console.log(data, 'pre-uploadToPresignedUrlRes')
         if(isContentTypeImage(file.type)){
             const uploadImageToPresignedUrlRes = await uploadImageToPresignedUrl(data.presigned_url_object, file.base64);
             if (!uploadImageToPresignedUrlRes) throw new Error();

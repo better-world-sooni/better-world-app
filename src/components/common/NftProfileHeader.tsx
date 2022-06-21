@@ -101,7 +101,7 @@ export default function NftProfileHeader({
                   p8
                   rounded100
                   border1={isFollowing}
-                  borderRealBlack
+                  borderGray200
                   onPress={handlePressFollowing}>
                   <Span white={!isFollowing} bold px5 fontSize={14}>
                     {!nft ? '불러오는 중' : isFollowing ? '팔로잉' : '팔로우'}

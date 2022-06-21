@@ -49,7 +49,7 @@ export default function TransactionScreen({
           </Col>
           <Col auto>
             <Span bold fontSize={19}>
-              tx({truncateAddress(transactionHash)})
+              전송내역
             </Span>
           </Col>
           <Col />

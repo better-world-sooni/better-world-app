@@ -247,7 +247,7 @@ const NotificationContent = ({
           p8
           rounded100
           border1={following}
-          borderGray400={following}
+          borderGray200={following}
           onPress={handlePressFollowing}>
           <Span white={!following} bold px5>
             {following ? '팔로잉' : '팔로우'}
