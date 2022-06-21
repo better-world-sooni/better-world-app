@@ -1,4 +1,11 @@
-import {ChevronLeft, Edit, Edit3, Settings} from 'react-native-feather';
+import {
+  ChevronLeft,
+  Edit,
+  Edit3,
+  Feather,
+  Plus,
+  Settings,
+} from 'react-native-feather';
 import React, {useRef} from 'react';
 import {Col} from './Col';
 import {Div} from './Div';
@@ -41,6 +48,8 @@ import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import BottomPopup from 'src/components/common/BottomPopup';
 import NftCollectionProfileEditBottomSheetScrollView from 'src/components/common/NftCollectionProfileEditBottomSheetScrollView';
 import {BottomSheetModal} from '@gorhom/bottom-sheet';
+import Colors from 'src/constants/Colors';
+import {ICONS} from 'src/modules/icons';
 
 export default function NftCollectionProfile({
   nftCollectionCore,
@@ -242,10 +251,14 @@ export default function NftCollectionProfile({
                         p8
                         rounded100
                         border1={isFollowing}
-                        borderGray400={isFollowing}
+                        borderRealBlack
                         onPress={handlePressFollowing}>
-                        <Span white={!isFollowing} bold mt2 px5>
-                          {isFollowing ? '언팔로우' : '팔로우'}
+                        <Span white={!isFollowing} bold px5 fontSize={14}>
+                          {!nftCollection
+                            ? '불러오는 중'
+                            : isFollowing
+                            ? '팔로잉'
+                            : '팔로우'}
                         </Span>
                       </Col>
                     </Row>
@@ -255,31 +268,15 @@ export default function NftCollectionProfile({
                     <Div>
                       <Row py10>
                         <Col />
-                        <Col
-                          auto
-                          bgRealBlack
-                          p8
-                          rounded100
-                          mr8
-                          onPress={editProfile}>
+                        <Col auto mx8 onPress={editProfile}>
                           <Div>
                             <Settings
                               strokeWidth={2}
-                              color={'white'}
-                              height={15}
-                              width={15}
+                              color={'black'}
+                              height={22}
+                              width={22}
                             />
                           </Div>
-                        </Col>
-                        <Col
-                          auto
-                          bgRealBlack
-                          p8
-                          rounded100
-                          onPress={() => gotoNewPost(null)}>
-                          <Span white bold mt1 px5 fontSize={12}>
-                            게시물 작성
-                          </Span>
                         </Col>
                       </Row>
                     </Div>
@@ -290,7 +287,8 @@ export default function NftCollectionProfile({
             <Div px15 bgWhite borderBottom={0.5} borderGray200 pb8>
               <Div>
                 <Span fontSize={20} bold>
-                  {(nftCollection || nftCollectionCore).name}
+                  {(nftCollection || nftCollectionCore).name}{' '}
+                  <Img source={ICONS.sealCheck} h18 w18></Img>
                 </Span>
               </Div>
               {nftCollection && (
@@ -349,7 +347,7 @@ export default function NftCollectionProfile({
             </Div>
           </>
         }
-        renderItem={({item}) => <Post post={item} />}
+        renderItem={({item}) => <Post post={item} displayLabel />}
         ListFooterComponent={
           <>
             {(nftCollectionPostListPaginating ||

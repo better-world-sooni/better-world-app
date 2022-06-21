@@ -15,6 +15,7 @@ const TruncatedText: TruncatedTextType = function ({
   onPressTruncated = null,
   spanProps = {},
 }) {
+  if (!text) return null;
   const lines = text.split('\n');
   let lineLength = 0;
   const resultLines = [];

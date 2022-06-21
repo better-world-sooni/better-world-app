@@ -32,7 +32,7 @@ export default function Comment({
       nftName={comment.nft.name}
       nftMetadatumName={comment.nft.nft_metadatum.name}
       hot={hot}
-      nftImageUri={getNftProfileImage(comment.nft, 50, 50)}
+      nftImageUri={getNftProfileImage(comment.nft, 100, 100)}
       nested={nested}
       onPressReplyTo={onPressReplyTo}
     />
@@ -64,7 +64,7 @@ function CommentContent({
     id,
   );
   const cachedComments = comments || [];
-  const profileImageSize = nested ? 25 : 30;
+  const profileImageSize = nested ? 25 : 36;
   const heartSize = hot ? 15 : 15;
   const heartProps = liked
     ? {
@@ -72,9 +72,9 @@ function CommentContent({
         width: heartSize,
         height: heartSize,
         color: Colors.danger.DEFAULT,
-        strokeWidth: 1.5,
+        strokeWidth: 2,
       }
-    : {width: heartSize, height: heartSize, color: 'black', strokeWidth: 1.5};
+    : {width: heartSize, height: heartSize, color: 'black', strokeWidth: 2};
   const handlePressReplyTo = () => {
     onPressReplyTo({
       id,
@@ -104,9 +104,9 @@ function CommentContent({
     likableType: LikeListType.Comment,
   });
   return (
-    <Div py3={!nested}>
+    <Div py2={!nested}>
       <Row py6 mr15 ml16 pl16 rounded10 borderGray200>
-        <Col auto mr10 onPress={() => goToProfile()}>
+        <Col auto mr8 onPress={() => goToProfile()}>
           <Img
             rounded={100}
             h={profileImageSize}
@@ -124,7 +124,7 @@ function CommentContent({
                 <Span fontSize={14}>{content}</Span>
               </Span>
             </Col>
-            <Col auto onPress={handlePressLike} mt4={hot}>
+            <Col auto onPress={handlePressLike} mt4>
               <Heart {...heartProps}></Heart>
             </Col>
           </Row>

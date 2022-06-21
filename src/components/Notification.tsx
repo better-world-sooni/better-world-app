@@ -250,7 +250,7 @@ const NotificationContent = ({
           borderGray400={following}
           onPress={handlePressFollowing}>
           <Span white={!following} bold px5>
-            {following ? '언팔로우' : '팔로우'}
+            {following ? '팔로잉' : '팔로우'}
           </Span>
         </Col>
       )}

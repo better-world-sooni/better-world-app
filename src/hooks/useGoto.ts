@@ -6,6 +6,7 @@ import { useApiGETWithToken, useApiPOSTWithToken, useApiGET, useReloadGETWithTok
 import { RootState } from "src/redux/rootReducer";
 import { ChatRoomEnterType } from "src/screens/ChatRoomScreen";
 import { FollowOwnerType, FollowType } from "src/screens/FollowListScreen";
+import { ForumFeedFilter } from "src/screens/Home/HomeScreen";
 import { PostType } from "src/screens/NewPostScreen";
 
 export function useGotoNftProfile({nft}){
@@ -170,8 +171,8 @@ export function useGotoCollectionFeedTagSelect(){
   const navigation = useNavigation()
   const apiGETWithToken = useApiGETWithToken()
   const gotoCollectionFeedTagSelect = (primaryKey, foreignKeyName) => {
-    apiGETWithToken(apis.feed.collection(currentNft.contract_address, 'all', ))
-    navigation.navigate(NAV_NAMES.CollectionFeedTagSelect as never, {contractAddress: currentNft.contract_address, primaryKey, foreignKeyName} as never);
+    apiGETWithToken(apis.feed.forum(ForumFeedFilter.Resolved))
+    navigation.navigate(NAV_NAMES.CollectionFeedTagSelect as never, {primaryKey, foreignKeyName} as never);
   }
   return gotoCollectionFeedTagSelect
 }

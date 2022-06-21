@@ -1,11 +1,14 @@
 import React from 'react';
 import {
   Edit3,
+  Feather,
   Grid,
   Maximize,
   MessageCircle,
+  Send,
   Settings,
 } from 'react-native-feather';
+import Colors from 'src/constants/Colors';
 import useFollow from 'src/hooks/useFollow';
 import {
   useGotoFollowList,
@@ -20,7 +23,6 @@ import {handlePressContribution} from 'src/modules/bottomPopupUtils';
 import {getNftName, getNftProfileImage} from 'src/modules/nftUtils';
 import {DEVICE_WIDTH} from 'src/modules/styles';
 import {FollowOwnerType, FollowType} from 'src/screens/FollowListScreen';
-import {PostOwnerType} from 'src/screens/NewPostScreen';
 import {ScanType} from 'src/screens/ScanScreen';
 import {Col} from './Col';
 import {Div} from './Div';
@@ -55,7 +57,6 @@ export default function NftProfileHeader({
   });
   const gotoQr = useGotoQR();
   const gotoScan = useGotoScan({scanType: ScanType.Nft});
-  const gotoNewPost = useGotoNewPost({postOwnerType: PostOwnerType.Nft});
   const gotoChatRoom = useGotoChatRoomFromProfile();
   return (
     <>
@@ -70,30 +71,15 @@ export default function NftProfileHeader({
             h75
             w75
             uri={getNftProfileImage(nft || nftCore, 200, 200)}></Img>
-          {isCurrentNft && qrScan && (
-            <Div
-              absolute
-              bottom0
-              right0
-              bgRealBlack
-              rounded100
-              p8
-              onPress={gotoQr}>
-              <Grid strokeWidth={2} color={'white'} height={15} width={15} />
-            </Div>
-          )}
         </Col>
         <Col justifyEnd>
           {!isCurrentNft ? (
             <Div>
-              <Row py8>
+              <Row py8 itemsCenter>
                 <Col />
                 <Col
                   auto
-                  bgRealBlack
-                  p8
-                  rounded100
-                  mx8
+                  px16
                   onPress={() =>
                     gotoChatRoom(
                       getNftName(nftCore),
@@ -102,11 +88,11 @@ export default function NftProfileHeader({
                       nftCore.token_id,
                     )
                   }>
-                  <MessageCircle
+                  <Send
                     strokeWidth={2}
-                    color={'white'}
-                    height={15}
-                    width={15}
+                    color={'black'}
+                    height={22}
+                    width={22}
                   />
                 </Col>
                 <Col
@@ -115,10 +101,10 @@ export default function NftProfileHeader({
                   p8
                   rounded100
                   border1={isFollowing}
-                  borderGray400={isFollowing}
+                  borderRealBlack
                   onPress={handlePressFollowing}>
-                  <Span white={!isFollowing} bold mt2 px5 fontSize={12}>
-                    {!nft ? '불러오는 중' : isFollowing ? '언팔로우' : '팔로우'}
+                  <Span white={!isFollowing} bold px5 fontSize={14}>
+                    {!nft ? '불러오는 중' : isFollowing ? '팔로잉' : '팔로우'}
                   </Span>
                 </Col>
               </Row>
@@ -128,36 +114,32 @@ export default function NftProfileHeader({
               <Row py10>
                 <Col />
                 {qrScan && (
-                  <Col auto bgRealBlack p8 rounded100 onPress={gotoScan}>
-                    <Div>
-                      <Maximize
-                        strokeWidth={2}
-                        color={'white'}
-                        height={15}
-                        width={15}
-                      />
-                    </Div>
+                  <Col auto onPress={gotoScan} px8>
+                    <Maximize
+                      strokeWidth={2}
+                      color={'black'}
+                      height={22}
+                      width={22}
+                    />
                   </Col>
                 )}
-                <Col auto bgRealBlack p8 rounded100 onPress={editProfile} mx8>
-                  <Div>
-                    <Settings
+                {isCurrentNft && qrScan && (
+                  <Col auto onPress={gotoQr} px8>
+                    <Grid
                       strokeWidth={2}
-                      color={'white'}
-                      height={15}
-                      width={15}
+                      color={'black'}
+                      height={22}
+                      width={22}
                     />
-                  </Div>
-                </Col>
-                <Col
-                  auto
-                  bgRealBlack
-                  p8
-                  rounded100
-                  onPress={() => gotoNewPost()}>
-                  <Span white bold fontSize={12} px5>
-                    게시물 작성
-                  </Span>
+                  </Col>
+                )}
+                <Col auto onPress={editProfile} px8>
+                  <Settings
+                    strokeWidth={2}
+                    color={'black'}
+                    height={22}
+                    width={22}
+                  />
                 </Col>
               </Row>
             </Div>
@@ -172,7 +154,9 @@ export default function NftProfileHeader({
         </Div>
         {nft && (
           <Div pt3 onPress={gotoNftCollectionProfile}>
-            <Span gray700>{nftCore.nft_metadatum.name}</Span>
+            <Span gray700 bold>
+              {nftCore.nft_metadatum.name}
+            </Span>
           </Div>
         )}
         {nftCore.story ? (

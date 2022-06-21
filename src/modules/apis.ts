@@ -4,6 +4,7 @@ import {isEmpty, omitBy, isNil} from 'lodash'
 
 // const BASE_URL = 'http://3.39.22.255:3000';
 const BASE_URL = 'http://localhost:3000';
+// const BASE_URL = 'http://192.168.31.148:3000';
 // const BASE_URL = 'https://api.betterworldapp.io';
 const toUrl = (...args) => ({url: urljoin(...args)});
 const base = path => toUrl(BASE_URL, path);
@@ -156,8 +157,8 @@ const apis = {
   feed: {
     _: (page?) => apiV1(`/feed${urlParams({page})}`),
     count: () => apiV1(`/feed/count`),
-    forum: (page?) => apiV1(`/feed/forum${urlParams({page})}`),
-    social: (page?) => apiV1(`/feed/social${urlParams({page})}`),
+    forum: (filter?, page?) => apiV1(`/feed/forum${urlParams({page, filter})}`),
+    social: (filter?,page?) => apiV1(`/feed/social${urlParams({page, filter})}`),
     collection: (contractAddress, type?, page?) => apiV1(`/feed/collection?contract_address${urlParams({contract_address: contractAddress, type, page})}`),
   },
   presignedUrl: {

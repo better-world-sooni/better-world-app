@@ -1,8 +1,10 @@
-import React, {useState} from 'react';
+import React, {useRef, useState} from 'react';
 import Carousel, {Pagination} from 'react-native-snap-carousel';
 import Colors from 'src/constants/Colors';
 import {Div} from './Div';
 import {Img} from './Img';
+import Video from 'react-native-video';
+import {lookup} from 'react-native-mime-types';
 
 export default function ImageSlideShow({
   imageUris,
@@ -25,9 +27,23 @@ export default function ImageSlideShow({
           data={imageUris}
           itemWidth={sliderWidth}
           sliderWidth={sliderWidth}
-          renderItem={({item}) => (
-            <ImageItem url={item} width={sliderWidth} height={sliderHeight} />
-          )}
+          renderItem={({item}) => {
+            if (
+              typeof lookup(item) == 'string' &&
+              lookup(item).startsWith('video')
+            ) {
+              return (
+                <VideoItem
+                  url={item}
+                  width={sliderWidth}
+                  height={sliderHeight}
+                />
+              );
+            }
+            return (
+              <ImageItem url={item} width={sliderWidth} height={sliderHeight} />
+            );
+          }}
           onSnapToItem={index => setCurrentPage(index)}
         />
       </Div>
@@ -61,6 +77,24 @@ function ImageItem({url, width, height}) {
   return (
     <Div>
       <Img w={width} h={height} uri={url}></Img>
+    </Div>
+  );
+}
+
+function VideoItem({url, width, height}) {
+  const ref = useRef(null);
+  const handlePress = () => {
+    ref?.current?.presentFullscreenPlayer();
+  };
+  return (
+    <Div onPress={handlePress}>
+      <Video
+        ref={ref}
+        source={{uri: url}}
+        style={{width, height}}
+        muted
+        repeat
+      />
     </Div>
   );
 }

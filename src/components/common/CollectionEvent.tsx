@@ -64,7 +64,7 @@ export default function CollectionEvent({
     },
     {
       id: CollectionEventActionTypes.Tag,
-      title: '커뮤니티 게시물에 참조',
+      title: '완료된 제안에 참조',
       image: Platform.select({
         ios: 'tag',
         android: 'ic_input_get',

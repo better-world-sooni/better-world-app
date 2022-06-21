@@ -1,6 +1,6 @@
 import React, {useRef} from 'react';
 import {Row} from 'src/components/common/Row';
-import {Send} from 'react-native-feather';
+import {ChevronDown, Zap} from 'react-native-feather';
 import apis from 'src/modules/apis';
 import {
   useApiSelector,
@@ -10,17 +10,25 @@ import {
 import Post from 'src/components/common/Post';
 import {Img} from 'src/components/common/Img';
 import {DEVICE_WIDTH} from 'src/modules/styles';
-import {useGotoChatList} from 'src/hooks/useGoto';
-import {IMAGES} from 'src/modules/images';
+import {useGotoNewPost} from 'src/hooks/useGoto';
 import SideMenu from 'react-native-side-menu-updated';
 import MyNftCollectionMenu from '../../components/common/MyNftCollectionMenu';
 import FeedFlatlist from 'src/components/FeedFlatlist';
-import {StatusBar} from 'react-native';
+import {Platform, StatusBar} from 'react-native';
 import {useScrollToTop} from '@react-navigation/native';
 import {Span} from 'src/components/common/Span';
 import {Col} from 'src/components/common/Col';
-import CommunityWalletSlideShow from 'src/components/common/CommunityWalletSlideShow';
 import {Div} from 'src/components/common/Div';
+import Colors from 'src/constants/Colors';
+import {MenuView} from '@react-native-menu/menu';
+import {PostOwnerType, PostType} from '../NewPostScreen';
+import useFocusReloadWithTimeOut from 'src/hooks/useFocusReloadWithTimeout';
+
+export enum ForumFeedFilter {
+  All = 'all',
+  Following = 'following',
+  Resolved = 'resolved',
+}
 
 export default function HomeScreen() {
   const {
@@ -33,24 +41,21 @@ export default function HomeScreen() {
   const {data: nftCollectionRes, isLoading: nftCollectionLoad} = useApiSelector(
     apis.nft_collection._(),
   );
-  const {data: communityWalletsRes, isLoading: communityWalletLoading} =
-    useApiSelector(apis.nft_collection.communityWallet.list());
-  const communityWallets = communityWalletsRes?.community_wallets || [];
   const nftCollection = nftCollectionRes?.nft_collection;
-  const gotoChatList = useGotoChatList();
+  const gotoNewPost = useGotoNewPost({
+    postOwnerType: PostOwnerType.Nft,
+  });
   const reloadGETWithToken = useReloadGETWithToken();
   const paginateGetWithToken = usePaginateGETWithToken();
   const handleRefresh = () => {
     if (feedLoading) return;
-    reloadGETWithToken(apis.feed.forum());
+    reloadGETWithToken(apis.feed.forum(feedRes?.filter));
     reloadGETWithToken(apis.feed.count());
-    reloadGETWithToken(apis.nft_collection.communityWallet.list());
-    reloadGETWithToken(apis.nft_collection.collectionEvent.list());
     reloadGETWithToken(apis.nft_collection._());
   };
   const handleEndReached = () => {
     if (feedPaginating || isNotPaginatable) return;
-    paginateGetWithToken(apis.feed.forum(page + 1), 'feed');
+    paginateGetWithToken(apis.feed.forum(feedRes?.filter, page + 1), 'feed');
   };
   const sideMenuRef = useRef(null);
   const openSideMenu = () => {
@@ -58,6 +63,67 @@ export default function HomeScreen() {
   };
   const flatlistRef = useRef(null);
   useScrollToTop(flatlistRef);
+  const menuOptions = [
+    {
+      id: ForumFeedFilter.All,
+      title: '모든 제안',
+      titleColor: '#46F289',
+      image: Platform.select({
+        ios: 'globe.asia.australia',
+        android: 'ic_menu_mapmode',
+      }),
+    },
+    {
+      id: ForumFeedFilter.Following,
+      title: '팔로잉 제안',
+      titleColor: '#46F289',
+      image: Platform.select({
+        ios: 'star',
+        android: 'star_big_on',
+      }),
+    },
+    {
+      id: ForumFeedFilter.Resolved,
+      title: '완료된 제안',
+      titleColor: '#46F289',
+      image: Platform.select({
+        ios: 'checkmark.circle',
+        android: 'checkbox_on_background',
+      }),
+    },
+  ];
+  const scrollToTop = () => {
+    flatlistRef?.current
+      ?.getScrollResponder()
+      ?.scrollTo({x: 0, y: 0, animated: true});
+  };
+  const handlePressMenu = ({nativeEvent: {event}}) => {
+    scrollToTop();
+    if (
+      event == ForumFeedFilter.All &&
+      feedRes?.filter !== ForumFeedFilter.All
+    ) {
+      reloadGETWithToken(apis.feed.forum(ForumFeedFilter.All));
+    }
+    if (
+      event == ForumFeedFilter.Following &&
+      feedRes?.filter !== ForumFeedFilter.Following
+    ) {
+      reloadGETWithToken(apis.feed.forum(ForumFeedFilter.Following));
+    }
+    if (
+      event == ForumFeedFilter.Resolved &&
+      feedRes?.filter !== ForumFeedFilter.Resolved
+    ) {
+      reloadGETWithToken(apis.feed.forum(ForumFeedFilter.Resolved));
+    }
+  };
+  useFocusReloadWithTimeOut({
+    reloadUriObject: apis.feed.forum(feedRes?.filter),
+    cacheTimeoutInSeconds: 120,
+    onStart: scrollToTop,
+  });
+
   return (
     <SideMenu
       ref={sideMenuRef}
@@ -93,24 +159,47 @@ export default function HomeScreen() {
               )}
             </Col>
             <Col auto itemsCenter>
-              {nftCollectionRes?.nft_collection?.name ? (
-                <Span bold fontSize={19}>
-                  {nftCollectionRes.nft_collection.name}
-                </Span>
-              ) : (
-                <Img h40 w40 source={IMAGES.betterWorldBlueLogo} legacy />
-              )}
+              <MenuView onPressAction={handlePressMenu} actions={menuOptions}>
+                <Row itemsCenter>
+                  <Col auto mx4>
+                    <Span fontSize={19} bold>
+                      {menuOptions.filter(
+                        menuOption => menuOption.id == feedRes?.filter,
+                      )[0]?.title || '피드를 다시 로드해주세요'}
+                    </Span>
+                  </Col>
+                  <Col auto>
+                    <ChevronDown
+                      strokeWidth={2}
+                      color={'black'}
+                      height={20}
+                      width={20}
+                    />
+                  </Col>
+                </Row>
+              </MenuView>
             </Col>
-            <Col itemsEnd rounded100 onPress={gotoChatList}>
-              <Send strokeWidth={1.7} color={'black'} height={24} width={24} />
+            <Col
+              itemsEnd
+              rounded100
+              onPress={() => gotoNewPost(null, null, null, PostType.Proposal)}>
+              <Row itemsCenter>
+                <Col auto>
+                  <Span bold fontSize={10}>
+                    제안하기
+                  </Span>
+                </Col>
+                <Col auto>
+                  <Zap
+                    width={22}
+                    height={22}
+                    strokeWidth={2}
+                    fill={Colors.warning.DEFAULT}
+                    color={'black'}></Zap>
+                </Col>
+              </Row>
             </Col>
           </Row>
-        }
-        HeaderComponent={
-          <CommunityWalletSlideShow
-            communityWallets={communityWallets}
-            sliderWidth={DEVICE_WIDTH}
-          />
         }
       />
     </SideMenu>

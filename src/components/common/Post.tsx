@@ -58,6 +58,7 @@ import RepostedPost from './RepostedPost';
 import CollectionEvent from './CollectionEvent';
 import {getAdjustedHeightFromDimensions} from 'src/modules/imageUtils';
 import RepostedTransaction from './RepostedTransaction';
+import {ICONS} from 'src/modules/icons';
 
 export enum PostEventTypes {
   Delete = 'DELETE',
@@ -66,7 +67,7 @@ export enum PostEventTypes {
   SetWinningProposal = 'SET_WINNING_PROPOSAL',
 }
 
-function PostContent({post, selectableFn = null}) {
+function PostContent({post, selectableFn = null, displayLabel = false}) {
   const [deleted, setDeleted] = useState(false);
 
   const [loading, setLoading] = useState(false);
@@ -154,7 +155,7 @@ function PostContent({post, selectableFn = null}) {
     width: 18,
     height: 18,
     color: Colors.gray[700],
-    strokeWidth: 1.7,
+    strokeWidth: 2,
   };
   const heartProps = liked
     ? {
@@ -162,7 +163,7 @@ function PostContent({post, selectableFn = null}) {
         width: 18,
         height: 18,
         color: Colors.danger.DEFAULT,
-        strokeWidth: 1.7,
+        strokeWidth: 2,
       }
     : actionIconDefaultProps;
 
@@ -172,7 +173,7 @@ function PostContent({post, selectableFn = null}) {
         width: 18,
         height: 18,
         color: Colors.info.DEFAULT,
-        strokeWidth: 1.7,
+        strokeWidth: 2,
       }
     : actionIconDefaultProps;
   const againstVoteProps = hasVotedAgainst
@@ -181,7 +182,7 @@ function PostContent({post, selectableFn = null}) {
         width: 18,
         height: 18,
         color: Colors.danger.DEFAULT,
-        strokeWidth: 1.7,
+        strokeWidth: 2,
       }
     : actionIconDefaultProps;
   const gotoPost = useGotoPost({postId: post.id});
@@ -246,7 +247,7 @@ function PostContent({post, selectableFn = null}) {
     if (event == PostEventTypes.Delete) deletePost();
     if (event == PostEventTypes.Report) gotoReport();
     if (event == PostEventTypes.SetVotingDeadline) setVotingDeadline();
-    if (event == PostEventTypes.SetWinningProposal) setWinningProposal();
+    // if (event == PostEventTypes.SetWinningProposal) setWinningProposal();
   };
 
   const gotoLikeList = useGotoLikeList({
@@ -279,12 +280,10 @@ function PostContent({post, selectableFn = null}) {
       <Div py5 borderBottom={0.5} borderGray200 bgWhite>
         <Row px15 pt5>
           <Col auto mr8>
-            {!selectableFn && (
+            {displayLabel && (
               <Div itemsEnd mb5>
-                {post.type == PostType.Forum ? (
+                {post.type == PostType.Proposal ? (
                   <Zap height={16} width={16} color={Colors.gray[500]} />
-                ) : post.type == PostType.Proposal ? (
-                  <ThumbsUp height={16} width={16} color={Colors.gray[500]} />
                 ) : (
                   <Heart height={16} width={16} color={Colors.gray[500]} />
                 )}
@@ -302,8 +301,8 @@ function PostContent({post, selectableFn = null}) {
             </Div>
           </Col>
           <Col>
-            <Div mt1 mb4>
-              {selectableFn ? (
+            {selectableFn ? (
+              <Div mt1 mb4>
                 <Span
                   bold
                   info
@@ -311,30 +310,33 @@ function PostContent({post, selectableFn = null}) {
                   onPress={() => selectableFn(post.id)}>
                   선택하기
                 </Span>
-              ) : (
-                <Span bold gray700 fontSize={12}>
-                  {post.type == PostType.Forum
-                    ? '홀더 포럼'
-                    : post.type == PostType.Proposal
-                    ? '홀더 투표'
-                    : '게시물'}
-                </Span>
-              )}
-            </Div>
+              </Div>
+            ) : (
+              displayLabel && (
+                <Div mt1 mb4>
+                  <Span bold gray700 fontSize={12}>
+                    {post.type == PostType.Proposal ? '제안' : '게시물'}
+                  </Span>
+                </Div>
+              )
+            )}
             <Row>
               <Col auto>
                 <Span>
-                  <Span fontSize={14} bold onPress={goToProfile}>
-                    {getNftName(post.nft)}
+                  <Span fontSize={15} bold onPress={goToProfile}>
+                    {getNftName(post.nft)}{' '}
                   </Span>
-                  {post.nft.token_id &&
+                  {post.nft.token_id ? (
                     post.nft.nft_metadatum.name != getNftName(post.nft) && (
-                      <Span fontSize={14} gray700 onPress={goToProfile}>
+                      <Span fontSize={12} bold gray700 onPress={goToProfile}>
                         {' '}
                         {post.nft.nft_metadatum.name}
                       </Span>
-                    )}
-                  <Span fontSize={14} gray700>
+                    )
+                  ) : (
+                    <Img source={ICONS.sealCheck} h15 w15></Img>
+                  )}
+                  <Span fontSize={12} gray700>
                     {' · '}
                     {createdAtText(post.updated_at)}
                   </Span>
@@ -343,15 +345,17 @@ function PostContent({post, selectableFn = null}) {
               <Col />
               <Col auto>
                 <MenuView onPressAction={handlePressMenu} actions={menuOptions}>
-                  {loading ? (
-                    <ActivityIndicator />
-                  ) : (
-                    <MoreHorizontal
-                      color={Colors.gray[200]}
-                      width={18}
-                      height={18}
-                    />
-                  )}
+                  <Div>
+                    {loading ? (
+                      <ActivityIndicator />
+                    ) : (
+                      <MoreHorizontal
+                        color={Colors.gray[200]}
+                        width={22}
+                        height={18}
+                      />
+                    )}
+                  </Div>
                 </MenuView>
               </Col>
             </Row>
@@ -509,11 +513,11 @@ function PostContent({post, selectableFn = null}) {
                   )}
               {!votable && (
                 <>
-                  <Col auto rounded100 bgRealBlack p3 bgSuccess mr4>
+                  <Col auto rounded100 p2 bgSuccess mr4>
                     <Check
                       strokeWidth={2}
-                      height={15}
-                      width={15}
+                      height={14}
+                      width={14}
                       color={'white'}
                     />
                   </Col>
@@ -532,7 +536,7 @@ function PostContent({post, selectableFn = null}) {
             </Row>
           </Col>
         </Row>
-        {post.comment && !post.type && (
+        {post.comment && (
           <Div onPress={gotoPost}>
             <Comment hot key={post.comment.id} comment={post.comment}></Comment>
           </Div>

@@ -100,15 +100,8 @@ const SearchScreen = () => {
                 onChangeText={handleChangeQuery}
               />
             </Col>
-            <Col auto bgRealBlack p8 rounded100 onPress={onPressSearch}>
-              <Div>
-                <Search
-                  strokeWidth={2}
-                  color={'white'}
-                  height={15}
-                  width={15}
-                />
-              </Div>
+            <Col auto rounded100 onPress={onPressSearch}>
+              <Search strokeWidth={2} color={'black'} height={22} width={22} />
             </Col>
           </Row>
         </Div>

@@ -11,10 +11,11 @@ import ListFlatlist from 'src/components/ListFlatlist';
 import {X} from 'react-native-feather';
 import {ActivityIndicator} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
+import {ForumFeedFilter} from './Home/HomeScreen';
 
 export default function CollectionFeedTagSelectScreen({
   route: {
-    params: {contractAddress, primaryKey, foreignKeyName},
+    params: {primaryKey, foreignKeyName},
   },
 }) {
   const [loading, setLoading] = useState(false);
@@ -25,13 +26,13 @@ export default function CollectionFeedTagSelectScreen({
     isPaginating: feedPaginating,
     page,
     isNotPaginatable,
-  } = useApiSelector(apis.feed.collection);
+  } = useApiSelector(apis.feed.forum);
   const {goBack} = useNavigation();
   const paginateGetWithToken = usePaginateGETWithToken();
   const handleEndReached = () => {
     if (feedPaginating || isNotPaginatable) return;
     paginateGetWithToken(
-      apis.feed.collection(contractAddress, 'all', page + 1),
+      apis.feed.forum(ForumFeedFilter.Resolved, page + 1),
       'feed',
     );
   };
@@ -39,7 +40,7 @@ export default function CollectionFeedTagSelectScreen({
   const putPromiseFnWithToken = usePutPromiseFnWithToken();
   const onRefresh = () => {
     if (feedLoading) return;
-    reloadGetWithToken(apis.feed.collection(contractAddress, 'all'));
+    reloadGetWithToken(apis.feed.forum(ForumFeedFilter.Resolved));
   };
   const putPrimaryKey = async postId => {
     if (loading) return;

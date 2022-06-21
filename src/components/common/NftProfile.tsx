@@ -107,7 +107,7 @@ export default function NftProfile({
       ],
     };
   });
-  const renderItem = ({item}) => <Post post={item} />;
+  const renderItem = ({item}) => <Post post={item} displayLabel />;
 
   useEffect(() => {
     if(nft?.background_image_uri) {
@@ -116,7 +116,7 @@ export default function NftProfile({
         cache: true,
         key: 'unique_key',
       }).then(colors => {
-        console.log(colors)
+        // console.log(colors)
       })
     }
   },[nft])

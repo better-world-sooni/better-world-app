@@ -8,44 +8,26 @@ import {resizeImageUri} from 'src/modules/uriUtils';
 import {Span} from './Span';
 import {FollowOwnerType, FollowType} from 'src/screens/FollowListScreen';
 import {
-  useGotoAffinity,
-  useGotoCollectionFeed,
   useGotoFollowList,
   useGotoMyCollectionEventList,
   useGotoMyCommunityWalletList,
   useGotoNewCollectionEvent,
   useGotoNewCommunityWallet,
-  useGotoNewPost,
   useGotoNftCollectionProfile,
 } from 'src/hooks/useGoto';
-import {shallowEqual, useSelector} from 'react-redux';
-import {RootState} from 'src/redux/rootReducer';
-import {
-  Calendar,
-  CreditCard,
-  Layers,
-  PieChart,
-  ThumbsUp,
-  Zap,
-} from 'react-native-feather';
+import {Calendar, CreditCard} from 'react-native-feather';
 import {useApiSelector} from 'src/redux/asyncReducer';
 import apis from 'src/modules/apis';
 import {getSiPrefixedNumber} from 'src/modules/numberUtils';
 import {useIsAdmin} from 'src/modules/nftUtils';
 import Colors from 'src/constants/Colors';
-import {PostOwnerType, PostType} from 'src/screens/NewPostScreen';
+import {ICONS} from 'src/modules/icons';
+import {handlePressAffinity} from 'src/modules/bottomPopupUtils';
 
 const MyNftCollectionMenu = ({nftCollection}) => {
-  const {currentNft} = useSelector(
-    (root: RootState) => root.app.session,
-    shallowEqual,
-  );
   const {data: feedCountRes, isLoading: feedCountLoading} = useApiSelector(
     apis.feed.count(),
   );
-  const allPostCount = feedCountRes?.all_post_count;
-  const activeForumCount = feedCountRes?.active_forum_count;
-  const activeProposalCount = feedCountRes?.active_proposal_count;
   const upcomingEventCount = feedCountRes?.upcoming_event_count;
   const communityWalletCount = feedCountRes?.community_wallet_count;
   const textColor = 'black';
@@ -57,19 +39,10 @@ const MyNftCollectionMenu = ({nftCollection}) => {
   const gotoNftCollectionProfile = useGotoNftCollectionProfile({
     nftCollection,
   });
-  const gotoCollectionFeed = useGotoCollectionFeed({
-    contractAddress: currentNft.contract_address,
-  });
   const gotoCommunityWalletList = useGotoMyCommunityWalletList();
   const gotoCollectionEventList = useGotoMyCollectionEventList();
   const gotoNewCollectionEvent = useGotoNewCollectionEvent();
   const gotoNewCommunityWallet = useGotoNewCommunityWallet();
-  const gotoNewPost = useGotoNewPost({
-    postOwnerType: PostOwnerType.NftCollection,
-  });
-  const gotoAffinity = useGotoAffinity({
-    nftCollection,
-  });
   const notchHeight = HAS_NOTCH ? 44 : 0;
   const headerHeight = notchHeight + 18;
   const isAdmin = useIsAdmin();
@@ -93,7 +66,8 @@ const MyNftCollectionMenu = ({nftCollection}) => {
             <Row itemsCenter>
               <Col auto mr10 onPress={gotoNftCollectionProfile}>
                 <Span fontSize={20} bold color={textColor}>
-                  {nftCollection.name}
+                  {nftCollection.name}{' '}
+                  <Img source={ICONS.sealCheck} h18 w18></Img>
                 </Span>
               </Col>
             </Row>
@@ -112,7 +86,7 @@ const MyNftCollectionMenu = ({nftCollection}) => {
               <Col />
             </Row>
             <Row mt10 itemsEnd>
-              <Col auto mr20 onPress={gotoAffinity}>
+              <Col auto mr20 onPress={handlePressAffinity}>
                 <Span bold fontSize={13}>
                   <Span gray700 regular fontSize={13}>
                     멤버 친목도
@@ -135,18 +109,17 @@ const MyNftCollectionMenu = ({nftCollection}) => {
             <Row itemsCenter py16 onPress={gotoCommunityWalletList}>
               <Col auto mr16>
                 <CreditCard
-                  strokeWidth={1.3}
+                  strokeWidth={2}
                   color={'black'}
-                  height={24}
-                  width={24}
+                  height={22}
+                  width={22}
                 />
               </Col>
               <Col>
                 <Span fontSize={16}>커뮤니티 지갑</Span>
               </Col>
-
               <Col auto>
-                <Span gray700 fontSize={14}>
+                <Span gray700 bold fontSize={14}>
                   {getSiPrefixedNumber(communityWalletCount)}개
                 </Span>
               </Col>
@@ -156,10 +129,10 @@ const MyNftCollectionMenu = ({nftCollection}) => {
               <Row itemsCenter py16 onPress={gotoNewCommunityWallet}>
                 <Col auto mr16>
                   <CreditCard
-                    strokeWidth={1.3}
+                    strokeWidth={2}
                     color={Colors.primary.DEFAULT}
-                    height={24}
-                    width={24}
+                    height={22}
+                    width={22}
                   />
                 </Col>
                 <Col>
@@ -170,50 +143,21 @@ const MyNftCollectionMenu = ({nftCollection}) => {
               </Row>
             )
           )}
-          {allPostCount ? (
-            <Row
-              itemsCenter
-              py16
-              onPress={() =>
-                gotoCollectionFeed(`${nftCollection.name} 멤버 피드`)
-              }>
-              <Col auto mr16>
-                <Layers
-                  strokeWidth={1.3}
-                  color={textColor}
-                  height={24}
-                  width={24}
-                />
-              </Col>
-              <Col>
-                <Span fontSize={16} color={textColor}>
-                  모든 멤버들의 게시물
-                </Span>
-              </Col>
-
-              <Col auto>
-                <Span gray700 fontSize={14}>
-                  {getSiPrefixedNumber(allPostCount)}개
-                </Span>
-              </Col>
-            </Row>
-          ) : null}
           {upcomingEventCount ? (
             <Row itemsCenter py16 onPress={gotoCollectionEventList}>
               <Col auto mr16>
                 <Calendar
-                  strokeWidth={1.3}
+                  strokeWidth={2}
                   color={'black'}
-                  height={24}
-                  width={24}
+                  height={22}
+                  width={22}
                 />
               </Col>
               <Col>
                 <Span fontSize={16}>예정된 일정</Span>
               </Col>
-
               <Col auto>
-                <Span gray700 fontSize={14}>
+                <Span gray700 bold fontSize={14}>
                   {getSiPrefixedNumber(upcomingEventCount)}개
                 </Span>
               </Col>
@@ -223,7 +167,7 @@ const MyNftCollectionMenu = ({nftCollection}) => {
               <Row itemsCenter py16 onPress={gotoNewCollectionEvent}>
                 <Col auto mr16>
                   <Calendar
-                    strokeWidth={1.3}
+                    strokeWidth={2}
                     color={Colors.primary.DEFAULT}
                     height={24}
                     width={24}
@@ -232,111 +176,6 @@ const MyNftCollectionMenu = ({nftCollection}) => {
                 <Col>
                   <Span fontSize={16} primary>
                     일정 추가
-                  </Span>
-                </Col>
-              </Row>
-            )
-          )}
-          {activeForumCount ? (
-            <Row
-              itemsCenter
-              py16
-              onPress={() =>
-                gotoCollectionFeed(
-                  `${nftCollection.name} 진행중인 포럼`,
-                  'Forum',
-                )
-              }>
-              <Col auto mr16>
-                <Zap
-                  strokeWidth={1.3}
-                  color={textColor}
-                  height={24}
-                  width={24}
-                />
-              </Col>
-              <Col>
-                <Span fontSize={16} color={textColor}>
-                  진행중인 포럼
-                </Span>
-              </Col>
-              <Col auto>
-                <Span gray700 fontSize={14}>
-                  {getSiPrefixedNumber(activeForumCount)}개
-                </Span>
-              </Col>
-            </Row>
-          ) : (
-            isAdmin && (
-              <Row
-                itemsCenter
-                py16
-                onPress={() => gotoNewPost(null, null, null, PostType.Forum)}>
-                <Col auto mr16>
-                  <PieChart
-                    strokeWidth={1.3}
-                    color={Colors.primary.DEFAULT}
-                    height={24}
-                    width={24}
-                  />
-                </Col>
-                <Col>
-                  <Span fontSize={16} primary>
-                    포럼 추가
-                  </Span>
-                </Col>
-              </Row>
-            )
-          )}
-          {activeProposalCount ? (
-            <Row
-              itemsCenter
-              py16
-              onPress={() =>
-                gotoCollectionFeed(
-                  `${nftCollection.name} 진행중인 투표`,
-                  'Proposal',
-                )
-              }>
-              <Col auto mr16>
-                <ThumbsUp
-                  strokeWidth={1.3}
-                  color={textColor}
-                  height={24}
-                  width={24}
-                />
-              </Col>
-              <Col>
-                <Span fontSize={16} color={textColor}>
-                  진행중인 투표
-                </Span>
-              </Col>
-
-              <Col auto>
-                <Span gray700 fontSize={14}>
-                  {getSiPrefixedNumber(activeProposalCount)}개
-                </Span>
-              </Col>
-            </Row>
-          ) : (
-            isAdmin && (
-              <Row
-                itemsCenter
-                py16
-                onPress={() =>
-                  gotoNewPost(null, null, null, PostType.Proposal)
-                }>
-                <Col auto mr16>
-                  <ThumbsUp
-                    strokeWidth={1.3}
-                    color={Colors.primary.DEFAULT}
-                    height={24}
-                    width={24}
-                  />
-                </Col>
-                <Col>
-                  <Span fontSize={16} primary>
-                    투표 추가
                   </Span>
                 </Col>
               </Row>
