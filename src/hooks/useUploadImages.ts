@@ -9,7 +9,7 @@ export default function useUploadImages({attachedRecord = "post", selectionLimit
     const handleAddImages = async () => {
         try {
           const {assets} = await launchImageLibrary({
-            mediaType: 'photo',
+            mediaType: 'mixed',
             selectionLimit,
             maxHeight: 1600,
             maxWidth: 1600,
@@ -19,8 +19,8 @@ export default function useUploadImages({attachedRecord = "post", selectionLimit
             if (targetFilesLength === 0) {
                 return;
             }
-            if (images.length + targetFilesLength > 8) {
-                setError("이미지는 8개 이상 선택하실 수 없습니다.");
+            if (images.length + targetFilesLength > 4) {
+                setError("미디어는 4개 이상 선택하실 수 없습니다.");
                 return;
             }
             const additionalFiles = [];
@@ -50,7 +50,8 @@ export default function useUploadImages({attachedRecord = "post", selectionLimit
       try {
         const signedIdArray = await Promise.all(images.map((file, index) => uploadFileAtIndex(index)));
         return signedIdArray;
-      } catch {
+      } catch (e){
+        console.log(e)
         setError("이미지 업로드중 문제가 발생하였습니다.");
         setImages(setAllSelectedFileNotLoading);
         return [];

@@ -6,6 +6,7 @@ import {Col} from 'src/components/common/Col';
 import {
   ChevronDown,
   ChevronLeft,
+  ChevronUp,
   Feather,
   Image,
   Upload,
@@ -178,28 +179,24 @@ const NewPostScreen = ({
                   />
                 </Div>
               </Col>
-              <Col auto></Col>
-              <Col itemsEnd>
-                <Div onPress={handlePressUpload}>
-                  <Span info bold fontSize={16}>
-                    {loading ? (
-                      <ActivityIndicator />
-                    ) : currentPostType == '' ? (
-                      <Upload
-                        width={22}
-                        height={22}
-                        strokeWidth={2}
-                        color={'black'}></Upload>
-                    ) : (
-                      <Zap
-                        width={22}
-                        height={22}
-                        strokeWidth={2}
-                        fill={Colors.warning.DEFAULT}
-                        color={'black'}></Zap>
-                    )}
-                  </Span>
-                </Div>
+              <Col></Col>
+              <Col itemsEnd onPress={handlePressUpload}>
+                {loading ? (
+                  <ActivityIndicator />
+                ) : currentPostType == '' ? (
+                  <Upload
+                    width={22}
+                    height={22}
+                    strokeWidth={2}
+                    color={'black'}></Upload>
+                ) : (
+                  <Zap
+                    width={22}
+                    height={22}
+                    strokeWidth={2}
+                    fill={Colors.warning.DEFAULT}
+                    color={'black'}></Zap>
+                )}
               </Col>
             </Row>
           </Div>
@@ -288,32 +285,43 @@ const NewPostScreen = ({
             </Col>
           </Row>
         </Animated.ScrollView>
-        <Row px15 py15 borderTop={0.5} borderGray200>
+        <Row px15 py8>
           <Col />
           <Col auto>
-            <Row itemsCenter onPress={() => setAddImages(prev => !prev)}>
+            <Row
+              itemsCenter
+              onPress={() => setAddImages(prev => !prev)}
+              border={0.5}
+              rounded10
+              borderGray200
+              p9>
               <Col auto mr10>
                 <Image
-                  strokeWidth={1.7}
-                  color={addImages ? Colors.danger.DEFAULT : 'black'}
-                  height={24}
-                  width={24}></Image>
+                  strokeWidth={2}
+                  color={!addImages ? Colors.info.DEFAULT : 'black'}
+                  height={22}
+                  width={22}></Image>
               </Col>
               <Col auto>
-                <Span color={addImages ? Colors.danger.DEFAULT : 'black'}>
-                  이미지 {addImages ? '제거' : '추가'}
+                <Span color={!addImages ? Colors.info.DEFAULT : 'black'} bold>
+                  미디어 {addImages ? '제거' : '추가'}
                 </Span>
               </Col>
             </Row>
           </Col>
           <Col auto ml10>
             <MenuView onPressAction={handlePressMenu} actions={postTypes}>
-              <Row itemsCenter>
+              <Row itemsCenter border={0.5} rounded10 borderGray200 p8>
                 <Col auto mr5>
-                  <ChevronDown color={'black'} height={24} width={24} />
+                  <ChevronUp
+                    color={'black'}
+                    height={24}
+                    width={24}
+                    strokeWidth={2}
+                  />
                 </Col>
                 <Col auto>
-                  <Span>
+                  <Span bold>
                     {postTypes.filter(pt => pt.id == currentPostType)[0].title}
                   </Span>
                 </Col>

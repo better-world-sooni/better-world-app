@@ -22,8 +22,9 @@ import {Div} from 'src/components/common/Div';
 import Colors from 'src/constants/Colors';
 import {MenuView} from '@react-native-menu/menu';
 import {PostOwnerType, PostType} from '../NewPostScreen';
+import useFocusReloadWithTimeOut from 'src/hooks/useFocusReloadWithTimeout';
 
-enum ForumFeedFilter {
+export enum ForumFeedFilter {
   All = 'all',
   Following = 'following',
   Resolved = 'resolved',
@@ -91,32 +92,37 @@ export default function HomeScreen() {
       }),
     },
   ];
-  const handlePressMenu = ({nativeEvent: {event}}) => {
+  const scrollToTop = () => {
     flatlistRef?.current
       ?.getScrollResponder()
       ?.scrollTo({x: 0, y: 0, animated: true});
+  };
+  const handlePressMenu = ({nativeEvent: {event}}) => {
+    scrollToTop();
     if (
       event == ForumFeedFilter.All &&
       feedRes?.filter !== ForumFeedFilter.All
     ) {
-      // flatlistRef?.current?.scrollToTop();
       reloadGETWithToken(apis.feed.forum(ForumFeedFilter.All));
     }
     if (
       event == ForumFeedFilter.Following &&
       feedRes?.filter !== ForumFeedFilter.Following
     ) {
-      // flatlistRef?.current?.scrollToTop();
       reloadGETWithToken(apis.feed.forum(ForumFeedFilter.Following));
     }
     if (
       event == ForumFeedFilter.Resolved &&
       feedRes?.filter !== ForumFeedFilter.Resolved
     ) {
-      // flatlistRef?.current?.scrollToTop();
       reloadGETWithToken(apis.feed.forum(ForumFeedFilter.Resolved));
     }
   };
+  useFocusReloadWithTimeOut({
+    reloadUriObject: apis.feed.forum(feedRes?.filter),
+    cacheTimeoutInSeconds: 120,
+    onStart: scrollToTop,
+  });
 
   return (
     <SideMenu
@@ -155,7 +161,7 @@ export default function HomeScreen() {
             <Col auto itemsCenter>
               <MenuView onPressAction={handlePressMenu} actions={menuOptions}>
                 <Row itemsCenter>
-                  <Col auto>
+                  <Col auto mx4>
                     <Span fontSize={19} bold>
                       {menuOptions.filter(
                         menuOption => menuOption.id == feedRes?.filter,

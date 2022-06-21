@@ -610,11 +610,11 @@ export default function FullPost({post, autoFocus = false}) {
                         )}
                     {!votable && (
                       <>
-                        <Col auto rounded100 bgRealBlack p3 bgSuccess mr4>
+                        <Col auto rounded100 bgRealBlack p2 bgSuccess mr4>
                           <Check
                             strokeWidth={2}
-                            height={15}
-                            width={15}
+                            height={14}
+                            width={14}
                             color={'white'}
                           />
                         </Col>

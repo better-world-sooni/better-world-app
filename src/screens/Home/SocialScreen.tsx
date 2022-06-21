@@ -17,6 +17,9 @@ import {Col} from 'src/components/common/Col';
 import {MenuView} from '@react-native-menu/menu';
 import {PostOwnerType, PostType} from '../NewPostScreen';
 import {Div} from 'src/components/common/Div';
+import {Img} from 'src/components/common/Img';
+import {IMAGES} from 'src/modules/images';
+import useFocusReloadWithTimeOut from 'src/hooks/useFocusReloadWithTimeout';
 
 enum SocialFeedFilter {
   All = 'all',
@@ -58,13 +61,13 @@ export default function SocialScreen() {
   const gotoNotifications = useGotoNotification();
   const reloadGETWithToken = useReloadGETWithToken();
   const paginateGetWithToken = usePaginateGETWithToken();
-  const gotoNewPost = useGotoNewPost({
-    postOwnerType: PostOwnerType.Nft,
-  });
-  const handlePressMenu = ({nativeEvent: {event}}) => {
+  const scrollToTop = () => {
     flatlistRef?.current
       ?.getScrollResponder()
       ?.scrollTo({x: 0, y: 0, animated: true});
+  };
+  const handlePressMenu = ({nativeEvent: {event}}) => {
+    scrollToTop();
     if (
       event == SocialFeedFilter.All &&
       feedRes?.filter !== SocialFeedFilter.All
@@ -86,6 +89,12 @@ export default function SocialScreen() {
     if (feedPaginating || isNotPaginatable) return;
     paginateGetWithToken(apis.feed.social(feedRes?.filter, page + 1), 'feed');
   };
+
+  useFocusReloadWithTimeOut({
+    reloadUriObject: apis.feed.social(feedRes?.filter),
+    cacheTimeoutInSeconds: 120,
+    onStart: scrollToTop,
+  });
   return (
     <FeedFlatlist
       ref={flatlistRef}
@@ -101,11 +110,14 @@ export default function SocialScreen() {
       data={feedRes ? feedRes.feed : []}
       TopComponent={
         <Row itemsCenter>
+          <Col itemsStart>
+            <Img source={IMAGES.bW} h40 w40 rounded100 p4 bgWhite></Img>
+          </Col>
           <Col auto>
             <MenuView onPressAction={handlePressMenu} actions={menuOptions}>
               <Row itemsCenter>
                 <Col auto>
-                  <Span fontSize={19} bold>
+                  <Span fontSize={19} bold mx4>
                     {menuOptions.filter(
                       menuOption => menuOption.id == feedRes?.filter,
                     )[0]?.title || '피드를 다시 로드해주세요'}

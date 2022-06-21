@@ -59,7 +59,7 @@ export default function PolymorphicOwner({
         </Div>
         {getNftName(nft) !== nft.nft_metadatum.name && (
           <Div mt3>
-            <Span gray600 fontSize={12}>
+            <Span gray700 fontSize={12} bold>
               {nft.nft_metadatum.name}
             </Span>
           </Div>

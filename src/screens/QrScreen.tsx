@@ -138,19 +138,19 @@ const QrScreen = () => {
             </Span>
           </Div>
           {getNftName(currentNft) !== currentNft.nft_metadatum.name && (
-            <Div mt10>
-              <Span gray700 fontSize={14}>
+            <Div mt4>
+              <Span gray700 fontSize={16} bold>
                 {currentNft.nft_metadatum.name}
               </Span>
             </Div>
           )}
-          <Div mt10>
-            <Span gray700 fontSize={14}>
+          <Div mt8>
+            <Span gray700 fontSize={12}>
               컨트렉 주소: {truncateAddress(currentNft.contract_address)}
             </Span>
           </Div>
-          <Div mt10>
-            <Span gray700 fontSize={14}>
+          <Div mt4>
+            <Span gray700 fontSize={12}>
               토큰 아이디: {currentNft.token_id}
             </Span>
           </Div>
@@ -170,12 +170,12 @@ const QrScreen = () => {
                   : `잔여 ${ttl.minutes}분 ${ttl.seconds}초`}
               </Span>
             </Col>
-            <Col auto p8 rounded100 bgBlack onPress={handleRefresh}>
+            <Col auto onPress={handleRefresh}>
               <RefreshCw
                 strokeWidth={2}
-                color={'white'}
-                height={16}
-                width={16}
+                color={'black'}
+                height={22}
+                width={22}
               />
             </Col>
           </Row>

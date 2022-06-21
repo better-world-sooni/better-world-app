@@ -23,7 +23,7 @@ export default function useUploadImage({uri, attachedRecord, url, property, succ
               setImage(assets[0])
           }
         } catch (e) {
-          console.log(e);
+        //   console.log(e);
         }
     };
     const handleRemoveImage = () => {
@@ -53,7 +53,7 @@ export default function useUploadImage({uri, attachedRecord, url, property, succ
                 reloadGetWithToken(successReloadKey)
             }
         } catch (e){
-            console.log(e)
+            // console.log(e)
         }
         
         setUploading(false)

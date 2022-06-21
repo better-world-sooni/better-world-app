@@ -247,7 +247,7 @@ function PostContent({post, selectableFn = null, displayLabel = false}) {
     if (event == PostEventTypes.Delete) deletePost();
     if (event == PostEventTypes.Report) gotoReport();
     if (event == PostEventTypes.SetVotingDeadline) setVotingDeadline();
-    if (event == PostEventTypes.SetWinningProposal) setWinningProposal();
+    // if (event == PostEventTypes.SetWinningProposal) setWinningProposal();
   };
 
   const gotoLikeList = useGotoLikeList({
@@ -345,15 +345,17 @@ function PostContent({post, selectableFn = null, displayLabel = false}) {
               <Col />
               <Col auto>
                 <MenuView onPressAction={handlePressMenu} actions={menuOptions}>
-                  {loading ? (
-                    <ActivityIndicator />
-                  ) : (
-                    <MoreHorizontal
-                      color={Colors.gray[200]}
-                      width={18}
-                      height={18}
-                    />
-                  )}
+                  <Div>
+                    {loading ? (
+                      <ActivityIndicator />
+                    ) : (
+                      <MoreHorizontal
+                        color={Colors.gray[200]}
+                        width={22}
+                        height={18}
+                      />
+                    )}
+                  </Div>
                 </MenuView>
               </Col>
             </Row>
@@ -511,11 +513,11 @@ function PostContent({post, selectableFn = null, displayLabel = false}) {
                   )}
               {!votable && (
                 <>
-                  <Col auto rounded100 bgRealBlack p3 bgSuccess mr4>
+                  <Col auto rounded100 p2 bgSuccess mr4>
                     <Check
                       strokeWidth={2}
-                      height={15}
-                      width={15}
+                      height={14}
+                      width={14}
                       color={'white'}
                     />
                   </Col>

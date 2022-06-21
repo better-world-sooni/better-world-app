@@ -3,6 +3,7 @@ import {
   Edit,
   Edit3,
   Feather,
+  Plus,
   Settings,
 } from 'react-native-feather';
 import React, {useRef} from 'react';
@@ -267,22 +268,6 @@ export default function NftCollectionProfile({
                     <Div>
                       <Row py10>
                         <Col />
-                        <Col auto onPress={() => gotoNewPost(null)} px8>
-                          <Row itemsCenter>
-                            <Col auto>
-                              <Span bold fontSize={10}>
-                                게시하기
-                              </Span>
-                            </Col>
-                            <Col auto>
-                              <Feather
-                                width={22}
-                                height={22}
-                                strokeWidth={2}
-                                color={'black'}></Feather>
-                            </Col>
-                          </Row>
-                        </Col>
                         <Col auto mx8 onPress={editProfile}>
                           <Div>
                             <Settings

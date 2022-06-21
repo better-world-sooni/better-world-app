@@ -70,7 +70,7 @@ function FeedFlatlist(
       zIndex: 200,
       position: 'absolute',
       top: 0,
-      opacity: Math.min(translationY.value / 50, 1),
+      backgroundColor: 'white',
       transform: [
         {
           translateY: translateY,
@@ -83,7 +83,8 @@ function FeedFlatlist(
       width: DEVICE_WIDTH,
       top: 0,
       height: headerHeight,
-      opacity: Math.min(translationY.value / 50, 1),
+      opacity: 1,
+      backgroundColor: 'white',
     };
   });
   const topBarStyles = useAnimatedStyle(() => {
@@ -107,71 +108,16 @@ function FeedFlatlist(
   });
   return (
     <Div flex={1} bgWhite relative>
-      <Animated.View style={notchStyles}>
-        <CustomBlurView
-          blurType="xlight"
-          blurAmount={30}
-          blurRadius={25}
-          overlayColor=""
-          style={{
-            width: DEVICE_WIDTH,
-            height: notchHeight,
-            position: 'absolute',
-          }}
-          reducedTransparencyFallbackColor="white"></CustomBlurView>
-      </Animated.View>
-      <Animated.View style={topBarStyles}>
-        <Animated.View style={headerStyles}>
-          {Platform.OS === 'ios' ? (
-            <CustomBlurView
-              blurType="xlight"
-              blurAmount={30}
-              blurRadius={25}
-              overlayColor=""
-              style={{
-                width: DEVICE_WIDTH,
-                top: 0,
-                height: headerHeight,
-                position: 'absolute',
-              }}
-              reducedTransparencyFallbackColor="white"></CustomBlurView>
-          ) : (
-            <Div
-              style={{
-                width: DEVICE_WIDTH,
-                top: 0,
-                height: headerHeight,
-                position: 'absolute',
-              }}
-              bgWhite
-            />
-          )}
-        </Animated.View>
-        <Row
-          itemsCenter
-          h40
-          px15
-          zIndex={100}
-          absolute
-          w={DEVICE_WIDTH}
-          top={notchHeight + 5}>
-          {TopComponent}
-        </Row>
-      </Animated.View>
-      <ReanimatedFlatList
+      <Div h={notchHeight}></Div>
+      <FlatList
         ref={ref}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{
-          marginTop: headerHeight,
-          marginBottom: headerHeight,
-        }}
         keyExtractor={item => (item as any).id}
-        onScroll={scrollHandler}
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
             onRefresh={onRefresh}
-            progressViewOffset={headerHeight}
+            // progressViewOffset={headerHeight}
           />
         }
         ListFooterComponent={
@@ -186,14 +132,27 @@ function FeedFlatlist(
                 <Span textCenter>피드를 모두 확인했습니다.</Span>
               </Div>
             )}
-            <Div h={headerHeight}></Div>
+            <Div h={50}></Div>
             <Div h={27} />
           </>
         }
-        ListHeaderComponent={HeaderComponent}
+        ListHeaderComponent={
+          <Div
+            bgWhite
+            px15
+            h={50}
+            justifyCenter
+            borderBottom={0.5}
+            borderGray200>
+            {TopComponent}
+          </Div>
+        }
+        stickyHeaderIndices={[0]}
+        // @ts-ignore
+        stickyHeaderHiddenOnScroll
         data={data}
         onEndReached={onEndReached}
-        renderItem={renderItem}></ReanimatedFlatList>
+        renderItem={renderItem}></FlatList>
       {enableAdd && (
         <Div
           rounded100

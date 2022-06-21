@@ -79,7 +79,7 @@ export default function NftProfileHeader({
                 <Col />
                 <Col
                   auto
-                  px8
+                  px16
                   onPress={() =>
                     gotoChatRoom(
                       getNftName(nftCore),
@@ -88,21 +88,12 @@ export default function NftProfileHeader({
                       nftCore.token_id,
                     )
                   }>
-                  <Row itemsCenter>
-                    <Col auto>
-                      <Span bold fontSize={10}>
-                        디엠하기
-                      </Span>
-                    </Col>
-                    <Col auto>
-                      <Send
-                        strokeWidth={2}
-                        color={'black'}
-                        height={22}
-                        width={22}
-                      />
-                    </Col>
-                  </Row>
+                  <Send
+                    strokeWidth={2}
+                    color={'black'}
+                    height={22}
+                    width={22}
+                  />
                 </Col>
                 <Col
                   auto

@@ -43,7 +43,6 @@ import CollectionEventListScreen from 'src/screens/CollectionEventListScreen';
 import NewCollectionEventScreen from 'src/screens/NewCollectionEventScreen';
 import AttendanceListScreen from 'src/screens/AttendanceListScreen';
 import CollectionEventScreen from 'src/screens/CollectionEventScreen';
-import AffinityScreen from 'src/screens/AffinityScreen';
 import PasswordSigninScreen from 'src/screens/Auth/PasswordSigninScreen';
 import {createStackNavigator} from '@react-navigation/stack';
 import CollectionSearchScreen from 'src/screens/CollectionSearchScreen';
@@ -303,10 +302,6 @@ export const AppContent = ({notificationOpenData}) => {
     {
       name: NAV_NAMES.CollectionEvent,
       component: CollectionEventScreen,
-    },
-    {
-      name: NAV_NAMES.Affinity,
-      component: AffinityScreen,
     },
     {
       name: NAV_NAMES.Qr,

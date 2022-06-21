@@ -1,3 +1,4 @@
+
 export function getAdjustedHeightFromDimensions({width, height, frameWidth}){
     return Math.min(
         (height /
@@ -5,4 +6,8 @@ export function getAdjustedHeightFromDimensions({width, height, frameWidth}){
           frameWidth,
           frameWidth * 2,
       )
+}
+
+export function isContentTypeImage(contentType){
+    return contentType?.startsWith('image')
 }

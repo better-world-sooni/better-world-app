@@ -20,7 +20,7 @@ export default function useUploadImageUriKey({uri, attachedRecord}){
               setImage(assets[0])
           }
         } catch (e) {
-          console.log(e);
+        //   console.log(e);
         }
     };
     const handleRemoveImage = () => {
