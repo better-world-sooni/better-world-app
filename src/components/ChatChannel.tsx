@@ -26,33 +26,45 @@ type NewRoomOpen = {
   data: string;
 };
 
-type ChatMessage = {
-  type: 'send';
-  room: object;
+type RoomMessage = {
+  type: 'room';
   message: object;
 };
 
-type FetchMessage = {
-  type: 'fetch';
+type ListMessage = {
+  type: 'list';
+  room: object;
+};
+
+
+type ListFetchMessage = {
+  type: 'fetchList';
   data: {
     list_data: Array<object>;
     total_unread: number;
   }
 };
 
+// type RoomFetchMessage = {
+//   type: 'room'
+// }
+
 type Message =
   | EnteringMessage
   | NewRoomOpen
   | LeavingMessage
-  | ChatMessage
-  | FetchMessage;
+  | RoomMessage
+  | ListMessage
+  | ListFetchMessage;
 
 interface Events extends ChannelEvents<Message> {
   enter: (msg: EnteringMessage) => void;
   leave: (msg: LeavingMessage) => void;
   new: (msg: NewRoomOpen) => void;
-  fetch: (msg: FetchMessage) => void;
-  message: (msg: ChatMessage) => void;
+  fetchList: (msg: ListFetchMessage) => void;
+  // fetchRoom: (msg: RoomFetchMessage) => void;
+  messageRoom: (msg: RoomMessage) => void;
+  messageList: (msg: ListMessage) => void;
 }
 
 export class ChatChannel extends Channel<Params, Message, Events> {
@@ -89,9 +101,12 @@ export class ChatChannel extends Channel<Params, Message, Events> {
       return this.emit('leave', message);
     } else if (message.type === 'new') {
       return this.emit('new', message);
-    } else if (message.type === 'fetch') {
-      return this.emit('fetch', message);
+    } else if (message.type === 'fetchList') {
+      return this.emit('fetchList', message);
+    } else if (message.type === 'room') {
+      return this.emit('messageRoom', message)
+    } else if (message.type === 'list') {
+      return this.emit('messageList', message)
     }
-    return this.emit('message', message);
   }
 }

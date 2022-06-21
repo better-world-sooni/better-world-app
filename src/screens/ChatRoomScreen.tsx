@@ -36,9 +36,6 @@ function ChatRoomScreen({
       contractAddress,
       tokenId,
       chatRoomEnterType,
-      inRoomSetIsEntered, 
-      inRoomUnreadCountUpdate, 
-      inRoomMessageUpdate
     },
   },
 }) {
@@ -101,10 +98,6 @@ function ChatRoomScreen({
 
   useEffect(() => {
     if (connectRoomId) {
-      if(chatRoomEnterType == ChatRoomEnterType.List) {
-        inRoomUnreadCountUpdate(connectRoomId);
-        inRoomSetIsEntered(true);
-      }
       const channel = new ChatChannel({roomId: connectRoomId});
       const wsConnect = async () => {
         await cable(token).subscribe(channel);
@@ -114,11 +107,9 @@ function ChatRoomScreen({
           setMessages(res['update_msgs']);
         });
         let _ = await channel.enter(connectRoomId);
-        channel.on('message', res => {
+        channel.on('messageRoom', res => {
+          console.log("roomget")
           setMessages(m => [res.message, ...m]);
-          // if(chatRoomEnterType == ChatRoomEnterType.List) {
-          //   inRoomMessageUpdate(connectRoomId, res.message)
-          // }
         });
         channel.on('leave', res => {
           if (currentNftId != res['leave_nft']) {
@@ -131,14 +122,12 @@ function ChatRoomScreen({
       };
       wsConnect();
       return () => {
-        
+
         if (channel) {
           channel.disconnect();
           channel.close();
         }
-        if(chatRoomEnterType == ChatRoomEnterType.List) {
-          inRoomSetIsEntered(false);
-        }
+
       };
     }
   }, [connectRoomId]);
@@ -180,6 +169,7 @@ function ChatRoomScreen({
       setNumNfts(chatRoomRes.num_nfts);
     }
   }, [chatRoomRes]);
+
 
   return (
     <>
@@ -269,6 +259,7 @@ function ChatRoomScreen({
           text={text}
           onTextChange={handleTextChange}
           onPressSend={sendMessage}
+          roomLoading={chatRoomLoad}
         />
       </KeyboardAvoidingView>
       <Div h={HAS_NOTCH ? 27 : 12} bgWhite />

@@ -20,7 +20,7 @@ export enum ReplyToType {
   Post = 'Post',
 }
 
-export default function NewMessage({text, onTextChange, onPressSend}) {
+export default function NewMessage({text, onTextChange, onPressSend, roomLoading}) {
   return (
     <Div
       zIndex={100}
@@ -40,7 +40,7 @@ export default function NewMessage({text, onTextChange, onPressSend}) {
           mt={0}
           onChangeText={onTextChange}
           rightComp={
-            <Div ml10 onPress={text && onPressSend}>
+            <Div ml10 onPress={!roomLoading && text && onPressSend}>
               <Span medium fontSize={14} primary={text} gray400={!text}>
                 전송
               </Span>
