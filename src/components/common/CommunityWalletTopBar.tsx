@@ -15,7 +15,7 @@ export default function CommunityWalletTopBar({communityWallet, onPressDown}) {
   const {goBack} = useNavigation();
 
   return (
-    <Row itemsCenter px7>
+    <Row flex itemsCenter px7>
       <Col auto>
         <Div auto rounded100 onPress={goBack}>
           <ChevronLeft width={30} height={30} color="black" strokeWidth={2} />

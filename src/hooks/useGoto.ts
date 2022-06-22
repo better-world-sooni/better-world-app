@@ -2,7 +2,7 @@ import { CommonActions, useNavigation } from "@react-navigation/native";
 import { shallowEqual, useSelector } from "react-redux";
 import apis from "src/modules/apis";
 import { NAV_NAMES } from "src/modules/navNames";
-import { useApiGETWithToken, useApiPOSTWithToken, useApiGET } from "src/redux/asyncReducer";
+import { useApiGETWithToken, useApiPOSTWithToken, useApiGET, useReloadGETWithToken } from "src/redux/asyncReducer";
 import { RootState } from "src/redux/rootReducer";
 import { ChatRoomEnterType } from "src/screens/ChatRoomScreen";
 import { FollowOwnerType, FollowType } from "src/screens/FollowListScreen";
@@ -69,28 +69,29 @@ export function useGotoPasswordSignIn(){
 
 export function useGotoChatList(){
   const navigation = useNavigation()
-  const apiGETWithToken = useApiGETWithToken()
+  const reloadGETWithToken = useReloadGETWithToken()
   const gotoChatList = () => {
-      apiGETWithToken(
-        apis.chat.chatRoom.all()
-      );
-      navigation.navigate(NAV_NAMES.ChatList as never);
-    }
-    return gotoChatList
+    reloadGETWithToken(
+      apis.chat.chatRoom.all()
+    );
+    navigation.navigate(NAV_NAMES.ChatList as never);
+  }
+  return gotoChatList
 }
 
 export function useGotoChatRoomFromList() {
   const navigation = useNavigation()
   const apiGETWithToken = useApiGETWithToken()
-  const gotoChatRoomFromList = (roomName, roomImage, roomId) => {
+  const gotoChatRoomFromList = (roomId, roomName, roomImage, opponentNft) => {
     apiGETWithToken(
       apis.chat.chatRoom.roomId(roomId),
     );
     navigation.navigate(NAV_NAMES.ChatRoom as never, {
+      roomId,
       roomName,
       roomImage,
-      roomId,
-      chatRoomEnterType: ChatRoomEnterType.List
+      opponentNft,
+      chatRoomEnterType: ChatRoomEnterType.List,
     } as never);
   };
   return gotoChatRoomFromList
@@ -109,8 +110,10 @@ export function useGotoChatRoomFromProfile() {
     navigation.navigate(NAV_NAMES.ChatRoom as never, {
       roomName,
       roomImage,
-      contractAddress,
-      tokenId,
+      opponentNft: {
+        contract_address: contractAddress,
+        token_id: tokenId
+      },
       chatRoomEnterType: ChatRoomEnterType.Profile
     } as never);
   }

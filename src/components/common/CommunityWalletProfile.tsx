@@ -82,7 +82,7 @@ export default function CommunityWalletProfile({
             }}
             reducedTransparencyFallbackColor="white"></CustomBlurView>
         </Animated.View>
-        <Div zIndex={100} absolute w={DEVICE_WIDTH} top={notchHeight}>
+        <Div zIndex={100} absolute w={DEVICE_WIDTH} top={notchHeight} h={headerHeight} >
           <CommunityWalletTopBar
             communityWallet={communityWallet}
             onPressDown={() => setIsAboutOpen(prev => !prev)}

@@ -35,6 +35,7 @@ import AttendanceListScreen from 'src/screens/AttendanceListScreen';
 import CollectionEventScreen from 'src/screens/CollectionEventScreen';
 import PasswordSigninScreen from 'src/screens/Auth/PasswordSigninScreen';
 import {createStackNavigator} from '@react-navigation/stack';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import CollectionSearchScreen from 'src/screens/CollectionSearchScreen';
 import SocialScreen from 'src/screens/Home/SocialScreen';
 import CommunityWalletListScreen from 'src/screens/CommunityWalletListScreen';
@@ -45,9 +46,10 @@ import {TransitionPresets} from '@react-navigation/stack';
 import TransactionScreen from 'src/screens/TransactionScreen';
 import {ICONS} from 'src/modules/icons';
 
-const RootStack = createStackNavigator();
+const RootStack = createNativeStackNavigator();
 
 const Tab = createBottomTabNavigator();
+
 
 const tabBarFunc = props => <BottomTabBar {...props} />;
 
@@ -66,7 +68,11 @@ const MainBottomTabs = () => {
     <Tab.Navigator
       tabBar={tabBarFunc}
       initialRouteName={NAV_NAMES.Social}
-      lazy={false}>
+      screenOptions={{
+        lazy: false,
+        headerShown: false,
+      }}
+    >
       <Tab.Screen
         name={NAV_NAMES.Social}
         component={SocialScreen}
@@ -116,6 +122,7 @@ const MainBottomTabs = () => {
               strokeWidth={2}
               color={focused ? 'black' : Colors.gray[400]}></Send>
           ),
+          tabBarBadge: "10", 
         }}
       />
       <Tab.Screen
@@ -139,6 +146,7 @@ const MainBottomTabs = () => {
         }}
       />
     </Tab.Navigator>
+    
   );
 };
 
@@ -209,6 +217,7 @@ export const AppContent = ({notificationOpenData}) => {
       options: props => ({
         gestureEnabled: false,
         cardStyle: {backgroundColor: 'white', presentation: 'screen'},
+        headershown: false,
       }),
     },
     {

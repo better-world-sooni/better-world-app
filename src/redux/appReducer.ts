@@ -24,6 +24,7 @@ const usePreloadData = () => {
       apiGETAsync(apis.feed.social(), jwt),
       apiGETAsync(apis.rank.list(), jwt),
       apiGETAsync(apis.nft_collection._(), jwt),
+      apiGETAsync(apis.chat.chatRoom.all(), jwt),
     ])
   }
 }

@@ -1,90 +1,125 @@
 import {useNavigation, useFocusEffect} from '@react-navigation/core';
-import React, {useCallback, useEffect, useState, useRef} from 'react';
-import {RefreshControl} from 'react-native';
-import {shallowEqual, useSelector} from 'react-redux';
+import React, {useCallback, useEffect, useState, useRef, memo} from 'react';
+import {shallowEqual, useSelector, useDispatch} from 'react-redux';
 import {Col} from 'src/components/common/Col';
 import {Div} from 'src/components/common/Div';
 import {Row} from 'src/components/common/Row';
 import {Span} from 'src/components/common/Span';
+import {Img} from 'src/components/common/Img';
 import apis from 'src/modules/apis';
-import {useApiSelector} from 'src/redux/asyncReducer';
+import {useApiSelector, asyncActions, getKeyByApi} from 'src/redux/asyncReducer';
 import {RootState} from 'src/redux/rootReducer';
 import {cable} from 'src/modules/cable';
 import {ChatChannel} from 'src/components/ChatChannel';
-import ChatRoomAvatars from 'src/components/ChatRoomAvatars';
 import TruncatedText from 'src/components/common/TruncatedText';
 import {DEVICE_HEIGHT, DEVICE_WIDTH} from 'src/modules/styles';
 import {createdAtText} from 'src/modules/timeUtils';
 import {useGotoChatRoomFromList} from 'src/hooks/useGoto';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import {resizeImageUri} from 'src/modules/uriUtils';
 import {FlatList} from 'native-base';
 import ListEmptyComponent from 'src/components/common/ListEmptyComponent';
 
 function ChatListScreen() {
-  const {data: chatListRes, isLoading: chatListLoad} = useApiSelector(
-    apis.chat.chatRoom.all,
-  );
   const {currentNft, token} = useSelector(
     (root: RootState) => root.app.session,
     shallowEqual,
   );
+  const {data: chatListRes, isLoading: chatListLoad} = useApiSelector(
+    apis.chat.chatRoom.all,
+  );
+  
+  const [chatRooms, setChatRooms] = useState(
+    chatListRes ? chatListRes.chat_list_data : [],
+  );
+  const [chatSocket, setChatSocket] = useState(null);
+  const updateListRef = useRef(null);
+  const chatRoomsRef = useRef(null);
+
+  const dispatch = useDispatch();
   const {goBack} = useNavigation();
   const gotoChatRoom = useGotoChatRoomFromList();
+
   const currentNftId = {
     token_id: currentNft.token_id,
     contract_address: currentNft.contract_address,
   };
-  const [chatRooms, setChatRooms] = useState(chatListRes?.chat_rooms || []);
-  const [chatSocket, setChatSocket] = useState(null);
-  const updateListRef = useRef(null);
+
+  type ListObject = {
+    room_id: string
+    room_image: string
+    room_name: string
+    opponent_nft: Object
+    unread_count: number
+    last_message: string
+    updated_at: string
+  }
 
   useEffect(() => {
     if (chatListRes) {
-      setChatRooms(chatListRes.chat_rooms);
+      setChatRooms(chatListRes.chat_list_data);
     }
   }, [chatListRes]);
 
+  useFocusEffect(
+    useCallback(() => {
+      if(chatSocket?.state === 'connected') chatSocket.fetchList();
+    }, [chatSocket])
+  );
+
   useEffect(() => {
-    const updateList = newRoom => {
-      const index = chatRooms.findIndex(x => x.room_id === newRoom.room_id);
-      newRoom.unread_count = 1;
-      if (index > -1) {
-        if (chatSocket) chatSocket.newRoomOpen(newRoom.room_id);
-        newRoom.unread_count = chatRooms[index].unread_count + 1;
-        newRoom.room_profile_imgs = chatRooms[index].room_profile_imgs;
-        setChatRooms(prev => [newRoom, ...prev.filter((_, i) => i != index)]);
-      } else {
-        setChatRooms(prev => [newRoom, ...prev]);
+    const channel = new ChatChannel(currentNftId);
+    const wsConnect = async () => {
+      await cable(token).subscribe(channel);
+      setChatSocket(channel);
+      channel.on('fetchList', res => {
+        setChatRooms(res.data.list_data);
+      });
+      channel.on('messageList', res => {
+        console.log('receive messagfe!')
+        updateListRef.current(res.room, res.read);
+      });
+    };
+    wsConnect();
+    
+    return () => {
+      if (channel) {
+        channel.disconnect();
+        channel.close();
+      }
+      dispatch(asyncActions.update({
+        key: getKeyByApi(apis.chat.chatRoom.all()),
+        data: {
+          success: true,
+          chat_list_data: chatRoomsRef.current,
+        }
+      }))
+    };
+  }, [currentNft]);
+
+  useEffect(() => {
+    const updateList = (room, read) => {
+      console.log(room, read)
+      const index = chatRooms.findIndex(x => x.room_id === room.room_id);
+      if (index > -1) {        
+        room.unread_count = read ? 0 : chatRooms[index].unread_count + 1;
+        setChatRooms(prev => [room, ...prev.filter((_, i) => i != index)]);
+      }
+      else {
+        room.unread_count = read ? 0 : 1;
+        setChatRooms(prev => [room, ...prev]);
       }
     };
     updateListRef.current = updateList;
-  }, [chatRooms]);
+    chatRoomsRef.current = chatRooms;
+  }, [chatRooms, chatSocket]);
 
-  useFocusEffect(
-    useCallback(() => {
-      const channel = new ChatChannel(currentNftId);
-      const wsConnect = async () => {
-        await cable(token).subscribe(channel);
-        setChatSocket(channel);
-        channel.on('fetch', res => {
-          setChatRooms(res['data']);
-        });
-        let _ = await channel.fetchList();
-        channel.on('message', res => {
-          updateListRef.current(res['room']);
-        });
-        channel.on('close', () => console.log('Disconnected from chat'));
-        channel.on('disconnect', () => console.log('check disconnect'));
-      };
-      wsConnect();
-      return () => {
-        if (channel) {
-          channel.disconnect();
-          channel.close();
-        }
-      };
-    }, [currentNft]),
-  );
+  const readCountRefresh = useCallback((roomId) => {
+    const index = chatRooms.findIndex(x => x.room_id === roomId);
+    const room = Object.assign({}, chatRooms[index]); 
+    room.unread_count = 0;
+    setChatRooms(prev => [...prev.slice(0, index), room, ...prev.slice(index+1)])
+  }, [chatRooms, setChatRooms])
 
   const notchHeight = useSafeAreaInsets().top;
   const headerHeight = notchHeight + 50;
@@ -118,15 +153,16 @@ function ChatListScreen() {
         ListEmptyComponent={
           <ListEmptyComponent h={DEVICE_HEIGHT - headerHeight * 2} />
         }
-        refreshControl={<RefreshControl refreshing={chatListLoad} />}
-        data={chatRooms}
+        stickyHeaderIndices={[0]}
+        data={chatRooms as Array<ListObject>}
         renderItem={({item, index}) => {
           return (
-            <ChatRoomItem
+            <ChatRoomItemMemo
               key={index}
-              onPress={(roomName, roomImage, roomId) =>
-                gotoChatRoom(roomName, roomImage, roomId)
-              }
+              onPress={() => {
+                readCountRefresh(item.room_id)
+                gotoChatRoom(item.room_id, item.room_name, item.room_image, item.opponent_nft)
+              }}
               room={item}
             />
           );
@@ -135,28 +171,27 @@ function ChatListScreen() {
   );
 }
 
+
+const ChatRoomItemMemo = memo(ChatRoomItem)
 function ChatRoomItem({onPress, room}) {
   const roomId = room.room_id;
   const updatedAt = room.updated_at;
   const roomName = room.room_name;
   const unreadMessageCount = room.unread_count;
   const lastMessage = room.last_message;
-  const profileImgArr = room.room_profile_imgs;
+  const roomImage = room.room_image;
 
   return (
     <Div px15>
       <Row
         bgWhite
-        onPress={() => onPress(roomName, profileImgArr, roomId)}
+        onPress={() => onPress()}
         py5
         cursorPointer
         itemsCenter>
         <Col auto relative mr10>
           <Div rounded100 overflowHidden h50>
-            <ChatRoomAvatars
-              firstUserAvatar={profileImgArr[0]}
-              secondUserAvatar={profileImgArr[1]}
-            />
+            <Img uri={resizeImageUri(roomImage, 200, 200)} w50 h50></Img>
           </Div>
         </Col>
         <Col>
@@ -175,7 +210,7 @@ function ChatRoomItem({onPress, room}) {
           <Row w={'100%'} pt2>
             <Col pr10>
               <Div>
-                <TruncatedText text={lastMessage} maxLength={30} />
+                {lastMessage && <TruncatedText text={lastMessage} maxLength={30} />}
               </Div>
             </Col>
           </Row>
@@ -191,5 +226,6 @@ function ChatRoomItem({onPress, room}) {
     </Div>
   );
 }
+
 
 export default ChatListScreen;

@@ -54,8 +54,8 @@ const BottomTabBar = ({state, descriptors, navigation}) => {
   return (
     <>
       <Row
-        borderTopColor={isFocusedOnCapsule ? 'black' : Colors.gray[100]}
-        borderTopWidth={0.2}>
+        borderTopColor={isFocusedOnCapsule ? 'black' : Colors.gray[200]}
+        borderTopWidth={0.5}>
         <NativeBaseProvider>
           <HStack
             bg={isFocusedOnCapsule ? 'black' : 'white'}
