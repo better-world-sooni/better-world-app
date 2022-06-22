@@ -76,7 +76,6 @@ function ChatListScreen() {
         setChatRooms(res.data.list_data);
       });
       channel.on('messageList', res => {
-        console.log('receive messagfe!')
         updateListRef.current(res.room, res.read);
       });
     };
@@ -99,7 +98,6 @@ function ChatListScreen() {
 
   useEffect(() => {
     const updateList = (room, read) => {
-      console.log(room, read)
       const index = chatRooms.findIndex(x => x.room_id === room.room_id);
       if (index > -1) {        
         room.unread_count = read ? 0 : chatRooms[index].unread_count + 1;
@@ -153,7 +151,7 @@ function ChatListScreen() {
         ListEmptyComponent={
           <ListEmptyComponent h={DEVICE_HEIGHT - headerHeight * 2} />
         }
-        stickyHeaderIndices={[0]}
+        // stickyHeaderIndices={[0]}
         data={chatRooms as Array<ListObject>}
         renderItem={({item, index}) => {
           return (

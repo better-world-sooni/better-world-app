@@ -7,13 +7,6 @@ import Colors from 'src/constants/Colors';
 import {openNftList} from 'src/modules/bottomPopupUtils';
 
 const BottomTabBar = ({state, descriptors, navigation}) => {
-  const isFocusedOnCapsule = state.history[
-    state.history.length - 1
-  ].key.startsWith(NAV_NAMES.Capsule);
-  descriptors[
-    state.history[state.history.length - 1].key
-  ]?.navigation?.isFocused();
-
   const List = useCallback(
     state.routes.map((route, index) => {
       const {key, name} = route;
@@ -54,11 +47,11 @@ const BottomTabBar = ({state, descriptors, navigation}) => {
   return (
     <>
       <Row
-        borderTopColor={isFocusedOnCapsule ? 'black' : Colors.gray[200]}
+        borderTopColor={Colors.gray[200]}
         borderTopWidth={0.5}>
         <NativeBaseProvider>
           <HStack
-            bg={isFocusedOnCapsule ? 'black' : 'white'}
+            bg={'white'}
             safeAreaBottom
             paddingTop={4}
             paddingBottom={0}>
