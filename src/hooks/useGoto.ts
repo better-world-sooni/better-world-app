@@ -82,14 +82,15 @@ export function useGotoChatList(){
 export function useGotoChatRoomFromList() {
   const navigation = useNavigation()
   const apiGETWithToken = useApiGETWithToken()
-  const gotoChatRoomFromList = (roomName, roomImage, roomId) => {
+  const gotoChatRoomFromList = (roomId, roomName, roomImage, opponentNft) => {
     apiGETWithToken(
       apis.chat.chatRoom.roomId(roomId),
     );
     navigation.navigate(NAV_NAMES.ChatRoom as never, {
+      roomId,
       roomName,
       roomImage,
-      roomId,
+      opponentNft,
       chatRoomEnterType: ChatRoomEnterType.List,
     } as never);
   };

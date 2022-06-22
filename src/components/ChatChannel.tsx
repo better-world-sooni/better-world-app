@@ -70,12 +70,12 @@ interface Events extends ChannelEvents<Message> {
 export class ChatChannel extends Channel<Params, Message, Events> {
   static identifier = 'ChatChannel';
 
-  async send(message, room) {
-    return this.perform('send_message', {message, room});
+  async send(message, room, opponent) {
+    return this.perform('send_message', {message, room, opponent});
   }
 
-  async sendNew(message, room) {
-    return this.perform('send_message_new', {message, room});
+  async sendNew(message, room, opponent) {
+    return this.perform('send_message_new', {message, room, opponent});
   }
 
   async newRoomOpen(roomId) {

@@ -57,6 +57,16 @@ function ChatListScreen() {
     contract_address: currentNft.contract_address,
   };
 
+  type ListObject = {
+    room_id: string
+    room_image: string
+    room_name: string
+    opponent_nft: Object
+    unread_count: number
+    last_message: string
+    updated_at: string
+  }
+
   useEffect(() => {
     if (chatListRes) {
       setChatRooms(chatListRes.chat_list_data);
@@ -186,14 +196,12 @@ function ChatListScreen() {
           </>
         }
         stickyHeaderIndices={[0]}
-        data={chatRooms}
+        data={chatRooms as Array<ListObject>}
         renderItem={({item, index}) => {
           return (
             <ChatRoomItemMemo
               key={index}
-              onPress={(roomName, roomImage, roomId) =>
-                gotoChatRoom(roomName, roomImage, roomId)
-              }
+              onPress={() => gotoChatRoom(item.room_id, item.room_name, item.room_image, item.opponent_nft)}
               room={item}
             />
           );
@@ -216,7 +224,7 @@ function ChatRoomItem({onPress, room}) {
     <Div px15>
       <Row
         bgWhite
-        onPress={() => onPress(roomName, roomImage, roomId)}
+        onPress={() => onPress()}
         py5
         cursorPointer
         itemsCenter>

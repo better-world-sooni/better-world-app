@@ -22,24 +22,26 @@ import NewMessage from 'src/components/common/NewMessage';
 import {createdAtText, getCalendarDay} from 'src/modules/timeUtils';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {getNftName, getNftProfileImage} from 'src/modules/nftUtils';
+import {resizeImageUri} from 'src/modules/uriUtils';
 
 export enum ChatRoomEnterType {
   List,
   Profile,
 }
+
 function ChatRoomScreen({
   route: {
     params: {
+      roomId,
       roomName,
       roomImage,
-      roomId,
+      opponentNft,
       contractAddress,
       tokenId,
       chatRoomEnterType,
     },
   },
 }) {
-  const flatListRef = useRef(null);
   const {currentNft, token} = useSelector(
     (root: RootState) => root.app.session,
     shallowEqual,
@@ -49,14 +51,13 @@ function ChatRoomScreen({
       ? apis.chat.chatRoom.roomId(roomId)
       : apis.chat.chatRoom.contractAddressAndTokenId(contractAddress, tokenId),
   );
-
   const currentNftId = {
     token_id: currentNft.token_id,
     contract_address: currentNft.contract_address,
   };
   const currentAvatar = getNftProfileImage(currentNft, 200, 200)
-  const {goBack} = useNavigation();
-
+  const opponentAvatar = resizeImageUri(roomImage, 200, 200)
+  
   const [connectRoomId, setConnectRoomId] = useState(null);
   const [chatSocket, setChatSocket] = useState(null);
   const [numNfts, setNumNfts] = useState(null);
@@ -68,33 +69,8 @@ function ChatRoomScreen({
   const [isNew, setIsNew] = useState(
     (chatRoomRes ? chatRoomRes.init_messages : []).length == 0,
   );
-
-  const handleTextChange = text => {
-    setText(text);
-  };
-
-  const sendMessage = async () => {
-    if (chatSocket) {
-      const Timestamp = new Date();
-      const msg = {
-        text: text,
-        nft: currentNftId,
-        avatar: currentAvatar,
-        read_nft_ids: enterNfts,
-        created_at: Timestamp,
-        updated_at: Timestamp,
-      };
-      const room = {
-        room_id: connectRoomId,
-        last_message: text,
-        room_name: roomName,
-      };
-      if (isNew) chatSocket.sendNew(msg, room);
-      else chatSocket.send(msg, room);
-    } 
-    else Alert.alert('네트워크가 불안정하여 메세지를 보내지 못했습니다');
-    setText('');
-  };
+  const flatListRef = useRef(null);
+  const {goBack} = useNavigation();
 
   useEffect(() => {
     if (connectRoomId) {
@@ -106,7 +82,6 @@ function ChatRoomScreen({
           setEnterNfts(res['new_nfts']);
           setMessages(res['update_msgs']);
         });
-        let _ = await channel.enter(connectRoomId);
         channel.on('messageRoom', res => {
           console.log("roomget")
           setMessages(m => [res.message, ...m]);
@@ -121,20 +96,57 @@ function ChatRoomScreen({
         });
       };
       wsConnect();
+      channel.enter(connectRoomId);
       return () => {
-
         if (channel) {
           channel.disconnect();
           channel.close();
         }
-
       };
     }
   }, [connectRoomId]);
 
-  const scrollToEnd = () => {
+  useEffect(() => {
+    if (chatRoomRes) {
+      setMessages(chatRoomRes.init_messages);
+      setConnectRoomId(chatRoomRes.room_id);
+      setIsNew(chatRoomRes.init_messages.length == 0);
+      setNumNfts(chatRoomRes.num_nfts);
+    }
+  }, [chatRoomRes]);
+
+  const handleTextChange = useCallback(text => {
+    setText(text);
+  }, []);
+
+  const sendMessage = useCallback(async () => {
+    if (chatSocket) {
+      const Timestamp = new Date();
+      const msg = {
+        text: text,
+        nft: currentNftId,
+        read_nft_ids: enterNfts,
+        created_at: Timestamp,
+        updated_at: Timestamp,
+      };
+      const room = {
+        room_id: connectRoomId,
+        updated_at: Timestamp,
+        room_name: roomName,
+        room_image: roomImage,
+        last_message: text,
+      };
+      if (isNew) chatSocket.sendNew(msg, room, opponentNft);
+      else chatSocket.send(msg, room, opponentNft);
+    } 
+    else Alert.alert('네트워크가 불안정하여 메세지를 보내지 못했습니다');
+    setText('');
+  }, [connectRoomId, chatSocket, text, enterNfts]);
+
+  const scrollToEnd = useCallback(() => {
     flatListRef?.current?.scrollToEnd({animated: false});
-  };
+  }, [flatListRef]);
+
   const notchHeight = useSafeAreaInsets().top;
   const headerHeight = notchHeight + 50;
   const isSameNft = useCallback((nft1, nft2) => {
@@ -161,14 +173,6 @@ function ChatRoomScreen({
       ) !== 0
     );
   }, []);
-  useEffect(() => {
-    if (chatRoomRes) {
-      setMessages(chatRoomRes.init_messages);
-      setConnectRoomId(chatRoomRes.room_id);
-      setIsNew(chatRoomRes.init_messages.length == 0);
-      setNumNfts(chatRoomRes.num_nfts);
-    }
-  }, [chatRoomRes]);
 
 
   return (
@@ -243,7 +247,7 @@ function ChatRoomScreen({
               <MessageMemo
                 key={message._id.$oid}
                 text={message.text}
-                avatar={message.avatar}
+                avatar={isMine ? currentAvatar : opponentAvatar}
                 createdAt={message.created_at}
                 readNftIdLength={message.read_nft_ids.length}
                 isMine={isMine}
