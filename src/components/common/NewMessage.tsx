@@ -40,7 +40,7 @@ export default function NewMessage({text, onTextChange, onPressSend, roomLoading
           mt={0}
           onChangeText={onTextChange}
           rightComp={
-            <Div ml10 onPress={!roomLoading && text && onPressSend}>
+            <Div flex justifyCenter pl10 onPress={!roomLoading && text && onPressSend}>
               <Span medium fontSize={14} primary={text} gray400={!text}>
                 전송
               </Span>

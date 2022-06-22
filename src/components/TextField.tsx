@@ -32,7 +32,7 @@ export const TextField = (props) => {
           {label}
         </Span>
       ) : null}
-      <Row itemsCenter mt4>
+      <Row itemsCenter my2>
         {leftComp && <Col auto>{leftComp}</Col>}
         <Col>
           <TextInput

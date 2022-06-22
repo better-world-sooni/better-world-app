@@ -73,23 +73,6 @@ function ChatListScreen() {
     }
   }, [chatListRes]);
 
-  useEffect(() => {
-    const updateList = newRoom => {
-      const index = chatRooms.findIndex(x => x.room_id === newRoom.room_id);
-      newRoom.unread_count = 1;
-      if (index > -1) {        
-        newRoom.unread_count = chatRooms[index].unread_count + 1;
-        newRoom.room_image = chatRooms[index].room_image;
-        setChatRooms(prev => [newRoom, ...prev.filter((_, i) => i != index)]);
-      } else {
-        if (chatSocket) chatSocket.newRoomOpen(newRoom.room_id);
-        setChatRooms(prev => [newRoom, ...prev]);
-      }
-    };
-    updateListRef.current = updateList;
-    chatRoomsRef.current = chatRooms;
-  }, [chatRooms, chatSocket, isEntered]);
-
   useFocusEffect(
     useCallback(() => {
       if(chatSocket?.state === 'connected') chatSocket.fetchList();
@@ -105,11 +88,8 @@ function ChatListScreen() {
         setChatRooms(res.data.list_data);
       });
       channel.on('messageList', res => {
-        console.log("list get")
-        updateListRef.current(res.room);
+        updateListRef.current(res.room, res.read);
       });
-      channel.on('close', () => console.log('Disconnected from chat'));
-      channel.on('disconnect', () => console.log('check disconnect'));
     };
     wsConnect();
     
@@ -128,6 +108,28 @@ function ChatListScreen() {
     };
   }, [currentNft]);
 
+  useEffect(() => {
+    const updateList = (room, read) => {
+      const index = chatRooms.findIndex(x => x.room_id === room.room_id);
+      if (index > -1) {        
+        room.unread_count = read ? 0 : chatRooms[index].unread_count + 1;
+        setChatRooms(prev => [room, ...prev.filter((_, i) => i != index)]);
+      }
+      else {
+        room.unread_count = read ? 0 : 1;
+        setChatRooms(prev => [room, ...prev]);
+      }
+    };
+    updateListRef.current = updateList;
+    chatRoomsRef.current = chatRooms;
+  }, [chatRooms, chatSocket, isEntered]);
+
+  const readCountRefresh = useCallback((roomId) => {
+    const index = chatRooms.findIndex(x => x.room_id === roomId);
+    const room = Object.assign({}, chatRooms[index]); 
+    room.unread_count = 0;
+    setChatRooms(prev => [...prev.slice(0, index), room, ...prev.slice(index+1)])
+  }, [chatRooms, setChatRooms])
 
   const translationY = useSharedValue(0);
   const scrollHandler = useAnimatedScrollHandler(event => {
@@ -201,7 +203,10 @@ function ChatListScreen() {
           return (
             <ChatRoomItemMemo
               key={index}
-              onPress={() => gotoChatRoom(item.room_id, item.room_name, item.room_image, item.opponent_nft)}
+              onPress={() => {
+                readCountRefresh(item.room_id)
+                gotoChatRoom(item.room_id, item.room_name, item.room_image, item.opponent_nft)
+              }}
               room={item}
             />
           );

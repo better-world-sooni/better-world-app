@@ -34,6 +34,7 @@ type RoomMessage = {
 type ListMessage = {
   type: 'list';
   room: object;
+  read: boolean;
 };
 
 

@@ -60,15 +60,11 @@ function ChatRoomScreen({
   
   const [connectRoomId, setConnectRoomId] = useState(null);
   const [chatSocket, setChatSocket] = useState(null);
-  const [numNfts, setNumNfts] = useState(null);
   const [enterNfts, setEnterNfts] = useState([]);
   const [messages, setMessages] = useState(
     chatRoomRes ? chatRoomRes.init_messages : [],
   );
   const [text, setText] = useState('');
-  const [isNew, setIsNew] = useState(
-    (chatRoomRes ? chatRoomRes.init_messages : []).length == 0,
-  );
   const flatListRef = useRef(null);
   const {goBack} = useNavigation();
 
@@ -83,16 +79,12 @@ function ChatRoomScreen({
           setMessages(res['update_msgs']);
         });
         channel.on('messageRoom', res => {
-          console.log("roomget")
           setMessages(m => [res.message, ...m]);
         });
         channel.on('leave', res => {
           if (currentNftId != res['leave_nft']) {
             setEnterNfts(res['new_nfts']);
           }
-        });
-        channel.on('new', res => {
-          setIsNew(false);
         });
       };
       wsConnect();
@@ -110,8 +102,6 @@ function ChatRoomScreen({
     if (chatRoomRes) {
       setMessages(chatRoomRes.init_messages);
       setConnectRoomId(chatRoomRes.room_id);
-      setIsNew(chatRoomRes.init_messages.length == 0);
-      setNumNfts(chatRoomRes.num_nfts);
     }
   }, [chatRoomRes]);
 
@@ -136,8 +126,7 @@ function ChatRoomScreen({
         room_image: roomImage,
         last_message: text,
       };
-      if (isNew) chatSocket.sendNew(msg, room, opponentNft);
-      else chatSocket.send(msg, room, opponentNft);
+      chatSocket.send(msg, room, opponentNft);
     } 
     else Alert.alert('네트워크가 불안정하여 메세지를 보내지 못했습니다');
     setText('');
@@ -251,7 +240,6 @@ function ChatRoomScreen({
                 createdAt={message.created_at}
                 readNftIdLength={message.read_nft_ids.length}
                 isMine={isMine}
-                numNfts={numNfts}
                 showTime={showTime}
                 showAuthor={showAuthor}
                 showDate={showDate}
@@ -266,7 +254,6 @@ function ChatRoomScreen({
           roomLoading={chatRoomLoad}
         />
       </KeyboardAvoidingView>
-      <Div h={HAS_NOTCH ? 27 : 12} bgWhite />
     </>
   );
 }
@@ -275,7 +262,6 @@ const Message = ({
   text,
   avatar,
   isMine,
-  numNfts,
   createdAt,
   readNftIdLength,
   showTime,
@@ -283,7 +269,7 @@ const Message = ({
   showDate,
   roomName,
 }) => {
-  const unreadCount = numNfts - readNftIdLength;
+  const unreadCount = 2 - readNftIdLength;
   return (
     <>
       <Row
