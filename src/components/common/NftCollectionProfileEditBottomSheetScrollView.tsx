@@ -13,6 +13,7 @@ import {Check, Tool, Trash, Upload} from 'react-native-feather';
 import useUploadImage from 'src/hooks/useUploadImage';
 import apis from 'src/modules/apis';
 import Colors from 'src/constants/Colors';
+import {DEVICE_WIDTH} from 'src/modules/styles';
 
 export default function NftCollectionProfileEditBottomSheetScrollView({
   nftCollection,
@@ -46,7 +47,7 @@ export default function NftCollectionProfileEditBottomSheetScrollView({
     url: apis.nft_collection.contractAddress._(nftCollection.contract_address)
       .url,
     property: 'background_image_uri',
-    successReloadKey: apis.nft_collection.contractAddress.profile(
+    successReloadKey: apis.nft_collection.contractAddress._(
       nftCollection.contract_address,
     ),
   });
@@ -63,7 +64,7 @@ export default function NftCollectionProfileEditBottomSheetScrollView({
     url: apis.nft_collection.contractAddress._(nftCollection.contract_address)
       .url,
     property: 'image_uri',
-    successReloadKey: apis.nft_collection.contractAddress.profile(
+    successReloadKey: apis.nft_collection.contractAddress._(
       nftCollection.contract_address,
     ),
   });
@@ -91,7 +92,7 @@ export default function NftCollectionProfileEditBottomSheetScrollView({
           )}
         </Div>
         <Row zIndex={100} px15 mt={-50} relative mb20 itemsEnd>
-          <Div h30 absolute w={'100%'} bgWhite bottom0></Div>
+          <Div h45 absolute w={DEVICE_WIDTH} bgWhite bottom0></Div>
           <Col auto mr10 relative>
             <Div
               rounded100

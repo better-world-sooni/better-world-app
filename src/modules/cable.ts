@@ -1,5 +1,7 @@
 import { createCable } from '@anycable/core'
 const URL = 'wss://api.betterworldapp.io:8080/cable';
+// const URL = 'ws://localhost:8080/cable';
+
 
 function getWebSocketURL(jwt) {
 	return `${URL}?token=${jwt}`

@@ -1,4 +1,4 @@
-import React, {useEffect, useRef} from 'react';
+import React from 'react';
 import {Div} from 'src/components/common/Div';
 import {HAS_NOTCH} from 'src/modules/constants';
 import {Row} from 'src/components/common/Row';
@@ -6,8 +6,11 @@ import {Col} from 'src/components/common/Col';
 import {
   ChevronDown,
   ChevronLeft,
+  ChevronUp,
+  Feather,
   Image,
-  MoreHorizontal,
+  Upload,
+  Zap,
 } from 'react-native-feather';
 import apis from 'src/modules/apis';
 import {Img} from 'src/components/common/Img';
@@ -19,11 +22,7 @@ import {Span} from 'src/components/common/Span';
 import {createdAtText} from 'src/modules/timeUtils';
 import useUploadPost from 'src/hooks/useUploadPost';
 import UploadImageSlideShow from 'src/components/common/UploadImageSlideShow';
-import {
-  KeyboardAvoidingView,
-  ScrollView,
-  TextInput,
-} from 'src/modules/viewComponents';
+import {KeyboardAvoidingView, TextInput} from 'src/modules/viewComponents';
 import {useApiSelector, useReloadGETWithToken} from 'src/redux/asyncReducer';
 import {ActivityIndicator, Platform} from 'react-native';
 import {MenuView} from '@react-native-menu/menu';
@@ -32,28 +31,24 @@ import Animated, {
   useAnimatedStyle,
   useSharedValue,
 } from 'react-native-reanimated';
-import {DEVICE_HEIGHT, DEVICE_WIDTH} from 'src/modules/styles';
-import {BlurView} from '@react-native-community/blur';
+import {DEVICE_WIDTH} from 'src/modules/styles';
 import {CustomBlurView} from 'src/components/common/CustomBlurView';
 import Colors from 'src/constants/Colors';
 import useAutoFocusRef from 'src/hooks/useAutoFocusRef';
-import TruncatedText from 'src/components/common/TruncatedText';
 import RepostedPost from 'src/components/common/RepostedPost';
 import CollectionEvent from 'src/components/common/CollectionEvent';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import RepostedTransaction from 'src/components/common/RepostedTransaction';
+import {ICONS} from 'src/modules/icons';
 
 const postTypes = [
   {
     id: '',
-    title: '기본',
+    title: '게시물',
   },
   {
     id: 'Proposal',
-    title: '투표',
-  },
-  {
-    id: 'Forum',
-    title: '포럼',
+    title: '제안',
   },
 ];
 
@@ -62,9 +57,14 @@ export enum PostOwnerType {
   NftCollection,
 }
 
+export enum PostType {
+  Default = '',
+  Proposal = 'Proposal',
+}
+
 const NewPostScreen = ({
   route: {
-    params: {postOwnerType, repostable, collectionEvent},
+    params: {postOwnerType, repostable, collectionEvent, transaction, postType},
   },
 }) => {
   const autoFocusRef = useAutoFocusRef();
@@ -78,9 +78,7 @@ const NewPostScreen = ({
     shallowEqual,
   );
   const {data: nftCollectionData, isLoading: nftCollectionLoading} =
-    useApiSelector(
-      apis.nft_collection.contractAddress.profile(currentNft.contract_address),
-    );
+    useApiSelector(apis.nft_collection._());
   const postOwnerIsCollection = postOwnerType == PostOwnerType.NftCollection;
   const uploadSuccessCallback = () => {
     reloadGetWithToken(
@@ -88,7 +86,8 @@ const NewPostScreen = ({
         ? apis.post.list.nftCollection(currentNft.contract_address)
         : apis.post.list._(),
     );
-    reloadGetWithToken(apis.feed._());
+    reloadGetWithToken(apis.feed.forum());
+    reloadGetWithToken(apis.feed.social());
     goBack();
   };
   const {
@@ -107,7 +106,7 @@ const NewPostScreen = ({
     handleRemoveImage,
     uploadPost,
   } = useUploadPost({
-    initialPostType: repostable?.type == 'Forum' ? 'Proposal' : '',
+    initialPostType: postType,
   });
 
   const handlePressUpload = () => {
@@ -116,6 +115,7 @@ const NewPostScreen = ({
       uploadSuccessCallback,
       repostId: repostable?.id,
       collectionEventId: collectionEvent?.id,
+      transactionHash: transaction?.transaction_hash,
     });
   };
 
@@ -167,20 +167,31 @@ const NewPostScreen = ({
                 position: 'absolute',
               }}></CustomBlurView>
           </Animated.View>
-          <Div zIndex={100} absolute w={DEVICE_WIDTH} top={notchHeight+5}>
+          <Div zIndex={100} absolute w={DEVICE_WIDTH} top={notchHeight + 5}>
             <Row itemsCenter py5 h40 px15>
               <Col itemsStart>
                 <Div auto rounded100 onPress={goBack}>
-                  <ChevronLeft height={30} color="black" strokeWidth={2} />
+                  <ChevronLeft
+                    width={22}
+                    height={22}
+                    color="black"
+                    strokeWidth={2}
+                  />
                 </Div>
               </Col>
-              <Col auto></Col>
-              <Col itemsEnd>
-                <Div onPress={handlePressUpload}>
-                  <Span info bold fontSize={16}>
-                    {loading ? <ActivityIndicator /> : '게시'}
-                  </Span>
-                </Div>
+              <Col></Col>
+              <Col itemsEnd onPress={handlePressUpload}>
+                {loading ? (
+                  <ActivityIndicator />
+                ) : currentPostType == '' ? (
+                  <Upload
+                    width={22}
+                    height={22}
+                    strokeWidth={2}
+                    color={'black'}></Upload>
+                ) : (
+                  <Img source={ICONS.lightBulb} h22 w22 />
+                )}
               </Col>
             </Row>
           </Div>
@@ -210,19 +221,22 @@ const NewPostScreen = ({
               <Row>
                 <Col auto>
                   <Span>
-                    <Span fontSize={14} bold>
+                    <Span fontSize={15} bold>
                       {getNftName(postOwner)}{' '}
                     </Span>
-                    {!postOwnerIsCollection &&
+                    {!postOwnerIsCollection ? (
                       currentNft.token_id &&
                       currentNft.nft_metadatum.name !=
                         getNftName(currentNft) && (
-                        <Span fontSize={14} gray700>
+                        <Span fontSize={12} gray700 bold>
                           {' '}
                           {currentNft.nft_metadatum.name}
                         </Span>
-                      )}
-                    <Span fontSize={14} gray700>
+                      )
+                    ) : (
+                      <Img source={ICONS.sealCheck} h15 w15></Img>
+                    )}
+                    <Span fontSize={12} gray700>
                       {' · '}
                       {createdAtText(new Date())}
                     </Span>
@@ -242,6 +256,8 @@ const NewPostScreen = ({
                   bold
                   onChangeText={handleContentChange}></TextInput>
               </Row>
+              {transaction && <RepostedTransaction transaction={transaction} />}
+              {repostable && <RepostedPost repostedPost={repostable} />}
               {addImages && (
                 <Div mt8>
                   <UploadImageSlideShow
@@ -252,7 +268,6 @@ const NewPostScreen = ({
                   />
                 </Div>
               )}
-              {repostable && <RepostedPost repostedPost={repostable} />}
               {collectionEvent && (
                 <Div mt8>
                   <CollectionEvent
@@ -265,44 +280,49 @@ const NewPostScreen = ({
             </Col>
           </Row>
         </Animated.ScrollView>
-        <Row px15 py15 borderTop={0.5} borderGray200>
+        <Row px15 py8>
           <Col />
           <Col auto>
-            <Row itemsCenter onPress={() => setAddImages(prev => !prev)}>
+            <Row
+              itemsCenter
+              onPress={() => setAddImages(prev => !prev)}
+              border={0.5}
+              rounded10
+              borderGray200
+              p9>
               <Col auto mr10>
                 <Image
-                  strokeWidth={1.7}
-                  color={addImages ? Colors.danger.DEFAULT : 'black'}
-                  height={24}
-                  width={24}></Image>
+                  strokeWidth={2}
+                  color={!addImages ? Colors.info.DEFAULT : 'black'}
+                  height={22}
+                  width={22}></Image>
               </Col>
               <Col auto>
-                <Span color={addImages ? Colors.danger.DEFAULT : 'black'}>
-                  이미지 {addImages ? '제거' : '추가'}
+                <Span color={!addImages ? Colors.info.DEFAULT : 'black'} bold>
+                  미디어 {addImages ? '제거' : '추가'}
                 </Span>
               </Col>
             </Row>
           </Col>
-          {postOwnerIsCollection && (
-            <Col auto ml10>
-              <MenuView onPressAction={handlePressMenu} actions={postTypes}>
-                <Row itemsCenter>
-                  <Col auto mr5>
-                    <ChevronDown color={'black'} height={24} width={24} />
-                  </Col>
-                  <Col auto>
-                    <Span>
-                      {
-                        postTypes.filter(
-                          postType => postType.id == currentPostType,
-                        )[0].title
-                      }
-                    </Span>
-                  </Col>
-                </Row>
-              </MenuView>
-            </Col>
-          )}
+          <Col auto ml10>
+            <MenuView onPressAction={handlePressMenu} actions={postTypes}>
+              <Row itemsCenter border={0.5} rounded10 borderGray200 p8>
+                <Col auto mr5>
+                  <ChevronUp
+                    color={'black'}
+                    height={24}
+                    width={24}
+                    strokeWidth={2}
+                  />
+                </Col>
+                <Col auto>
+                  <Span bold>
+                    {postTypes.filter(pt => pt.id == currentPostType)[0].title}
+                  </Span>
+                </Col>
+              </Row>
+            </MenuView>
+          </Col>
         </Row>
       </KeyboardAvoidingView>
       <Div h={HAS_NOTCH ? 27 : 12} bgWhite />

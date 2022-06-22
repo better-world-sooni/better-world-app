@@ -47,15 +47,9 @@ export default function PolymorphicOwner({
     }
     gotoNftCollectionProfile();
   };
-  const sheildProps = {
-    width: 18,
-    height: 18,
-    color: 'white',
-    strokeWidth: 1.7,
-  };
 
   return (
-    <Row itemsCenter h70 onPress={handlePressRow} px15 relative>
+    <Row itemsCenter h64 onPress={handlePressRow} px15 relative>
       <Img w50 h50 rounded100 uri={getNftProfileImage(nft, 150, 150)} />
       <Col mx15>
         <Div>
@@ -65,15 +59,15 @@ export default function PolymorphicOwner({
         </Div>
         {getNftName(nft) !== nft.nft_metadatum.name && (
           <Div mt3>
-            <Span gray600 fontSize={12}>
+            <Span gray700 fontSize={12} bold>
               {nft.nft_metadatum.name}
             </Span>
           </Div>
         )}
       </Col>
       {showPrivilege && privilege && (!isAdmin || isCurrentNft) && (
-        <Col auto p8 rounded100 bgRealBlack mx5>
-          <Shield strokeWidth={2} color={'white'} height={15} width={15} />
+        <Col auto mx5>
+          <Shield strokeWidth={2} color={'black'} height={22} width={22} />
         </Col>
       )}
       {showPrivilege && isAdmin && !isCurrentNft && (
@@ -99,10 +93,10 @@ export default function PolymorphicOwner({
           p8
           rounded100
           border1={following}
-          borderGray400={following}
+          borderGray200
           onPress={handlePressFollowing}>
-          <Span white={!following} bold px5>
-            {following ? '언팔로우' : '팔로우'}
+          <Span white={!following} bold px5 fontSize={14}>
+            {!nft ? '불러오는 중' : following ? '팔로잉' : '팔로우'}
           </Span>
         </Col>
       )}

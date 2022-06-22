@@ -20,14 +20,13 @@ export default function RankedOwner({rankItem}) {
       },
     },
   });
-  return <RankMemo {...rankItem} gotoNftProfile={gotoNftProfile} />;
+  return <RankMemo {...rankItem} gotoNftProfile={() => gotoNftProfile()} />;
 }
 
 const RankMemo = memo(RankOwnerContent);
 
 function RankOwnerContent({
-  rank_score,
-  rank,
+  contribution,
   nft_metadatum_name,
   nft_name,
   nft_image_uri,
@@ -35,7 +34,7 @@ function RankOwnerContent({
   gotoNftProfile,
 }) {
   return (
-    <Row itemsCenter h70 onPress={gotoNftProfile} px15 relative>
+    <Row itemsCenter h64 onPress={gotoNftProfile} px15 relative>
       <Img
         w50
         h50
@@ -48,33 +47,21 @@ function RankOwnerContent({
       />
       <Col mx15>
         <Div>
-          <Span medium fontSize={15} bold>
+          <Span medium fontSize={16} bold>
             {nft_name || nft_metadatum_name}
           </Span>
         </Div>
         {nft_name && (
           <Div mt3>
-            <Span gray600 fontSize={12}>
+            <Span gray700 fontSize={12} bold>
               {nft_metadatum_name}
             </Span>
           </Div>
         )}
       </Col>
-      <Col />
       <Col auto mr10 itemsCenter justifyCenter>
-        <Span gray700>
-          <Span bold black>
-            {rank}
-          </Span>{' '}
-          위
-        </Span>
-      </Col>
-      <Col auto mr10 itemsCenter justifyCenter>
-        <Span gray700>
-          <Span bold black>
-            {rank_score}
-          </Span>{' '}
-          RP
+        <Span gray700 bold>
+          <Span black>{Math.round(contribution * 10) / 10}</Span> 인분 기여
         </Span>
       </Col>
     </Row>

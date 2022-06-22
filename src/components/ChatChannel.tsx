@@ -1,76 +1,73 @@
 import {Channel, ChannelEvents} from '@anycable/core';
 
-type nftId = {
-  token_id: number;
-  contract_address: string;
-};
 
 type RoomId = {
   roomId: string | number;
 };
 
-type Params = RoomId | nftId;
+type NftId = {
+  contract_address: string;
+  token_id: number;
+}
+
+
+type Params = RoomId | NftId;
+
 
 type EnteringMessage = {
   type: 'enter';
-  data: string;
+  entered_nfts: Array<NftId>;
+  update_msgs: Array<object>;
 };
 
 type LeavingMessage = {
   type: 'leave';
-  data: string;
+  leave_nft: NftId;
 };
 
-type NewRoomOpen = {
-  type: 'new';
-  data: string;
+type RoomMessage = {
+  type: 'room';
+  message: object;
 };
 
-type ChatMessage = {
-  type: 'send';
-  data: object;
+type ListMessage = {
+  type: 'list';
+  room: object;
+  read: boolean;
 };
 
-type FetchMessage = {
-  type: 'fetch';
-  data: object;
+type ListFetchMessage = {
+  type: 'fetchList';
+  data: {
+    list_data: Array<object>;
+    total_unread: number;
+  }
 };
 
 type Message =
   | EnteringMessage
-  | NewRoomOpen
   | LeavingMessage
-  | ChatMessage
-  | FetchMessage;
+  | RoomMessage
+  | ListMessage
+  | ListFetchMessage;
 
 interface Events extends ChannelEvents<Message> {
   enter: (msg: EnteringMessage) => void;
   leave: (msg: LeavingMessage) => void;
-  new: (msg: NewRoomOpen) => void;
-  fetch: (msg: FetchMessage) => void;
+  fetchList: (msg: ListFetchMessage) => void;
+  messageRoom: (msg: RoomMessage) => void;
+  messageList: (msg: ListMessage) => void;
 }
 
 export class ChatChannel extends Channel<Params, Message, Events> {
-  static identifier = 'ChatChannelWeb';
+  static identifier = 'ChatChannel';
 
-  async send(message, room) {
-    return this.perform('send_message', {message, room});
+  async send(message, room, opponent) {
+    return this.perform('send_message', {message, room, opponent});
   }
 
-  async sendNew(message, room) {
-    return this.perform('send_message_new', {message, room});
-  }
-
-  async newRoomOpen(roomId) {
-    return this.perform('new_room_open', {roomId});
-  }
-
-  async enter(roomId) {
-    return this.perform('enter_room', {roomId});
-  }
-
-  async leave(roomId) {
-    return this.perform('leave_room', {roomId});
+  async enter() {
+    return this.perform('enter_room');
   }
 
   async fetchList() {
@@ -82,11 +79,12 @@ export class ChatChannel extends Channel<Params, Message, Events> {
       return this.emit('enter', message);
     } else if (message.type === 'leave') {
       return this.emit('leave', message);
-    } else if (message.type === 'new') {
-      return this.emit('new', message);
-    } else if (message.type === 'fetch') {
-      return this.emit('fetch', message);
+    } else if (message.type === 'fetchList') {
+      return this.emit('fetchList', message);
+    } else if (message.type === 'room') {
+      return this.emit('messageRoom', message)
+    } else if (message.type === 'list') {
+      return this.emit('messageList', message)
     }
-    super.receive(message);
   }
 }

@@ -8,22 +8,28 @@ import {resizeImageUri} from 'src/modules/uriUtils';
 import {Span} from './Span';
 import {FollowOwnerType, FollowType} from 'src/screens/FollowListScreen';
 import {
-  useGotoAffinity,
-  useGotoCollectionEventList,
-  useGotoCollectionFeed,
   useGotoFollowList,
+  useGotoMyCollectionEventList,
+  useGotoMyCommunityWalletList,
+  useGotoNewCollectionEvent,
+  useGotoNewCommunityWallet,
   useGotoNftCollectionProfile,
 } from 'src/hooks/useGoto';
-import {shallowEqual, useSelector} from 'react-redux';
-import {RootState} from 'src/redux/rootReducer';
-import {Calendar, Layers, PieChart, ThumbsUp} from 'react-native-feather';
+import {Calendar, CreditCard} from 'react-native-feather';
+import {useApiSelector} from 'src/redux/asyncReducer';
+import apis from 'src/modules/apis';
+import {getSiPrefixedNumber} from 'src/modules/numberUtils';
+import {useIsAdmin} from 'src/modules/nftUtils';
+import Colors from 'src/constants/Colors';
 import {ICONS} from 'src/modules/icons';
+import {handlePressAffinity} from 'src/modules/bottomPopupUtils';
 
 const MyNftCollectionMenu = ({nftCollection}) => {
-  const {currentNft} = useSelector(
-    (root: RootState) => root.app.session,
-    shallowEqual,
+  const {data: feedCountRes, isLoading: feedCountLoading} = useApiSelector(
+    apis.feed.count(),
   );
+  const upcomingEventCount = feedCountRes?.upcoming_event_count;
+  const communityWalletCount = feedCountRes?.community_wallet_count;
   const textColor = 'black';
   const backgroundColor = 'white';
   const gotoFollowList = useGotoFollowList({
@@ -33,18 +39,13 @@ const MyNftCollectionMenu = ({nftCollection}) => {
   const gotoNftCollectionProfile = useGotoNftCollectionProfile({
     nftCollection,
   });
-  const gotoCollectionFeed = useGotoCollectionFeed({
-    contractAddress: currentNft.contract_address,
-  });
-  const gotoCollectionEventList = useGotoCollectionEventList({
-    nftCollection,
-  });
-  const gotoAffinity = useGotoAffinity({
-    nftCollection,
-  });
+  const gotoCommunityWalletList = useGotoMyCommunityWalletList();
+  const gotoCollectionEventList = useGotoMyCollectionEventList();
+  const gotoNewCollectionEvent = useGotoNewCollectionEvent();
+  const gotoNewCommunityWallet = useGotoNewCommunityWallet();
   const notchHeight = HAS_NOTCH ? 44 : 0;
   const headerHeight = notchHeight + 18;
-
+  const isAdmin = useIsAdmin();
   return (
     <Div flex={1} bg={backgroundColor} relative borderRight={0.5} borderGray200>
       <Div h={headerHeight} />
@@ -64,10 +65,9 @@ const MyNftCollectionMenu = ({nftCollection}) => {
           <Div py10>
             <Row itemsCenter>
               <Col auto mr10 onPress={gotoNftCollectionProfile}>
-                <Span>
-                  <Span fontSize={20} bold color={textColor}>
-                    {nftCollection.name}
-                  </Span>
+                <Span fontSize={20} bold color={textColor}>
+                  {nftCollection.name}{' '}
+                  <Img source={ICONS.sealCheck} h18 w18></Img>
                 </Span>
               </Col>
             </Row>
@@ -86,7 +86,7 @@ const MyNftCollectionMenu = ({nftCollection}) => {
               <Col />
             </Row>
             <Row mt10 itemsEnd>
-              <Col auto mr20 onPress={gotoAffinity}>
+              <Col auto mr20 onPress={handlePressAffinity}>
                 <Span bold fontSize={13}>
                   <Span gray700 regular fontSize={13}>
                     멤버 친목도
@@ -105,82 +105,82 @@ const MyNftCollectionMenu = ({nftCollection}) => {
               <Col />
             </Row>
           </Div>
-          <Row itemsCenter py16 onPress={gotoCollectionEventList}>
-            <Col auto mr16>
-              <Calendar
-                strokeWidth={1.3}
-                color={'black'}
-                height={24}
-                width={24}
-              />
-            </Col>
-            <Col>
-              <Span fontSize={16}>일정</Span>
-            </Col>
-          </Row>
-          <Row
-            itemsCenter
-            py16
-            onPress={() =>
-              gotoCollectionFeed(`${nftCollection.name} 멤버 피드`)
-            }>
-            <Col auto mr16>
-              <Layers
-                strokeWidth={1.3}
-                color={textColor}
-                height={24}
-                width={24}
-              />
-            </Col>
-            <Col>
-              <Span fontSize={16} color={textColor}>
-                모든 멤버들의 게시물
-              </Span>
-            </Col>
-          </Row>
-          <Row
-            itemsCenter
-            py16
-            onPress={() =>
-              gotoCollectionFeed(`${nftCollection.name} 진행중인 포럼`, 'Forum')
-            }>
-            <Col auto mr16>
-              <PieChart
-                strokeWidth={1.3}
-                color={textColor}
-                height={24}
-                width={24}
-              />
-            </Col>
-            <Col>
-              <Span fontSize={16} color={textColor}>
-                진행중인 포럼
-              </Span>
-            </Col>
-          </Row>
-          <Row
-            itemsCenter
-            py16
-            onPress={() =>
-              gotoCollectionFeed(
-                `${nftCollection.name} 진행중인 투표`,
-                'Proposal',
-              )
-            }>
-            <Col auto mr16>
-              <ThumbsUp
-                strokeWidth={1.3}
-                color={textColor}
-                height={24}
-                width={24}
-              />
-            </Col>
-            <Col>
-              <Span fontSize={16} color={textColor}>
-                진행중인 투표
-              </Span>
-            </Col>
-          </Row>
+          {communityWalletCount ? (
+            <Row itemsCenter py16 onPress={gotoCommunityWalletList}>
+              <Col auto mr16>
+                <CreditCard
+                  strokeWidth={2}
+                  color={'black'}
+                  height={22}
+                  width={22}
+                />
+              </Col>
+              <Col>
+                <Span fontSize={16}>커뮤니티 지갑</Span>
+              </Col>
+              <Col auto>
+                <Span gray700 bold fontSize={14}>
+                  {getSiPrefixedNumber(communityWalletCount)}개
+                </Span>
+              </Col>
+            </Row>
+          ) : (
+            isAdmin && (
+              <Row itemsCenter py16 onPress={gotoNewCommunityWallet}>
+                <Col auto mr16>
+                  <CreditCard
+                    strokeWidth={2}
+                    color={Colors.primary.DEFAULT}
+                    height={22}
+                    width={22}
+                  />
+                </Col>
+                <Col>
+                  <Span fontSize={16} primary>
+                    커뮤니티 지갑 추가
+                  </Span>
+                </Col>
+              </Row>
+            )
+          )}
+          {upcomingEventCount ? (
+            <Row itemsCenter py16 onPress={gotoCollectionEventList}>
+              <Col auto mr16>
+                <Calendar
+                  strokeWidth={2}
+                  color={'black'}
+                  height={22}
+                  width={22}
+                />
+              </Col>
+              <Col>
+                <Span fontSize={16}>예정된 일정</Span>
+              </Col>
+              <Col auto>
+                <Span gray700 bold fontSize={14}>
+                  {getSiPrefixedNumber(upcomingEventCount)}개
+                </Span>
+              </Col>
+            </Row>
+          ) : (
+            isAdmin && (
+              <Row itemsCenter py16 onPress={gotoNewCollectionEvent}>
+                <Col auto mr16>
+                  <Calendar
+                    strokeWidth={2}
+                    color={Colors.primary.DEFAULT}
+                    height={24}
+                    width={24}
+                  />
+                </Col>
+                <Col>
+                  <Span fontSize={16} primary>
+                    일정 추가
+                  </Span>
+                </Col>
+              </Row>
+            )
+          )}
         </Div>
       )}
     </Div>

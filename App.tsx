@@ -19,6 +19,7 @@ import {NativeBaseProvider} from 'native-base';
 import {NavigationContainer} from '@react-navigation/native';
 import {navigationRef} from 'src/modules/rootNavagation';
 import {onMessageReceived} from 'src/modules/notification'
+import BottomPopups from 'src/components/common/BottomPopups';
 
 const App = () => {
   const {
@@ -68,19 +69,20 @@ const App = () => {
   async function initialOpened() {
     const initialNotification = await notifee.getInitialNotification();
     if (initialNotification) {
-      setNotificationOpenData(initialNotification.notification.data)
+      setNotificationOpenData(initialNotification.notification.data);
     }
   }
 
   useEffect(() => {
-    initialOpened().then(() => setLoading(false)).catch(console.error);
-    return notifee.onForegroundEvent(({ type, detail }) => {
+    initialOpened()
+      .then(() => setLoading(false))
+      .catch(console.error);
+    return notifee.onForegroundEvent(({type, detail}) => {
       if (type === EventType.PRESS) {
-        gotoWithNotification(detail.notification.data)
+        gotoWithNotification(detail.notification.data);
       }
     });
   }, [token]);
-
 
   useEffect(() => {
     if (isLoggedIn) {
@@ -95,12 +97,13 @@ const App = () => {
   }
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
-      <StatusBar barStyle="dark-content" backgroundColor='#FFFFFF'></StatusBar>
+    <GestureHandlerRootView style={{flex: 1}}>
+      <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF"></StatusBar>
       <NavigationContainer ref={navigationRef}>
         <NativeBaseProvider>
           <BottomSheetModalProvider>
-            <AppContent notificationOpenData={notificationOpenData}/>
+            <AppContent notificationOpenData={notificationOpenData} />
+            <BottomPopups />
           </BottomSheetModalProvider>
         </NativeBaseProvider>
       </NavigationContainer>

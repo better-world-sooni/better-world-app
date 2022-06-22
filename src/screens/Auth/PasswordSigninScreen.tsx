@@ -2,24 +2,19 @@ import React, {useCallback, useRef, useState} from 'react';
 import {ActivityIndicator, Keyboard, Platform} from 'react-native';
 import {Col} from 'src/components/common/Col';
 import {Div} from 'src/components/common/Div';
-import {Img} from 'src/components/common/Img';
 import {Row} from 'src/components/common/Row';
 import {Span} from 'src/components/common/Span';
 import {TextField} from 'src/components/TextField';
 import {useLogin} from 'src/redux/appReducer';
-import {IMAGES} from 'src/modules/images';
 import BottomPopup from 'src/components/common/BottomPopup';
 import {BottomSheetModal} from '@gorhom/bottom-sheet';
-import {QuestionIcon} from 'native-base';
 import {KeyboardAvoidingView} from 'src/modules/viewComponents';
-import {HAS_NOTCH} from 'src/modules/constants';
 import {DEVICE_WIDTH} from 'src/modules/styles';
-import Carousel from 'react-native-snap-carousel';
-import {useGotoHome, useGotoOnboarding, useGotoScan} from 'src/hooks/useGoto';
-import {ScanType} from 'src/screens/ScanScreen';
+import {useGotoHome, useGotoOnboarding} from 'src/hooks/useGoto';
 import {ChevronLeft} from 'react-native-feather';
 import {useNavigation} from '@react-navigation/native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import {isAddress} from 'src/modules/blockchainUtils';
 
 const PasswordSigninScreen = () => {
   const [address, setAddress] = useState('');
@@ -39,6 +34,10 @@ const PasswordSigninScreen = () => {
     }
     if (address === '') {
       expandBottomPopupWithText('클레이튼 주소를 입력해 주세요');
+      return;
+    }
+    if (!isAddress(address)) {
+      expandBottomPopupWithText('클레이튼 주소가 유효하지 않습니다.');
       return;
     }
     if (password === '') {
@@ -64,7 +63,9 @@ const PasswordSigninScreen = () => {
     );
   }, [address, password]);
 
-  const handleChangeAddress = useCallback(text => setAddress(text), []);
+  const handleChangeAddress = useCallback(text => {
+    setAddress(text);
+  }, []);
   const handleChangePassword = useCallback(text => setPassword(text), []);
 
   const expandBottomPopupWithText = text => {
@@ -75,7 +76,10 @@ const PasswordSigninScreen = () => {
   const headerHeight = notchHeight + 50;
 
   return (
-    <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} flex={1} bgWhite>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      flex={1}
+      bgWhite>
       <Div h={headerHeight} zIndex={100} absolute top0>
         <Row
           itemsCenter
@@ -85,7 +89,7 @@ const PasswordSigninScreen = () => {
           zIndex={100}
           absolute
           w={DEVICE_WIDTH}
-          top={notchHeight+5}>
+          top={notchHeight + 5}>
           <Col justifyStart>
             <Div auto rounded100 onPress={goBack}>
               <ChevronLeft

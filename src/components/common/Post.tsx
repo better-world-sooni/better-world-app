@@ -8,10 +8,10 @@ import {
   Repeat,
   ThumbsDown,
   ThumbsUp,
+  Zap,
 } from 'react-native-feather';
 import Colors from 'src/constants/Colors';
 import {
-  useGotoForumFeed,
   useGotoLikeList,
   useGotoNewPost,
   useGotoNftCollectionProfile,
@@ -40,7 +40,6 @@ import {Row} from './Row';
 import {Span} from './Span';
 import {MenuView} from '@react-native-menu/menu';
 import {
-  putPromiseFn,
   useDeletePromiseFnWithToken,
   usePutPromiseFnWithToken,
 } from 'src/redux/asyncReducer';
@@ -48,11 +47,13 @@ import {ReportTypes} from 'src/screens/ReportScreen';
 import useVote, {VoteCategory} from 'src/hooks/useVote';
 import {LikeListType} from 'src/screens/LikeListScreen';
 import {DEVICE_WIDTH} from 'src/modules/styles';
-import {PostOwnerType} from 'src/screens/NewPostScreen';
+import {PostOwnerType, PostType} from 'src/screens/NewPostScreen';
 import TruncatedText from './TruncatedText';
 import RepostedPost from './RepostedPost';
 import CollectionEvent from './CollectionEvent';
 import {getAdjustedHeightFromDimensions} from 'src/modules/imageUtils';
+import RepostedTransaction from './RepostedTransaction';
+import {ICONS} from 'src/modules/icons';
 
 export enum PostEventTypes {
   Delete = 'DELETE',
@@ -61,7 +62,7 @@ export enum PostEventTypes {
   SetWinningProposal = 'SET_WINNING_PROPOSAL',
 }
 
-function PostContent({post}) {
+function PostContent({post, selectableFn = null, displayLabel = false}) {
   const [deleted, setDeleted] = useState(false);
 
   const [loading, setLoading] = useState(false);
@@ -101,7 +102,6 @@ function PostContent({post}) {
       id: PostEventTypes.Report,
       title: '게시물 신고',
       titleColor: '#46F289',
-      subtitle: 'Share action on SNS',
       image: Platform.select({
         ios: 'flag',
         android: 'stat_sys_warning',
@@ -150,7 +150,7 @@ function PostContent({post}) {
     width: 18,
     height: 18,
     color: Colors.gray[700],
-    strokeWidth: 1.7,
+    strokeWidth: 2,
   };
   const heartProps = liked
     ? {
@@ -158,17 +158,17 @@ function PostContent({post}) {
         width: 18,
         height: 18,
         color: Colors.danger.DEFAULT,
-        strokeWidth: 1.7,
+        strokeWidth: 2,
       }
     : actionIconDefaultProps;
 
   const forVoteProps = hasVotedFor
     ? {
-        fill: Colors.primary.DEFAULT,
+        fill: Colors.info.DEFAULT,
         width: 18,
         height: 18,
-        color: Colors.primary.DEFAULT,
-        strokeWidth: 1.7,
+        color: Colors.info.DEFAULT,
+        strokeWidth: 2,
       }
     : actionIconDefaultProps;
   const againstVoteProps = hasVotedAgainst
@@ -177,7 +177,7 @@ function PostContent({post}) {
         width: 18,
         height: 18,
         color: Colors.danger.DEFAULT,
-        strokeWidth: 1.7,
+        strokeWidth: 2,
       }
     : actionIconDefaultProps;
   const gotoPost = useGotoPost({postId: post.id});
@@ -242,7 +242,7 @@ function PostContent({post}) {
     if (event == PostEventTypes.Delete) deletePost();
     if (event == PostEventTypes.Report) gotoReport();
     if (event == PostEventTypes.SetVotingDeadline) setVotingDeadline();
-    if (event == PostEventTypes.SetWinningProposal) setWinningProposal();
+    // if (event == PostEventTypes.SetWinningProposal) setWinningProposal();
   };
 
   const gotoLikeList = useGotoLikeList({
@@ -258,15 +258,11 @@ function PostContent({post}) {
     postOwnerType: PostOwnerType.Nft,
   });
 
-  const gotoForumFeed = useGotoForumFeed({
-    postId: post.id,
-  });
-
   const gotoRepostList = useGotoRepostList({
     postId: post.id,
   });
 
-  const itemWidth = DEVICE_WIDTH - 30 - 50;
+  const itemWidth = DEVICE_WIDTH - 30 - 62;
 
   if (deleted) return null;
 
@@ -274,31 +270,64 @@ function PostContent({post}) {
     <>
       <Div py5 borderBottom={0.5} borderGray200 bgWhite>
         <Row px15 pt5>
-          <Col auto mr10>
+          <Col auto mr8>
+            {displayLabel && (
+              <Div itemsEnd mb5>
+                {post.type == PostType.Proposal ? (
+                  <Zap height={16} width={16} color={Colors.gray[500]} />
+                ) : (
+                  <Heart height={16} width={16} color={Colors.gray[500]} />
+                )}
+              </Div>
+            )}
             <Div onPress={goToProfile}>
               <Img
-                w47
-                h47
+                w54
+                h54
+                border={0.5}
+                borderGray200
                 rounded100
                 uri={getNftProfileImage(post.nft, 200, 200)}
               />
             </Div>
           </Col>
           <Col>
+            {selectableFn ? (
+              <Div mt1 mb4>
+                <Span
+                  bold
+                  info
+                  fontSize={12}
+                  onPress={() => selectableFn(post.id)}>
+                  선택하기
+                </Span>
+              </Div>
+            ) : (
+              displayLabel && (
+                <Div mt1 mb4>
+                  <Span bold gray700 fontSize={12}>
+                    {post.type == PostType.Proposal ? '제안' : '게시물'}
+                  </Span>
+                </Div>
+              )
+            )}
             <Row>
               <Col auto>
                 <Span>
-                  <Span fontSize={14} bold onPress={goToProfile}>
-                    {getNftName(post.nft)}
-                  </Span>{' '}
-                  {post.nft.token_id &&
+                  <Span fontSize={15} bold onPress={goToProfile}>
+                    {getNftName(post.nft)}{' '}
+                  </Span>
+                  {post.nft.token_id ? (
                     post.nft.nft_metadatum.name != getNftName(post.nft) && (
-                      <Span fontSize={14} gray700 onPress={goToProfile}>
+                      <Span fontSize={12} bold gray700 onPress={goToProfile}>
                         {' '}
                         {post.nft.nft_metadatum.name}
                       </Span>
-                    )}
-                  <Span fontSize={14} gray700>
+                    )
+                  ) : (
+                    <Img source={ICONS.sealCheck} h15 w15></Img>
+                  )}
+                  <Span fontSize={12} gray700>
                     {' · '}
                     {createdAtText(post.updated_at)}
                   </Span>
@@ -307,34 +336,35 @@ function PostContent({post}) {
               <Col />
               <Col auto>
                 <MenuView onPressAction={handlePressMenu} actions={menuOptions}>
-                  {loading ? (
-                    <ActivityIndicator />
-                  ) : (
-                    <MoreHorizontal
-                      color={Colors.gray[400]}
-                      width={20}
-                      height={20}
-                    />
-                  )}
+                  <Div>
+                    {loading ? (
+                      <ActivityIndicator />
+                    ) : (
+                      <MoreHorizontal
+                        color={Colors.gray[200]}
+                        width={22}
+                        height={18}
+                      />
+                    )}
+                  </Div>
                 </MenuView>
               </Col>
             </Row>
-            <Row>
-              {post.content ? (
-                <Div>
-                  <TruncatedText
-                    text={post.content}
-                    maxLength={300}
-                    spanProps={{fontSize: 14}}
-                    onPressTruncated={gotoPost}
-                  />
-                </Div>
-              ) : null}
-            </Row>
-            {post.reposted_post && (
-              <Div mt5>
-                <RepostedPost repostedPost={post.reposted_post} enablePress />
+            {post.content ? (
+              <Div>
+                <TruncatedText
+                  text={post.content}
+                  maxLength={300}
+                  spanProps={{fontSize: 14}}
+                  onPressTruncated={gotoPost}
+                />
               </Div>
+            ) : null}
+            {post.transaction && (
+              <RepostedTransaction transaction={post.transaction} enablePress />
+            )}
+            {post.reposted_post && (
+              <RepostedPost repostedPost={post.reposted_post} enablePress />
             )}
             {post.image_uris.length > 0 ? (
               <Div mt5>
@@ -353,7 +383,6 @@ function PostContent({post}) {
                 />
               </Div>
             ) : null}
-
             {post.collection_event && (
               <Div mt5>
                 <CollectionEvent
@@ -434,29 +463,25 @@ function PostContent({post}) {
                     </>
                   )}
                 </>
-              ) : (
-                <>
-                  <Col auto pr12>
-                    <Span
-                      fontSize={12}
-                      style={{fontWeight: '600'}}
-                      onPress={() =>
-                        gotoForumFeed(`${getNftName(post.nft)} 포럼`)
-                      }>
-                      제안 <Span realBlack>{post.repost_count}</Span>개
-                    </Span>
-                  </Col>
-                  <Col />
-                </>
-              )}
+              ) : null}
               {post.type == 'Forum'
                 ? isCurrentCollection &&
                   votable && (
-                    <Col auto onPress={() => gotoNewPost(post)}>
-                      <Span info bold fontSize={12}>
-                        제안하기
-                      </Span>
-                    </Col>
+                    <>
+                      <Col auto onPress={() => gotoNewPost(post)} mr4>
+                        <Zap
+                          height={18}
+                          width={18}
+                          fill={Colors.warning.DEFAULT}
+                          color={Colors.warning.DEFAULT}
+                        />
+                      </Col>
+                      <Col auto onPress={() => gotoNewPost(post)}>
+                        <Span gray700 bold fontSize={12}>
+                          제안하기
+                        </Span>
+                      </Col>
+                    </>
                   )
                 : !post.type && (
                     <Col auto onPress={() => gotoNewPost(post)} pr16>
@@ -465,18 +490,18 @@ function PostContent({post}) {
                   )}
               {!votable && (
                 <>
-                  <Col auto mr8>
+                  <Col auto rounded100 p2 bgSuccess mr4>
+                    <Check
+                      strokeWidth={2}
+                      height={14}
+                      width={14}
+                      color={'white'}
+                    />
+                  </Col>
+                  <Col auto>
                     <Span bold fontSize={12}>
                       완료됨
                     </Span>
-                  </Col>
-                  <Col auto rounded100 bgRealBlack p3 bgSuccess>
-                    <Check
-                      strokeWidth={2}
-                      height={15}
-                      width={15}
-                      color={'white'}
-                    />
                   </Col>
                 </>
               )}
@@ -488,7 +513,7 @@ function PostContent({post}) {
             </Row>
           </Col>
         </Row>
-        {post.comment && !post.type && (
+        {post.comment && (
           <Div onPress={gotoPost}>
             <Comment hot key={post.comment.id} comment={post.comment}></Comment>
           </Div>

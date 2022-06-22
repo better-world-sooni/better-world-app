@@ -53,7 +53,7 @@ export function NftIdentity({nft, setCloseDisable, onSuccess}) {
   }, [isCurrentNft]);
 
   return (
-    <Row itemsCenter rounded10 py10 onPress={handlePressIdentity}>
+    <Row itemsCenter rounded10 pt16 onPress={handlePressIdentity}>
       <Img w50 h50 rounded100 uri={getNftProfileImage(nft, 200, 200)} />
       <Col mx15 auto>
         <Div>

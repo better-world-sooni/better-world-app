@@ -9,7 +9,6 @@ import {useAutoLogin} from 'src/redux/appReducer';
 import { IMAGES } from 'src/modules/images';
 import {JWT} from 'src/modules/constants';
 import {Span} from 'src/components/common/Span';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import {useGotoHome, useGotoPost, useGotoNftProfile} from 'src/hooks/useGoto';
 
 const getInitialRoute = (routeParams) => {
@@ -74,18 +73,14 @@ const SplashScreen = ({route}) => {
   };
 
   return (
-      <Div bgPrimary flex={1} itemsCenter justifyCenter>
-        <StatusBar barStyle="dark-content" backgroundColor='rgb(25, 110, 237)'></StatusBar>
-        <Div itemsCenter pb50>
-          <Img w134 h134 source={IMAGES.betterWorldWhiteLogo} legacy />
-          <Span white fontSize={20} mt={-15} fontFamily={'UniSans'}>
-            BetterWorld{' '}
-            <Span white bold fontSize={20}>
-              alpha
-            </Span>
-          </Span>
-        </Div>
+    <Div bgWhite flex={1} itemsCenter justifyCenter>
+      <StatusBar
+        barStyle="dark-content"
+        backgroundColor="#FFFFFF"></StatusBar>
+      <Div itemsCenter>
+        <Img w80 h80 source={IMAGES.bW} legacy />
       </Div>
+    </Div>
   );
 };
 

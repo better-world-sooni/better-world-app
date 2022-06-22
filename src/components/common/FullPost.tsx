@@ -1,6 +1,6 @@
 import {useNavigation} from '@react-navigation/native';
 import React, {useCallback, useEffect, useState} from 'react';
-import {ActivityIndicator, Platform, RefreshControl} from 'react-native';
+import {ActivityIndicator, Platform} from 'react-native';
 import {
   Check,
   ChevronLeft,
@@ -9,15 +9,14 @@ import {
   Repeat,
   ThumbsDown,
   ThumbsUp,
+  Zap,
 } from 'react-native-feather';
 import Colors from 'src/constants/Colors';
 import {
-  useGotoForumFeed,
   useGotoLikeList,
   useGotoNewPost,
   useGotoNftCollectionProfile,
   useGotoNftProfile,
-  useGotoPost,
   useGotoReport,
   useGotoRepostList,
   useGotoVoteList,
@@ -55,16 +54,16 @@ import Animated, {
   useAnimatedStyle,
   useSharedValue,
 } from 'react-native-reanimated';
-import {BlurView} from '@react-native-community/blur';
 import {CustomBlurView} from 'src/components/common/CustomBlurView';
 import useScrollToEndRef from 'src/hooks/useScrollToEndRef';
 import {PostOwnerType} from 'src/screens/NewPostScreen';
-import TruncatedText from './TruncatedText';
 import RepostedPost from './RepostedPost';
 import CollectionEvent from './CollectionEvent';
 import {getAdjustedHeightFromDimensions} from 'src/modules/imageUtils';
 import {PostEventTypes} from './Post';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import RepostedTransaction from './RepostedTransaction';
+import {ICONS} from 'src/modules/icons';
 
 export default function FullPost({post, autoFocus = false}) {
   const scrollToEndRef = useScrollToEndRef();
@@ -174,10 +173,10 @@ export default function FullPost({post, autoFocus = false}) {
 
   const forVoteProps = hasVotedFor
     ? {
-        fill: Colors.primary.DEFAULT,
+        fill: Colors.info.DEFAULT,
         width: 18,
         height: 18,
-        color: Colors.primary.DEFAULT,
+        color: Colors.info.DEFAULT,
         strokeWidth: 1.7,
       }
     : actionIconDefaultProps;
@@ -318,10 +317,6 @@ export default function FullPost({post, autoFocus = false}) {
     postOwnerType: PostOwnerType.Nft,
   });
 
-  const gotoForumFeed = useGotoForumFeed({
-    postId: post.id,
-  });
-
   const gotoRepostList = useGotoRepostList({
     postId: post.id,
   });
@@ -339,7 +334,7 @@ export default function FullPost({post, autoFocus = false}) {
     };
   });
 
-  const itemWidth = DEVICE_WIDTH - 30 - 50;
+  const itemWidth = DEVICE_WIDTH - 30 - 62;
 
   if (deleted) return null;
 
@@ -385,17 +380,20 @@ export default function FullPost({post, autoFocus = false}) {
           contentContainerStyle={{paddingBottom: 100}}
           ref={scrollToEndRef}
           onScroll={scrollHandler}
+          showsVerticalScrollIndicator={false}
           ListHeaderComponent={
             <>
               <Div h={headerHeight}></Div>
               <Row px15 pt5 borderGray200 borderBottom={0.5}>
-                <Col auto mr10>
+                <Col auto mr8>
                   <Div onPress={goToProfile}>
                     <Img
-                      w47
-                      h47
+                      w54
+                      h54
+                      border={0.5}
+                      borderGray200
                       rounded100
-                      uri={getNftProfileImage(post.nft, 100, 100)}
+                      uri={getNftProfileImage(post.nft, 200, 200)}
                     />
                   </Div>
                 </Col>
@@ -405,16 +403,24 @@ export default function FullPost({post, autoFocus = false}) {
                       <Span>
                         <Span fontSize={15} bold onPress={goToProfile}>
                           {getNftName(post.nft)}{' '}
-                        </Span>{' '}
-                        {post.nft.token_id &&
+                        </Span>
+                        {post.nft.token_id ? (
                           post.nft.nft_metadatum.name !=
                             getNftName(post.nft) && (
-                            <Span fontSize={12} gray700 onPress={goToProfile}>
+                            <Span
+                              fontSize={12}
+                              bold
+                              gray700
+                              onPress={goToProfile}>
+                              {' '}
                               {post.nft.nft_metadatum.name}
-                              {' · '}
                             </Span>
-                          )}
+                          )
+                        ) : (
+                          <Img source={ICONS.sealCheck} h15 w15></Img>
+                        )}
                         <Span fontSize={12} gray700>
+                          {' · '}
                           {createdAtText(post.updated_at)}
                         </Span>
                       </Span>
@@ -428,9 +434,9 @@ export default function FullPost({post, autoFocus = false}) {
                           <ActivityIndicator />
                         ) : (
                           <MoreHorizontal
-                            color={Colors.gray[400]}
-                            width={20}
-                            height={20}
+                            color={Colors.gray[200]}
+                            width={18}
+                            height={18}
                           />
                         )}
                       </MenuView>
@@ -439,10 +445,16 @@ export default function FullPost({post, autoFocus = false}) {
                   <Row>
                     {post.content ? (
                       <Div>
-                        <Span>{post.content}</Span>
+                        <Span fontSize={14}>{post.content}</Span>
                       </Div>
                     ) : null}
                   </Row>
+                  {post.transaction && (
+                    <RepostedTransaction
+                      transaction={post.transaction}
+                      enablePress
+                    />
+                  )}
                   {post.reposted_post && (
                     <Div mt5>
                       <RepostedPost
@@ -468,7 +480,6 @@ export default function FullPost({post, autoFocus = false}) {
                       />
                     </Div>
                   ) : null}
-
                   {post.collection_event && (
                     <Div mt5>
                       <CollectionEvent
@@ -542,7 +553,7 @@ export default function FullPost({post, autoFocus = false}) {
                         <Col />
                         {isCurrentCollection && votable && (
                           <>
-                            <Col auto mr16 onPress={handlePressVoteAgainst}>
+                            <Col auto mr12 onPress={handlePressVoteAgainst}>
                               {<ThumbsDown {...againstVoteProps}></ThumbsDown>}
                             </Col>
                             <Col auto onPress={handlePressVoteFor}>
@@ -551,30 +562,26 @@ export default function FullPost({post, autoFocus = false}) {
                           </>
                         )}
                       </>
-                    ) : (
-                      <>
-                        <Col auto mr12>
-                          <Span
-                            fontSize={12}
-                            style={{fontWeight: '600'}}
-                            onPress={() =>
-                              gotoForumFeed(`${getNftName(post.nft)} 포럼`)
-                            }>
-                            제안 <Span realBlack>{post.repost_count}</Span>개
-                          </Span>
-                        </Col>
-                        <Col />
-                      </>
-                    )}
+                    ) : null}
 
                     {post.type == 'Forum'
                       ? isCurrentCollection &&
                         votable && (
-                          <Col auto onPress={() => gotoNewPost(post)}>
-                            <Span info bold fontSize={12}>
-                              제안하기
-                            </Span>
-                          </Col>
+                          <>
+                            <Col auto onPress={() => gotoNewPost(post)} mr4>
+                              <Zap
+                                height={18}
+                                width={18}
+                                fill={Colors.warning.DEFAULT}
+                                color={Colors.warning.DEFAULT}
+                              />
+                            </Col>
+                            <Col auto onPress={() => gotoNewPost(post)}>
+                              <Span gray700 bold fontSize={12}>
+                                제안하기
+                              </Span>
+                            </Col>
+                          </>
                         )
                       : !post.type && (
                           <Col auto onPress={() => gotoNewPost(post)}>
@@ -583,18 +590,18 @@ export default function FullPost({post, autoFocus = false}) {
                         )}
                     {!votable && (
                       <>
-                        <Col auto mr8>
+                        <Col auto rounded100 bgRealBlack p2 bgSuccess mr4>
+                          <Check
+                            strokeWidth={2}
+                            height={14}
+                            width={14}
+                            color={'white'}
+                          />
+                        </Col>
+                        <Col auto>
                           <Span bold fontSize={12}>
                             완료됨
                           </Span>
-                        </Col>
-                        <Col auto rounded100 bgRealBlack p3 bgSuccess>
-                          <Check
-                            strokeWidth={2}
-                            height={15}
-                            width={15}
-                            color={'white'}
-                          />
                         </Col>
                       </>
                     )}

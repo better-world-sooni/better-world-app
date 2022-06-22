@@ -3,8 +3,10 @@ import querystring from 'querystring'
 import {isEmpty, omitBy, isNil} from 'lodash'
 
 // const BASE_URL = 'http://3.39.22.255:3000';
+// const BASE_URL = 'http://192.168.31.148:3000';
 // const BASE_URL = 'http://localhost:3000';
 const BASE_URL = 'https://api.betterworldapp.io';
+
 const toUrl = (...args) => ({url: urljoin(...args)});
 const base = path => toUrl(BASE_URL, path);
 const apiV1 = path => toUrl(BASE_URL, '/api/v1', path);
@@ -51,9 +53,6 @@ const apis = {
     klaytnAddress: (klaytnAddress) => apiV1(`/profile/${klaytnAddress}`),
     _: () => apiV1(`/profile`)
   },
-  rankSeason: {
-    _: (cwyear?, cweek?) => cwyear && cweek ? apiV1(`/rank_season?cwyear=${cwyear}&cweek=${cweek}`) : apiV1(`/rank_season`),
-  },
   search: {
     nft: (keyword) => apiV1(`/search/nft/${keyword}`)
   },
@@ -80,14 +79,34 @@ const apis = {
     list: (getFollowers, contractAddress, tokenId?, page?) => apiV1(`/follow/list${urlParams({get_followers: getFollowers, contract_address: contractAddress, token_id: tokenId, page})}`)
   },
   nft_collection: {
-    profile: () => apiV1(`/nft_collection/profile`),
+    _: () => apiV1(`/nft_collection`),
+    communityWallet: {
+      list: (page?) => apiV1(`/nft_collection/community_wallet/list${urlParams({page})}`),
+    },
+    collectionEvent: {
+      list: (page?) => apiV1(`/nft_collection/collection_event/list${urlParams({page})}`),
+    },
     contractAddress: {
       _: (contractAddress) => apiV1(`/nft_collection/${contractAddress}`),
-      profile: (contractAddress) => apiV1(`/nft_collection/${contractAddress}/profile`),
+      communityWallet: {
+        list: (contractAddress, page?) => apiV1(`nft_collection/${contractAddress}/community_wallet/list${urlParams({page})}`),
+      },
+      collectionEvent: {
+        list: (contractAddress, page?) => apiV1(`nft_collection/${contractAddress}/collection_event/list${urlParams({page})}`),
+      },
       nft: {
         list: (contractAddress, keyword?, page?) => apiV1(`/nft_collection/${contractAddress}/nft/list${urlParams({keyword, page})}`)
       }
     },
+  },
+  community_wallet: {
+    _: () => apiV1(`/community_wallet`),
+    address: {
+      _: (address) => apiV1(`/community_wallet/${address}`),
+      transaction: {
+        list: (address, cursor?) => apiV1(`/community_wallet/${address}/transaction/list${urlParams({cursor})}`),
+      }
+    }
   },
   comment: {
     post: (postId) => apiV1(`/comment/post/${postId}`),
@@ -103,7 +122,7 @@ const apis = {
     list: (voteCategory, postId, page?) => apiV1(`/vote/list${urlParams({page, post_id: postId, vote_category: voteCategory})}`),
   },
   rank:{
-    list: (cwyear?, cweek?, keyword?, page?) => apiV1(`/rank/list${urlParams({cwyear, cweek, page, keyword})}`)
+    list: (keyword?, page?) => apiV1(`/rank/list${urlParams({page, keyword})}`)
   },
   post: {
     _: () => apiV1(`/post`),
@@ -133,8 +152,14 @@ const apis = {
       commentId: (commentId) => apiV1(`/report/comment/${commentId}`)
     }
   },
+  blockchain_transaction: {
+    _:(transactionHash) => apiV1(`/blockchain_transaction/${transactionHash}`),
+  },
   feed: {
     _: (page?) => apiV1(`/feed${urlParams({page})}`),
+    count: () => apiV1(`/feed/count`),
+    forum: (filter?, page?) => apiV1(`/feed/forum${urlParams({page, filter})}`),
+    social: (filter?,page?) => apiV1(`/feed/social${urlParams({page, filter})}`),
     collection: (contractAddress, type?, page?) => apiV1(`/feed/collection?contract_address${urlParams({contract_address: contractAddress, type, page})}`),
   },
   presignedUrl: {

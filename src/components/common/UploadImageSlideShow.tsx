@@ -4,7 +4,7 @@ import {Trash, Upload} from 'react-native-feather';
 import Carousel, {Pagination} from 'react-native-snap-carousel';
 import Colors from 'src/constants/Colors';
 import {getAdjustedHeightFromDimensions} from 'src/modules/imageUtils';
-import {DEVICE_WIDTH} from 'src/modules/styles';
+import Video from 'react-native-video';
 import {Div} from './Div';
 import {Img} from './Img';
 
@@ -26,11 +26,7 @@ export default function UploadImageSlideShow({
       : sliderWidth * 0.7;
   return (
     <>
-      <Div
-        rounded10={!disablePagination}
-        borderTopLeftRadius={10}
-        borderTopRightRadius={10}
-        overflowHidden>
+      <Div rounded10 border={0.5} borderGray200 overflowHidden>
         <Carousel
           data={images}
           itemWidth={sliderWidth}
@@ -89,7 +85,20 @@ function CarouselItem({
     <Div>
       {item.uri ? (
         <Div w={sliderWidth} h={imageHeight} bgGray200 relative>
-          <Img w={sliderWidth} h={imageHeight} uri={item.uri} absolute></Img>
+          {item.type.startsWith('video') ? (
+            <Video
+              source={{uri: item.uri}}
+              repeat
+              muted
+              style={{
+                width: sliderWidth,
+                height: imageHeight,
+                position: 'absolute',
+              }}
+            />
+          ) : (
+            <Img w={sliderWidth} h={imageHeight} uri={item.uri} absolute></Img>
+          )}
           <Div flex={1} itemsEnd justifyStart>
             <Div
               auto

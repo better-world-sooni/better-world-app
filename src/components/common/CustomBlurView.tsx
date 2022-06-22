@@ -26,16 +26,6 @@ export const CustomBlurView = props => {
         reducedTransparencyFallbackColor
       }></BlurView>
   ) : (
-    <BlurView
-      blurType={blurType}
-      blurAmount={blurAmount}
-      blurRadius={blurRadius}
-      style={style}
-      overlayColor={overlayColor}
-      reducedTransparencyFallbackColor={
-        reducedTransparencyFallbackColor
-      }
-    ></BlurView>
-
-    );
+    <Div style={style} bgWhite opacity={0.8}></Div>
+  );
 };

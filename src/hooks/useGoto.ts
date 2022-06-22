@@ -2,10 +2,12 @@ import { CommonActions, useNavigation } from "@react-navigation/native";
 import { shallowEqual, useSelector } from "react-redux";
 import apis from "src/modules/apis";
 import { NAV_NAMES } from "src/modules/navNames";
-import { useApiGETWithToken, useApiPOSTWithToken, useApiGET } from "src/redux/asyncReducer";
+import { useApiGETWithToken, useApiPOSTWithToken, useApiGET, useReloadGETWithToken } from "src/redux/asyncReducer";
 import { RootState } from "src/redux/rootReducer";
 import { ChatRoomEnterType } from "src/screens/ChatRoomScreen";
 import { FollowOwnerType, FollowType } from "src/screens/FollowListScreen";
+import { ForumFeedFilter } from "src/screens/Home/HomeScreen";
+import { PostType } from "src/screens/NewPostScreen";
 
 export function useGotoNftProfile({nft}){
     const apiGETWithToken = useApiGETWithToken()
@@ -67,28 +69,29 @@ export function useGotoPasswordSignIn(){
 
 export function useGotoChatList(){
   const navigation = useNavigation()
-  const apiGETWithToken = useApiGETWithToken()
+  const reloadGETWithToken = useReloadGETWithToken()
   const gotoChatList = () => {
-      apiGETWithToken(
-        apis.chat.chatRoom.all()
-      );
-      navigation.navigate(NAV_NAMES.ChatList as never);
-    }
-    return gotoChatList
+    reloadGETWithToken(
+      apis.chat.chatRoom.all()
+    );
+    navigation.navigate(NAV_NAMES.ChatList as never);
+  }
+  return gotoChatList
 }
 
 export function useGotoChatRoomFromList() {
   const navigation = useNavigation()
   const apiGETWithToken = useApiGETWithToken()
-  const gotoChatRoomFromList = (roomName, roomImage, roomId) => {
+  const gotoChatRoomFromList = (roomId, roomName, roomImage, opponentNft) => {
     apiGETWithToken(
       apis.chat.chatRoom.roomId(roomId),
     );
     navigation.navigate(NAV_NAMES.ChatRoom as never, {
+      roomId,
       roomName,
       roomImage,
-      roomId,
-      chatRoomEnterType: ChatRoomEnterType.List
+      opponentNft,
+      chatRoomEnterType: ChatRoomEnterType.List,
     } as never);
   };
   return gotoChatRoomFromList
@@ -107,8 +110,10 @@ export function useGotoChatRoomFromProfile() {
     navigation.navigate(NAV_NAMES.ChatRoom as never, {
       roomName,
       roomImage,
-      contractAddress,
-      tokenId,
+      opponentNft: {
+        contract_address: contractAddress,
+        token_id: tokenId
+      },
       chatRoomEnterType: ChatRoomEnterType.Profile
     } as never);
   }
@@ -119,7 +124,7 @@ export function useGotoNftCollectionProfile({nftCollection}){
     const apiGETWithToken = useApiGETWithToken()
     const navigation = useNavigation()
     const gotoProfile = () => {
-      apiGETWithToken(apis.nft_collection.contractAddress.profile(nftCollection.contract_address));
+      apiGETWithToken(apis.nft_collection.contractAddress._(nftCollection.contract_address));
       apiGETWithToken(apis.post.list.nftCollection(nftCollection.contract_address))
       navigation.navigate(NAV_NAMES.NftCollection as never, {
         nftCollection
@@ -152,20 +157,33 @@ export function useGotoPost({postId}){
 
 export function useGotoNewPost({postOwnerType}){
   const navigation = useNavigation()
-  const gotoNewPost = (repostable = null, collectionEvent = null) => {
-    navigation.navigate(NAV_NAMES.NewPost as never, {postOwnerType, repostable, collectionEvent} as never);
+  const gotoNewPost = (repostable = null, collectionEvent = null, transaction = null, postType=PostType.Default) => {
+    navigation.navigate(NAV_NAMES.NewPost as never, {postOwnerType, repostable, collectionEvent, transaction, postType} as never);
   }
   return gotoNewPost
 }
 
-export function useGotoCapsule({nft}) {
+export function useGotoCollectionFeedTagSelect(){
+  const {currentNft} = useSelector(
+    (root: RootState) => root.app.session,
+    shallowEqual,
+);
   const navigation = useNavigation()
-  const gotoCapsule = () => {
-    navigation.navigate(NAV_NAMES.Capsule as never, {
-      nft,
-    } as never)
-  };
-  return gotoCapsule
+  const apiGETWithToken = useApiGETWithToken()
+  const gotoCollectionFeedTagSelect = (primaryKey, foreignKeyName) => {
+    apiGETWithToken(apis.feed.forum(ForumFeedFilter.Resolved))
+    navigation.navigate(NAV_NAMES.CollectionFeedTagSelect as never, {primaryKey, foreignKeyName} as never);
+  }
+  return gotoCollectionFeedTagSelect
+}
+
+
+export function useGotoNewCommunityWallet(){
+  const navigation = useNavigation()
+  const gotoNewCommunityWallet = () => {
+    navigation.navigate(NAV_NAMES.NewCommunityWallet as never);
+  }
+  return gotoNewCommunityWallet
 }
 
 export function useGotoLikeList({likableType, likableId}) {
@@ -182,6 +200,39 @@ export function useGotoLikeList({likableType, likableId}) {
     } as never)
   };
   return gotoCapsule
+}
+
+export function useGotoMyCommunityWalletList() {
+  const navigation = useNavigation()
+  const apiGETWithToken = useApiGETWithToken()
+  const gotoCommunityWalletList = () => {
+    apiGETWithToken(
+      apis.nft_collection.communityWallet.list(),
+    );
+    navigation.navigate(NAV_NAMES.CommunityWalletList as never)
+  };
+  return gotoCommunityWalletList
+}
+
+export function useGotoCommunityWalletProfile({communityWallet}) {
+  const navigation = useNavigation()
+  const apiGETWithToken = useApiGETWithToken()
+  const gotoCommunityWalletProfile = () => {
+    apiGETWithToken(
+      apis.community_wallet.address._(
+        communityWallet?.address
+      ),
+    );
+    apiGETWithToken(
+      apis.community_wallet.address.transaction.list(
+        communityWallet?.address
+      ),
+    );
+    navigation.navigate(NAV_NAMES.CommunityWalletProfile as never, {
+      communityWallet
+    } as never)
+  };
+  return gotoCommunityWalletProfile
 }
 
 export function useGotoVoteList({postId}) {
@@ -250,20 +301,6 @@ export function useGotoQR(){
   return gotoQR
 }
 
-export function useGotoRankSeason({cwyear, cweek}) {
-  const navigation = useNavigation()
-  const apiGETWithToken = useApiGETWithToken()
-  const useGotoRankSeason = () => {
-    apiGETWithToken(
-      apis.rankSeason._(
-        cwyear, cweek
-      ),
-    );
-    navigation.navigate(NAV_NAMES.RankSeason as never)
-  };
-  return useGotoRankSeason
-}
-
 export function useGotoScan({scanType}){
   const navigation = useNavigation()
   const gotoScan = () => {
@@ -310,18 +347,6 @@ export function useGotoOnboarding() {
   return gotoOnboarding
 }
 
-export function useGotoRankDeltum({contractAddress, tokenId}) {
-  const navigation = useNavigation()
-  const apiGETWithToken = useApiGETWithToken()
-  const gotoRankDeltum = () => {
-    apiGETWithToken(
-      apis.rankDeltum.list(contractAddress, tokenId)
-    );
-    navigation.navigate(NAV_NAMES.RankDeltum as never, {contractAddress, tokenId} as never)
-  };
-  return gotoRankDeltum
-}
-
 export function useGotoCollectionFeed({contractAddress}) {
   const navigation = useNavigation()
   const apiGETWithToken = useApiGETWithToken()
@@ -333,21 +358,6 @@ export function useGotoCollectionFeed({contractAddress}) {
       contractAddress,
       title,
       type
-    } as never)
-  };
-  return gotoCollectionFeed
-}
-
-export function useGotoForumFeed({postId}) {
-  const navigation = useNavigation()
-  const apiGETWithToken = useApiGETWithToken()
-  const gotoCollectionFeed = (title) => {
-    apiGETWithToken(
-      apis.post.postId.repost.list.proposal(postId, 1)
-    );
-    navigation.navigate(NAV_NAMES.ForumFeed as never, {
-      postId,
-      title
     } as never)
   };
   return gotoCollectionFeed
@@ -378,6 +388,18 @@ export function useGotoSignIn(){
     );
   }
   return gotoSignIn
+}
+
+export function useGotoMyCollectionEventList(){
+  const navigation = useNavigation()
+  const apiGETWithToken = useApiGETWithToken()
+  const gotoCollectionEventList = () => {
+    apiGETWithToken(
+      apis.nft_collection.collectionEvent.list()
+    )
+    navigation.navigate(NAV_NAMES.CollectionEventList as never)
+  }
+  return gotoCollectionEventList
 }
 
 export function useGotoCollectionEventList({nftCollection}){
@@ -412,12 +434,10 @@ export function useGotoAttendanceList({collectionEventId}){
   return gotoAttendanceList
 }
 
-export function useGotoNewCollectionEvent({nftCollection}){
+export function useGotoNewCollectionEvent(){
   const navigation = useNavigation()
   const gotoNewCollectionEvent = () => {
-    navigation.navigate(NAV_NAMES.NewCollectionEvent as never, {
-      nftCollection
-    } as never)
+    navigation.navigate(NAV_NAMES.NewCollectionEvent as never)
   }
   return gotoNewCollectionEvent
 }
@@ -464,4 +484,18 @@ export function useGotoCollectionSearch({contractAddress}){
     } as never)
   }
   return gotoCollectionEvent
+}
+
+export function useGotoTransaction({transactionHash}){
+  const navigation = useNavigation()
+  const apiGETWithToken = useApiGETWithToken()
+  const gotoTransaction = () => {
+    apiGETWithToken(
+      apis.blockchain_transaction._(transactionHash)
+    )
+    navigation.navigate(NAV_NAMES.Transaction as never, {
+      transactionHash
+    } as never)
+  }
+  return gotoTransaction
 }

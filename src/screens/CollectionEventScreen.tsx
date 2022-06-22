@@ -8,7 +8,6 @@ import {Div} from 'src/components/common/Div';
 import {Row} from 'src/components/common/Row';
 import {Span} from 'src/components/common/Span';
 import apis from 'src/modules/apis';
-import {HAS_NOTCH} from 'src/modules/constants';
 import {DEVICE_WIDTH} from 'src/modules/styles';
 import {useApiSelector} from 'src/redux/asyncReducer';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -29,7 +28,7 @@ export default function CollectionEventScreen({
     ? collectionEventRes?.collection_event
     : collectionEvent;
   return (
-    <Div flex={1} justifyCenter bgRealBlack>
+    <Div flex={1} justifyCenter bgWhite>
       <Div h={headerHeight} zIndex={100} absolute top0 bgWhite>
         <Row
           itemsCenter
@@ -39,19 +38,19 @@ export default function CollectionEventScreen({
           zIndex={100}
           absolute
           w={DEVICE_WIDTH}
-          top={notchHeight+5}>
+          top={notchHeight + 5}>
           <Col justifyStart>
             <Div auto rounded100 onPress={goBack}>
               <ChevronLeft
                 width={30}
                 height={30}
-                color="white"
+                color="black"
                 strokeWidth={2}
               />
             </Div>
           </Col>
           <Col auto>
-            <Span bold fontSize={19} white>
+            <Span bold fontSize={19}>
               {collectionEvent.title}
             </Span>
           </Col>

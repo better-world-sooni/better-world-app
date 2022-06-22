@@ -304,14 +304,15 @@ export const useReloadPOSTWithToken = (props = {}) => {
 
 export const useApiSelector = (api, scope?) => {
   const newKey = getKeyByApi(api, scope);
-  const {data, isLoading, error, page, isPaginating, isNotPaginatable} = useSelector(
+  const {data, isLoading, error, page, isPaginating, isNotPaginatable, finishedAt} = useSelector(
     (root: RootState) => ({
       data: root.async[newKey]?.data,
       isLoading: root.async[newKey]?.isLoading,
       isPaginating: root.async[newKey]?.isPaginating,
       error: root.async[newKey]?.error,
       page: root.async[newKey]?.page,
-      isNotPaginatable: root.async[newKey]?.isNotPaginatable
+      isNotPaginatable: root.async[newKey]?.isNotPaginatable,
+      finishedAt: root.async[newKey]?.finishedAt,
     }),
     shallowEqual,
   );
@@ -321,7 +322,8 @@ export const useApiSelector = (api, scope?) => {
     isPaginating,
     error,
     page,
-    isNotPaginatable
+    isNotPaginatable, 
+    finishedAt
   };
 };
 
@@ -350,7 +352,7 @@ const asyncSlice = createSlice({
         args: args,
         data: null,
         isLoading: true,
-        startedAt: new Date().toString(),
+        startedAt: new Date(),
         finishedAt: null,
         elapedTime: 0,
         page: 1,
@@ -361,7 +363,7 @@ const asyncSlice = createSlice({
     fetchReload(state, action) {
       const {key} = action.payload;
       state[key].isLoading = true
-      state[key].startedAt = new Date().toString()
+      state[key].startedAt = new Date()
       state[key].page = 1
       state[key].error = null
       state[key].isNotPaginatable = false
@@ -369,7 +371,7 @@ const asyncSlice = createSlice({
     fetchPaginate(state, action) {
       const {key} = action.payload;
       state[key].isPaginating = true
-      state[key].startedAt = new Date().toString()
+      state[key].startedAt = new Date()
       state[key].error = null
       state[key].isNotPaginatable = false
     },
@@ -380,7 +382,7 @@ const asyncSlice = createSlice({
         data: data,
         status: status,
         isLoading: false,
-        finishedAt: new Date().toString(),
+        finishedAt: new Date(),
         elapsedTime: elapsedTime,
         error: null,
       };
@@ -394,13 +396,14 @@ const asyncSlice = createSlice({
         status: status,
         isLoading: false,
         isPaginating: false,
-        finishedAt: new Date().toString(),
+        finishedAt: new Date(),
         elapsedTime: elapsedTime,
         page: prevPage ? prevPage + 1 : 1,
         isNotPaginatable,
         error: null,
       };
       if(!isNotPaginatable) state[key].data[concatKey] = [...state[key].data[concatKey],...(data[concatKey])]
+      state[key].data.cursor = data.cursor
     },
     error(state, action) {
       const {key, error, status, elapsedTime} = action.payload;
@@ -410,11 +413,15 @@ const asyncSlice = createSlice({
         status: status,
         isLoading: false,
         isPaginating: false,
-        finishedAt: new Date().toString(),
+        finishedAt: new Date(),
         elapsedTime: elapsedTime,
         error: error,
       };
     },
+    update(state, action) {
+      const {key, data} = action.payload;
+      state[key].data = data
+    }
   },
 });
 

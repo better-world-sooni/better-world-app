@@ -20,7 +20,7 @@ export default function RepostedPost({repostedPost, enablePress = false}) {
       border={0.5}
       borderGray200
       rounded10
-      p15
+      p12
       onPress={handlePressRepost}>
       <Row itemsCenter>
         <Col auto mr7>

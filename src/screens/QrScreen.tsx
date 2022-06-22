@@ -1,32 +1,24 @@
-import React, {useCallback, useEffect, useRef, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Div} from 'src/components/common/Div';
 import {Img} from 'src/components/common/Img';
 import {Span} from 'src/components/common/Span';
 import {IMAGES} from 'src/modules/images';
-import BottomPopup from 'src/components/common/BottomPopup';
-import {BottomSheetModal} from '@gorhom/bottom-sheet';
 import {KeyboardAvoidingView} from 'src/modules/viewComponents';
-import {HAS_NOTCH, truncateKlaytnAddress} from 'src/modules/constants';
 import {DEVICE_WIDTH} from 'src/modules/styles';
-import Carousel from 'react-native-snap-carousel';
 import QRCode from 'react-native-qrcode-svg';
-import {
-  useApiSelector,
-  useReloadGETWithToken,
-  useReloadPOSTWithToken,
-} from 'src/redux/asyncReducer';
+import {useApiSelector, useReloadPOSTWithToken} from 'src/redux/asyncReducer';
 import apis from 'src/modules/apis';
 import {shallowEqual, useSelector} from 'react-redux';
 import {RootState} from 'src/redux/rootReducer';
 import {ActivityIndicator, Platform} from 'react-native';
 import {getNftName, getNftProfileImage} from 'src/modules/nftUtils';
 import {Col} from 'src/components/common/Col';
-import {ChevronLeft, RefreshCw} from 'react-native-feather';
+import {ChevronLeft, RefreshCw, X} from 'react-native-feather';
 import {useNavigation} from '@react-navigation/native';
 import {Row} from 'src/components/common/Row';
-import {BlurView} from '@react-native-community/blur';
 import {CustomBlurView} from 'src/components/common/CustomBlurView';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {truncateAddress} from 'src/modules/blockchainUtils';
 
 const QrScreen = () => {
   const {
@@ -78,7 +70,10 @@ const QrScreen = () => {
   }, [qrRes?.exp]);
 
   return (
-    <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} flex={1} bgRealBlack>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      flex={1}
+      bgRealBlack>
       <Div h={headerHeight} zIndex={100} absolute top0>
         <Row
           itemsCenter
@@ -88,15 +83,10 @@ const QrScreen = () => {
           zIndex={100}
           absolute
           w={DEVICE_WIDTH}
-          top={notchHeight+5}>
+          top={notchHeight + 5}>
           <Col justifyStart>
             <Div auto rounded100 onPress={goBack}>
-              <ChevronLeft
-                width={30}
-                height={30}
-                color="white"
-                strokeWidth={2}
-              />
+              <X width={30} height={30} color="white" strokeWidth={2} />
             </Div>
           </Col>
           <Col auto>
@@ -132,8 +122,7 @@ const QrScreen = () => {
                     width: 200,
                     height: 200,
                     position: 'absolute',
-                  }}
-                  ></CustomBlurView>
+                  }}></CustomBlurView>
                 <Img
                   source={IMAGES.betterWorldBlueLogo}
                   h100
@@ -149,19 +138,19 @@ const QrScreen = () => {
             </Span>
           </Div>
           {getNftName(currentNft) !== currentNft.nft_metadatum.name && (
-            <Div mt10>
-              <Span gray700 fontSize={14}>
+            <Div mt4>
+              <Span gray700 fontSize={16} bold>
                 {currentNft.nft_metadatum.name}
               </Span>
             </Div>
           )}
-          <Div mt10>
-            <Span gray700 fontSize={14}>
-              컨트렉 주소: {truncateKlaytnAddress(currentNft.contract_address)}
+          <Div mt8>
+            <Span gray700 fontSize={12}>
+              컨트렉 주소: {truncateAddress(currentNft.contract_address)}
             </Span>
           </Div>
-          <Div mt10>
-            <Span gray700 fontSize={14}>
+          <Div mt4>
+            <Span gray700 fontSize={12}>
               토큰 아이디: {currentNft.token_id}
             </Span>
           </Div>
@@ -181,12 +170,12 @@ const QrScreen = () => {
                   : `잔여 ${ttl.minutes}분 ${ttl.seconds}초`}
               </Span>
             </Col>
-            <Col auto p8 rounded100 bgBlack onPress={handleRefresh}>
+            <Col auto onPress={handleRefresh}>
               <RefreshCw
                 strokeWidth={2}
-                color={'white'}
-                height={16}
-                width={16}
+                color={'black'}
+                height={22}
+                width={22}
               />
             </Col>
           </Row>

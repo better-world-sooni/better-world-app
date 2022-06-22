@@ -1,11 +1,10 @@
-import {ChevronLeft, Edit, Edit3, Settings} from 'react-native-feather';
+import {ChevronLeft, Settings} from 'react-native-feather';
 import React, {useRef} from 'react';
 import {Col} from './Col';
 import {Div} from './Div';
 import {Img} from './Img';
 import {Row} from './Row';
 import {Span} from './Span';
-import {resizeImageUri} from 'src/modules/uriUtils';
 import {DEVICE_WIDTH} from 'src/modules/styles';
 import useFollow from 'src/hooks/useFollow';
 import apis from 'src/modules/apis';
@@ -22,7 +21,6 @@ import Animated, {
   useAnimatedStyle,
   useSharedValue,
 } from 'react-native-reanimated';
-import {BlurView} from '@react-native-community/blur';
 import {CustomBlurView} from 'src/components/common/CustomBlurView';
 import {useNavigation} from '@react-navigation/native';
 import {ActivityIndicator, RefreshControl, Platform} from 'react-native';
@@ -41,6 +39,9 @@ import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import BottomPopup from 'src/components/common/BottomPopup';
 import NftCollectionProfileEditBottomSheetScrollView from 'src/components/common/NftCollectionProfileEditBottomSheetScrollView';
 import {BottomSheetModal} from '@gorhom/bottom-sheet';
+import {ICONS} from 'src/modules/icons';
+import ListEmptyComponent from './ListEmptyComponent';
+import {handlePressContribution} from 'src/modules/bottomPopupUtils';
 
 export default function NftCollectionProfile({
   nftCollectionCore,
@@ -84,15 +85,9 @@ export default function NftCollectionProfile({
     apis.follow.contractAddress(nftCollectionCore.contract_address).url,
   );
   const {goBack} = useNavigation();
-  const gotoNewPost = useGotoNewPost({
-    postOwnerType: PostOwnerType.NftCollection,
-  });
   const gotoFollowList = useGotoFollowList({
     followOwnerType: FollowOwnerType.NftCollection,
     contractAddress: nftCollectionCore.contract_address,
-  });
-  const gotoAffinity = useGotoAffinity({
-    nftCollection,
   });
   const gotoCollectionSearch = useGotoCollectionSearch({
     contractAddress: nftCollectionCore.contract_address,
@@ -102,7 +97,6 @@ export default function NftCollectionProfile({
     translationY.value = event.contentOffset.y;
   });
   const notchHeight = useSafeAreaInsets().top;
-  //After scroll down height : 80 - 30 = 50 (homescreen header same)
   const headerHeight = notchHeight + 80;
   const headerStyles = useAnimatedStyle(() => {
     return {
@@ -211,6 +205,7 @@ export default function NftCollectionProfile({
           ...(Platform.OS === 'android' && {paddingTop: 30}),
         }}
         data={nftCollectionPostListRes?.posts || []}
+        ListEmptyComponent={<ListEmptyComponent h={450} />}
         ListHeaderComponent={
           <>
             <Row zIndex={100} px15 relative>
@@ -242,10 +237,14 @@ export default function NftCollectionProfile({
                         p8
                         rounded100
                         border1={isFollowing}
-                        borderGray400={isFollowing}
+                        borderGray200
                         onPress={handlePressFollowing}>
-                        <Span white={!isFollowing} bold mt2 px5>
-                          {isFollowing ? '언팔로우' : '팔로우'}
+                        <Span white={!isFollowing} bold px5 fontSize={14}>
+                          {!nftCollection
+                            ? '불러오는 중'
+                            : isFollowing
+                            ? '팔로잉'
+                            : '팔로우'}
                         </Span>
                       </Col>
                     </Row>
@@ -255,31 +254,15 @@ export default function NftCollectionProfile({
                     <Div>
                       <Row py10>
                         <Col />
-                        <Col
-                          auto
-                          bgRealBlack
-                          p8
-                          rounded100
-                          mr8
-                          onPress={editProfile}>
+                        <Col auto mx8 onPress={editProfile}>
                           <Div>
                             <Settings
                               strokeWidth={2}
-                              color={'white'}
-                              height={15}
-                              width={15}
+                              color={'black'}
+                              height={22}
+                              width={22}
                             />
                           </Div>
-                        </Col>
-                        <Col
-                          auto
-                          bgRealBlack
-                          p8
-                          rounded100
-                          onPress={() => gotoNewPost(null)}>
-                          <Span white bold mt1 px5 fontSize={12}>
-                            게시물 작성
-                          </Span>
                         </Col>
                       </Row>
                     </Div>
@@ -287,10 +270,11 @@ export default function NftCollectionProfile({
                 )}
               </Col>
             </Row>
-            <Div px15 py10 bgWhite borderBottom={0.5} borderGray200>
+            <Div px15 bgWhite borderBottom={0.5} borderGray200 pb8>
               <Div>
                 <Span fontSize={20} bold>
-                  {(nftCollection || nftCollectionCore).name}
+                  {(nftCollection || nftCollectionCore).name}{' '}
+                  <Img source={ICONS.sealCheck} h18 w18></Img>
                 </Span>
               </Div>
               {nftCollection && (
@@ -307,7 +291,7 @@ export default function NftCollectionProfile({
                         {followerCount}
                       </Span>
                     </Col>
-                    <Col auto mr12 onPress={gotoAffinity}>
+                    <Col auto mr12 onPress={handlePressContribution}>
                       <Span bold fontSize={13}>
                         <Span gray700 regular fontSize={13}>
                           멤버 친목도
@@ -349,7 +333,7 @@ export default function NftCollectionProfile({
             </Div>
           </>
         }
-        renderItem={({item}) => <Post post={item} />}
+        renderItem={({item}) => <Post post={item} displayLabel />}
         ListFooterComponent={
           <>
             {(nftCollectionPostListPaginating ||

@@ -23,6 +23,7 @@ import {Span} from './common/Span';
 enum NotificationEventType {
   Follow = 'follow',
   Comment = 'comment',
+  VotePost = 'vote_post',
   LikePost = 'like_post',
   LikeComment = 'like_comment',
   Hug = 'hug',
@@ -117,6 +118,10 @@ const NotificationContent = ({
       gotoPost();
       return;
     }
+    if (event == NotificationEventType.VotePost) {
+      gotoPost();
+      return;
+    }
     if (event == NotificationEventType.LikeComment) {
       gotoPost();
       return;
@@ -157,6 +162,20 @@ const NotificationContent = ({
             {currentNftName}
           </Span>
           의 게시물을 좋아요 했습니다.
+        </Span>
+      );
+    }
+    if (event == NotificationEventType.VotePost) {
+      return (
+        <Span fontSize={14}>
+          <Span bold fontSize={14}>
+            {name}
+          </Span>
+          님이{' '}
+          <Span bold fontSize={14}>
+            {currentNftName}
+          </Span>
+          의 제안에 동의 했습니다.
         </Span>
       );
     }
@@ -228,10 +247,10 @@ const NotificationContent = ({
           p8
           rounded100
           border1={following}
-          borderGray400={following}
+          borderGray200={following}
           onPress={handlePressFollowing}>
           <Span white={!following} bold px5>
-            {following ? '언팔로우' : '팔로우'}
+            {following ? '팔로잉' : '팔로우'}
           </Span>
         </Col>
       )}

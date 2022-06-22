@@ -21,8 +21,8 @@ export default function useName(nameOwner, nameOwnerType) {
         if (!nameError) {
             setNameLoading(true)
 			try {
-				const key = nameOwnerType == NameOwnerType.NftCollection ? apis.nft_collection.contractAddress.profile(nameOwner.contract_address) : apis.nft._();
-                const url = nameOwnerType == NameOwnerType.NftCollection ? apis.nft_collection.contractAddress._(nameOwner.contract_address).url : apis.nft._().url;
+				const key = nameOwnerType == NameOwnerType.NftCollection ? apis.nft_collection.contractAddress._(nameOwner.contract_address) : apis.nft._();
+                const url = key.url
                 const body = {
 					property: "name",
 					value: name,
@@ -64,8 +64,8 @@ export default function useName(nameOwner, nameOwnerType) {
 		if (value.split(" ").length > 5) {
 			return "이름은 다섯 단어 이하여야 합니다.";
 		}
-		if (value.length > 20) {
-			return "이름은 길이는 스무 글자 이하여야 합니다.";
+		if (value.length > 19) {
+			return "이름은 길이는 스무 글자 미만여야 합니다.";
 		}
 		return "";
 	};

@@ -1,9 +1,9 @@
-import React, {forwardRef, Fragment} from 'react';
+import React, {forwardRef} from 'react';
 import BottomSheet, {
   BottomSheetBackdrop,
   BottomSheetHandle,
 } from '@gorhom/bottom-sheet';
-import {useCallback, useEffect, useMemo, useRef} from 'react';
+import {useCallback} from 'react';
 
 const BottomPopup = (
   {

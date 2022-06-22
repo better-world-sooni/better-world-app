@@ -10,6 +10,7 @@ import useAttendance, {AttendanceCategory} from 'src/hooks/useAttendance';
 import {
   useGotoAttendanceList,
   useGotoCollectionEvent,
+  useGotoCollectionFeedTagSelect,
   useGotoNewPost,
 } from 'src/hooks/useGoto';
 import apis from 'src/modules/apis';
@@ -18,7 +19,7 @@ import {getAdjustedHeightFromDimensions} from 'src/modules/imageUtils';
 import {getNftProfileImage} from 'src/modules/nftUtils';
 import {useDeletePromiseFnWithToken} from 'src/redux/asyncReducer';
 import {RootState} from 'src/redux/rootReducer';
-import {PostOwnerType} from 'src/screens/NewPostScreen';
+import {PostOwnerType, PostType} from 'src/screens/NewPostScreen';
 import {Col} from './Col';
 import {Div} from './Div';
 import ImageSlideShow from './ImageSlideShow';
@@ -26,6 +27,12 @@ import {Img} from './Img';
 import {Row} from './Row';
 import {Span} from './Span';
 import TruncatedText from './TruncatedText';
+
+enum CollectionEventActionTypes {
+  Delete = 'Delete',
+  AdminShare = 'AdminShare',
+  Tag = 'Tag',
+}
 
 export default function CollectionEvent({
   collectionEvent,
@@ -42,13 +49,33 @@ export default function CollectionEvent({
   const isAdmin =
     collectionEvent.contract_address == currentNft.contract_address;
   const deletePromiseFnWithToken = useDeletePromiseFnWithToken();
+  const gotoNewCollectionFeedTagSelect = useGotoCollectionFeedTagSelect();
+  const gotoNewPostAsAdmin = useGotoNewPost({
+    postOwnerType: PostOwnerType.NftCollection,
+  });
   const menuOptions = [
     {
-      id: 'DELETE',
-      title: 'Delete Post',
+      id: CollectionEventActionTypes.Delete,
+      title: '이벤트 삭제',
       image: Platform.select({
         ios: 'trash',
         android: 'ic_menu_delete',
+      }),
+    },
+    {
+      id: CollectionEventActionTypes.Tag,
+      title: '완료된 제안에 참조',
+      image: Platform.select({
+        ios: 'tag',
+        android: 'ic_input_get',
+      }),
+    },
+    {
+      id: CollectionEventActionTypes.AdminShare,
+      title: '커뮤니티 계정으로 리포스트',
+      image: Platform.select({
+        ios: 'square.and.arrow.up',
+        android: 'ic_menu_set_as',
       }),
     },
   ];
@@ -63,7 +90,11 @@ export default function CollectionEvent({
     }
   };
   const handlePressMenu = ({nativeEvent: {event}}) => {
-    if (event == 'DELETE') deleteCollectionEvent();
+    if (event == CollectionEventActionTypes.Delete) deleteCollectionEvent();
+    if (event == CollectionEventActionTypes.AdminShare)
+      gotoNewPostAsAdmin(null, collectionEvent, null, PostType.Default);
+    if (event == CollectionEventActionTypes.Tag)
+      gotoNewCollectionFeedTagSelect(collectionEvent.id, 'collection_event_id');
   };
   const {
     willAttendCount,
@@ -107,7 +138,7 @@ export default function CollectionEvent({
         overflowHidden
         rounded10
         border={0.5}
-        borderGray400>
+        borderGray200>
         <Div relative>
           <ImageSlideShow
             roundedTopOnly
