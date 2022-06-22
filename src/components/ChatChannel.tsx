@@ -1,29 +1,28 @@
 import {Channel, ChannelEvents} from '@anycable/core';
 
-type nftId = {
-  token_id: number;
-  contract_address: string;
-};
 
 type RoomId = {
   roomId: string | number;
 };
 
-type Params = RoomId | nftId;
+type NftId = {
+  contract_address: string;
+  token_id: number;
+}
+
+
+type Params = RoomId | NftId;
+
 
 type EnteringMessage = {
   type: 'enter';
-  data: string;
+  entered_nfts: Array<NftId>;
+  update_msgs: Array<object>;
 };
 
 type LeavingMessage = {
   type: 'leave';
-  data: string;
-};
-
-type NewRoomOpen = {
-  type: 'new';
-  data: string;
+  leave_nft: NftId;
 };
 
 type RoomMessage = {
@@ -37,7 +36,6 @@ type ListMessage = {
   read: boolean;
 };
 
-
 type ListFetchMessage = {
   type: 'fetchList';
   data: {
@@ -46,13 +44,8 @@ type ListFetchMessage = {
   }
 };
 
-// type RoomFetchMessage = {
-//   type: 'room'
-// }
-
 type Message =
   | EnteringMessage
-  | NewRoomOpen
   | LeavingMessage
   | RoomMessage
   | ListMessage
@@ -61,9 +54,7 @@ type Message =
 interface Events extends ChannelEvents<Message> {
   enter: (msg: EnteringMessage) => void;
   leave: (msg: LeavingMessage) => void;
-  new: (msg: NewRoomOpen) => void;
   fetchList: (msg: ListFetchMessage) => void;
-  // fetchRoom: (msg: RoomFetchMessage) => void;
   messageRoom: (msg: RoomMessage) => void;
   messageList: (msg: ListMessage) => void;
 }
@@ -75,20 +66,8 @@ export class ChatChannel extends Channel<Params, Message, Events> {
     return this.perform('send_message', {message, room, opponent});
   }
 
-  async sendNew(message, room, opponent) {
-    return this.perform('send_message_new', {message, room, opponent});
-  }
-
-  async newRoomOpen(roomId) {
-    return this.perform('new_room_open', {roomId});
-  }
-
-  async enter(roomId) {
-    return this.perform('enter_room', {roomId});
-  }
-
-  async leave(roomId) {
-    return this.perform('leave_room', {roomId});
+  async enter() {
+    return this.perform('enter_room');
   }
 
   async fetchList() {
@@ -100,8 +79,6 @@ export class ChatChannel extends Channel<Params, Message, Events> {
       return this.emit('enter', message);
     } else if (message.type === 'leave') {
       return this.emit('leave', message);
-    } else if (message.type === 'new') {
-      return this.emit('new', message);
     } else if (message.type === 'fetchList') {
       return this.emit('fetchList', message);
     } else if (message.type === 'room') {

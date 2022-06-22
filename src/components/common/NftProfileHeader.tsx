@@ -83,7 +83,7 @@ export default function NftProfileHeader({
                   onPress={() =>
                     gotoChatRoom(
                       getNftName(nftCore),
-                      [getNftProfileImage(nftCore)],
+                      getNftProfileImage(nftCore),
                       nftCore.contract_address,
                       nftCore.token_id,
                     )

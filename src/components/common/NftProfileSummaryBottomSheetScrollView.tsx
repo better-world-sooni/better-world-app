@@ -153,7 +153,7 @@ export function NftProfileSummary({nft, token = null}) {
                   onPress={() =>
                     gotoChatRoom(
                       getNftName(nft),
-                      [getNftProfileImage(nft)],
+                      getNftProfileImage(nft),
                       nft.contract_address,
                       nft.token_id,
                     )

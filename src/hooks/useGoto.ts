@@ -110,8 +110,10 @@ export function useGotoChatRoomFromProfile() {
     navigation.navigate(NAV_NAMES.ChatRoom as never, {
       roomName,
       roomImage,
-      contractAddress,
-      tokenId,
+      opponentNft: {
+        contract_address: contractAddress,
+        token_id: tokenId
+      },
       chatRoomEnterType: ChatRoomEnterType.Profile
     } as never);
   }

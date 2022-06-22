@@ -44,7 +44,6 @@ function ChatListScreen() {
     chatListRes ? chatListRes.chat_list_data : [],
   );
   const [chatSocket, setChatSocket] = useState(null);
-  const [isEntered, setIsEntered] = useState(false);
   const updateListRef = useRef(null);
   const chatRoomsRef = useRef(null);
 
@@ -88,6 +87,7 @@ function ChatListScreen() {
         setChatRooms(res.data.list_data);
       });
       channel.on('messageList', res => {
+        console.log('receive messagfe!')
         updateListRef.current(res.room, res.read);
       });
     };
@@ -110,6 +110,7 @@ function ChatListScreen() {
 
   useEffect(() => {
     const updateList = (room, read) => {
+      console.log(room, read)
       const index = chatRooms.findIndex(x => x.room_id === room.room_id);
       if (index > -1) {        
         room.unread_count = read ? 0 : chatRooms[index].unread_count + 1;
@@ -122,7 +123,7 @@ function ChatListScreen() {
     };
     updateListRef.current = updateList;
     chatRoomsRef.current = chatRooms;
-  }, [chatRooms, chatSocket, isEntered]);
+  }, [chatRooms, chatSocket]);
 
   const readCountRefresh = useCallback((roomId) => {
     const index = chatRooms.findIndex(x => x.room_id === roomId);
