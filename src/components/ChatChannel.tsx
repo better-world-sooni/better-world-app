@@ -44,12 +44,18 @@ type ListFetchMessage = {
   }
 };
 
+type NextPageMessage = {
+  type: 'nextPage';
+  messages: Array<object>;
+}
+
 type Message =
   | EnteringMessage
   | LeavingMessage
   | RoomMessage
   | ListMessage
-  | ListFetchMessage;
+  | ListFetchMessage
+  | NextPageMessage;
 
 interface Events extends ChannelEvents<Message> {
   enter: (msg: EnteringMessage) => void;
@@ -57,13 +63,14 @@ interface Events extends ChannelEvents<Message> {
   fetchList: (msg: ListFetchMessage) => void;
   messageRoom: (msg: RoomMessage) => void;
   messageList: (msg: ListMessage) => void;
+  nextPageMessage: (msg: NextPageMessage) => void;
 }
 
 export class ChatChannel extends Channel<Params, Message, Events> {
   static identifier = 'ChatChannel';
 
-  async send(message, room, opponent) {
-    return this.perform('send_message', {message, room, opponent});
+  async send(message, myRoom, opponentRoom, opponentNft) {
+    return this.perform('send_message', {message, myRoom, opponentRoom, opponentNft});
   }
 
   async enter() {
@@ -72,6 +79,10 @@ export class ChatChannel extends Channel<Params, Message, Events> {
 
   async fetchList() {
     return this.perform('fetch_list');
+  }
+
+  async nextPage(page) {
+    return this.perform('fetch_page_messages', {page})
   }
 
   receive(message: Message) {
@@ -85,6 +96,8 @@ export class ChatChannel extends Channel<Params, Message, Events> {
       return this.emit('messageRoom', message)
     } else if (message.type === 'list') {
       return this.emit('messageList', message)
+    } else if (message.type === 'nextPage') {
+      return this.emit('nextPageMessage', message)
     }
   }
 }
