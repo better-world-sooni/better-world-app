@@ -4,6 +4,7 @@ import React from 'react';
 type TruncatedTextProps = {
   text: string;
   maxLength: number;
+  maxLines: number;
   onPressTruncated?: any;
   spanProps?: any;
 };
@@ -12,20 +13,21 @@ type TruncatedTextType = (props: TruncatedTextProps) => JSX.Element;
 const TruncatedText: TruncatedTextType = function ({
   text,
   maxLength,
+  maxLines = 8,
   onPressTruncated = null,
   spanProps = {},
 }) {
   if (!text) return null;
-  const lines = text.split('\n');
-  let lineLength = 0;
+  const lines = text.split('\n').slice(0, maxLines);
+  let stringLength = 0;
   const resultLines = [];
   for (const lineIndex in lines) {
-    if (lineLength + lines[lineIndex].length > maxLength) {
+    if (stringLength + lines[lineIndex].length > maxLength) {
       const words = lines[lineIndex].split(' ');
       let truncatedLine = '';
       for (const wordIndex in words) {
         if (
-          lineLength + truncatedLine.length + words[wordIndex].length >
+          stringLength + truncatedLine.length + words[wordIndex].length >
           maxLength
         ) {
           break;
@@ -37,7 +39,7 @@ const TruncatedText: TruncatedTextType = function ({
       }
       break;
     }
-    lineLength += lines[lineIndex].length;
+    stringLength += lines[lineIndex].length;
     resultLines.push(lines[lineIndex]);
   }
   const result = resultLines.join('\n');

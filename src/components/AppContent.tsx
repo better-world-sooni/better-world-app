@@ -34,18 +34,19 @@ import NewCollectionEventScreen from 'src/screens/NewCollectionEventScreen';
 import AttendanceListScreen from 'src/screens/AttendanceListScreen';
 import CollectionEventScreen from 'src/screens/CollectionEventScreen';
 import PasswordSigninScreen from 'src/screens/Auth/PasswordSigninScreen';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {createStackNavigator, TransitionPresets} from '@react-navigation/stack';
 import CollectionSearchScreen from 'src/screens/CollectionSearchScreen';
 import SocialScreen from 'src/screens/Home/SocialScreen';
 import CommunityWalletListScreen from 'src/screens/CommunityWalletListScreen';
 import CommunityWalletProfileScreen from 'src/screens/CommunityWalletProfileScreen';
 import NewCommunityWalletScreen from 'src/screens/NewCommunityWalletScreen';
 import CollectionFeedTagSelectScreen from 'src/screens/CollectionFeedTagSelectScreen';
-import {TransitionPresets} from '@react-navigation/stack';
 import TransactionScreen from 'src/screens/TransactionScreen';
 import {ICONS} from 'src/modules/icons';
+import {Platform} from 'react-native';
+import {ConfirmationModalScreen} from 'src/screens/ConfirmationModalScreen';
 
-const RootStack = createNativeStackNavigator();
+const RootStack = createStackNavigator();
 
 const Tab = createBottomTabNavigator();
 
@@ -263,7 +264,10 @@ export const AppContent = ({notificationOpenData}) => {
     {
       name: NAV_NAMES.Scan,
       component: ScanScreen,
-      options: TransitionPresets.ModalTransition,
+      options:
+        Platform.OS == 'ios'
+          ? TransitionPresets.ModalSlideFromBottomIOS
+          : TransitionPresets.ModalTransition,
     },
     {
       name: NAV_NAMES.Notification,
@@ -292,7 +296,10 @@ export const AppContent = ({notificationOpenData}) => {
     {
       name: NAV_NAMES.Qr,
       component: QrScreen,
-      options: TransitionPresets.ModalTransition,
+      options:
+        Platform.OS == 'ios'
+          ? TransitionPresets.ModalSlideFromBottomIOS
+          : TransitionPresets.ModalTransition,
     },
     {
       name: NAV_NAMES.ChatRoom,
@@ -319,9 +326,19 @@ export const AppContent = ({notificationOpenData}) => {
       component: NewCommunityWalletScreen,
     },
     {
+      name: NAV_NAMES.ConfirmationModal,
+      component: ConfirmationModalScreen,
+      options: {
+        presentation: 'transparentModal',
+      },
+    },
+    {
       name: NAV_NAMES.CollectionFeedTagSelect,
       component: CollectionFeedTagSelectScreen,
-      options: TransitionPresets.ModalTransition,
+      options:
+        Platform.OS == 'ios'
+          ? TransitionPresets.ModalSlideFromBottomIOS
+          : TransitionPresets.ModalTransition,
     },
     {
       name: NAV_NAMES.Transaction,

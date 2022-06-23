@@ -347,6 +347,14 @@ export function useGotoOnboarding() {
   return gotoOnboarding
 }
 
+export function useGotoConfirmationModal() {
+  const navigation = useNavigation()
+  const gotoConfirmation = ({onCancel = null, onConfirm = null, text}) => {
+    navigation.navigate(NAV_NAMES.ConfirmationModal as never, {onCancel, onConfirm, text} as never)
+  };
+  return gotoConfirmation
+}
+
 export function useGotoCollectionFeed({contractAddress}) {
   const navigation = useNavigation()
   const apiGETWithToken = useApiGETWithToken()
