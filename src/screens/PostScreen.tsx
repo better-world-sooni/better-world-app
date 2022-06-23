@@ -5,7 +5,7 @@ import NotFound from 'src/components/error/NotFound';
 import PostLoading from 'src/components/loading/PostLoading';
 import apis from 'src/modules/apis';
 import {HAS_NOTCH} from 'src/modules/constants';
-import {KeyboardAvoidingView} from 'src/modules/viewComponents';
+import {KeyboardAvoidingView} from 'src/components/common/ViewComponents';
 import {useApiSelector} from 'src/redux/asyncReducer';
 import {Platform} from 'react-native';
 

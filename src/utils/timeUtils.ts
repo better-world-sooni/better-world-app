@@ -1,5 +1,8 @@
-import moment from "moment";
-import { kmoment } from "./constants";
+import moment from 'moment';
+import 'moment/min/locales';
+moment.locale('ko');
+
+export const kmoment = moment;
 
 export function createdAtText(createdAt) {
     if (createdAt) {

@@ -1,7 +1,6 @@
 import React from 'react';
 import {Div} from 'src/components/common/Div';
 import apis from 'src/modules/apis';
-import {useApiSelector, useReloadGETWithToken} from 'src/redux/asyncReducer';
 import NftProfile from 'src/components/common/NftProfile';
 
 const OtherProfileScreen = ({

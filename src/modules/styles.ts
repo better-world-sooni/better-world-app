@@ -1,61 +1,70 @@
-import {Dimensions} from 'react-native';
+import {Dimensions, Appearance} from 'react-native';
 
 export const DEVICE_WIDTH = Dimensions.get('window').width;
 export const DEVICE_HEIGHT = Dimensions.get('window').height;
-export const PADDINGED_WIDTH = Dimensions.get('window').width - 40;
-export const PADDINGED_HEIGHT = Dimensions.get('window').height - 40;
+
+export const Colors = {
+  primary: {
+    DEFAULT: 'rgb(0, 122, 255)',
+    light: 'rgb(10, 132, 255)',
+  },
+  secondary: {
+    DEFAULT: 'rgb(0, 122, 255)',
+    light: 'rgb(10, 132, 255)',
+  },
+  gray: {
+    100: 'rgb(242, 242, 247)',
+    200: 'rgb(229, 229, 234)',
+    300: 'rgb(209, 209, 214)',
+    400: 'rgb(199, 199, 204)',
+    500: 'rgb(174, 174, 178)',
+    DEFAULT: 'rgb(142, 142, 147)',
+    600: 'rgb(99, 99, 102)',
+    700: 'rgb(72, 72, 74)',
+  },
+  info: {
+    DEFAULT:  '#2a97ff',
+    light: '#2a97ff90'
+  },
+  warning: {DEFAULT: '#f6c343', light: '#f6c34390',},
+  success: { DEFAULT: '#3cd278', light: '#3cd27890' },
+  danger: { DEFAULT: '#ff3051', light: '#ff305190' },
+  black: '#000000',
+  white: '#ffffff'
+};
 
 export const varStyle = {
-  realBlack: '#000000',
-  black: '#ffffff',
-  primary: 'rgb(0, 122, 255)',
-  primarySoft: 'rgb(10, 132, 255)',
-  secondary: '#513ccd',
-  secondarySoft: '#513ccd10',
-  secondary2: '#3f3d88',
-  secondary2Soft: '#3f3d8810',
-  danger: '#ff3051',
-  dangerSoft: '#ff305110',
-  info: '#2a97ff',
-  infoSoft: '#2a97ff10',
-  warning: '#f6c343',
-  warningSoft: '#f6c34310',
-  success: '#3cd278',
-  successSoft: '#3cd27810',
-  gray: '#f9fafb',
-  gray100: '#f2f4f6',
-  gray200: '#e5e8eb',
-  gray300: '#d1d6db',
-  gray400: '#b0b8c1',
-  gray500: '#8b95a1',
-  gray600: '#6b7684',
-  gray700: '#4e5968',
-  gray800: '#333d4b',
-  gray900: '#191f28',
-  white: '#ffffff',
-  yellow: '#fabd3e',
-  webinarPink: '#e68eb5',
-  webinarYellow: '#e6b500',
-  webinarBlue: '#46b6e0',
+  black: Colors.black,
+  primary: Colors.primary.DEFAULT,
+  primarySoft: Colors.primary.light,
+  secondary: Colors.secondary.DEFAULT,
+  secondarySoft: Colors.secondary.light,
+  danger: Colors.danger.DEFAULT,
+  dangerSoft: Colors.danger.light,
+  info: Colors.info.DEFAULT,
+  infoSoft: Colors.info.light,
+  warning: Colors.warning.DEFAULT,
+  warningSoft: Colors.warning.light,
+  success: Colors.success.DEFAULT,
+  successSoft: Colors.info.light,
+  gray: Colors.gray.DEFAULT,
+  gray100: Colors.gray[100],
+  gray200: Colors.gray[200],
+  gray300: Colors.gray[300],
+  gray400: Colors.gray[400],
+  gray500: Colors.gray[500],
+  gray600: Colors.gray[600],
+  gray700: Colors.gray[700],
+  white: Colors.white,
   weightBold: 'bold' as const,
   weightMedium: '500' as const,
   weightRegular: 'normal' as const,
   weightLight: '300' as const,
   weightThin: '100' as const,
-  defaultBorderWidth: 1,
-  defaultBorderRadius: 8,
-  fullWidth: '100%',
-  halfWidth: '50%',
-  mediumWidth: '33%',
-  smallWidth: '18%',
+  defaultBorderRadius: 10,
 };
 
 export const globalStyle = {
-  basicContainer: {
-    flex: 1,
-    alignItems: 'center' as const,
-    justifyContent: 'center' as const,
-  },
   bgPrimary: {
     backgroundColor: varStyle.primary,
   },
@@ -64,9 +73,6 @@ export const globalStyle = {
   },
   bgSecondary: {
     backgroundColor: varStyle.secondary,
-  },
-  bgSecondary2: {
-    backgroundColor: varStyle.secondary2,
   },
   bgDanger: {
     backgroundColor: varStyle.danger,
@@ -80,7 +86,7 @@ export const globalStyle = {
   bgInfo: {
     backgroundColor: varStyle.info,
   },
-  bgRealBlack: {
+  bgBlack: {
     backgroundColor: varStyle.black,
   },
   bgWhite: {
@@ -112,9 +118,6 @@ export const globalStyle = {
   },
   textSecondary: {
     color: varStyle.secondary,
-  },
-  textSecondary2: {
-    color: varStyle.secondary2,
   },
   textDanger: {
     color: varStyle.danger,
@@ -169,9 +172,6 @@ export const globalStyle = {
   },
   borderSecondary: {
     borderColor: varStyle.secondary,
-  },
-  borderSecondary2: {
-    borderColor: varStyle.secondary2,
   },
   borderDanger: {
     borderColor: varStyle.danger,
@@ -473,126 +473,4 @@ export const globalStyle = {
     marginTop: n,
     marginBottom: n,
   }),
-  header1: {
-    fontSize: 24,
-    fontWeight: varStyle.weightBold,
-    letterSpacing: 0,
-    lineHeight: 36,
-    fontFamily: 'UniSans',
-  },
-  header2: {
-    fontSize: 20,
-    fontWeight: varStyle.weightBold,
-    letterSpacing: -0.5,
-    lineHeight: 30,
-    fontFamily: 'UniSans',
-  },
-  header3: {
-    fontSize: 18,
-    fontWeight: varStyle.weightMedium,
-    letterSpacing: 0.5,
-    lineHeight: 27,
-    fontFamily: 'UniSans',
-  },
-  header4: {
-    fontSize: 16,
-    fontWeight: varStyle.weightMedium,
-    letterSpacing: 0,
-    lineHeight: 24,
-    fontFamily: 'UniSans',
-  },
-  header5: {
-    fontSize: 14,
-    fontWeight: varStyle.weightMedium,
-    letterSpacing: -0.3,
-    lineHeight: 21,
-    fontFamily: 'UniSans',
-  },
-  header6: {
-    fontSize: 12,
-    fontWeight: varStyle.weightMedium,
-    letterSpacing: 0,
-    lineHeight: 18,
-    fontFamily: 'UniSans',
-  },
-  header7: {
-    fontSize: 15,
-    fontWeight: varStyle.weightMedium,
-    letterSpacing: -0.3,
-    fontFamily: 'UniSans',
-  },
-  header8: {
-    fontSize: 12,
-    fontWeight: varStyle.weightMedium,
-    letterSpacing: -0.26,
-    fontFamily: 'UniSans',
-  },
-  headerDesc: {
-    fontSize: 12,
-    fontWeight: varStyle.weightRegular,
-    letterSpacing: 0.5,
-    lineHeight: 18,
-    fontFamily: 'UniSans',
-  },
-  sectionBody: {
-    fontSize: 14,
-    fontWeight: varStyle.weightRegular,
-    letterSpacing: -0.3,
-    lineHeight: 21,
-    fontFamily: 'UniSans',
-  },
-  sectionBody2: {
-    fontSize: 12,
-    fontWeight: varStyle.weightRegular,
-    letterSpacing: -0.3,
-    lineHeight: 20,
-    fontFamily: 'UniSans',
-  },
-  dialogTitle: {
-    fontSize: 12,
-    fontWeight: varStyle.weightMedium,
-    letterSpacing: -0.5,
-    lineHeight: 24,
-    fontFamily: 'UniSans',
-  },
-  dialogBody: {
-    fontSize: 12,
-    fontWeight: varStyle.weightRegular,
-    letterSpacing: -0.5,
-    lineHeight: 24,
-    fontFamily: 'UniSans',
-  },
-  notice: {
-    fontSize: 11,
-    fontWeight: varStyle.weightMedium,
-    letterSpacing: 0,
-    lineHeight: 17,
-    fontFamily: 'UniSans',
-  },
-  noticeDetail: {
-    color: varStyle.gray600,
-    fontSize: 11,
-    lineHeight: 17,
-    fontWeight: varStyle.weightMedium,
-    letterSpacing: -0.5,
-    fontFamily: 'UniSans',
-  },
-  enCourseHeader1: {
-    fontFamily: 'DroidSerif',
-    fontSize: 32,
-    fontWeight: 'bold',
-    fontStyle: 'italic',
-    lineHeight: 48,
-    letterSpacing: 0,
-    color: varStyle.black,
-  },
-  enCourseHeader2: {
-    fontFamily: 'DroidSerif',
-    fontSize: 16,
-    fontWeight: 'normal',
-    fontStyle: 'normal',
-    lineHeight: 28,
-    letterSpacing: -0.05,
-    color: varStyle.black,
-  },
 };

@@ -12,9 +12,9 @@ import {RootState} from 'src/redux/rootReducer';
 import ChatRoomScreen from 'src/screens/ChatRoomScreen';
 import OnboardingScreen from 'src/screens/Auth/OnboardingScreen';
 import {Img} from './common/Img';
-import {getNftProfileImage} from 'src/modules/nftUtils';
+import {getNftProfileImage} from 'src/utils/nftUtils';
 import {Home, Search, Send, User} from 'react-native-feather';
-import Colors from 'src/constants/Colors';
+import {Colors} from 'src/modules/styles';
 import OtherProfileScreen from 'src/screens/OtherProfileScreen';
 import NftCollectionScreen from 'src/screens/NftCollectionScreen';
 import NewPostScreen from 'src/screens/NewPostScreen';
@@ -34,8 +34,7 @@ import NewCollectionEventScreen from 'src/screens/NewCollectionEventScreen';
 import AttendanceListScreen from 'src/screens/AttendanceListScreen';
 import CollectionEventScreen from 'src/screens/CollectionEventScreen';
 import PasswordSigninScreen from 'src/screens/Auth/PasswordSigninScreen';
-import {createStackNavigator} from '@react-navigation/stack';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import CollectionSearchScreen from 'src/screens/CollectionSearchScreen';
 import SocialScreen from 'src/screens/Home/SocialScreen';
 import CommunityWalletListScreen from 'src/screens/CommunityWalletListScreen';
@@ -49,7 +48,6 @@ import {ICONS} from 'src/modules/icons';
 const RootStack = createNativeStackNavigator();
 
 const Tab = createBottomTabNavigator();
-
 
 const tabBarFunc = props => <BottomTabBar {...props} />;
 
@@ -71,8 +69,7 @@ const MainBottomTabs = () => {
       screenOptions={{
         lazy: false,
         headerShown: false,
-      }}
-    >
+      }}>
       <Tab.Screen
         name={NAV_NAMES.Social}
         component={SocialScreen}
@@ -82,7 +79,7 @@ const MainBottomTabs = () => {
               width={22}
               height={22}
               strokeWidth={2}
-              color={focused ? 'black' : Colors.gray[400]}></Home>
+              color={focused ? Colors.black : Colors.gray.DEFAULT}></Home>
           ),
         }}
       />
@@ -107,7 +104,7 @@ const MainBottomTabs = () => {
               width={22}
               height={22}
               strokeWidth={2}
-              color={focused ? 'black' : Colors.gray[400]}></Search>
+              color={focused ? Colors.black : Colors.gray.DEFAULT}></Search>
           ),
         }}
       />
@@ -120,9 +117,9 @@ const MainBottomTabs = () => {
               width={22}
               height={22}
               strokeWidth={2}
-              color={focused ? 'black' : Colors.gray[400]}></Send>
+              color={focused ? Colors.black : Colors.gray.DEFAULT}></Send>
           ),
-          tabBarBadge: "10", 
+          tabBarBadge: '10',
         }}
       />
       <Tab.Screen
@@ -141,12 +138,11 @@ const MainBottomTabs = () => {
                 width={22}
                 height={22}
                 strokeWidth={2}
-                color={focused ? 'black' : Colors.gray[400]}></User>
+                color={focused ? Colors.black : Colors.gray.DEFAULT}></User>
             ),
         }}
       />
     </Tab.Navigator>
-    
   );
 };
 
@@ -216,7 +212,7 @@ export const AppContent = ({notificationOpenData}) => {
       component: MainBottomTabs,
       options: props => ({
         gestureEnabled: false,
-        cardStyle: {backgroundColor: 'white', presentation: 'screen'},
+        cardStyle: {backgroundColor: Colors.white, presentation: 'screen'},
         headershown: false,
       }),
     },

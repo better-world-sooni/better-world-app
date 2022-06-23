@@ -12,13 +12,13 @@ import {RootState} from 'src/redux/rootReducer';
 import {cable} from 'src/modules/cable';
 import {ChatChannel} from 'src/components/ChatChannel';
 import TruncatedText from 'src/components/common/TruncatedText';
-import {DEVICE_HEIGHT, DEVICE_WIDTH} from 'src/modules/styles';
-import {createdAtText} from 'src/modules/timeUtils';
+import {DEVICE_HEIGHT} from 'src/modules/styles';
+import {createdAtText} from 'src/utils/timeUtils';
 import {useGotoChatRoomFromList} from 'src/hooks/useGoto';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import {resizeImageUri} from 'src/modules/uriUtils';
-import {FlatList} from 'native-base';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {resizeImageUri} from 'src/utils/uriUtils';
 import ListEmptyComponent from 'src/components/common/ListEmptyComponent';
+import {FlatList} from 'react-native';
 
 function ChatListScreen() {
   const {currentNft, token} = useSelector(
@@ -28,7 +28,7 @@ function ChatListScreen() {
   const {data: chatListRes, isLoading: chatListLoad} = useApiSelector(
     apis.chat.chatRoom.all,
   );
-  
+
   const [chatRooms, setChatRooms] = useState(
     chatListRes ? chatListRes.chat_list_data : [],
   );
@@ -46,14 +46,14 @@ function ChatListScreen() {
   };
 
   type ListObject = {
-    room_id: string
-    room_image: string
-    room_name: string
-    opponent_nft: Object
-    unread_count: number
-    last_message: string
-    updated_at: string
-  }
+    room_id: string;
+    room_image: string;
+    room_name: string;
+    opponent_nft: Object;
+    unread_count: number;
+    last_message: string;
+    updated_at: string;
+  };
 
   useEffect(() => {
     if (chatListRes) {
@@ -63,8 +63,8 @@ function ChatListScreen() {
 
   useFocusEffect(
     useCallback(() => {
-      if(chatSocket?.state === 'connected') chatSocket.fetchList();
-    }, [chatSocket])
+      if (chatSocket?.state === 'connected') chatSocket.fetchList();
+    }, [chatSocket]),
   );
 
   useEffect(() => {
@@ -80,30 +80,31 @@ function ChatListScreen() {
       });
     };
     wsConnect();
-    
+
     return () => {
       if (channel) {
         channel.disconnect();
         channel.close();
       }
-      dispatch(asyncActions.update({
-        key: getKeyByApi(apis.chat.chatRoom.all()),
-        data: {
-          success: true,
-          chat_list_data: chatRoomsRef.current,
-        }
-      }))
+      dispatch(
+        asyncActions.update({
+          key: getKeyByApi(apis.chat.chatRoom.all()),
+          data: {
+            success: true,
+            chat_list_data: chatRoomsRef.current,
+          },
+        }),
+      );
     };
   }, [currentNft]);
 
   useEffect(() => {
     const updateList = (room, read) => {
       const index = chatRooms.findIndex(x => x.room_id === room.room_id);
-      if (index > -1) {        
+      if (index > -1) {
         room.unread_count = read ? 0 : chatRooms[index].unread_count + 1;
         setChatRooms(prev => [room, ...prev.filter((_, i) => i != index)]);
-      }
-      else {
+      } else {
         room.unread_count = read ? 0 : 1;
         setChatRooms(prev => [room, ...prev]);
       }
@@ -112,12 +113,19 @@ function ChatListScreen() {
     chatRoomsRef.current = chatRooms;
   }, [chatRooms, chatSocket]);
 
-  const readCountRefresh = useCallback((roomId) => {
-    const index = chatRooms.findIndex(x => x.room_id === roomId);
-    const room = Object.assign({}, chatRooms[index]); 
-    room.unread_count = 0;
-    setChatRooms(prev => [...prev.slice(0, index), room, ...prev.slice(index+1)])
-  }, [chatRooms, setChatRooms])
+  const readCountRefresh = useCallback(
+    roomId => {
+      const index = chatRooms.findIndex(x => x.room_id === roomId);
+      const room = Object.assign({}, chatRooms[index]);
+      room.unread_count = 0;
+      setChatRooms(prev => [
+        ...prev.slice(0, index),
+        room,
+        ...prev.slice(index + 1),
+      ]);
+    },
+    [chatRooms, setChatRooms],
+  );
 
   const notchHeight = useSafeAreaInsets().top;
   const headerHeight = notchHeight + 50;
@@ -144,22 +152,24 @@ function ChatListScreen() {
             </Row>
           </Div>
         }
-        // stickyHeaderIndices={[0]}
-        // @ts-ignore
-        stickyHeaderHiddenOnScroll
         showsVerticalScrollIndicator={false}
         ListEmptyComponent={
           <ListEmptyComponent h={DEVICE_HEIGHT - headerHeight * 2} />
         }
-        // stickyHeaderIndices={[0]}
+        stickyHeaderIndices={[0]}
         data={chatRooms as Array<ListObject>}
         renderItem={({item, index}) => {
           return (
             <ChatRoomItemMemo
               key={index}
               onPress={() => {
-                readCountRefresh(item.room_id)
-                gotoChatRoom(item.room_id, item.room_name, item.room_image, item.opponent_nft)
+                readCountRefresh(item.room_id);
+                gotoChatRoom(
+                  item.room_id,
+                  item.room_name,
+                  item.room_image,
+                  item.opponent_nft,
+                );
               }}
               room={item}
             />

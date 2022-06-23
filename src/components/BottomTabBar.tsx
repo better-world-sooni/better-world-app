@@ -3,8 +3,8 @@ import React, {useCallback} from 'react';
 import {Div} from './common/Div';
 import {Row} from 'src/components/common/Row';
 import {NAV_NAMES} from 'src/modules/navNames';
-import Colors from 'src/constants/Colors';
-import {openNftList} from 'src/modules/bottomPopupUtils';
+import {Colors} from 'src/modules/styles';
+import {openNftList} from 'src/utils/bottomPopupUtils';
 
 const BottomTabBar = ({state, descriptors, navigation}) => {
   const List = useCallback(
@@ -46,12 +46,10 @@ const BottomTabBar = ({state, descriptors, navigation}) => {
 
   return (
     <>
-      <Row
-        borderTopColor={Colors.gray[200]}
-        borderTopWidth={0.5}>
+      <Row borderTopColor={Colors.gray[200]} borderTopWidth={0.5}>
         <NativeBaseProvider>
           <HStack
-            bg={'white'}
+            bg={Colors.white}
             safeAreaBottom
             paddingTop={4}
             paddingBottom={0}>

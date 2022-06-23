@@ -4,7 +4,7 @@ import {HAS_NOTCH} from 'src/modules/constants';
 import {Row} from './Row';
 import {Col} from './Col';
 import {Img} from './Img';
-import {resizeImageUri} from 'src/modules/uriUtils';
+import {resizeImageUri} from 'src/utils/uriUtils';
 import {Span} from './Span';
 import {FollowOwnerType, FollowType} from 'src/screens/FollowListScreen';
 import {
@@ -18,11 +18,11 @@ import {
 import {Calendar, CreditCard} from 'react-native-feather';
 import {useApiSelector} from 'src/redux/asyncReducer';
 import apis from 'src/modules/apis';
-import {getSiPrefixedNumber} from 'src/modules/numberUtils';
-import {useIsAdmin} from 'src/modules/nftUtils';
-import Colors from 'src/constants/Colors';
+import {getSiPrefixedNumber} from 'src/utils/numberUtils';
+import {useIsAdmin} from 'src/utils/nftUtils';
+import {Colors} from 'src/modules/styles';
 import {ICONS} from 'src/modules/icons';
-import {handlePressAffinity} from 'src/modules/bottomPopupUtils';
+import {handlePressAffinity} from 'src/utils/bottomPopupUtils';
 
 const MyNftCollectionMenu = ({nftCollection}) => {
   const {data: feedCountRes, isLoading: feedCountLoading} = useApiSelector(
@@ -30,8 +30,8 @@ const MyNftCollectionMenu = ({nftCollection}) => {
   );
   const upcomingEventCount = feedCountRes?.upcoming_event_count;
   const communityWalletCount = feedCountRes?.community_wallet_count;
-  const textColor = 'black';
-  const backgroundColor = 'white';
+  const textColor = Colors.black;
+  const backgroundColor = Colors.white;
   const gotoFollowList = useGotoFollowList({
     followOwnerType: FollowOwnerType.NftCollection,
     contractAddress: nftCollection?.contract_address,
@@ -59,6 +59,8 @@ const MyNftCollectionMenu = ({nftCollection}) => {
                 bgGray200
                 h60
                 w60
+                border={0.5}
+                borderGray200
                 uri={resizeImageUri(nftCollection.image_uri, 200, 200)}></Img>
             </Col>
           </Row>
@@ -110,7 +112,7 @@ const MyNftCollectionMenu = ({nftCollection}) => {
               <Col auto mr16>
                 <CreditCard
                   strokeWidth={2}
-                  color={'black'}
+                  color={Colors.black}
                   height={22}
                   width={22}
                 />
@@ -148,7 +150,7 @@ const MyNftCollectionMenu = ({nftCollection}) => {
               <Col auto mr16>
                 <Calendar
                   strokeWidth={2}
-                  color={'black'}
+                  color={Colors.black}
                   height={22}
                   width={22}
                 />

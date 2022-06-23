@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import Carousel, {Pagination} from 'react-native-snap-carousel';
-import Colors from 'src/constants/Colors';
+import {Colors} from 'src/modules/styles';
 import CommunityWallet from './CommunityWallet';
 import {Div} from './Div';
 

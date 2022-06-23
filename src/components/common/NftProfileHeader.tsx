@@ -8,7 +8,7 @@ import {
   Send,
   Settings,
 } from 'react-native-feather';
-import Colors from 'src/constants/Colors';
+import {Colors} from 'src/modules/styles';
 import useFollow from 'src/hooks/useFollow';
 import {
   useGotoFollowList,
@@ -19,8 +19,8 @@ import {
   useGotoScan,
 } from 'src/hooks/useGoto';
 import apis from 'src/modules/apis';
-import {handlePressContribution} from 'src/modules/bottomPopupUtils';
-import {getNftName, getNftProfileImage} from 'src/modules/nftUtils';
+import {handlePressContribution} from 'src/utils/bottomPopupUtils';
+import {getNftName, getNftProfileImage} from 'src/utils/nftUtils';
 import {DEVICE_WIDTH} from 'src/modules/styles';
 import {FollowOwnerType, FollowType} from 'src/screens/FollowListScreen';
 import {ScanType} from 'src/screens/ScanScreen';
@@ -90,14 +90,14 @@ export default function NftProfileHeader({
                   }>
                   <Send
                     strokeWidth={2}
-                    color={'black'}
+                    color={Colors.black}
                     height={22}
                     width={22}
                   />
                 </Col>
                 <Col
                   auto
-                  bgRealBlack={!isFollowing}
+                  bgBlack={!isFollowing}
                   p8
                   rounded100
                   border1={isFollowing}
@@ -117,7 +117,7 @@ export default function NftProfileHeader({
                   <Col auto onPress={gotoScan} px8>
                     <Maximize
                       strokeWidth={2}
-                      color={'black'}
+                      color={Colors.black}
                       height={22}
                       width={22}
                     />
@@ -127,7 +127,7 @@ export default function NftProfileHeader({
                   <Col auto onPress={gotoQr} px8>
                     <Grid
                       strokeWidth={2}
-                      color={'black'}
+                      color={Colors.black}
                       height={22}
                       width={22}
                     />
@@ -136,7 +136,7 @@ export default function NftProfileHeader({
                 <Col auto onPress={editProfile} px8>
                   <Settings
                     strokeWidth={2}
-                    color={'black'}
+                    color={Colors.black}
                     height={22}
                     width={22}
                   />

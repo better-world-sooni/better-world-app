@@ -21,19 +21,3 @@ export default function useSocketInput() {
         }
     return sendChatSocketMessage;
 }
-
-// export const sendChatSocketMessage = (
-//     action: string,
-//     payload: any,
-//     username: string
-// ) => {
-//     if (username) {
-//         const withDefaultParams = {
-//             ...payload,
-//             defaultParams: {
-//                 username: username,
-//             },
-//         };
-//         chatSocket.emit(action, withDefaultParams);
-//     }
-// };

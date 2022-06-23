@@ -1,6 +1,6 @@
 import React, {useRef} from 'react';
 import {Row} from 'src/components/common/Row';
-import {Bell, ChevronDown, Feather} from 'react-native-feather';
+import {Bell, ChevronDown} from 'react-native-feather';
 import apis from 'src/modules/apis';
 import {
   useApiSelector,
@@ -8,21 +8,20 @@ import {
   useReloadGETWithToken,
 } from 'src/redux/asyncReducer';
 import Post from 'src/components/common/Post';
-import {useGotoNewPost, useGotoNotification} from 'src/hooks/useGoto';
+import {useGotoNotification} from 'src/hooks/useGoto';
 import FeedFlatlist from 'src/components/FeedFlatlist';
 import {Platform} from 'react-native';
 import {useScrollToTop} from '@react-navigation/native';
 import {Span} from 'src/components/common/Span';
 import {Col} from 'src/components/common/Col';
 import {MenuView} from '@react-native-menu/menu';
-import {PostOwnerType, PostType} from '../NewPostScreen';
 import {Div} from 'src/components/common/Div';
 import {Img} from 'src/components/common/Img';
-import {IMAGES} from 'src/modules/images';
 import useFocusReloadWithTimeOut from 'src/hooks/useFocusReloadWithTimeout';
 import SideMenu from 'react-native-side-menu-updated';
 import MyNftCollectionMenu from 'src/components/common/MyNftCollectionMenu';
 import {DEVICE_WIDTH} from 'src/modules/styles';
+import {Colors} from 'react-native/Libraries/NewAppScreen';
 
 enum SocialFeedFilter {
   All = 'all',
@@ -137,6 +136,8 @@ export default function SocialScreen() {
                   w30
                   rounded100
                   bgGray200
+                  border={0.5}
+                  borderGray200
                   uri={nftCollectionRes.nft_collection.image_uri}></Img>
               ) : (
                 <Div bgGray200 h30 w30 rounded100 />
@@ -155,7 +156,7 @@ export default function SocialScreen() {
                   <Col auto>
                     <ChevronDown
                       strokeWidth={2}
-                      color={'black'}
+                      color={Colors.black}
                       height={20}
                       width={20}
                     />
@@ -165,7 +166,12 @@ export default function SocialScreen() {
             </Col>
             <Col itemsEnd>
               <Div onPress={() => gotoNotifications()}>
-                <Bell strokeWidth={2} color={'black'} height={22} width={22} />
+                <Bell
+                  strokeWidth={2}
+                  color={Colors.black}
+                  height={22}
+                  width={22}
+                />
               </Div>
             </Col>
           </Row>

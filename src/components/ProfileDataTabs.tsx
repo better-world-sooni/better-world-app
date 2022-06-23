@@ -5,7 +5,6 @@ import {Div} from './common/Div';
 import Feed from './common/Feed';
 import {Row} from './common/Row';
 import {Span} from './common/Span';
-import TruncatedMarkdown from './common/TruncatedMarkdown';
 import NftCollectionMembers from './NftCollectionMembers';
 
 export default function ProfileDataTabs({posts, about, members, adminNfts}) {

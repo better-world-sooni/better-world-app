@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import apis from "src/modules/apis";
-import { getNftStory } from "src/modules/nftUtils";
+import { getNftStory } from "src/utils/nftUtils";
 import { appActions } from "src/redux/appReducer";
 import { usePutPromiseFnWithToken, useReloadGETWithToken } from "src/redux/asyncReducer";
 import useEdittableText from "./useEdittableText";

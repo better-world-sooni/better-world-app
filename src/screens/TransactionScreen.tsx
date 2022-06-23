@@ -7,11 +7,10 @@ import {Div} from 'src/components/common/Div';
 import {Row} from 'src/components/common/Row';
 import {Span} from 'src/components/common/Span';
 import apis from 'src/modules/apis';
-import {DEVICE_WIDTH} from 'src/modules/styles';
+import {Colors, DEVICE_WIDTH} from 'src/modules/styles';
 import {useApiSelector} from 'src/redux/asyncReducer';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import Transaction from 'src/components/common/Transaction';
-import {truncateAddress} from 'src/modules/blockchainUtils';
 
 export default function TransactionScreen({
   route: {
@@ -42,7 +41,7 @@ export default function TransactionScreen({
               <ChevronLeft
                 width={30}
                 height={30}
-                color="black"
+                color={Colors.black}
                 strokeWidth={2}
               />
             </Div>

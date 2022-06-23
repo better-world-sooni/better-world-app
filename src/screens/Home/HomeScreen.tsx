@@ -19,7 +19,7 @@ import {useScrollToTop} from '@react-navigation/native';
 import {Span} from 'src/components/common/Span';
 import {Col} from 'src/components/common/Col';
 import {Div} from 'src/components/common/Div';
-import Colors from 'src/constants/Colors';
+import {Colors} from 'src/modules/styles';
 import {MenuView} from '@react-native-menu/menu';
 import {PostOwnerType, PostType} from '../NewPostScreen';
 import useFocusReloadWithTimeOut from 'src/hooks/useFocusReloadWithTimeout';
@@ -133,7 +133,6 @@ export default function HomeScreen() {
       menu={<MyNftCollectionMenu nftCollection={nftCollection} />}
       bounceBackOnOverdraw={false}
       openMenuOffset={DEVICE_WIDTH - 65}>
-      <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF"></StatusBar>
       <FeedFlatlist
         ref={flatlistRef}
         refreshing={feedLoading}
@@ -156,6 +155,8 @@ export default function HomeScreen() {
                   w30
                   rounded100
                   bgGray200
+                  border={0.5}
+                  borderGray200
                   uri={nftCollectionRes.nft_collection.image_uri}></Img>
               ) : (
                 <Div bgGray200 h30 w30 rounded100 />
@@ -174,7 +175,7 @@ export default function HomeScreen() {
                   <Col auto>
                     <ChevronDown
                       strokeWidth={2}
-                      color={'black'}
+                      color={Colors.black}
                       height={20}
                       width={20}
                     />
@@ -184,7 +185,12 @@ export default function HomeScreen() {
             </Col>
             <Col itemsEnd>
               <Div onPress={() => gotoNotifications()}>
-                <Bell strokeWidth={2} color={'black'} height={22} width={22} />
+                <Bell
+                  strokeWidth={2}
+                  color={Colors.black}
+                  height={22}
+                  width={22}
+                />
               </Div>
             </Col>
           </Row>

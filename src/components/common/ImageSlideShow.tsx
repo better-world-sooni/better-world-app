@@ -1,6 +1,6 @@
 import React, {useRef, useState} from 'react';
 import Carousel, {Pagination} from 'react-native-snap-carousel';
-import Colors from 'src/constants/Colors';
+import {Colors} from 'src/modules/styles';
 import {Div} from './Div';
 import {Img} from './Img';
 import Video from 'react-native-video';

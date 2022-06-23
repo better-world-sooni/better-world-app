@@ -15,7 +15,7 @@ import {
   addBorderStyles,
   addLayoutStyles,
   addStyles,
-} from './styleUtils';
+} from 'src/utils/styleUtils';
 import * as _ from 'lodash';
 import {StyleSheet} from 'react-native';
 

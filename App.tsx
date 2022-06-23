@@ -8,18 +8,15 @@ import {RootState} from 'src/redux/rootReducer';
 import messaging from '@react-native-firebase/messaging';
 import {usePostPromiseFnWithToken} from 'src/redux/asyncReducer';
 import apis from 'src/modules/apis';
-import PushNotification, {Importance} from 'react-native-push-notification';
 import 'react-native-url-polyfill/auto';
-import {BETTER_WORLD_MAIN_PUSH_CHANNEL} from 'src/modules/constants';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import notifee, { AndroidImportance, EventType } from '@notifee/react-native';
-import {useGotoWithNotification} from 'src/hooks/useGotoWithNotification'
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
+import notifee, {EventType} from '@notifee/react-native';
+import {useGotoWithNotification} from 'src/hooks/useGotoWithNotification';
 import {BottomSheetModalProvider} from '@gorhom/bottom-sheet';
 import {NativeBaseProvider} from 'native-base';
 import {NavigationContainer} from '@react-navigation/native';
-import {navigationRef} from 'src/modules/rootNavagation';
-import {onMessageReceived} from 'src/modules/notification'
 import BottomPopups from 'src/components/common/BottomPopups';
+import {navigationRef, onMessageReceived} from 'src/utils/notificationUtils';
 
 const App = () => {
   const {

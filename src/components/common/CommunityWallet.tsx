@@ -2,14 +2,14 @@ import {MenuView} from '@react-native-menu/menu';
 import React, {memo, useState} from 'react';
 import {ActivityIndicator, Clipboard, Linking, Platform} from 'react-native';
 import {ChevronRight, Copy, MoreHorizontal} from 'react-native-feather';
-import Colors from 'src/constants/Colors';
+import {Colors} from 'src/modules/styles';
 import {useGotoCommunityWalletProfile, useGotoHome} from 'src/hooks/useGoto';
 import apis from 'src/modules/apis';
-import {truncateAddress} from 'src/modules/blockchainUtils';
-import {smallBump} from 'src/modules/hapticFeedBackUtils';
+import {truncateAddress} from 'src/utils/blockchainUtils';
+import {smallBump} from 'src/utils/hapticFeedBackUtils';
 import {ICONS} from 'src/modules/icons';
-import {useIsAdmin} from 'src/modules/nftUtils';
-import {resizeImageUri} from 'src/modules/uriUtils';
+import {useIsAdmin} from 'src/utils/nftUtils';
+import {resizeImageUri} from 'src/utils/uriUtils';
 import {
   useDeletePromiseFnWithToken,
   useReloadGETWithToken,

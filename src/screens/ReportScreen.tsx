@@ -1,14 +1,10 @@
-import {StatusBar} from 'native-base';
 import React, {useEffect, useState} from 'react';
 import {Div} from 'src/components/common/Div';
-import Post from 'src/components/common/Post';
 import apis from 'src/modules/apis';
-import {HAS_NOTCH} from 'src/modules/constants';
 import {
   KeyboardAvoidingView,
-  ScrollView,
   TextInput,
-} from 'src/modules/viewComponents';
+} from 'src/components/common/ViewComponents';
 import {usePostPromiseFnWithToken} from 'src/redux/asyncReducer';
 import useEdittableText from 'src/hooks/useEdittableText';
 import {Row} from 'src/components/common/Row';
@@ -22,10 +18,9 @@ import Animated, {
   useAnimatedStyle,
   useSharedValue,
 } from 'react-native-reanimated';
-import {DEVICE_WIDTH} from 'src/modules/styles';
-import {BlurView} from '@react-native-community/blur';
+import {Colors, DEVICE_WIDTH} from 'src/modules/styles';
 import {CustomBlurView} from 'src/components/common/CustomBlurView';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 export enum ReportTypes {
   Post,
@@ -82,7 +77,11 @@ export default function ReportScreen({
     };
   });
   return (
-    <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} flex={1} bgWhite relative>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      flex={1}
+      bgWhite
+      relative>
       <Div h={headerHeight} zIndex={100}>
         <Animated.View style={headerStyles}>
           <CustomBlurView
@@ -94,17 +93,16 @@ export default function ReportScreen({
               width: DEVICE_WIDTH,
               height: '100%',
               position: 'absolute',
-            }}
-            ></CustomBlurView>
+            }}></CustomBlurView>
         </Animated.View>
-        <Div zIndex={100} absolute w={DEVICE_WIDTH} top={notchHeight+5}>
+        <Div zIndex={100} absolute w={DEVICE_WIDTH} top={notchHeight + 5}>
           <Row itemsCenter py5 h40 px8>
             <Col itemsStart>
               <Div auto rounded100 onPress={goBack}>
                 <ChevronLeft
                   width={30}
                   height={30}
-                  color="black"
+                  color={Colors.black}
                   strokeWidth={2}
                 />
               </Div>

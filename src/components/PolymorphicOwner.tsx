@@ -1,6 +1,6 @@
 import React from 'react';
 import {Shield} from 'react-native-feather';
-import Colors from 'src/constants/Colors';
+import {Colors} from 'src/modules/styles';
 import useFollow from 'src/hooks/useFollow';
 import {
   useGotoNftCollectionProfile,
@@ -13,7 +13,7 @@ import {
   getNftProfileImage,
   useIsAdmin,
   useIsCurrentNft,
-} from 'src/modules/nftUtils';
+} from 'src/utils/nftUtils';
 import {Col} from './common/Col';
 import {Div} from './common/Div';
 import {Img} from './common/Img';
@@ -67,7 +67,7 @@ export default function PolymorphicOwner({
       </Col>
       {showPrivilege && privilege && (!isAdmin || isCurrentNft) && (
         <Col auto mx5>
-          <Shield strokeWidth={2} color={'black'} height={22} width={22} />
+          <Shield strokeWidth={2} color={Colors.black} height={22} width={22} />
         </Col>
       )}
       {showPrivilege && isAdmin && !isCurrentNft && (
@@ -89,7 +89,7 @@ export default function PolymorphicOwner({
       {!isCurrentNft && (
         <Col
           auto
-          bgRealBlack={!following}
+          bgBlack={!following}
           p8
           rounded100
           border1={following}

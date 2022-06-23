@@ -1,10 +1,10 @@
 import {useNavigation} from '@react-navigation/native';
 import React from 'react';
 import {ChevronDown, ChevronLeft} from 'react-native-feather';
-import Colors from 'src/constants/Colors';
-import {truncateAddress} from 'src/modules/blockchainUtils';
+import {Colors} from 'src/modules/styles';
+import {truncateAddress} from 'src/utils/blockchainUtils';
 import {ICONS} from 'src/modules/icons';
-import {resizeImageUri} from 'src/modules/uriUtils';
+import {resizeImageUri} from 'src/utils/uriUtils';
 import {Col} from './Col';
 import {Div} from './Div';
 import {Img} from './Img';
@@ -18,7 +18,12 @@ export default function CommunityWalletTopBar({communityWallet, onPressDown}) {
     <Row flex itemsCenter px7>
       <Col auto>
         <Div auto rounded100 onPress={goBack}>
-          <ChevronLeft width={30} height={30} color="black" strokeWidth={2} />
+          <ChevronLeft
+            width={30}
+            height={30}
+            color={Colors.black}
+            strokeWidth={2}
+          />
         </Div>
       </Col>
       <Col auto mr8>

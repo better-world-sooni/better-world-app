@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { EventRegister } from 'react-native-event-listeners'
 import apis from "src/modules/apis";
-import { smallBump } from "src/modules/hapticFeedBackUtils";
+import { smallBump } from "src/utils/hapticFeedBackUtils";
 import { usePromiseFnWithToken } from "src/redux/asyncReducer";
 
 export enum LikableType {

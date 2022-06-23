@@ -3,9 +3,12 @@ import React, {useState} from 'react';
 import {ActivityIndicator, Platform, Switch} from 'react-native';
 import useName, {NameOwnerType} from 'src/hooks/useName';
 import useStory, {StoryOwnerType} from 'src/hooks/useStory';
-import {getNftProfileImage} from 'src/modules/nftUtils';
+import {getNftProfileImage} from 'src/utils/nftUtils';
 import {DEVICE_WIDTH} from 'src/modules/styles';
-import {KeyboardAvoidingView, TextInput} from 'src/modules/viewComponents';
+import {
+  KeyboardAvoidingView,
+  TextInput,
+} from 'src/components/common/ViewComponents';
 import {Col} from './Col';
 import {Div} from './Div';
 import {Img} from './Img';
@@ -14,7 +17,7 @@ import {Span} from './Span';
 import {Check, Tool, Trash, Upload} from 'react-native-feather';
 import useUploadImage from 'src/hooks/useUploadImage';
 import apis from 'src/modules/apis';
-import Colors from 'src/constants/Colors';
+import {Colors} from 'src/modules/styles';
 import {
   usePutPromiseFnWithToken,
   useReloadGETWithToken,
@@ -85,10 +88,10 @@ export default function NftProfileEditBottomSheetScrollView({nft}) {
             </>
           ) : (
             <Div flex={1} itemsCenter justifyCenter bgGray400>
-              <Div bgRealBlack p8 rounded100>
+              <Div bgBlack p8 rounded100>
                 <Upload
                   strokeWidth={2}
-                  color={'white'}
+                  color={Colors.white}
                   height={20}
                   width={20}
                 />
@@ -117,7 +120,7 @@ export default function NftProfileEditBottomSheetScrollView({nft}) {
                   mr10
                   onPress={handleRemoveImage}
                   rounded100
-                  bgRealBlack
+                  bgBlack
                   p8>
                   <Trash
                     strokeWidth={2}
@@ -128,13 +131,7 @@ export default function NftProfileEditBottomSheetScrollView({nft}) {
                 </Col>
               ) : null}
               {image?.uri ? (
-                <Col
-                  auto
-                  mr10
-                  rounded100
-                  bgRealBlack
-                  p8
-                  onPress={handleAddImage}>
+                <Col auto mr10 rounded100 bgBlack p8 onPress={handleAddImage}>
                   <Tool
                     strokeWidth={2}
                     color={Colors.info.DEFAULT}
@@ -144,7 +141,7 @@ export default function NftProfileEditBottomSheetScrollView({nft}) {
                 </Col>
               ) : null}
               {image?.uri || imageHasChanged ? (
-                <Col auto rounded100 bgRealBlack p8 onPress={handleSaveImage}>
+                <Col auto rounded100 bgBlack p8 onPress={handleSaveImage}>
                   {uploading ? (
                     <ActivityIndicator></ActivityIndicator>
                   ) : (

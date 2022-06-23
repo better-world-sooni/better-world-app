@@ -3,7 +3,10 @@ import React from 'react';
 import {ActivityIndicator, Platform} from 'react-native';
 import useName, {NameOwnerType} from 'src/hooks/useName';
 import useStory, {StoryOwnerType} from 'src/hooks/useStory';
-import {KeyboardAvoidingView, TextInput} from 'src/modules/viewComponents';
+import {
+  KeyboardAvoidingView,
+  TextInput,
+} from 'src/components/common/ViewComponents';
 import {Col} from './Col';
 import {Div} from './Div';
 import {Img} from './Img';
@@ -12,7 +15,7 @@ import {Span} from './Span';
 import {Check, Tool, Trash, Upload} from 'react-native-feather';
 import useUploadImage from 'src/hooks/useUploadImage';
 import apis from 'src/modules/apis';
-import Colors from 'src/constants/Colors';
+import {Colors} from 'src/modules/styles';
 import {DEVICE_WIDTH} from 'src/modules/styles';
 
 export default function NftCollectionProfileEditBottomSheetScrollView({
@@ -80,10 +83,10 @@ export default function NftCollectionProfileEditBottomSheetScrollView({
             </>
           ) : (
             <Div flex={1} itemsCenter justifyCenter bgGray400>
-              <Div bgRealBlack p8 rounded100>
+              <Div bgBlack p8 rounded100>
                 <Upload
                   strokeWidth={2}
-                  color={'white'}
+                  color={Colors.white}
                   height={20}
                   width={20}
                 />
@@ -115,10 +118,10 @@ export default function NftCollectionProfileEditBottomSheetScrollView({
                   rounded100></Img>
               ) : (
                 <Div flex={1} itemsCenter justifyCenter bgGray400 rounded100>
-                  <Div bgRealBlack p8 rounded100>
+                  <Div bgBlack p8 rounded100>
                     <Upload
                       strokeWidth={2}
-                      color={'white'}
+                      color={Colors.white}
                       height={20}
                       width={20}
                     />
@@ -136,7 +139,7 @@ export default function NftCollectionProfileEditBottomSheetScrollView({
                   mr10
                   onPress={handleRemoveImage}
                   rounded100
-                  bgRealBlack
+                  bgBlack
                   p8>
                   <Trash
                     strokeWidth={2}
@@ -147,13 +150,7 @@ export default function NftCollectionProfileEditBottomSheetScrollView({
                 </Col>
               ) : null}
               {image?.uri ? (
-                <Col
-                  auto
-                  mr10
-                  rounded100
-                  bgRealBlack
-                  p8
-                  onPress={handleAddImage}>
+                <Col auto mr10 rounded100 bgBlack p8 onPress={handleAddImage}>
                   <Tool
                     strokeWidth={2}
                     color={Colors.info.DEFAULT}
@@ -163,7 +160,7 @@ export default function NftCollectionProfileEditBottomSheetScrollView({
                 </Col>
               ) : null}
               {image?.uri || imageHasChanged ? (
-                <Col auto rounded100 bgRealBlack p8 onPress={handleSaveImage}>
+                <Col auto rounded100 bgBlack p8 onPress={handleSaveImage}>
                   {uploading ? (
                     <ActivityIndicator></ActivityIndicator>
                   ) : (
@@ -184,7 +181,7 @@ export default function NftCollectionProfileEditBottomSheetScrollView({
                   mr10
                   onPress={handleRemoveProfileImage}
                   rounded100
-                  bgRealBlack
+                  bgBlack
                   p8>
                   <Trash
                     strokeWidth={2}
@@ -199,7 +196,7 @@ export default function NftCollectionProfileEditBottomSheetScrollView({
                   auto
                   mr10
                   rounded100
-                  bgRealBlack
+                  bgBlack
                   p8
                   onPress={handleAddProfileImage}>
                   <Tool
@@ -211,12 +208,7 @@ export default function NftCollectionProfileEditBottomSheetScrollView({
                 </Col>
               ) : null}
               {profileImage?.uri || profileImageHasChanged ? (
-                <Col
-                  auto
-                  rounded100
-                  bgRealBlack
-                  p8
-                  onPress={hangeSaveProfileImage}>
+                <Col auto rounded100 bgBlack p8 onPress={hangeSaveProfileImage}>
                   {profileUploading ? (
                     <ActivityIndicator></ActivityIndicator>
                   ) : (

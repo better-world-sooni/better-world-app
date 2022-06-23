@@ -2,15 +2,14 @@ import {useNavigation} from '@react-navigation/native';
 import React from 'react';
 import {ChevronLeft} from 'react-native-feather';
 import {useGotoHome} from 'src/hooks/useGoto';
-import {HAS_NOTCH} from 'src/modules/constants';
 import {IMAGES} from 'src/modules/images';
-import {DEVICE_WIDTH} from 'src/modules/styles';
+import {Colors, DEVICE_WIDTH} from 'src/modules/styles';
 import {Col} from '../common/Col';
 import {Div} from '../common/Div';
 import {Img} from '../common/Img';
 import {Row} from '../common/Row';
 import {Span} from '../common/Span';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 export default function NotFound({text}) {
   const notchHeight = useSafeAreaInsets().top;
@@ -27,7 +26,7 @@ export default function NotFound({text}) {
                 <ChevronLeft
                   width={30}
                   height={30}
-                  color="black"
+                  color={Colors.black}
                   strokeWidth={2}
                 />
               </Div>

@@ -3,7 +3,7 @@ import {Col} from 'src/components/common/Col';
 import {Div} from 'src/components/common/Div';
 import {Row} from 'src/components/common/Row';
 import {Span} from 'src/components/common/Span';
-import {FlatList, ScrollView} from 'src/modules/viewComponents';
+import {FlatList, ScrollView} from 'src/components/common/ViewComponents';
 import BottomPopup from 'src/components/common/BottomPopup';
 import {BottomSheetModal} from '@gorhom/bottom-sheet';
 import {useApiSelector} from 'src/redux/asyncReducer';

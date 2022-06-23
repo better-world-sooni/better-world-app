@@ -10,8 +10,8 @@ import {
   usePaginateGETWithToken,
   useReloadGETWithToken,
 } from 'src/redux/asyncReducer';
-import {TextInput} from 'src/modules/viewComponents';
-import {DEVICE_WIDTH} from 'src/modules/styles';
+import {TextInput} from 'src/components/common/ViewComponents';
+import {Colors, DEVICE_WIDTH} from 'src/modules/styles';
 import Animated, {
   useAnimatedScrollHandler,
   useAnimatedStyle,
@@ -102,7 +102,7 @@ const CollectionSearchScreen = ({
             <Col auto onPress={goBack}>
               <ChevronLeft
                 strokeWidth={2}
-                color={'black'}
+                color={Colors.black}
                 height={22}
                 width={22}
               />
@@ -124,7 +124,12 @@ const CollectionSearchScreen = ({
               />
             </Col>
             <Col auto onPress={onPressSearch}>
-              <Search strokeWidth={2} color={'black'} height={22} width={22} />
+              <Search
+                strokeWidth={2}
+                color={Colors.black}
+                height={22}
+                width={22}
+              />
             </Col>
           </Row>
         </Div>

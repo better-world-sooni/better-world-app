@@ -6,12 +6,12 @@ import {Img} from 'src/components/common/Img';
 import {Row} from 'src/components/common/Row';
 import {Span} from 'src/components/common/Span';
 import {IMAGES} from 'src/modules/images';
-import {KeyboardAvoidingView} from 'src/modules/viewComponents';
+import {KeyboardAvoidingView} from 'src/components/common/ViewComponents';
 import {DEVICE_WIDTH} from 'src/modules/styles';
 import Carousel from 'react-native-snap-carousel';
 import {useGotoPasswordSignIn, useGotoScan} from 'src/hooks/useGoto';
 import {ScanType} from 'src/screens/ScanScreen';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 const SignInScreen = () => {
   const gotoScan = useGotoScan({scanType: ScanType.Login});
@@ -49,7 +49,7 @@ const SignInScreen = () => {
             <Div h20></Div>
             <Div h48>
               <Row
-                bgRealBlack
+                bgBlack
                 rounded100
                 h48
                 flex={1}

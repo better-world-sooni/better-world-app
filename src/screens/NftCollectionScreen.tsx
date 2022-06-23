@@ -2,10 +2,11 @@ import React from 'react';
 import {Div} from 'src/components/common/Div';
 import apis from 'src/modules/apis';
 import NftCollectionProfile from 'src/components/common/NftCollectionProfile';
-import {useIsAdmin} from 'src/modules/nftUtils';
+import {useIsAdmin} from 'src/utils/nftUtils';
 import {useGotoNewPost} from 'src/hooks/useGoto';
 import {PostOwnerType} from './NewPostScreen';
 import {Plus} from 'react-native-feather';
+import {Colors} from 'src/modules/styles';
 
 const NftCollectionScreen = ({
   route: {
@@ -50,7 +51,11 @@ const NftCollectionScreen = ({
             shadowRadius: 4,
             elevation: 4,
           }}>
-          <Plus strokeWidth={2} color={'white'} height={30} width={30}></Plus>
+          <Plus
+            strokeWidth={2}
+            color={Colors.white}
+            height={30}
+            width={30}></Plus>
         </Div>
       )}
     </Div>

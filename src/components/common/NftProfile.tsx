@@ -1,6 +1,6 @@
 import {ChevronLeft} from 'react-native-feather';
 import React, {useEffect, useRef, useState} from 'react';
-import {getNftName, useIsCurrentNft} from 'src/modules/nftUtils';
+import {getNftName, useIsCurrentNft} from 'src/utils/nftUtils';
 import {Col} from './Col';
 import {Div} from './Div';
 import {Row} from './Row';
@@ -8,7 +8,7 @@ import {Span} from './Span';
 import {useNavigation} from '@react-navigation/native';
 import {ActivityIndicator, RefreshControl, Platform} from 'react-native';
 import Post from './Post';
-import {DEVICE_WIDTH} from 'src/modules/styles';
+import {Colors, DEVICE_WIDTH} from 'src/modules/styles';
 import BottomPopup from './BottomPopup';
 import {BottomSheetModal} from '@gorhom/bottom-sheet';
 import NftProfileEditBottomSheetScrollView from './NftProfileEditBottomSheetScrollView';
@@ -25,7 +25,7 @@ import {
 } from 'src/redux/asyncReducer';
 import NftProfileHeader from './NftProfileHeader';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import ImageColors from 'react-native-image-colors'
+import ImageColors from 'react-native-image-colors';
 import ListEmptyComponent from './ListEmptyComponent';
 
 export default function NftProfile({
@@ -130,7 +130,12 @@ export default function NftProfile({
             style={backgroundImageStyles}
             source={{uri: nft.background_image_uri}}></Animated.Image>
         ) : (
-          <Div absolute top0 h={headerHeight+30} bgGray400 w={DEVICE_WIDTH}></Div>
+          <Div
+            absolute
+            top0
+            h={headerHeight + 30}
+            bgGray400
+            w={DEVICE_WIDTH}></Div>
         )}
         <Animated.View style={headerStyles}>
           <CustomBlurView
@@ -143,7 +148,7 @@ export default function NftProfile({
               height: '100%',
               position: 'absolute',
             }}
-            reducedTransparencyFallbackColor="white"></CustomBlurView>
+            reducedTransparencyFallbackColor={Colors.white}></CustomBlurView>
           <Row itemsCenter justifyCenter width={DEVICE_WIDTH} absolute>
             <Animated.View style={titleStyles}>
               <Span
@@ -159,11 +164,11 @@ export default function NftProfile({
         </Animated.View>
         <Row itemsCenter py5 h40 zIndex={100} absolute top={notchHeight + 5}>
           {enableBack && (
-            <Col auto ml15 bgRealBlack p5 rounded100 onPress={goBack}>
+            <Col auto ml15 bgBlack p5 rounded100 onPress={goBack}>
               <ChevronLeft
                 width={20}
                 height={20}
-                color="white"
+                color={Colors.white}
                 strokeWidth={2.4}
               />
             </Col>

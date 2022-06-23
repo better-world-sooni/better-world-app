@@ -4,8 +4,8 @@ import {X} from 'react-native-feather';
 import {shallowEqual, useSelector} from 'react-redux';
 import apis from 'src/modules/apis';
 import {HAS_NOTCH} from 'src/modules/constants';
-import {getNftName, getNftProfileImage} from 'src/modules/nftUtils';
-import {varStyle} from 'src/modules/styles';
+import {getNftName, getNftProfileImage} from 'src/utils/nftUtils';
+import {Colors, varStyle} from 'src/modules/styles';
 import {usePostPromiseFnWithToken} from 'src/redux/asyncReducer';
 import {RootState} from 'src/redux/rootReducer';
 import {TextField} from '../TextField';
@@ -73,7 +73,7 @@ export default function NewComment({
             <Span>{getNftName(replyToObject.nft)} 에게 답변중</Span>
           </Col>
           <Col itemsEnd onPress={onPressExitReplyToComment}>
-            <X width={20} height={20} color={'black'} />
+            <X width={20} height={20} color={Colors.black} />
           </Col>
         </Row>
       )}

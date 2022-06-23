@@ -1,9 +1,4 @@
 import {hasNotch} from 'react-native-device-info';
-import moment from 'moment';
-import 'moment/min/locales';
-moment.locale('ko');
-
-export const kmoment = moment;
 
 export const HAS_NOTCH = hasNotch();
 

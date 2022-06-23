@@ -1,7 +1,7 @@
 import {BottomSheetModal} from '@gorhom/bottom-sheet';
 import {useNavigation} from '@react-navigation/native';
 import React, {useEffect, useRef, useState} from 'react';
-import {ChevronLeft, X} from 'react-native-feather';
+import {X} from 'react-native-feather';
 import QRCodeScanner from 'react-native-qrcode-scanner';
 import BottomPopup from 'src/components/common/BottomPopup';
 import {Col} from 'src/components/common/Col';
@@ -10,7 +10,7 @@ import {NftProfileSummary} from 'src/components/common/NftProfileSummaryBottomSh
 import {Row} from 'src/components/common/Row';
 import {Span} from 'src/components/common/Span';
 import apis from 'src/modules/apis';
-import {DEVICE_HEIGHT, DEVICE_WIDTH} from 'src/modules/styles';
+import {Colors, DEVICE_HEIGHT, DEVICE_WIDTH} from 'src/modules/styles';
 import {
   useApiGETAsync,
   useApiSelector,
@@ -92,7 +92,7 @@ export default function ScanScreen({
           top={notchHeight + 5}>
           <Col justifyStart mr10>
             <Div auto rounded100 onPress={goBack}>
-              <X width={30} height={30} color="black" strokeWidth={2} />
+              <X width={30} height={30} color={Colors.black} strokeWidth={2} />
             </Div>
           </Col>
           <Col auto>
@@ -114,7 +114,7 @@ export default function ScanScreen({
           cameraStyle={{height: DEVICE_HEIGHT - 2 * headerHeight}}
         />
       ) : (
-        <Div h={DEVICE_HEIGHT} bgRealBlack>
+        <Div h={DEVICE_HEIGHT} bgBlack>
           <Div flex={1} itemsCenter justifyCenter>
             <ActivityIndicator />
           </Div>

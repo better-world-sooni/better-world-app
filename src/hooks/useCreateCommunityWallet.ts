@@ -1,6 +1,6 @@
 import { useState } from "react";
 import apis from "src/modules/apis";
-import { isAddress } from "src/modules/blockchainUtils";
+import { isAddress } from "src/utils/blockchainUtils";
 import { usePostPromiseFnWithToken } from "src/redux/asyncReducer";
 import useUploadImageUriKey from "./useUploadImageUriKey";
   

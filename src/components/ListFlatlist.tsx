@@ -3,7 +3,7 @@ import React from 'react';
 import {ActivityIndicator, FlatList, RefreshControl} from 'react-native';
 import {ChevronLeft} from 'react-native-feather';
 import {HAS_NOTCH} from 'src/modules/constants';
-import {DEVICE_HEIGHT} from 'src/modules/styles';
+import {Colors, DEVICE_HEIGHT} from 'src/modules/styles';
 import {Col} from './common/Col';
 import {Div} from './common/Div';
 import {Row} from './common/Row';
@@ -58,7 +58,7 @@ export default function ListFlatlist({
                     <BackIcon
                       width={30}
                       height={30}
-                      color="black"
+                      color={Colors.black}
                       strokeWidth={2}
                     />
                   </Div>

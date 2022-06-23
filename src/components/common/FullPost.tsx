@@ -11,7 +11,7 @@ import {
   ThumbsUp,
   Zap,
 } from 'react-native-feather';
-import Colors from 'src/constants/Colors';
+import {Colors} from 'src/modules/styles';
 import {
   useGotoLikeList,
   useGotoNewPost,
@@ -29,8 +29,8 @@ import {
   useIsAdmin,
   useIsCurrentCollection,
   useIsCurrentNft,
-} from 'src/modules/nftUtils';
-import {createdAtText} from 'src/modules/timeUtils';
+} from 'src/utils/nftUtils';
+import {createdAtText} from 'src/utils/timeUtils';
 import {Col} from './Col';
 import Comment from './Comment';
 import {Div} from './Div';
@@ -59,7 +59,7 @@ import useScrollToEndRef from 'src/hooks/useScrollToEndRef';
 import {PostOwnerType} from 'src/screens/NewPostScreen';
 import RepostedPost from './RepostedPost';
 import CollectionEvent from './CollectionEvent';
-import {getAdjustedHeightFromDimensions} from 'src/modules/imageUtils';
+import {getAdjustedHeightFromDimensions} from 'src/utils/imageUtils';
 import {PostEventTypes} from './Post';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import RepostedTransaction from './RepostedTransaction';
@@ -158,7 +158,7 @@ export default function FullPost({post, autoFocus = false}) {
   const actionIconDefaultProps = {
     width: 18,
     height: 18,
-    color: Colors.gray[700],
+    color: Colors.black,
     strokeWidth: 1.7,
   };
   const heartProps = liked
@@ -352,7 +352,7 @@ export default function FullPost({post, autoFocus = false}) {
               height: '100%',
               position: 'absolute',
             }}
-            reducedTransparencyFallbackColor="white"></CustomBlurView>
+            reducedTransparencyFallbackColor={Colors.white}></CustomBlurView>
         </Animated.View>
         <Div zIndex={100} absolute w={DEVICE_WIDTH} top={notchHeight + 5}>
           <Row itemsCenter py5 h40 px8>
@@ -361,7 +361,7 @@ export default function FullPost({post, autoFocus = false}) {
                 <ChevronLeft
                   width={30}
                   height={30}
-                  color="black"
+                  color={Colors.black}
                   strokeWidth={2}
                 />
               </Div>
@@ -520,7 +520,7 @@ export default function FullPost({post, autoFocus = false}) {
                       </>
                     ) : post.type == 'Proposal' ? (
                       <>
-                        <Col auto mr12 gray800>
+                        <Col auto mr12>
                           <Span
                             fontSize={12}
                             style={{fontWeight: '600'}}
@@ -535,7 +535,7 @@ export default function FullPost({post, autoFocus = false}) {
                             %)
                           </Span>
                         </Col>
-                        <Col auto mr12 gray800>
+                        <Col auto mr12>
                           <Span
                             fontSize={12}
                             style={{fontWeight: '600'}}
@@ -590,12 +590,12 @@ export default function FullPost({post, autoFocus = false}) {
                         )}
                     {!votable && (
                       <>
-                        <Col auto rounded100 bgRealBlack p2 bgSuccess mr4>
+                        <Col auto rounded100 bgBlack p2 bgSuccess mr4>
                           <Check
                             strokeWidth={2}
                             height={14}
                             width={14}
-                            color={'white'}
+                            color={Colors.white}
                           />
                         </Col>
                         <Col auto>

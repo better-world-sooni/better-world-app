@@ -1,5 +1,5 @@
 import React from 'react';
-import {FlatList} from 'src/modules/viewComponents';
+import {FlatList} from 'src/components/common/ViewComponents';
 import Post from './Post';
 
 export default function Feed({feed}) {

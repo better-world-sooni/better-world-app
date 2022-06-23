@@ -1,12 +1,12 @@
 import React, {useEffect, useState} from 'react';
 import {ActivityIndicator} from 'react-native';
 import {AlertTriangle, Check, RefreshCw} from 'react-native-feather';
-import Colors from 'src/constants/Colors';
+import {Colors} from 'src/modules/styles';
 import {
   getNftName,
   getNftProfileImage,
   useIsCurrentNft,
-} from 'src/modules/nftUtils';
+} from 'src/utils/nftUtils';
 import {useChangeAccount} from 'src/redux/appReducer';
 import {Col} from './common/Col';
 import {Div} from './common/Div';
@@ -71,7 +71,12 @@ export function NftIdentity({nft, setCloseDisable, onSuccess}) {
       </Col>
       {isCurrentNft && (
         <Col auto>
-          <RefreshCw strokeWidth={2} height={18} width={18} color={'black'} />
+          <RefreshCw
+            strokeWidth={2}
+            height={18}
+            width={18}
+            color={Colors.black}
+          />
         </Col>
       )}
       <Col></Col>
@@ -80,8 +85,13 @@ export function NftIdentity({nft, setCloseDisable, onSuccess}) {
           {stateType === StateType.Loading ? (
             <ActivityIndicator />
           ) : stateType === StateType.Success ? (
-            <Div auto rounded100 bgRealBlack p3 bgInfo>
-              <Check strokeWidth={2} height={18} width={18} color={'white'} />
+            <Div auto rounded100 bgBlack p3 bgInfo>
+              <Check
+                strokeWidth={2}
+                height={18}
+                width={18}
+                color={Colors.white}
+              />
             </Div>
           ) : (
             <AlertTriangle

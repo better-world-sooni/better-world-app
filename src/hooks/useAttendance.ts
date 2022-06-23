@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import apis from "src/modules/apis";
-import { smallBump } from "src/modules/hapticFeedBackUtils";
+import { smallBump } from "src/utils/hapticFeedBackUtils";
 import { useDeletePromiseFnWithToken, usePostPromiseFnWithToken, usePutPromiseFnWithToken } from "src/redux/asyncReducer";
 
 export enum AttendanceCategory {

@@ -1,7 +1,7 @@
 import apis from "src/modules/apis";
 import { NAV_NAMES } from "src/modules/navNames";
-import { useApiGETWithToken, useApiPOSTWithToken, useApiGET } from "src/redux/asyncReducer";
-import { notificationNavigate } from 'src/modules/rootNavagation';
+import { useApiGETWithToken } from "src/redux/asyncReducer";
+import { notificationNavigate } from "src/utils/notificationUtils";
 
 export function useGotoWithNotification() {
     const apiGETWithToken = useApiGETWithToken()

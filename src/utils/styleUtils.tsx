@@ -1,15 +1,12 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import {globalStyle, varStyle} from './styles';
 import * as _ from 'lodash';
 import {StyleSheet} from 'react-native';
+import {varStyle} from 'src/modules/styles';
 
 export const COLOR_PALETTE = [
   {name: 'Primary', color: varStyle.primary},
   {name: 'PrimarySoft', color: varStyle.primarySoft},
   {name: 'Secondary', color: varStyle.secondary},
   {name: 'SecondarySoft', color: varStyle.secondarySoft},
-  {name: 'Secondary2', color: varStyle.secondary2},
-  {name: 'Secondary2Soft', color: varStyle.secondary2Soft},
   {name: 'Gray700', color: varStyle.gray700},
   {name: 'Gray600', color: varStyle.gray600},
   {name: 'Gray500', color: varStyle.gray500},
@@ -17,7 +14,6 @@ export const COLOR_PALETTE = [
   {name: 'Gray300', color: varStyle.gray300},
   {name: 'Gray200', color: varStyle.gray200},
   {name: 'Gray100', color: varStyle.gray100},
-  {name: 'Yellow', color: varStyle.yellow},
   {name: 'Info', color: varStyle.info},
   {name: 'InfoSoft', color: varStyle.infoSoft},
   {name: 'Success', color: varStyle.success},
@@ -26,14 +22,8 @@ export const COLOR_PALETTE = [
   {name: 'WarningSoft', color: varStyle.warningSoft},
   {name: 'Danger', color: varStyle.danger},
   {name: 'DangerSoft', color: varStyle.dangerSoft},
-  {name: 'White', color: '#FFFFFF'},
-  {name: 'Red', color: '#FF0000'},
-  {name: 'Blue', color: '#0000FF'},
-  {name: 'Yellow', color: '#FFFF00'},
-  {name: 'Green', color: '#008000'},
-  {name: 'Purple', color: '#800080'},
-  {name: 'Black', color: '#161c2d'},
-  {name: 'RealBlack', color: '#000000'},
+  {name: 'White', color: varStyle.white},
+  {name: 'Black', color: varStyle.black},
   {name: 'Transparent', color: 'transparent'},
 ];
 
@@ -397,7 +387,6 @@ export const addLayoutStyles = (props, arr: Array<any>, key) => {
   if (addIf(ctx, {shadowRadius}, v => ({shadowRadius: v}))) {
     return;
   }
-
 };
 
 export const addBorderStyles = (props, arr: Array<any>, key) => {
@@ -707,76 +696,8 @@ export const addTextStyles = (props, arr: Array<any>, key) => {
     uppercase,
     lowercase,
     capitalize,
-    header1,
-    header2,
-    header3,
-    header4,
-    header5,
-    header6,
-    header7,
-    header8,
-    headerDesc,
-    sectionBody,
-    sectionBody2,
-    dialogTitle,
-    dialogBody,
-    notice,
-    noticeDetail,
-    enCourseHeader1,
-    enCourseHeader2,
   } = props;
   const ctx = {props, arr, key, isActive};
-  if (addIf(ctx, {header1}, globalStyle.header1)) {
-    return;
-  }
-  if (addIf(ctx, {header2}, globalStyle.header2)) {
-    return;
-  }
-  if (addIf(ctx, {header3}, globalStyle.header3)) {
-    return;
-  }
-  if (addIf(ctx, {header4}, globalStyle.header4)) {
-    return;
-  }
-  if (addIf(ctx, {header5}, globalStyle.header5)) {
-    return;
-  }
-  if (addIf(ctx, {header6}, globalStyle.header6)) {
-    return;
-  }
-  if (addIf(ctx, {header7}, globalStyle.header7)) {
-    return;
-  }
-  if (addIf(ctx, {header8}, globalStyle.header8)) {
-    return;
-  }
-  if (addIf(ctx, {headerDesc}, globalStyle.headerDesc)) {
-    return;
-  }
-  if (addIf(ctx, {sectionBody}, globalStyle.sectionBody)) {
-    return;
-  }
-  if (addIf(ctx, {sectionBody2}, globalStyle.sectionBody2)) {
-    return;
-  }
-  if (addIf(ctx, {dialogTitle}, globalStyle.dialogTitle)) {
-    return;
-  }
-  if (addIf(ctx, {dialogBody}, globalStyle.dialogBody)) {
-    return;
-  }
-  if (addIf(ctx, {notice}, globalStyle.notice)) {
-    return;
-  }
-  if (addIf(ctx, {noticeDetail}, globalStyle.noticeDetail)) {
-    return;
-  }
-  if (addIf(ctx, {enCourseHeader1}, globalStyle.enCourseHeader1)) {
-    return;
-  }
-  if (addIf(ctx, {enCourseHeader2}, globalStyle.enCourseHeader2)) {
-    return;
-  }
 
   if (addIf(ctx, {color}, v => ({color: v}))) {
     return;

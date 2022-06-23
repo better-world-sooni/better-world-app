@@ -8,13 +8,13 @@ import {TextField} from 'src/components/TextField';
 import {useLogin} from 'src/redux/appReducer';
 import BottomPopup from 'src/components/common/BottomPopup';
 import {BottomSheetModal} from '@gorhom/bottom-sheet';
-import {KeyboardAvoidingView} from 'src/modules/viewComponents';
-import {DEVICE_WIDTH} from 'src/modules/styles';
+import {KeyboardAvoidingView} from 'src/components/common/ViewComponents';
+import {Colors, DEVICE_WIDTH} from 'src/modules/styles';
 import {useGotoHome, useGotoOnboarding} from 'src/hooks/useGoto';
 import {ChevronLeft} from 'react-native-feather';
 import {useNavigation} from '@react-navigation/native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import {isAddress} from 'src/modules/blockchainUtils';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {isAddress} from 'src/utils/blockchainUtils';
 
 const PasswordSigninScreen = () => {
   const [address, setAddress] = useState('');
@@ -95,7 +95,7 @@ const PasswordSigninScreen = () => {
               <ChevronLeft
                 width={30}
                 height={30}
-                color="black"
+                color={Colors.black}
                 strokeWidth={2}
               />
             </Div>
@@ -140,7 +140,7 @@ const PasswordSigninScreen = () => {
             </Row>
             <Div h48 my15>
               <Row
-                bgRealBlack
+                bgBlack
                 rounded100
                 h48
                 flex={1}

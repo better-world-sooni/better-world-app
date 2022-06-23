@@ -1,9 +1,9 @@
 import apis from "src/modules/apis";
-import { fileChecksum } from "src/modules/fileHelper";
-import { getKeyFromUri } from "src/modules/uriUtils";
+import { fileChecksum } from "src/utils/fileUtils";
+import { getKeyFromUri } from "src/utils/uriUtils";
 import { promiseFnPure, usePostPromiseFnWithToken } from "src/redux/asyncReducer";
 import { Buffer } from 'buffer'
-import { isContentTypeImage } from "src/modules/imageUtils";
+import { isContentTypeImage } from "src/utils/imageUtils";
 import useConvertVideo from "./useCovertVideo";
 
 export enum FileUploadReturnType {
@@ -35,7 +35,6 @@ export default function useFileUpload({attachedRecord}){
     }
     const uploadVideoToPresignedUrl = async (presignedUrlObject, file) => {
         const res = await promiseFnPure({url: presignedUrlObject.direct_upload.url, body: file, method: 'PUT', headers: presignedUrlObject.direct_upload.headers })
-        console.log(res, "uploadVideoToPresignedUrl")
         if(res.status == 200) return res.url
         return ''
     }
@@ -51,11 +50,8 @@ export default function useFileUpload({attachedRecord}){
             blob = await (await fetch(file.uri)).blob()
             file.fileSize = blob._data.size
         }
-        console.log(file, 'pre-fileChecksum')
         const checksum = await fileChecksum(file);
-        console.log(checksum, 'pre-createPresignedUrl')
         const {data} = await createPresignedUrl(file.fileName, file.type, file.fileSize, checksum, attachedRecord);
-        console.log(data, 'pre-uploadToPresignedUrlRes')
         if(isContentTypeImage(file.type)){
             const uploadImageToPresignedUrlRes = await uploadImageToPresignedUrl(data.presigned_url_object, file.base64);
             if (!uploadImageToPresignedUrlRes) throw new Error();

@@ -1,6 +1,17 @@
-import notifee, { AndroidImportance, EventType } from '@notifee/react-native';
+import notifee, { AndroidImportance } from '@notifee/react-native';
+import { createNavigationContainerRef } from '@react-navigation/native';
 import {BETTER_WORLD_MAIN_PUSH_CHANNEL} from 'src/modules/constants';
-import messaging from '@react-native-firebase/messaging';
+
+export const navigationRef = createNavigationContainerRef()
+
+export function notificationNavigate(name, params) {
+    if (navigationRef.isReady()) {
+        navigationRef.navigate(name as never, params as never);
+    } 
+    else {
+        console.log("navigation not ready")
+    }
+}
 
 const onDisplayNotification = async(title, body, data) => {
     const channelId  = await notifee.createChannel({

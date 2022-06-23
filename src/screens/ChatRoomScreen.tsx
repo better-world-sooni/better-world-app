@@ -12,17 +12,16 @@ import {useApiSelector} from 'src/redux/asyncReducer';
 import {RootState} from 'src/redux/rootReducer';
 import {cable} from 'src/modules/cable';
 import {ChatChannel} from 'src/components/ChatChannel';
-import {HAS_NOTCH, kmoment} from 'src/modules/constants';
-import {DEVICE_WIDTH} from 'src/modules/styles';
+import {Colors, DEVICE_WIDTH} from 'src/modules/styles';
 import {BlurView} from '@react-native-community/blur';
 import {CustomBlurView} from 'src/components/common/CustomBlurView';
-import {KeyboardAvoidingView} from 'src/modules/viewComponents';
+import {KeyboardAvoidingView} from 'src/components/common/ViewComponents';
 import {Img} from 'src/components/common/Img';
 import NewMessage from 'src/components/common/NewMessage';
-import {createdAtText, getCalendarDay} from 'src/modules/timeUtils';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import {getNftName, getNftProfileImage} from 'src/modules/nftUtils';
-import {resizeImageUri} from 'src/modules/uriUtils';
+import {getCalendarDay, kmoment} from 'src/utils/timeUtils';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {getNftProfileImage} from 'src/utils/nftUtils';
+import {resizeImageUri} from 'src/utils/uriUtils';
 
 export enum ChatRoomEnterType {
   List,
@@ -31,13 +30,7 @@ export enum ChatRoomEnterType {
 
 function ChatRoomScreen({
   route: {
-    params: {
-      roomId,
-      roomName,
-      roomImage,
-      opponentNft,
-      chatRoomEnterType,
-    },
+    params: {roomId, roomName, roomImage, opponentNft, chatRoomEnterType},
   },
 }) {
   const {currentNft, token} = useSelector(
@@ -47,15 +40,18 @@ function ChatRoomScreen({
   const {data: chatRoomRes, isLoading: chatRoomLoad} = useApiSelector(
     chatRoomEnterType == ChatRoomEnterType.List
       ? apis.chat.chatRoom.roomId(roomId)
-      : apis.chat.chatRoom.contractAddressAndTokenId(opponentNft.contract_address, opponentNft.token_id),
+      : apis.chat.chatRoom.contractAddressAndTokenId(
+          opponentNft.contract_address,
+          opponentNft.token_id,
+        ),
   );
   const currentNftId = {
     token_id: currentNft.token_id,
     contract_address: currentNft.contract_address,
   };
-  const currentAvatar = getNftProfileImage(currentNft, 200, 200)
-  const opponentAvatar = resizeImageUri(roomImage, 200, 200)
-  
+  const currentAvatar = getNftProfileImage(currentNft, 200, 200);
+  const opponentAvatar = resizeImageUri(roomImage, 200, 200);
+
   const [connectRoomId, setConnectRoomId] = useState(null);
   const [chatSocket, setChatSocket] = useState(null);
   const [enterNfts, setEnterNfts] = useState([]);
@@ -75,18 +71,19 @@ function ChatRoomScreen({
         channel.on('enter', res => {
           setEnterNfts(res.entered_nfts);
           const updateMsgLength = res.update_msgs.length;
-          setMessages(m => [...res.update_msgs, ...m.slice(updateMsgLength)])
+          setMessages(m => [...res.update_msgs, ...m.slice(updateMsgLength)]);
         });
         channel.on('messageRoom', res => {
           setMessages(m => [res.message, ...m]);
         });
         channel.on('leave', res => {
-          setEnterNfts(prevNfts => 
-            [...prevNfts.filter(nft => 
-              nft.contract_address != res.leave_nft.contract_address ||
-              nft.token_id != res.leave_nft.token_id
-            )]
-          );
+          setEnterNfts(prevNfts => [
+            ...prevNfts.filter(
+              nft =>
+                nft.contract_address != res.leave_nft.contract_address ||
+                nft.token_id != res.leave_nft.token_id,
+            ),
+          ]);
         });
       };
       wsConnect();
@@ -129,8 +126,7 @@ function ChatRoomScreen({
         last_message: text,
       };
       chatSocket.send(msg, room, opponentNft);
-    } 
-    else Alert.alert('네트워크가 불안정하여 메세지를 보내지 못했습니다');
+    } else Alert.alert('네트워크가 불안정하여 메세지를 보내지 못했습니다');
     setText('');
   }, [connectRoomId, chatSocket, text, enterNfts]);
 
@@ -165,7 +161,6 @@ function ChatRoomScreen({
     );
   }, []);
 
-
   return (
     <>
       <Div h={headerHeight} zIndex={100}>
@@ -178,8 +173,7 @@ function ChatRoomScreen({
             width: DEVICE_WIDTH,
             height: headerHeight,
             position: 'absolute',
-          }}
-          ></CustomBlurView>
+          }}></CustomBlurView>
         <Row
           itemsCenter
           py5
@@ -188,13 +182,13 @@ function ChatRoomScreen({
           zIndex={100}
           absolute
           w={DEVICE_WIDTH}
-          top={notchHeight+5}>
+          top={notchHeight + 5}>
           <Col justifyStart mr10>
             <Div auto rounded100 onPress={goBack}>
               <ChevronLeft
                 width={30}
                 height={30}
-                color="black"
+                color={Colors.black}
                 strokeWidth={2}
               />
             </Div>
@@ -207,7 +201,10 @@ function ChatRoomScreen({
           <Col />
         </Row>
       </Div>
-      <KeyboardAvoidingView flex={1} bgWhite behavior={Platform.OS === "ios" ? "padding" : "height"}>
+      <KeyboardAvoidingView
+        flex={1}
+        bgWhite
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
         <FlatList
           ref={flatListRef}
           showsVerticalScrollIndicator={false}
@@ -219,17 +216,24 @@ function ChatRoomScreen({
           renderItem={({item: message, index}) => {
             const author = (message as any).nft;
             const isMine = isSameNft(author, currentNftId);
-            const isConsecutiveForward = isSameNft(author, messages[index-1]?.nft);
-            const isConsecutiveBackward = isSameNft(author, messages[index+1]?.nft)
+            const isConsecutiveForward = isSameNft(
+              author,
+              messages[index - 1]?.nft,
+            );
+            const isConsecutiveBackward = isSameNft(
+              author,
+              messages[index + 1]?.nft,
+            );
             const showTime =
               hasMintuesChanged(
                 message.created_at,
                 messages[index - 1]?.created_at,
               ) || !isConsecutiveForward;
-            const showAuthor = hasMintuesChanged(
-              message.created_at,
-              messages[index + 1]?.created_at,
-            ) || !isConsecutiveBackward;
+            const showAuthor =
+              hasMintuesChanged(
+                message.created_at,
+                messages[index + 1]?.created_at,
+              ) || !isConsecutiveBackward;
             const showDate = hasDateChanged(
               message.created_at,
               messages[index + 1]?.created_at,
@@ -331,7 +335,7 @@ const Message = ({
       </Row>
       {showDate && (
         <Div itemsCenter py16>
-          <Div rounded100 bgRealBlack>
+          <Div rounded100 bgBlack>
             <Span py8 px16 white>
               {getCalendarDay(createdAt)}
             </Span>

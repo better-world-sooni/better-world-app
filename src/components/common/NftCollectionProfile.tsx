@@ -5,16 +5,10 @@ import {Div} from './Div';
 import {Img} from './Img';
 import {Row} from './Row';
 import {Span} from './Span';
-import {DEVICE_WIDTH} from 'src/modules/styles';
+import {Colors, DEVICE_WIDTH} from 'src/modules/styles';
 import useFollow from 'src/hooks/useFollow';
 import apis from 'src/modules/apis';
-import {
-  useGotoAffinity,
-  useGotoCollectionSearch,
-  useGotoFollowList,
-  useGotoNewPost,
-} from 'src/hooks/useGoto';
-import {PostOwnerType} from 'src/screens/NewPostScreen';
+import {useGotoCollectionSearch, useGotoFollowList} from 'src/hooks/useGoto';
 import {HAS_NOTCH} from 'src/modules/constants';
 import Animated, {
   useAnimatedScrollHandler,
@@ -29,7 +23,7 @@ import {shallowEqual, useSelector} from 'react-redux';
 import {RootState} from 'src/redux/rootReducer';
 import TruncatedMarkdown from './TruncatedMarkdown';
 import Post from './Post';
-import {getNftName, getNftProfileImage} from 'src/modules/nftUtils';
+import {getNftName, getNftProfileImage} from 'src/utils/nftUtils';
 import {
   useApiSelector,
   usePaginateGETWithToken,
@@ -41,7 +35,7 @@ import NftCollectionProfileEditBottomSheetScrollView from 'src/components/common
 import {BottomSheetModal} from '@gorhom/bottom-sheet';
 import {ICONS} from 'src/modules/icons';
 import ListEmptyComponent from './ListEmptyComponent';
-import {handlePressContribution} from 'src/modules/bottomPopupUtils';
+import {handlePressContribution} from 'src/utils/bottomPopupUtils';
 
 export default function NftCollectionProfile({
   nftCollectionCore,
@@ -161,7 +155,7 @@ export default function NftCollectionProfile({
               height: '100%',
               position: 'absolute',
             }}
-            reducedTransparencyFallbackColor="white"></CustomBlurView>
+            reducedTransparencyFallbackColor={Colors.white}></CustomBlurView>
           <Row itemsCenter justifyCenter width={DEVICE_WIDTH} absolute>
             <Animated.View style={titleStyles}>
               <Span
@@ -183,11 +177,11 @@ export default function NftCollectionProfile({
           zIndex={100}
           absolute
           top={notchHeight + 5}>
-          <Col auto bg={'black'} p8 rounded100 mr12 onPress={goBack}>
+          <Col auto bg={Colors.black} p8 rounded100 mr12 onPress={goBack}>
             <Div>
               <ChevronLeft
                 strokeWidth={2.4}
-                color={'white'}
+                color={Colors.white}
                 height={15}
                 width={15}
               />
@@ -233,7 +227,7 @@ export default function NftCollectionProfile({
                       <Col />
                       <Col
                         auto
-                        bgRealBlack={!isFollowing}
+                        bgBlack={!isFollowing}
                         p8
                         rounded100
                         border1={isFollowing}
@@ -258,7 +252,7 @@ export default function NftCollectionProfile({
                           <Div>
                             <Settings
                               strokeWidth={2}
-                              color={'black'}
+                              color={Colors.black}
                               height={22}
                               width={22}
                             />

@@ -1,16 +1,18 @@
 import React, {useState} from 'react';
 import {Div} from 'src/components/common/Div';
-import {HAS_NOTCH, kmoment} from 'src/modules/constants';
 import {Row} from 'src/components/common/Row';
 import {Col} from 'src/components/common/Col';
 import {ChevronLeft} from 'react-native-feather';
 import apis from 'src/modules/apis';
 import {Img} from 'src/components/common/Img';
 import {useNavigation} from '@react-navigation/native';
-import {getNftProfileImage} from 'src/modules/nftUtils';
+import {getNftProfileImage} from 'src/utils/nftUtils';
 import {Span} from 'src/components/common/Span';
 import UploadImageSlideShow from 'src/components/common/UploadImageSlideShow';
-import {KeyboardAvoidingView, TextInput} from 'src/modules/viewComponents';
+import {
+  KeyboardAvoidingView,
+  TextInput,
+} from 'src/components/common/ViewComponents';
 import {useApiSelector, useReloadGETWithToken} from 'src/redux/asyncReducer';
 import {ActivityIndicator, Platform} from 'react-native';
 import {MenuView} from '@react-native-menu/menu';
@@ -19,13 +21,14 @@ import Animated, {
   useAnimatedStyle,
   useSharedValue,
 } from 'react-native-reanimated';
-import {DEVICE_WIDTH} from 'src/modules/styles';
+import {Colors, DEVICE_WIDTH} from 'src/modules/styles';
 import {CustomBlurView} from 'src/components/common/CustomBlurView';
-import Colors from 'src/constants/Colors';
 import useAutoFocusRef from 'src/hooks/useAutoFocusRef';
 import useUploadCollectionEvent from 'src/hooks/useUploadCollectionEvent';
 import DatePicker from 'react-native-date-picker';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {kmoment} from 'src/utils/timeUtils';
+import {HAS_NOTCH} from 'src/modules/constants';
 
 const postTypes = [
   {
@@ -123,7 +126,11 @@ const NewCollectionEventScreen = () => {
             <Row itemsCenter py5 h40 px15>
               <Col itemsStart>
                 <Div auto rounded100 onPress={goBack}>
-                  <ChevronLeft height={30} color="black" strokeWidth={2} />
+                  <ChevronLeft
+                    height={30}
+                    color={Colors.black}
+                    strokeWidth={2}
+                  />
                 </Div>
               </Col>
               <Col auto></Col>

@@ -8,16 +8,16 @@ import {Div} from 'src/components/common/Div';
 import {Row} from 'src/components/common/Row';
 import {Span} from 'src/components/common/Span';
 import apis from 'src/modules/apis';
-import {DEVICE_WIDTH} from 'src/modules/styles';
+import {Colors, DEVICE_WIDTH} from 'src/modules/styles';
 import {useApiSelector} from 'src/redux/asyncReducer';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 export default function CollectionEventScreen({
   route: {
     params: {collectionEvent, reload},
   },
 }) {
-  const {data: collectionEventRes, isLoading: collectionEventLoad} = 
+  const {data: collectionEventRes, isLoading: collectionEventLoad} =
     useApiSelector(apis.collectionEvent.collectionEventId);
   const notchHeight = useSafeAreaInsets().top;
   const headerHeight = notchHeight + 50;
@@ -44,7 +44,7 @@ export default function CollectionEventScreen({
               <ChevronLeft
                 width={30}
                 height={30}
-                color="black"
+                color={Colors.black}
                 strokeWidth={2}
               />
             </Div>

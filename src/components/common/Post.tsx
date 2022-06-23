@@ -10,7 +10,7 @@ import {
   ThumbsUp,
   Zap,
 } from 'react-native-feather';
-import Colors from 'src/constants/Colors';
+import {Colors} from 'src/modules/styles';
 import {
   useGotoLikeList,
   useGotoNewPost,
@@ -29,8 +29,8 @@ import {
   useIsAdmin,
   useIsCurrentCollection,
   useIsCurrentNft,
-} from 'src/modules/nftUtils';
-import {createdAtText} from 'src/modules/timeUtils';
+} from 'src/utils/nftUtils';
+import {createdAtText} from 'src/utils/timeUtils';
 import {Col} from './Col';
 import Comment from './Comment';
 import {Div} from './Div';
@@ -51,7 +51,7 @@ import {PostOwnerType, PostType} from 'src/screens/NewPostScreen';
 import TruncatedText from './TruncatedText';
 import RepostedPost from './RepostedPost';
 import CollectionEvent from './CollectionEvent';
-import {getAdjustedHeightFromDimensions} from 'src/modules/imageUtils';
+import {getAdjustedHeightFromDimensions} from 'src/utils/imageUtils';
 import RepostedTransaction from './RepostedTransaction';
 import {ICONS} from 'src/modules/icons';
 
@@ -149,7 +149,7 @@ function PostContent({post, selectableFn = null, displayLabel = false}) {
   const actionIconDefaultProps = {
     width: 18,
     height: 18,
-    color: Colors.gray[700],
+    color: Colors.black,
     strokeWidth: 2,
   };
   const heartProps = liked
@@ -242,7 +242,6 @@ function PostContent({post, selectableFn = null, displayLabel = false}) {
     if (event == PostEventTypes.Delete) deletePost();
     if (event == PostEventTypes.Report) gotoReport();
     if (event == PostEventTypes.SetVotingDeadline) setVotingDeadline();
-    // if (event == PostEventTypes.SetWinningProposal) setWinningProposal();
   };
 
   const gotoLikeList = useGotoLikeList({
@@ -274,9 +273,9 @@ function PostContent({post, selectableFn = null, displayLabel = false}) {
             {displayLabel && (
               <Div itemsEnd mb5>
                 {post.type == PostType.Proposal ? (
-                  <Zap height={16} width={16} color={Colors.gray[500]} />
+                  <Zap height={16} width={16} color={Colors.gray[700]} />
                 ) : (
-                  <Heart height={16} width={16} color={Colors.gray[500]} />
+                  <Heart height={16} width={16} color={Colors.gray[700]} />
                 )}
               </Div>
             )}
@@ -422,7 +421,7 @@ function PostContent({post, selectableFn = null, displayLabel = false}) {
                 </>
               ) : post.type == 'Proposal' ? (
                 <>
-                  <Col auto mr12 gray800>
+                  <Col auto mr12>
                     <Span
                       fontSize={12}
                       style={{fontWeight: '600'}}
@@ -437,7 +436,7 @@ function PostContent({post, selectableFn = null, displayLabel = false}) {
                       %)
                     </Span>
                   </Col>
-                  <Col auto mr12 gray800>
+                  <Col auto mr12>
                     <Span
                       fontSize={12}
                       style={{fontWeight: '600'}}
@@ -495,7 +494,7 @@ function PostContent({post, selectableFn = null, displayLabel = false}) {
                       strokeWidth={2}
                       height={14}
                       width={14}
-                      color={'white'}
+                      color={Colors.white}
                     />
                   </Col>
                   <Col auto>

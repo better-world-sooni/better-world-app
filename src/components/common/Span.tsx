@@ -1,13 +1,14 @@
 import React from 'react';
 import {StyleSheet, Text} from 'react-native';
-import {mergePropsWithStyleComp} from 'src/modules/viewComponents';
+import {mergePropsWithStyleComp} from 'src/components/common/ViewComponents';
+import {Colors} from 'src/modules/styles';
 import {
   addBackgroundStyles,
   addBorderStyles,
   addLayoutStyles,
   addStyles,
   addTextStyles,
-} from 'src/modules/styleUtils';
+} from 'src/utils/styleUtils';
 
 const getTextStyles = props => {
   const {style} = props;
@@ -32,14 +33,12 @@ export const Span = props => {
     style: StyleSheet.flatten(textStyles),
   });
   return (
-    //NotoSansKR-Regular
     <Text
       ref={innerRef}
       {...mergedProps}
       style={[
         {
-          // fontFamily: 'UniSans',
-          color: 'black',
+          color: Colors.black,
           fontSize: 13,
           flexDirection: 'row',
           flexWrap: 'wrap',

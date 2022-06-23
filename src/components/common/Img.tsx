@@ -6,8 +6,8 @@ import {
   addImageStyles,
   addLayoutStyles,
   addStyles,
-} from 'src/modules/styleUtils';
-import {mergePropsWithStyleComp} from 'src/modules/viewComponents';
+} from 'src/utils/styleUtils';
+import {mergePropsWithStyleComp} from 'src/components/common/ViewComponents';
 import FastImage from 'react-native-fast-image';
 import {IMAGES} from 'src/modules/images';
 

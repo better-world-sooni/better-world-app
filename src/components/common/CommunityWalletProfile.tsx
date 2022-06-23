@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {Div} from './Div';
-import {DEVICE_WIDTH} from 'src/modules/styles';
+import {Colors, DEVICE_WIDTH} from 'src/modules/styles';
 import {HAS_NOTCH} from 'src/modules/constants';
 import Animated, {
   useAnimatedScrollHandler,
@@ -80,9 +80,14 @@ export default function CommunityWalletProfile({
               height: '100%',
               position: 'absolute',
             }}
-            reducedTransparencyFallbackColor="white"></CustomBlurView>
+            reducedTransparencyFallbackColor={Colors.white}></CustomBlurView>
         </Animated.View>
-        <Div zIndex={100} absolute w={DEVICE_WIDTH} top={notchHeight} h={headerHeight} >
+        <Div
+          zIndex={100}
+          absolute
+          w={DEVICE_WIDTH}
+          top={notchHeight}
+          h={headerHeight}>
           <CommunityWalletTopBar
             communityWallet={communityWallet}
             onPressDown={() => setIsAboutOpen(prev => !prev)}

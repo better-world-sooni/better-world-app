@@ -4,15 +4,14 @@ import {FlatList, RefreshControl} from 'react-native';
 import {Row} from 'src/components/common/Row';
 import {Col} from 'src/components/common/Col';
 import {Search} from 'react-native-feather';
-import {Span} from 'src/components/common/Span';
 import apis from 'src/modules/apis';
 import {
   useApiSelector,
   usePaginateGETWithToken,
   useReloadGETWithToken,
 } from 'src/redux/asyncReducer';
-import {TextInput} from 'src/modules/viewComponents';
-import {DEVICE_HEIGHT} from 'src/modules/styles';
+import {TextInput} from 'src/components/common/ViewComponents';
+import {Colors, DEVICE_HEIGHT} from 'src/modules/styles';
 import useEdittableText from 'src/hooks/useEdittableText';
 import RankedOwner from 'src/components/RankOwner';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
@@ -81,7 +80,7 @@ const SearchScreen = () => {
               <Col auto rounded100 onPress={onPressSearch}>
                 <Search
                   strokeWidth={2}
-                  color={'black'}
+                  color={Colors.black}
                   height={22}
                   width={22}
                 />

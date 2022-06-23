@@ -1,6 +1,6 @@
 import React, {memo} from 'react';
 import {useGotoNftProfile} from 'src/hooks/useGoto';
-import {resizeImageUri} from 'src/modules/uriUtils';
+import {resizeImageUri} from 'src/utils/uriUtils';
 import {Col} from './common/Col';
 import {Div} from './common/Div';
 import {Img} from './common/Img';

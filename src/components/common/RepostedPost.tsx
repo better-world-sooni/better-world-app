@@ -1,7 +1,7 @@
 import React from 'react';
 import {useGotoPost} from 'src/hooks/useGoto';
-import {getNftName, getNftProfileImage} from 'src/modules/nftUtils';
-import {createdAtText} from 'src/modules/timeUtils';
+import {getNftName, getNftProfileImage} from 'src/utils/nftUtils';
+import {createdAtText} from 'src/utils/timeUtils';
 import {Col} from './Col';
 import {Div} from './Div';
 import {Img} from './Img';
