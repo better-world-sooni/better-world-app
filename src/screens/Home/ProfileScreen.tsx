@@ -9,6 +9,7 @@ import {Plus} from 'react-native-feather';
 import {useGotoNewPost} from 'src/hooks/useGoto';
 import {PostOwnerType} from '../NewPostScreen';
 import {Colors} from 'src/modules/styles';
+import FocusAwareStatusBar from 'src/components/FocusAwareStatusBar';
 
 const ProfileScreen = () => {
   const {currentNft} = useSelector(
@@ -21,7 +22,6 @@ const ProfileScreen = () => {
   const gotoNewPost = useGotoNewPost({postOwnerType: PostOwnerType.Nft});
   return (
     <Div flex={1} bgWhite overflowHidden>
-      <StatusBar barStyle="dark-content" backgroundColor="#283018"></StatusBar>
       <NftProfile
         qrScan
         nftCore={currentNft}

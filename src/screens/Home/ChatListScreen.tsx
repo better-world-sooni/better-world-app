@@ -19,6 +19,7 @@ import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {resizeImageUri} from 'src/utils/uriUtils';
 import ListEmptyComponent from 'src/components/common/ListEmptyComponent';
 import {FlatList} from 'react-native';
+import FocusAwareStatusBar from 'src/components/FocusAwareStatusBar';
 
 function ChatListScreen() {
   const {currentNft, token} = useSelector(

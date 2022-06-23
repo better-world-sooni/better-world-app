@@ -74,9 +74,7 @@ const SplashScreen = ({route}) => {
 
   return (
     <Div bgWhite flex={1} itemsCenter justifyCenter>
-      <StatusBar
-        barStyle="dark-content"
-        backgroundColor="#FFFFFF"></StatusBar>
+      <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF"/>
       <Div itemsCenter>
         <Img w80 h80 source={IMAGES.bW} legacy />
       </Div>

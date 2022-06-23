@@ -16,6 +16,7 @@ import useEdittableText from 'src/hooks/useEdittableText';
 import RankedOwner from 'src/components/RankOwner';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import ListEmptyComponent from 'src/components/common/ListEmptyComponent';
+import FocusAwareStatusBar from 'src/components/FocusAwareStatusBar';
 
 const SearchScreen = () => {
   const searchRef = useRef(null);

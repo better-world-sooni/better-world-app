@@ -23,6 +23,7 @@ import {Colors} from 'src/modules/styles';
 import {MenuView} from '@react-native-menu/menu';
 import {PostOwnerType, PostType} from '../NewPostScreen';
 import useFocusReloadWithTimeOut from 'src/hooks/useFocusReloadWithTimeout';
+import FocusAwareStatusBar from 'src/components/FocusAwareStatusBar';
 
 export enum ForumFeedFilter {
   All = 'all',

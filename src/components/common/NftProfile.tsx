@@ -27,6 +27,9 @@ import NftProfileHeader from './NftProfileHeader';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import ImageColors from 'react-native-image-colors';
 import ListEmptyComponent from './ListEmptyComponent';
+import FocusAwareStatusBar from 'src/components/FocusAwareStatusBar';
+import {BlurView} from '@react-native-community/blur';
+
 
 export default function NftProfile({
   nftCore,
@@ -55,7 +58,7 @@ export default function NftProfile({
     reloadGetWithToken(pageableNftPostFn());
   };
   const nft = profileData?.nft;
-  const [statusBarColor, setStatusBarColor] = useState('#FFFFFF');
+  const [bgImgColor, setBgImgColor] = useState(Colors.gray[400]);
   const translationY = useSharedValue(0);
   const scrollHandler = useAnimatedScrollHandler(event => {
     translationY.value = event.contentOffset.y;
@@ -115,15 +118,16 @@ export default function NftProfile({
       ImageColors.getColors(nft.background_image_uri, {
         fallback: '#228B22',
         cache: true,
-        key: 'unique_key',
+        key: nft.background_image_uri,
       }).then(colors => {
-        // console.log(colors)
+        setBgImgColor(colors['average'])
       });
     }
-  }, [nft]);
+  }, [nft, bgImgColor, setBgImgColor]);
 
   return (
     <>
+      {Platform.OS === 'android' && <FocusAwareStatusBar barStyle="dark-content" backgroundColor={bgImgColor}/>}
       <Div h={headerHeight}>
         {nft?.background_image_uri ? (
           <Animated.Image
@@ -138,17 +142,25 @@ export default function NftProfile({
             w={DEVICE_WIDTH}></Div>
         )}
         <Animated.View style={headerStyles}>
-          <CustomBlurView
-            blurType="light"
-            blurAmount={20}
-            blurRadius={10}
-            overlayColor=""
-            style={{
-              width: DEVICE_WIDTH,
-              height: '100%',
-              position: 'absolute',
-            }}
-            reducedTransparencyFallbackColor={Colors.white}></CustomBlurView>
+          {Platform.OS === 'ios' ? (
+          <BlurView
+          blurType="light"
+          blurAmount={20}
+          blurRadius={10}
+          overlayColor=""
+          style={{
+            width: DEVICE_WIDTH,
+            height: '100%',
+            position: 'absolute',
+          }}
+          reducedTransparencyFallbackColor={Colors.white}/> 
+          ):(
+          <Div style={{
+            width: DEVICE_WIDTH,
+            height: '100%',
+            position: 'absolute',
+          }} backgroundColor={bgImgColor}></Div>
+          )}
           <Row itemsCenter justifyCenter width={DEVICE_WIDTH} absolute>
             <Animated.View style={titleStyles}>
               <Span

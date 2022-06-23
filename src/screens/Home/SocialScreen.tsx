@@ -22,6 +22,7 @@ import SideMenu from 'react-native-side-menu-updated';
 import MyNftCollectionMenu from 'src/components/common/MyNftCollectionMenu';
 import {DEVICE_WIDTH} from 'src/modules/styles';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
+import FocusAwareStatusBar from 'src/components/FocusAwareStatusBar';
 
 enum SocialFeedFilter {
   All = 'all',
