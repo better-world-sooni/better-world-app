@@ -1,13 +1,12 @@
 import React, {useState} from 'react';
 import {Div} from './Div';
-import {Colors, DEVICE_WIDTH} from 'src/modules/styles';
+import {DEVICE_WIDTH} from 'src/modules/styles';
 import {HAS_NOTCH} from 'src/modules/constants';
 import Animated, {
   useAnimatedScrollHandler,
   useAnimatedStyle,
   useSharedValue,
 } from 'react-native-reanimated';
-import {CustomBlurView} from 'src/components/common/CustomBlurView';
 import {ActivityIndicator, RefreshControl} from 'react-native';
 import {
   useApiSelector,
@@ -16,15 +15,14 @@ import {
 } from 'src/redux/asyncReducer';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import Transaction from './Transaction';
-import CommunityWalletHeader from './CommunityWalletHeader';
 import CommunityWalletTopBar from './CommunityWalletTopBar';
+import {FlatList} from './ViewComponents';
 
 export default function CommunityWalletProfile({
   communityWalletCore,
   communityWalletApiObject,
   pageableTransactionListFn,
 }) {
-  const [isAboutOpen, setIsAboutOpen] = useState(false);
   const {data: communityWalletRes, isLoading: communityWalletLoading} =
     useApiSelector(communityWalletApiObject);
   const {
@@ -62,56 +60,28 @@ export default function CommunityWalletProfile({
   });
   return (
     <Div flex={1} bgWhite>
-      <Div
-        h={headerHeight}
-        zIndex={100}
-        absolute
-        top0
-        borderBottom={0.5}
-        borderGray200>
-        <Animated.View style={headerStyles}>
-          <CustomBlurView
-            blurType="xlight"
-            blurAmount={30}
-            blurRadius={20}
-            overlayColor=""
-            style={{
-              width: DEVICE_WIDTH,
-              height: '100%',
-              position: 'absolute',
-            }}
-            reducedTransparencyFallbackColor={Colors.white}></CustomBlurView>
-        </Animated.View>
-        <Div
-          zIndex={100}
-          absolute
-          w={DEVICE_WIDTH}
-          top={notchHeight}
-          h={headerHeight}>
-          <CommunityWalletTopBar
-            communityWallet={communityWallet}
-            onPressDown={() => setIsAboutOpen(prev => !prev)}
-          />
-        </Div>
-      </Div>
-      <Animated.FlatList
-        automaticallyAdjustContentInsets
+      <Div h={notchHeight} />
+      <FlatList
+        stickyHeaderIndices={[0]}
         showsVerticalScrollIndicator={false}
-        onScroll={scrollHandler}
         keyExtractor={item => (item as any).transaction_hash}
-        initialNumToRender={10}
-        removeClippedSubviews
-        updateCellsBatchingPeriod={100}
-        windowSize={11}
-        contentContainerStyle={{
-          marginTop: headerHeight,
-          marginBottom: headerHeight,
-        }}
+        ListHeaderComponent={
+          <Div
+            bgWhite
+            px8
+            h={50}
+            justifyCenter
+            borderBottom={0.5}
+            borderGray200>
+            <Div>
+              <CommunityWalletTopBar communityWallet={communityWallet} />
+            </Div>
+          </Div>
+        }
         refreshControl={
           <RefreshControl
             refreshing={transactionListLoading}
             onRefresh={handleRefresh}
-            progressViewOffset={headerHeight}
           />
         }
         onEndReached={handleEndReached}
@@ -122,13 +92,6 @@ export default function CommunityWalletProfile({
             mainAddress={communityWalletCore.address}
           />
         )}
-        ListHeaderComponent={
-          isAboutOpen && (
-            <CommunityWalletHeader
-              communityWallet={communityWallet || communityWalletCore}
-            />
-          )
-        }
         ListFooterComponent={
           <>
             {transactionListPaginating && (
@@ -136,10 +99,9 @@ export default function CommunityWalletProfile({
                 <ActivityIndicator />
               </Div>
             )}
-            <Div h={headerHeight}></Div>
             <Div h={HAS_NOTCH ? 27 : 12} />
           </>
-        }></Animated.FlatList>
+        }></FlatList>
     </Div>
   );
 }

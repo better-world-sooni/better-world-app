@@ -32,19 +32,13 @@ export default function ListFlatlist({
       <Div h={notchHeight}></Div>
       <FlatList
         stickyHeaderIndices={[0]}
-        // @ts-ignore
-        stickyHeaderHiddenOnScroll
         showsVerticalScrollIndicator={false}
         keyExtractor={keyExtractor}
         ListEmptyComponent={
           <ListEmptyComponent h={DEVICE_HEIGHT - headerHeight * 2} />
         }
         refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={onRefresh}
-            progressViewOffset={headerHeight}
-          />
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
         onEndReached={onEndReached}
         data={data}
@@ -82,7 +76,6 @@ export default function ListFlatlist({
                 <ActivityIndicator />
               </Div>
             )}
-            <Div h={headerHeight}></Div>
             <Div h={HAS_NOTCH ? 27 : 12} />
           </>
         }></FlatList>

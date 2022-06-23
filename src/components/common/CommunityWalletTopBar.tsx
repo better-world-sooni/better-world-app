@@ -10,12 +10,13 @@ import {Div} from './Div';
 import {Img} from './Img';
 import {Row} from './Row';
 import {Span} from './Span';
+import {handlePressWalletExpand} from 'src/utils/bottomPopupUtils';
 
-export default function CommunityWalletTopBar({communityWallet, onPressDown}) {
+export default function CommunityWalletTopBar({communityWallet}) {
   const {goBack} = useNavigation();
 
   return (
-    <Row flex itemsCenter px7>
+    <Row itemsCenter>
       <Col auto>
         <Div auto rounded100 onPress={goBack}>
           <ChevronLeft
@@ -38,7 +39,7 @@ export default function CommunityWalletTopBar({communityWallet, onPressDown}) {
           />
         </Div>
       </Col>
-      <Col onPress={onPressDown}>
+      <Col onPress={() => handlePressWalletExpand(communityWallet.about)} pr7>
         <Row itemsCenter>
           <Col auto mr8>
             <Span fontSize={14} bold>

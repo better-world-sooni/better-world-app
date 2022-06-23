@@ -78,7 +78,7 @@ export default function PolymorphicOwner({
           py6
           rounded100
           mx5
-          border1={privilege}
+          border={privilege && 0.5}
           borderDanger={privilege}
           onPress={handlePressPrivilege}>
           <Span white={!privilege} danger={privilege} bold px5>
@@ -92,7 +92,7 @@ export default function PolymorphicOwner({
           bgBlack={!following}
           p8
           rounded100
-          border1={following}
+          border={following && 0.5}
           borderGray200
           onPress={handlePressFollowing}>
           <Span white={!following} bold px5 fontSize={14}>
