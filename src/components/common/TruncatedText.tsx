@@ -4,7 +4,7 @@ import React from 'react';
 type TruncatedTextProps = {
   text: string;
   maxLength: number;
-  maxLines: number;
+  maxLines?: number;
   onPressTruncated?: any;
   spanProps?: any;
 };

@@ -14,6 +14,7 @@ export const COLOR_PALETTE = [
   {name: 'Gray300', color: varStyle.gray300},
   {name: 'Gray200', color: varStyle.gray200},
   {name: 'Gray100', color: varStyle.gray100},
+  {name: 'Gray', color: varStyle.gray},
   {name: 'Info', color: varStyle.info},
   {name: 'InfoSoft', color: varStyle.infoSoft},
   {name: 'Success', color: varStyle.success},

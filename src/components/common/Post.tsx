@@ -273,9 +273,9 @@ function PostContent({post, selectableFn = null, displayLabel = false}) {
             {displayLabel && (
               <Div itemsEnd mb5>
                 {post.type == PostType.Proposal ? (
-                  <Zap height={16} width={16} color={Colors.gray[700]} />
+                  <Img source={ICONS.lightBulbGray} h16 w16 />
                 ) : (
-                  <Heart height={16} width={16} color={Colors.gray[700]} />
+                  <Heart height={16} width={16} color={Colors.gray.DEFAULT} />
                 )}
               </Div>
             )}
@@ -304,7 +304,7 @@ function PostContent({post, selectableFn = null, displayLabel = false}) {
             ) : (
               displayLabel && (
                 <Div mt1 mb4>
-                  <Span bold gray700 fontSize={12}>
+                  <Span bold gray fontSize={12}>
                     {post.type == PostType.Proposal ? '제안' : '게시물'}
                   </Span>
                 </Div>
