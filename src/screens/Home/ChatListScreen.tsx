@@ -1,5 +1,5 @@
 import {useNavigation, useFocusEffect} from '@react-navigation/core';
-import React, {useCallback, useEffect, useState, useRef, memo} from 'react';
+import React, {useCallback, useEffect, useState, useRef, memo, useMemo} from 'react';
 import {shallowEqual, useSelector, useDispatch} from 'react-redux';
 import {Col} from 'src/components/common/Col';
 import {Div} from 'src/components/common/Div';
@@ -19,7 +19,6 @@ import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {resizeImageUri} from 'src/utils/uriUtils';
 import ListEmptyComponent from 'src/components/common/ListEmptyComponent';
 import {FlatList} from 'react-native';
-import FocusAwareStatusBar from 'src/components/FocusAwareStatusBar';
 
 function ChatListScreen() {
   const {currentNft, token} = useSelector(
@@ -189,6 +188,7 @@ function ChatRoomItem({onPress, room}) {
   const unreadMessageCount = room.unread_count;
   const lastMessage = room.last_message;
   const roomImage = room.room_image;
+  const imgUri = useMemo(()=> resizeImageUri(room.room_image, 200, 200), [roomImage])
 
   return (
     <Div px15>
@@ -200,7 +200,7 @@ function ChatRoomItem({onPress, room}) {
         itemsCenter>
         <Col auto relative mr10>
           <Div rounded100 overflowHidden h50>
-            <Img uri={resizeImageUri(roomImage, 200, 200)} w50 h50></Img>
+            <Img uri={imgUri} w50 h50></Img>
           </Div>
         </Col>
         <Col>

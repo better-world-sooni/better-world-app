@@ -1,20 +1,25 @@
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import React from 'react';
+import React, {useCallback, useEffect, useState, useRef, memo, useMemo} from 'react';
+import {shallowEqual, useSelector} from 'react-redux';
+import {RootState} from 'src/redux/rootReducer';
+import {useApiSelector} from 'src/redux/asyncReducer';
+import {Img} from 'src/components/common/Img';
 import BottomTabBar from 'src/components/BottomTabBar';
+import {getNftProfileImage} from 'src/utils/nftUtils';
+import {ICONS} from 'src/modules/icons';
+import apis from 'src/modules/apis';
+import {Colors} from 'src/modules/styles';
+import {Home, Search, Send, User} from 'react-native-feather';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {TransitionPresets} from '@react-navigation/stack';
 import {NAV_NAMES} from 'src/modules/navNames';
 import HomeScreen from 'src/screens/Home/HomeScreen';
 import ProfileScreen from 'src/screens/Home/ProfileScreen';
 import SplashScreen from 'src/screens/Common/SplashScreen';
 import SignInScreen from 'src/screens/Auth/SignInScreen';
-import PostScreen from 'src/screens/PostScreen';
-import {shallowEqual, useSelector} from 'react-redux';
-import {RootState} from 'src/redux/rootReducer';
 import ChatRoomScreen from 'src/screens/ChatRoomScreen';
 import OnboardingScreen from 'src/screens/Auth/OnboardingScreen';
-import {Img} from './common/Img';
-import {getNftProfileImage} from 'src/utils/nftUtils';
-import {Home, Search, Send, User} from 'react-native-feather';
-import {Colors} from 'src/modules/styles';
+import PostScreen from 'src/screens/PostScreen';
 import OtherProfileScreen from 'src/screens/OtherProfileScreen';
 import NftCollectionScreen from 'src/screens/NftCollectionScreen';
 import NewPostScreen from 'src/screens/NewPostScreen';
@@ -34,21 +39,17 @@ import NewCollectionEventScreen from 'src/screens/NewCollectionEventScreen';
 import AttendanceListScreen from 'src/screens/AttendanceListScreen';
 import CollectionEventScreen from 'src/screens/CollectionEventScreen';
 import PasswordSigninScreen from 'src/screens/Auth/PasswordSigninScreen';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import CollectionSearchScreen from 'src/screens/CollectionSearchScreen';
 import SocialScreen from 'src/screens/Home/SocialScreen';
 import CommunityWalletListScreen from 'src/screens/CommunityWalletListScreen';
 import CommunityWalletProfileScreen from 'src/screens/CommunityWalletProfileScreen';
 import NewCommunityWalletScreen from 'src/screens/NewCommunityWalletScreen';
 import CollectionFeedTagSelectScreen from 'src/screens/CollectionFeedTagSelectScreen';
-import {TransitionPresets} from '@react-navigation/stack';
 import TransactionScreen from 'src/screens/TransactionScreen';
-import {ICONS} from 'src/modules/icons';
+
 
 const RootStack = createNativeStackNavigator();
-
 const Tab = createBottomTabNavigator();
-
 const tabBarFunc = props => <BottomTabBar {...props} />;
 
 const MainBottomTabs = () => {
@@ -56,6 +57,12 @@ const MainBottomTabs = () => {
     (root: RootState) => root.app.session,
     shallowEqual,
   );
+  const {data: chatListRes, isLoading: chatListLoad} = useApiSelector(
+    apis.chat.chatRoom.all,
+  );
+  const [chatTabBarBadge, setChatTabBarBadge] = useState(chatListRes.total_unread)
+  console.log(chatListRes.total_unread)
+
   const profileTabIconProps = {
     uri: getNftProfileImage(currentNft, 50, 50),
     w: 24,
@@ -119,7 +126,7 @@ const MainBottomTabs = () => {
               strokeWidth={2}
               color={focused ? Colors.black : Colors.gray.DEFAULT}></Send>
           ),
-          tabBarBadge: '10',
+          tabBarBadge: chatListRes.total_unread,
         }}
       />
       <Tab.Screen

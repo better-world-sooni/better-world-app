@@ -1,7 +1,9 @@
 import {NativeBaseProvider, HStack} from 'native-base';
 import React, {useCallback} from 'react';
-import {Div} from './common/Div';
+import {Div} from 'src/components/common/Div';
 import {Row} from 'src/components/common/Row';
+import {Col} from 'src/components/common/Col';
+import {Span} from 'src/components/common/Span';
 import {NAV_NAMES} from 'src/modules/navNames';
 import {Colors} from 'src/modules/styles';
 import {openNftList} from 'src/utils/bottomPopupUtils';
@@ -36,8 +38,16 @@ const BottomTabBar = ({state, descriptors, navigation}) => {
           flex={1}
           itemsCenter
           justifyCenter
-          pb10>
+          relative
+          >
           {image}
+          {name === NAV_NAMES.ChatList && 
+            <Col relative left={1} auto rounded100 bgDanger px8 py4 justifyCenter>
+              <Span white fontSize={12} medium>
+                {options.tabBarBadge}
+              </Span>
+            </Col> 
+          }
         </Div>
       );
     }),
@@ -51,8 +61,9 @@ const BottomTabBar = ({state, descriptors, navigation}) => {
           <HStack
             bg={Colors.white}
             safeAreaBottom
-            paddingTop={4}
-            paddingBottom={0}>
+            height={10}
+            paddingBottom={0}
+          >
             {List}
           </HStack>
         </NativeBaseProvider>

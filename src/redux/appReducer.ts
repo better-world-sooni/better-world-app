@@ -184,7 +184,7 @@ const appSlice = createSlice({
   initialState: {
     isLoggedIn: false,
     unreadNotificationCount: 0,
-    unreadMessagesCount: 0,
+    unreadChatRoomCount: 0,
     session: {
       currentUser: null,
       token: null,
@@ -228,8 +228,12 @@ const appSlice = createSlice({
     },
     updateUnreadCount(state, action) {
       const { unreadCount } = action.payload;
-      state.unreadNotificationCount = unreadCount
+      state.unreadNotificationCount = unreadCount;
     },
+    updateUnreadChatRoomCount(state, action) {
+      const { unreadChatRoomCount } = action.payload;
+      state.unreadChatRoomCount = unreadChatRoomCount;
+    }
   },
 });
 
