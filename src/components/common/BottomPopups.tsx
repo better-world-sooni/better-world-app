@@ -68,7 +68,7 @@ export default function BottomPopups() {
         snapPoints={[bottomMargin + 50]}
         index={-1}>
         <Div itemsCenter px15 justifyCenter>
-          <Span fontSize={14} style={{textAlign: 'center'}}>
+          <Span fontSize={14} style={{textAlign: 'center'}} bold>
             {bottomInfoPopupText}
           </Span>
         </Div>

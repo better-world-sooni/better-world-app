@@ -1,5 +1,5 @@
 import {useNavigation} from '@react-navigation/core';
-import React, {useCallback, useEffect, useLayoutEffect, useState, useRef, useMemo} from 'react';
+import React, {useCallback, useEffect, useState, useRef, useMemo} from 'react';
 import {Alert, FlatList, Platform, ActivityIndicator} from 'react-native';
 import {ChevronLeft} from 'react-native-feather';
 import {shallowEqual, useSelector} from 'react-redux';
@@ -13,8 +13,6 @@ import {RootState} from 'src/redux/rootReducer';
 import {cable} from 'src/modules/cable';
 import {ChatChannel} from 'src/components/ChatChannel';
 import {Colors, DEVICE_WIDTH} from 'src/modules/styles';
-import {BlurView} from '@react-native-community/blur';
-import {CustomBlurView} from 'src/components/common/CustomBlurView';
 import {KeyboardAvoidingView} from 'src/components/common/ViewComponents';
 import {Img} from 'src/components/common/Img';
 import NewMessage from 'src/components/common/NewMessage';
@@ -22,6 +20,7 @@ import {getCalendarDay, kmoment} from 'src/utils/timeUtils';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {getNftProfileImage, getNftName} from 'src/utils/nftUtils';
 import {resizeImageUri} from 'src/utils/uriUtils';
+import {HAS_NOTCH} from 'src/modules/constants';
 
 export enum ChatRoomEnterType {
   List,
@@ -49,9 +48,18 @@ function ChatRoomScreen({
     token_id: currentNft.token_id,
     contract_address: currentNft.contract_address,
   };
-  const currentAvatar = useMemo(() => getNftProfileImage(currentNft, 200, 200), [currentNft]);
-  const opponentAvatar = useMemo(() => resizeImageUri(roomImage, 200, 200), [roomImage]);
-  const currentNftImage = useMemo(() => getNftProfileImage(currentNft), [currentNft]);
+  const currentAvatar = useMemo(
+    () => getNftProfileImage(currentNft, 200, 200),
+    [currentNft],
+  );
+  const opponentAvatar = useMemo(
+    () => resizeImageUri(roomImage, 200, 200),
+    [roomImage],
+  );
+  const currentNftImage = useMemo(
+    () => getNftProfileImage(currentNft),
+    [currentNft],
+  );
   const currentNftName = useMemo(() => getNftName(currentNft), [currentNft]);
 
   const [chatSocket, setChatSocket] = useState(null);
@@ -62,10 +70,8 @@ function ChatRoomScreen({
   const [messages, setMessages] = useState(
     chatRoomRes ? chatRoomRes.init_messages : [],
   );
-  const [page, setPage] = useState(
-    chatRoomRes ? chatRoomRes.init_messages : 1,
-  );
-  const [isLastPage, setIsLastPage] = useState(false)
+  const [page, setPage] = useState(chatRoomRes ? chatRoomRes.init_messages : 1);
+  const [isLastPage, setIsLastPage] = useState(false);
   const [text, setText] = useState('');
   const [pageLoading, setPageLoading] = useState(false);
   const flatListRef = useRef(null);
@@ -80,24 +86,25 @@ function ChatRoomScreen({
         channel.on('enter', res => {
           setEnterNfts(res.entered_nfts);
           const updateMsgLength = res.update_msgs.length;
-          setMessages(prevMsgs => [...res.update_msgs, ...prevMsgs.slice(updateMsgLength)]);
+          setMessages(prevMsgs => [
+            ...res.update_msgs,
+            ...prevMsgs.slice(updateMsgLength),
+          ]);
         });
         channel.on('nextPageMessage', res => {
-          const msgs_length = res.messages.length 
+          const msgs_length = res.messages.length;
           setPageLoading(false);
-          if(msgs_length == 0) {
+          if (msgs_length == 0) {
+            setIsLastPage(true);
+          } else if (msgs_length == 20) {
+            setMessages(prevMsgs => [...prevMsgs, ...res.messages]);
+            setPage(p => p + 1);
+          } else {
+            setMessages(prevMsgs => [...prevMsgs, ...res.messages]);
+            setPage(p => p + 1);
             setIsLastPage(true);
           }
-          else if(msgs_length == 20) {
-            setMessages(prevMsgs => [...prevMsgs, ...res.messages]);
-            setPage(p => p+1);
-          }
-          else {
-            setMessages(prevMsgs => [...prevMsgs, ...res.messages]);
-            setPage(p => p+1);
-            setIsLastPage(true);
-          }
-        })
+        });
         channel.on('messageRoom', res => {
           setMessages(m => [res.message, ...m]);
         });
@@ -157,11 +164,19 @@ function ChatRoomScreen({
         room_name: currentNftName,
         room_image: currentNftImage,
         last_message: text,
-      }
+      };
       chatSocket.send(msg, myRoom, opponentRoom, opponentNft);
     } else Alert.alert('네트워크가 불안정하여 메세지를 보내지 못했습니다');
     setText('');
-  }, [currentNft, currentNftName, currentNftImage, connectRoomId, chatSocket, text, enterNfts]);
+  }, [
+    currentNft,
+    currentNftName,
+    currentNftImage,
+    connectRoomId,
+    chatSocket,
+    text,
+    enterNfts,
+  ]);
 
   const scrollToEnd = useCallback(() => {
     flatListRef?.current?.scrollToEnd({animated: false});
@@ -198,35 +213,22 @@ function ChatRoomScreen({
     if (pageLoading || isLastPage) {
       return;
     } else {
-      if(chatSocket?.state === 'connected'){
+      if (chatSocket?.state === 'connected') {
         setPageLoading(true);
         chatSocket.nextPage(page);
       }
     }
   }, [chatSocket, page, isLastPage, pageLoading, setPageLoading]);
 
+  useEffect(() => {
+    console.log(isLastPage);
+  }, [isLastPage]);
+
   return (
     <>
-      <Div h={headerHeight} zIndex={100}>
-        <CustomBlurView
-          blurType="xlight"
-          blurAmount={30}
-          blurRadius={20}
-          overlayColor=""
-          style={{
-            width: DEVICE_WIDTH,
-            height: headerHeight,
-            position: 'absolute',
-          }}></CustomBlurView>
-        <Row
-          itemsCenter
-          py5
-          h40
-          px8
-          zIndex={100}
-          absolute
-          w={DEVICE_WIDTH}
-          top={notchHeight + 5}>
+      <Div h={notchHeight} bgWhite></Div>
+      <Div bgWhite px15 h={50} justifyCenter borderBottom={0.5} borderGray200>
+        <Row itemsCenter>
           <Col justifyStart mr10>
             <Div auto rounded100 onPress={goBack}>
               <ChevronLeft
@@ -255,7 +257,7 @@ function ChatRoomScreen({
           contentInset={{bottom: 5, top: 5}}
           inverted
           onEndReached={onEndReached}
-          onEndReachedThreshold={0.8}
+          onEndReachedThreshold={Platform.OS == 'ios' ? 0 : 0.8}
           ListFooterComponent={pageLoading && <ActivityIndicator />}
           data={messages}
           initialNumToRender={25}
@@ -307,6 +309,7 @@ function ChatRoomScreen({
           roomLoading={chatRoomLoad}
         />
       </KeyboardAvoidingView>
+      <Div h={HAS_NOTCH ? 25 : 0} bgWhite></Div>
     </>
   );
 }

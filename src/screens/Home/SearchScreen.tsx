@@ -93,15 +93,12 @@ const SearchScreen = () => {
           <ListEmptyComponent h={DEVICE_HEIGHT - headerHeight * 2} />
         }
         stickyHeaderIndices={[0]}
-        // @ts-ignore
-        stickyHeaderHiddenOnScroll
         showsVerticalScrollIndicator={false}
         onEndReached={handleEndReached}
         refreshControl={
           <RefreshControl
             refreshing={rankLoad && !textHasChanged}
             onRefresh={handleRefresh}
-            progressViewOffset={headerHeight}
           />
         }
         data={rankRes ? rankRes.ranks : []}

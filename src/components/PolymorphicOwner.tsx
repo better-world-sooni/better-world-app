@@ -19,6 +19,7 @@ import {Div} from './common/Div';
 import {Img} from './common/Img';
 import {Row} from './common/Row';
 import {Span} from './common/Span';
+import {ICONS} from 'src/modules/icons';
 
 export default function PolymorphicOwner({
   nft,
@@ -54,7 +55,10 @@ export default function PolymorphicOwner({
       <Col mx15>
         <Div>
           <Span medium fontSize={15} bold>
-            {getNftName(nft)}
+            {getNftName(nft)}{' '}
+            {showPrivilege && privilege && (!isAdmin || isCurrentNft) && (
+              <Img source={ICONS.sealCheck} h12 w12></Img>
+            )}
           </Span>
         </Div>
         {getNftName(nft) !== nft.nft_metadatum.name && (
@@ -65,11 +69,7 @@ export default function PolymorphicOwner({
           </Div>
         )}
       </Col>
-      {showPrivilege && privilege && (!isAdmin || isCurrentNft) && (
-        <Col auto mx5>
-          <Shield strokeWidth={2} color={Colors.black} height={22} width={22} />
-        </Col>
-      )}
+
       {showPrivilege && isAdmin && !isCurrentNft && (
         <Col
           auto
@@ -78,7 +78,7 @@ export default function PolymorphicOwner({
           py6
           rounded100
           mx5
-          border1={privilege}
+          border={privilege && 0.5}
           borderDanger={privilege}
           onPress={handlePressPrivilege}>
           <Span white={!privilege} danger={privilege} bold px5>
@@ -92,7 +92,7 @@ export default function PolymorphicOwner({
           bgBlack={!following}
           p8
           rounded100
-          border1={following}
+          border={following && 0.5}
           borderGray200
           onPress={handlePressFollowing}>
           <Span white={!following} bold px5 fontSize={14}>

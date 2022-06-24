@@ -3,6 +3,7 @@ import { EventRegister } from "react-native-event-listeners";
 import apis from "src/modules/apis";
 import { smallBump } from "src/utils/hapticFeedBackUtils";
 import { usePostPromiseFnWithToken } from "src/redux/asyncReducer";
+import { useGotoConfirmationModal } from "./useGoto";
 
 export enum VoteCategory {
     Against = 0,
@@ -22,6 +23,7 @@ export default function useVote({initialVote, initialForVotesCount, initialAgain
     const abstainVoteOffset = initialVote == null && VoteCategory.Abstain == vote ? 1 : 0;
     
     const postPromiseFnWithToken = usePostPromiseFnWithToken();
+    const gotoConfirmation = useGotoConfirmationModal()
     useEffect(() => {
         setVote(initialVote);
         EventRegister.addEventListener(voteEventId(postId), (voteCategory) => {
@@ -50,14 +52,17 @@ export default function useVote({initialVote, initialForVotesCount, initialAgain
     const handlePressVoteAbstain = () => {
         handlePressVote(VoteCategory.Abstain)
     }
+    const confirmVote = (voteCategory) => {
+        smallBump();
+        postPromiseFnWithToken({url: apis.vote.postId(postId).url, body: {
+            category: voteCategory
+        }});
+        setVote(voteCategory);
+        EventRegister.emit(voteEventId(postId), voteCategory)
+    }
     const handlePressVote = (voteCategory) => {
         if(vote == null){
-            smallBump();
-            postPromiseFnWithToken({url: apis.vote.postId(postId).url, body: {
-                category: voteCategory
-            }});
-            setVote(voteCategory);
-            EventRegister.emit(voteEventId(postId), voteCategory)
+            gotoConfirmation({onConfirm: () => confirmVote(voteCategory), text: `투표는 취소할 수 없습니다. \n${voteCategory == VoteCategory.For ? '찬성' : '반대'}하시겠습니까?`})
         }
     }
     const handleSetVotable = (value) => {
