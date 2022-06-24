@@ -41,7 +41,7 @@ const BottomTabBar = ({state, descriptors, navigation}) => {
           relative
           >
           {image}
-          {name === NAV_NAMES.ChatList && 
+          {name === NAV_NAMES.ChatList && options.tabBarBadge > 0 &&
             <Col relative left={1} auto rounded100 bgDanger px8 py4 justifyCenter>
               <Span white fontSize={12} medium>
                 {options.tabBarBadge}

@@ -8,6 +8,7 @@ import {Span} from 'src/components/common/Span';
 import {Img} from 'src/components/common/Img';
 import apis from 'src/modules/apis';
 import {useApiSelector, asyncActions, getKeyByApi} from 'src/redux/asyncReducer';
+import { appActions } from "src/redux/appReducer";
 import {RootState} from 'src/redux/rootReducer';
 import {cable} from 'src/modules/cable';
 import {ChatChannel} from 'src/components/ChatChannel';
@@ -58,6 +59,9 @@ function ChatListScreen() {
   useEffect(() => {
     if (chatListRes) {
       setChatRooms(chatListRes.chat_list_data);
+      dispatch(appActions.updateUnreadChatRoomCount({
+        unreadChatRoomCount: chatListRes.total_unread,
+      }));
     }
   }, [chatListRes]);
 
@@ -186,7 +190,7 @@ function ChatRoomItem({onPress, room}) {
   const updatedAt = room.updated_at;
   const roomName = room.room_name;
   const unreadMessageCount = room.unread_count;
-  const lastMessage = room.last_message;
+  const text = unreadMessageCount > 0 ? `새 메세지 ${unreadMessageCount}개` : room.last_message;
   const roomImage = room.room_image;
   const imgUri = useMemo(()=> resizeImageUri(room.room_image, 200, 200), [roomImage])
 
@@ -203,7 +207,7 @@ function ChatRoomItem({onPress, room}) {
             <Img uri={imgUri} w50 h50></Img>
           </Div>
         </Col>
-        <Col>
+        <Col pl5>
           <Row itemsCenter>
             <Col auto mr10>
               <Span fontSize={15} medium>
@@ -218,19 +222,13 @@ function ChatRoomItem({onPress, room}) {
           </Row>
           <Row w={'100%'} pt2>
             <Col pr10>
-              <Div>
-                {lastMessage && <TruncatedText text={lastMessage} maxLength={30} />}
+              <Div >
+                {text && <TruncatedText spanProps={{...(unreadMessageCount > 0 && {bold: true})}} text={text} maxLength={30} />}
               </Div>
             </Col>
           </Row>
         </Col>
-        {unreadMessageCount > 0 && (
-          <Col auto rounded100 bgDanger px8 py4 justifyCenter>
-            <Span white fontSize={12} medium>
-              {unreadMessageCount >= 100 ? '99+' : unreadMessageCount}
-            </Span>
-          </Col>
-        )}
+        {unreadMessageCount > 0 && <Col auto rounded100 bgInfo p4 justifyCenter />}
       </Row>
     </Div>
   );

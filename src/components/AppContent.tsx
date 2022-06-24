@@ -57,11 +57,12 @@ const MainBottomTabs = () => {
     (root: RootState) => root.app.session,
     shallowEqual,
   );
-  const {data: chatListRes, isLoading: chatListLoad} = useApiSelector(
-    apis.chat.chatRoom.all,
-  );
-  const [chatTabBarBadge, setChatTabBarBadge] = useState(chatListRes.total_unread)
-  console.log(chatListRes.total_unread)
+  const unreadChatRoomCount = useSelector( 
+    (root: RootState) => root.app.unreadChatRoomCount
+  )
+  
+console.log(unreadChatRoomCount)
+
 
   const profileTabIconProps = {
     uri: getNftProfileImage(currentNft, 50, 50),
@@ -126,7 +127,7 @@ const MainBottomTabs = () => {
               strokeWidth={2}
               color={focused ? Colors.black : Colors.gray.DEFAULT}></Send>
           ),
-          tabBarBadge: chatListRes.total_unread,
+          tabBarBadge: unreadChatRoomCount,
         }}
       />
       <Tab.Screen
