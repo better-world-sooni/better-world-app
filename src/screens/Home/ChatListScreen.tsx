@@ -62,6 +62,7 @@ function ChatListScreen() {
       dispatch(appActions.updateUnreadChatRoomCount({
         unreadChatRoomCount: chatListRes.total_unread,
       }));
+
     }
   }, [chatListRes]);
 
@@ -106,10 +107,20 @@ function ChatListScreen() {
     const updateList = (room, read) => {
       const index = chatRooms.findIndex(x => x.room_id === room.room_id);
       if (index > -1) {
-        room.unread_count = read ? 0 : chatRooms[index].unread_count + 1;
+        if(!read) {
+          if(chatRooms[index].unread_count == 0) {
+            dispatch(appActions.deltaUnreadChatRoomCount({deltum: 1}))
+          }
+          room.unread_count = chatRooms[index].unread_count + 1;
+        }
+        else room.unread_count = 0;
         setChatRooms(prev => [room, ...prev.filter((_, i) => i != index)]);
       } else {
-        room.unread_count = read ? 0 : 1;
+        if(!read) {
+          room.unread_count = 1;
+          dispatch(appActions.deltaUnreadChatRoomCount({deltum: 1}));
+        }
+        else room.unread_count = 0;
         setChatRooms(prev => [room, ...prev]);
       }
     };
@@ -120,13 +131,16 @@ function ChatListScreen() {
   const readCountRefresh = useCallback(
     roomId => {
       const index = chatRooms.findIndex(x => x.room_id === roomId);
-      const room = Object.assign({}, chatRooms[index]);
-      room.unread_count = 0;
-      setChatRooms(prev => [
-        ...prev.slice(0, index),
-        room,
-        ...prev.slice(index + 1),
-      ]);
+      if(chatRooms[index].unread_count > 0) {
+        const room = Object.assign({}, chatRooms[index]);
+        room.unread_count = 0;
+        setChatRooms(prev => [
+          ...prev.slice(0, index),
+          room,
+          ...prev.slice(index + 1),
+        ]);
+        dispatch(appActions.deltaUnreadChatRoomCount({deltum: -1}))
+      }
     },
     [chatRooms, setChatRooms],
   );

@@ -233,7 +233,11 @@ const appSlice = createSlice({
     updateUnreadChatRoomCount(state, action) {
       const { unreadChatRoomCount } = action.payload;
       state.unreadChatRoomCount = unreadChatRoomCount;
-    }
+    },
+    deltaUnreadChatRoomCount(state, action) {
+      const { deltum } = action.payload;
+      state.unreadChatRoomCount += deltum;
+    },
   },
 });
 
