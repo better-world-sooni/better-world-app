@@ -32,19 +32,10 @@ import {Row} from './Row';
 import {Span} from './Span';
 import TruncatedMarkdown from './TruncatedMarkdown';
 
-export default function NftProfileHeader({
-  nftCore,
-  nft,
-  bottomPopupRef,
-  isCurrentNft,
-  qrScan,
-}) {
+export default function NftProfileHeader({nftCore, nft, isCurrentNft, qrScan}) {
   const gotoNftCollectionProfile = useGotoNftCollectionProfile({
     nftCollection: nft?.nft_collection,
   });
-  const editProfile = () => {
-    bottomPopupRef?.current?.expand();
-  };
   const [isFollowing, followerCount, handlePressFollowing] = useFollow(
     nft?.is_following,
     nft?.follower_count,

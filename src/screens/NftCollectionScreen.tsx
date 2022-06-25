@@ -7,12 +7,18 @@ import {useGotoNewPost} from 'src/hooks/useGoto';
 import {PostOwnerType} from './NewPostScreen';
 import {Plus} from 'react-native-feather';
 import {Colors} from 'src/modules/styles';
+import {shallowEqual, useSelector} from 'react-redux';
+import {RootState} from 'src/redux/rootReducer';
 
 const NftCollectionScreen = ({
   route: {
     params: {nftCollection},
   },
 }) => {
+  const {currentNft} = useSelector(
+    (root: RootState) => root.app.session,
+    shallowEqual,
+  );
   const isAdmin = useIsAdmin(nftCollection);
   const pageableNftCollectionPostFn = (page?) => {
     return apis.post.list.nftCollection(nftCollection.contract_address, page);
@@ -24,9 +30,13 @@ const NftCollectionScreen = ({
     <Div flex={1} bgWhite relative overflowHidden>
       <NftCollectionProfile
         nftCollectionCore={nftCollection}
-        nftCollectionProfileApiObject={apis.nft_collection.contractAddress._(
-          nftCollection.contract_address,
-        )}
+        nftCollectionProfileApiObject={
+          currentNft.contract_address == nftCollection.contract_address
+            ? apis.nft_collection._()
+            : apis.nft_collection.contractAddress._(
+                nftCollection.contract_address,
+              )
+        }
         pageableNftCollectionPostFn={pageableNftCollectionPostFn}
         isAdmin={isAdmin}
       />

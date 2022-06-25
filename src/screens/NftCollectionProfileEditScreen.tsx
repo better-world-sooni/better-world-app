@@ -1,12 +1,7 @@
 import {useNavigation} from '@react-navigation/native';
 import React, {useState} from 'react';
-import {
-  ActivityIndicator,
-  Platform,
-  RefreshControl,
-  Switch,
-} from 'react-native';
-import {Check, Tool, Trash, Upload, X} from 'react-native-feather';
+import {ActivityIndicator, Platform} from 'react-native';
+import {Trash, Upload, X} from 'react-native-feather';
 import {Col} from 'src/components/common/Col';
 import {Div} from 'src/components/common/Div';
 import {Img} from 'src/components/common/Img';
@@ -19,24 +14,21 @@ import {
 } from 'src/components/common/ViewComponents';
 import useName, {NameOwnerType} from 'src/hooks/useName';
 import useStory, {StoryOwnerType} from 'src/hooks/useStory';
-import useUploadImage from 'src/hooks/useUploadImage';
 import useUploadImageUriKey from 'src/hooks/useUploadImageUriKey';
 import apis from 'src/modules/apis';
 import {Colors, DEVICE_WIDTH} from 'src/modules/styles';
 import {
   useApiSelector,
-  usePatchPromiseFnWithToken,
   usePutPromiseFnWithToken,
   useReloadGETWithToken,
 } from 'src/redux/asyncReducer';
-import {getNftProfileImage} from 'src/utils/nftUtils';
 import {getKeyFromUri} from 'src/utils/uriUtils';
 
-export default function NftProfileEditScreen() {
+export default function NftCollectionProfileEditScreen() {
   const {data: profileData, isLoading: refreshing} = useApiSelector(
-    apis.nft._(),
+    apis.nft_collection._(),
   );
-  const nft = profileData?.nft;
+  const nftCollection = profileData.nft_collection;
   const {
     name,
     nameHasChanged,
@@ -44,7 +36,7 @@ export default function NftProfileEditScreen() {
     nameError,
     handleChangeName,
     handleSaveName,
-  } = useName(nft, NameOwnerType.Nft);
+  } = useName(nftCollection, NameOwnerType.NftCollection);
   const {
     story,
     storyHasChanged,
@@ -52,7 +44,18 @@ export default function NftProfileEditScreen() {
     storyError,
     handleChangeStory,
     handleSaveStory,
-  } = useStory(nft, StoryOwnerType.Nft);
+  } = useStory(nftCollection, StoryOwnerType.NftCollection);
+  const {
+    image: profileImage,
+    imageHasChanged: profileImageHasChanged,
+    uploading: profileUploading,
+    handleAddImage: handleAddProfileImage,
+    handleRemoveImage: handleRemoveProfileImage,
+    getImageUriKey: getProfileImageUriKey,
+  } = useUploadImageUriKey({
+    attachedRecord: 'nft_collection',
+    uri: nftCollection.image_uri,
+  });
   const {
     image,
     imageHasChanged,
@@ -61,40 +64,40 @@ export default function NftProfileEditScreen() {
     handleRemoveImage,
     getImageUriKey,
   } = useUploadImageUriKey({
-    attachedRecord: 'nft',
-    uri: nft.background_image_uri,
+    attachedRecord: 'nft_collection',
+    uri: nftCollection.background_image_uri,
   });
   const {goBack} = useNavigation();
   const reloadGetWithToken = useReloadGETWithToken();
   const putPromiseFnWithToken = usePutPromiseFnWithToken();
-  const [pushNotificationEnabled, setPushNotificationEnabled] = useState(
-    !nft.is_push_notification_disabled,
-  );
   const [loading, setLoading] = useState(false);
-  const handleSwitchPushNotification = async bool => {
-    setPushNotificationEnabled(bool);
-  };
   const save = async () => {
     if (!isSaveable) return;
     setLoading(true);
     const backgroundImageUriKey = imageHasChanged
       ? await getImageUriKey()
       : getKeyFromUri(image.uri);
+    const imageUriKey = profileImageHasChanged
+      ? await getProfileImageUriKey()
+      : getKeyFromUri(profileImage.uri);
     const body = {
       name,
-      story,
+      about: story,
+      image_uri_key: imageUriKey,
       background_image_uri_key: backgroundImageUriKey,
-      push_notification_setting_is_disabled_globally: !pushNotificationEnabled,
     };
-    const {data} = await putPromiseFnWithToken({url: apis.nft._().url, body});
+    const {data} = await putPromiseFnWithToken({
+      url: apis.nft_collection._().url,
+      body,
+    });
     setLoading(false);
-    reloadGetWithToken(apis.nft._());
+    reloadGetWithToken(apis.nft_collection._());
   };
   const isSaveable =
     nameHasChanged ||
     storyHasChanged ||
     imageHasChanged ||
-    pushNotificationEnabled != !nft.is_push_notification_disabled;
+    profileImageHasChanged;
   return (
     <>
       <Div bgWhite px15 h={50} justifyCenter borderBottom={0.5} borderGray200>
@@ -166,29 +169,35 @@ export default function NftProfileEditScreen() {
           </Div>
           <Row zIndex={100} px15 mt={-25} relative mb8 itemsEnd>
             <Div h45 absolute w={DEVICE_WIDTH} bgWhite bottom0></Div>
-            <Img
+            <Div
               rounded100
-              border4
               borderWhite
               bgGray200
               h70
               w70
-              uri={getNftProfileImage(nft, 200, 200)}></Img>
-          </Row>
-          <Row px15 py12 itemsCenter borderTop={0.5} borderGray200>
-            <Col auto w50 m5>
-              <Span fontSize={16} bold>
-                알림
-              </Span>
-            </Col>
-            <Col></Col>
-            <Col auto>
-              <Switch
-                value={pushNotificationEnabled}
-                onValueChange={handleSwitchPushNotification}
-                style={{transform: [{scaleX: 0.8}, {scaleY: 0.8}]}}
-              />
-            </Col>
+              overflowHidden
+              onPress={handleAddProfileImage}>
+              {profileImage?.uri ? (
+                <Img
+                  uri={profileImage.uri}
+                  border4
+                  borderWhite
+                  h70
+                  w70
+                  rounded100></Img>
+              ) : (
+                <Div flex={1} itemsCenter justifyCenter bgGray400 rounded100>
+                  <Div bgBlack p8 rounded100>
+                    <Upload
+                      strokeWidth={2}
+                      color={Colors.white}
+                      height={20}
+                      width={20}
+                    />
+                  </Div>
+                </Div>
+              )}
+            </Div>
           </Row>
           <Row px15 py15 itemsCenter borderTop={0.5} borderGray200>
             <Col auto w50 m5>
@@ -212,13 +221,13 @@ export default function NftProfileEditScreen() {
           <Row px15 py15 borderTop={0.5} borderGray200>
             <Col auto w50 m5 mt3>
               <Span fontSize={16} bold>
-                스토리
+                정보
               </Span>
             </Col>
             <Col pr10>
               <TextInput
                 value={story}
-                placeholder={'자신을 소개해주세요.'}
+                placeholder={'컬렉션 정보를 입력해주세요.'}
                 fontSize={16}
                 multiline
                 mt={-4}

@@ -121,16 +121,20 @@ export function useGotoChatRoomFromProfile() {
 }
 
 export function useGotoNftCollectionProfile({nftCollection}){
-    const apiGETWithToken = useApiGETWithToken()
-    const navigation = useNavigation()
-    const gotoProfile = () => {
-      apiGETWithToken(apis.nft_collection.contractAddress._(nftCollection.contract_address));
-      apiGETWithToken(apis.post.list.nftCollection(nftCollection.contract_address))
-      navigation.navigate(NAV_NAMES.NftCollection as never, {
-        nftCollection
-      } as never);
-    }
-    return gotoProfile
+  const {currentNft} = useSelector(
+    (root: RootState) => root.app.session,
+    shallowEqual,
+  );
+  const apiGETWithToken = useApiGETWithToken()
+  const navigation = useNavigation()
+  const gotoProfile = () => {
+    apiGETWithToken(currentNft.contract_address == nftCollection.contract_address ?  apis.nft_collection._() : apis.nft_collection.contractAddress._(nftCollection.contract_address));
+    apiGETWithToken(apis.post.list.nftCollection(nftCollection.contract_address))
+    navigation.navigate(NAV_NAMES.NftCollection as never, {
+      nftCollection
+    } as never);
+  }
+  return gotoProfile
 }
 
 export function useGotoPost({postId}){
@@ -230,6 +234,14 @@ export function useGotoNftProfileEdit() {
   const navigation = useNavigation()
   const gotoNftProfileEdit = () => {
     navigation.navigate(NAV_NAMES.NftProfileEdit as never)
+  };
+  return gotoNftProfileEdit
+}
+
+export function useGotoNftCollectionProfileEdit() {
+  const navigation = useNavigation()
+  const gotoNftProfileEdit = () => {
+    navigation.navigate(NAV_NAMES.NftCollectionProfileEdit as never)
   };
   return gotoNftProfileEdit
 }

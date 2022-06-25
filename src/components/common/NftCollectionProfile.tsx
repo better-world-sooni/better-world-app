@@ -8,7 +8,11 @@ import {Span} from './Span';
 import {Colors, DEVICE_WIDTH} from 'src/modules/styles';
 import useFollow from 'src/hooks/useFollow';
 import apis from 'src/modules/apis';
-import {useGotoCollectionSearch, useGotoFollowList} from 'src/hooks/useGoto';
+import {
+  useGotoCollectionSearch,
+  useGotoFollowList,
+  useGotoNftCollectionProfileEdit,
+} from 'src/hooks/useGoto';
 import {HAS_NOTCH} from 'src/modules/constants';
 import Animated, {
   useAnimatedScrollHandler,
@@ -30,9 +34,6 @@ import {
   useReloadGETWithToken,
 } from 'src/redux/asyncReducer';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import BottomPopup from 'src/components/common/BottomPopup';
-import NftCollectionProfileEditBottomSheetScrollView from 'src/components/common/NftCollectionProfileEditBottomSheetScrollView';
-import {BottomSheetModal} from '@gorhom/bottom-sheet';
 import {ICONS} from 'src/modules/icons';
 import ListEmptyComponent from './ListEmptyComponent';
 import {handlePressContribution} from 'src/utils/bottomPopupUtils';
@@ -43,10 +44,6 @@ export default function NftCollectionProfile({
   nftCollectionProfileApiObject,
   pageableNftCollectionPostFn,
 }) {
-  const bottomPopupRef = useRef<BottomSheetModal>(null);
-  const editProfile = () => {
-    bottomPopupRef?.current?.expand();
-  };
   const {
     data: nftCollectionProfileRes,
     isLoading: nftCollectionProfileLoading,
@@ -64,6 +61,7 @@ export default function NftCollectionProfile({
     reloadGetWithToken(pageableNftCollectionPostFn());
   };
   const paginateGetWithToken = usePaginateGETWithToken();
+  const gotoNftCollectionProfileEdit = useGotoNftCollectionProfileEdit();
   const handleEndReached = () => {
     if (nftCollectionPostListPaginating || isNotPaginatable) return;
     paginateGetWithToken(pageableNftCollectionPostFn(page + 1), 'posts');
@@ -199,7 +197,9 @@ export default function NftCollectionProfile({
           ...(Platform.OS === 'android' && {paddingTop: 30}),
         }}
         data={nftCollectionPostListRes?.posts || []}
-        ListEmptyComponent={<ListEmptyComponent h={450} />}
+        ListEmptyComponent={
+          !nftCollectionPostListLoading && <ListEmptyComponent h={450} />
+        }
         ListHeaderComponent={
           <>
             <Row zIndex={100} px15 relative>
@@ -248,7 +248,7 @@ export default function NftCollectionProfile({
                     <Div>
                       <Row py10>
                         <Col />
-                        <Col auto mx8 onPress={editProfile}>
+                        <Col auto mx8 onPress={gotoNftCollectionProfileEdit}>
                           <Div>
                             <Settings
                               strokeWidth={2}
@@ -273,6 +273,14 @@ export default function NftCollectionProfile({
               </Div>
               {nftCollection && (
                 <>
+                  {nftCollection.about ? (
+                    <Div mt16>
+                      <TruncatedMarkdown
+                        text={nftCollection.about}
+                        maxLength={500}
+                      />
+                    </Div>
+                  ) : null}
                   <Row mt12>
                     <Col
                       auto
@@ -314,14 +322,6 @@ export default function NftCollectionProfile({
                       <Col />
                     </Row>
                   )}
-                  {nftCollection.about ? (
-                    <Div mt16>
-                      <TruncatedMarkdown
-                        text={nftCollection.about}
-                        maxLength={500}
-                      />
-                    </Div>
-                  ) : null}
                 </>
               )}
             </Div>
@@ -350,13 +350,6 @@ export default function NftCollectionProfile({
             onRefresh={handleRefresh}
           />
         }></Animated.FlatList>
-      {isAdmin && nftCollection && (
-        <BottomPopup ref={bottomPopupRef} snapPoints={['90%']} index={-1}>
-          <NftCollectionProfileEditBottomSheetScrollView
-            nftCollection={nftCollection}
-          />
-        </BottomPopup>
-      )}
     </>
   );
 }

@@ -36,6 +36,7 @@ export const NAV_NAMES = {
     ForumSetting: "ForumSetting",
     SocialSetting: "SocialSetting",
     NftProfileEdit: "NftProfileEdit",
+    NftCollectionProfileEdit: "NftCollectionProfileEdit",
     CollectionFeedTagSelect: "CollectionFeedTagSelect",
     Transaction: "Transaction",
     Affinity: "Affinity",

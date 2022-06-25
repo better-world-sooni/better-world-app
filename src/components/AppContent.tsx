@@ -51,6 +51,7 @@ import {ConfirmationModalScreen} from 'src/screens/ConfirmationModalScreen';
 import ForumSettingScreen from 'src/screens/ForumSettingScreen';
 import SocialSettingScreen from 'src/screens/SocialSettingScreen';
 import NftProfileEditScreen from 'src/screens/NftProfileEditScreen';
+import NftCollectionProfileEditScreen from 'src/screens/NftCollectionProfileEditScreen';
 
 const RootStack = createStackNavigator();
 
@@ -362,6 +363,11 @@ export const AppContent = ({notificationOpenData}) => {
     {
       name: NAV_NAMES.NftProfileEdit,
       component: NftProfileEditScreen,
+      options: TransitionPresets.ModalTransition,
+    },
+    {
+      name: NAV_NAMES.NftCollectionProfileEdit,
+      component: NftCollectionProfileEditScreen,
       options: TransitionPresets.ModalTransition,
     },
     {

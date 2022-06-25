@@ -83,8 +83,8 @@ const CollectionSearchScreen = ({
                 <ChevronLeft
                   strokeWidth={2}
                   color={Colors.black}
-                  height={22}
-                  width={22}
+                  width={30}
+                  height={30}
                 />
               </Col>
               <Col mx10>
