@@ -36,6 +36,7 @@ export const Span = props => {
     <Text
       ref={innerRef}
       {...mergedProps}
+      selectable
       style={[
         {
           color: Colors.black,

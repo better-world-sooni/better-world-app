@@ -205,13 +205,25 @@ export function useGotoLikeList({likableType, likableId}) {
 export function useGotoForumSetting() {
   const navigation = useNavigation()
   const apiGETWithToken = useApiGETWithToken()
-  const gotoCapsule = () => {
+  const gotoForumSetting = () => {
     apiGETWithToken(
       apis.forum_setting._(),
     );
     navigation.navigate(NAV_NAMES.ForumSetting as never)
   };
-  return gotoCapsule
+  return gotoForumSetting
+}
+
+export function useGotoSocialSetting() {
+  const navigation = useNavigation()
+  const apiGETWithToken = useApiGETWithToken()
+  const gotoSocialSetting = () => {
+    apiGETWithToken(
+      apis.social_setting._(),
+    );
+    navigation.navigate(NAV_NAMES.SocialSetting as never)
+  };
+  return gotoSocialSetting
 }
 
 export function useGotoMyCommunityWalletList() {

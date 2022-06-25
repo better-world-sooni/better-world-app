@@ -49,6 +49,7 @@ import TransactionScreen from 'src/screens/TransactionScreen';
 import {Platform} from 'react-native';
 import {ConfirmationModalScreen} from 'src/screens/ConfirmationModalScreen';
 import ForumSettingScreen from 'src/screens/ForumSettingScreen';
+import SocialSettingScreen from 'src/screens/SocialSettingScreen';
 
 const RootStack = createStackNavigator();
 
@@ -350,6 +351,11 @@ export const AppContent = ({notificationOpenData}) => {
     {
       name: NAV_NAMES.ForumSetting,
       component: ForumSettingScreen,
+      options: TransitionPresets.ModalTransition,
+    },
+    {
+      name: NAV_NAMES.SocialSetting,
+      component: SocialSettingScreen,
       options: TransitionPresets.ModalTransition,
     },
     {

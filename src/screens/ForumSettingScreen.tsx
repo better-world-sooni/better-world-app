@@ -49,7 +49,7 @@ export default function ForumSettingScreen() {
   const percentagePickerOptions = [
     {id: 'percent', label: '%', min: 0, max: 100},
   ];
-  const minutePickerOptions = [{id: 'hour', label: '시간', min: 0, max: 2400}];
+  const hourPickerOptions = [{id: 'hour', label: '시간', min: 0, max: 2400}];
   const isSaveable =
     guidelineHasChanged ||
     finalApprovalPercentHasChanged ||
@@ -99,7 +99,6 @@ export default function ForumSettingScreen() {
             </Col>
           </Row>
         </Div>
-
         <Div borderBottom={0.5} borderGray200 py16 px15>
           <Row py4>
             <Span fontSize={19} bold>
@@ -111,12 +110,12 @@ export default function ForumSettingScreen() {
               <TextInput
                 value={guideline}
                 placeholder={placeholder}
-                fontSize={16}
+                fontSize={14}
                 multiline
                 bold
                 onChangeText={handleChangeGuideline}></TextInput>
             ) : (
-              <Span>{guideline || placeholder}</Span>
+              <Span fontSize={14}>{guideline || placeholder}</Span>
             )}
           </Row>
         </Div>
@@ -184,7 +183,7 @@ export default function ForumSettingScreen() {
             </Col>
             <Col auto w100>
               <NumberPlease
-                digits={minutePickerOptions}
+                digits={hourPickerOptions}
                 itemStyle={{
                   height: 40,
                   fontSize: 16,
@@ -262,7 +261,7 @@ export default function ForumSettingScreen() {
             </Col>
             <Col auto w100>
               <NumberPlease
-                digits={minutePickerOptions}
+                digits={hourPickerOptions}
                 itemStyle={{
                   height: 40,
                   fontSize: 16,
@@ -276,6 +275,7 @@ export default function ForumSettingScreen() {
             </Col>
           </Row>
         </Div>
+        <Div h={50}></Div>
       </ScrollView>
     </>
   );
