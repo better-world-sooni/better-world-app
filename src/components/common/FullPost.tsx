@@ -1,217 +1,25 @@
 import {useNavigation} from '@react-navigation/native';
 import React, {useCallback, useEffect, useState} from 'react';
-import {ActivityIndicator, Platform} from 'react-native';
-import {
-  Check,
-  ChevronLeft,
-  Heart,
-  MoreHorizontal,
-  Repeat,
-  ThumbsDown,
-  ThumbsUp,
-  Zap,
-} from 'react-native-feather';
+import {ChevronLeft} from 'react-native-feather';
 import {Colors} from 'src/modules/styles';
-import {
-  useGotoLikeList,
-  useGotoNewPost,
-  useGotoNftCollectionProfile,
-  useGotoNftProfile,
-  useGotoReport,
-  useGotoRepostList,
-  useGotoVoteList,
-} from 'src/hooks/useGoto';
-import useLike, {LikableType} from 'src/hooks/useLike';
-import apis from 'src/modules/apis';
-import {
-  getNftName,
-  getNftProfileImage,
-  useIsAdmin,
-  useIsCurrentCollection,
-  useIsCurrentNft,
-} from 'src/utils/nftUtils';
-import {createdAtText} from 'src/utils/timeUtils';
 import {Col} from './Col';
 import Comment from './Comment';
 import {Div} from './Div';
-import ImageSlideShow from './ImageSlideShow';
-import {Img} from './Img';
 import NewComment, {ReplyToType} from './NewComment';
 import {Row} from './Row';
 import {Span} from './Span';
-import {MenuView} from '@react-native-menu/menu';
-import {
-  useDeletePromiseFnWithToken,
-  usePutPromiseFnWithToken,
-} from 'src/redux/asyncReducer';
-import {ReportTypes} from 'src/screens/ReportScreen';
-import useVote, {VoteCategory} from 'src/hooks/useVote';
-import {LikeListType} from 'src/screens/LikeListScreen';
-import {HAS_NOTCH} from 'src/modules/constants';
-import {DEVICE_WIDTH} from 'src/modules/styles';
-import Animated, {
-  useAnimatedScrollHandler,
-  useAnimatedStyle,
-  useSharedValue,
-} from 'react-native-reanimated';
-import {CustomBlurView} from 'src/components/common/CustomBlurView';
+import Animated from 'react-native-reanimated';
 import useScrollToEndRef from 'src/hooks/useScrollToEndRef';
-import {PostOwnerType} from 'src/screens/NewPostScreen';
-import RepostedPost from './RepostedPost';
-import CollectionEvent from './CollectionEvent';
-import {getAdjustedHeightFromDimensions} from 'src/utils/imageUtils';
-import {PostEventTypes} from './Post';
+import Post from './Post';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import RepostedTransaction from './RepostedTransaction';
-import {ICONS} from 'src/modules/icons';
 
 export default function FullPost({post, autoFocus = false}) {
   const scrollToEndRef = useScrollToEndRef();
   const {goBack} = useNavigation();
-  const [deleted, setDeleted] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [liked, likesCount, handlePressLike] = useLike(
-    post.is_liked,
-    post.likes_count,
-    LikableType.Post,
-    post.id,
-  );
   const [cachedComments, setCachedComments] = useState(post.comments || []);
   useEffect(() => {
     setCachedComments(post.comments || []);
   }, [post.comments?.length]);
-  const {
-    votable,
-    forVotesCount,
-    againstVotesCount,
-    abstainVotesCount,
-    hasVotedFor,
-    hasVotedAgainst,
-    hasVotedAbstain,
-    handleSetVotable,
-    handlePressVoteAbstain,
-    handlePressVoteFor,
-    handlePressVoteAgainst,
-  } = useVote({
-    initialVote: post.vote_category,
-    initialAbstainVotesCount: post.abstain_votes_count,
-    initialForVotesCount: post.for_votes_count,
-    initialAgainstVotesCount: post.against_votes_count,
-    postId: post.id,
-    votingDeadline: post.voting_deadline,
-  });
-  const isCurrentNft = useIsCurrentNft(post.nft);
-  const isCurrentCollection = useIsCurrentCollection(post.nft);
-  const isAdmin = !post.nft.token_id && useIsAdmin(post.nft);
-  const deletePromiseFnWithToken = useDeletePromiseFnWithToken();
-  const putPromiseFnWithToken = usePutPromiseFnWithToken();
-  const menuOptions = [
-    {
-      id: PostEventTypes.Report,
-      title: '게시물 신고',
-      titleColor: '#46F289',
-      subtitle: 'Share action on SNS',
-      image: Platform.select({
-        ios: 'flag',
-        android: 'stat_sys_warning',
-      }),
-    },
-    (isCurrentNft || (!post.nft.token_id && isAdmin)) && {
-      id: PostEventTypes.Delete,
-      title: '게시물 삭제',
-      image: Platform.select({
-        ios: 'trash',
-        android: 'ic_menu_delete',
-      }),
-    },
-    isAdmin &&
-      post.type == 'Proposal' &&
-      post.reposted_post && {
-        id: PostEventTypes.SetWinningProposal,
-        title: '이 제안을 해당 포럼에 참조',
-        image: Platform.select({
-          ios: 'checkmark',
-          android: 'ic_menu_agenda',
-        }),
-      },
-    isAdmin &&
-      post.type == 'Proposal' &&
-      !post.reposted_post && {
-        id: PostEventTypes.SetVotingDeadline,
-        title: '투표 마무리',
-        image: Platform.select({
-          ios: 'checkmark',
-          android: 'ic_menu_agenda',
-        }),
-      },
-    isAdmin &&
-      post.type == 'Forum' && {
-        id: PostEventTypes.SetVotingDeadline,
-        title: '포럼 마무리',
-        image: Platform.select({
-          ios: 'checkmark',
-          android: 'ic_menu_agenda',
-        }),
-      },
-  ].filter(option => option);
-
-  const actionIconDefaultProps = {
-    width: 18,
-    height: 18,
-    color: Colors.black,
-    strokeWidth: 1.7,
-  };
-  const heartProps = liked
-    ? {
-        fill: Colors.danger.DEFAULT,
-        width: 18,
-        height: 18,
-        color: Colors.danger.DEFAULT,
-        strokeWidth: 1.7,
-      }
-    : actionIconDefaultProps;
-
-  const forVoteProps = hasVotedFor
-    ? {
-        fill: Colors.info.DEFAULT,
-        width: 18,
-        height: 18,
-        color: Colors.info.DEFAULT,
-        strokeWidth: 1.7,
-      }
-    : actionIconDefaultProps;
-  const abstainVoteProps = hasVotedAbstain
-    ? {
-        fill: Colors.primary.DEFAULT,
-        width: 18,
-        height: 18,
-        color: Colors.primary.DEFAULT,
-        strokeWidth: 1.7,
-      }
-    : actionIconDefaultProps;
-  const againstVoteProps = hasVotedAgainst
-    ? {
-        fill: Colors.danger.DEFAULT,
-        width: 18,
-        height: 18,
-        color: Colors.danger.DEFAULT,
-        strokeWidth: 1.7,
-      }
-    : actionIconDefaultProps;
-
-  const gotoNftProfile = useGotoNftProfile({
-    nft: post.nft,
-  });
-  const gotoNftCollectionProfile = useGotoNftCollectionProfile({
-    nftCollection: post.nft,
-  });
-  const goToProfile = () => {
-    if (post.nft.token_id) {
-      gotoNftProfile();
-    } else {
-      gotoNftCollectionProfile();
-    }
-  };
   const defaultReplyTo = {
     object: post,
     type: ReplyToType.Post,
@@ -254,362 +62,37 @@ export default function FullPost({post, autoFocus = false}) {
       type: ReplyToType.Comment,
     });
   }, []);
-  const deletePost = async () => {
-    setLoading(true);
-    const {data} = await deletePromiseFnWithToken({
-      url: apis.post.postId._(post.id).url,
-    });
-    setLoading(false);
-    if (data.success) {
-      setDeleted(true);
-    }
-  };
-
-  const gotoReport = useGotoReport({
-    id: post.id,
-    reportType: ReportTypes.Post,
-  });
-
-  const setVotingDeadline = async () => {
-    setLoading(true);
-    const {data} = await putPromiseFnWithToken({
-      url: apis.post.postId._(post.id).url,
-      body: {
-        property: 'voting_deadline',
-        value: new Date(),
-      },
-    });
-    setLoading(false);
-    if (data.success) {
-      handleSetVotable(false);
-    }
-  };
-  const setWinningProposal = async () => {
-    if (!post.reposted_post.id) return;
-    setLoading(true);
-    const {data} = await putPromiseFnWithToken({
-      url: apis.post.postId._(post.reposted_post?.id).url,
-      body: {
-        property: 'repost_id',
-        value: post.id,
-      },
-    });
-    setLoading(false);
-  };
-
-  const handlePressMenu = ({nativeEvent: {event}}) => {
-    if (event == PostEventTypes.Delete) deletePost();
-    if (event == PostEventTypes.Report) gotoReport();
-    if (event == PostEventTypes.SetVotingDeadline) setVotingDeadline();
-    if (event == PostEventTypes.SetWinningProposal) setWinningProposal();
-  };
-
-  const gotoLikeList = useGotoLikeList({
-    likableId: post.id,
-    likableType: LikeListType.Post,
-  });
-
-  const gotoVoteList = useGotoVoteList({
-    postId: post.id,
-  });
-
-  const gotoNewPost = useGotoNewPost({
-    postOwnerType: PostOwnerType.Nft,
-  });
-
-  const gotoRepostList = useGotoRepostList({
-    postId: post.id,
-  });
-  const translationY = useSharedValue(0);
-  const scrollHandler = useAnimatedScrollHandler(event => {
-    translationY.value = event.contentOffset.y * 20;
-  });
   const notchHeight = useSafeAreaInsets().top;
-  const headerHeight = notchHeight + 50;
-  const headerStyles = useAnimatedStyle(() => {
-    return {
-      width: DEVICE_WIDTH,
-      height: headerHeight,
-      opacity: Math.min(translationY.value / 100, 1),
-    };
-  });
-
-  const itemWidth = DEVICE_WIDTH - 30 - 62;
-
-  if (deleted) return null;
 
   return (
     <>
-      <Div h={headerHeight} zIndex={100} absolute top0>
-        <Animated.View style={headerStyles}>
-          <CustomBlurView
-            blurType="xlight"
-            blurAmount={30}
-            blurRadius={20}
-            overlayColor=""
-            style={{
-              width: DEVICE_WIDTH,
-              height: '100%',
-              position: 'absolute',
-            }}
-            reducedTransparencyFallbackColor={Colors.white}></CustomBlurView>
-        </Animated.View>
-        <Div zIndex={100} absolute w={DEVICE_WIDTH} top={notchHeight + 5}>
-          <Row itemsCenter py5 h40 px8>
-            <Col itemsStart>
-              <Div auto rounded100 onPress={goBack}>
-                <ChevronLeft
-                  width={30}
-                  height={30}
-                  color={Colors.black}
-                  strokeWidth={2}
-                />
-              </Div>
-            </Col>
-            <Col auto onPress={goBack}>
-              <Span bold fontSize={19}>
-                게시물
-              </Span>
-            </Col>
-            <Col itemsEnd></Col>
-          </Row>
-        </Div>
+      <Div h={notchHeight}></Div>
+      <Div bgWhite h={50} justifyCenter borderBottom={0.5} borderGray200>
+        <Row itemsCenter py5 h40 px8>
+          <Col itemsStart>
+            <Div auto rounded100 onPress={goBack}>
+              <ChevronLeft
+                width={30}
+                height={30}
+                color={Colors.black}
+                strokeWidth={2}
+              />
+            </Div>
+          </Col>
+          <Col auto onPress={goBack}>
+            <Span bold fontSize={19}>
+              {post.type ? '제안' : '게시물'}
+            </Span>
+          </Col>
+          <Col itemsEnd></Col>
+        </Row>
       </Div>
-      <Div py5 bgWhite flex={1}>
+      <Div bgWhite flex={1}>
         <Animated.FlatList
           contentContainerStyle={{paddingBottom: 100}}
           ref={scrollToEndRef}
-          onScroll={scrollHandler}
           showsVerticalScrollIndicator={false}
-          ListHeaderComponent={
-            <>
-              <Div h={headerHeight}></Div>
-              <Row px15 pt5 borderGray200 borderBottom={0.5}>
-                <Col auto mr8>
-                  <Div onPress={goToProfile}>
-                    <Img
-                      w54
-                      h54
-                      border={0.5}
-                      borderGray200
-                      rounded100
-                      uri={getNftProfileImage(post.nft, 200, 200)}
-                    />
-                  </Div>
-                </Col>
-                <Col>
-                  <Row>
-                    <Col auto>
-                      <Span>
-                        <Span fontSize={15} bold onPress={goToProfile}>
-                          {getNftName(post.nft)}{' '}
-                        </Span>
-                        {post.nft.token_id ? (
-                          post.nft.nft_metadatum.name !=
-                            getNftName(post.nft) && (
-                            <Span
-                              fontSize={12}
-                              bold
-                              gray700
-                              onPress={goToProfile}>
-                              {' '}
-                              {post.nft.nft_metadatum.name}
-                            </Span>
-                          )
-                        ) : (
-                          <Img source={ICONS.sealCheck} h15 w15></Img>
-                        )}
-                        <Span fontSize={12} gray700>
-                          {' · '}
-                          {createdAtText(post.updated_at)}
-                        </Span>
-                      </Span>
-                    </Col>
-                    <Col />
-                    <Col auto>
-                      <MenuView
-                        onPressAction={handlePressMenu}
-                        actions={menuOptions}>
-                        {loading ? (
-                          <ActivityIndicator />
-                        ) : (
-                          <MoreHorizontal
-                            color={Colors.gray[200]}
-                            width={18}
-                            height={18}
-                          />
-                        )}
-                      </MenuView>
-                    </Col>
-                  </Row>
-                  <Row>
-                    {post.content ? (
-                      <Div>
-                        <Span fontSize={14}>{post.content}</Span>
-                      </Div>
-                    ) : null}
-                  </Row>
-                  {post.transaction && (
-                    <RepostedTransaction
-                      transaction={post.transaction}
-                      enablePress
-                    />
-                  )}
-                  {post.reposted_post && (
-                    <Div mt5>
-                      <RepostedPost
-                        repostedPost={post.reposted_post}
-                        enablePress
-                      />
-                    </Div>
-                  )}
-                  {post.image_uris.length > 0 ? (
-                    <Div mt5>
-                      <ImageSlideShow
-                        imageUris={post.image_uris}
-                        sliderHeight={
-                          post.image_width && post.image_height
-                            ? getAdjustedHeightFromDimensions({
-                                width: post.image_width,
-                                height: post.image_height,
-                                frameWidth: itemWidth,
-                              })
-                            : itemWidth * 0.7
-                        }
-                        sliderWidth={itemWidth}
-                      />
-                    </Div>
-                  ) : null}
-                  {post.collection_event && (
-                    <Div mt5>
-                      <CollectionEvent
-                        collectionEvent={post.collection_event}
-                        reposted
-                        itemWidth={itemWidth}
-                      />
-                    </Div>
-                  )}
-                  <Row itemsCenter mb8 mt8 mb10>
-                    {!post.type ? (
-                      <>
-                        {likesCount > 0 && (
-                          <Col auto mr12>
-                            <Span
-                              fontSize={12}
-                              style={{fontWeight: '600'}}
-                              onPress={gotoLikeList}>
-                              좋아요 <Span realBlack>{likesCount}</Span>개
-                            </Span>
-                          </Col>
-                        )}
-                        {post.repost_count > 0 && (
-                          <Col auto mr12>
-                            <Span
-                              fontSize={12}
-                              style={{fontWeight: '600'}}
-                              onPress={gotoRepostList}>
-                              리포스트{' '}
-                              <Span realBlack>{post.repost_count}</Span>번
-                            </Span>
-                          </Col>
-                        )}
-                        <Col />
-                        <Col auto mr16 onPress={handlePressLike}>
-                          {<Heart {...heartProps}></Heart>}
-                        </Col>
-                      </>
-                    ) : post.type == 'Proposal' ? (
-                      <>
-                        <Col auto mr12>
-                          <Span
-                            fontSize={12}
-                            style={{fontWeight: '600'}}
-                            onPress={() => gotoVoteList(VoteCategory.Against)}>
-                            반대 <Span realBlack>{againstVotesCount}</Span>표 (
-                            {Math.round(
-                              (againstVotesCount + forVotesCount > 0
-                                ? againstVotesCount /
-                                  (againstVotesCount + forVotesCount)
-                                : 0) * 100,
-                            )}
-                            %)
-                          </Span>
-                        </Col>
-                        <Col auto mr12>
-                          <Span
-                            fontSize={12}
-                            style={{fontWeight: '600'}}
-                            onPress={() => gotoVoteList(VoteCategory.For)}>
-                            찬성 <Span realBlack>{forVotesCount}</Span>표 (
-                            {Math.round(
-                              (againstVotesCount + forVotesCount > 0
-                                ? forVotesCount /
-                                  (againstVotesCount + forVotesCount)
-                                : 0) * 100,
-                            )}
-                            %)
-                          </Span>
-                        </Col>
-                        <Col />
-                        {isCurrentCollection && votable && (
-                          <>
-                            <Col auto mr12 onPress={handlePressVoteAgainst}>
-                              {<ThumbsDown {...againstVoteProps}></ThumbsDown>}
-                            </Col>
-                            <Col auto onPress={handlePressVoteFor}>
-                              {<ThumbsUp {...forVoteProps}></ThumbsUp>}
-                            </Col>
-                          </>
-                        )}
-                      </>
-                    ) : null}
-
-                    {post.type == 'Forum'
-                      ? isCurrentCollection &&
-                        votable && (
-                          <>
-                            <Col auto onPress={() => gotoNewPost(post)} mr4>
-                              <Zap
-                                height={18}
-                                width={18}
-                                fill={Colors.warning.DEFAULT}
-                                color={Colors.warning.DEFAULT}
-                              />
-                            </Col>
-                            <Col auto onPress={() => gotoNewPost(post)}>
-                              <Span gray700 bold fontSize={12}>
-                                제안하기
-                              </Span>
-                            </Col>
-                          </>
-                        )
-                      : !post.type && (
-                          <Col auto onPress={() => gotoNewPost(post)}>
-                            <Repeat {...actionIconDefaultProps} />
-                          </Col>
-                        )}
-                    {!votable && (
-                      <>
-                        <Col auto rounded100 bgBlack p2 bgSuccess mr4>
-                          <Check
-                            strokeWidth={2}
-                            height={14}
-                            width={14}
-                            color={Colors.white}
-                          />
-                        </Col>
-                        <Col auto>
-                          <Span bold fontSize={12}>
-                            완료됨
-                          </Span>
-                        </Col>
-                      </>
-                    )}
-                  </Row>
-                </Col>
-              </Row>
-            </>
-          }
+          ListHeaderComponent={<Post post={post} full></Post>}
           data={cachedComments}
           renderItem={({item}) => {
             return (

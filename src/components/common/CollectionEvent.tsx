@@ -64,7 +64,7 @@ export default function CollectionEvent({
     },
     {
       id: CollectionEventActionTypes.Tag,
-      title: '완료된 제안에 참조',
+      title: '통과된 제안에 참조',
       image: Platform.select({
         ios: 'tag',
         android: 'ic_input_get',
@@ -283,7 +283,7 @@ export default function CollectionEvent({
                 onPress={() => gotoAttendanceList(AttendanceCategory.Maybe)}>
                 <Span fontSize={12} gray700>
                   Maybe{' '}
-                  <Span realBlack bold>
+                  <Span black bold>
                     {maybeAttendCount}
                   </Span>
                 </Span>
@@ -294,7 +294,7 @@ export default function CollectionEvent({
                 onPress={() => gotoAttendanceList(AttendanceCategory.Yes)}>
                 <Span fontSize={12} gray700>
                   Yes{' '}
-                  <Span realBlack bold>
+                  <Span black bold>
                     {willAttendCount}
                   </Span>
                 </Span>

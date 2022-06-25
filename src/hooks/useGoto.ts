@@ -171,7 +171,7 @@ export function useGotoCollectionFeedTagSelect(){
   const navigation = useNavigation()
   const apiGETWithToken = useApiGETWithToken()
   const gotoCollectionFeedTagSelect = (primaryKey, foreignKeyName) => {
-    apiGETWithToken(apis.feed.forum(ForumFeedFilter.Resolved))
+    apiGETWithToken(apis.feed.forum(ForumFeedFilter.Approved))
     navigation.navigate(NAV_NAMES.CollectionFeedTagSelect as never, {primaryKey, foreignKeyName} as never);
   }
   return gotoCollectionFeedTagSelect
@@ -198,6 +198,18 @@ export function useGotoLikeList({likableType, likableId}) {
     navigation.navigate(NAV_NAMES.LikeList as never, {
       likableType, likableId
     } as never)
+  };
+  return gotoCapsule
+}
+
+export function useGotoForumSetting() {
+  const navigation = useNavigation()
+  const apiGETWithToken = useApiGETWithToken()
+  const gotoCapsule = () => {
+    apiGETWithToken(
+      apis.forum_setting._(),
+    );
+    navigation.navigate(NAV_NAMES.ForumSetting as never)
   };
   return gotoCapsule
 }

@@ -33,6 +33,7 @@ export const NAV_NAMES = {
     CommunityWalletList: "CommunityWalletList",
     NewCommunityWallet: "NewCommunityWallet",
     ConfirmationModal: "ConfirmationModal",
+    ForumSetting: "ForumSetting",
     CollectionFeedTagSelect: "CollectionFeedTagSelect",
     Transaction: "Transaction",
     Affinity: "Affinity",

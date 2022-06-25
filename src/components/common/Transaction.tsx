@@ -55,7 +55,7 @@ function Transaction({transaction, mainAddress = null, enablePress = false}) {
     },
     isAdmin && {
       id: TransactionEventTypes.Tag,
-      title: '완료된 제안에 참조',
+      title: '통과된 제안에 참조',
       image: Platform.select({
         ios: 'tag',
         android: 'ic_input_get',

@@ -108,6 +108,12 @@ const apis = {
       }
     }
   },
+  forum_setting: {
+    _: () => apiV1(`/forum_setting`)
+  }, 
+  social_setting: {
+    _: () => apiV1(`/social_setting`)
+  }, 
   comment: {
     post: (postId) => apiV1(`/comment/post/${postId}`),
     comment: (commentId) => apiV1(`/comment/comment/${commentId}`)

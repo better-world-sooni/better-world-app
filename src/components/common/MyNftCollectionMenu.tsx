@@ -9,13 +9,14 @@ import {Span} from './Span';
 import {FollowOwnerType, FollowType} from 'src/screens/FollowListScreen';
 import {
   useGotoFollowList,
+  useGotoForumSetting,
   useGotoMyCollectionEventList,
   useGotoMyCommunityWalletList,
   useGotoNewCollectionEvent,
   useGotoNewCommunityWallet,
   useGotoNftCollectionProfile,
 } from 'src/hooks/useGoto';
-import {Calendar, CreditCard} from 'react-native-feather';
+import {Calendar, CreditCard, Settings} from 'react-native-feather';
 import {useApiSelector} from 'src/redux/asyncReducer';
 import apis from 'src/modules/apis';
 import {getSiPrefixedNumber} from 'src/utils/numberUtils';
@@ -43,6 +44,7 @@ const MyNftCollectionMenu = ({nftCollection}) => {
   const gotoCollectionEventList = useGotoMyCollectionEventList();
   const gotoNewCollectionEvent = useGotoNewCollectionEvent();
   const gotoNewCommunityWallet = useGotoNewCommunityWallet();
+  const gotoForumSetting = useGotoForumSetting();
   const notchHeight = HAS_NOTCH ? 44 : 0;
   const headerHeight = notchHeight + 18;
   const isAdmin = useIsAdmin();
@@ -183,6 +185,14 @@ const MyNftCollectionMenu = ({nftCollection}) => {
               </Row>
             )
           )}
+          <Row itemsCenter py16 onPress={gotoForumSetting}>
+            <Col auto mr16>
+              <Img source={ICONS.lightBulb} h22 w22></Img>
+            </Col>
+            <Col>
+              <Span fontSize={16}>포럼 설정</Span>
+            </Col>
+          </Row>
         </Div>
       )}
     </Div>
