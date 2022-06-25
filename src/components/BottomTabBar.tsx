@@ -8,16 +8,15 @@ import {Span} from 'src/components/common/Span';
 import {NAV_NAMES} from 'src/modules/navNames';
 import {Colors} from 'src/modules/styles';
 import {openNftList} from 'src/utils/bottomPopupUtils';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 const BottomTabBar = ({state, descriptors, navigation}) => {
-  
-
   const [keyboardStatus, setKeyboardStatus] = useState(false);
   useEffect(() => {
-    const showSubscription = Keyboard.addListener("keyboardDidShow", () => {
+    const showSubscription = Keyboard.addListener('keyboardDidShow', () => {
       setKeyboardStatus(true);
     });
-    const hideSubscription = Keyboard.addListener("keyboardDidHide", () => {
+    const hideSubscription = Keyboard.addListener('keyboardDidHide', () => {
       setKeyboardStatus(false);
     });
 
@@ -27,7 +26,7 @@ const BottomTabBar = ({state, descriptors, navigation}) => {
     };
   }, []);
 
-
+  const notchHeight = useSafeAreaInsets().bottom;
 
   const List = useCallback(
     state.routes.map((route, index) => {
@@ -50,8 +49,6 @@ const BottomTabBar = ({state, descriptors, navigation}) => {
       const conditionalProps = changeProfileOnLongPress
         ? {onLongPress: openNftList}
         : {};
-        
-
 
       return (
         <Div
@@ -62,7 +59,8 @@ const BottomTabBar = ({state, descriptors, navigation}) => {
           itemsCenter
           justifyCenter
           relative
-          pb10>
+          pt13
+          pb={notchHeight + 15}>
           {image}
           {name === NAV_NAMES.ChatList && parseInt(options.tabBarBadge) > 0 && (
             <Div
@@ -75,7 +73,7 @@ const BottomTabBar = ({state, descriptors, navigation}) => {
               px8
               py4
               justifyCenter>
-              <Span white fontSize={10} medium>
+              <Span white fontSize={10} bold>
                 {options.tabBarBadge}
               </Span>
             </Div>
@@ -87,19 +85,10 @@ const BottomTabBar = ({state, descriptors, navigation}) => {
   );
 
   return (
-    (!keyboardStatus && <>
+    !keyboardStatus && (
       <Row borderTopColor={Colors.gray[200]} borderTopWidth={0.5}>
-        <NativeBaseProvider>
-          <HStack
-            bg={Colors.white}
-            safeAreaBottom
-            paddingTop={4}
-            paddingBottom={0}>
-            {List}
-          </HStack>
-        </NativeBaseProvider>
+        {List}
       </Row>
-    </>
     )
   );
 };

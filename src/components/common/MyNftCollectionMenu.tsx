@@ -205,7 +205,7 @@ const MyNftCollectionMenu = ({nftCollection}) => {
               <Img source={ICONS.lightBulb} h22 w22></Img>
             </Col>
             <Col>
-              <Span fontSize={16}>포럼 설정</Span>
+              <Span fontSize={16}>제안 피드 설정</Span>
             </Col>
           </Row>
         </Div>

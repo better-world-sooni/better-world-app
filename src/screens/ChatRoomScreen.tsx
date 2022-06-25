@@ -219,11 +219,19 @@ function ChatRoomScreen({
       }
     }
   }, [chatSocket, page, isLastPage, pageLoading, setPageLoading]);
+  const notchBottom = useSafeAreaInsets().bottom;
 
   return (
     <Div flex={1} bgWhite>
       <Div h={notchHeight} bgWhite></Div>
-      <Div bgWhite px15 h={50} justifyCenter borderBottom={0.5} borderGray200 zIndex={100}>
+      <Div
+        bgWhite
+        px15
+        h={50}
+        justifyCenter
+        borderBottom={0.5}
+        borderGray200
+        zIndex={100}>
         <Row itemsCenter>
           <Col justifyStart mr10>
             <Div auto rounded100 onPress={goBack}>
@@ -243,7 +251,10 @@ function ChatRoomScreen({
           <Col />
         </Row>
       </Div>
-
+      <KeyboardAvoidingView
+        flex={1}
+        bgWhite
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
         <FlatList
           ref={flatListRef}
           showsVerticalScrollIndicator={false}
@@ -301,8 +312,8 @@ function ChatRoomScreen({
           onPressSend={sendMessage}
           roomLoading={chatRoomLoad}
         />
-
-      <Div h={HAS_NOTCH ? 25 : 0} bgWhite></Div>
+      </KeyboardAvoidingView>
+      <Div h={notchBottom} bgWhite></Div>
     </Div>
   );
 }

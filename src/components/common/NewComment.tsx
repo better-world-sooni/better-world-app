@@ -77,7 +77,7 @@ export default function NewComment({
           </Col>
         </Row>
       )}
-      <Div px15 py8>
+      <Div px15 py4>
         <TextField
           w={'100%'}
           h40

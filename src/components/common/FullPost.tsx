@@ -102,15 +102,13 @@ export default function FullPost({post, autoFocus = false}) {
                 onPressReplyTo={handlePressReplyTo}></Comment>
             );
           }}></Animated.FlatList>
-        {post.type !== 'Forum' && (
-          <NewComment
-            autoFocus={autoFocus}
-            replyToObject={replyTo.object}
-            replyToType={replyTo.type}
-            onSuccess={handleNewCommentSuccess}
-            onPressExitReplyToComment={resetReplyTo}
-          />
-        )}
+        <NewComment
+          autoFocus={autoFocus}
+          replyToObject={replyTo.object}
+          replyToType={replyTo.type}
+          onSuccess={handleNewCommentSuccess}
+          onPressExitReplyToComment={resetReplyTo}
+        />
       </Div>
     </>
   );

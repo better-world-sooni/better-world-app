@@ -1,19 +1,10 @@
 import React from 'react';
-import {
-  Edit3,
-  Feather,
-  Grid,
-  Maximize,
-  MessageCircle,
-  Send,
-  Settings,
-} from 'react-native-feather';
+import {Grid, Maximize, Send, Settings} from 'react-native-feather';
 import {Colors} from 'src/modules/styles';
 import useFollow from 'src/hooks/useFollow';
 import {
   useGotoFollowList,
   useGotoChatRoomFromProfile,
-  useGotoNewPost,
   useGotoNftCollectionProfile,
   useGotoQR,
   useGotoScan,
@@ -68,11 +59,11 @@ export default function NftProfileHeader({nftCore, nft, isCurrentNft, qrScan}) {
         <Col justifyEnd>
           {!isCurrentNft ? (
             <Div>
-              <Row py12 itemsCenter>
+              <Row py6 itemsCenter>
                 <Col />
                 <Col
                   auto
-                  px16
+                  px12
                   onPress={() =>
                     gotoChatRoom(
                       getNftName(nftCore),

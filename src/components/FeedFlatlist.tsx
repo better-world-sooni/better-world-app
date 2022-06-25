@@ -41,6 +41,9 @@ function FeedFlatlist(
   return (
     <Div flex={1} bgWhite relative>
       <Div h={notchHeight}></Div>
+      <Div bgWhite px15 h={50} justifyCenter borderBottom={0.5} borderGray200>
+        {TopComponent}
+      </Div>
       <FlatList
         ref={ref}
         showsVerticalScrollIndicator={false}
@@ -64,23 +67,9 @@ function FeedFlatlist(
             <Div h={27} />
           </>
         }
-        ListHeaderComponent={
-          <Div
-            bgWhite
-            px15
-            h={50}
-            justifyCenter
-            borderBottom={0.5}
-            borderGray200>
-            {TopComponent}
-          </Div>
-        }
         ListEmptyComponent={
           <ListEmptyComponent h={DEVICE_HEIGHT - headerHeight * 2} />
         }
-        stickyHeaderIndices={[0]}
-        // @ts-ignore
-        stickyHeaderHiddenOnScroll
         data={data}
         onEndReached={onEndReached}
         renderItem={renderItem}></FlatList>

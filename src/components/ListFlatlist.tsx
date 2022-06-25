@@ -30,8 +30,31 @@ export default function ListFlatlist({
   return (
     <Div flex={1} bgWhite>
       <Div h={notchHeight}></Div>
+      <Div bgWhite h={50} justifyCenter borderBottom={0.5} borderGray200>
+        <Row itemsCenter py5 h40 px={BackIcon == ChevronLeft ? 8 : 15}>
+          <Col itemsStart>
+            {enableBack && (
+              <Div auto rounded100 onPress={goBack}>
+                <BackIcon
+                  width={30}
+                  height={30}
+                  color={Colors.black}
+                  strokeWidth={2}
+                />
+              </Div>
+            )}
+          </Col>
+          <Col auto>
+            <Span bold fontSize={19}>
+              {title}
+            </Span>
+          </Col>
+          <Col itemsEnd pr={enableBack && BackIcon == ChevronLeft ? 8 : 0}>
+            {HeaderRightComponent}
+          </Col>
+        </Row>
+      </Div>
       <FlatList
-        stickyHeaderIndices={[0]}
         showsVerticalScrollIndicator={false}
         keyExtractor={keyExtractor}
         ListEmptyComponent={
@@ -45,32 +68,6 @@ export default function ListFlatlist({
         onEndReached={onEndReached}
         data={data}
         renderItem={renderItem}
-        ListHeaderComponent={
-          <Div bgWhite h={50} justifyCenter borderBottom={0.5} borderGray200>
-            <Row itemsCenter py5 h40 px={BackIcon == ChevronLeft ? 8 : 15}>
-              <Col itemsStart>
-                {enableBack && (
-                  <Div auto rounded100 onPress={goBack}>
-                    <BackIcon
-                      width={30}
-                      height={30}
-                      color={Colors.black}
-                      strokeWidth={2}
-                    />
-                  </Div>
-                )}
-              </Col>
-              <Col auto>
-                <Span bold fontSize={19}>
-                  {title}
-                </Span>
-              </Col>
-              <Col itemsEnd pr={enableBack && BackIcon == ChevronLeft ? 8 : 0}>
-                {HeaderRightComponent}
-              </Col>
-            </Row>
-          </Div>
-        }
         ListFooterComponent={
           <>
             {isPaginating && (

@@ -130,7 +130,7 @@ export default function ForumSettingScreen() {
             <Col auto>
               <Span fontSize={12} gray700>
                 {' '}
-                모두 0 초과할 시에 적용
+                모두 0을 초과할 시에 적용
               </Span>
             </Col>
           </Row>
@@ -208,7 +208,7 @@ export default function ForumSettingScreen() {
             <Col auto>
               <Span fontSize={12} gray700>
                 {' '}
-                모두 0 초과할 시에 적용
+                모두 0을 초과할 시에 적용
               </Span>
             </Col>
           </Row>

@@ -1,12 +1,6 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {Div} from './Div';
-import {DEVICE_WIDTH} from 'src/modules/styles';
 import {HAS_NOTCH} from 'src/modules/constants';
-import Animated, {
-  useAnimatedScrollHandler,
-  useAnimatedStyle,
-  useSharedValue,
-} from 'react-native-reanimated';
 import {ActivityIndicator, RefreshControl} from 'react-native';
 import {
   useApiSelector,
@@ -45,39 +39,18 @@ export default function CommunityWalletProfile({
   };
   const communityWallet =
     communityWalletRes?.community_wallet || communityWalletCore;
-  const translationY = useSharedValue(0);
-  const scrollHandler = useAnimatedScrollHandler(event => {
-    translationY.value = event.contentOffset.y;
-  });
   const notchHeight = useSafeAreaInsets().top;
-  const headerHeight = notchHeight + 50;
-  const headerStyles = useAnimatedStyle(() => {
-    return {
-      width: DEVICE_WIDTH,
-      height: headerHeight,
-      opacity: Math.min(translationY.value / 50, 1),
-    };
-  });
   return (
     <Div flex={1} bgWhite>
       <Div h={notchHeight} />
+      <Div bgWhite px8 h={50} justifyCenter borderBottom={0.5} borderGray200>
+        <Div>
+          <CommunityWalletTopBar communityWallet={communityWallet} />
+        </Div>
+      </Div>
       <FlatList
-        stickyHeaderIndices={[0]}
         showsVerticalScrollIndicator={false}
         keyExtractor={item => (item as any).transaction_hash}
-        ListHeaderComponent={
-          <Div
-            bgWhite
-            px8
-            h={50}
-            justifyCenter
-            borderBottom={0.5}
-            borderGray200>
-            <Div>
-              <CommunityWalletTopBar communityWallet={communityWallet} />
-            </Div>
-          </Div>
-        }
         refreshControl={
           <RefreshControl
             refreshing={transactionListLoading}

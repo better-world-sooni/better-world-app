@@ -224,7 +224,7 @@ const NotificationContent = ({
   };
 
   return (
-    <Row itemsCenter py10 px15 onPress={handlePressNotification}>
+    <Row itemsCenter py8 px15 onPress={handlePressNotification}>
       <Col auto onPress={handlePressProfile}>
         <Img
           rounded100

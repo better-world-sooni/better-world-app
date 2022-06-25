@@ -22,7 +22,7 @@ export default function NewMessage({
       w={'100%'}
       borderTop={0.5}
       borderColor={varStyle.gray200}>
-      <Div px15 py8>
+      <Div px15 py4>
         <TextField
           w={'100%'}
           h40

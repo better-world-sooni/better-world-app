@@ -52,47 +52,38 @@ const SearchScreen = () => {
   return (
     <Div flex={1} bgWhite>
       <Div h={notchHeight}></Div>
+      <Div bgWhite px15 h={50} justifyCenter borderBottom={0.5} borderGray200>
+        <Row itemsCenter py5 h40>
+          <Col mr10>
+            <TextInput
+              innerRef={searchRef}
+              value={text}
+              placeholder="NFT를 찾아보세요"
+              fontSize={16}
+              bgGray200
+              rounded100
+              m0
+              p0
+              px8
+              h32
+              bold
+              onChangeText={handleChangeQuery}
+            />
+          </Col>
+          <Col auto rounded100 onPress={onPressSearch}>
+            <Search
+              strokeWidth={2}
+              color={Colors.black}
+              height={22}
+              width={22}
+            />
+          </Col>
+        </Row>
+      </Div>
       <FlatList
-        ListHeaderComponent={
-          <Div
-            bgWhite
-            px15
-            h={50}
-            justifyCenter
-            borderBottom={0.5}
-            borderGray200>
-            <Row itemsCenter py5 h40>
-              <Col mr10>
-                <TextInput
-                  innerRef={searchRef}
-                  value={text}
-                  placeholder="NFT를 찾아보세요"
-                  fontSize={16}
-                  bgGray200
-                  rounded100
-                  m0
-                  p0
-                  px8
-                  h32
-                  bold
-                  onChangeText={handleChangeQuery}
-                />
-              </Col>
-              <Col auto rounded100 onPress={onPressSearch}>
-                <Search
-                  strokeWidth={2}
-                  color={Colors.black}
-                  height={22}
-                  width={22}
-                />
-              </Col>
-            </Row>
-          </Div>
-        }
         ListEmptyComponent={
           <ListEmptyComponent h={DEVICE_HEIGHT - headerHeight * 2} />
         }
-        stickyHeaderIndices={[0]}
         showsVerticalScrollIndicator={false}
         onEndReached={handleEndReached}
         refreshControl={

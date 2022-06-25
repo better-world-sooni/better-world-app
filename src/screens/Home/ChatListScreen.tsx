@@ -150,31 +150,22 @@ function ChatListScreen() {
   return (
     <Div flex={1} bgWhite>
       <Div h={notchHeight}></Div>
+      <Div bgWhite px15 h={50} justifyCenter borderBottom={0.5} borderGray200>
+        <Row itemsCenter py5 h40 p8 zIndex={100}>
+          <Col itemsStart></Col>
+          <Col auto>
+            <Span bold fontSize={19}>
+              채팅
+            </Span>
+          </Col>
+          <Col />
+        </Row>
+      </Div>
       <FlatList
-        ListHeaderComponent={
-          <Div
-            bgWhite
-            px15
-            h={50}
-            justifyCenter
-            borderBottom={0.5}
-            borderGray200>
-            <Row itemsCenter py5 h40 p8 zIndex={100}>
-              <Col itemsStart></Col>
-              <Col auto>
-                <Span bold fontSize={19}>
-                  채팅
-                </Span>
-              </Col>
-              <Col />
-            </Row>
-          </Div>
-        }
         showsVerticalScrollIndicator={false}
         ListEmptyComponent={
           <ListEmptyComponent h={DEVICE_HEIGHT - headerHeight * 2} />
         }
-        stickyHeaderIndices={[0]}
         data={chatRooms as Array<ListObject>}
         renderItem={({item, index}) => {
           return (
