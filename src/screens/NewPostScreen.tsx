@@ -330,7 +330,7 @@ const NewPostScreen = ({
           </Col>
         </Row>
       </KeyboardAvoidingView>
-      <Div h={HAS_NOTCH ? 27 : 12} bgWhite />
+      <Div h={HAS_NOTCH ? 27 : 0} bgWhite />
     </>
   );
 };

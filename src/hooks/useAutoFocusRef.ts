@@ -4,6 +4,6 @@ export default function useAutoFocusRef(){
     const autoFocusRef = useRef(null);
     useEffect(() => {
         autoFocusRef?.current?.focus();
-    }, []);
+    }, [autoFocusRef]);
     return autoFocusRef
 }
