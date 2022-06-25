@@ -32,7 +32,7 @@ export default function CollectionFeedTagSelectScreen({
   const handleEndReached = () => {
     if (feedPaginating || isNotPaginatable) return;
     paginateGetWithToken(
-      apis.feed.forum(ForumFeedFilter.Resolved, page + 1),
+      apis.feed.forum(ForumFeedFilter.Approved, page + 1),
       'feed',
     );
   };
@@ -40,7 +40,7 @@ export default function CollectionFeedTagSelectScreen({
   const putPromiseFnWithToken = usePutPromiseFnWithToken();
   const onRefresh = () => {
     if (feedLoading) return;
-    reloadGetWithToken(apis.feed.forum(ForumFeedFilter.Resolved));
+    reloadGetWithToken(apis.feed.forum(ForumFeedFilter.Approved));
   };
   const putPrimaryKey = async postId => {
     if (loading) return;

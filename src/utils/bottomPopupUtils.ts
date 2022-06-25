@@ -19,7 +19,7 @@ export const handlePressContribution = () => {
 };
 
 export const handlePressAffinity = () => {
-    openInfoPopup('멤버 친목도는 컬렉션 멤버끼리의 팔로우를 세어 추산하는 척도입니다.');
+    openInfoPopup('멤버 친목도는 컬렉션 멤버끼리의 팔로우를 세어 만든 지표에요');
 };
 
 export const handlePressWalletExpand = (about) => {

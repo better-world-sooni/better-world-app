@@ -17,6 +17,7 @@ import {
   useGotoNftCollectionProfile,
   useGotoQR,
   useGotoScan,
+  useGotoNftProfileEdit,
 } from 'src/hooks/useGoto';
 import apis from 'src/modules/apis';
 import {handlePressContribution} from 'src/utils/bottomPopupUtils';
@@ -58,6 +59,7 @@ export default function NftProfileHeader({
   const gotoQr = useGotoQR();
   const gotoScan = useGotoScan({scanType: ScanType.Nft});
   const gotoChatRoom = useGotoChatRoomFromProfile();
+  const gotoNftProfileEdit = useGotoNftProfileEdit();
   return (
     <>
       <Row zIndex={100} px15 relative>
@@ -68,14 +70,14 @@ export default function NftProfileHeader({
             border4
             borderWhite
             bgGray200
-            h75
-            w75
+            h70
+            w70
             uri={getNftProfileImage(nft || nftCore, 200, 200)}></Img>
         </Col>
         <Col justifyEnd>
           {!isCurrentNft ? (
             <Div>
-              <Row py8 itemsCenter>
+              <Row py12 itemsCenter>
                 <Col />
                 <Col
                   auto
@@ -111,7 +113,7 @@ export default function NftProfileHeader({
             </Div>
           ) : (
             <Div>
-              <Row py10>
+              <Row py12>
                 <Col />
                 {qrScan && (
                   <Col auto onPress={gotoScan} px8>
@@ -133,7 +135,7 @@ export default function NftProfileHeader({
                     />
                   </Col>
                 )}
-                <Col auto onPress={editProfile} px8>
+                <Col auto onPress={gotoNftProfileEdit} px8>
                   <Settings
                     strokeWidth={2}
                     color={Colors.black}

@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 import apis from "src/modules/apis";
 import { getNftStory } from "src/utils/nftUtils";
 import { appActions } from "src/redux/appReducer";
-import { usePutPromiseFnWithToken, useReloadGETWithToken } from "src/redux/asyncReducer";
+import { usePatchPromiseFnWithToken, usePutPromiseFnWithToken, useReloadGETWithToken } from "src/redux/asyncReducer";
 import useEdittableText from "./useEdittableText";
 
 export enum StoryOwnerType {
@@ -15,7 +15,7 @@ export default function useStory(storyOwner, storyOwnerType) {
     const [storyError, setStoryError] = useState('')
     const [storyLoading, setStoryLoading] = useState(false)
     const reloadGetWithToken = useReloadGETWithToken();
-    const putPromiseFnWithToken = usePutPromiseFnWithToken();
+    const patchPromiseFnWithToken = usePatchPromiseFnWithToken();
     const dispatch = useDispatch()
     const handleSaveStory = async () => {
         if (!storyError) {
@@ -27,7 +27,7 @@ export default function useStory(storyOwner, storyOwnerType) {
 					property: "story",
 					value: story,
 				}
-				const {data} = await putPromiseFnWithToken({
+				const {data} = await patchPromiseFnWithToken({
                     url,
                     body
                 });

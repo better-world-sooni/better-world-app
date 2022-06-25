@@ -48,6 +48,9 @@ import CollectionFeedTagSelectScreen from 'src/screens/CollectionFeedTagSelectSc
 import TransactionScreen from 'src/screens/TransactionScreen';
 import {Platform} from 'react-native';
 import {ConfirmationModalScreen} from 'src/screens/ConfirmationModalScreen';
+import ForumSettingScreen from 'src/screens/ForumSettingScreen';
+import SocialSettingScreen from 'src/screens/SocialSettingScreen';
+import NftProfileEditScreen from 'src/screens/NftProfileEditScreen';
 
 const RootStack = createStackNavigator();
 
@@ -62,7 +65,6 @@ const MainBottomTabs = () => {
   const unreadChatRoomCount = useSelector( 
     (root: RootState) => root.app.unreadChatRoomCount
   )
-  
 
   const profileTabIconProps = {
     uri: getNftProfileImage(currentNft, 50, 50),
@@ -347,6 +349,21 @@ export const AppContent = ({notificationOpenData}) => {
         Platform.OS == 'ios'
           ? TransitionPresets.ModalSlideFromBottomIOS
           : TransitionPresets.ModalTransition,
+    },
+    {
+      name: NAV_NAMES.ForumSetting,
+      component: ForumSettingScreen,
+      options: TransitionPresets.ModalTransition,
+    },
+    {
+      name: NAV_NAMES.SocialSetting,
+      component: SocialSettingScreen,
+      options: TransitionPresets.ModalTransition,
+    },
+    {
+      name: NAV_NAMES.NftProfileEdit,
+      component: NftProfileEditScreen,
+      options: TransitionPresets.ModalTransition,
     },
     {
       name: NAV_NAMES.Transaction,

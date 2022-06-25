@@ -171,7 +171,7 @@ export function useGotoCollectionFeedTagSelect(){
   const navigation = useNavigation()
   const apiGETWithToken = useApiGETWithToken()
   const gotoCollectionFeedTagSelect = (primaryKey, foreignKeyName) => {
-    apiGETWithToken(apis.feed.forum(ForumFeedFilter.Resolved))
+    apiGETWithToken(apis.feed.forum(ForumFeedFilter.Approved))
     navigation.navigate(NAV_NAMES.CollectionFeedTagSelect as never, {primaryKey, foreignKeyName} as never);
   }
   return gotoCollectionFeedTagSelect
@@ -200,6 +200,38 @@ export function useGotoLikeList({likableType, likableId}) {
     } as never)
   };
   return gotoCapsule
+}
+
+export function useGotoForumSetting() {
+  const navigation = useNavigation()
+  const apiGETWithToken = useApiGETWithToken()
+  const gotoForumSetting = () => {
+    apiGETWithToken(
+      apis.forum_setting._(),
+    );
+    navigation.navigate(NAV_NAMES.ForumSetting as never)
+  };
+  return gotoForumSetting
+}
+
+export function useGotoSocialSetting() {
+  const navigation = useNavigation()
+  const apiGETWithToken = useApiGETWithToken()
+  const gotoSocialSetting = () => {
+    apiGETWithToken(
+      apis.social_setting._(),
+    );
+    navigation.navigate(NAV_NAMES.SocialSetting as never)
+  };
+  return gotoSocialSetting
+}
+
+export function useGotoNftProfileEdit() {
+  const navigation = useNavigation()
+  const gotoNftProfileEdit = () => {
+    navigation.navigate(NAV_NAMES.NftProfileEdit as never)
+  };
+  return gotoNftProfileEdit
 }
 
 export function useGotoMyCommunityWalletList() {

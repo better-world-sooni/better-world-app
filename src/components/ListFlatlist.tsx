@@ -35,7 +35,9 @@ export default function ListFlatlist({
         showsVerticalScrollIndicator={false}
         keyExtractor={keyExtractor}
         ListEmptyComponent={
-          <ListEmptyComponent h={DEVICE_HEIGHT - headerHeight * 2} />
+          !refreshing && (
+            <ListEmptyComponent h={DEVICE_HEIGHT - headerHeight * 2} />
+          )
         }
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />

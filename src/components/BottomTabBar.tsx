@@ -62,15 +62,24 @@ const BottomTabBar = ({state, descriptors, navigation}) => {
           itemsCenter
           justifyCenter
           relative
-          >
+          pb10>
           {image}
-          {name === NAV_NAMES.ChatList && options.tabBarBadge > 0 &&
-            <Col relative left={1} auto rounded100 bgDanger px8 py4 justifyCenter>
-              <Span white fontSize={12} medium>
+          {name === NAV_NAMES.ChatList && parseInt(options.tabBarBadge) > 0 && (
+            <Div
+              absolute
+              top={-8}
+              right16
+              auto
+              rounded100
+              bgDanger
+              px8
+              py4
+              justifyCenter>
+              <Span white fontSize={10} medium>
                 {options.tabBarBadge}
               </Span>
-            </Col> 
-          }
+            </Div>
+          )}
         </Div>
       );
     }),
@@ -84,9 +93,8 @@ const BottomTabBar = ({state, descriptors, navigation}) => {
           <HStack
             bg={Colors.white}
             safeAreaBottom
-            height={10}
-            paddingBottom={0}
-          >
+            paddingTop={4}
+            paddingBottom={0}>
             {List}
           </HStack>
         </NativeBaseProvider>

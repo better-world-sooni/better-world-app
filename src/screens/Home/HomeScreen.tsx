@@ -28,7 +28,7 @@ import FocusAwareStatusBar from 'src/components/FocusAwareStatusBar';
 export enum ForumFeedFilter {
   All = 'all',
   Following = 'following',
-  Resolved = 'resolved',
+  Approved = 'approved',
 }
 
 export default function HomeScreen() {
@@ -42,10 +42,8 @@ export default function HomeScreen() {
   const {data: nftCollectionRes, isLoading: nftCollectionLoad} = useApiSelector(
     apis.nft_collection._(),
   );
+  console.log(nftCollectionRes?.filter);
   const nftCollection = nftCollectionRes?.nft_collection;
-  const gotoNewPost = useGotoNewPost({
-    postOwnerType: PostOwnerType.Nft,
-  });
   const reloadGETWithToken = useReloadGETWithToken();
   const paginateGetWithToken = usePaginateGETWithToken();
   const gotoNotifications = useGotoNotification();
@@ -85,8 +83,8 @@ export default function HomeScreen() {
       }),
     },
     {
-      id: ForumFeedFilter.Resolved,
-      title: '완료된 제안',
+      id: ForumFeedFilter.Approved,
+      title: '통과된 제안',
       titleColor: '#46F289',
       image: Platform.select({
         ios: 'checkmark.circle',
@@ -114,10 +112,10 @@ export default function HomeScreen() {
       reloadGETWithToken(apis.feed.forum(ForumFeedFilter.Following));
     }
     if (
-      event == ForumFeedFilter.Resolved &&
-      feedRes?.filter !== ForumFeedFilter.Resolved
+      event == ForumFeedFilter.Approved &&
+      feedRes?.filter !== ForumFeedFilter.Approved
     ) {
-      reloadGETWithToken(apis.feed.forum(ForumFeedFilter.Resolved));
+      reloadGETWithToken(apis.feed.forum(ForumFeedFilter.Approved));
     }
   };
   useFocusReloadWithTimeOut({
