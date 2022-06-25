@@ -50,6 +50,7 @@ import {Platform} from 'react-native';
 import {ConfirmationModalScreen} from 'src/screens/ConfirmationModalScreen';
 import ForumSettingScreen from 'src/screens/ForumSettingScreen';
 import SocialSettingScreen from 'src/screens/SocialSettingScreen';
+import NftProfileEditScreen from 'src/screens/NftProfileEditScreen';
 
 const RootStack = createStackNavigator();
 
@@ -356,6 +357,11 @@ export const AppContent = ({notificationOpenData}) => {
     {
       name: NAV_NAMES.SocialSetting,
       component: SocialSettingScreen,
+      options: TransitionPresets.ModalTransition,
+    },
+    {
+      name: NAV_NAMES.NftProfileEdit,
+      component: NftProfileEditScreen,
       options: TransitionPresets.ModalTransition,
     },
     {

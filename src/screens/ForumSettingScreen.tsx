@@ -60,6 +60,7 @@ export default function ForumSettingScreen() {
     preliminaryTimeoutHasChanged;
 
   const save = () => {
+    if (!isSaveable) return;
     const body = {
       guideline: guideline,
       preliminary_approval_percent: preliminaryApprovalPercent,
@@ -74,31 +75,31 @@ export default function ForumSettingScreen() {
 
   return (
     <>
-      <ScrollView stickyHeaderIndices={[0]} bgWhite>
-        <Div bgWhite px15 h={50} justifyCenter borderBottom={0.5} borderGray200>
-          <Row itemsCenter zIndex={100}>
-            <Col itemsStart onPress={goBack}>
-              <X width={30} height={30} color={Colors.black} strokeWidth={2} />
-            </Col>
-            <Col auto>
-              <Span bold fontSize={19}>
-                포럼 설정
+      <Div bgWhite px15 h={50} justifyCenter borderBottom={0.5} borderGray200>
+        <Row itemsCenter zIndex={100}>
+          <Col itemsStart onPress={goBack}>
+            <X width={30} height={30} color={Colors.black} strokeWidth={2} />
+          </Col>
+          <Col auto>
+            <Span bold fontSize={19}>
+              포럼 설정
+            </Span>
+          </Col>
+          <Col itemsEnd>
+            {isAdmin && (
+              <Span
+                info={isSaveable}
+                gray500={!isSaveable}
+                fontSize={16}
+                onPress={save}
+                bold>
+                저장
               </Span>
-            </Col>
-            <Col itemsEnd>
-              {isAdmin && (
-                <Span
-                  info={isSaveable}
-                  gray500={!isSaveable}
-                  fontSize={16}
-                  onPress={save}
-                  bold>
-                  저장
-                </Span>
-              )}
-            </Col>
-          </Row>
-        </Div>
+            )}
+          </Col>
+        </Row>
+      </Div>
+      <ScrollView bgWhite bounces={false}>
         <Div borderBottom={0.5} borderGray200 py16 px15>
           <Row py4>
             <Span fontSize={19} bold>

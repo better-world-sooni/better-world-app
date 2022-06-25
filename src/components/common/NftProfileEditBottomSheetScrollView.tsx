@@ -19,6 +19,7 @@ import useUploadImage from 'src/hooks/useUploadImage';
 import apis from 'src/modules/apis';
 import {Colors} from 'src/modules/styles';
 import {
+  usePatchPromiseFnWithToken,
   usePutPromiseFnWithToken,
   useReloadGETWithToken,
 } from 'src/redux/asyncReducer';
@@ -58,7 +59,7 @@ export default function NftProfileEditBottomSheetScrollView({nft}) {
     ),
   });
   const reloadGetWithToken = useReloadGETWithToken();
-  const putPromiseFnWithToken = usePutPromiseFnWithToken();
+  const patchPromiseFnWithToken = usePatchPromiseFnWithToken();
   const [pushNotificationEnabled, setPushNotificationEnabled] = useState(
     !nft.is_push_notification_disabled,
   );
@@ -68,7 +69,7 @@ export default function NftProfileEditBottomSheetScrollView({nft}) {
       property: 'is_disabled_globally',
       value: !bool,
     };
-    const {data} = await putPromiseFnWithToken({
+    const {data} = await patchPromiseFnWithToken({
       url: apis.pushNotificationSetting._().url,
       body,
     });

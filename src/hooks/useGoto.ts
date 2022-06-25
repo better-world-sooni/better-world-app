@@ -226,6 +226,14 @@ export function useGotoSocialSetting() {
   return gotoSocialSetting
 }
 
+export function useGotoNftProfileEdit() {
+  const navigation = useNavigation()
+  const gotoNftProfileEdit = () => {
+    navigation.navigate(NAV_NAMES.NftProfileEdit as never)
+  };
+  return gotoNftProfileEdit
+}
+
 export function useGotoMyCommunityWalletList() {
   const navigation = useNavigation()
   const apiGETWithToken = useApiGETWithToken()
