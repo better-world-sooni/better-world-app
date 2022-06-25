@@ -1,5 +1,6 @@
 import {NativeBaseProvider, HStack} from 'native-base';
-import React, {useCallback} from 'react';
+import React, { useState, useEffect, useCallback } from "react";
+import { Keyboard, Text, TextInput, StyleSheet, View } from "react-native";
 import {Div} from 'src/components/common/Div';
 import {Row} from 'src/components/common/Row';
 import {Col} from 'src/components/common/Col';
@@ -9,6 +10,25 @@ import {Colors} from 'src/modules/styles';
 import {openNftList} from 'src/utils/bottomPopupUtils';
 
 const BottomTabBar = ({state, descriptors, navigation}) => {
+  
+
+  const [keyboardStatus, setKeyboardStatus] = useState(false);
+  useEffect(() => {
+    const showSubscription = Keyboard.addListener("keyboardDidShow", () => {
+      setKeyboardStatus(true);
+    });
+    const hideSubscription = Keyboard.addListener("keyboardDidHide", () => {
+      setKeyboardStatus(false);
+    });
+
+    return () => {
+      showSubscription.remove();
+      hideSubscription.remove();
+    };
+  }, []);
+
+
+
   const List = useCallback(
     state.routes.map((route, index) => {
       const {key, name} = route;
@@ -30,6 +50,9 @@ const BottomTabBar = ({state, descriptors, navigation}) => {
       const conditionalProps = changeProfileOnLongPress
         ? {onLongPress: openNftList}
         : {};
+        
+
+
       return (
         <Div
           key={key}
@@ -55,7 +78,7 @@ const BottomTabBar = ({state, descriptors, navigation}) => {
   );
 
   return (
-    <>
+    (!keyboardStatus && <>
       <Row borderTopColor={Colors.gray[200]} borderTopWidth={0.5}>
         <NativeBaseProvider>
           <HStack
@@ -69,6 +92,7 @@ const BottomTabBar = ({state, descriptors, navigation}) => {
         </NativeBaseProvider>
       </Row>
     </>
+    )
   );
 };
 

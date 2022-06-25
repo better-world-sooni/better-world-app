@@ -220,14 +220,10 @@ function ChatRoomScreen({
     }
   }, [chatSocket, page, isLastPage, pageLoading, setPageLoading]);
 
-  useEffect(() => {
-    console.log(isLastPage);
-  }, [isLastPage]);
-
   return (
-    <>
+    <Div flex={1} bgWhite>
       <Div h={notchHeight} bgWhite></Div>
-      <Div bgWhite px15 h={50} justifyCenter borderBottom={0.5} borderGray200>
+      <Div bgWhite px15 h={50} justifyCenter borderBottom={0.5} borderGray200 zIndex={100}>
         <Row itemsCenter>
           <Col justifyStart mr10>
             <Div auto rounded100 onPress={goBack}>
@@ -247,10 +243,7 @@ function ChatRoomScreen({
           <Col />
         </Row>
       </Div>
-      <KeyboardAvoidingView
-        flex={1}
-        bgWhite
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+
         <FlatList
           ref={flatListRef}
           showsVerticalScrollIndicator={false}
@@ -260,7 +253,7 @@ function ChatRoomScreen({
           onEndReachedThreshold={Platform.OS == 'ios' ? 0 : 0.8}
           ListFooterComponent={pageLoading && <ActivityIndicator />}
           data={messages}
-          initialNumToRender={25}
+          initialNumToRender={20}
           keyExtractor={item => item._id.$oid}
           renderItem={({item: message, index}) => {
             const author = (message as any).nft;
@@ -308,9 +301,9 @@ function ChatRoomScreen({
           onPressSend={sendMessage}
           roomLoading={chatRoomLoad}
         />
-      </KeyboardAvoidingView>
+
       <Div h={HAS_NOTCH ? 25 : 0} bgWhite></Div>
-    </>
+    </Div>
   );
 }
 

@@ -63,8 +63,6 @@ const MainBottomTabs = () => {
     (root: RootState) => root.app.unreadChatRoomCount
   )
   
-console.log(unreadChatRoomCount)
-
 
   const profileTabIconProps = {
     uri: getNftProfileImage(currentNft, 50, 50),
@@ -79,6 +77,7 @@ console.log(unreadChatRoomCount)
       screenOptions={{
         lazy: false,
         headerShown: false,
+        tabBarHideOnKeyboard: true,
       }}>
       <Tab.Screen
         name={NAV_NAMES.Social}
