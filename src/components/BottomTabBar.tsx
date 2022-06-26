@@ -9,9 +9,14 @@ import {NAV_NAMES} from 'src/modules/navNames';
 import {Colors} from 'src/modules/styles';
 import {openNftList} from 'src/utils/bottomPopupUtils';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {useSelector} from 'react-redux';
+import {RootState} from 'src/redux/rootReducer';
 
 const BottomTabBar = ({state, descriptors, navigation}) => {
   const [keyboardStatus, setKeyboardStatus] = useState(false);
+  const unreadChatRoomCount = useSelector(
+    (root: RootState) => root.app.unreadChatRoomCount,
+  );
   useEffect(() => {
     const showSubscription = Keyboard.addListener('keyboardDidShow', () => {
       setKeyboardStatus(true);
@@ -62,11 +67,11 @@ const BottomTabBar = ({state, descriptors, navigation}) => {
           pt13
           pb={notchHeight + 15}>
           {image}
-          {name === NAV_NAMES.ChatList && parseInt(options.tabBarBadge) > 0 && (
+          {name == NAV_NAMES.ChatList && unreadChatRoomCount > 0 && (
             <Div
               absolute
-              top={-8}
-              right16
+              top0
+              right10
               auto
               rounded100
               bgDanger
@@ -74,7 +79,7 @@ const BottomTabBar = ({state, descriptors, navigation}) => {
               py4
               justifyCenter>
               <Span white fontSize={10} bold>
-                {options.tabBarBadge}
+                {unreadChatRoomCount}
               </Span>
             </Div>
           )}

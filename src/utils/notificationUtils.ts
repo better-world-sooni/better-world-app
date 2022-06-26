@@ -21,6 +21,7 @@ const onDisplayNotification = async(title, body, data) => {
         vibration: true,
         importance: AndroidImportance.HIGH,
     });
+    if( data.unread_notification_count + data.unread_message_count >= 0) notifee.setBadgeCount(data.unread_notification_count + data.unread_message_count);
     notifee.displayNotification({
         title,
         body,

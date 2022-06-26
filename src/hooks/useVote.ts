@@ -10,13 +10,18 @@ export enum VoteCategory {
     For = 1,
 }
 
-const voteEventId = (postId) => `vote-${postId}`
-const voteableEventId = (postId) => `votable-${postId}`
+export enum VotingStatus {
+    Rejected = 0,
+    Approved = 1,
+    Error = 2,
+}
 
-export default function useVote({initialVote, initialForVotesCount, initialAgainstVotesCount, votingDeadline, postId}) {
+const voteEventId = (postId) => `vote-${postId}`
+const votingStatusEventId = (postId) => `votingStatus-${postId}`
+
+export default function useVote({initialVote, initialForVotesCount, initialAgainstVotesCount, initialVotingStatus, postId}) {
     const [vote, setVote] = useState(initialVote)
-    const [votable, setVotable] = useState(!votingDeadline ||
-        new Date(votingDeadline) > new Date());
+    const [votingStatus, setVotingStatus] = useState(initialVotingStatus);
     const forVoteOffset = initialVote == null && VoteCategory.For == vote ? 1 : 0;
     const againstVoteOffset = initialVote == null && VoteCategory.Against == vote ? 1 : 0;
     
@@ -32,28 +37,31 @@ export default function useVote({initialVote, initialForVotesCount, initialAgain
         }
     }, [initialVote]);
     useEffect(() => {
-        setVotable(!votingDeadline ||
-            new Date(votingDeadline) > new Date());
-        EventRegister.addEventListener(voteableEventId(postId), (votable) => {
-            setVotable(votable)
+        setVotingStatus(initialVotingStatus);
+        EventRegister.addEventListener(votingStatusEventId(postId), (votingStatus) => {
+            setVotingStatus(votingStatus)
         })
         return () => {
-            EventRegister.removeEventListener(voteableEventId(postId));
+            EventRegister.removeEventListener(votingStatusEventId(postId));
         }
-    }, [votingDeadline]);
+    }, [initialVotingStatus]);
     const handlePressVoteFor = () => {
         handlePressVote(VoteCategory.For)
     };
     const handlePressVoteAgainst = () => {
         handlePressVote(VoteCategory.Against)
     };
-    const confirmVote = (voteCategory) => {
+    const confirmVote = async (voteCategory) => {
         smallBump();
-        postPromiseFnWithToken({url: apis.vote.postId(postId).url, body: {
+        const {data} = await postPromiseFnWithToken({url: apis.vote.postId(postId).url, body: {
             category: voteCategory
         }});
-        setVote(voteCategory);
-        EventRegister.emit(voteEventId(postId), voteCategory)
+        if(data.success){
+            EventRegister.emit(voteEventId(postId), voteCategory)
+            EventRegister.emit(votingStatusEventId(postId), data.voting_status)
+        } else {
+            EventRegister.emit(votingStatusEventId(postId), VotingStatus.Error)
+        }
     }
     const handlePressVote = (voteCategory) => {
         if(vote == null){
@@ -61,10 +69,10 @@ export default function useVote({initialVote, initialForVotesCount, initialAgain
         }
     }
     const handleSetVotable = (value) => {
-        EventRegister.emit(voteableEventId(postId), value)
+        EventRegister.emit(votingStatusEventId(postId), value)
     }
     return {
-        votable,
+        votingStatus,
         forVotesCount: initialForVotesCount + forVoteOffset, 
         againstVotesCount: initialAgainstVotesCount + againstVoteOffset,
         hasVotedFor: vote == VoteCategory.For,

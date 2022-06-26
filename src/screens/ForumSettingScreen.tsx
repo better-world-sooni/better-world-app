@@ -28,8 +28,6 @@ export default function ForumSettingScreen() {
   ] = useEdittableText(forumSetting?.final_approval_percent);
   const [finalQuorum, finalQuorumHasChanged, handleChangeFinalQuorum] =
     useEdittableText(forumSetting?.final_quorum_percent);
-  const [finalTimeout, finalTimeoutHasChanged, handleChangeFinalTimeout] =
-    useEdittableText(forumSetting?.final_timeout);
   const [
     preliminaryApprovalPercent,
     preliminaryApprovalPercentHasChanged,
@@ -40,24 +38,16 @@ export default function ForumSettingScreen() {
     preliminaryQuorumHasChanged,
     handleChangePreliminaryQuorum,
   ] = useEdittableText(forumSetting?.preliminary_quorum_percent);
-  const [
-    preliminaryTimeout,
-    preliminaryTimeoutHasChanged,
-    handleChangePreliminaryTimeout,
-  ] = useEdittableText(forumSetting?.preliminary_timeout);
   const placeholder = isLoading ? '불러오는 중' : '설정되지 않았습니다.';
   const percentagePickerOptions = [
     {id: 'percent', label: '%', min: 0, max: 100},
   ];
-  const hourPickerOptions = [{id: 'hour', label: '시간', min: 0, max: 2400}];
   const isSaveable =
     guidelineHasChanged ||
     finalApprovalPercentHasChanged ||
     finalQuorumHasChanged ||
-    finalTimeoutHasChanged ||
     preliminaryApprovalPercentHasChanged ||
-    preliminaryQuorumHasChanged ||
-    preliminaryTimeoutHasChanged;
+    preliminaryQuorumHasChanged;
 
   const save = () => {
     if (!isSaveable) return;
@@ -65,10 +55,8 @@ export default function ForumSettingScreen() {
       guideline: guideline,
       preliminary_approval_percent: preliminaryApprovalPercent,
       preliminary_quorum_percent: preliminaryQuorum,
-      preliminary_timeout: preliminaryTimeout,
       final_approval_percent: finalApprovalPercent,
       final_quorum_percent: finalQuorum,
-      final_timeout: finalTimeout,
     };
     apiPUTWithToken(apis.forum_setting._(), body);
   };
@@ -176,27 +164,6 @@ export default function ForumSettingScreen() {
               />
             </Col>
           </Row>
-          <Row py4 itemsCenter>
-            <Col auto>
-              <Span fontSize={16} gray700 bold>
-                제안 게시후 시간 제한
-              </Span>
-            </Col>
-            <Col auto w100>
-              <NumberPlease
-                digits={hourPickerOptions}
-                itemStyle={{
-                  height: 40,
-                  fontSize: 16,
-                }}
-                values={[{id: 'hour', value: preliminaryTimeout}]}
-                onChange={values => {
-                  if (!isAdmin) return;
-                  handleChangePreliminaryTimeout(values[0].value);
-                }}
-              />
-            </Col>
-          </Row>
         </Div>
         <Div borderBottom={0.5} borderGray200 py16 px15>
           <Row py4 itemsCenter>
@@ -250,27 +217,6 @@ export default function ForumSettingScreen() {
                 onChange={values => {
                   if (!isAdmin) return;
                   handleChangeFinalQuorum(values[0].value);
-                }}
-              />
-            </Col>
-          </Row>
-          <Row py4 itemsCenter>
-            <Col auto>
-              <Span fontSize={16} gray700 bold>
-                제안 게시후 시간 제한
-              </Span>
-            </Col>
-            <Col auto w100>
-              <NumberPlease
-                digits={hourPickerOptions}
-                itemStyle={{
-                  height: 40,
-                  fontSize: 16,
-                }}
-                values={[{id: 'hour', value: finalTimeout}]}
-                onChange={values => {
-                  if (!isAdmin) return;
-                  handleChangeFinalTimeout(values[0].value);
                 }}
               />
             </Col>

@@ -1,5 +1,12 @@
-import {useNavigation, useFocusEffect} from '@react-navigation/core';
-import React, {useCallback, useEffect, useState, useRef, memo, useMemo} from 'react';
+import {useFocusEffect} from '@react-navigation/core';
+import React, {
+  useCallback,
+  useEffect,
+  useState,
+  useRef,
+  memo,
+  useMemo,
+} from 'react';
 import {shallowEqual, useSelector, useDispatch} from 'react-redux';
 import {Col} from 'src/components/common/Col';
 import {Div} from 'src/components/common/Div';
@@ -7,8 +14,12 @@ import {Row} from 'src/components/common/Row';
 import {Span} from 'src/components/common/Span';
 import {Img} from 'src/components/common/Img';
 import apis from 'src/modules/apis';
-import {useApiSelector, asyncActions, getKeyByApi} from 'src/redux/asyncReducer';
-import { appActions } from "src/redux/appReducer";
+import {
+  useApiSelector,
+  asyncActions,
+  getKeyByApi,
+} from 'src/redux/asyncReducer';
+import {appActions} from 'src/redux/appReducer';
 import {RootState} from 'src/redux/rootReducer';
 import {cable} from 'src/modules/cable';
 import {ChatChannel} from 'src/components/ChatChannel';
@@ -38,7 +49,6 @@ function ChatListScreen() {
   const chatRoomsRef = useRef(null);
 
   const dispatch = useDispatch();
-  const {goBack} = useNavigation();
   const gotoChatRoom = useGotoChatRoomFromList();
 
   const currentNftId = {
@@ -59,10 +69,11 @@ function ChatListScreen() {
   useEffect(() => {
     if (chatListRes) {
       setChatRooms(chatListRes.chat_list_data);
-      dispatch(appActions.updateUnreadChatRoomCount({
-        unreadChatRoomCount: chatListRes.total_unread,
-      }));
-
+      dispatch(
+        appActions.updateUnreadChatRoomCount({
+          unreadChatRoomCount: parseInt(chatListRes.total_unread),
+        }),
+      );
     }
   }, [chatListRes]);
 
@@ -107,20 +118,18 @@ function ChatListScreen() {
     const updateList = (room, read) => {
       const index = chatRooms.findIndex(x => x.room_id === room.room_id);
       if (index > -1) {
-        if(!read) {
-          if(chatRooms[index].unread_count == 0) {
-            dispatch(appActions.deltaUnreadChatRoomCount({deltum: 1}))
+        if (!read) {
+          if (chatRooms[index].unread_count == 0) {
+            dispatch(appActions.incrementUnreadChatRoomCount({deltum: 1}));
           }
           room.unread_count = chatRooms[index].unread_count + 1;
-        }
-        else room.unread_count = 0;
+        } else room.unread_count = 0;
         setChatRooms(prev => [room, ...prev.filter((_, i) => i != index)]);
       } else {
-        if(!read) {
+        if (!read) {
           room.unread_count = 1;
-          dispatch(appActions.deltaUnreadChatRoomCount({deltum: 1}));
-        }
-        else room.unread_count = 0;
+          dispatch(appActions.incrementUnreadChatRoomCount({deltum: 1}));
+        } else room.unread_count = 0;
         setChatRooms(prev => [room, ...prev]);
       }
     };
@@ -131,7 +140,7 @@ function ChatListScreen() {
   const readCountRefresh = useCallback(
     roomId => {
       const index = chatRooms.findIndex(x => x.room_id === roomId);
-      if(chatRooms[index].unread_count > 0) {
+      if (chatRooms[index].unread_count > 0) {
         const room = Object.assign({}, chatRooms[index]);
         room.unread_count = 0;
         setChatRooms(prev => [
@@ -139,7 +148,7 @@ function ChatListScreen() {
           room,
           ...prev.slice(index + 1),
         ]);
-        dispatch(appActions.deltaUnreadChatRoomCount({deltum: -1}))
+        dispatch(appActions.incrementUnreadChatRoomCount({deltum: -1}));
       }
     },
     [chatRooms, setChatRooms],
@@ -188,25 +197,25 @@ function ChatListScreen() {
   );
 }
 
-
-const ChatRoomItemMemo = memo(ChatRoomItem)
+const ChatRoomItemMemo = memo(ChatRoomItem);
 function ChatRoomItem({onPress, room}) {
   const roomId = room.room_id;
   const updatedAt = room.updated_at;
   const roomName = room.room_name;
   const unreadMessageCount = room.unread_count;
-  const text = unreadMessageCount > 0 ? `새 메세지 ${unreadMessageCount}개` : room.last_message;
+  const text =
+    unreadMessageCount > 0
+      ? `새 메세지 ${unreadMessageCount}개`
+      : room.last_message;
   const roomImage = room.room_image;
-  const imgUri = useMemo(()=> resizeImageUri(room.room_image, 200, 200), [roomImage])
+  const imgUri = useMemo(
+    () => resizeImageUri(room.room_image, 200, 200),
+    [roomImage],
+  );
 
   return (
     <Div px15>
-      <Row
-        bgWhite
-        onPress={() => onPress()}
-        py5
-        cursorPointer
-        itemsCenter>
+      <Row bgWhite onPress={() => onPress()} py5 cursorPointer itemsCenter>
         <Col auto relative mr10>
           <Div rounded100 overflowHidden h50>
             <Img uri={imgUri} w50 h50></Img>
@@ -215,7 +224,7 @@ function ChatRoomItem({onPress, room}) {
         <Col pl5>
           <Row itemsCenter>
             <Col auto mr10>
-              <Span fontSize={15} medium>
+              <Span fontSize={15} bold>
                 {roomName}
               </Span>
             </Col>
@@ -227,17 +236,24 @@ function ChatRoomItem({onPress, room}) {
           </Row>
           <Row w={'100%'} pt2>
             <Col pr10>
-              <Div >
-                {text && <TruncatedText spanProps={{...(unreadMessageCount > 0 && {bold: true})}} text={text} maxLength={30} />}
+              <Div>
+                {text && (
+                  <TruncatedText
+                    spanProps={{...(unreadMessageCount > 0 && {bold: true})}}
+                    text={text}
+                    maxLength={30}
+                  />
+                )}
               </Div>
             </Col>
           </Row>
         </Col>
-        {unreadMessageCount > 0 && <Col auto rounded100 bgInfo p4 justifyCenter />}
+        {unreadMessageCount > 0 && (
+          <Col auto rounded100 bgInfo p4 justifyCenter />
+        )}
       </Row>
     </Div>
   );
 }
-
 
 export default ChatListScreen;

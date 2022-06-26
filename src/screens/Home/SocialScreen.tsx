@@ -22,7 +22,9 @@ import SideMenu from 'react-native-side-menu-updated';
 import MyNftCollectionMenu from 'src/components/common/MyNftCollectionMenu';
 import {DEVICE_WIDTH} from 'src/modules/styles';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
-import FocusAwareStatusBar from 'src/components/FocusAwareStatusBar';
+import {useUpdateUnreadNotificationCount} from 'src/redux/appReducer';
+import {useSelector} from 'react-redux';
+import {RootState} from 'src/redux/rootReducer';
 
 enum SocialFeedFilter {
   All = 'all',
@@ -88,10 +90,11 @@ export default function SocialScreen() {
       reloadGETWithToken(apis.feed.social(SocialFeedFilter.Following));
     }
   };
+  const updateUnreadNotificationCount = useUpdateUnreadNotificationCount();
   const handleRefresh = () => {
     if (feedLoading) return;
     reloadGETWithToken(apis.feed.social(feedRes?.filter));
-    reloadGETWithToken(apis.feed.count());
+    updateUnreadNotificationCount();
     reloadGETWithToken(apis.nft_collection._());
   };
   const handleEndReached = () => {
@@ -105,9 +108,13 @@ export default function SocialScreen() {
   };
   useFocusReloadWithTimeOut({
     reloadUriObject: apis.feed.social(feedRes?.filter),
-    cacheTimeoutInSeconds: 120,
+    cacheTimeoutInSeconds: 300,
     onStart: scrollToTop,
   });
+  const unreadNotificationCount = useSelector(
+    (root: RootState) => root.app.unreadNotificationCount,
+  );
+
   return (
     <SideMenu
       ref={sideMenuRef}
@@ -166,13 +173,29 @@ export default function SocialScreen() {
               </MenuView>
             </Col>
             <Col itemsEnd>
-              <Div onPress={() => gotoNotifications()}>
+              <Div onPress={() => gotoNotifications()} relative>
                 <Bell
                   strokeWidth={2}
                   color={Colors.black}
                   height={22}
                   width={22}
                 />
+                {unreadNotificationCount > 0 && (
+                  <Div
+                    absolute
+                    top={-10}
+                    right={-10}
+                    auto
+                    rounded100
+                    bgDanger
+                    px8
+                    py4
+                    justifyCenter>
+                    <Span white fontSize={10} bold>
+                      {unreadNotificationCount}
+                    </Span>
+                  </Div>
+                )}
               </Div>
             </Col>
           </Row>

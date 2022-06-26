@@ -1,6 +1,7 @@
 import React, {memo, useState} from 'react';
 import {ActivityIndicator, Platform} from 'react-native';
 import {
+  AlertTriangle,
   Check,
   Heart,
   MessageCircle,
@@ -8,6 +9,7 @@ import {
   Repeat,
   ThumbsDown,
   ThumbsUp,
+  X,
   Zap,
 } from 'react-native-feather';
 import {Colors} from 'src/modules/styles';
@@ -44,7 +46,7 @@ import {
   usePutPromiseFnWithToken,
 } from 'src/redux/asyncReducer';
 import {ReportTypes} from 'src/screens/ReportScreen';
-import useVote, {VoteCategory} from 'src/hooks/useVote';
+import useVote, {VoteCategory, VotingStatus} from 'src/hooks/useVote';
 import {LikeListType} from 'src/screens/LikeListScreen';
 import {DEVICE_WIDTH} from 'src/modules/styles';
 import {PostOwnerType, PostType} from 'src/screens/NewPostScreen';
@@ -54,12 +56,11 @@ import CollectionEvent from './CollectionEvent';
 import {getAdjustedHeightFromDimensions} from 'src/utils/imageUtils';
 import RepostedTransaction from './RepostedTransaction';
 import {ICONS} from 'src/modules/icons';
+import useDelete from 'src/hooks/useDelete';
 
 export enum PostEventTypes {
   Delete = 'DELETE',
   Report = 'REPORT',
-  SetVotingDeadline = 'SET_VOTING_DEADLINE',
-  SetWinningProposal = 'SET_WINNING_PROPOSAL',
 }
 
 function PostContent({
@@ -68,8 +69,6 @@ function PostContent({
   displayLabel = false,
   full = false,
 }) {
-  const [deleted, setDeleted] = useState(false);
-  const [loading, setLoading] = useState(false);
   const [liked, likesCount, handlePressLike] = useLike(
     post.is_liked,
     post.likes_count,
@@ -77,7 +76,7 @@ function PostContent({
     post.id,
   );
   const {
-    votable,
+    votingStatus,
     forVotesCount,
     againstVotesCount,
     hasVotedFor,
@@ -90,13 +89,14 @@ function PostContent({
     initialForVotesCount: post.for_votes_count,
     initialAgainstVotesCount: post.against_votes_count,
     postId: post.id,
-    votingDeadline: post.voting_deadline,
+    initialVotingStatus: post.voting_status,
   });
   const isCurrentNft = useIsCurrentNft(post.nft);
   const isCurrentCollection = useIsCurrentCollection(post.nft);
   const isAdmin = useIsAdmin(post.nft);
-  const deletePromiseFnWithToken = useDeletePromiseFnWithToken();
-  const putPromiseFnWithToken = usePutPromiseFnWithToken();
+  const {loading, deleted, deleteObject} = useDelete({
+    url: apis.post.postId._(post.id).url,
+  });
   const menuOptions = [
     {
       id: PostEventTypes.Report,
@@ -115,35 +115,6 @@ function PostContent({
         android: 'ic_menu_delete',
       }),
     },
-    isAdmin &&
-      post.type == 'Proposal' &&
-      post.reposted_post && {
-        id: PostEventTypes.SetWinningProposal,
-        title: '이 제안을 해당 포럼에 참조',
-        image: Platform.select({
-          ios: 'checkmark',
-          android: 'ic_menu_agenda',
-        }),
-      },
-    isAdmin &&
-      post.type == 'Proposal' &&
-      !post.reposted_post && {
-        id: PostEventTypes.SetVotingDeadline,
-        title: '투표 마무리',
-        image: Platform.select({
-          ios: 'checkmark',
-          android: 'ic_menu_agenda',
-        }),
-      },
-    isAdmin &&
-      post.type == 'Forum' && {
-        id: PostEventTypes.SetVotingDeadline,
-        title: '포럼 마무리',
-        image: Platform.select({
-          ios: 'checkmark',
-          android: 'ic_menu_agenda',
-        }),
-      },
   ].filter(option => option);
 
   const actionIconDefaultProps = {
@@ -194,41 +165,15 @@ function PostContent({
       gotoNftCollectionProfile();
     }
   };
-  const deletePost = async () => {
-    setLoading(true);
-    const {data} = await deletePromiseFnWithToken({
-      url: apis.post.postId._(post.id).url,
-    });
-    setLoading(false);
-    if (data.success) {
-      setDeleted(true);
-    }
-  };
 
   const gotoReport = useGotoReport({
     id: post.id,
     reportType: ReportTypes.Post,
   });
 
-  const setVotingDeadline = async () => {
-    setLoading(true);
-    const {data} = await putPromiseFnWithToken({
-      url: apis.post.postId._(post.id).url,
-      body: {
-        property: 'voting_deadline',
-        value: new Date(),
-      },
-    });
-    setLoading(false);
-    if (data.success) {
-      handleSetVotable(false);
-    }
-  };
-
   const handlePressMenu = ({nativeEvent: {event}}) => {
-    if (event == PostEventTypes.Delete) deletePost();
+    if (event == PostEventTypes.Delete) deleteObject();
     if (event == PostEventTypes.Report) gotoReport();
-    if (event == PostEventTypes.SetVotingDeadline) setVotingDeadline();
   };
 
   const gotoLikeList = useGotoLikeList({
@@ -442,7 +387,7 @@ function PostContent({
                     </Span>
                   </Col>
                   <Col />
-                  {isCurrentCollection && votable && (
+                  {isCurrentCollection && !votingStatus && (
                     <>
                       <Col auto pr12 onPress={handlePressVoteAgainst}>
                         {<ThumbsDown {...againstVoteProps}></ThumbsDown>}
@@ -459,7 +404,7 @@ function PostContent({
                   <Repeat {...actionIconDefaultProps} />
                 </Col>
               )}
-              {!votable && (
+              {votingStatus == VotingStatus.Approved ? (
                 <>
                   <Col auto rounded100 p2 bgSuccess mr4>
                     <Check
@@ -471,12 +416,46 @@ function PostContent({
                   </Col>
                   <Col auto>
                     <Span bold fontSize={12}>
-                      완료됨
+                      통과됨
                     </Span>
                   </Col>
                 </>
+              ) : votingStatus == VotingStatus.Rejected ? (
+                <>
+                  <Col auto>
+                    <X
+                      strokeWidth={2}
+                      height={22}
+                      width={22}
+                      color={Colors.danger.DEFAULT}
+                    />
+                  </Col>
+                  <Col auto>
+                    <Span bold fontSize={12}>
+                      거절됨
+                    </Span>
+                  </Col>
+                </>
+              ) : (
+                votingStatus == VotingStatus.Error && (
+                  <>
+                    <Col auto>
+                      <AlertTriangle
+                        strokeWidth={2}
+                        height={22}
+                        width={22}
+                        color={Colors.warning.DEFAULT}
+                      />
+                    </Col>
+                    <Col auto>
+                      <Span bold fontSize={12}>
+                        리로드 필요
+                      </Span>
+                    </Col>
+                  </>
+                )
               )}
-              {post.type !== 'Forum' && votable && !full && (
+              {!votingStatus && !full && (
                 <Col auto onPress={() => gotoPost(true)}>
                   <MessageCircle {...actionIconDefaultProps} />
                 </Col>

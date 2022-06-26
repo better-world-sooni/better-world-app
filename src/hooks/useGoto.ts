@@ -1,7 +1,8 @@
 import { CommonActions, useNavigation } from "@react-navigation/native";
-import { shallowEqual, useSelector } from "react-redux";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import apis from "src/modules/apis";
 import { NAV_NAMES } from "src/modules/navNames";
+import { appActions } from "src/redux/appReducer";
 import { useApiGETWithToken, useApiPOSTWithToken, useApiGET, useReloadGETWithToken } from "src/redux/asyncReducer";
 import { RootState } from "src/redux/rootReducer";
 import { ChatRoomEnterType } from "src/screens/ChatRoomScreen";
@@ -356,10 +357,12 @@ export function useGotoScan({scanType}){
 export function useGotoNotification() {
   const navigation = useNavigation()
   const apiGETWithToken = useApiGETWithToken()
+  const dispatch = useDispatch()
   const useGotoNotification = () => {
     apiGETWithToken(
       apis.notification.list._()
     );
+    dispatch(appActions.updateUnreadNotificationCount(0))
     navigation.navigate(NAV_NAMES.Notification as never)
   };
   return useGotoNotification

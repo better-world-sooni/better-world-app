@@ -21,6 +21,8 @@ import {navigationRef, onMessageReceived} from 'src/utils/notificationUtils';
 const App = () => {
   const {
     isLoggedIn,
+    unreadNotificationCount,
+    unreadChatRoomCount,
     session: {token},
   } = useSelector((root: RootState) => root.app, shallowEqual);
   const firebaseMessaging = messaging();
@@ -88,6 +90,11 @@ const App = () => {
       return unsubscribe;
     }
   }, [isLoggedIn]);
+
+  useEffect(() => {
+    if (unreadChatRoomCount + unreadNotificationCount >= 0)
+      notifee.setBadgeCount(unreadChatRoomCount + unreadNotificationCount);
+  }, [unreadChatRoomCount, unreadNotificationCount]);
 
   if (loading) {
     return null;

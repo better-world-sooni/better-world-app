@@ -8,7 +8,6 @@ import {isEmpty, omitBy, isNil} from 'lodash'
 const BASE_URL = 'https://api.betterworldapp.io';
 
 const toUrl = (...args) => ({url: urljoin(...args)});
-const base = path => toUrl(BASE_URL, path);
 const apiV1 = path => toUrl(BASE_URL, '/api/v1', path);
 
 export const urlParams = (obj, nullable?) => {

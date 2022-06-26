@@ -10,16 +10,19 @@ import {
   useApiGETWithToken,
   useApiPOSTWithToken,
   useApiPUTWithToken,
+  useReloadGETWithToken,
 } from 'src/redux/asyncReducer';
+import notifee from '@notifee/react-native';
 
 const usePreloadData = () => {
   const apiGETAsync = useApiGETAsync();
+  const updateUnreadNotificationCount = useUpdateUnreadNotificationCount();
   return async (jwt) => {
     await Promise.all([
       apiGETAsync(apis.profile._(), jwt),
       apiGETAsync(apis.nft._(), jwt),
       apiGETAsync(apis.post.list._(), jwt),
-      apiGETAsync(apis.feed.count(), jwt),
+      updateUnreadNotificationCount(jwt),
       apiGETAsync(apis.feed.forum(), jwt),
       apiGETAsync(apis.feed.social(), jwt),
       apiGETAsync(apis.rank.list(), jwt),
@@ -144,27 +147,26 @@ export const useAutoLogin = () => {
   };
 };
 
-export const useUpdateUnreadMessageCount = () => {
+export const useUpdateUnreadNotificationCount = () => {
   const dispatch = useDispatch();
-  const apiGETWithToken = useApiGETWithToken();
-  return (successHandler?, errHandler?) => {
-    apiGETWithToken(
-      apis.notification.list.unreadCount(),
-      props => {
-        dispatch(async () => {
-          const payload = {
-            unreadCount: props.data.unread_count
-          };
-          dispatch(appActions.updateUnreadCount(payload));
-          if (successHandler) {
-            await successHandler(props);
-          }
-        });
-      },
-      async props => {
-        await errHandler(props);
-      },
-    );
+  const reloadGETWithToken = useReloadGETWithToken();
+  const apiGET = useApiGETAsync()
+  return (jwt = null) => {
+    if(!jwt) {
+      reloadGETWithToken(apis.feed.count(), ({data}) => {
+        const payload = {
+          unreadNotificationCount: data.unread_notification_count,
+        };
+        dispatch(appActions.updateUnreadNotificationCount(payload));
+      });
+      return;
+    }
+    apiGET(apis.feed.count(), jwt, ({data}) => {
+      const payload = {
+        unreadNotificationCount: data.unread_notification_count,
+      };
+      dispatch(appActions.updateUnreadNotificationCount(payload));
+    });
   };
 };
 
@@ -226,15 +228,15 @@ const appSlice = createSlice({
       state.session.currentNft = null;
       state.session.token = null;
     },
-    updateUnreadCount(state, action) {
-      const { unreadCount } = action.payload;
-      state.unreadNotificationCount = unreadCount;
+    updateUnreadNotificationCount(state, action) {
+      const { unreadNotificationCount } = action.payload;
+      state.unreadNotificationCount = unreadNotificationCount;
     },
     updateUnreadChatRoomCount(state, action) {
       const { unreadChatRoomCount } = action.payload;
       state.unreadChatRoomCount = unreadChatRoomCount;
     },
-    deltaUnreadChatRoomCount(state, action) {
+    incrementUnreadChatRoomCount(state, action) {
       const { deltum } = action.payload;
       state.unreadChatRoomCount += deltum;
     },

@@ -1,6 +1,6 @@
 import React, {useRef} from 'react';
 import {Row} from 'src/components/common/Row';
-import {Bell, ChevronDown, Zap} from 'react-native-feather';
+import {Bell, ChevronDown} from 'react-native-feather';
 import apis from 'src/modules/apis';
 import {
   useApiSelector,
@@ -10,20 +10,21 @@ import {
 import Post from 'src/components/common/Post';
 import {Img} from 'src/components/common/Img';
 import {DEVICE_WIDTH} from 'src/modules/styles';
-import {useGotoNewPost, useGotoNotification} from 'src/hooks/useGoto';
+import {useGotoNotification} from 'src/hooks/useGoto';
 import SideMenu from 'react-native-side-menu-updated';
 import MyNftCollectionMenu from '../../components/common/MyNftCollectionMenu';
 import FeedFlatlist, {EnableAddType} from 'src/components/FeedFlatlist';
-import {Platform, StatusBar} from 'react-native';
+import {Platform} from 'react-native';
 import {useScrollToTop} from '@react-navigation/native';
 import {Span} from 'src/components/common/Span';
 import {Col} from 'src/components/common/Col';
 import {Div} from 'src/components/common/Div';
 import {Colors} from 'src/modules/styles';
 import {MenuView} from '@react-native-menu/menu';
-import {PostOwnerType, PostType} from '../NewPostScreen';
 import useFocusReloadWithTimeOut from 'src/hooks/useFocusReloadWithTimeout';
-import FocusAwareStatusBar from 'src/components/FocusAwareStatusBar';
+import {useUpdateUnreadNotificationCount} from 'src/redux/appReducer';
+import {useSelector} from 'react-redux';
+import {RootState} from 'src/redux/rootReducer';
 
 export enum ForumFeedFilter {
   All = 'all',
@@ -42,15 +43,15 @@ export default function HomeScreen() {
   const {data: nftCollectionRes, isLoading: nftCollectionLoad} = useApiSelector(
     apis.nft_collection._(),
   );
-  console.log(nftCollectionRes?.filter);
   const nftCollection = nftCollectionRes?.nft_collection;
   const reloadGETWithToken = useReloadGETWithToken();
   const paginateGetWithToken = usePaginateGETWithToken();
   const gotoNotifications = useGotoNotification();
+  const updateUnreadNotificationCount = useUpdateUnreadNotificationCount();
   const handleRefresh = () => {
     if (feedLoading) return;
     reloadGETWithToken(apis.feed.forum(feedRes?.filter));
-    reloadGETWithToken(apis.feed.count());
+    updateUnreadNotificationCount();
     reloadGETWithToken(apis.nft_collection._());
   };
   const handleEndReached = () => {
@@ -120,9 +121,12 @@ export default function HomeScreen() {
   };
   useFocusReloadWithTimeOut({
     reloadUriObject: apis.feed.forum(feedRes?.filter),
-    cacheTimeoutInSeconds: 120,
+    cacheTimeoutInSeconds: 300,
     onStart: scrollToTop,
   });
+  const unreadNotificationCount = useSelector(
+    (root: RootState) => root.app.unreadNotificationCount,
+  );
 
   return (
     <SideMenu
@@ -183,13 +187,29 @@ export default function HomeScreen() {
               </MenuView>
             </Col>
             <Col itemsEnd>
-              <Div onPress={() => gotoNotifications()}>
+              <Div onPress={() => gotoNotifications()} relative>
                 <Bell
                   strokeWidth={2}
                   color={Colors.black}
                   height={22}
                   width={22}
                 />
+                {unreadNotificationCount > 0 && (
+                  <Div
+                    absolute
+                    top={-10}
+                    right={-10}
+                    auto
+                    rounded100
+                    bgDanger
+                    py4
+                    px8
+                    justifyCenter>
+                    <Span white fontSize={10} bold>
+                      {unreadNotificationCount}
+                    </Span>
+                  </Div>
+                )}
               </Div>
             </Col>
           </Row>
