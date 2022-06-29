@@ -8,7 +8,7 @@ import {getNftProfileImage} from 'src/utils/nftUtils';
 import {ICONS} from 'src/modules/icons';
 import apis from 'src/modules/apis';
 import {Colors} from 'src/modules/styles';
-import {Home, Search, Send, User} from 'react-native-feather';
+import {Home, Search, Send, User, ShoppingCart} from 'react-native-feather';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createStackNavigator, TransitionPresets} from '@react-navigation/stack';
@@ -24,7 +24,7 @@ import OtherProfileScreen from 'src/screens/OtherProfileScreen';
 import NftCollectionScreen from 'src/screens/NftCollectionScreen';
 import NewPostScreen from 'src/screens/NewPostScreen';
 import ReportScreen from 'src/screens/ReportScreen';
-import SearchScreen from 'src/screens/Home/SearchScreen';
+import SearchScreen from 'src/screens/SearchScreen';
 import ChatListScreen from 'src/screens/Home/ChatListScreen';
 import LikeListScreen from 'src/screens/LikeListScreen';
 import FollowListScreen from 'src/screens/FollowListScreen';
@@ -46,6 +46,7 @@ import CommunityWalletProfileScreen from 'src/screens/CommunityWalletProfileScre
 import NewCommunityWalletScreen from 'src/screens/NewCommunityWalletScreen';
 import CollectionFeedTagSelectScreen from 'src/screens/CollectionFeedTagSelectScreen';
 import TransactionScreen from 'src/screens/TransactionScreen';
+import StoreScreen from 'src/screens/Home/StoreScreen';
 import {Platform} from 'react-native';
 import {ConfirmationModalScreen} from 'src/screens/ConfirmationModalScreen';
 import ForumSettingScreen from 'src/screens/ForumSettingScreen';
@@ -104,15 +105,15 @@ const MainBottomTabs = () => {
         }}
       />
       <Tab.Screen
-        name={NAV_NAMES.Search}
-        component={SearchScreen}
+        name={NAV_NAMES.Store}
+        component={StoreScreen}
         options={{
           tabBarIcon: ({focused}) => (
-            <Search
+            <ShoppingCart
               width={22}
               height={22}
               strokeWidth={2}
-              color={focused ? Colors.black : Colors.gray.DEFAULT}></Search>
+              color={focused ? Colors.black : Colors.gray.DEFAULT}></ShoppingCart>
           ),
         }}
       />
@@ -308,6 +309,10 @@ export const AppContent = ({notificationOpenData}) => {
           : TransitionPresets.ModalTransition,
     },
     {
+      name: NAV_NAMES.Search,
+      component: SearchScreen,
+    },
+    {
       name: NAV_NAMES.ChatRoom,
       component: ChatRoomScreen,
     },
@@ -370,6 +375,10 @@ export const AppContent = ({notificationOpenData}) => {
       name: NAV_NAMES.Transaction,
       component: TransactionScreen,
     },
+    {
+      name: NAV_NAMES.Store,
+      component: StoreScreen,
+    }
   ];
 
   return (

@@ -16,8 +16,9 @@ import {
   useGotoNewCommunityWallet,
   useGotoNftCollectionProfile,
   useGotoSocialSetting,
+  useGotoSearch
 } from 'src/hooks/useGoto';
-import {Calendar, CreditCard, Home, Settings} from 'react-native-feather';
+import {Calendar, CreditCard, Home, Settings, Search} from 'react-native-feather';
 import {useApiSelector} from 'src/redux/asyncReducer';
 import apis from 'src/modules/apis';
 import {getSiPrefixedNumber} from 'src/utils/numberUtils';
@@ -45,6 +46,7 @@ const MyNftCollectionMenu = ({nftCollection}) => {
   const gotoCollectionEventList = useGotoMyCollectionEventList();
   const gotoNewCollectionEvent = useGotoNewCollectionEvent();
   const gotoNewCommunityWallet = useGotoNewCommunityWallet();
+  const gotoSearch = useGotoSearch();
   const gotoForumSetting = useGotoForumSetting();
   const gotoSocialSetting = useGotoSocialSetting();
   const notchHeight = HAS_NOTCH ? 44 : 0;
@@ -198,6 +200,19 @@ const MyNftCollectionMenu = ({nftCollection}) => {
             </Col>
             <Col>
               <Span fontSize={16}>게시물 피드 설정</Span>
+            </Col>
+          </Row>
+          <Row itemsCenter py16 onPress={gotoSearch}>
+            <Col auto mr16>
+              <Search
+                strokeWidth={2}
+                color={Colors.black}
+                height={22}
+                width={22}
+              />
+            </Col>
+            <Col>
+              <Span fontSize={16}>커뮤니티 멤버 검색</Span>
             </Col>
           </Row>
           <Row itemsCenter py16 onPress={gotoForumSetting}>

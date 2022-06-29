@@ -3,7 +3,7 @@ import {Div} from 'src/components/common/Div';
 import {FlatList, RefreshControl} from 'react-native';
 import {Row} from 'src/components/common/Row';
 import {Col} from 'src/components/common/Col';
-import {Search} from 'react-native-feather';
+import {Search, ChevronLeft} from 'react-native-feather';
 import apis from 'src/modules/apis';
 import {
   useApiSelector,
@@ -16,7 +16,7 @@ import useEdittableText from 'src/hooks/useEdittableText';
 import RankedOwner from 'src/components/RankOwner';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import ListEmptyComponent from 'src/components/common/ListEmptyComponent';
-import FocusAwareStatusBar from 'src/components/FocusAwareStatusBar';
+import {useNavigation} from '@react-navigation/native';
 
 const SearchScreen = () => {
   const searchRef = useRef(null);
@@ -29,6 +29,7 @@ const SearchScreen = () => {
   } = useApiSelector(apis.rank.list);
   const reloadGetWithToken = useReloadGETWithToken();
   const paginateGetWithToken = usePaginateGETWithToken();
+  const {goBack} = useNavigation();
   const handleRefresh = () => {
     if (rankLoad) return;
     reloadGetWithToken(apis.rank.list(text));
@@ -54,6 +55,14 @@ const SearchScreen = () => {
       <Div h={notchHeight}></Div>
       <Div bgWhite px15 h={50} justifyCenter borderBottom={0.5} borderGray200>
         <Row itemsCenter py5 h40>
+          <Div auto rounded100 onPress={goBack}>
+            <ChevronLeft
+              width={30}
+              height={30}
+              color={Colors.black}
+              strokeWidth={2}
+            />
+          </Div>
           <Col mr10>
             <TextInput
               innerRef={searchRef}

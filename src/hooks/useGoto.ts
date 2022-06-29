@@ -381,6 +381,16 @@ export function useGotoHome() {
   return gotoHome
 }
 
+export function useGotoSearch() {
+  const navigation = useNavigation()
+  const reloadGETWithToken = useReloadGETWithToken()
+  const gotoSearch = () => {
+    reloadGETWithToken(apis.rank.list());
+    navigation.navigate(NAV_NAMES.Search as never)
+  }
+  return gotoSearch
+}
+
 export function useGotoOnboarding() {
   const navigation = useNavigation()
   const gotoOnboarding = () => {

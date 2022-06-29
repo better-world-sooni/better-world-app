@@ -42,5 +42,6 @@ export const NAV_NAMES = {
     Affinity: "Affinity",
     Scan: "Scan",
     Qr: "Qr",
+    Store: "Store",
 };
 
