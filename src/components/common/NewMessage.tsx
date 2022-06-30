@@ -14,6 +14,7 @@ export default function NewMessage({
   onTextChange,
   onPressSend,
   roomLoading,
+  ready
 }) {
   return (
     <Div
@@ -38,7 +39,7 @@ export default function NewMessage({
               flex
               justifyCenter
               pl10
-              onPress={!roomLoading && text && onPressSend}>
+              onPress={!roomLoading && ready && text && onPressSend}>
               <Span medium fontSize={14} primary={text} gray400={!text}>
                 전송
               </Span>
