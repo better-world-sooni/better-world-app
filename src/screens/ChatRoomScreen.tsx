@@ -65,7 +65,7 @@ function ChatRoomScreen({
   const [chatSocket, setChatSocket] = useState(null);
   const [enterNfts, setEnterNfts] = useState([]);
   const [connectRoomId, setConnectRoomId] = useState(
-    chatRoomRes ? chatRoomRes.room_id : null,
+    roomId ? roomId : (chatRoomRes ? chatRoomRes.room_id : null)
   );
   const [messages, setMessages] = useState(
     chatRoomRes ? chatRoomRes.init_messages : [],
@@ -74,6 +74,7 @@ function ChatRoomScreen({
   const [isLastPage, setIsLastPage] = useState(false);
   const [text, setText] = useState('');
   const [pageLoading, setPageLoading] = useState(false);
+  const readCountUpdateRef = useRef(null);
   const flatListRef = useRef(null);
   const {goBack} = useNavigation();
 
@@ -90,6 +91,10 @@ function ChatRoomScreen({
             ...res.update_msgs,
             ...prevMsgs.slice(updateMsgLength),
           ]);
+          if (currentNftId.contract_address != res.enter_nft.contract_address || 
+            currentNftId.token_id != res.enter_nft.token_id) {
+              readCountUpdateRef.current(res.enter_nft);
+          }
         });
         channel.on('nextPageMessage', res => {
           const msgs_length = res.messages.length;
@@ -136,6 +141,23 @@ function ChatRoomScreen({
       setPage(chatRoomRes.init_page);
     }
   }, [chatRoomRes]);
+
+  useEffect(() => {
+    const readCountUpdate = (enterNft) => {
+      const updateMsgs = [];
+      for(let i = 0; messages[i].read_nft_ids.length != 2; i++) {
+        const updatedMsg = Object.assign({}, messages[i])
+        updatedMsg.read_nft_ids.push(enterNft)
+        updateMsgs.push(updatedMsg)
+      }
+      const index = updateMsgs.length
+      setMessages(prevMsgs => [
+        ...updateMsgs,
+        ...prevMsgs.slice(index),
+      ]);
+    };
+    readCountUpdateRef.current = readCountUpdate;
+  }, [messages, setMessages])
 
   const handleTextChange = useCallback(text => {
     setText(text);
