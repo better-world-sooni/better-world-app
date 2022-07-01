@@ -1,7 +1,7 @@
 import apis from "src/modules/apis";
 import { NAV_NAMES } from "src/modules/navNames";
 import { useApiGETWithToken } from "src/redux/asyncReducer";
-import { notificationNavigate } from "src/utils/notificationUtils";
+import {navigationRef, notificationNavigate} from 'src/utils/notificationUtils';
 
 export function useGotoWithNotification() {
     const apiGETWithToken = useApiGETWithToken()
@@ -43,6 +43,12 @@ export function useGotoWithNotification() {
             );
             notificationNavigate(NAV_NAMES.OtherProfile, {nft})
         }
+        // else if(event === 'chat') {
+        //     console.log(navigationRef.getCurrentRoute())
+        //     if(['ChatList', 'ChatRoom'].includes(navigationRef.getCurrentRoute().name) ) {
+        //         console.log
+        //     }
+        // }
     }
     return gotoWithNotification
 }   

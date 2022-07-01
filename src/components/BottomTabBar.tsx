@@ -73,8 +73,8 @@ const BottomTabBar = ({state, descriptors, navigation}) => {
               absolute
               w17
               h17
-              top5
-              right10
+              top0
+              right0
               auto
               rounded100
               bgDanger
