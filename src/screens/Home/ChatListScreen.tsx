@@ -71,7 +71,7 @@ function ChatListScreen() {
       setChatRooms(chatListRes.chat_list_data);
       dispatch(
         appActions.updateUnreadChatRoomCount({
-          unreadChatRoomCount: parseInt(chatListRes.total_unread),
+          unreadChatRoomCount: chatListRes.total_unread,
         }),
       );
     }
@@ -90,6 +90,11 @@ function ChatListScreen() {
       setChatSocket(channel);
       channel.on('fetchList', res => {
         setChatRooms(res.data.list_data);
+        dispatch(
+          appActions.updateUnreadChatRoomCount({
+            unreadChatRoomCount: res.data.total_unread,
+          }),
+        );
       });
       channel.on('messageList', res => {
         updateListRef.current(res.room, res.read);

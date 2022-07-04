@@ -1,4 +1,4 @@
-import notifee, { AndroidImportance } from '@notifee/react-native';
+import notifee, { AndroidImportance, AndroidStyle  } from '@notifee/react-native';
 import { createNavigationContainerRef } from '@react-navigation/native';
 import {BETTER_WORLD_MAIN_PUSH_CHANNEL} from 'src/modules/constants';
 
@@ -24,28 +24,45 @@ const onDisplayNotification = async(title, body, data) => {
     if( data.unread_notification_count + data.unread_message_count >= 0) {
         notifee.setBadgeCount(data.unread_notification_count + data.unread_message_count);
     } 
+    console.log(title, body, data)
     console.log(navigationRef.getCurrentRoute()) 
     if (data.event === 'chat') {
-        notifee.displayNotification({
-            title,
-            body: "GOMZ #4: Hi There!",
-            android: {
-                channelId,
-                timestamp: Date.now(),
-                showTimestamp: true,
-                pressAction: {
-                    id: 'default',
+        if(navigationRef.getCurrentRoute().name != 'ChatList' || 
+        (navigationRef.getCurrentRoute().name === 'ChatRoom' && 
+            (navigationRef.getCurrentRoute().params["opponentNft"].token_id != data.token_id ||
+            navigationRef.getCurrentRoute().params["opponentNft"].contract_address != data.contract_address)
+        )) {
+            notifee.displayNotification({
+                id: data.room_id,
+                title,
+                body: `${data.name || data.meta_name}: ${body}`,
+                android: {
+                    channelId,
+                    style: {
+                        type: AndroidStyle.MESSAGING,
+                        person: {
+                            name: data.name || data.meta_name,
+                            icon: data.image_uri || data.meta_image_uri,
+                        },
+                        messages: [{
+                            text: body,
+                            timestamp: Date.parse(data.timestamp),
+                        }],
+                    },
+                    timestamp: Date.parse(data.timestamp),
+                    showTimestamp: true,
+                    pressAction: {
+                        id: 'default',
+                    }
                 },
-                largeIcon: 'https://d6d3sarhyklmq.cloudfront.net/nft/image/0xe5e47d1540d136777c0b4e0865f467987c3d6513/1.png'
-            },
-            data
-        });
+                data
+            });
+        }
     }
     else {
         notifee.displayNotification({
             title,
-            subtitle: "hihi",
-            body: "GOMZ #4: Hi There!",
+            body,
             android: {
                 channelId,
                 timestamp: Date.now(),
@@ -53,21 +70,9 @@ const onDisplayNotification = async(title, body, data) => {
                 pressAction: {
                     id: 'default',
                 },
-                largeIcon: 'https://d6d3sarhyklmq.cloudfront.net/nft/image/0xe5e47d1540d136777c0b4e0865f467987c3d6513/1.png'
             },
             data
         });
-        // notifee.displayNotification({
-        //     title,
-        //     body,
-        //     android: {
-        //         channelId,
-        //         pressAction: {
-        //             id: 'default',
-        //         },
-        //     },
-        //     data
-        // });
     }
 }
 export async function onMessageReceived(message) {
