@@ -13,10 +13,11 @@ import {useSelector} from 'react-redux';
 import {RootState} from 'src/redux/rootReducer';
 
 const BottomTabBar = ({state, descriptors, navigation}) => {
-  const [keyboardStatus, setKeyboardStatus] = useState(false);
   const unreadChatRoomCount = useSelector(
     (root: RootState) => root.app.unreadChatRoomCount,
   );
+  const [keyboardStatus, setKeyboardStatus] = useState(false);
+
   useEffect(() => {
     const showSubscription = Keyboard.addListener('keyboardDidShow', () => {
       setKeyboardStatus(true);
@@ -70,13 +71,14 @@ const BottomTabBar = ({state, descriptors, navigation}) => {
           {name == NAV_NAMES.ChatList && unreadChatRoomCount > 0 && (
             <Div
               absolute
-              top0
+              w17
+              h17
+              top5
               right10
               auto
               rounded100
               bgDanger
-              px8
-              py4
+              itemsCenter
               justifyCenter>
               <Span white fontSize={10} bold>
                 {unreadChatRoomCount}
@@ -86,7 +88,7 @@ const BottomTabBar = ({state, descriptors, navigation}) => {
         </Div>
       );
     }),
-    [state, descriptors, navigation],
+    [state, descriptors, navigation, unreadChatRoomCount],
   );
 
   return (

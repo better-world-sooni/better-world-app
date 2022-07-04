@@ -18,6 +18,7 @@ type EnteringMessage = {
   type: 'enter';
   entered_nfts: Array<NftId>;
   update_msgs: Array<object>;
+  enter_nft: NftId;
 };
 
 type LeavingMessage = {

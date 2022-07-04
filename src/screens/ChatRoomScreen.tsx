@@ -65,7 +65,7 @@ function ChatRoomScreen({
   const [chatSocket, setChatSocket] = useState(null);
   const [enterNfts, setEnterNfts] = useState([]);
   const [connectRoomId, setConnectRoomId] = useState(
-    chatRoomRes ? chatRoomRes.room_id : null,
+    roomId ? roomId : (chatRoomRes ? chatRoomRes.room_id : null)
   );
   const [messages, setMessages] = useState(
     chatRoomRes ? chatRoomRes.init_messages : [],
@@ -74,6 +74,8 @@ function ChatRoomScreen({
   const [isLastPage, setIsLastPage] = useState(false);
   const [text, setText] = useState('');
   const [pageLoading, setPageLoading] = useState(false);
+  const [chatReady, setChatReady] = useState(false);
+  const readCountUpdateRef = useRef(null);
   const flatListRef = useRef(null);
   const {goBack} = useNavigation();
 
@@ -85,11 +87,15 @@ function ChatRoomScreen({
         setChatSocket(channel);
         channel.on('enter', res => {
           setEnterNfts(res.entered_nfts);
-          const updateMsgLength = res.update_msgs.length;
-          setMessages(prevMsgs => [
-            ...res.update_msgs,
-            ...prevMsgs.slice(updateMsgLength),
-          ]);
+          setChatReady(true)
+          if (currentNftId.token_id != res.enter_nft.token_id || 
+            currentNftId.contract_address != res.enter_nft.contract_address) {
+              const updateMsgLength = res.update_msgs.length;
+              setMessages(prevMsgs => [
+                ...res.update_msgs,
+                ...prevMsgs.slice(updateMsgLength),
+              ]);
+          }
         });
         channel.on('nextPageMessage', res => {
           const msgs_length = res.messages.length;
@@ -112,8 +118,8 @@ function ChatRoomScreen({
           setEnterNfts(prevNfts => [
             ...prevNfts.filter(
               nft =>
-                nft.contract_address != res.leave_nft.contract_address ||
-                nft.token_id != res.leave_nft.token_id,
+              nft.token_id != res.leave_nft.token_id ||
+              nft.contract_address != res.leave_nft.contract_address,
             ),
           ]);
         });
@@ -311,6 +317,7 @@ function ChatRoomScreen({
           onTextChange={handleTextChange}
           onPressSend={sendMessage}
           roomLoading={chatRoomLoad}
+          ready={chatReady}
         />
       </KeyboardAvoidingView>
       <Div h={notchBottom} bgWhite></Div>
