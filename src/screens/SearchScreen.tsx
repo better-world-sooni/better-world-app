@@ -53,7 +53,7 @@ const SearchScreen = () => {
   return (
     <Div flex={1} bgWhite>
       <Div h={notchHeight}></Div>
-      <Div bgWhite px15 h={50} justifyCenter borderBottom={0.5} borderGray200>
+      <Div bgWhite px8 h={50} justifyCenter borderBottom={0.5} borderGray200>
         <Row itemsCenter py5 h40>
           <Div auto rounded100 onPress={goBack}>
             <ChevronLeft
@@ -79,7 +79,7 @@ const SearchScreen = () => {
               onChangeText={handleChangeQuery}
             />
           </Col>
-          <Col auto rounded100 onPress={onPressSearch}>
+          <Col auto rounded100 onPress={onPressSearch} pr7>
             <Search
               strokeWidth={2}
               color={Colors.black}

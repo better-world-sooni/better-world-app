@@ -1,42 +1,45 @@
-import {useFocusEffect} from '@react-navigation/core';
-import React, {
-  useCallback,
-  useEffect,
-  useState,
-  useRef,
-  memo,
-  useMemo,
-} from 'react';
-import {shallowEqual, useSelector, useDispatch} from 'react-redux';
-import {Col} from 'src/components/common/Col';
-import {Div} from 'src/components/common/Div';
-import {Row} from 'src/components/common/Row';
-import {Span} from 'src/components/common/Span';
-import {Img} from 'src/components/common/Img';
+import React from 'react';
 import apis from 'src/modules/apis';
 import {
   useApiSelector,
-  asyncActions,
-  getKeyByApi,
+  usePaginateGETWithToken,
+  useReloadGETWithToken,
 } from 'src/redux/asyncReducer';
-import {appActions} from 'src/redux/appReducer';
-import {RootState} from 'src/redux/rootReducer';
-import {cable} from 'src/modules/cable';
-import {ChatChannel} from 'src/components/ChatChannel';
-import TruncatedText from 'src/components/common/TruncatedText';
-import {DEVICE_HEIGHT} from 'src/modules/styles';
-import {createdAtText} from 'src/utils/timeUtils';
-import {useGotoChatRoomFromList} from 'src/hooks/useGoto';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import {resizeImageUri} from 'src/utils/uriUtils';
-import ListEmptyComponent from 'src/components/common/ListEmptyComponent';
-import {FlatList} from 'react-native';
+import Post from 'src/components/common/Post';
+import ListFlatlist from 'src/components/ListFlatlist';
 
-function StoreScreen() {
-    return (
-        <Span>
-            {"hj"}
-        </Span>
-    )
+export default function StoreScreen() {
+  const {
+    data: proposalListRes,
+    isLoading: proposalListLoading,
+    isPaginating: repostListPaginating,
+    page,
+    isNotPaginatable,
+  } = useApiSelector(apis.post.postId.repost.list.proposal);
+  const reloadGetWithToken = useReloadGETWithToken();
+  const paginateGetWithToken = usePaginateGETWithToken();
+  const handleEndReached = () => {
+    if (repostListPaginating || isNotPaginatable) return;
+    paginateGetWithToken(
+      apis.nft_collection.merchandise.list(page + 1),
+      'merchandises',
+    );
+  };
+  const handleRefresh = () => {
+    reloadGetWithToken(apis.nft_collection.merchandise.list());
+  };
+  return (
+    <ListFlatlist
+      onRefresh={handleRefresh}
+      data={proposalListRes ? proposalListRes.proposals : []}
+      refreshing={proposalListLoading}
+      onEndReached={handleEndReached}
+      isPaginating={repostListPaginating}
+      enableBack={false}
+      title={'드랍스 & 스토어'}
+      renderItem={({item}) => {
+        return <Post key={(item as any).id} post={item} />;
+      }}
+    />
+  );
 }
-export default StoreScreen

@@ -113,6 +113,19 @@ const MyNftCollectionMenu = ({nftCollection}) => {
               <Col />
             </Row>
           </Div>
+          <Row itemsCenter py16 onPress={gotoSearch}>
+            <Col auto mr16>
+              <Search
+                strokeWidth={2}
+                color={Colors.black}
+                height={22}
+                width={22}
+              />
+            </Col>
+            <Col>
+              <Span fontSize={16}>커뮤니티 멤버 검색</Span>
+            </Col>
+          </Row>
           {communityWalletCount ? (
             <Row itemsCenter py16 onPress={gotoCommunityWalletList}>
               <Col auto mr16>
@@ -200,19 +213,6 @@ const MyNftCollectionMenu = ({nftCollection}) => {
             </Col>
             <Col>
               <Span fontSize={16}>게시물 피드 설정</Span>
-            </Col>
-          </Row>
-          <Row itemsCenter py16 onPress={gotoSearch}>
-            <Col auto mr16>
-              <Search
-                strokeWidth={2}
-                color={Colors.black}
-                height={22}
-                width={22}
-              />
-            </Col>
-            <Col>
-              <Span fontSize={16}>커뮤니티 멤버 검색</Span>
             </Col>
           </Row>
           <Row itemsCenter py16 onPress={gotoForumSetting}>
