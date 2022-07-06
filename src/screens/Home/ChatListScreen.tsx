@@ -26,7 +26,7 @@ import {ChatChannel} from 'src/components/ChatChannel';
 import TruncatedText from 'src/components/common/TruncatedText';
 import {DEVICE_HEIGHT} from 'src/modules/styles';
 import {createdAtText} from 'src/utils/timeUtils';
-import {useGotoChatRoomWithRoomId} from 'src/hooks/useGoto';
+import {useGotoChatRoomFromList} from 'src/hooks/useGoto';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {resizeImageUri} from 'src/utils/uriUtils';
 import ListEmptyComponent from 'src/components/common/ListEmptyComponent';
@@ -50,7 +50,7 @@ function ChatListScreen() {
   const chatRoomsRef = useRef(null);
 
   const dispatch = useDispatch();
-  const gotoChatRoom = useGotoChatRoomWithRoomId();
+  const gotoChatRoom = useGotoChatRoomFromList();
 
   const currentNftId = {
     token_id: currentNft.token_id,
@@ -66,15 +66,6 @@ function ChatListScreen() {
     last_message: string;
     updated_at: string;
   };
-
-  useEffect(() => {
-    const listener = EventRegister.addEventListener('roomUnreadCountUpdate', (roomId) => {
-      readCountRefresh(roomId)
-    })
-    return () => {
-      if(typeof(listener) === 'string') EventRegister.removeEventListener(listener)
-    }
-  }, []);
 
   useEffect(() => {
     if (chatListRes) {
@@ -130,6 +121,9 @@ function ChatListScreen() {
   }, [currentNft]);
 
   useEffect(() => {
+    const listener = EventRegister.addEventListener('roomUnreadCountUpdate', (roomId) => {
+      readCountRefresh(roomId)
+    });
     const updateList = (room, read) => {
       const index = chatRooms.findIndex(x => x.room_id === room.room_id);
       if (index > -1) {
@@ -150,24 +144,25 @@ function ChatListScreen() {
     };
     updateListRef.current = updateList;
     chatRoomsRef.current = chatRooms;
+
+    return () => {
+      if(typeof(listener) === 'string') EventRegister.removeEventListener(listener)
+    }
   }, [chatRooms, chatSocket]);
 
-  const readCountRefresh = useCallback(
-    roomId => {
-      const index = chatRooms.findIndex(x => x.room_id === roomId);
-      if (chatRooms[index].unread_count > 0) {
-        const room = Object.assign({}, chatRooms[index]);
-        room.unread_count = 0;
-        setChatRooms(prev => [
-          ...prev.slice(0, index),
-          room,
-          ...prev.slice(index + 1),
-        ]);
-        dispatch(appActions.incrementUnreadChatRoomCount({deltum: -1}));
-      }
-    },
-    [chatRooms, setChatRooms],
-  );
+  const readCountRefresh = useCallback(roomId => {
+    const index = chatRooms.findIndex(x => x.room_id === roomId);
+    if (chatRooms[index].unread_count > 0) {
+      const room = Object.assign({}, chatRooms[index]);
+      room.unread_count = 0;
+      setChatRooms(prev => [
+        ...prev.slice(0, index),
+        room,
+        ...prev.slice(index + 1),
+      ]);
+      dispatch(appActions.incrementUnreadChatRoomCount({deltum: -1}));
+    }
+  }, [chatRooms]);
 
   const notchHeight = useSafeAreaInsets().top;
   const headerHeight = notchHeight + 50;
@@ -218,10 +213,12 @@ function ChatRoomItem({onPress, room}) {
   const updatedAt = room.updated_at;
   const roomName = room.room_name;
   const unreadMessageCount = room.unread_count;
-  const text =
-    unreadMessageCount > 0
-      ? `새 메세지 ${unreadMessageCount}개`
-      : room.last_message;
+  // const text =
+  //   unreadMessageCount > 0
+  //     ? `새 메세지 ${unreadMessageCount}개`
+  //     : room.last_message;
+  const text = room.last_message;
+  
   const roomImage = room.room_image;
   const imgUri = useMemo(
     () => resizeImageUri(room.room_image, 200, 200),

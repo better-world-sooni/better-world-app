@@ -16,7 +16,7 @@ import {Heart, MessageCircle} from 'react-native-feather';
 import apis from 'src/modules/apis';
 import {useApiPOSTWithToken, useApiSelector} from 'src/redux/asyncReducer';
 import {
-  useGotoChatRoomWithoutRoomId,
+  useGotoChatRoomFromProfile,
   useGotoFollowList,
   useGotoNftCollectionProfile,
   useGotoNftProfile,
@@ -104,7 +104,7 @@ export function NftProfileSummary({nft, token = null}) {
   const gotoNftCollectionProfile = useGotoNftCollectionProfile({
     nftCollection: nft,
   });
-  const gotoChatRoom = useGotoChatRoomWithoutRoomId();
+  const gotoChatRoom = useGotoChatRoomFromProfile();
   const gotoFollowList = useGotoFollowList({
     followOwnerType: FollowOwnerType.Nft,
     contractAddress: nft.contract_address,

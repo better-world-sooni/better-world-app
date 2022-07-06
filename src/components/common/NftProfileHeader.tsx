@@ -4,7 +4,7 @@ import {Colors} from 'src/modules/styles';
 import useFollow from 'src/hooks/useFollow';
 import {
   useGotoFollowList,
-  useGotoChatRoomWithoutRoomId,
+  useGotoChatRoomFromProfile,
   useGotoNftCollectionProfile,
   useGotoQR,
   useGotoScan,
@@ -40,7 +40,7 @@ export default function NftProfileHeader({nftCore, nft, isCurrentNft, qrScan}) {
   });
   const gotoQr = useGotoQR();
   const gotoScan = useGotoScan({scanType: ScanType.Nft});
-  const gotoChatRoom = useGotoChatRoomWithoutRoomId();
+  const gotoChatRoom = useGotoChatRoomFromProfile();
   const gotoNftProfileEdit = useGotoNftProfileEdit();
   return (
     <>

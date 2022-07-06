@@ -80,10 +80,10 @@ export function useGotoChatList(){
   return gotoChatList
 }
 
-export function useGotoChatRoomWithRoomId() {
+export function useGotoChatRoomFromList() {
   const navigation = useNavigation()
   const apiGETWithToken = useApiGETWithToken()
-  const gotoChatRoomWithRoomId = (roomId, roomName, roomImage, opponentNft) => {
+  const gotoChatRoomFromList = (roomId, roomName, roomImage, opponentNft) => {
     apiGETWithToken(
       apis.chat.chatRoom.roomId(roomId),
     );
@@ -92,16 +92,16 @@ export function useGotoChatRoomWithRoomId() {
       roomName,
       roomImage,
       opponentNft,
-      chatRoomEnterType: ChatRoomEnterType.WithId,
+      chatRoomEnterType: ChatRoomEnterType.List,
     } as never);
   };
-  return gotoChatRoomWithRoomId
+  return gotoChatRoomFromList
 }
 
-export function useGotoChatRoomWithoutRoomId() {
+export function useGotoChatRoomFromProfile() {
   const navigation = useNavigation()
   const apiPOSTWithToken = useApiPOSTWithToken()
-  const gotoChatRoomWithoutRoomId = (roomName, roomImage, contractAddress, tokenId)  => {
+  const gotoChatRoomFromProfile = (roomName, roomImage, contractAddress, tokenId)  => {
     apiPOSTWithToken(
       apis.chat.chatRoom.contractAddressAndTokenId(
         contractAddress,
@@ -115,10 +115,10 @@ export function useGotoChatRoomWithoutRoomId() {
         contract_address: contractAddress,
         token_id: tokenId
       },
-      chatRoomEnterType: ChatRoomEnterType.WithoutId
+      chatRoomEnterType: ChatRoomEnterType.Profile
     } as never);
   }
-  return gotoChatRoomWithoutRoomId
+  return gotoChatRoomFromProfile
 }
 
 export function useGotoNftCollectionProfile({nftCollection}){

@@ -24,8 +24,9 @@ import {HAS_NOTCH} from 'src/modules/constants';
 import { EventRegister } from 'react-native-event-listeners'
 
 export enum ChatRoomEnterType {
-  WithId,
-  WithoutId,
+  List,
+  Profile,
+  Notification
 }
 
 function ChatRoomScreen({
@@ -38,12 +39,12 @@ function ChatRoomScreen({
     shallowEqual,
   );
   const {data: chatRoomRes, isLoading: chatRoomLoad} = useApiSelector(
-    chatRoomEnterType == ChatRoomEnterType.WithId
-      ? apis.chat.chatRoom.roomId(roomId)
-      : apis.chat.chatRoom.contractAddressAndTokenId(
-          opponentNft.contract_address,
-          opponentNft.token_id,
-        ),
+    chatRoomEnterType == ChatRoomEnterType.Profile
+      ? apis.chat.chatRoom.contractAddressAndTokenId(
+        opponentNft.contract_address,
+        opponentNft.token_id,
+      )
+      : apis.chat.chatRoom.roomId(roomId) 
   );
   const currentNftId = {
     token_id: currentNft.token_id,
@@ -81,7 +82,6 @@ function ChatRoomScreen({
   const {goBack} = useNavigation();
 
   useEffect(() => {
-    console.log("roomId")
     if (connectRoomId) {
       const channel = new ChatChannel({roomId: connectRoomId});
       const wsConnect = async () => {
@@ -142,7 +142,7 @@ function ChatRoomScreen({
       setMessages(chatRoomRes.init_messages);
       setConnectRoomId(chatRoomRes.room_id);
       setPage(chatRoomRes.init_page);
-      if(chatRoomEnterType == ChatRoomEnterType.WithoutId) {
+      if(chatRoomEnterType !== ChatRoomEnterType.List) {
         EventRegister.emit('roomUnreadCountUpdate', chatRoomRes.room_id)
       }
     }
@@ -241,7 +241,7 @@ function ChatRoomScreen({
         zIndex={100}>
         <Row itemsCenter>
           <Col justifyStart mr10>
-            <Div auto rounded100 onPress={goBack}>
+            <Div auto rounded100 onPress={chatReady && goBack}>
               <ChevronLeft
                 width={30}
                 height={30}
