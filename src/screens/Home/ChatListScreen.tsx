@@ -213,12 +213,10 @@ function ChatRoomItem({onPress, room}) {
   const updatedAt = room.updated_at;
   const roomName = room.room_name;
   const unreadMessageCount = room.unread_count;
-  // const text =
-  //   unreadMessageCount > 0
-  //     ? `새 메세지 ${unreadMessageCount}개`
-  //     : room.last_message;
-  const text = room.last_message;
-  
+  const text =
+    unreadMessageCount > 0
+      ? `새 메세지 ${unreadMessageCount}개`
+      : room.last_message;
   const roomImage = room.room_image;
   const imgUri = useMemo(
     () => resizeImageUri(room.room_image, 200, 200),
