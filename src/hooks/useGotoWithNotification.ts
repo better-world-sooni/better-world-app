@@ -10,6 +10,7 @@ export function useGotoWithNotification() {
             event, 
             post_id,
             comment_id,
+            room_id,
             contract_address,
             token_id,
             name,
@@ -43,12 +44,11 @@ export function useGotoWithNotification() {
             );
             notificationNavigate(NAV_NAMES.OtherProfile, {nft})
         }
-        // else if(event === 'chat') {
-        //     console.log(navigationRef.getCurrentRoute())
-        //     if(['ChatList', 'ChatRoom'].includes(navigationRef.getCurrentRoute().name) ) {
-        //         console.log
-        //     }
-        // }
+        else if(event === 'chat') {
+            // notificationNavigate(NAV_NAMES.ChatList)
+            console.log(navigationRef.getRootState().routes)
+            // const newRoutes = [...navigationRef.getRootState().routes, {name: NAV_NAMES.ChatRoom, params: {nft}}];
+        }
     }
     return gotoWithNotification
 }   

@@ -26,11 +26,12 @@ import {ChatChannel} from 'src/components/ChatChannel';
 import TruncatedText from 'src/components/common/TruncatedText';
 import {DEVICE_HEIGHT} from 'src/modules/styles';
 import {createdAtText} from 'src/utils/timeUtils';
-import {useGotoChatRoomFromList} from 'src/hooks/useGoto';
+import {useGotoChatRoomWithRoomId} from 'src/hooks/useGoto';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {resizeImageUri} from 'src/utils/uriUtils';
 import ListEmptyComponent from 'src/components/common/ListEmptyComponent';
 import {FlatList} from 'react-native';
+import { EventRegister } from 'react-native-event-listeners'
 
 function ChatListScreen() {
   const {currentNft, token} = useSelector(
@@ -49,7 +50,7 @@ function ChatListScreen() {
   const chatRoomsRef = useRef(null);
 
   const dispatch = useDispatch();
-  const gotoChatRoom = useGotoChatRoomFromList();
+  const gotoChatRoom = useGotoChatRoomWithRoomId();
 
   const currentNftId = {
     token_id: currentNft.token_id,
@@ -65,6 +66,15 @@ function ChatListScreen() {
     last_message: string;
     updated_at: string;
   };
+
+  useEffect(() => {
+    const listener = EventRegister.addEventListener('roomUnreadCountUpdate', (roomId) => {
+      readCountRefresh(roomId)
+    })
+    return () => {
+      if(typeof(listener) === 'string') EventRegister.removeEventListener(listener)
+    }
+  }, []);
 
   useEffect(() => {
     if (chatListRes) {

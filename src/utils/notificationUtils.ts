@@ -4,7 +4,7 @@ import {BETTER_WORLD_MAIN_PUSH_CHANNEL} from 'src/modules/constants';
 
 export const navigationRef = createNavigationContainerRef()
 
-export function notificationNavigate(name, params) {
+export function notificationNavigate(name, params?) {
     if (navigationRef.isReady()) {
         navigationRef.navigate(name as never, params as never);
     } 
@@ -24,8 +24,6 @@ const onDisplayNotification = async(title, body, data) => {
     if( data.unread_notification_count + data.unread_message_count >= 0) {
         notifee.setBadgeCount(data.unread_notification_count + data.unread_message_count);
     } 
-    console.log(title, body, data)
-    console.log(navigationRef.getCurrentRoute()) 
     if (data.event === 'chat') {
         if(navigationRef.getCurrentRoute().name != 'ChatList' || 
         (navigationRef.getCurrentRoute().name === 'ChatRoom' && 

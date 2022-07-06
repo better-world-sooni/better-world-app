@@ -21,10 +21,11 @@ import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {getNftProfileImage, getNftName} from 'src/utils/nftUtils';
 import {resizeImageUri} from 'src/utils/uriUtils';
 import {HAS_NOTCH} from 'src/modules/constants';
+import { EventRegister } from 'react-native-event-listeners'
 
 export enum ChatRoomEnterType {
-  List,
-  Profile,
+  WithId,
+  WithoutId,
 }
 
 function ChatRoomScreen({
@@ -37,7 +38,7 @@ function ChatRoomScreen({
     shallowEqual,
   );
   const {data: chatRoomRes, isLoading: chatRoomLoad} = useApiSelector(
-    chatRoomEnterType == ChatRoomEnterType.List
+    chatRoomEnterType == ChatRoomEnterType.WithId
       ? apis.chat.chatRoom.roomId(roomId)
       : apis.chat.chatRoom.contractAddressAndTokenId(
           opponentNft.contract_address,
@@ -80,6 +81,7 @@ function ChatRoomScreen({
   const {goBack} = useNavigation();
 
   useEffect(() => {
+    console.log("roomId")
     if (connectRoomId) {
       const channel = new ChatChannel({roomId: connectRoomId});
       const wsConnect = async () => {
@@ -140,6 +142,9 @@ function ChatRoomScreen({
       setMessages(chatRoomRes.init_messages);
       setConnectRoomId(chatRoomRes.room_id);
       setPage(chatRoomRes.init_page);
+      if(chatRoomEnterType == ChatRoomEnterType.WithoutId) {
+        EventRegister.emit('roomUnreadCountUpdate', chatRoomRes.room_id)
+      }
     }
   }, [chatRoomRes]);
 
@@ -183,10 +188,6 @@ function ChatRoomScreen({
     text,
     enterNfts,
   ]);
-
-  const scrollToEnd = useCallback(() => {
-    flatListRef?.current?.scrollToEnd({animated: false});
-  }, [flatListRef]);
 
   const notchHeight = useSafeAreaInsets().top;
   const headerHeight = notchHeight + 50;
