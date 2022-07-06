@@ -14,3 +14,10 @@ export const getSiPrefixedNumber = (number: number): string => {
   const baseNumber = parseFloat((number / Math.pow(10, siBase * EXP_STEP_SIZE)).toFixed(2));
   return `${baseNumber}${prefix}`;
 };
+
+export const getCommaSeparatedNumber = (number: number) => {
+  if(!number) return ''
+  return number
+  .toString()
+  .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ',')
+}

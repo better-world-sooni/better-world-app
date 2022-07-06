@@ -13,26 +13,32 @@ export default function DefaultMarkdown(props) {
         heading1: {
           fontSize: 19,
           marginBottom: 5,
+          fontWeight: '500',
         },
         heading2: {
           fontSize: 18,
           marginBottom: 5,
+          fontWeight: '500',
         },
         heading3: {
           fontSize: 17,
           marginBottom: 5,
+          fontWeight: '500',
         },
         heading4: {
           fontSize: 16,
           marginBottom: 5,
+          fontWeight: '500',
         },
         heading5: {
           fontSize: 15,
           marginBottom: 5,
+          fontWeight: '500',
         },
         heading6: {
           fontSize: 14,
           marginBottom: 5,
+          fontWeight: '500',
         },
       }}
       {...props}

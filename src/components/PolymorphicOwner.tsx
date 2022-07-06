@@ -69,24 +69,23 @@ export default function PolymorphicOwner({
           </Div>
         )}
       </Col>
-
       {showPrivilege && isAdmin && !isCurrentNft && (
         <Col
           auto
-          bgInfo={!privilege}
+          bgAdmin={!privilege}
           px8
           py6
           rounded100
           mx5
           border={privilege && 0.5}
-          borderDanger={privilege}
+          borderAdminSoft={privilege}
           onPress={handlePressPrivilege}>
-          <Span white={!privilege} danger={privilege} bold px5>
+          <Span white={!privilege} adminSoft={privilege} bold px5>
             {!privilege ? '권한 부여' : '권한 취소'}
           </Span>
         </Col>
       )}
-      {!isCurrentNft && (
+      {!isCurrentNft && nft.token_id && (
         <Col
           auto
           bgBlack={!following}

@@ -43,5 +43,10 @@ export const NAV_NAMES = {
     Scan: "Scan",
     Qr: "Qr",
     Store: "Store",
+    StoreSetting: "StoreSetting",
+    NewMerchandise: "NewMerchandise",
+    Merchandise: "Merchandise",
+    NewCoupon: "NewCoupon",
+    MerchandiseSelect: "MerchandiseSelect",
 };
 

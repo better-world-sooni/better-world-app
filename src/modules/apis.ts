@@ -132,6 +132,16 @@ const apis = {
   rank:{
     list: (keyword?, page?) => apiV1(`/rank/list${urlParams({page, keyword})}`)
   },
+  merchandise: {
+    _: () => apiV1(`/merchandise`),
+    merchandiseId: (merchandiseId) => apiV1(`/merchandise/${merchandiseId}`),
+  },
+  order: {
+    _: () => apiV1(`/order`),
+  },
+  coupon: {
+    list: () => apiV1(`/coupon/list`),
+  },
   post: {
     _: () => apiV1(`/post`),
     postId: {

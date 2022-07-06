@@ -1,16 +1,13 @@
-import React, {useCallback, useEffect, useState, useRef, memo, useMemo} from 'react';
+import React from 'react';
 import {shallowEqual, useSelector} from 'react-redux';
 import {RootState} from 'src/redux/rootReducer';
-import {useApiSelector} from 'src/redux/asyncReducer';
 import {Img} from 'src/components/common/Img';
 import BottomTabBar from 'src/components/BottomTabBar';
 import {getNftProfileImage} from 'src/utils/nftUtils';
 import {ICONS} from 'src/modules/icons';
-import apis from 'src/modules/apis';
 import {Colors} from 'src/modules/styles';
-import {Home, Search, Send, User, ShoppingCart} from 'react-native-feather';
+import {Home, Send, User, ShoppingBag} from 'react-native-feather';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createStackNavigator, TransitionPresets} from '@react-navigation/stack';
 import {NAV_NAMES} from 'src/modules/navNames';
 import HomeScreen from 'src/screens/Home/HomeScreen';
@@ -48,11 +45,16 @@ import CollectionFeedTagSelectScreen from 'src/screens/CollectionFeedTagSelectSc
 import TransactionScreen from 'src/screens/TransactionScreen';
 import StoreScreen from 'src/screens/Home/StoreScreen';
 import {Platform} from 'react-native';
-import {ConfirmationModalScreen} from 'src/screens/ConfirmationModalScreen';
+import ConfirmationModalScreen from 'src/screens/ConfirmationModalScreen';
 import ForumSettingScreen from 'src/screens/ForumSettingScreen';
 import SocialSettingScreen from 'src/screens/SocialSettingScreen';
 import NftProfileEditScreen from 'src/screens/NftProfileEditScreen';
 import NftCollectionProfileEditScreen from 'src/screens/NftCollectionProfileEditScreen';
+import StoreSettingScreen from 'src/screens/StoreSettingScreen';
+import NewMerchandiseScreen from 'src/screens/NewMerchandiseScreen';
+import MerchandiseScreen from 'src/screens/MerchandiseScreen';
+import NewCouponScreen from 'src/screens/NewCouponScreen';
+import MerchandiseSelectScreen from 'src/screens/MerchandiseSelectScreen';
 
 const RootStack = createStackNavigator();
 
@@ -109,11 +111,13 @@ const MainBottomTabs = () => {
         component={StoreScreen}
         options={{
           tabBarIcon: ({focused}) => (
-            <ShoppingCart
+            <ShoppingBag
               width={22}
               height={22}
               strokeWidth={2}
-              color={focused ? Colors.black : Colors.gray.DEFAULT}></ShoppingCart>
+              color={
+                focused ? Colors.black : Colors.gray.DEFAULT
+              }></ShoppingBag>
           ),
         }}
       />
@@ -372,13 +376,34 @@ export const AppContent = ({notificationOpenData}) => {
       options: TransitionPresets.ModalTransition,
     },
     {
+      name: NAV_NAMES.MerchandiseSelect,
+      component: MerchandiseSelectScreen,
+      options: TransitionPresets.ModalTransition,
+    },
+    {
       name: NAV_NAMES.Transaction,
       component: TransactionScreen,
     },
     {
       name: NAV_NAMES.Store,
       component: StoreScreen,
-    }
+    },
+    {
+      name: NAV_NAMES.StoreSetting,
+      component: StoreSettingScreen,
+    },
+    {
+      name: NAV_NAMES.NewMerchandise,
+      component: NewMerchandiseScreen,
+    },
+    {
+      name: NAV_NAMES.Merchandise,
+      component: MerchandiseScreen,
+    },
+    {
+      name: NAV_NAMES.NewCoupon,
+      component: NewCouponScreen,
+    },
   ];
 
   return (

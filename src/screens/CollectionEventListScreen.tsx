@@ -50,7 +50,7 @@ export default function CollectionEventListScreen() {
       HeaderRightComponent={
         isAdmin && (
           <Div onPress={gotoNewCollectionEvent}>
-            <Span info bold fontSize={14}>
+            <Span admin bold fontSize={14}>
               추가
             </Span>
           </Div>

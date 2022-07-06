@@ -47,7 +47,7 @@ export default function CommunityWalletListScreen() {
       HeaderRightComponent={
         isAdmin && (
           <Div onPress={gotoNewCommunityWallet}>
-            <Span info bold fontSize={14}>
+            <Span admin bold fontSize={14}>
               추가
             </Span>
           </Div>

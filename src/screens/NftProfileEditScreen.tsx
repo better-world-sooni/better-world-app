@@ -173,7 +173,7 @@ export default function NftProfileEditScreen() {
               bgGray200
               h70
               w70
-              uri={getNftProfileImage(nft, 200, 200)}></Img>
+              uri={getNftProfileImage(nft)}></Img>
           </Row>
           <Row px15 py12 itemsCenter borderTop={0.5} borderGray200>
             <Col auto w50 m5>

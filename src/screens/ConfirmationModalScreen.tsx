@@ -6,7 +6,7 @@ import {Row} from 'src/components/common/Row';
 import {Span} from 'src/components/common/Span';
 import {DEVICE_WIDTH} from 'src/modules/styles';
 
-export function ConfirmationModalScreen({
+export default function ConfirmationModalScreen({
   route: {
     params: {onCancel = null, onConfirm = null, text},
   },

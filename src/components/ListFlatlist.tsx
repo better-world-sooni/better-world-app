@@ -20,6 +20,8 @@ export default function ListFlatlist({
   data,
   title,
   enableBack = true,
+  flatlistStyle = {},
+  numColumns = 1,
   BackIcon = ChevronLeft,
   keyExtractor = item => (item as any).id,
   HeaderRightComponent = null,
@@ -57,6 +59,8 @@ export default function ListFlatlist({
       <FlatList
         showsVerticalScrollIndicator={false}
         keyExtractor={keyExtractor}
+        contentContainerStyle={flatlistStyle}
+        numColumns={numColumns}
         ListEmptyComponent={
           !refreshing && (
             <ListEmptyComponent h={DEVICE_HEIGHT - headerHeight * 2} />

@@ -12,14 +12,15 @@ export default function ImageSlideShow({
   sliderWidth,
   roundedTopOnly = false,
   enablePagination = true,
+  borderRadius = 10,
 }) {
   const [currentPage, setCurrentPage] = useState(0);
   return (
     <>
       <Div
-        rounded10={!roundedTopOnly}
-        borderBottomRight={10}
-        borderBottomLeft={10}
+        rounded={!roundedTopOnly && borderRadius}
+        borderBottomRight={borderRadius}
+        borderBottomLeft={borderRadius}
         border={0.5}
         borderGray200
         overflowHidden>

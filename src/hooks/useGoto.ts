@@ -383,12 +383,56 @@ export function useGotoHome() {
 
 export function useGotoSearch() {
   const navigation = useNavigation()
-  const reloadGETWithToken = useReloadGETWithToken()
+  const apiGETWithToken = useApiGETWithToken()
   const gotoSearch = () => {
-    reloadGETWithToken(apis.rank.list());
+    apiGETWithToken(apis.rank.list());
     navigation.navigate(NAV_NAMES.Search as never)
   }
   return gotoSearch
+}
+
+export function useGotoStoreSetting() {
+  const navigation = useNavigation()
+  const gotoStoreSetting= () => {
+    navigation.navigate(NAV_NAMES.StoreSetting as never)
+  }
+  return gotoStoreSetting
+}
+
+export function useGotoMerchandise({merchandiseId}) {
+  const navigation = useNavigation()
+  const apiGETWithToken = useApiGETWithToken()
+  const gotoMerchandise =() => {
+    apiGETWithToken(
+      apis.merchandise.merchandiseId(merchandiseId)
+    );
+    navigation.navigate(NAV_NAMES.Merchandise as never)
+  }
+  return gotoMerchandise
+}
+
+export function useGotoMerchandiseSelect({onConfirm}) {
+  const navigation = useNavigation()
+  const reloadGETWithToken = useReloadGETWithToken()
+  const gotoMerchandise =() => {
+    reloadGETWithToken(
+      apis.nft_collection.merchandise.list()
+    );
+    navigation.navigate(NAV_NAMES.MerchandiseSelect as never, {
+      onConfirm
+    } as never)
+  }
+  return gotoMerchandise
+}
+
+
+export function useGotoNewMerchandise() {
+  const navigation = useNavigation()
+  
+  const gotoNewMerchandise= () => {
+    navigation.navigate(NAV_NAMES.NewMerchandise as never)
+  }
+  return gotoNewMerchandise
 }
 
 export function useGotoOnboarding() {
@@ -402,6 +446,14 @@ export function useGotoOnboarding() {
     );
   };
   return gotoOnboarding
+}
+
+export function useGotoNewCoupon(){
+  const navigation = useNavigation()
+  const gotoNewCoupon = () => {
+    navigation.navigate(NAV_NAMES.NewCoupon as never)
+  };
+  return gotoNewCoupon
 }
 
 export function useGotoConfirmationModal() {

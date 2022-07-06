@@ -387,7 +387,7 @@ function PostContent({
                     </Span>
                   </Col>
                   <Col />
-                  {isCurrentCollection && !votingStatus && (
+                  {isCurrentCollection && votingStatus == null && (
                     <>
                       <Col auto pr12 onPress={handlePressVoteAgainst}>
                         {<ThumbsDown {...againstVoteProps}></ThumbsDown>}
@@ -439,7 +439,7 @@ function PostContent({
               ) : (
                 votingStatus == VotingStatus.Error && (
                   <>
-                    <Col auto>
+                    <Col auto mr4>
                       <AlertTriangle
                         strokeWidth={2}
                         height={22}
@@ -449,13 +449,13 @@ function PostContent({
                     </Col>
                     <Col auto>
                       <Span bold fontSize={12}>
-                        리로드 필요
+                        투표 불가
                       </Span>
                     </Col>
                   </>
                 )
               )}
-              {!votingStatus && !full && (
+              {votingStatus == null && !full && (
                 <Col auto onPress={() => gotoPost(true)}>
                   <MessageCircle {...actionIconDefaultProps} />
                 </Col>

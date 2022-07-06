@@ -16,10 +16,24 @@ import ListEmptyComponent from 'src/components/common/ListEmptyComponent';
 import {ActivityIndicator, RefreshControl} from 'react-native';
 import {HAS_NOTCH} from 'src/modules/constants';
 import Merchandise from 'src/components/common/Merchandise';
-import {Clock, Gift} from 'react-native-feather';
+import {useNavigation} from '@react-navigation/native';
+import {X} from 'react-native-feather';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 
-export default function StoreScreen() {
+export default function MerchandiseSelectScreen({
+  route: {
+    params: {onCancel = null, onConfirm = null},
+  },
+}) {
+  const {goBack} = useNavigation();
+  const handleCancel = () => {
+    if (onCancel) onCancel();
+    goBack();
+  };
+  const handleConfirm = merchandise => {
+    if (onConfirm) onConfirm(merchandise);
+    goBack();
+  };
   const {data, isLoading, isPaginating, page, isNotPaginatable} =
     useApiSelector(apis.nft_collection.merchandise.list);
   const merchandises = data ? data.merchandises : [];
@@ -44,26 +58,17 @@ export default function StoreScreen() {
 
   return (
     <Div flex={1} bgWhite>
-      <Div h={notchHeight}></Div>
       <Div bgWhite h={50} justifyCenter borderBottom={0.5} borderGray200>
         <Row itemsCenter py5 h40 px15>
+          <Col onPress={handleCancel}>
+            <X width={30} height={30} color={Colors.black} strokeWidth={2} />
+          </Col>
           <Col auto>
             <Span bold fontSize={19}>
-              {'굿즈 드랍'}
+              {'굿즈 선택하기'}
             </Span>
           </Col>
-          <Col />
-          <Col auto mr16>
-            <Clock
-              width={22}
-              height={22}
-              color={Colors.black}
-              strokeWidth={2}
-            />
-          </Col>
-          <Col auto>
-            <Gift width={22} height={22} color={Colors.black} strokeWidth={2} />
-          </Col>
+          <Col></Col>
         </Row>
       </Div>
       <FlatList
@@ -87,6 +92,7 @@ export default function StoreScreen() {
             <Merchandise
               key={(item as any).id}
               merchandise={item}
+              selectableFn={handleConfirm}
               mx={mx}
               my={my}
               width={

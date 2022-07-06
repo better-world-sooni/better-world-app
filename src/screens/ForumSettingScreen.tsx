@@ -76,8 +76,8 @@ export default function ForumSettingScreen() {
           <Col itemsEnd>
             {isAdmin && (
               <Span
-                info={isSaveable}
-                gray500={!isSaveable}
+                admin={isSaveable}
+                adminSoft={!isSaveable}
                 fontSize={16}
                 onPress={save}
                 bold>

@@ -252,7 +252,7 @@ export default function NftCollectionProfile({
                           <Div>
                             <Settings
                               strokeWidth={2}
-                              color={Colors.black}
+                              color={Colors.admin.DEFAULT}
                               height={22}
                               width={22}
                             />

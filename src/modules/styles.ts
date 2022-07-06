@@ -1,4 +1,4 @@
-import {Dimensions, Appearance} from 'react-native';
+import {Dimensions} from 'react-native';
 
 export const DEVICE_WIDTH = Dimensions.get('window').width;
 export const DEVICE_HEIGHT = Dimensions.get('window').height;
@@ -29,8 +29,12 @@ export const Colors = {
   warning: {DEFAULT: '#f6c343', light: '#f6c34390',},
   success: { DEFAULT: '#3cd278', light: '#3cd27890' },
   danger: { DEFAULT: '#ff3051', light: '#ff305190' },
+  admin: {DEFAULT: 'rgb(0, 199, 190)', light: 'rgba(102, 212, 207, 0.5)'},
   black: '#000000',
-  white: '#ffffff'
+  white: '#ffffff',
+  opacity: {
+    100: 'rgba(0, 0, 0, 0.1)'
+  }
 };
 
 export const varStyle = {
@@ -46,7 +50,9 @@ export const varStyle = {
   warning: Colors.warning.DEFAULT,
   warningSoft: Colors.warning.light,
   success: Colors.success.DEFAULT,
-  successSoft: Colors.info.light,
+  successSoft: Colors.success.light,
+  admin: Colors.admin.DEFAULT,
+  adminSoft: Colors.admin.light,
   gray: Colors.gray.DEFAULT,
   gray100: Colors.gray[100],
   gray200: Colors.gray[200],
@@ -64,6 +70,34 @@ export const varStyle = {
   defaultBorderRadius: 10,
 };
 
+export const COLOR_PALETTE = [
+  {name: 'Primary', color: varStyle.primary},
+  {name: 'PrimarySoft', color: varStyle.primarySoft},
+  {name: 'Secondary', color: varStyle.secondary},
+  {name: 'SecondarySoft', color: varStyle.secondarySoft},
+  {name: 'Gray700', color: varStyle.gray700},
+  {name: 'Gray600', color: varStyle.gray600},
+  {name: 'Gray500', color: varStyle.gray500},
+  {name: 'Gray400', color: varStyle.gray400},
+  {name: 'Gray300', color: varStyle.gray300},
+  {name: 'Gray200', color: varStyle.gray200},
+  {name: 'Gray100', color: varStyle.gray100},
+  {name: 'Gray', color: varStyle.gray},
+  {name: 'Info', color: varStyle.info},
+  {name: 'InfoSoft', color: varStyle.infoSoft},
+  {name: 'Success', color: varStyle.success},
+  {name: 'SuccessSoft', color: varStyle.successSoft},
+  {name: 'Warning', color: varStyle.warning},
+  {name: 'WarningSoft', color: varStyle.warningSoft},
+  {name: 'Admin', color: varStyle.admin},
+  {name: 'AdminSoft', color: varStyle.adminSoft},
+  {name: 'Danger', color: varStyle.danger},
+  {name: 'DangerSoft', color: varStyle.dangerSoft},
+  {name: 'White', color: varStyle.white},
+  {name: 'Black', color: varStyle.black},
+  {name: 'Transparent', color: 'transparent'},
+];
+
 export const globalStyle = {
   bgPrimary: {
     backgroundColor: varStyle.primary,
@@ -80,8 +114,17 @@ export const globalStyle = {
   bgSuccess: {
     backgroundColor: varStyle.success,
   },
+  bgSuccessSoft: {
+    backgroundColor: varStyle.successSoft,
+  },
   bgWarning: {
     backgroundColor: varStyle.warning,
+  },
+  bgAdmin: {
+    backgroundColor: varStyle.admin,
+  },
+  bgAdminSoft: {
+    backgroundColor: varStyle.adminSoft,
   },
   bgInfo: {
     backgroundColor: varStyle.info,
@@ -130,6 +173,12 @@ export const globalStyle = {
   },
   textInfo: {
     color: varStyle.info,
+  },
+  textAdmin: {
+    color: varStyle.admin,
+  },
+  textAdminSoft: {
+    color: varStyle.adminSoft,
   },
   textBlack: {
     color: varStyle.black,
@@ -184,6 +233,12 @@ export const globalStyle = {
   },
   borderInfo: {
     borderColor: varStyle.warning,
+  },
+  borderAdmin: {
+    borderColor: varStyle.admin,
+  },
+  borderAdminSoft: {
+    borderColor: varStyle.adminSoft,
   },
   justifyContentCenter: {
     justifyContent: 'center' as const,

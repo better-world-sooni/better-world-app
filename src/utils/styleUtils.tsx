@@ -1,32 +1,6 @@
 import * as _ from 'lodash';
 import {StyleSheet} from 'react-native';
-import {varStyle} from 'src/modules/styles';
-
-export const COLOR_PALETTE = [
-  {name: 'Primary', color: varStyle.primary},
-  {name: 'PrimarySoft', color: varStyle.primarySoft},
-  {name: 'Secondary', color: varStyle.secondary},
-  {name: 'SecondarySoft', color: varStyle.secondarySoft},
-  {name: 'Gray700', color: varStyle.gray700},
-  {name: 'Gray600', color: varStyle.gray600},
-  {name: 'Gray500', color: varStyle.gray500},
-  {name: 'Gray400', color: varStyle.gray400},
-  {name: 'Gray300', color: varStyle.gray300},
-  {name: 'Gray200', color: varStyle.gray200},
-  {name: 'Gray100', color: varStyle.gray100},
-  {name: 'Gray', color: varStyle.gray},
-  {name: 'Info', color: varStyle.info},
-  {name: 'InfoSoft', color: varStyle.infoSoft},
-  {name: 'Success', color: varStyle.success},
-  {name: 'SuccessSoft', color: varStyle.successSoft},
-  {name: 'Warning', color: varStyle.warning},
-  {name: 'WarningSoft', color: varStyle.warningSoft},
-  {name: 'Danger', color: varStyle.danger},
-  {name: 'DangerSoft', color: varStyle.dangerSoft},
-  {name: 'White', color: varStyle.white},
-  {name: 'Black', color: varStyle.black},
-  {name: 'Transparent', color: 'transparent'},
-];
+import {COLOR_PALETTE, varStyle} from 'src/modules/styles';
 
 const ACTIVE_PREFIX = 'a_';
 

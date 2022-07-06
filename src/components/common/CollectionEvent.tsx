@@ -163,7 +163,7 @@ export default function CollectionEvent({
                 ) : (
                   <MoreHorizontal
                     strokeWidth={2}
-                    color={Colors.white}
+                    color={Colors.admin.DEFAULT}
                     height={16}
                     width={16}
                   />
