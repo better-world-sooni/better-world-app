@@ -5,9 +5,10 @@ import NotFound from 'src/components/error/NotFound';
 import PostLoading from 'src/components/loading/PostLoading';
 import apis from 'src/modules/apis';
 import {HAS_NOTCH} from 'src/modules/constants';
-import {KeyboardAvoidingView} from 'src/modules/viewComponents';
+import {KeyboardAvoidingView} from 'src/components/common/ViewComponents';
 import {useApiSelector} from 'src/redux/asyncReducer';
 import {Platform} from 'react-native';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 export default function PostScreen({
   route: {
@@ -19,7 +20,8 @@ export default function PostScreen({
     isLoading: postLoad,
     error,
   } = useApiSelector(apis.post.postId._(postId));
-  
+  const notchHeight = useSafeAreaInsets().bottom;
+
   if (postLoad) return <PostLoading />;
 
   if (!postRes && error)
@@ -27,12 +29,16 @@ export default function PostScreen({
 
   return (
     <>
-      <KeyboardAvoidingView flex={1} bgWhite relative behavior={Platform.OS === "ios" ? "padding" : "height"}>
+      <KeyboardAvoidingView
+        flex={1}
+        bgWhite
+        relative
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
         {postRes?.post ? (
           <FullPost autoFocus={autoFocus} post={postRes?.post}></FullPost>
         ) : null}
       </KeyboardAvoidingView>
-      <Div h={HAS_NOTCH ? 27 : 12} bgWhite />
+      <Div h={notchHeight} bgWhite />
     </>
   );
 }

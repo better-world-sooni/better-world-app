@@ -12,8 +12,8 @@ import {
   getNftName,
   getNftProfileImage,
   useIsCurrentNft,
-} from 'src/modules/nftUtils';
-import {createdAtText} from 'src/modules/timeUtils';
+} from 'src/utils/nftUtils';
+import {createdAtText} from 'src/utils/timeUtils';
 import {RootState} from 'src/redux/rootReducer';
 import {Col} from './common/Col';
 import {Img} from './common/Img';
@@ -224,7 +224,7 @@ const NotificationContent = ({
   };
 
   return (
-    <Row itemsCenter py10 px15 onPress={handlePressNotification}>
+    <Row itemsCenter py8 px15 onPress={handlePressNotification}>
       <Col auto onPress={handlePressProfile}>
         <Img
           rounded100
@@ -243,7 +243,7 @@ const NotificationContent = ({
       {!isCurrentNft && (
         <Col
           auto
-          bgRealBlack={!following}
+          bgBlack={!following}
           p8
           rounded100
           border1={following}

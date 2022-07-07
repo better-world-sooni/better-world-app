@@ -5,7 +5,7 @@ import React, {useState} from 'react';
 import {ActivityIndicator, Linking, Platform} from 'react-native';
 import {MoreHorizontal, Repeat} from 'react-native-feather';
 import {shallowEqual, useSelector} from 'react-redux';
-import Colors from 'src/constants/Colors';
+import {Colors} from 'src/modules/styles';
 import useAttendance, {AttendanceCategory} from 'src/hooks/useAttendance';
 import {
   useGotoAttendanceList,
@@ -14,9 +14,9 @@ import {
   useGotoNewPost,
 } from 'src/hooks/useGoto';
 import apis from 'src/modules/apis';
-import {kmoment} from 'src/modules/constants';
-import {getAdjustedHeightFromDimensions} from 'src/modules/imageUtils';
-import {getNftProfileImage} from 'src/modules/nftUtils';
+import {kmoment} from 'src/utils/timeUtils';
+import {getAdjustedHeightFromDimensions} from 'src/utils/imageUtils';
+import {getNftProfileImage} from 'src/utils/nftUtils';
 import {useDeletePromiseFnWithToken} from 'src/redux/asyncReducer';
 import {RootState} from 'src/redux/rootReducer';
 import {PostOwnerType, PostType} from 'src/screens/NewPostScreen';
@@ -64,7 +64,7 @@ export default function CollectionEvent({
     },
     {
       id: CollectionEventActionTypes.Tag,
-      title: '완료된 제안에 참조',
+      title: '통과된 제안에 참조',
       image: Platform.select({
         ios: 'tag',
         android: 'ic_input_get',
@@ -156,14 +156,14 @@ export default function CollectionEvent({
             sliderWidth={itemWidth}
           />
           {isAdmin && !reposted && (
-            <Div m8 p8 bgRealBlack rounded100 absolute top0 right0>
+            <Div m8 p8 bgBlack rounded100 absolute top0 right0>
               <MenuView onPressAction={handlePressMenu} actions={menuOptions}>
                 {loading ? (
                   <ActivityIndicator />
                 ) : (
                   <MoreHorizontal
                     strokeWidth={2}
-                    color={'white'}
+                    color={Colors.admin.DEFAULT}
                     height={16}
                     width={16}
                   />
@@ -283,7 +283,7 @@ export default function CollectionEvent({
                 onPress={() => gotoAttendanceList(AttendanceCategory.Maybe)}>
                 <Span fontSize={12} gray700>
                   Maybe{' '}
-                  <Span realBlack bold>
+                  <Span black bold>
                     {maybeAttendCount}
                   </Span>
                 </Span>
@@ -294,7 +294,7 @@ export default function CollectionEvent({
                 onPress={() => gotoAttendanceList(AttendanceCategory.Yes)}>
                 <Span fontSize={12} gray700>
                   Yes{' '}
-                  <Span realBlack bold>
+                  <Span black bold>
                     {willAttendCount}
                   </Span>
                 </Span>
@@ -303,7 +303,7 @@ export default function CollectionEvent({
               {attendable && (
                 <>
                   <Col
-                    bgRealBlack={!maybeAttend}
+                    bgBlack={!maybeAttend}
                     p8
                     rounded100
                     border1={maybeAttend}
@@ -316,7 +316,7 @@ export default function CollectionEvent({
                     </Span>
                   </Col>
                   <Col
-                    bgRealBlack={!willAttend}
+                    bgBlack={!willAttend}
                     p8
                     rounded100
                     border1={willAttend}

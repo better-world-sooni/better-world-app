@@ -2,23 +2,23 @@ import {MenuView} from '@react-native-menu/menu';
 import React, {memo} from 'react';
 import {Linking, Platform} from 'react-native';
 import {MoreHorizontal, Repeat, User} from 'react-native-feather';
-import Colors from 'src/constants/Colors';
+import {Colors} from 'src/modules/styles';
 import {
   useGotoCollectionFeedTagSelect,
   useGotoCommunityWalletProfile,
   useGotoNewPost,
 } from 'src/hooks/useGoto';
-import {truncateAddress} from 'src/modules/blockchainUtils';
-import {kmoment} from 'src/modules/constants';
+import {truncateAddress} from 'src/utils/blockchainUtils';
 import {ICONS} from 'src/modules/icons';
-import {getNftName, getNftProfileImage, useIsAdmin} from 'src/modules/nftUtils';
-import {resizeImageUri} from 'src/modules/uriUtils';
+import {getNftName, getNftProfileImage, useIsAdmin} from 'src/utils/nftUtils';
+import {resizeImageUri} from 'src/utils/uriUtils';
 import {PostOwnerType, PostType} from 'src/screens/NewPostScreen';
 import {Col} from './Col';
 import {Div} from './Div';
 import {Img} from './Img';
 import {Row} from './Row';
 import {Span} from './Span';
+import {kmoment} from 'src/utils/timeUtils';
 
 enum TransactionEventTypes {
   Klaytnfinder = 'Klaytnfinder',
@@ -55,7 +55,7 @@ function Transaction({transaction, mainAddress = null, enablePress = false}) {
     },
     isAdmin && {
       id: TransactionEventTypes.Tag,
-      title: '완료된 제안에 참조',
+      title: '통과된 제안에 참조',
       image: Platform.select({
         ios: 'tag',
         android: 'ic_input_get',

@@ -1,26 +1,28 @@
 import React from 'react';
 import {
-  Edit3,
-  Feather,
+  ChevronDown,
   Grid,
   Maximize,
-  MessageCircle,
   Send,
   Settings,
 } from 'react-native-feather';
-import Colors from 'src/constants/Colors';
+import {Colors} from 'src/modules/styles';
 import useFollow from 'src/hooks/useFollow';
 import {
   useGotoFollowList,
   useGotoChatRoomFromProfile,
-  useGotoNewPost,
   useGotoNftCollectionProfile,
   useGotoQR,
   useGotoScan,
+  useGotoNftProfileEdit,
 } from 'src/hooks/useGoto';
 import apis from 'src/modules/apis';
-import {handlePressContribution} from 'src/modules/bottomPopupUtils';
-import {getNftName, getNftProfileImage} from 'src/modules/nftUtils';
+import {handlePressContribution, openNftList} from 'src/utils/bottomPopupUtils';
+import {
+  getNftName,
+  getNftProfileImage,
+  useIsCurrentNft,
+} from 'src/utils/nftUtils';
 import {DEVICE_WIDTH} from 'src/modules/styles';
 import {FollowOwnerType, FollowType} from 'src/screens/FollowListScreen';
 import {ScanType} from 'src/screens/ScanScreen';
@@ -31,19 +33,10 @@ import {Row} from './Row';
 import {Span} from './Span';
 import TruncatedMarkdown from './TruncatedMarkdown';
 
-export default function NftProfileHeader({
-  nftCore,
-  nft,
-  bottomPopupRef,
-  isCurrentNft,
-  qrScan,
-}) {
+export default function NftProfileHeader({nftCore, nft, isCurrentNft, qrScan}) {
   const gotoNftCollectionProfile = useGotoNftCollectionProfile({
     nftCollection: nft?.nft_collection,
   });
-  const editProfile = () => {
-    bottomPopupRef?.current?.expand();
-  };
   const [isFollowing, followerCount, handlePressFollowing] = useFollow(
     nft?.is_following,
     nft?.follower_count,
@@ -58,6 +51,7 @@ export default function NftProfileHeader({
   const gotoQr = useGotoQR();
   const gotoScan = useGotoScan({scanType: ScanType.Nft});
   const gotoChatRoom = useGotoChatRoomFromProfile();
+  const gotoNftProfileEdit = useGotoNftProfileEdit();
   return (
     <>
       <Row zIndex={100} px15 relative>
@@ -68,18 +62,18 @@ export default function NftProfileHeader({
             border4
             borderWhite
             bgGray200
-            h75
-            w75
+            h70
+            w70
             uri={getNftProfileImage(nft || nftCore, 200, 200)}></Img>
         </Col>
         <Col justifyEnd>
           {!isCurrentNft ? (
             <Div>
-              <Row py8 itemsCenter>
+              <Row py6 itemsCenter>
                 <Col />
                 <Col
                   auto
-                  px16
+                  px12
                   onPress={() =>
                     gotoChatRoom(
                       getNftName(nftCore),
@@ -90,14 +84,14 @@ export default function NftProfileHeader({
                   }>
                   <Send
                     strokeWidth={2}
-                    color={'black'}
+                    color={Colors.black}
                     height={22}
                     width={22}
                   />
                 </Col>
                 <Col
                   auto
-                  bgRealBlack={!isFollowing}
+                  bgBlack={!isFollowing}
                   p8
                   rounded100
                   border1={isFollowing}
@@ -111,13 +105,13 @@ export default function NftProfileHeader({
             </Div>
           ) : (
             <Div>
-              <Row py10>
+              <Row py12>
                 <Col />
                 {qrScan && (
                   <Col auto onPress={gotoScan} px8>
                     <Maximize
                       strokeWidth={2}
-                      color={'black'}
+                      color={Colors.black}
                       height={22}
                       width={22}
                     />
@@ -127,16 +121,16 @@ export default function NftProfileHeader({
                   <Col auto onPress={gotoQr} px8>
                     <Grid
                       strokeWidth={2}
-                      color={'black'}
+                      color={Colors.black}
                       height={22}
                       width={22}
                     />
                   </Col>
                 )}
-                <Col auto onPress={editProfile} px8>
+                <Col auto onPress={gotoNftProfileEdit} px8>
                   <Settings
                     strokeWidth={2}
-                    color={'black'}
+                    color={Colors.black}
                     height={22}
                     width={22}
                   />
@@ -147,11 +141,23 @@ export default function NftProfileHeader({
         </Col>
       </Row>
       <Div px15 py10 bgWhite borderBottom={0.5} borderGray200>
-        <Div>
-          <Span fontSize={20} bold>
-            {getNftName(nft || nftCore)}
-          </Span>
-        </Div>
+        <Row itemsCenter {...(isCurrentNft && {onPress: openNftList})}>
+          <Col auto>
+            <Span fontSize={20} bold numberOfLines={1}>
+              {getNftName(nft || nftCore)}
+            </Span>
+          </Col>
+          {isCurrentNft && (
+            <Col auto>
+              <ChevronDown
+                strokeWidth={2}
+                color={Colors.black}
+                height={22}
+                width={22}
+              />
+            </Col>
+          )}
+        </Row>
         {nft && (
           <Div pt3 onPress={gotoNftCollectionProfile}>
             <Span gray700 bold>

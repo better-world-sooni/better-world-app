@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import { launchImageLibrary } from 'react-native-image-picker';
-import { useApiPUTWithToken, usePutPromiseFnWithToken, useReloadGETWithToken } from 'src/redux/asyncReducer';
+import { useApiPUTWithToken, usePatchPromiseFnWithToken, usePutPromiseFnWithToken, useReloadGETWithToken } from 'src/redux/asyncReducer';
 import useFileUpload from './useFileUpload';
 
 export default function useUploadImage({uri, attachedRecord, url, property, successReloadKey}){
@@ -9,6 +9,7 @@ export default function useUploadImage({uri, attachedRecord, url, property, succ
     } as any)
     const [uploading, setUploading] = useState(false)
     const putPromiseFnWithToken = usePutPromiseFnWithToken()
+    const patchPromiseFnWithToken = usePatchPromiseFnWithToken();
     const reloadGetWithToken = useReloadGETWithToken();
     const {uploadFile} = useFileUpload({attachedRecord})
     const handleAddImage = async () => {
@@ -36,7 +37,7 @@ export default function useUploadImage({uri, attachedRecord, url, property, succ
                 const body = {
                     property,
                 }
-                const {data} = await putPromiseFnWithToken({url, body})
+                const {data} = await patchPromiseFnWithToken({url, body})
                 if(data.success){
                     reloadGetWithToken(successReloadKey)
                 }
@@ -48,7 +49,7 @@ export default function useUploadImage({uri, attachedRecord, url, property, succ
                 property,
                 value: key
             }
-            const {data} = await putPromiseFnWithToken({url, body})
+            const {data} = await patchPromiseFnWithToken({url, body})
             if(data.success){
                 reloadGetWithToken(successReloadKey)
             }

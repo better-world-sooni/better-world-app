@@ -1,6 +1,6 @@
 import React, {useRef} from 'react';
 import {Row} from 'src/components/common/Row';
-import {Bell, ChevronDown, Zap} from 'react-native-feather';
+import {Bell, ChevronDown} from 'react-native-feather';
 import apis from 'src/modules/apis';
 import {
   useApiSelector,
@@ -10,24 +10,26 @@ import {
 import Post from 'src/components/common/Post';
 import {Img} from 'src/components/common/Img';
 import {DEVICE_WIDTH} from 'src/modules/styles';
-import {useGotoNewPost, useGotoNotification} from 'src/hooks/useGoto';
+import {useGotoNotification} from 'src/hooks/useGoto';
 import SideMenu from 'react-native-side-menu-updated';
 import MyNftCollectionMenu from '../../components/common/MyNftCollectionMenu';
 import FeedFlatlist, {EnableAddType} from 'src/components/FeedFlatlist';
-import {Platform, StatusBar} from 'react-native';
+import {Platform} from 'react-native';
 import {useScrollToTop} from '@react-navigation/native';
 import {Span} from 'src/components/common/Span';
 import {Col} from 'src/components/common/Col';
 import {Div} from 'src/components/common/Div';
-import Colors from 'src/constants/Colors';
+import {Colors} from 'src/modules/styles';
 import {MenuView} from '@react-native-menu/menu';
-import {PostOwnerType, PostType} from '../NewPostScreen';
 import useFocusReloadWithTimeOut from 'src/hooks/useFocusReloadWithTimeout';
+import {useUpdateUnreadNotificationCount} from 'src/redux/appReducer';
+import {useSelector} from 'react-redux';
+import {RootState} from 'src/redux/rootReducer';
 
 export enum ForumFeedFilter {
   All = 'all',
   Following = 'following',
-  Resolved = 'resolved',
+  Approved = 'approved',
 }
 
 export default function HomeScreen() {
@@ -42,16 +44,14 @@ export default function HomeScreen() {
     apis.nft_collection._(),
   );
   const nftCollection = nftCollectionRes?.nft_collection;
-  const gotoNewPost = useGotoNewPost({
-    postOwnerType: PostOwnerType.Nft,
-  });
   const reloadGETWithToken = useReloadGETWithToken();
   const paginateGetWithToken = usePaginateGETWithToken();
   const gotoNotifications = useGotoNotification();
+  const updateUnreadNotificationCount = useUpdateUnreadNotificationCount();
   const handleRefresh = () => {
     if (feedLoading) return;
     reloadGETWithToken(apis.feed.forum(feedRes?.filter));
-    reloadGETWithToken(apis.feed.count());
+    updateUnreadNotificationCount();
     reloadGETWithToken(apis.nft_collection._());
   };
   const handleEndReached = () => {
@@ -84,8 +84,8 @@ export default function HomeScreen() {
       }),
     },
     {
-      id: ForumFeedFilter.Resolved,
-      title: '완료된 제안',
+      id: ForumFeedFilter.Approved,
+      title: '통과된 제안',
       titleColor: '#46F289',
       image: Platform.select({
         ios: 'checkmark.circle',
@@ -113,17 +113,20 @@ export default function HomeScreen() {
       reloadGETWithToken(apis.feed.forum(ForumFeedFilter.Following));
     }
     if (
-      event == ForumFeedFilter.Resolved &&
-      feedRes?.filter !== ForumFeedFilter.Resolved
+      event == ForumFeedFilter.Approved &&
+      feedRes?.filter !== ForumFeedFilter.Approved
     ) {
-      reloadGETWithToken(apis.feed.forum(ForumFeedFilter.Resolved));
+      reloadGETWithToken(apis.feed.forum(ForumFeedFilter.Approved));
     }
   };
   useFocusReloadWithTimeOut({
     reloadUriObject: apis.feed.forum(feedRes?.filter),
-    cacheTimeoutInSeconds: 120,
+    cacheTimeoutInSeconds: 300,
     onStart: scrollToTop,
   });
+  const unreadNotificationCount = useSelector(
+    (root: RootState) => root.app.unreadNotificationCount,
+  );
 
   return (
     <SideMenu
@@ -133,7 +136,6 @@ export default function HomeScreen() {
       menu={<MyNftCollectionMenu nftCollection={nftCollection} />}
       bounceBackOnOverdraw={false}
       openMenuOffset={DEVICE_WIDTH - 65}>
-      <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF"></StatusBar>
       <FeedFlatlist
         ref={flatlistRef}
         refreshing={feedLoading}
@@ -156,6 +158,8 @@ export default function HomeScreen() {
                   w30
                   rounded100
                   bgGray200
+                  border={0.5}
+                  borderGray200
                   uri={nftCollectionRes.nft_collection.image_uri}></Img>
               ) : (
                 <Div bgGray200 h30 w30 rounded100 />
@@ -174,7 +178,7 @@ export default function HomeScreen() {
                   <Col auto>
                     <ChevronDown
                       strokeWidth={2}
-                      color={'black'}
+                      color={Colors.black}
                       height={20}
                       width={20}
                     />
@@ -183,8 +187,29 @@ export default function HomeScreen() {
               </MenuView>
             </Col>
             <Col itemsEnd>
-              <Div onPress={() => gotoNotifications()}>
-                <Bell strokeWidth={2} color={'black'} height={22} width={22} />
+              <Div onPress={() => gotoNotifications()} relative>
+                <Bell
+                  strokeWidth={2}
+                  color={Colors.black}
+                  height={22}
+                  width={22}
+                />
+                {unreadNotificationCount > 0 && (
+                  <Div
+                    absolute
+                    top={-10}
+                    right={-10}
+                    auto
+                    rounded100
+                    bgDanger
+                    py4
+                    px8
+                    justifyCenter>
+                    <Span white fontSize={10} bold>
+                      {unreadNotificationCount}
+                    </Span>
+                  </Div>
+                )}
               </Div>
             </Col>
           </Row>

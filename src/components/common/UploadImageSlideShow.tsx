@@ -2,8 +2,8 @@ import React, {useState} from 'react';
 import {ActivityIndicator} from 'react-native';
 import {Trash, Upload} from 'react-native-feather';
 import Carousel, {Pagination} from 'react-native-snap-carousel';
-import Colors from 'src/constants/Colors';
-import {getAdjustedHeightFromDimensions} from 'src/modules/imageUtils';
+import {Colors} from 'src/modules/styles';
+import {getAdjustedHeightFromDimensions} from 'src/utils/imageUtils';
 import Video from 'react-native-video';
 import {Div} from './Div';
 import {Img} from './Img';
@@ -13,20 +13,27 @@ export default function UploadImageSlideShow({
   onPressAdd,
   onPressRemove,
   sliderWidth,
+  borderRadius = 10,
+  sliderHeight = null,
   disablePagination = false,
 }) {
   const [currentPage, setCurrentPage] = useState(0);
   const imageHeight =
-    images[0]?.uri && images[0].width && images[0].height
+    sliderHeight ||
+    (images[0]?.uri && images[0].width && images[0].height
       ? getAdjustedHeightFromDimensions({
           width: images[0].width,
           height: images[0].height,
           frameWidth: sliderWidth,
         })
-      : sliderWidth * 0.7;
+      : sliderWidth * 0.7);
   return (
     <>
-      <Div rounded10 border={0.5} borderGray200 overflowHidden>
+      <Div
+        rounded={borderRadius}
+        border={borderRadius > 0 ? 0.5 : 0}
+        borderGray200
+        overflowHidden>
         <Carousel
           data={images}
           itemWidth={sliderWidth}
@@ -104,7 +111,7 @@ function CarouselItem({
               auto
               onPress={handlePressRemoveImageAtIndex}
               rounded100
-              bgRealBlack
+              bgBlack
               p8
               mx20
               my10>
@@ -122,9 +129,14 @@ function CarouselItem({
           </Div>
         </Div>
       ) : (
-        <Div w={sliderWidth} h={imageHeight} bgGray200 onPress={onPressAdd}>
+        <Div w={sliderWidth} h={imageHeight} bgGray100 onPress={onPressAdd}>
           <Div flex={1} itemsCenter justifyCenter>
-            <Upload width={20} height={20} color="black" strokeWidth={2} />
+            <Upload
+              width={20}
+              height={20}
+              color={Colors.black}
+              strokeWidth={2}
+            />
           </Div>
         </Div>
       )}

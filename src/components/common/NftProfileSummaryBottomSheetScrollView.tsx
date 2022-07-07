@@ -5,7 +5,7 @@ import {
   getNftName,
   getNftProfileImage,
   useIsCurrentNft,
-} from 'src/modules/nftUtils';
+} from 'src/utils/nftUtils';
 import {DEVICE_WIDTH} from 'src/modules/styles';
 import {Col} from './Col';
 import {Div} from './Div';
@@ -23,11 +23,11 @@ import {
 } from 'src/hooks/useGoto';
 import useFollow from 'src/hooks/useFollow';
 import {FollowOwnerType, FollowType} from 'src/screens/FollowListScreen';
-import Colors from 'src/constants/Colors';
+import {Colors} from 'src/modules/styles';
 import {shallowEqual, useSelector} from 'react-redux';
 import {RootState} from 'src/redux/rootReducer';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import {handlePressContribution} from 'src/modules/bottomPopupUtils';
+import {handlePressContribution} from 'src/utils/bottomPopupUtils';
 
 export default function NftProfileSummaryBottomSheetScrollView({
   contractAddress,
@@ -144,7 +144,7 @@ export function NftProfileSummary({nft, token = null}) {
                 <Col />
                 <Col
                   auto
-                  bgRealBlack
+                  bgBlack
                   p8
                   mr8
                   rounded100
@@ -158,7 +158,7 @@ export function NftProfileSummary({nft, token = null}) {
                   }>
                   <MessageCircle
                     strokeWidth={2}
-                    color={'white'}
+                    color={Colors.white}
                     height={15}
                     width={15}
                   />
@@ -180,7 +180,7 @@ export function NftProfileSummary({nft, token = null}) {
                             ? Colors.gray[200]
                             : Colors.danger.DEFAULT
                         }
-                        fill={'white'}
+                        fill={Colors.white}
                         height={15}
                         width={15}
                       />
@@ -189,7 +189,7 @@ export function NftProfileSummary({nft, token = null}) {
                 )}
                 <Col
                   auto
-                  bgRealBlack={!isFollowing}
+                  bgBlack={!isFollowing}
                   p8
                   rounded100
                   border1={isFollowing}

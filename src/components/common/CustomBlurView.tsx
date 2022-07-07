@@ -2,8 +2,6 @@ import React from 'react';
 import { Platform } from 'react-native';
 import {BlurView} from '@react-native-community/blur';
 import {Div} from './Div';
-import {Img} from './Img';
-import {StyleSheet, Text, View} from 'react-native';
 
 export const CustomBlurView = props => {
   const {

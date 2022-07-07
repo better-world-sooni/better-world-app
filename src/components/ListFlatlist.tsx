@@ -3,7 +3,7 @@ import React from 'react';
 import {ActivityIndicator, FlatList, RefreshControl} from 'react-native';
 import {ChevronLeft} from 'react-native-feather';
 import {HAS_NOTCH} from 'src/modules/constants';
-import {DEVICE_HEIGHT} from 'src/modules/styles';
+import {Colors, DEVICE_HEIGHT} from 'src/modules/styles';
 import {Col} from './common/Col';
 import {Div} from './common/Div';
 import {Row} from './common/Row';
@@ -20,6 +20,8 @@ export default function ListFlatlist({
   data,
   title,
   enableBack = true,
+  flatlistStyle = {},
+  numColumns = 1,
   BackIcon = ChevronLeft,
   keyExtractor = item => (item as any).id,
   HeaderRightComponent = null,
@@ -30,51 +32,46 @@ export default function ListFlatlist({
   return (
     <Div flex={1} bgWhite>
       <Div h={notchHeight}></Div>
+      <Div bgWhite h={50} justifyCenter borderBottom={0.5} borderGray200>
+        <Row itemsCenter py5 h40 px={BackIcon == ChevronLeft ? 8 : 15}>
+          <Col itemsStart>
+            {enableBack && (
+              <Div auto rounded100 onPress={goBack}>
+                <BackIcon
+                  width={30}
+                  height={30}
+                  color={Colors.black}
+                  strokeWidth={2}
+                />
+              </Div>
+            )}
+          </Col>
+          <Col auto>
+            <Span bold fontSize={19}>
+              {title}
+            </Span>
+          </Col>
+          <Col itemsEnd pr={enableBack && BackIcon == ChevronLeft ? 8 : 0}>
+            {HeaderRightComponent}
+          </Col>
+        </Row>
+      </Div>
       <FlatList
-        stickyHeaderIndices={[0]}
-        // @ts-ignore
-        stickyHeaderHiddenOnScroll
         showsVerticalScrollIndicator={false}
         keyExtractor={keyExtractor}
+        contentContainerStyle={flatlistStyle}
+        numColumns={numColumns}
         ListEmptyComponent={
-          <ListEmptyComponent h={DEVICE_HEIGHT - headerHeight * 2} />
+          !refreshing && (
+            <ListEmptyComponent h={DEVICE_HEIGHT - headerHeight * 2} />
+          )
         }
         refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={onRefresh}
-            progressViewOffset={headerHeight}
-          />
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
         onEndReached={onEndReached}
         data={data}
         renderItem={renderItem}
-        ListHeaderComponent={
-          <Div bgWhite h={50} justifyCenter borderBottom={0.5} borderGray200>
-            <Row itemsCenter py5 h40 px={BackIcon == ChevronLeft ? 8 : 15}>
-              <Col itemsStart>
-                {enableBack && (
-                  <Div auto rounded100 onPress={goBack}>
-                    <BackIcon
-                      width={30}
-                      height={30}
-                      color="black"
-                      strokeWidth={2}
-                    />
-                  </Div>
-                )}
-              </Col>
-              <Col auto>
-                <Span bold fontSize={19}>
-                  {title}
-                </Span>
-              </Col>
-              <Col itemsEnd pr={enableBack && BackIcon == ChevronLeft ? 8 : 0}>
-                {HeaderRightComponent}
-              </Col>
-            </Row>
-          </Div>
-        }
         ListFooterComponent={
           <>
             {isPaginating && (
@@ -82,7 +79,6 @@ export default function ListFlatlist({
                 <ActivityIndicator />
               </Div>
             )}
-            <Div h={headerHeight}></Div>
             <Div h={HAS_NOTCH ? 27 : 12} />
           </>
         }></FlatList>

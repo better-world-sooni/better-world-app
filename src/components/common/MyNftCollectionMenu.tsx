@@ -4,25 +4,37 @@ import {HAS_NOTCH} from 'src/modules/constants';
 import {Row} from './Row';
 import {Col} from './Col';
 import {Img} from './Img';
-import {resizeImageUri} from 'src/modules/uriUtils';
+import {resizeImageUri} from 'src/utils/uriUtils';
 import {Span} from './Span';
 import {FollowOwnerType, FollowType} from 'src/screens/FollowListScreen';
 import {
   useGotoFollowList,
+  useGotoForumSetting,
   useGotoMyCollectionEventList,
   useGotoMyCommunityWalletList,
   useGotoNewCollectionEvent,
   useGotoNewCommunityWallet,
   useGotoNftCollectionProfile,
+  useGotoSocialSetting,
+  useGotoSearch,
+  useGotoStoreSetting,
 } from 'src/hooks/useGoto';
-import {Calendar, CreditCard} from 'react-native-feather';
+import {
+  Calendar,
+  CreditCard,
+  Home,
+  Settings,
+  Search,
+  ShoppingBag,
+  Flag,
+} from 'react-native-feather';
 import {useApiSelector} from 'src/redux/asyncReducer';
 import apis from 'src/modules/apis';
-import {getSiPrefixedNumber} from 'src/modules/numberUtils';
-import {useIsAdmin} from 'src/modules/nftUtils';
-import Colors from 'src/constants/Colors';
+import {getSiPrefixedNumber} from 'src/utils/numberUtils';
+import {useIsAdmin} from 'src/utils/nftUtils';
+import {Colors} from 'src/modules/styles';
 import {ICONS} from 'src/modules/icons';
-import {handlePressAffinity} from 'src/modules/bottomPopupUtils';
+import {handlePressAffinity} from 'src/utils/bottomPopupUtils';
 
 const MyNftCollectionMenu = ({nftCollection}) => {
   const {data: feedCountRes, isLoading: feedCountLoading} = useApiSelector(
@@ -30,8 +42,8 @@ const MyNftCollectionMenu = ({nftCollection}) => {
   );
   const upcomingEventCount = feedCountRes?.upcoming_event_count;
   const communityWalletCount = feedCountRes?.community_wallet_count;
-  const textColor = 'black';
-  const backgroundColor = 'white';
+  const textColor = Colors.black;
+  const backgroundColor = Colors.white;
   const gotoFollowList = useGotoFollowList({
     followOwnerType: FollowOwnerType.NftCollection,
     contractAddress: nftCollection?.contract_address,
@@ -43,6 +55,10 @@ const MyNftCollectionMenu = ({nftCollection}) => {
   const gotoCollectionEventList = useGotoMyCollectionEventList();
   const gotoNewCollectionEvent = useGotoNewCollectionEvent();
   const gotoNewCommunityWallet = useGotoNewCommunityWallet();
+  const gotoSearch = useGotoSearch();
+  const gotoForumSetting = useGotoForumSetting();
+  const gotoSocialSetting = useGotoSocialSetting();
+  const gotoStoreSetting = useGotoStoreSetting();
   const notchHeight = HAS_NOTCH ? 44 : 0;
   const headerHeight = notchHeight + 18;
   const isAdmin = useIsAdmin();
@@ -59,7 +75,9 @@ const MyNftCollectionMenu = ({nftCollection}) => {
                 bgGray200
                 h60
                 w60
-                uri={resizeImageUri(nftCollection.image_uri, 200, 200)}></Img>
+                border={0.5}
+                borderGray200
+                uri={nftCollection.image_uri}></Img>
             </Col>
           </Row>
           <Div py10>
@@ -105,12 +123,25 @@ const MyNftCollectionMenu = ({nftCollection}) => {
               <Col />
             </Row>
           </Div>
+          <Row itemsCenter py16 onPress={gotoSearch}>
+            <Col auto mr16>
+              <Search
+                strokeWidth={2}
+                color={Colors.black}
+                height={22}
+                width={22}
+              />
+            </Col>
+            <Col>
+              <Span fontSize={16}>커뮤니티 멤버 검색</Span>
+            </Col>
+          </Row>
           {communityWalletCount ? (
             <Row itemsCenter py16 onPress={gotoCommunityWalletList}>
               <Col auto mr16>
                 <CreditCard
                   strokeWidth={2}
-                  color={'black'}
+                  color={Colors.black}
                   height={22}
                   width={22}
                 />
@@ -130,13 +161,13 @@ const MyNftCollectionMenu = ({nftCollection}) => {
                 <Col auto mr16>
                   <CreditCard
                     strokeWidth={2}
-                    color={Colors.primary.DEFAULT}
+                    color={Colors.admin.DEFAULT}
                     height={22}
                     width={22}
                   />
                 </Col>
                 <Col>
-                  <Span fontSize={16} primary>
+                  <Span fontSize={16} admin>
                     커뮤니티 지갑 추가
                   </Span>
                 </Col>
@@ -148,7 +179,7 @@ const MyNftCollectionMenu = ({nftCollection}) => {
               <Col auto mr16>
                 <Calendar
                   strokeWidth={2}
-                  color={'black'}
+                  color={Colors.black}
                   height={22}
                   width={22}
                 />
@@ -168,18 +199,56 @@ const MyNftCollectionMenu = ({nftCollection}) => {
                 <Col auto mr16>
                   <Calendar
                     strokeWidth={2}
-                    color={Colors.primary.DEFAULT}
+                    color={Colors.admin.DEFAULT}
                     height={24}
                     width={24}
                   />
                 </Col>
                 <Col>
-                  <Span fontSize={16} primary>
+                  <Span fontSize={16} admin>
                     일정 추가
                   </Span>
                 </Col>
               </Row>
             )
+          )}
+          <Row itemsCenter py16 onPress={gotoSocialSetting}>
+            <Col auto mr16>
+              <Home
+                strokeWidth={2}
+                color={Colors.black}
+                height={22}
+                width={22}
+              />
+            </Col>
+            <Col>
+              <Span fontSize={16}>게시물 피드 설정</Span>
+            </Col>
+          </Row>
+          <Row itemsCenter py16 onPress={gotoForumSetting}>
+            <Col auto mr16>
+              <Img source={ICONS.lightBulb} h22 w22></Img>
+            </Col>
+            <Col>
+              <Span fontSize={16}>제안 피드 설정</Span>
+            </Col>
+          </Row>
+          {isAdmin && (
+            <Row itemsCenter py16 onPress={gotoStoreSetting}>
+              <Col auto mr16>
+                <ShoppingBag
+                  strokeWidth={2}
+                  color={Colors.admin.DEFAULT}
+                  height={22}
+                  width={22}
+                />
+              </Col>
+              <Col>
+                <Span fontSize={16} admin>
+                  스토어 관리
+                </Span>
+              </Col>
+            </Row>
           )}
         </Div>
       )}

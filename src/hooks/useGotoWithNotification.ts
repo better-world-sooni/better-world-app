@@ -1,7 +1,9 @@
 import apis from "src/modules/apis";
 import { NAV_NAMES } from "src/modules/navNames";
-import { useApiGETWithToken, useApiPOSTWithToken, useApiGET } from "src/redux/asyncReducer";
-import { notificationNavigate } from 'src/modules/rootNavagation';
+import { useApiGETWithToken } from "src/redux/asyncReducer";
+import {navigationRef, notificationNavigate} from 'src/utils/notificationUtils';
+import { ChatRoomEnterType } from "src/screens/ChatRoomScreen";
+import { CommonActions } from '@react-navigation/native';
 
 export function useGotoWithNotification() {
     const apiGETWithToken = useApiGETWithToken()
@@ -10,6 +12,7 @@ export function useGotoWithNotification() {
             event, 
             post_id,
             comment_id,
+            room_id,
             contract_address,
             token_id,
             name,
@@ -42,6 +45,20 @@ export function useGotoWithNotification() {
                 apis.post.list.nft(nft.contract_address, nft.token_id)
             );
             notificationNavigate(NAV_NAMES.OtherProfile, {nft})
+        }
+        else if(event === 'chat') {
+            apiGETWithToken(apis.chat.chatRoom.roomId(room_id));     
+            const params = {
+                roomId: room_id,
+                roomName: name || meta_name,
+                roomImage: image_uri || meta_image_uri,
+                opponentNft: {
+                    contract_address: contract_address,
+                    token_id: token_id
+                },
+                chatRoomEnterType: ChatRoomEnterType.Notification,
+            }
+            notificationNavigate(NAV_NAMES.ChatRoom, params)
         }
     }
     return gotoWithNotification

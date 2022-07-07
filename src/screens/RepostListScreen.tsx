@@ -5,8 +5,6 @@ import {
   usePaginateGETWithToken,
   useReloadGETWithToken,
 } from 'src/redux/asyncReducer';
-import ListFlatlist from 'src/components/ListFlatlist';
-import PolymorphicOwner from 'src/components/PolymorphicOwner';
 import PolymorphicOwnerListFlatlist from 'src/components/PolymorphicOwnerListFlatlist';
 
 const RepostListScreen = ({

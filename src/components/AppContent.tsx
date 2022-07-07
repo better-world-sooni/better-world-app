@@ -1,25 +1,27 @@
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import React from 'react';
+import {shallowEqual, useSelector} from 'react-redux';
+import {RootState} from 'src/redux/rootReducer';
+import {Img} from 'src/components/common/Img';
 import BottomTabBar from 'src/components/BottomTabBar';
+import {getNftProfileImage} from 'src/utils/nftUtils';
+import {ICONS} from 'src/modules/icons';
+import {Colors} from 'src/modules/styles';
+import {Home, Send, User, ShoppingBag} from 'react-native-feather';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {createStackNavigator, TransitionPresets} from '@react-navigation/stack';
 import {NAV_NAMES} from 'src/modules/navNames';
 import HomeScreen from 'src/screens/Home/HomeScreen';
 import ProfileScreen from 'src/screens/Home/ProfileScreen';
 import SplashScreen from 'src/screens/Common/SplashScreen';
 import SignInScreen from 'src/screens/Auth/SignInScreen';
-import PostScreen from 'src/screens/PostScreen';
-import {shallowEqual, useSelector} from 'react-redux';
-import {RootState} from 'src/redux/rootReducer';
 import ChatRoomScreen from 'src/screens/ChatRoomScreen';
 import OnboardingScreen from 'src/screens/Auth/OnboardingScreen';
-import {Img} from './common/Img';
-import {getNftProfileImage} from 'src/modules/nftUtils';
-import {Home, Search, Send, User} from 'react-native-feather';
-import Colors from 'src/constants/Colors';
+import PostScreen from 'src/screens/PostScreen';
 import OtherProfileScreen from 'src/screens/OtherProfileScreen';
 import NftCollectionScreen from 'src/screens/NftCollectionScreen';
 import NewPostScreen from 'src/screens/NewPostScreen';
 import ReportScreen from 'src/screens/ReportScreen';
-import SearchScreen from 'src/screens/Home/SearchScreen';
+import SearchScreen from 'src/screens/SearchScreen';
 import ChatListScreen from 'src/screens/Home/ChatListScreen';
 import LikeListScreen from 'src/screens/LikeListScreen';
 import FollowListScreen from 'src/screens/FollowListScreen';
@@ -34,23 +36,36 @@ import NewCollectionEventScreen from 'src/screens/NewCollectionEventScreen';
 import AttendanceListScreen from 'src/screens/AttendanceListScreen';
 import CollectionEventScreen from 'src/screens/CollectionEventScreen';
 import PasswordSigninScreen from 'src/screens/Auth/PasswordSigninScreen';
-import {createStackNavigator} from '@react-navigation/stack';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import CollectionSearchScreen from 'src/screens/CollectionSearchScreen';
 import SocialScreen from 'src/screens/Home/SocialScreen';
 import CommunityWalletListScreen from 'src/screens/CommunityWalletListScreen';
 import CommunityWalletProfileScreen from 'src/screens/CommunityWalletProfileScreen';
 import NewCommunityWalletScreen from 'src/screens/NewCommunityWalletScreen';
 import CollectionFeedTagSelectScreen from 'src/screens/CollectionFeedTagSelectScreen';
-import {TransitionPresets} from '@react-navigation/stack';
 import TransactionScreen from 'src/screens/TransactionScreen';
-import {ICONS} from 'src/modules/icons';
+import StoreScreen from 'src/screens/Home/StoreScreen';
+import {Platform} from 'react-native';
+import ConfirmationModalScreen from 'src/screens/ConfirmationModalScreen';
+import ForumSettingScreen from 'src/screens/ForumSettingScreen';
+import SocialSettingScreen from 'src/screens/SocialSettingScreen';
+import NftProfileEditScreen from 'src/screens/NftProfileEditScreen';
+import NftCollectionProfileEditScreen from 'src/screens/NftCollectionProfileEditScreen';
+<<<<<<< HEAD
+import StoreSettingScreen from 'src/screens/StoreSettingScreen';
+import NewMerchandiseScreen from 'src/screens/NewMerchandiseScreen';
+import MerchandiseScreen from 'src/screens/MerchandiseScreen';
+import NewCouponScreen from 'src/screens/NewCouponScreen';
+import MerchandiseSelectScreen from 'src/screens/MerchandiseSelectScreen';
+import OrderListScreen from 'src/screens/OrderListScreen';
+import CouponListScreen from 'src/screens/CouponListScreen';
+import CollectionOrderListScreen from 'src/screens/CollectionOrderListScreen';
+=======
+import { ChatRoomEnterType } from "src/screens/ChatRoomScreen";
+>>>>>>> notification
 
-const RootStack = createNativeStackNavigator();
+const RootStack = createStackNavigator();
 
 const Tab = createBottomTabNavigator();
-
-
 const tabBarFunc = props => <BottomTabBar {...props} />;
 
 const MainBottomTabs = () => {
@@ -58,6 +73,7 @@ const MainBottomTabs = () => {
     (root: RootState) => root.app.session,
     shallowEqual,
   );
+
   const profileTabIconProps = {
     uri: getNftProfileImage(currentNft, 50, 50),
     w: 24,
@@ -71,8 +87,7 @@ const MainBottomTabs = () => {
       screenOptions={{
         lazy: false,
         headerShown: false,
-      }}
-    >
+      }}>
       <Tab.Screen
         name={NAV_NAMES.Social}
         component={SocialScreen}
@@ -82,7 +97,7 @@ const MainBottomTabs = () => {
               width={22}
               height={22}
               strokeWidth={2}
-              color={focused ? 'black' : Colors.gray[400]}></Home>
+              color={focused ? Colors.black : Colors.gray.DEFAULT}></Home>
           ),
         }}
       />
@@ -99,15 +114,17 @@ const MainBottomTabs = () => {
         }}
       />
       <Tab.Screen
-        name={NAV_NAMES.Search}
-        component={SearchScreen}
+        name={NAV_NAMES.Store}
+        component={StoreScreen}
         options={{
           tabBarIcon: ({focused}) => (
-            <Search
+            <ShoppingBag
               width={22}
               height={22}
               strokeWidth={2}
-              color={focused ? 'black' : Colors.gray[400]}></Search>
+              color={
+                focused ? Colors.black : Colors.gray.DEFAULT
+              }></ShoppingBag>
           ),
         }}
       />
@@ -120,9 +137,8 @@ const MainBottomTabs = () => {
               width={22}
               height={22}
               strokeWidth={2}
-              color={focused ? 'black' : Colors.gray[400]}></Send>
+              color={focused ? Colors.black : Colors.gray.DEFAULT}></Send>
           ),
-          tabBarBadge: "10", 
         }}
       />
       <Tab.Screen
@@ -141,19 +157,18 @@ const MainBottomTabs = () => {
                 width={22}
                 height={22}
                 strokeWidth={2}
-                color={focused ? 'black' : Colors.gray[400]}></User>
+                color={focused ? Colors.black : Colors.gray.DEFAULT}></User>
             ),
         }}
       />
     </Tab.Navigator>
-    
   );
 };
 
 const setInitialRouteParams = notificationOpenData => {
   if (notificationOpenData) {
     if (
-      ['like_post', 'like_comment', 'comment'].includes(
+      ['like_post', 'like_comment', 'comment', 'vote'].includes(
         notificationOpenData.event,
       )
     ) {
@@ -183,6 +198,24 @@ const setInitialRouteParams = notificationOpenData => {
           },
         },
       };
+    } 
+    else if(notificationOpenData.event === 'chat') {
+      return {
+        notificationOpened: true,
+        routeDestination: {
+          navName: NAV_NAMES.ChatRoom,
+          id: {         
+            roomId: notificationOpenData.room_id,
+            roomName: notificationOpenData?.name || notificationOpenData.meta_name,
+            roomImage: notificationOpenData?.image_uri || notificationOpenData.meta_image_uri,
+            opponentNft: {
+              contract_address: notificationOpenData.contract_address,
+              token_id: notificationOpenData.token_id
+            },
+            chatRoomEnterType: ChatRoomEnterType.Notification,
+          }
+        }
+      }
     }
   } else {
     return {
@@ -216,7 +249,7 @@ export const AppContent = ({notificationOpenData}) => {
       component: MainBottomTabs,
       options: props => ({
         gestureEnabled: false,
-        cardStyle: {backgroundColor: 'white', presentation: 'screen'},
+        cardStyle: {backgroundColor: Colors.white, presentation: 'screen'},
         headershown: false,
       }),
     },
@@ -267,7 +300,10 @@ export const AppContent = ({notificationOpenData}) => {
     {
       name: NAV_NAMES.Scan,
       component: ScanScreen,
-      options: TransitionPresets.ModalTransition,
+      options:
+        Platform.OS == 'ios'
+          ? TransitionPresets.ModalSlideFromBottomIOS
+          : TransitionPresets.ModalTransition,
     },
     {
       name: NAV_NAMES.Notification,
@@ -296,7 +332,14 @@ export const AppContent = ({notificationOpenData}) => {
     {
       name: NAV_NAMES.Qr,
       component: QrScreen,
-      options: TransitionPresets.ModalTransition,
+      options:
+        Platform.OS == 'ios'
+          ? TransitionPresets.ModalSlideFromBottomIOS
+          : TransitionPresets.ModalTransition,
+    },
+    {
+      name: NAV_NAMES.Search,
+      component: SearchScreen,
     },
     {
       name: NAV_NAMES.ChatRoom,
@@ -323,13 +366,80 @@ export const AppContent = ({notificationOpenData}) => {
       component: NewCommunityWalletScreen,
     },
     {
+      name: NAV_NAMES.ConfirmationModal,
+      component: ConfirmationModalScreen,
+      options: {
+        presentation: 'transparentModal',
+      },
+    },
+    {
       name: NAV_NAMES.CollectionFeedTagSelect,
       component: CollectionFeedTagSelectScreen,
+      options:
+        Platform.OS == 'ios'
+          ? TransitionPresets.ModalSlideFromBottomIOS
+          : TransitionPresets.ModalTransition,
+    },
+    {
+      name: NAV_NAMES.ForumSetting,
+      component: ForumSettingScreen,
+      options: TransitionPresets.ModalTransition,
+    },
+    {
+      name: NAV_NAMES.SocialSetting,
+      component: SocialSettingScreen,
+      options: TransitionPresets.ModalTransition,
+    },
+    {
+      name: NAV_NAMES.NftProfileEdit,
+      component: NftProfileEditScreen,
+      options: TransitionPresets.ModalTransition,
+    },
+    {
+      name: NAV_NAMES.NftCollectionProfileEdit,
+      component: NftCollectionProfileEditScreen,
+      options: TransitionPresets.ModalTransition,
+    },
+    {
+      name: NAV_NAMES.MerchandiseSelect,
+      component: MerchandiseSelectScreen,
       options: TransitionPresets.ModalTransition,
     },
     {
       name: NAV_NAMES.Transaction,
       component: TransactionScreen,
+    },
+    {
+      name: NAV_NAMES.Store,
+      component: StoreScreen,
+    },
+    {
+      name: NAV_NAMES.StoreSetting,
+      component: StoreSettingScreen,
+    },
+    {
+      name: NAV_NAMES.NewMerchandise,
+      component: NewMerchandiseScreen,
+    },
+    {
+      name: NAV_NAMES.Merchandise,
+      component: MerchandiseScreen,
+    },
+    {
+      name: NAV_NAMES.NewCoupon,
+      component: NewCouponScreen,
+    },
+    {
+      name: NAV_NAMES.OrderList,
+      component: OrderListScreen,
+    },
+    {
+      name: NAV_NAMES.CouponList,
+      component: CouponListScreen,
+    },
+    {
+      name: NAV_NAMES.CollectionOrderList,
+      component: CollectionOrderListScreen,
     },
   ];
 

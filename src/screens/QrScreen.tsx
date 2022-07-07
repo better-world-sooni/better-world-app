@@ -3,22 +3,22 @@ import {Div} from 'src/components/common/Div';
 import {Img} from 'src/components/common/Img';
 import {Span} from 'src/components/common/Span';
 import {IMAGES} from 'src/modules/images';
-import {KeyboardAvoidingView} from 'src/modules/viewComponents';
-import {DEVICE_WIDTH} from 'src/modules/styles';
+import {KeyboardAvoidingView} from 'src/components/common/ViewComponents';
+import {Colors, DEVICE_WIDTH} from 'src/modules/styles';
 import QRCode from 'react-native-qrcode-svg';
 import {useApiSelector, useReloadPOSTWithToken} from 'src/redux/asyncReducer';
 import apis from 'src/modules/apis';
 import {shallowEqual, useSelector} from 'react-redux';
 import {RootState} from 'src/redux/rootReducer';
 import {ActivityIndicator, Platform} from 'react-native';
-import {getNftName, getNftProfileImage} from 'src/modules/nftUtils';
+import {getNftName, getNftProfileImage} from 'src/utils/nftUtils';
 import {Col} from 'src/components/common/Col';
 import {ChevronLeft, RefreshCw, X} from 'react-native-feather';
 import {useNavigation} from '@react-navigation/native';
 import {Row} from 'src/components/common/Row';
 import {CustomBlurView} from 'src/components/common/CustomBlurView';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import {truncateAddress} from 'src/modules/blockchainUtils';
+import {truncateAddress} from 'src/utils/blockchainUtils';
 
 const QrScreen = () => {
   const {
@@ -73,7 +73,7 @@ const QrScreen = () => {
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       flex={1}
-      bgRealBlack>
+      bgBlack>
       <Div h={headerHeight} zIndex={100} absolute top0>
         <Row
           itemsCenter
@@ -86,7 +86,7 @@ const QrScreen = () => {
           top={notchHeight + 5}>
           <Col justifyStart>
             <Div auto rounded100 onPress={goBack}>
-              <X width={30} height={30} color="white" strokeWidth={2} />
+              <X width={30} height={30} color={Colors.white} strokeWidth={2} />
             </Div>
           </Col>
           <Col auto>
@@ -173,7 +173,7 @@ const QrScreen = () => {
             <Col auto onPress={handleRefresh}>
               <RefreshCw
                 strokeWidth={2}
-                color={'black'}
+                color={Colors.black}
                 height={22}
                 width={22}
               />

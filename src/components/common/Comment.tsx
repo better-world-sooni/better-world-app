@@ -1,10 +1,10 @@
 import {Heart} from 'react-native-feather';
-import Colors from 'src/constants/Colors';
+import {Colors} from 'src/modules/styles';
 import useLike, {LikableType} from 'src/hooks/useLike';
 import apis from 'src/modules/apis';
 import React from 'react';
-import {getNftName, getNftProfileImage} from 'src/modules/nftUtils';
-import {createdAtText} from 'src/modules/timeUtils';
+import {getNftName, getNftProfileImage} from 'src/utils/nftUtils';
+import {createdAtText} from 'src/utils/timeUtils';
 import {Col} from './Col';
 import {Div} from './Div';
 import {Img} from './Img';
@@ -74,7 +74,12 @@ function CommentContent({
         color: Colors.danger.DEFAULT,
         strokeWidth: 2,
       }
-    : {width: heartSize, height: heartSize, color: 'black', strokeWidth: 2};
+    : {
+        width: heartSize,
+        height: heartSize,
+        color: Colors.black,
+        strokeWidth: 2,
+      };
   const handlePressReplyTo = () => {
     onPressReplyTo({
       id,

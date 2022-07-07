@@ -8,7 +8,7 @@ import {Plus, Zap} from 'react-native-feather';
 import {useGotoNewPost} from 'src/hooks/useGoto';
 import {PostOwnerType, PostType} from 'src/screens/NewPostScreen';
 import ListEmptyComponent from './common/ListEmptyComponent';
-import Colors from 'src/constants/Colors';
+import {Colors} from 'src/modules/styles';
 import {Img} from './common/Img';
 import {ICONS} from 'src/modules/icons';
 
@@ -41,6 +41,9 @@ function FeedFlatlist(
   return (
     <Div flex={1} bgWhite relative>
       <Div h={notchHeight}></Div>
+      <Div bgWhite px15 h={50} justifyCenter borderBottom={0.5} borderGray200>
+        {TopComponent}
+      </Div>
       <FlatList
         ref={ref}
         showsVerticalScrollIndicator={false}
@@ -64,23 +67,9 @@ function FeedFlatlist(
             <Div h={27} />
           </>
         }
-        ListHeaderComponent={
-          <Div
-            bgWhite
-            px15
-            h={50}
-            justifyCenter
-            borderBottom={0.5}
-            borderGray200>
-            {TopComponent}
-          </Div>
-        }
         ListEmptyComponent={
           <ListEmptyComponent h={DEVICE_HEIGHT - headerHeight * 2} />
         }
-        stickyHeaderIndices={[0]}
-        // @ts-ignore
-        stickyHeaderHiddenOnScroll
         data={data}
         onEndReached={onEndReached}
         renderItem={renderItem}></FlatList>
@@ -88,7 +77,7 @@ function FeedFlatlist(
         (enableAddType == EnableAddType.Post ? (
           <Div
             rounded100
-            bgPrimary
+            bgBlack
             absolute
             w54
             h54
@@ -105,7 +94,11 @@ function FeedFlatlist(
               shadowRadius: 4,
               elevation: 4,
             }}>
-            <Plus strokeWidth={2} color={'white'} height={30} width={30}></Plus>
+            <Plus
+              strokeWidth={2}
+              color={Colors.white}
+              height={30}
+              width={30}></Plus>
           </Div>
         ) : (
           <Div

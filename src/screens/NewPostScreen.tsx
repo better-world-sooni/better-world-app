@@ -15,14 +15,17 @@ import {
 import apis from 'src/modules/apis';
 import {Img} from 'src/components/common/Img';
 import {useNavigation} from '@react-navigation/native';
-import {getNftName, getNftProfileImage} from 'src/modules/nftUtils';
+import {getNftName, getNftProfileImage} from 'src/utils/nftUtils';
 import {shallowEqual, useSelector} from 'react-redux';
 import {RootState} from 'src/redux/rootReducer';
 import {Span} from 'src/components/common/Span';
-import {createdAtText} from 'src/modules/timeUtils';
+import {createdAtText} from 'src/utils/timeUtils';
 import useUploadPost from 'src/hooks/useUploadPost';
 import UploadImageSlideShow from 'src/components/common/UploadImageSlideShow';
-import {KeyboardAvoidingView, TextInput} from 'src/modules/viewComponents';
+import {
+  KeyboardAvoidingView,
+  TextInput,
+} from 'src/components/common/ViewComponents';
 import {useApiSelector, useReloadGETWithToken} from 'src/redux/asyncReducer';
 import {ActivityIndicator, Platform} from 'react-native';
 import {MenuView} from '@react-native-menu/menu';
@@ -33,7 +36,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import {DEVICE_WIDTH} from 'src/modules/styles';
 import {CustomBlurView} from 'src/components/common/CustomBlurView';
-import Colors from 'src/constants/Colors';
+import {Colors} from 'src/modules/styles';
 import useAutoFocusRef from 'src/hooks/useAutoFocusRef';
 import RepostedPost from 'src/components/common/RepostedPost';
 import CollectionEvent from 'src/components/common/CollectionEvent';
@@ -174,7 +177,7 @@ const NewPostScreen = ({
                   <ChevronLeft
                     width={22}
                     height={22}
-                    color="black"
+                    color={Colors.black}
                     strokeWidth={2}
                   />
                 </Div>
@@ -188,7 +191,7 @@ const NewPostScreen = ({
                     width={22}
                     height={22}
                     strokeWidth={2}
-                    color={'black'}></Upload>
+                    color={Colors.black}></Upload>
                 ) : (
                   <Img source={ICONS.lightBulb} h22 w22 />
                 )}
@@ -293,12 +296,14 @@ const NewPostScreen = ({
               <Col auto mr10>
                 <Image
                   strokeWidth={2}
-                  color={!addImages ? Colors.info.DEFAULT : 'black'}
+                  color={!addImages ? Colors.info.DEFAULT : Colors.black}
                   height={22}
                   width={22}></Image>
               </Col>
               <Col auto>
-                <Span color={!addImages ? Colors.info.DEFAULT : 'black'} bold>
+                <Span
+                  color={!addImages ? Colors.info.DEFAULT : Colors.black}
+                  bold>
                   미디어 {addImages ? '제거' : '추가'}
                 </Span>
               </Col>
@@ -309,7 +314,7 @@ const NewPostScreen = ({
               <Row itemsCenter border={0.5} rounded10 borderGray200 p8>
                 <Col auto mr5>
                   <ChevronUp
-                    color={'black'}
+                    color={Colors.black}
                     height={24}
                     width={24}
                     strokeWidth={2}
@@ -325,7 +330,7 @@ const NewPostScreen = ({
           </Col>
         </Row>
       </KeyboardAvoidingView>
-      <Div h={HAS_NOTCH ? 27 : 12} bgWhite />
+      <Div h={HAS_NOTCH ? 27 : 0} bgWhite />
     </>
   );
 };

@@ -27,7 +27,6 @@ export const useDeletePromiseFnWithToken = () => {
   );
   return async(args) => deletePromiseFn({...args, token: userToken})
 };
-
 export const useGetPromiseFnWithToken = () => {
   const {userToken} = useSelector(
     (root: RootState) => ({userToken: root.app.session.token}),
@@ -35,7 +34,13 @@ export const useGetPromiseFnWithToken = () => {
   );
   return async(args) => await getPromiseFn({...args, token: userToken})
 };
-
+export const usePatchPromiseFnWithToken = () => {
+  const {userToken} = useSelector(
+    (root: RootState) => ({userToken: root.app.session.token}),
+    shallowEqual,
+  );
+  return async(args) => await patchPromiseFn({...args, token: userToken})
+};
 
 
 export const usePromiseFnWithToken = () => {
@@ -294,6 +299,33 @@ export const useReloadPOSTWithToken = (props = {}) => {
           ...(finalToken && {token: finalToken}),
         },
         promiseFn: postPromiseFn,
+        successHandler,
+        errHandler,
+        fetchType: FetchType.Reload,
+      }),
+    );
+  };
+};
+
+export const useReloadPUTWithToken = (props = {}) => {
+  const {scope, token} = props as any;
+  const {userToken} = useSelector(
+    (root: RootState) => ({userToken: root.app.session.token}),
+    shallowEqual,
+  );
+  const finalToken = token ? token : userToken;
+  const dispatch = useDispatch();
+  return (api, body?, successHandler?, errHandler?) => {
+    const key = getKeyByApi(api, scope);
+    dispatch(
+      asyncThunk({
+        key: key,
+        args: {
+          url: api.url,
+          ...(body && {body}),
+          ...(finalToken && {token: finalToken}),
+        },
+        promiseFn: putPromiseFn,
         successHandler,
         errHandler,
         fetchType: FetchType.Reload,

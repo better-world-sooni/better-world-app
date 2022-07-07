@@ -50,7 +50,7 @@ const Button = (props) => {
         ...(isChip
           ? [
               <Style bgPrimary isActive={chipPrimary} />,
-              <Style bgRealBlack isActive={chipBlack} />,
+              <Style bgBlack isActive={chipBlack} />,
               <Style bgWhite border borderPrimary isActive={chipOutlined} />,
               <Style
                 bgWhite

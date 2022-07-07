@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import { launchImageLibrary } from 'react-native-image-picker';
 import useFileUpload, { FileUploadReturnType } from './useFileUpload';
 
-export default function useUploadImages({attachedRecord = "post", selectionLimit = 0}){
+export default function useUploadImages({attachedRecord = "post", selectionLimit = 0, fileLimit=4}){
     const [images, setImages] = useState([])
     const [error, setError] = useState('')
     const {uploadFile} = useFileUpload({attachedRecord})
@@ -19,8 +19,8 @@ export default function useUploadImages({attachedRecord = "post", selectionLimit
             if (targetFilesLength === 0) {
                 return;
             }
-            if (images.length + targetFilesLength > 4) {
-                setError("미디어는 4개 이상 선택하실 수 없습니다.");
+            if (images.length + targetFilesLength > fileLimit) {
+                setError(`미디어는 ${fileLimit}개 이상 선택하실 수 없습니다.`);
                 return;
             }
             const additionalFiles = [];

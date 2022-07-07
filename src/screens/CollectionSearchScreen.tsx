@@ -1,6 +1,6 @@
 import React, {useRef} from 'react';
 import {Div} from 'src/components/common/Div';
-import {RefreshControl} from 'react-native';
+import {FlatList, RefreshControl} from 'react-native';
 import {Row} from 'src/components/common/Row';
 import {Col} from 'src/components/common/Col';
 import {ChevronLeft, Search} from 'react-native-feather';
@@ -10,14 +10,8 @@ import {
   usePaginateGETWithToken,
   useReloadGETWithToken,
 } from 'src/redux/asyncReducer';
-import {TextInput} from 'src/modules/viewComponents';
-import {DEVICE_WIDTH} from 'src/modules/styles';
-import Animated, {
-  useAnimatedScrollHandler,
-  useAnimatedStyle,
-  useSharedValue,
-} from 'react-native-reanimated';
-import {CustomBlurView} from 'src/components/common/CustomBlurView';
+import {TextInput} from 'src/components/common/ViewComponents';
+import {Colors} from 'src/modules/styles';
 import useEdittableText from 'src/hooks/useEdittableText';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import PolymorphicOwner from 'src/components/PolymorphicOwner';
@@ -68,81 +62,65 @@ const CollectionSearchScreen = ({
       );
     }
   };
-
-  const translationY = useSharedValue(0);
-  const scrollHandler = useAnimatedScrollHandler(event => {
-    translationY.value = event.contentOffset.y;
-  });
   const notchHeight = useSafeAreaInsets().top;
-  const headerHeight = notchHeight + 50;
-  const headerStyles = useAnimatedStyle(() => {
-    return {
-      width: DEVICE_WIDTH,
-      height: headerHeight,
-      opacity: Math.min(translationY.value / 50, 1),
-    };
-  });
   return (
     <Div flex={1} bgWhite>
-      <Div h={headerHeight} zIndex={100}>
-        <Animated.View style={headerStyles}>
-          <CustomBlurView
-            blurType="xlight"
-            blurAmount={30}
-            blurRadius={20}
-            overlayColor=""
-            style={{
-              width: DEVICE_WIDTH,
-              height: '100%',
-              position: 'absolute',
-            }}></CustomBlurView>
-        </Animated.View>
-        <Div zIndex={100} absolute w={DEVICE_WIDTH} top={notchHeight + 5}>
-          <Row itemsCenter py5 h40 px15>
-            <Col auto onPress={goBack}>
-              <ChevronLeft
-                strokeWidth={2}
-                color={'black'}
-                height={22}
-                width={22}
-              />
-            </Col>
-            <Col mx10>
-              <TextInput
-                innerRef={searchRef}
-                value={text}
-                placeholder="컬렉션의 NFT를 찾아보세요"
-                fontSize={16}
-                bgGray200
-                rounded100
-                m0
-                p0
-                px8
-                h32
-                bold
-                onChangeText={handleChangeQuery}
-              />
-            </Col>
-            <Col auto onPress={onPressSearch}>
-              <Search strokeWidth={2} color={'black'} height={22} width={22} />
-            </Col>
-          </Row>
-        </Div>
-      </Div>
-      <Animated.FlatList
-        style={{marginTop: -headerHeight}}
+      <Div h={notchHeight} />
+      <FlatList
         automaticallyAdjustContentInsets
         showsVerticalScrollIndicator={false}
-        onScroll={scrollHandler}
         onEndReached={handleEndReached}
+        ListHeaderComponent={
+          <Div
+            bgWhite
+            px8
+            h={50}
+            justifyCenter
+            borderBottom={0.5}
+            borderGray200>
+            <Row itemsCenter>
+              <Col auto onPress={goBack}>
+                <ChevronLeft
+                  strokeWidth={2}
+                  color={Colors.black}
+                  width={30}
+                  height={30}
+                />
+              </Col>
+              <Col mx10>
+                <TextInput
+                  innerRef={searchRef}
+                  value={text}
+                  placeholder="컬렉션의 NFT를 찾아보세요"
+                  fontSize={16}
+                  bgGray200
+                  rounded100
+                  m0
+                  p0
+                  px8
+                  h32
+                  bold
+                  onChangeText={handleChangeQuery}
+                />
+              </Col>
+              <Col auto onPress={onPressSearch} pr8>
+                <Search
+                  strokeWidth={2}
+                  color={Colors.black}
+                  height={22}
+                  width={22}
+                />
+              </Col>
+            </Row>
+          </Div>
+        }
+        stickyHeaderIndices={[0]}
         refreshControl={
           <RefreshControl
             refreshing={memberLoading && !textHasChanged}
             onRefresh={handleRefresh}
-            progressViewOffset={headerHeight}
           />
         }
-        ListHeaderComponent={<Div h={headerHeight}></Div>}
         data={memberRes ? memberRes.nfts : []}
         keyExtractor={item =>
           `${(item as any)?.nft?.contract_address}-${
@@ -157,7 +135,7 @@ const CollectionSearchScreen = ({
               isFollowing={(item as any).is_following}
             />
           );
-        }}></Animated.FlatList>
+        }}></FlatList>
     </Div>
   );
 };

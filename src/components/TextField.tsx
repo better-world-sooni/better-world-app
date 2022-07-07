@@ -5,9 +5,9 @@ import { Row } from "src/components/common/Row"
 import { Span } from "src/components/common/Span"
 import { Style } from "src/components/common/Style"
 import useAutoFocusRef from 'src/hooks/useAutoFocusRef';
-import { TextInput  } from "src/modules/viewComponents"
+import {TextInput} from 'src/components/common/ViewComponents';
 
-export const TextField = (props) => {
+export const TextField = props => {
   const {
     label,
     labelStyle,
@@ -59,16 +59,16 @@ export const TextField = (props) => {
         {rightComp && <Col auto>{rightComp}</Col>}
       </Row>
       {error ? (
-        <Span noticeDetail danger mt2>
+        <Span danger mt2>
           {error}
         </Span>
       ) : (
         note && (
-          <Span noticeDetail gray600 mt2>
+          <Span gray600 mt2>
             {note}
           </Span>
         )
       )}
     </Div>
   );
-}
+};

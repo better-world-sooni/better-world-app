@@ -1,7 +1,6 @@
 import React from 'react';
 import {Div} from 'src/components/common/Div';
 import apis from 'src/modules/apis';
-import {useIsAdmin} from 'src/modules/nftUtils';
 import CommunityWalletProfile from 'src/components/common/CommunityWalletProfile';
 
 export default function CommunityWalletProfileScreen({

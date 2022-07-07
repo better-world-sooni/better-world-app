@@ -9,7 +9,7 @@ import ListFlatlist from 'src/components/ListFlatlist';
 import CommunityWallet from 'src/components/common/CommunityWallet';
 import {DEVICE_WIDTH} from 'src/modules/styles';
 import {useGotoNewCommunityWallet} from 'src/hooks/useGoto';
-import {useIsAdmin} from 'src/modules/nftUtils';
+import {useIsAdmin} from 'src/utils/nftUtils';
 import {Div} from 'src/components/common/Div';
 import {Span} from 'src/components/common/Span';
 
@@ -47,7 +47,7 @@ export default function CommunityWalletListScreen() {
       HeaderRightComponent={
         isAdmin && (
           <Div onPress={gotoNewCommunityWallet}>
-            <Span info bold fontSize={14}>
+            <Span admin bold fontSize={14}>
               추가
             </Span>
           </Div>

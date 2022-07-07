@@ -1,5 +1,5 @@
 import React from 'react';
-import {TouchableOpacity, View} from 'src/modules/viewComponents';
+import {TouchableOpacity, View} from './ViewComponents';
 
 export const Div = props => {
   const {onPress, ...otherProps} = props;

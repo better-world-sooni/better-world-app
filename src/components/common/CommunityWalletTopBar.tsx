@@ -1,24 +1,30 @@
 import {useNavigation} from '@react-navigation/native';
 import React from 'react';
 import {ChevronDown, ChevronLeft} from 'react-native-feather';
-import Colors from 'src/constants/Colors';
-import {truncateAddress} from 'src/modules/blockchainUtils';
+import {Colors} from 'src/modules/styles';
+import {truncateAddress} from 'src/utils/blockchainUtils';
 import {ICONS} from 'src/modules/icons';
-import {resizeImageUri} from 'src/modules/uriUtils';
+import {resizeImageUri} from 'src/utils/uriUtils';
 import {Col} from './Col';
 import {Div} from './Div';
 import {Img} from './Img';
 import {Row} from './Row';
 import {Span} from './Span';
+import {handlePressWalletExpand} from 'src/utils/bottomPopupUtils';
 
-export default function CommunityWalletTopBar({communityWallet, onPressDown}) {
+export default function CommunityWalletTopBar({communityWallet}) {
   const {goBack} = useNavigation();
 
   return (
-    <Row flex itemsCenter px7>
+    <Row itemsCenter>
       <Col auto>
         <Div auto rounded100 onPress={goBack}>
-          <ChevronLeft width={30} height={30} color="black" strokeWidth={2} />
+          <ChevronLeft
+            width={30}
+            height={30}
+            color={Colors.black}
+            strokeWidth={2}
+          />
         </Div>
       </Col>
       <Col auto mr8>
@@ -33,7 +39,7 @@ export default function CommunityWalletTopBar({communityWallet, onPressDown}) {
           />
         </Div>
       </Col>
-      <Col onPress={onPressDown}>
+      <Col onPress={() => handlePressWalletExpand(communityWallet.about)} pr7>
         <Row itemsCenter>
           <Col auto mr8>
             <Span fontSize={14} bold>

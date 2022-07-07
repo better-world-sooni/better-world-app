@@ -1,6 +1,6 @@
 import React, {useRef} from 'react';
 import {Row} from 'src/components/common/Row';
-import {Bell, ChevronDown, Feather} from 'react-native-feather';
+import {Bell, ChevronDown} from 'react-native-feather';
 import apis from 'src/modules/apis';
 import {
   useApiSelector,
@@ -8,21 +8,23 @@ import {
   useReloadGETWithToken,
 } from 'src/redux/asyncReducer';
 import Post from 'src/components/common/Post';
-import {useGotoNewPost, useGotoNotification} from 'src/hooks/useGoto';
+import {useGotoNotification} from 'src/hooks/useGoto';
 import FeedFlatlist from 'src/components/FeedFlatlist';
 import {Platform} from 'react-native';
 import {useScrollToTop} from '@react-navigation/native';
 import {Span} from 'src/components/common/Span';
 import {Col} from 'src/components/common/Col';
 import {MenuView} from '@react-native-menu/menu';
-import {PostOwnerType, PostType} from '../NewPostScreen';
 import {Div} from 'src/components/common/Div';
 import {Img} from 'src/components/common/Img';
-import {IMAGES} from 'src/modules/images';
 import useFocusReloadWithTimeOut from 'src/hooks/useFocusReloadWithTimeout';
 import SideMenu from 'react-native-side-menu-updated';
 import MyNftCollectionMenu from 'src/components/common/MyNftCollectionMenu';
 import {DEVICE_WIDTH} from 'src/modules/styles';
+import {Colors} from 'react-native/Libraries/NewAppScreen';
+import {useUpdateUnreadNotificationCount} from 'src/redux/appReducer';
+import {useSelector} from 'react-redux';
+import {RootState} from 'src/redux/rootReducer';
 
 enum SocialFeedFilter {
   All = 'all',
@@ -88,10 +90,11 @@ export default function SocialScreen() {
       reloadGETWithToken(apis.feed.social(SocialFeedFilter.Following));
     }
   };
+  const updateUnreadNotificationCount = useUpdateUnreadNotificationCount();
   const handleRefresh = () => {
     if (feedLoading) return;
     reloadGETWithToken(apis.feed.social(feedRes?.filter));
-    reloadGETWithToken(apis.feed.count());
+    updateUnreadNotificationCount();
     reloadGETWithToken(apis.nft_collection._());
   };
   const handleEndReached = () => {
@@ -105,9 +108,13 @@ export default function SocialScreen() {
   };
   useFocusReloadWithTimeOut({
     reloadUriObject: apis.feed.social(feedRes?.filter),
-    cacheTimeoutInSeconds: 120,
+    cacheTimeoutInSeconds: 300,
     onStart: scrollToTop,
   });
+  const unreadNotificationCount = useSelector(
+    (root: RootState) => root.app.unreadNotificationCount,
+  );
+
   return (
     <SideMenu
       ref={sideMenuRef}
@@ -137,6 +144,8 @@ export default function SocialScreen() {
                   w30
                   rounded100
                   bgGray200
+                  border={0.5}
+                  borderGray200
                   uri={nftCollectionRes.nft_collection.image_uri}></Img>
               ) : (
                 <Div bgGray200 h30 w30 rounded100 />
@@ -155,7 +164,7 @@ export default function SocialScreen() {
                   <Col auto>
                     <ChevronDown
                       strokeWidth={2}
-                      color={'black'}
+                      color={Colors.black}
                       height={20}
                       width={20}
                     />
@@ -164,8 +173,29 @@ export default function SocialScreen() {
               </MenuView>
             </Col>
             <Col itemsEnd>
-              <Div onPress={() => gotoNotifications()}>
-                <Bell strokeWidth={2} color={'black'} height={22} width={22} />
+              <Div onPress={() => gotoNotifications()} relative>
+                <Bell
+                  strokeWidth={2}
+                  color={Colors.black}
+                  height={22}
+                  width={22}
+                />
+                {unreadNotificationCount > 0 && (
+                  <Div
+                    absolute
+                    top={-10}
+                    right={-10}
+                    auto
+                    rounded100
+                    bgDanger
+                    px8
+                    py4
+                    justifyCenter>
+                    <Span white fontSize={10} bold>
+                      {unreadNotificationCount}
+                    </Span>
+                  </Div>
+                )}
               </Div>
             </Col>
           </Row>

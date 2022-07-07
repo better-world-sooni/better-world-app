@@ -1,27 +1,32 @@
 import { useEffect, useState } from "react";
 import { EventRegister } from "react-native-event-listeners";
 import apis from "src/modules/apis";
-import { smallBump } from "src/modules/hapticFeedBackUtils";
+import { smallBump } from "src/utils/hapticFeedBackUtils";
 import { usePostPromiseFnWithToken } from "src/redux/asyncReducer";
+import { useGotoConfirmationModal } from "./useGoto";
 
 export enum VoteCategory {
     Against = 0,
     For = 1,
-    Abstain = 2
+}
+
+export enum VotingStatus {
+    Rejected = 0,
+    Approved = 1,
+    Error = 2,
 }
 
 const voteEventId = (postId) => `vote-${postId}`
-const voteableEventId = (postId) => `votable-${postId}`
+const votingStatusEventId = (postId) => `votingStatus-${postId}`
 
-export default function useVote({initialVote, initialForVotesCount, initialAgainstVotesCount, initialAbstainVotesCount, votingDeadline, postId}) {
+export default function useVote({initialVote, initialForVotesCount, initialAgainstVotesCount, initialVotingStatus, postId}) {
     const [vote, setVote] = useState(initialVote)
-    const [votable, setVotable] = useState(!votingDeadline ||
-        new Date(votingDeadline) > new Date());
+    const [votingStatus, setVotingStatus] = useState(initialVotingStatus);
     const forVoteOffset = initialVote == null && VoteCategory.For == vote ? 1 : 0;
     const againstVoteOffset = initialVote == null && VoteCategory.Against == vote ? 1 : 0;
-    const abstainVoteOffset = initialVote == null && VoteCategory.Abstain == vote ? 1 : 0;
     
     const postPromiseFnWithToken = usePostPromiseFnWithToken();
+    const gotoConfirmation = useGotoConfirmationModal()
     useEffect(() => {
         setVote(initialVote);
         EventRegister.addEventListener(voteEventId(postId), (voteCategory) => {
@@ -32,48 +37,48 @@ export default function useVote({initialVote, initialForVotesCount, initialAgain
         }
     }, [initialVote]);
     useEffect(() => {
-        setVotable(!votingDeadline ||
-            new Date(votingDeadline) > new Date());
-        EventRegister.addEventListener(voteableEventId(postId), (votable) => {
-            setVotable(votable)
+        setVotingStatus(initialVotingStatus);
+        EventRegister.addEventListener(votingStatusEventId(postId), (votingStatus) => {
+            setVotingStatus(votingStatus)
         })
         return () => {
-            EventRegister.removeEventListener(voteableEventId(postId));
+            EventRegister.removeEventListener(votingStatusEventId(postId));
         }
-    }, [votingDeadline]);
+    }, [initialVotingStatus]);
     const handlePressVoteFor = () => {
         handlePressVote(VoteCategory.For)
     };
     const handlePressVoteAgainst = () => {
         handlePressVote(VoteCategory.Against)
     };
-    const handlePressVoteAbstain = () => {
-        handlePressVote(VoteCategory.Abstain)
+    const confirmVote = async (voteCategory) => {
+        smallBump();
+        const {data} = await postPromiseFnWithToken({url: apis.vote.postId(postId).url, body: {
+            category: voteCategory
+        }});
+        if(data.success){
+            EventRegister.emit(voteEventId(postId), voteCategory)
+            EventRegister.emit(votingStatusEventId(postId), data.voting_status)
+        } else {
+            EventRegister.emit(votingStatusEventId(postId), VotingStatus.Error)
+        }
     }
     const handlePressVote = (voteCategory) => {
         if(vote == null){
-            smallBump();
-            postPromiseFnWithToken({url: apis.vote.postId(postId).url, body: {
-                category: voteCategory
-            }});
-            setVote(voteCategory);
-            EventRegister.emit(voteEventId(postId), voteCategory)
+            gotoConfirmation({onConfirm: () => confirmVote(voteCategory), text: `투표는 취소할 수 없습니다. \n${voteCategory == VoteCategory.For ? '찬성' : '반대'}하시겠습니까?`})
         }
     }
     const handleSetVotable = (value) => {
-        EventRegister.emit(voteableEventId(postId), value)
+        EventRegister.emit(votingStatusEventId(postId), value)
     }
     return {
-        votable,
+        votingStatus,
         forVotesCount: initialForVotesCount + forVoteOffset, 
-        againstVotesCount: initialAgainstVotesCount + againstVoteOffset, 
-        abstainVotesCount: initialAbstainVotesCount+ abstainVoteOffset,
+        againstVotesCount: initialAgainstVotesCount + againstVoteOffset,
         hasVotedFor: vote == VoteCategory.For,
         hasVotedAgainst: vote == VoteCategory.Against,
-        hasVotedAbstain: vote == VoteCategory.Abstain,
         handleSetVotable,
         handlePressVoteFor,
         handlePressVoteAgainst,
-        handlePressVoteAbstain
     }
 };

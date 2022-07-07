@@ -2,9 +2,9 @@ import {useNavigation} from '@react-navigation/native';
 import React, {useCallback} from 'react';
 import apis from 'src/modules/apis';
 import {NAV_NAMES} from 'src/modules/navNames';
-import {getNftName, getNftProfileImage} from 'src/modules/nftUtils';
+import {getNftName, getNftProfileImage} from 'src/utils/nftUtils';
 import {DEVICE_WIDTH} from 'src/modules/styles';
-import {FlatList} from 'src/modules/viewComponents';
+import {FlatList} from 'src/components/common/ViewComponents';
 import {useApiGETWithToken} from 'src/redux/asyncReducer';
 import {Div} from './common/Div';
 import {Img} from './common/Img';
@@ -30,10 +30,13 @@ function NftCollectionMember({member}) {
         member.token_id,
       ),
     );
-    navigation.navigate(NAV_NAMES.OtherProfile, {
-      contractAddress: member.contract_address,
-      tokenId: member.token_id,
-    });
+    navigation.navigate(
+      NAV_NAMES.OtherProfile as never,
+      {
+        contractAddress: member.contract_address,
+        tokenId: member.token_id,
+      } as never,
+    );
   }, []);
   return (
     <Div mx5 my5 rounded10 overflowHidden onPress={goToProfile}>

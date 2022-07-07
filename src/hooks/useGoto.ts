@@ -1,7 +1,8 @@
 import { CommonActions, useNavigation } from "@react-navigation/native";
-import { shallowEqual, useSelector } from "react-redux";
+import { shallowEqual, useDispatch, useSelector } from "react-redux";
 import apis from "src/modules/apis";
 import { NAV_NAMES } from "src/modules/navNames";
+import { appActions } from "src/redux/appReducer";
 import { useApiGETWithToken, useApiPOSTWithToken, useApiGET, useReloadGETWithToken } from "src/redux/asyncReducer";
 import { RootState } from "src/redux/rootReducer";
 import { ChatRoomEnterType } from "src/screens/ChatRoomScreen";
@@ -120,17 +121,36 @@ export function useGotoChatRoomFromProfile() {
   return gotoChatRoomFromProfile
 }
 
+export function useGotoChatRoomFromNotification(routeParams) {
+  const navigation = useNavigation()
+  const apiGET = useApiGET()
+  const gotoChatRoomFromNotification= (jwt) => {
+    apiGET(apis.chat.chatRoom.roomId(routeParams.roomId), jwt)
+    navigation.dispatch(
+      CommonActions.reset({
+        index: 1,
+        routes:[{name: NAV_NAMES.Home, params: {screen: NAV_NAMES.ChatList}}, {name: NAV_NAMES.ChatRoom, params: routeParams}]
+      })
+    );
+  }
+  return gotoChatRoomFromNotification
+}
+
 export function useGotoNftCollectionProfile({nftCollection}){
-    const apiGETWithToken = useApiGETWithToken()
-    const navigation = useNavigation()
-    const gotoProfile = () => {
-      apiGETWithToken(apis.nft_collection.contractAddress._(nftCollection.contract_address));
-      apiGETWithToken(apis.post.list.nftCollection(nftCollection.contract_address))
-      navigation.navigate(NAV_NAMES.NftCollection as never, {
-        nftCollection
-      } as never);
-    }
-    return gotoProfile
+  const {currentNft} = useSelector(
+    (root: RootState) => root.app.session,
+    shallowEqual,
+  );
+  const apiGETWithToken = useApiGETWithToken()
+  const navigation = useNavigation()
+  const gotoProfile = () => {
+    apiGETWithToken(currentNft.contract_address == nftCollection.contract_address ?  apis.nft_collection._() : apis.nft_collection.contractAddress._(nftCollection.contract_address));
+    apiGETWithToken(apis.post.list.nftCollection(nftCollection.contract_address))
+    navigation.navigate(NAV_NAMES.NftCollection as never, {
+      nftCollection
+    } as never);
+  }
+  return gotoProfile
 }
 
 export function useGotoPost({postId}){
@@ -143,7 +163,7 @@ export function useGotoPost({postId}){
       navigation.dispatch(
         CommonActions.reset({
           index: 1,
-          routes:[{name: NAV_NAMES.Home},{name: NAV_NAMES.Post, params: {postId, autoFocus}}]
+          routes:[{name: NAV_NAMES.Home}, {name: NAV_NAMES.Post, params: {postId, autoFocus}}]
         })
       );
     }
@@ -171,7 +191,7 @@ export function useGotoCollectionFeedTagSelect(){
   const navigation = useNavigation()
   const apiGETWithToken = useApiGETWithToken()
   const gotoCollectionFeedTagSelect = (primaryKey, foreignKeyName) => {
-    apiGETWithToken(apis.feed.forum(ForumFeedFilter.Resolved))
+    apiGETWithToken(apis.feed.forum(ForumFeedFilter.Approved))
     navigation.navigate(NAV_NAMES.CollectionFeedTagSelect as never, {primaryKey, foreignKeyName} as never);
   }
   return gotoCollectionFeedTagSelect
@@ -200,6 +220,46 @@ export function useGotoLikeList({likableType, likableId}) {
     } as never)
   };
   return gotoCapsule
+}
+
+export function useGotoForumSetting() {
+  const navigation = useNavigation()
+  const apiGETWithToken = useApiGETWithToken()
+  const gotoForumSetting = () => {
+    apiGETWithToken(
+      apis.forum_setting._(),
+    );
+    navigation.navigate(NAV_NAMES.ForumSetting as never)
+  };
+  return gotoForumSetting
+}
+
+export function useGotoSocialSetting() {
+  const navigation = useNavigation()
+  const apiGETWithToken = useApiGETWithToken()
+  const gotoSocialSetting = () => {
+    apiGETWithToken(
+      apis.social_setting._(),
+    );
+    navigation.navigate(NAV_NAMES.SocialSetting as never)
+  };
+  return gotoSocialSetting
+}
+
+export function useGotoNftProfileEdit() {
+  const navigation = useNavigation()
+  const gotoNftProfileEdit = () => {
+    navigation.navigate(NAV_NAMES.NftProfileEdit as never)
+  };
+  return gotoNftProfileEdit
+}
+
+export function useGotoNftCollectionProfileEdit() {
+  const navigation = useNavigation()
+  const gotoNftProfileEdit = () => {
+    navigation.navigate(NAV_NAMES.NftCollectionProfileEdit as never)
+  };
+  return gotoNftProfileEdit
 }
 
 export function useGotoMyCommunityWalletList() {
@@ -312,10 +372,12 @@ export function useGotoScan({scanType}){
 export function useGotoNotification() {
   const navigation = useNavigation()
   const apiGETWithToken = useApiGETWithToken()
+  const dispatch = useDispatch()
   const useGotoNotification = () => {
     apiGETWithToken(
       apis.notification.list._()
     );
+    dispatch(appActions.updateUnreadNotificationCount(0))
     navigation.navigate(NAV_NAMES.Notification as never)
   };
   return useGotoNotification
@@ -334,6 +396,60 @@ export function useGotoHome() {
   return gotoHome
 }
 
+export function useGotoSearch() {
+  const navigation = useNavigation()
+  const apiGETWithToken = useApiGETWithToken()
+  const gotoSearch = () => {
+    apiGETWithToken(apis.rank.list());
+    navigation.navigate(NAV_NAMES.Search as never)
+  }
+  return gotoSearch
+}
+
+export function useGotoStoreSetting() {
+  const navigation = useNavigation()
+  const gotoStoreSetting= () => {
+    navigation.navigate(NAV_NAMES.StoreSetting as never)
+  }
+  return gotoStoreSetting
+}
+
+export function useGotoMerchandise({merchandiseId}) {
+  const navigation = useNavigation()
+  const apiGETWithToken = useApiGETWithToken()
+  const gotoMerchandise =() => {
+    apiGETWithToken(
+      apis.merchandise.merchandiseId(merchandiseId)
+    );
+    navigation.navigate(NAV_NAMES.Merchandise as never)
+  }
+  return gotoMerchandise
+}
+
+export function useGotoMerchandiseSelect({onConfirm}) {
+  const navigation = useNavigation()
+  const reloadGETWithToken = useReloadGETWithToken()
+  const gotoMerchandise =() => {
+    reloadGETWithToken(
+      apis.nft_collection.merchandise.list()
+    );
+    navigation.navigate(NAV_NAMES.MerchandiseSelect as never, {
+      onConfirm
+    } as never)
+  }
+  return gotoMerchandise
+}
+
+
+export function useGotoNewMerchandise() {
+  const navigation = useNavigation()
+  
+  const gotoNewMerchandise= () => {
+    navigation.navigate(NAV_NAMES.NewMerchandise as never)
+  }
+  return gotoNewMerchandise
+}
+
 export function useGotoOnboarding() {
   const navigation = useNavigation()
   const gotoOnboarding = () => {
@@ -345,6 +461,22 @@ export function useGotoOnboarding() {
     );
   };
   return gotoOnboarding
+}
+
+export function useGotoNewCoupon(){
+  const navigation = useNavigation()
+  const gotoNewCoupon = () => {
+    navigation.navigate(NAV_NAMES.NewCoupon as never)
+  };
+  return gotoNewCoupon
+}
+
+export function useGotoConfirmationModal() {
+  const navigation = useNavigation()
+  const gotoConfirmation = ({onCancel = null, onConfirm = null, text}) => {
+    navigation.navigate(NAV_NAMES.ConfirmationModal as never, {onCancel, onConfirm, text} as never)
+  };
+  return gotoConfirmation
 }
 
 export function useGotoCollectionFeed({contractAddress}) {
@@ -400,6 +532,42 @@ export function useGotoMyCollectionEventList(){
     navigation.navigate(NAV_NAMES.CollectionEventList as never)
   }
   return gotoCollectionEventList
+}
+
+export function useGotoOrderList(){
+  const navigation = useNavigation()
+  const apiGETWithToken = useApiGETWithToken()
+  const gotoOrderList = () => {
+    apiGETWithToken(
+      apis.nft.order.list()
+    )
+    navigation.navigate(NAV_NAMES.OrderList as never)
+  }
+  return gotoOrderList
+}
+
+export function useGotoCollectionOrderList(){
+  const navigation = useNavigation()
+  const apiGETWithToken = useApiGETWithToken()
+  const gotoCollectionOrderList = () => {
+    apiGETWithToken(
+      apis.nft_collection.order.list()
+    )
+    navigation.navigate(NAV_NAMES.CollectionOrderList as never)
+  }
+  return gotoCollectionOrderList
+}
+
+export function useGotoCouponList(){
+  const navigation = useNavigation()
+  const apiGETWithToken = useApiGETWithToken()
+  const gotoCouponList = () => {
+    apiGETWithToken(
+      apis.nft.coupon.list()
+    )
+    navigation.navigate(NAV_NAMES.CouponList as never)
+  }
+  return gotoCouponList
 }
 
 export function useGotoCollectionEventList({nftCollection}){

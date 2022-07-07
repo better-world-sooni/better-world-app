@@ -8,7 +8,8 @@ import {RootState} from 'src/redux/rootReducer';
 import {Plus} from 'react-native-feather';
 import {useGotoNewPost} from 'src/hooks/useGoto';
 import {PostOwnerType} from '../NewPostScreen';
-import useFocusReloadWithTimeOut from 'src/hooks/useFocusReloadWithTimeout';
+import {Colors} from 'src/modules/styles';
+import FocusAwareStatusBar from 'src/components/FocusAwareStatusBar';
 
 const ProfileScreen = () => {
   const {currentNft} = useSelector(
@@ -19,14 +20,8 @@ const ProfileScreen = () => {
     return apis.post.list._(page);
   };
   const gotoNewPost = useGotoNewPost({postOwnerType: PostOwnerType.Nft});
-  useFocusReloadWithTimeOut({
-    reloadUriObject: pageableNftPostFn(),
-    cacheTimeoutInSeconds: 120,
-  });
-
   return (
     <Div flex={1} bgWhite overflowHidden>
-      <StatusBar barStyle="dark-content" backgroundColor="#283018"></StatusBar>
       <NftProfile
         qrScan
         nftCore={currentNft}
@@ -36,7 +31,7 @@ const ProfileScreen = () => {
       />
       <Div
         rounded100
-        bgPrimary
+        bgBlack
         absolute
         w54
         h54
@@ -53,7 +48,11 @@ const ProfileScreen = () => {
           shadowRadius: 4,
           elevation: 4,
         }}>
-        <Plus strokeWidth={2} color={'white'} height={30} width={30}></Plus>
+        <Plus
+          strokeWidth={2}
+          color={Colors.white}
+          height={30}
+          width={30}></Plus>
       </Div>
     </Div>
   );

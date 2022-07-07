@@ -1,6 +1,6 @@
 import React, {useRef, useState} from 'react';
 import Carousel, {Pagination} from 'react-native-snap-carousel';
-import Colors from 'src/constants/Colors';
+import {Colors} from 'src/modules/styles';
 import {Div} from './Div';
 import {Img} from './Img';
 import Video from 'react-native-video';
@@ -12,14 +12,15 @@ export default function ImageSlideShow({
   sliderWidth,
   roundedTopOnly = false,
   enablePagination = true,
+  borderRadius = 10,
 }) {
   const [currentPage, setCurrentPage] = useState(0);
   return (
     <>
       <Div
-        rounded10={!roundedTopOnly}
-        borderBottomRight={10}
-        borderBottomLeft={10}
+        rounded={!roundedTopOnly && borderRadius}
+        borderBottomRight={borderRadius}
+        borderBottomLeft={borderRadius}
         border={0.5}
         borderGray200
         overflowHidden>

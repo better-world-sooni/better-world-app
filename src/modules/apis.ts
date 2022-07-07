@@ -4,11 +4,10 @@ import {isEmpty, omitBy, isNil} from 'lodash'
 
 // const BASE_URL = 'http://3.39.22.255:3000';
 // const BASE_URL = 'http://192.168.31.148:3000';
-// const BASE_URL = 'http://localhost:3000';
-const BASE_URL = 'https://api.betterworldapp.io';
+const BASE_URL = 'http://localhost:3000';
+// const BASE_URL = 'https://api.betterworldapp.io';
 
 const toUrl = (...args) => ({url: urljoin(...args)});
-const base = path => toUrl(BASE_URL, path);
 const apiV1 = path => toUrl(BASE_URL, '/api/v1', path);
 
 export const urlParams = (obj, nullable?) => {
@@ -72,6 +71,12 @@ const apis = {
     contractAddressAndTokenId: (contractAddress, tokenId) => apiV1(`/nft/${contractAddress}/${tokenId}`),
     qr: (token) => apiV1(`/nft/qr?token=${token}`),
     _: () => apiV1(`/nft`),
+    order: {
+      list: (page?) => apiV1(`/nft/order/list${urlParams({page})}`),
+    },
+    coupon: {
+      list: (page?) => apiV1(`/nft/coupon/list${urlParams({page})}`),
+    },
   },
   follow: {
     contractAddressAndTokenId: (contractAddress, tokenId?) => tokenId ? apiV1(`/follow/${contractAddress}/${tokenId}`) : apiV1(`/follow/${contractAddress}`),
@@ -85,6 +90,12 @@ const apis = {
     },
     collectionEvent: {
       list: (page?) => apiV1(`/nft_collection/collection_event/list${urlParams({page})}`),
+    },
+    merchandise: {
+      list: (page?) => apiV1(`/nft_collection/merchandise/list${urlParams({page})}`),
+    },
+    order: {
+      list: (page?) => apiV1(`/nft/order/list${urlParams({page})}`),
     },
     contractAddress: {
       _: (contractAddress) => apiV1(`/nft_collection/${contractAddress}`),
@@ -108,6 +119,12 @@ const apis = {
       }
     }
   },
+  forum_setting: {
+    _: () => apiV1(`/forum_setting`)
+  }, 
+  social_setting: {
+    _: () => apiV1(`/social_setting`)
+  }, 
   comment: {
     post: (postId) => apiV1(`/comment/post/${postId}`),
     comment: (commentId) => apiV1(`/comment/comment/${commentId}`)
@@ -123,6 +140,18 @@ const apis = {
   },
   rank:{
     list: (keyword?, page?) => apiV1(`/rank/list${urlParams({page, keyword})}`)
+  },
+  merchandise: {
+    _: () => apiV1(`/merchandise`),
+    merchandiseId: (merchandiseId) => apiV1(`/merchandise/${merchandiseId}`),
+  },
+  order: {
+    _: () => apiV1(`/order`),
+    list: () => apiV1(`/order/list`),
+    orderId: (orderId) => apiV1(`/order/${orderId}`),
+  },
+  coupon: {
+    list: () => apiV1(`/coupon/list`),
   },
   post: {
     _: () => apiV1(`/post`),

@@ -1,6 +1,6 @@
 import {ChevronLeft} from 'react-native-feather';
-import React, {useEffect, useRef, useState} from 'react';
-import {getNftName, useIsCurrentNft} from 'src/modules/nftUtils';
+import React, {useEffect, useState} from 'react';
+import {getNftName, useIsCurrentNft} from 'src/utils/nftUtils';
 import {Col} from './Col';
 import {Div} from './Div';
 import {Row} from './Row';
@@ -8,16 +8,12 @@ import {Span} from './Span';
 import {useNavigation} from '@react-navigation/native';
 import {ActivityIndicator, RefreshControl, Platform} from 'react-native';
 import Post from './Post';
-import {DEVICE_WIDTH} from 'src/modules/styles';
-import BottomPopup from './BottomPopup';
-import {BottomSheetModal} from '@gorhom/bottom-sheet';
-import NftProfileEditBottomSheetScrollView from './NftProfileEditBottomSheetScrollView';
+import {Colors, DEVICE_WIDTH} from 'src/modules/styles';
 import Animated, {
   useAnimatedScrollHandler,
   useAnimatedStyle,
   useSharedValue,
 } from 'react-native-reanimated';
-import {CustomBlurView} from 'src/components/common/CustomBlurView';
 import {
   useApiSelector,
   usePaginateGETWithToken,
@@ -25,8 +21,10 @@ import {
 } from 'src/redux/asyncReducer';
 import NftProfileHeader from './NftProfileHeader';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import ImageColors from 'react-native-image-colors'
+import ImageColors from 'react-native-image-colors';
 import ListEmptyComponent from './ListEmptyComponent';
+import FocusAwareStatusBar from 'src/components/FocusAwareStatusBar';
+import {BlurView} from '@react-native-community/blur';
 
 export default function NftProfile({
   nftCore,
@@ -55,12 +53,11 @@ export default function NftProfile({
     reloadGetWithToken(pageableNftPostFn());
   };
   const nft = profileData?.nft;
-  const [statusBarColor, setStatusBarColor] = useState('#FFFFFF');
+  const [bgImgColor, setBgImgColor] = useState(Colors.gray[400]);
   const translationY = useSharedValue(0);
   const scrollHandler = useAnimatedScrollHandler(event => {
     translationY.value = event.contentOffset.y;
   });
-  const bottomPopupRef = useRef<BottomSheetModal>(null);
   const isCurrentNft = useIsCurrentNft(nftCore);
   const keyExtractor = item => (item as any).id;
   const {goBack} = useNavigation();
@@ -115,35 +112,57 @@ export default function NftProfile({
       ImageColors.getColors(nft.background_image_uri, {
         fallback: '#228B22',
         cache: true,
-        key: 'unique_key',
+        key: nft.background_image_uri,
       }).then(colors => {
-        // console.log(colors)
+        setBgImgColor(colors['average']);
       });
     }
-  }, [nft]);
+  }, [nft, bgImgColor, setBgImgColor]);
 
   return (
     <>
+      {Platform.OS === 'android' && (
+        <FocusAwareStatusBar
+          barStyle="dark-content"
+          backgroundColor={bgImgColor}
+        />
+      )}
       <Div h={headerHeight}>
         {nft?.background_image_uri ? (
           <Animated.Image
             style={backgroundImageStyles}
             source={{uri: nft.background_image_uri}}></Animated.Image>
         ) : (
-          <Div absolute top0 h={headerHeight+30} bgGray400 w={DEVICE_WIDTH}></Div>
+          <Div
+            absolute
+            top0
+            h={headerHeight + 30}
+            bgGray400
+            w={DEVICE_WIDTH}></Div>
         )}
         <Animated.View style={headerStyles}>
-          <CustomBlurView
-            blurType="light"
-            blurAmount={20}
-            blurRadius={10}
-            overlayColor=""
-            style={{
-              width: DEVICE_WIDTH,
-              height: '100%',
-              position: 'absolute',
-            }}
-            reducedTransparencyFallbackColor="white"></CustomBlurView>
+          {Platform.OS === 'ios' ? (
+            <BlurView
+              blurType="light"
+              blurAmount={20}
+              blurRadius={10}
+              overlayColor=""
+              style={{
+                width: DEVICE_WIDTH,
+                height: '100%',
+                position: 'absolute',
+              }}
+              reducedTransparencyFallbackColor={Colors.white}
+            />
+          ) : (
+            <Div
+              style={{
+                width: DEVICE_WIDTH,
+                height: '100%',
+                position: 'absolute',
+              }}
+              backgroundColor={bgImgColor}></Div>
+          )}
           <Row itemsCenter justifyCenter width={DEVICE_WIDTH} absolute>
             <Animated.View style={titleStyles}>
               <Span
@@ -159,11 +178,11 @@ export default function NftProfile({
         </Animated.View>
         <Row itemsCenter py5 h40 zIndex={100} absolute top={notchHeight + 5}>
           {enableBack && (
-            <Col auto ml15 bgRealBlack p5 rounded100 onPress={goBack}>
+            <Col auto ml15 bgBlack p5 rounded100 onPress={goBack}>
               <ChevronLeft
                 width={20}
                 height={20}
-                color="white"
+                color={Colors.white}
                 strokeWidth={2.4}
               />
             </Col>
@@ -186,13 +205,14 @@ export default function NftProfile({
         removeClippedSubviews
         updateCellsBatchingPeriod={100}
         windowSize={11}
-        ListEmptyComponent={<ListEmptyComponent h={450} />}
+        ListEmptyComponent={
+          !nftPostListLoading && <ListEmptyComponent h={450} />
+        }
         ListHeaderComponent={
           <NftProfileHeader
             nftCore={nftCore}
             nft={nft}
             isCurrentNft={isCurrentNft}
-            bottomPopupRef={bottomPopupRef}
             qrScan={qrScan}
           />
         }
@@ -205,7 +225,9 @@ export default function NftProfile({
             )}
             {isNotPaginatable && (
               <Div itemsCenter py15>
-                <Span textCenter>게시물을 모두 확인했습니다.</Span>
+                <Span textCenter bold>
+                  게시물을 모두 확인했습니다.
+                </Span>
               </Div>
             )}
             <Div h={27} />
@@ -215,11 +237,6 @@ export default function NftProfile({
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
         }></Animated.FlatList>
-      {isCurrentNft && nft && (
-        <BottomPopup ref={bottomPopupRef} snapPoints={['90%']} index={-1}>
-          <NftProfileEditBottomSheetScrollView nft={nft} />
-        </BottomPopup>
-      )}
     </>
   );
 }

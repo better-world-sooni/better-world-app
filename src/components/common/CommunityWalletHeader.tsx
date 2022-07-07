@@ -1,5 +1,5 @@
 import React from 'react';
-import {getNftCollectionProfileImage} from 'src/modules/nftUtils';
+import {getNftCollectionProfileImage} from 'src/utils/nftUtils';
 import {Col} from './Col';
 import {Div} from './Div';
 import {Img} from './Img';

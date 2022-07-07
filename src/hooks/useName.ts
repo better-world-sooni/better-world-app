@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useDispatch } from "react-redux";
 import apis from "src/modules/apis";
-import { getNftName } from "src/modules/nftUtils";
+import { getNftName } from "src/utils/nftUtils";
 import { appActions } from "src/redux/appReducer";
-import { usePutPromiseFnWithToken, useReloadGETWithToken } from "src/redux/asyncReducer";
+import { usePatchPromiseFnWithToken } from "src/redux/asyncReducer";
 import useEdittableText from "./useEdittableText";
 
 export enum NameOwnerType {
@@ -14,8 +14,7 @@ export default function useName(nameOwner, nameOwnerType) {
     const [name, nameHasChanged, handleChangeText] = useEdittableText(NameOwnerType.Nft == nameOwnerType ? getNftName(nameOwner) : nameOwner.name);
     const [nameError, setNameError] = useState('')
     const [nameLoading, setNameLoading] = useState(false)
-    const reloadGetWithToken = useReloadGETWithToken();
-    const putPromiseFnWithToken = usePutPromiseFnWithToken();
+    const patchPromiseFnWithToken = usePatchPromiseFnWithToken();
     const dispatch = useDispatch()
     const handleSaveName = async () => {
         if (!nameError) {
@@ -27,16 +26,14 @@ export default function useName(nameOwner, nameOwnerType) {
 					property: "name",
 					value: name,
 				}
-				const {data} = await putPromiseFnWithToken({
+				const {data} = await patchPromiseFnWithToken({
                     url,
                     body
                 });
 				if (data?.success) {
                     setNameError('')
                     setNameLoading(false)
-                    await reloadGetWithToken(key);
-                    if(nameOwnerType == NameOwnerType.Nft){ 
-                        await reloadGetWithToken(apis.nft.contractAddressAndTokenId(nameOwner.contract_address, nameOwner.token_id));
+                    if(nameOwnerType == NameOwnerType.Nft){
                         await dispatch(appActions.updateCurrentNftName({
                             name
                          }));

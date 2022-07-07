@@ -1,6 +1,7 @@
 import React, {memo, useState} from 'react';
 import {ActivityIndicator, Platform} from 'react-native';
 import {
+  AlertTriangle,
   Check,
   Heart,
   MessageCircle,
@@ -8,9 +9,10 @@ import {
   Repeat,
   ThumbsDown,
   ThumbsUp,
+  X,
   Zap,
 } from 'react-native-feather';
-import Colors from 'src/constants/Colors';
+import {Colors} from 'src/modules/styles';
 import {
   useGotoLikeList,
   useGotoNewPost,
@@ -29,8 +31,8 @@ import {
   useIsAdmin,
   useIsCurrentCollection,
   useIsCurrentNft,
-} from 'src/modules/nftUtils';
-import {createdAtText} from 'src/modules/timeUtils';
+} from 'src/utils/nftUtils';
+import {createdAtText} from 'src/utils/timeUtils';
 import {Col} from './Col';
 import Comment from './Comment';
 import {Div} from './Div';
@@ -44,28 +46,29 @@ import {
   usePutPromiseFnWithToken,
 } from 'src/redux/asyncReducer';
 import {ReportTypes} from 'src/screens/ReportScreen';
-import useVote, {VoteCategory} from 'src/hooks/useVote';
+import useVote, {VoteCategory, VotingStatus} from 'src/hooks/useVote';
 import {LikeListType} from 'src/screens/LikeListScreen';
 import {DEVICE_WIDTH} from 'src/modules/styles';
 import {PostOwnerType, PostType} from 'src/screens/NewPostScreen';
 import TruncatedText from './TruncatedText';
 import RepostedPost from './RepostedPost';
 import CollectionEvent from './CollectionEvent';
-import {getAdjustedHeightFromDimensions} from 'src/modules/imageUtils';
+import {getAdjustedHeightFromDimensions} from 'src/utils/imageUtils';
 import RepostedTransaction from './RepostedTransaction';
 import {ICONS} from 'src/modules/icons';
+import useDelete from 'src/hooks/useDelete';
 
 export enum PostEventTypes {
   Delete = 'DELETE',
   Report = 'REPORT',
-  SetVotingDeadline = 'SET_VOTING_DEADLINE',
-  SetWinningProposal = 'SET_WINNING_PROPOSAL',
 }
 
-function PostContent({post, selectableFn = null, displayLabel = false}) {
-  const [deleted, setDeleted] = useState(false);
-
-  const [loading, setLoading] = useState(false);
+function PostContent({
+  post,
+  selectableFn = null,
+  displayLabel = false,
+  full = false,
+}) {
   const [liked, likesCount, handlePressLike] = useLike(
     post.is_liked,
     post.likes_count,
@@ -73,30 +76,27 @@ function PostContent({post, selectableFn = null, displayLabel = false}) {
     post.id,
   );
   const {
-    votable,
+    votingStatus,
     forVotesCount,
     againstVotesCount,
-    abstainVotesCount,
     hasVotedFor,
     hasVotedAgainst,
-    hasVotedAbstain,
     handleSetVotable,
-    handlePressVoteAbstain,
     handlePressVoteFor,
     handlePressVoteAgainst,
   } = useVote({
     initialVote: post.vote_category,
-    initialAbstainVotesCount: post.abstain_votes_count,
     initialForVotesCount: post.for_votes_count,
     initialAgainstVotesCount: post.against_votes_count,
     postId: post.id,
-    votingDeadline: post.voting_deadline,
+    initialVotingStatus: post.voting_status,
   });
   const isCurrentNft = useIsCurrentNft(post.nft);
   const isCurrentCollection = useIsCurrentCollection(post.nft);
   const isAdmin = useIsAdmin(post.nft);
-  const deletePromiseFnWithToken = useDeletePromiseFnWithToken();
-  const putPromiseFnWithToken = usePutPromiseFnWithToken();
+  const {loading, deleted, deleteObject} = useDelete({
+    url: apis.post.postId._(post.id).url,
+  });
   const menuOptions = [
     {
       id: PostEventTypes.Report,
@@ -115,41 +115,12 @@ function PostContent({post, selectableFn = null, displayLabel = false}) {
         android: 'ic_menu_delete',
       }),
     },
-    isAdmin &&
-      post.type == 'Proposal' &&
-      post.reposted_post && {
-        id: PostEventTypes.SetWinningProposal,
-        title: '이 제안을 해당 포럼에 참조',
-        image: Platform.select({
-          ios: 'checkmark',
-          android: 'ic_menu_agenda',
-        }),
-      },
-    isAdmin &&
-      post.type == 'Proposal' &&
-      !post.reposted_post && {
-        id: PostEventTypes.SetVotingDeadline,
-        title: '투표 마무리',
-        image: Platform.select({
-          ios: 'checkmark',
-          android: 'ic_menu_agenda',
-        }),
-      },
-    isAdmin &&
-      post.type == 'Forum' && {
-        id: PostEventTypes.SetVotingDeadline,
-        title: '포럼 마무리',
-        image: Platform.select({
-          ios: 'checkmark',
-          android: 'ic_menu_agenda',
-        }),
-      },
   ].filter(option => option);
 
   const actionIconDefaultProps = {
     width: 18,
     height: 18,
-    color: Colors.gray[700],
+    color: Colors.black,
     strokeWidth: 2,
   };
   const heartProps = liked
@@ -161,7 +132,6 @@ function PostContent({post, selectableFn = null, displayLabel = false}) {
         strokeWidth: 2,
       }
     : actionIconDefaultProps;
-
   const forVoteProps = hasVotedFor
     ? {
         fill: Colors.info.DEFAULT,
@@ -195,54 +165,15 @@ function PostContent({post, selectableFn = null, displayLabel = false}) {
       gotoNftCollectionProfile();
     }
   };
-  const deletePost = async () => {
-    setLoading(true);
-    const {data} = await deletePromiseFnWithToken({
-      url: apis.post.postId._(post.id).url,
-    });
-    setLoading(false);
-    if (data.success) {
-      setDeleted(true);
-    }
-  };
 
   const gotoReport = useGotoReport({
     id: post.id,
     reportType: ReportTypes.Post,
   });
 
-  const setVotingDeadline = async () => {
-    setLoading(true);
-    const {data} = await putPromiseFnWithToken({
-      url: apis.post.postId._(post.id).url,
-      body: {
-        property: 'voting_deadline',
-        value: new Date(),
-      },
-    });
-    setLoading(false);
-    if (data.success) {
-      handleSetVotable(false);
-    }
-  };
-  const setWinningProposal = async () => {
-    if (!post.reposted_post.id) return;
-    setLoading(true);
-    const {data} = await putPromiseFnWithToken({
-      url: apis.post.postId._(post.reposted_post?.id).url,
-      body: {
-        property: 'repost_id',
-        value: post.id,
-      },
-    });
-    setLoading(false);
-  };
-
   const handlePressMenu = ({nativeEvent: {event}}) => {
-    if (event == PostEventTypes.Delete) deletePost();
+    if (event == PostEventTypes.Delete) deleteObject();
     if (event == PostEventTypes.Report) gotoReport();
-    if (event == PostEventTypes.SetVotingDeadline) setVotingDeadline();
-    // if (event == PostEventTypes.SetWinningProposal) setWinningProposal();
   };
 
   const gotoLikeList = useGotoLikeList({
@@ -274,9 +205,9 @@ function PostContent({post, selectableFn = null, displayLabel = false}) {
             {displayLabel && (
               <Div itemsEnd mb5>
                 {post.type == PostType.Proposal ? (
-                  <Zap height={16} width={16} color={Colors.gray[500]} />
+                  <Img source={ICONS.lightBulbGray} h16 w16 />
                 ) : (
-                  <Heart height={16} width={16} color={Colors.gray[500]} />
+                  <Heart height={16} width={16} color={Colors.gray.DEFAULT} />
                 )}
               </Div>
             )}
@@ -305,7 +236,7 @@ function PostContent({post, selectableFn = null, displayLabel = false}) {
             ) : (
               displayLabel && (
                 <Div mt1 mb4>
-                  <Span bold gray700 fontSize={12}>
+                  <Span bold gray fontSize={12}>
                     {post.type == PostType.Proposal ? '제안' : '게시물'}
                   </Span>
                 </Div>
@@ -352,12 +283,16 @@ function PostContent({post, selectableFn = null, displayLabel = false}) {
             </Row>
             {post.content ? (
               <Div>
-                <TruncatedText
-                  text={post.content}
-                  maxLength={300}
-                  spanProps={{fontSize: 14}}
-                  onPressTruncated={gotoPost}
-                />
+                {full ? (
+                  <Span fontSize={14}>{post.content}</Span>
+                ) : (
+                  <TruncatedText
+                    text={post.content}
+                    maxLength={300}
+                    spanProps={{fontSize: 14}}
+                    onPressTruncated={gotoPost}
+                  />
+                )}
               </Div>
             ) : null}
             {post.transaction && (
@@ -401,7 +336,7 @@ function PostContent({post, selectableFn = null, displayLabel = false}) {
                         fontSize={12}
                         style={{fontWeight: '600'}}
                         onPress={gotoLikeList}>
-                        좋아요 <Span realBlack>{likesCount}</Span>개
+                        좋아요 <Span black>{likesCount}</Span>개
                       </Span>
                     </Col>
                   )}
@@ -411,7 +346,7 @@ function PostContent({post, selectableFn = null, displayLabel = false}) {
                         fontSize={12}
                         style={{fontWeight: '600'}}
                         onPress={gotoRepostList}>
-                        리포스트 <Span realBlack>{post.repost_count}</Span>번
+                        리포스트 <Span black>{post.repost_count}</Span>번
                       </Span>
                     </Col>
                   )}
@@ -422,12 +357,12 @@ function PostContent({post, selectableFn = null, displayLabel = false}) {
                 </>
               ) : post.type == 'Proposal' ? (
                 <>
-                  <Col auto mr12 gray800>
+                  <Col auto mr12>
                     <Span
                       fontSize={12}
                       style={{fontWeight: '600'}}
                       onPress={() => gotoVoteList(VoteCategory.Against)}>
-                      반대 <Span realBlack>{againstVotesCount}</Span>표 (
+                      반대 <Span>{againstVotesCount}</Span>표 (
                       {Math.round(
                         (againstVotesCount + forVotesCount > 0
                           ? againstVotesCount /
@@ -437,12 +372,12 @@ function PostContent({post, selectableFn = null, displayLabel = false}) {
                       %)
                     </Span>
                   </Col>
-                  <Col auto mr12 gray800>
+                  <Col auto mr12>
                     <Span
                       fontSize={12}
                       style={{fontWeight: '600'}}
                       onPress={() => gotoVoteList(VoteCategory.For)}>
-                      찬성 <Span realBlack>{forVotesCount}</Span>표 (
+                      찬성 <Span black>{forVotesCount}</Span>표 (
                       {Math.round(
                         (againstVotesCount + forVotesCount > 0
                           ? forVotesCount / (againstVotesCount + forVotesCount)
@@ -452,60 +387,75 @@ function PostContent({post, selectableFn = null, displayLabel = false}) {
                     </Span>
                   </Col>
                   <Col />
-                  {isCurrentCollection && votable && (
+                  {isCurrentCollection && votingStatus == null && (
                     <>
                       <Col auto pr12 onPress={handlePressVoteAgainst}>
                         {<ThumbsDown {...againstVoteProps}></ThumbsDown>}
                       </Col>
-                      <Col auto pr12 onPress={handlePressVoteFor}>
+                      <Col auto pr12={!full} onPress={handlePressVoteFor}>
                         {<ThumbsUp {...forVoteProps}></ThumbsUp>}
                       </Col>
                     </>
                   )}
                 </>
               ) : null}
-              {post.type == 'Forum'
-                ? isCurrentCollection &&
-                  votable && (
-                    <>
-                      <Col auto onPress={() => gotoNewPost(post)} mr4>
-                        <Zap
-                          height={18}
-                          width={18}
-                          fill={Colors.warning.DEFAULT}
-                          color={Colors.warning.DEFAULT}
-                        />
-                      </Col>
-                      <Col auto onPress={() => gotoNewPost(post)}>
-                        <Span gray700 bold fontSize={12}>
-                          제안하기
-                        </Span>
-                      </Col>
-                    </>
-                  )
-                : !post.type && (
-                    <Col auto onPress={() => gotoNewPost(post)} pr16>
-                      <Repeat {...actionIconDefaultProps} />
-                    </Col>
-                  )}
-              {!votable && (
+              {!post.type && (
+                <Col auto onPress={() => gotoNewPost(post)} pr16={!full}>
+                  <Repeat {...actionIconDefaultProps} />
+                </Col>
+              )}
+              {votingStatus == VotingStatus.Approved ? (
                 <>
                   <Col auto rounded100 p2 bgSuccess mr4>
                     <Check
                       strokeWidth={2}
                       height={14}
                       width={14}
-                      color={'white'}
+                      color={Colors.white}
                     />
                   </Col>
                   <Col auto>
                     <Span bold fontSize={12}>
-                      완료됨
+                      통과됨
                     </Span>
                   </Col>
                 </>
+              ) : votingStatus == VotingStatus.Rejected ? (
+                <>
+                  <Col auto>
+                    <X
+                      strokeWidth={2}
+                      height={22}
+                      width={22}
+                      color={Colors.danger.DEFAULT}
+                    />
+                  </Col>
+                  <Col auto>
+                    <Span bold fontSize={12}>
+                      거절됨
+                    </Span>
+                  </Col>
+                </>
+              ) : (
+                votingStatus == VotingStatus.Error && (
+                  <>
+                    <Col auto mr4>
+                      <AlertTriangle
+                        strokeWidth={2}
+                        height={22}
+                        width={22}
+                        color={Colors.warning.DEFAULT}
+                      />
+                    </Col>
+                    <Col auto>
+                      <Span bold fontSize={12}>
+                        투표 불가
+                      </Span>
+                    </Col>
+                  </>
+                )
               )}
-              {post.type !== 'Forum' && votable && (
+              {votingStatus == null && !full && (
                 <Col auto onPress={() => gotoPost(true)}>
                   <MessageCircle {...actionIconDefaultProps} />
                 </Col>
@@ -513,7 +463,7 @@ function PostContent({post, selectableFn = null, displayLabel = false}) {
             </Row>
           </Col>
         </Row>
-        {post.comment && (
+        {post.comment && !full && (
           <Div onPress={gotoPost}>
             <Comment hot key={post.comment.id} comment={post.comment}></Comment>
           </Div>
@@ -523,6 +473,6 @@ function PostContent({post, selectableFn = null, displayLabel = false}) {
   );
 }
 
-const PostMemo = memo(PostContent);
+const Post = memo(PostContent);
 
-export default PostMemo;
+export default Post;

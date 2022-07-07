@@ -8,7 +8,7 @@ import {
 import {Div} from 'src/components/common/Div';
 import {Span} from 'src/components/common/Span';
 import {useGotoNewCollectionEvent} from 'src/hooks/useGoto';
-import {useIsAdmin} from 'src/modules/nftUtils';
+import {useIsAdmin} from 'src/utils/nftUtils';
 import ListFlatlist from 'src/components/ListFlatlist';
 import CollectionEvent from 'src/components/common/CollectionEvent';
 import {DEVICE_WIDTH} from 'src/modules/styles';
@@ -50,7 +50,7 @@ export default function CollectionEventListScreen() {
       HeaderRightComponent={
         isAdmin && (
           <Div onPress={gotoNewCollectionEvent}>
-            <Span info bold fontSize={14}>
+            <Span admin bold fontSize={14}>
               추가
             </Span>
           </Div>

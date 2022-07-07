@@ -5,8 +5,8 @@ import {
   useGotoTransaction,
 } from 'src/hooks/useGoto';
 import {ICONS} from 'src/modules/icons';
-import {createdAtText} from 'src/modules/timeUtils';
-import {resizeImageUri} from 'src/modules/uriUtils';
+import {createdAtText} from 'src/utils/timeUtils';
+import {resizeImageUri} from 'src/utils/uriUtils';
 import {RootState} from 'src/redux/rootReducer';
 import {Col} from './Col';
 import {Div} from './Div';

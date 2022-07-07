@@ -8,7 +8,10 @@ import apis from 'src/modules/apis';
 import {Img} from 'src/components/common/Img';
 import {useNavigation} from '@react-navigation/native';
 import {Span} from 'src/components/common/Span';
-import {KeyboardAvoidingView, TextInput} from 'src/modules/viewComponents';
+import {
+  KeyboardAvoidingView,
+  TextInput,
+} from 'src/components/common/ViewComponents';
 import {useReloadGETWithToken} from 'src/redux/asyncReducer';
 import {ActivityIndicator, Platform} from 'react-native';
 import Animated, {
@@ -16,7 +19,7 @@ import Animated, {
   useAnimatedStyle,
   useSharedValue,
 } from 'react-native-reanimated';
-import {DEVICE_WIDTH} from 'src/modules/styles';
+import {Colors, DEVICE_WIDTH} from 'src/modules/styles';
 import {CustomBlurView} from 'src/components/common/CustomBlurView';
 import useAutoFocusRef from 'src/hooks/useAutoFocusRef';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
@@ -72,23 +75,15 @@ export default function NewCommunityWalletScreen() {
         bgWhite
         relative>
         <Div h={headerHeight} zIndex={100} borderBottom={0.5} borderGray200>
-          <Animated.View style={headerStyles}>
-            <CustomBlurView
-              blurType="xlight"
-              blurAmount={30}
-              blurRadius={20}
-              overlayColor=""
-              style={{
-                width: DEVICE_WIDTH,
-                height: '100%',
-                position: 'absolute',
-              }}></CustomBlurView>
-          </Animated.View>
           <Div zIndex={100} absolute w={DEVICE_WIDTH} top={notchHeight + 5}>
             <Row itemsCenter py5 h40 px15>
               <Col itemsStart>
                 <Div auto rounded100 onPress={goBack}>
-                  <ChevronLeft height={30} color="black" strokeWidth={2} />
+                  <ChevronLeft
+                    height={30}
+                    color={Colors.black}
+                    strokeWidth={2}
+                  />
                 </Div>
               </Col>
               <Col auto></Col>
@@ -143,10 +138,10 @@ export default function NewCommunityWalletScreen() {
                         justifyCenter
                         bgGray200
                         rounded100>
-                        <Div bgRealBlack p8 rounded100>
+                        <Div bgBlack p8 rounded100>
                           <Upload
                             strokeWidth={2}
-                            color={'white'}
+                            color={Colors.white}
                             height={20}
                             width={20}
                           />

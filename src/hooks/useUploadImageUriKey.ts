@@ -27,6 +27,7 @@ export default function useUploadImageUriKey({uri, attachedRecord}){
         setImage(null)
     }
     const getImageUriKey = async () => {
+        if(!image) return null
         setUploading(true)
         try{
             const key = await uploadFile(image)
