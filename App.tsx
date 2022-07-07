@@ -18,6 +18,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import BottomPopups from 'src/components/common/BottomPopups';
 import {navigationRef, onMessageReceived} from 'src/utils/notificationUtils';
 
+
 const App = () => {
   const {
     isLoggedIn,

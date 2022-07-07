@@ -21,10 +21,12 @@ import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {getNftProfileImage, getNftName} from 'src/utils/nftUtils';
 import {resizeImageUri} from 'src/utils/uriUtils';
 import {HAS_NOTCH} from 'src/modules/constants';
+import { EventRegister } from 'react-native-event-listeners'
 
 export enum ChatRoomEnterType {
   List,
   Profile,
+  Notification
 }
 
 function ChatRoomScreen({
@@ -37,12 +39,12 @@ function ChatRoomScreen({
     shallowEqual,
   );
   const {data: chatRoomRes, isLoading: chatRoomLoad} = useApiSelector(
-    chatRoomEnterType == ChatRoomEnterType.List
-      ? apis.chat.chatRoom.roomId(roomId)
-      : apis.chat.chatRoom.contractAddressAndTokenId(
-          opponentNft.contract_address,
-          opponentNft.token_id,
-        ),
+    chatRoomEnterType == ChatRoomEnterType.Profile
+      ? apis.chat.chatRoom.contractAddressAndTokenId(
+        opponentNft.contract_address,
+        opponentNft.token_id,
+      )
+      : apis.chat.chatRoom.roomId(roomId) 
   );
   const currentNftId = {
     token_id: currentNft.token_id,
@@ -127,6 +129,7 @@ function ChatRoomScreen({
       wsConnect();
       channel.enter();
       return () => {
+        setChatReady(false)
         if (channel) {
           channel.disconnect();
           channel.close();
@@ -140,6 +143,9 @@ function ChatRoomScreen({
       setMessages(chatRoomRes.init_messages);
       setConnectRoomId(chatRoomRes.room_id);
       setPage(chatRoomRes.init_page);
+      if(chatRoomEnterType !== ChatRoomEnterType.List) {
+        EventRegister.emit('roomUnreadCountUpdate', chatRoomRes.room_id)
+      }
     }
   }, [chatRoomRes]);
 
@@ -183,10 +189,6 @@ function ChatRoomScreen({
     text,
     enterNfts,
   ]);
-
-  const scrollToEnd = useCallback(() => {
-    flatListRef?.current?.scrollToEnd({animated: false});
-  }, [flatListRef]);
 
   const notchHeight = useSafeAreaInsets().top;
   const headerHeight = notchHeight + 50;
@@ -240,7 +242,7 @@ function ChatRoomScreen({
         zIndex={100}>
         <Row itemsCenter>
           <Col justifyStart mr10>
-            <Div auto rounded100 onPress={goBack}>
+            <Div auto rounded100 onPress={chatReady && goBack}>
               <ChevronLeft
                 width={30}
                 height={30}
@@ -269,7 +271,8 @@ function ChatRoomScreen({
           onEndReached={onEndReached}
           onEndReachedThreshold={Platform.OS == 'ios' ? 0 : 0.8}
           ListFooterComponent={pageLoading && <ActivityIndicator />}
-          data={messages}
+          ListEmptyComponent={chatRoomLoad && <ActivityIndicator />}
+          data={!chatRoomLoad && messages}
           initialNumToRender={20}
           keyExtractor={item => item._id.$oid}
           renderItem={({item: message, index}) => {
@@ -311,7 +314,8 @@ function ChatRoomScreen({
                 roomName={roomName}
               />
             );
-          }}></FlatList>
+          }}
+        />
         <NewMessage
           text={text}
           onTextChange={handleTextChange}

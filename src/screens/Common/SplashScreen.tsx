@@ -9,28 +9,34 @@ import {useAutoLogin} from 'src/redux/appReducer';
 import { IMAGES } from 'src/modules/images';
 import {JWT} from 'src/modules/constants';
 import {Span} from 'src/components/common/Span';
-import {useGotoHome, useGotoPost, useGotoNftProfile} from 'src/hooks/useGoto';
+import {useGotoHome, useGotoPost, useGotoNftProfile, useGotoChatRoomFromNotification} from 'src/hooks/useGoto';
 
 const getInitialRoute = (routeParams) => {
   if(routeParams.notificationOpened) {
     if(routeParams.routeDestination.navName === NAV_NAMES.Post) {
       return {
         gotoInitial: useGotoPost(routeParams.routeDestination.id),
-        params: [false, true]
+        params: [false, true] 
       }
 
     }
     else if(routeParams.routeDestination.navName === NAV_NAMES.OtherProfile) {
       return {
         gotoInitial: useGotoNftProfile({nft: routeParams.routeDestination.id}),
-        params: [true]
+        params: [true] 
+      }
+    }
+    else if(routeParams.routeDestination.navName === NAV_NAMES.ChatRoom) {
+      return {
+        gotoInitial: useGotoChatRoomFromNotification(routeParams.routeDestination.id),
+        params: []
       }
     }
   }
   else {
     return {
       gotoInitial: useGotoHome(),
-      params: []
+      params: [] 
     }
   }
 }

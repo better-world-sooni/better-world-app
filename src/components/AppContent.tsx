@@ -50,6 +50,7 @@ import ForumSettingScreen from 'src/screens/ForumSettingScreen';
 import SocialSettingScreen from 'src/screens/SocialSettingScreen';
 import NftProfileEditScreen from 'src/screens/NftProfileEditScreen';
 import NftCollectionProfileEditScreen from 'src/screens/NftCollectionProfileEditScreen';
+<<<<<<< HEAD
 import StoreSettingScreen from 'src/screens/StoreSettingScreen';
 import NewMerchandiseScreen from 'src/screens/NewMerchandiseScreen';
 import MerchandiseScreen from 'src/screens/MerchandiseScreen';
@@ -58,6 +59,9 @@ import MerchandiseSelectScreen from 'src/screens/MerchandiseSelectScreen';
 import OrderListScreen from 'src/screens/OrderListScreen';
 import CouponListScreen from 'src/screens/CouponListScreen';
 import CollectionOrderListScreen from 'src/screens/CollectionOrderListScreen';
+=======
+import { ChatRoomEnterType } from "src/screens/ChatRoomScreen";
+>>>>>>> notification
 
 const RootStack = createStackNavigator();
 
@@ -194,6 +198,24 @@ const setInitialRouteParams = notificationOpenData => {
           },
         },
       };
+    } 
+    else if(notificationOpenData.event === 'chat') {
+      return {
+        notificationOpened: true,
+        routeDestination: {
+          navName: NAV_NAMES.ChatRoom,
+          id: {         
+            roomId: notificationOpenData.room_id,
+            roomName: notificationOpenData?.name || notificationOpenData.meta_name,
+            roomImage: notificationOpenData?.image_uri || notificationOpenData.meta_image_uri,
+            opponentNft: {
+              contract_address: notificationOpenData.contract_address,
+              token_id: notificationOpenData.token_id
+            },
+            chatRoomEnterType: ChatRoomEnterType.Notification,
+          }
+        }
+      }
     }
   } else {
     return {
