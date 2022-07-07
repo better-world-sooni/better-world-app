@@ -129,6 +129,7 @@ function ChatRoomScreen({
       wsConnect();
       channel.enter();
       return () => {
+        setChatReady(false)
         if (channel) {
           channel.disconnect();
           channel.close();
@@ -270,7 +271,8 @@ function ChatRoomScreen({
           onEndReached={onEndReached}
           onEndReachedThreshold={Platform.OS == 'ios' ? 0 : 0.8}
           ListFooterComponent={pageLoading && <ActivityIndicator />}
-          data={messages}
+          ListEmptyComponent={chatRoomLoad && <ActivityIndicator />}
+          data={!chatRoomLoad && messages}
           initialNumToRender={20}
           keyExtractor={item => item._id.$oid}
           renderItem={({item: message, index}) => {
@@ -312,7 +314,8 @@ function ChatRoomScreen({
                 roomName={roomName}
               />
             );
-          }}></FlatList>
+          }}
+        />
         <NewMessage
           text={text}
           onTextChange={handleTextChange}

@@ -52,6 +52,7 @@ import ForumSettingScreen from 'src/screens/ForumSettingScreen';
 import SocialSettingScreen from 'src/screens/SocialSettingScreen';
 import NftProfileEditScreen from 'src/screens/NftProfileEditScreen';
 import NftCollectionProfileEditScreen from 'src/screens/NftCollectionProfileEditScreen';
+import { ChatRoomEnterType } from "src/screens/ChatRoomScreen";
 
 const RootStack = createStackNavigator();
 
@@ -186,6 +187,24 @@ const setInitialRouteParams = notificationOpenData => {
           },
         },
       };
+    } 
+    else if(notificationOpenData.event === 'chat') {
+      return {
+        notificationOpened: true,
+        routeDestination: {
+          navName: NAV_NAMES.ChatRoom,
+          id: {         
+            roomId: notificationOpenData.room_id,
+            roomName: notificationOpenData?.name || notificationOpenData.meta_name,
+            roomImage: notificationOpenData?.image_uri || notificationOpenData.meta_image_uri,
+            opponentNft: {
+              contract_address: notificationOpenData.contract_address,
+              token_id: notificationOpenData.token_id
+            },
+            chatRoomEnterType: ChatRoomEnterType.Notification,
+          }
+        }
+      }
     }
   } else {
     return {

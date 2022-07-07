@@ -25,8 +25,8 @@ const onDisplayNotification = async(title, body, data) => {
         notifee.setBadgeCount(data.unread_notification_count + data.unread_message_count);
     } 
     if (data.event === 'chat') {
-        if(navigationRef.getCurrentRoute().name != 'ChatList' || 
-        (navigationRef.getCurrentRoute().name === 'ChatRoom' && 
+        if(!navigationRef.isReady() || navigationRef.getCurrentRoute().name != 'ChatList' && 
+        (navigationRef.getCurrentRoute().name != 'ChatRoom' || 
             (navigationRef.getCurrentRoute().params["opponentNft"].token_id != data.token_id ||
             navigationRef.getCurrentRoute().params["opponentNft"].contract_address != data.contract_address)
         )) {

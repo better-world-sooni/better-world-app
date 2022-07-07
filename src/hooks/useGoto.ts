@@ -121,6 +121,21 @@ export function useGotoChatRoomFromProfile() {
   return gotoChatRoomFromProfile
 }
 
+export function useGotoChatRoomFromNotification(routeParams) {
+  const navigation = useNavigation()
+  const apiGET = useApiGET()
+  const gotoChatRoomFromNotification= (jwt) => {
+    apiGET(apis.chat.chatRoom.roomId(routeParams.roomId), jwt)
+    navigation.dispatch(
+      CommonActions.reset({
+        index: 1,
+        routes:[{name: NAV_NAMES.Home, params: {screen: NAV_NAMES.ChatList}}, {name: NAV_NAMES.ChatRoom, params: routeParams}]
+      })
+    );
+  }
+  return gotoChatRoomFromNotification
+}
+
 export function useGotoNftCollectionProfile({nftCollection}){
   const {currentNft} = useSelector(
     (root: RootState) => root.app.session,
@@ -148,7 +163,7 @@ export function useGotoPost({postId}){
       navigation.dispatch(
         CommonActions.reset({
           index: 1,
-          routes:[{name: NAV_NAMES.Home},{name: NAV_NAMES.Post, params: {postId, autoFocus}}]
+          routes:[{name: NAV_NAMES.Home}, {name: NAV_NAMES.Post, params: {postId, autoFocus}}]
         })
       );
     }
