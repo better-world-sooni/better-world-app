@@ -11,11 +11,11 @@ export default function usePrivilege(nft) {
     const eventId = privilegeEventId(nft.contract_address, nft.token_id)
     useEffect(() => {
         setPrivilege(nft.privilege);
-        EventRegister.addEventListener(eventId, (data) => {
+        const privilegeEventListenerId = EventRegister.addEventListener(eventId, (data) => {
             setPrivilege(data)
         })
         return () => {
-            EventRegister.removeEventListener(eventId);
+            if(typeof privilegeEventListenerId == 'string') EventRegister.removeEventListener(eventId);
         }
     }, [nft.privilege]);
     const handlePressPrivilege = () => {

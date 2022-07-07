@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		00E356F31AD99517003FC87E /* sunganTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* sunganTests.m */; };
+		01783BC988044688B421BC30 /* BalooBhaijaan-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 65846CBB4B354F24A0BCC6BE /* BalooBhaijaan-Regular.ttf */; };
 		0E8920293F524BA7BC9AFFAA /* Uni Sans Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = 054F33EC7CC546DA95DBBAEC /* Uni Sans Light.otf */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
@@ -43,7 +44,6 @@
 		D679945081B5427D96C0BDED /* Uni Sans Heavy Italic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 766E41CDBD974B3A99CA8B05 /* Uni Sans Heavy Italic.otf */; };
 		F2244C62DDAF45E7A83FFC95 /* Uni Sans Book.otf in Resources */ = {isa = PBXBuildFile; fileRef = B2D13A2254B04FC3A280ED90 /* Uni Sans Book.otf */; };
 		FE094677BE2E42BC9A4D4C39 /* NotoSansKR-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = E9E561646480470E88ED5A74 /* NotoSansKR-Medium.otf */; };
-		01783BC988044688B421BC30 /* BalooBhaijaan-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 65846CBB4B354F24A0BCC6BE /* BalooBhaijaan-Regular.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -77,6 +77,7 @@
 		4F0425492A804FE5A4711833 /* Uni Sans Italic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Uni Sans Italic.otf"; path = "../assets/fonts/Uni Sans Italic.otf"; sourceTree = "<group>"; };
 		58770DF0E35840AB8DBCED9A /* Pods-BetterWorld-BetterWorldTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BetterWorld-BetterWorldTests.debug.xcconfig"; path = "Target Support Files/Pods-BetterWorld-BetterWorldTests/Pods-BetterWorld-BetterWorldTests.debug.xcconfig"; sourceTree = "<group>"; };
 		6133CBA8C61E462D80533051 /* Jua-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Jua-Regular.ttf"; path = "../assets/fonts/Jua-Regular.ttf"; sourceTree = "<group>"; };
+		65846CBB4B354F24A0BCC6BE /* BalooBhaijaan-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "BalooBhaijaan-Regular.ttf"; path = "../assets/fonts/BalooBhaijaan-Regular.ttf"; sourceTree = "<group>"; };
 		672D2D0D9393919A6AB7F361 /* Pods-BetterWorld.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-BetterWorld.release.xcconfig"; path = "Target Support Files/Pods-BetterWorld/Pods-BetterWorld.release.xcconfig"; sourceTree = "<group>"; };
 		6F6288D3854C45999FBCAC27 /* Uni Sans Bold Italic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Uni Sans Bold Italic.otf"; path = "../assets/fonts/Uni Sans Bold Italic.otf"; sourceTree = "<group>"; };
 		766E41CDBD974B3A99CA8B05 /* Uni Sans Heavy Italic.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Uni Sans Heavy Italic.otf"; path = "../assets/fonts/Uni Sans Heavy Italic.otf"; sourceTree = "<group>"; };
@@ -109,7 +110,6 @@
 		FBFFC96F5EBB40A9BA83E30E /* NotoSansKR-Light.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "NotoSansKR-Light.otf"; path = "../assets/fonts/NotoSansKR-Light.otf"; sourceTree = "<group>"; };
 		FC65B07996145ABF9CB95402 /* Pods-sungan-sunganTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-sungan-sunganTests.release.xcconfig"; path = "Target Support Files/Pods-sungan-sunganTests/Pods-sungan-sunganTests.release.xcconfig"; sourceTree = "<group>"; };
 		FED37267FBF0515C26FCD68C /* libPods-BetterWorld-BetterWorldTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-BetterWorld-BetterWorldTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		65846CBB4B354F24A0BCC6BE /* BalooBhaijaan-Regular.ttf */ = {isa = PBXFileReference; name = "BalooBhaijaan-Regular.ttf"; path = "../assets/fonts/BalooBhaijaan-Regular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -651,7 +651,7 @@
 					"$(inherited)",
 					"$(SDKROOT)/usr/lib/swift",
 				);
-				MARKETING_VERSION = 0.2.2;
+				MARKETING_VERSION = 0.4.0;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -685,7 +685,7 @@
 					"$(inherited)",
 					"$(SDKROOT)/usr/lib/swift",
 				);
-				MARKETING_VERSION = 0.2.2;
+				MARKETING_VERSION = 0.4.0;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",

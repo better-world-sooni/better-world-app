@@ -11,11 +11,11 @@ export default function useFollow(initialIsFollowing, initialFollowingCount, url
     const promiseFnWithToken = usePromiseFnWithToken();
     useEffect(() => {
         setIsFollowing(initialIsFollowing);
-        EventRegister.addEventListener(followEventId(url), (data) => {
+        const followEventListenerId = EventRegister.addEventListener(followEventId(url), (data) => {
             setIsFollowing(data)
         })
         return () => {
-            EventRegister.removeEventListener(followEventId(url));
+            if(typeof followEventListenerId == 'string')EventRegister.removeEventListener(followEventListenerId);
         }
     }, [initialIsFollowing]);
     const handlePressFollowing = () => {

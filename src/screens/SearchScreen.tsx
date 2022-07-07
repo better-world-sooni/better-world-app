@@ -91,7 +91,9 @@ const SearchScreen = () => {
       </Div>
       <FlatList
         ListEmptyComponent={
-          <ListEmptyComponent h={DEVICE_HEIGHT - headerHeight * 2} />
+          !rankLoad && (
+            <ListEmptyComponent h={DEVICE_HEIGHT - headerHeight * 2} />
+          )
         }
         showsVerticalScrollIndicator={false}
         onEndReached={handleEndReached}

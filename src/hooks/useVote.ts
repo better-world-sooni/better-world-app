@@ -29,20 +29,20 @@ export default function useVote({initialVote, initialForVotesCount, initialAgain
     const gotoConfirmation = useGotoConfirmationModal()
     useEffect(() => {
         setVote(initialVote);
-        EventRegister.addEventListener(voteEventId(postId), (voteCategory) => {
+        const voteEventListenerId = EventRegister.addEventListener(voteEventId(postId), (voteCategory) => {
             setVote(voteCategory)
         })
         return () => {
-            EventRegister.removeEventListener(voteEventId(postId));
+           if(typeof voteEventListenerId == 'string') EventRegister.removeEventListener(voteEventListenerId);
         }
     }, [initialVote]);
     useEffect(() => {
         setVotingStatus(initialVotingStatus);
-        EventRegister.addEventListener(votingStatusEventId(postId), (votingStatus) => {
+        const votingStatusEventListenerId = EventRegister.addEventListener(votingStatusEventId(postId), (votingStatus) => {
             setVotingStatus(votingStatus)
         })
         return () => {
-            EventRegister.removeEventListener(votingStatusEventId(postId));
+            if(typeof votingStatusEventListenerId == 'string')EventRegister.removeEventListener(votingStatusEventListenerId);
         }
     }, [initialVotingStatus]);
     const handlePressVoteFor = () => {
