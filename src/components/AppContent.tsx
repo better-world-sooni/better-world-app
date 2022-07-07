@@ -58,7 +58,7 @@ import MerchandiseSelectScreen from 'src/screens/MerchandiseSelectScreen';
 import OrderListScreen from 'src/screens/OrderListScreen';
 import CouponListScreen from 'src/screens/CouponListScreen';
 import CollectionOrderListScreen from 'src/screens/CollectionOrderListScreen';
-import {ChatRoomEnterType} from 'src/screens/ChatRoomScreen';
+import { ChatRoomEnterType } from "src/screens/ChatRoomScreen";
 
 const RootStack = createStackNavigator();
 
