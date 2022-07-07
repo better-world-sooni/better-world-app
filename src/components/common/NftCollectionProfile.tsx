@@ -337,7 +337,7 @@ export default function NftCollectionProfile({
               </Div>
             )}
             {isNotPaginatable && (
-              <Div itemsCenter py15>
+              <Div itemsCenter py15 bold>
                 <Span textCenter>게시물을 모두 확인했습니다.</Span>
               </Div>
             )}

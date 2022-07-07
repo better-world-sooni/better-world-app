@@ -225,7 +225,9 @@ export default function NftProfile({
             )}
             {isNotPaginatable && (
               <Div itemsCenter py15>
-                <Span textCenter>게시물을 모두 확인했습니다.</Span>
+                <Span textCenter bold>
+                  게시물을 모두 확인했습니다.
+                </Span>
               </Div>
             )}
             <Div h={27} />
