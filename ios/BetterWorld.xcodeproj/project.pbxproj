@@ -43,6 +43,7 @@
 		D679945081B5427D96C0BDED /* Uni Sans Heavy Italic.otf in Resources */ = {isa = PBXBuildFile; fileRef = 766E41CDBD974B3A99CA8B05 /* Uni Sans Heavy Italic.otf */; };
 		F2244C62DDAF45E7A83FFC95 /* Uni Sans Book.otf in Resources */ = {isa = PBXBuildFile; fileRef = B2D13A2254B04FC3A280ED90 /* Uni Sans Book.otf */; };
 		FE094677BE2E42BC9A4D4C39 /* NotoSansKR-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = E9E561646480470E88ED5A74 /* NotoSansKR-Medium.otf */; };
+		01783BC988044688B421BC30 /* BalooBhaijaan-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 65846CBB4B354F24A0BCC6BE /* BalooBhaijaan-Regular.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -108,6 +109,7 @@
 		FBFFC96F5EBB40A9BA83E30E /* NotoSansKR-Light.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "NotoSansKR-Light.otf"; path = "../assets/fonts/NotoSansKR-Light.otf"; sourceTree = "<group>"; };
 		FC65B07996145ABF9CB95402 /* Pods-sungan-sunganTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-sungan-sunganTests.release.xcconfig"; path = "Target Support Files/Pods-sungan-sunganTests/Pods-sungan-sunganTests.release.xcconfig"; sourceTree = "<group>"; };
 		FED37267FBF0515C26FCD68C /* libPods-BetterWorld-BetterWorldTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-BetterWorld-BetterWorldTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		65846CBB4B354F24A0BCC6BE /* BalooBhaijaan-Regular.ttf */ = {isa = PBXFileReference; name = "BalooBhaijaan-Regular.ttf"; path = "../assets/fonts/BalooBhaijaan-Regular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -221,6 +223,7 @@
 				F46FF67A8C094907B38BC0F6 /* Uni Sans SemiBold.otf */,
 				196D87473036401E8E56BCDA /* Uni Sans Thin Italic.otf */,
 				B13F7E20FC4C4883BDBEA74C /* Uni Sans Thin.otf */,
+				65846CBB4B354F24A0BCC6BE /* BalooBhaijaan-Regular.ttf */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -381,6 +384,7 @@
 				1D268D1B10364F3EA3A68B84 /* Uni Sans SemiBold.otf in Resources */,
 				C015511C538E4818A5B78C1C /* Uni Sans Thin Italic.otf in Resources */,
 				B6A960207D9046149AC29F66 /* Uni Sans Thin.otf in Resources */,
+				01783BC988044688B421BC30 /* BalooBhaijaan-Regular.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
