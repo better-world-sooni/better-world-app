@@ -23,7 +23,8 @@ import {ICONS} from 'src/modules/icons';
 
 export default function PolymorphicOwner({
   nft,
-  isFollowing,
+  isFollowing = false,
+  showFollowing = true,
   showPrivilege = false,
 }) {
   const [following, _followerCount, handlePressFollowing] = useFollow(
@@ -85,7 +86,7 @@ export default function PolymorphicOwner({
           </Span>
         </Col>
       )}
-      {!isCurrentNft && nft.token_id && (
+      {showFollowing && !isCurrentNft && nft.token_id && (
         <Col
           auto
           bgBlack={!following}

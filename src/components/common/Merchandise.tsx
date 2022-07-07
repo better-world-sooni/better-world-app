@@ -44,7 +44,7 @@ export default function Merchandise({
           </Span>
         ) : (
           <Span bold fontSize={16}>
-            주문불가
+            주문 불가
           </Span>
         )}
       </Div>

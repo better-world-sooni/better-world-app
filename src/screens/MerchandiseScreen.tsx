@@ -16,6 +16,7 @@ import DefaultMarkdown from 'src/components/common/DefaultMarkdown';
 import {getCommaSeparatedNumber} from 'src/utils/numberUtils';
 import NewOrder from 'src/components/common/NewOrder';
 import {Img} from 'src/components/common/Img';
+import MerchandiseLoading from 'src/components/loading/MerchandiseLoading';
 
 export default function MerchandiseScreen() {
   const {data: nftCollectionRes, isLoading: nftCollectionLoading} =
@@ -43,7 +44,7 @@ export default function MerchandiseScreen() {
       </Div>
       <ScrollView keyboardShouldPersistTaps="always">
         {!merchandise ? (
-          <Span>Loading..</Span>
+          <MerchandiseLoading />
         ) : (
           <>
             <Div relative>
@@ -68,13 +69,6 @@ export default function MerchandiseScreen() {
                   {merchandise.name}
                 </Span>
               </Div>
-              <Row py8 itemsCenter>
-                <Col auto mr8 medium>
-                  <Span gray700>
-                    좋아요 <Span bold>{merchandise.likes_count}</Span>개
-                  </Span>
-                </Col>
-              </Row>
               <Row py12 itemsCenter borderBottom={0.5} borderGray200>
                 <Col auto mr4>
                   {!merchandise.is_airdrop_only ? (

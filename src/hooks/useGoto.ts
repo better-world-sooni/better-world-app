@@ -519,6 +519,42 @@ export function useGotoMyCollectionEventList(){
   return gotoCollectionEventList
 }
 
+export function useGotoOrderList(){
+  const navigation = useNavigation()
+  const apiGETWithToken = useApiGETWithToken()
+  const gotoOrderList = () => {
+    apiGETWithToken(
+      apis.nft.order.list()
+    )
+    navigation.navigate(NAV_NAMES.OrderList as never)
+  }
+  return gotoOrderList
+}
+
+export function useGotoCollectionOrderList(){
+  const navigation = useNavigation()
+  const apiGETWithToken = useApiGETWithToken()
+  const gotoCollectionOrderList = () => {
+    apiGETWithToken(
+      apis.nft_collection.order.list()
+    )
+    navigation.navigate(NAV_NAMES.CollectionOrderList as never)
+  }
+  return gotoCollectionOrderList
+}
+
+export function useGotoCouponList(){
+  const navigation = useNavigation()
+  const apiGETWithToken = useApiGETWithToken()
+  const gotoCouponList = () => {
+    apiGETWithToken(
+      apis.nft.coupon.list()
+    )
+    navigation.navigate(NAV_NAMES.CouponList as never)
+  }
+  return gotoCouponList
+}
+
 export function useGotoCollectionEventList({nftCollection}){
   const navigation = useNavigation()
   const apiGETWithToken = useApiGETWithToken()

@@ -11,9 +11,14 @@ import useUploadOrder, {
   SelectableOrderCategory,
 } from 'src/hooks/useUploadOrder';
 import {ActivityIndicator} from 'react-native';
+import {useGotoOrderList} from 'src/hooks/useGoto';
 
 export default function NewOrder({merchandise}) {
   const [expandOptions, setExpandOptions] = useState(false);
+  const gotoOrderList = useGotoOrderList();
+  const uploadSuccessCallback = () => {
+    gotoOrderList();
+  };
   const {
     error,
     loading,
@@ -24,7 +29,12 @@ export default function NewOrder({merchandise}) {
     uploadOrder,
   } = useUploadOrder({
     merchandise,
+    uploadSuccessCallback,
   });
+  const handlePressInitialOrder = () => {
+    if (!orderable) return;
+    setExpandOptions(true);
+  };
   return (
     <Div
       zIndex={100}
@@ -98,9 +108,6 @@ export default function NewOrder({merchandise}) {
           </>
         ) : (
           <Row itemsCenter>
-            <Col auto px16>
-              <Heart color={Colors.black} width={24} height={24} />
-            </Col>
             <Col>
               <Div
                 bgInfo={orderable}
@@ -109,7 +116,7 @@ export default function NewOrder({merchandise}) {
                 itemsCenter
                 justifyCenter
                 bgGray400={!orderable}
-                onPress={() => setExpandOptions(true)}>
+                onPress={handlePressInitialOrder}>
                 <Span white bold>
                   주문하기
                 </Span>

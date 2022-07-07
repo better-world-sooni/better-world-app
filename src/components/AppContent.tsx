@@ -55,6 +55,9 @@ import NewMerchandiseScreen from 'src/screens/NewMerchandiseScreen';
 import MerchandiseScreen from 'src/screens/MerchandiseScreen';
 import NewCouponScreen from 'src/screens/NewCouponScreen';
 import MerchandiseSelectScreen from 'src/screens/MerchandiseSelectScreen';
+import OrderListScreen from 'src/screens/OrderListScreen';
+import CouponListScreen from 'src/screens/CouponListScreen';
+import CollectionOrderListScreen from 'src/screens/CollectionOrderListScreen';
 
 const RootStack = createStackNavigator();
 
@@ -403,6 +406,18 @@ export const AppContent = ({notificationOpenData}) => {
     {
       name: NAV_NAMES.NewCoupon,
       component: NewCouponScreen,
+    },
+    {
+      name: NAV_NAMES.OrderList,
+      component: OrderListScreen,
+    },
+    {
+      name: NAV_NAMES.CouponList,
+      component: CouponListScreen,
+    },
+    {
+      name: NAV_NAMES.CollectionOrderList,
+      component: CollectionOrderListScreen,
     },
   ];
 

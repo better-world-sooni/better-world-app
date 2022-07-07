@@ -48,5 +48,8 @@ export const NAV_NAMES = {
     Merchandise: "Merchandise",
     NewCoupon: "NewCoupon",
     MerchandiseSelect: "MerchandiseSelect",
+    OrderList: "OrderList",
+    CouponList: "CouponList",
+    CollectionOrderList: "CollectionOrderList",
 };
 

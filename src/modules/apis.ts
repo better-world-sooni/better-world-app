@@ -71,6 +71,12 @@ const apis = {
     contractAddressAndTokenId: (contractAddress, tokenId) => apiV1(`/nft/${contractAddress}/${tokenId}`),
     qr: (token) => apiV1(`/nft/qr?token=${token}`),
     _: () => apiV1(`/nft`),
+    order: {
+      list: (page?) => apiV1(`/nft/order/list${urlParams({page})}`),
+    },
+    coupon: {
+      list: (page?) => apiV1(`/nft/coupon/list${urlParams({page})}`),
+    },
   },
   follow: {
     contractAddressAndTokenId: (contractAddress, tokenId?) => tokenId ? apiV1(`/follow/${contractAddress}/${tokenId}`) : apiV1(`/follow/${contractAddress}`),
@@ -87,6 +93,9 @@ const apis = {
     },
     merchandise: {
       list: (page?) => apiV1(`/nft_collection/merchandise/list${urlParams({page})}`),
+    },
+    order: {
+      list: (page?) => apiV1(`/nft/order/list${urlParams({page})}`),
     },
     contractAddress: {
       _: (contractAddress) => apiV1(`/nft_collection/${contractAddress}`),
@@ -138,6 +147,8 @@ const apis = {
   },
   order: {
     _: () => apiV1(`/order`),
+    list: () => apiV1(`/order/list`),
+    orderId: (orderId) => apiV1(`/order/${orderId}`),
   },
   coupon: {
     list: () => apiV1(`/coupon/list`),

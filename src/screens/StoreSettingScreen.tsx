@@ -7,7 +7,11 @@ import {Div} from 'src/components/common/Div';
 import {Row} from 'src/components/common/Row';
 import {Span} from 'src/components/common/Span';
 import {ScrollView} from 'src/components/common/ViewComponents';
-import {useGotoNewCoupon, useGotoNewMerchandise} from 'src/hooks/useGoto';
+import {
+  useGotoCollectionOrderList,
+  useGotoNewCoupon,
+  useGotoNewMerchandise,
+} from 'src/hooks/useGoto';
 import {Colors} from 'src/modules/styles';
 
 export default function StoreSettingScreen() {
@@ -15,6 +19,7 @@ export default function StoreSettingScreen() {
   const {goBack} = useNavigation();
   const gotoNewMerchandise = useGotoNewMerchandise();
   const gotoNewCoupon = useGotoNewCoupon();
+  const gotoCollectionOrderList = useGotoCollectionOrderList();
   return (
     <Div bgWhite flex={1}>
       <Div h={notchHeight}></Div>
@@ -37,7 +42,13 @@ export default function StoreSettingScreen() {
         </Row>
       </Div>
       <ScrollView bounces={false}>
-        <Row py20 px15 borderBottom={0.5} borderGray200 itemsCenter>
+        <Row
+          py20
+          px15
+          borderBottom={0.5}
+          borderGray200
+          itemsCenter
+          onPress={gotoCollectionOrderList}>
           <Col>
             <Span fontSize={16} bold>
               주문 관리

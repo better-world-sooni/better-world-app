@@ -16,7 +16,7 @@ export type SelectableOrderCategory = {
 	options: OrderOption[];
 };
 
-export default function useUploadOrder({merchandise}){
+export default function useUploadOrder({merchandise, uploadSuccessCallback}){
 	const getOrderCategories = orderOptions => {
 		return chain(orderOptions)
 		  .groupBy('category')
@@ -35,8 +35,11 @@ export default function useUploadOrder({merchandise}){
 	const [amount, setAmount] = useState(1);
     const postPromiseFnWithToken = usePostPromiseFnWithToken()
 	
-    const uploadOrder = async ({uploadSuccessCallback}) => {
+    const uploadOrder = async () => {
 		if (loading) {
+			return;
+		}
+		if(!orderable){
 			return;
 		}
 		const selectedOptions= {}
