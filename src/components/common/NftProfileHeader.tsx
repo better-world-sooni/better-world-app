@@ -1,5 +1,11 @@
 import React from 'react';
-import {Grid, Maximize, Send, Settings} from 'react-native-feather';
+import {
+  ChevronDown,
+  Grid,
+  Maximize,
+  Send,
+  Settings,
+} from 'react-native-feather';
 import {Colors} from 'src/modules/styles';
 import useFollow from 'src/hooks/useFollow';
 import {
@@ -11,8 +17,12 @@ import {
   useGotoNftProfileEdit,
 } from 'src/hooks/useGoto';
 import apis from 'src/modules/apis';
-import {handlePressContribution} from 'src/utils/bottomPopupUtils';
-import {getNftName, getNftProfileImage} from 'src/utils/nftUtils';
+import {handlePressContribution, openNftList} from 'src/utils/bottomPopupUtils';
+import {
+  getNftName,
+  getNftProfileImage,
+  useIsCurrentNft,
+} from 'src/utils/nftUtils';
 import {DEVICE_WIDTH} from 'src/modules/styles';
 import {FollowOwnerType, FollowType} from 'src/screens/FollowListScreen';
 import {ScanType} from 'src/screens/ScanScreen';
@@ -131,11 +141,23 @@ export default function NftProfileHeader({nftCore, nft, isCurrentNft, qrScan}) {
         </Col>
       </Row>
       <Div px15 py10 bgWhite borderBottom={0.5} borderGray200>
-        <Div>
-          <Span fontSize={20} bold>
-            {getNftName(nft || nftCore)}
-          </Span>
-        </Div>
+        <Row itemsCenter {...(isCurrentNft && {onPress: openNftList})}>
+          <Col auto>
+            <Span fontSize={20} bold numberOfLines={1}>
+              {getNftName(nft || nftCore)}
+            </Span>
+          </Col>
+          {isCurrentNft && (
+            <Col auto>
+              <ChevronDown
+                strokeWidth={2}
+                color={Colors.black}
+                height={22}
+                width={22}
+              />
+            </Col>
+          )}
+        </Row>
         {nft && (
           <Div pt3 onPress={gotoNftCollectionProfile}>
             <Span gray700 bold>

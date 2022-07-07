@@ -1,7 +1,6 @@
 export const IMAGES = {
   betterWorldWhiteLogo: require('assets/images/betterWorldWhiteLogo.png'),
   betterWorldBlueLogo: require('assets/images/betterWorldBlueLogo.png'),
-  bW: require('assets/images/bW.jpg'),
-  notAThing: require('assets/images/notAThing.jpg'),
+  betterWorldPlanet: require('assets/images/betterWorldPlanet.png'),
   placeholder: require('assets/images/placeholder.png'),
 };

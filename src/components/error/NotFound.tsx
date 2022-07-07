@@ -37,7 +37,7 @@ export default function NotFound({text}) {
         </Div>
       </Div>
       <Div itemsCenter>
-        <Img w100 h100 source={IMAGES.bW} />
+        <Img w100 h100 source={IMAGES.betterWorldPlanet} rounded10 />
         <Span bold fontSize={14}>
           {text}
         </Span>

@@ -28,7 +28,7 @@ const SignInScreen = () => {
         itemsCenter
         justifyEnd
         w={DEVICE_WIDTH}>
-        <Img source={IMAGES.bW} h40 w40></Img>
+        <Img source={IMAGES.betterWorldPlanet} h40 w40 rounded10></Img>
       </Div>
       <Div flex={1} justifyCenter>
         <Div>
