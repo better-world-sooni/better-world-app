@@ -152,7 +152,7 @@ function ChatListScreen() {
 
   const readCountRefresh = useCallback(roomId => {
     const index = chatRooms.findIndex(x => x.room_id === roomId);
-    if (chatRooms[index].unread_count > 0) {
+    if (chatRooms[index]?.unread_count > 0) {
       const room = Object.assign({}, chatRooms[index]);
       room.unread_count = 0;
       setChatRooms(prev => [
