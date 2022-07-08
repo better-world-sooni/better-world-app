@@ -144,6 +144,9 @@ export default function NftProfile({
         setBgImgColor(colors['average']);
       });
     }
+    else {
+      setBgImgColor(Colors.gray[400]);
+    }
   }, [nft, bgImgColor, setBgImgColor]);
 
   return (

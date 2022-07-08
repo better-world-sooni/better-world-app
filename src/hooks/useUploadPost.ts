@@ -41,7 +41,6 @@ export default function useUploadPost({initialPostType = ''}){
 				body.image_height = images[0].height
 			}
 		}
-		console.log(body)
 		const {data} = await postPromiseFnWithToken({url: apis.post._().url, body});
 		if (!data.success) {
 			setError("게시물 업로드중 문제가 발생하였습니다.");
