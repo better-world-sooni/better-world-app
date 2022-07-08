@@ -33,6 +33,5 @@ export default function useFollow(initialIsFollowing, initialFollowingCount, con
         promiseFnWithToken({url, method});
         EventRegister.emit(followEventId(contractAddress, tokenId), !isFollowing)
       };
-      console.log(followerCount, "followerCount")
-    return [isFollowing, isBlocked, followerCount, handlePressFollowing];
+    return [isFollowing, followerCount, handlePressFollowing, isBlocked];
 };
