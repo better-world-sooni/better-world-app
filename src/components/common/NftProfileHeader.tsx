@@ -43,7 +43,6 @@ export default function NftProfileHeader({nftCore, nft, isCurrentNft, qrScan}) {
     nft?.contract_address,
     nft?.token_id,
   );
-  console.log(followerCount);
   const gotoFollowList = useGotoFollowList({
     followOwnerType: FollowOwnerType.Nft,
     contractAddress: nftCore.contract_address,
