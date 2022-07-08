@@ -107,7 +107,8 @@ const NotificationContent = ({
   const [following, _followerCount, handlePressFollowing] = useFollow(
     isFollowing,
     0,
-    apis.follow.contractAddressAndTokenId(contractAddress, tokenId).url,
+    contractAddress,
+    tokenId,
   );
   const handlePressNotification = () => {
     if (event == NotificationEventType.Comment) {

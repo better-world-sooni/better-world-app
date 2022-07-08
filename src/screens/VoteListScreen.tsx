@@ -29,7 +29,7 @@ const VoteListScreen = ({
   const handleEndReached = () => {
     if (votePaginating || isNotPaginatable) return;
     paginateGetWithToken(
-      apis.like.list(voteCategory, postId, page + 1),
+      apis.vote.list(voteCategory, postId, page + 1),
       'votes',
     );
   };

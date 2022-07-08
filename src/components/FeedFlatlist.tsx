@@ -60,7 +60,9 @@ function FeedFlatlist(
             )}
             {isNotPaginatable && (
               <Div itemsCenter py15>
-                <Span textCenter>피드를 모두 확인했습니다.</Span>
+                <Span textCenter bold>
+                  피드를 모두 확인했습니다.
+                </Span>
               </Div>
             )}
             <Div h={50}></Div>

@@ -30,8 +30,8 @@ export default function PolymorphicOwner({
   const [following, _followerCount, handlePressFollowing] = useFollow(
     isFollowing,
     0,
-    apis.follow.contractAddressAndTokenId(nft.contract_address, nft.token_id)
-      .url,
+    nft.contract_address,
+    nft.token_id,
   );
   const isCurrentNft = useIsCurrentNft(nft);
   const isAdmin = useIsAdmin();

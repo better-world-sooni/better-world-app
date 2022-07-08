@@ -64,8 +64,8 @@ export function NftProfileSummary({nft, token = null}) {
   const [isFollowing, followerCount, handlePressFollowing] = useFollow(
     nft.is_following,
     nft.follower_count,
-    apis.follow.contractAddressAndTokenId(nft.contract_address, nft.token_id)
-      .url,
+    nft.contract_address,
+    nft.token_id,
   );
   const [huggable, setHuggable] = useState(
     nft.huggable ? HugState.Huggable : HugState.UnHuggable,

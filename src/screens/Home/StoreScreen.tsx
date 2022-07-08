@@ -78,8 +78,7 @@ export default function StoreScreen() {
         contentContainerStyle={{paddingRight: paddingX, paddingLeft: paddingX}}
         numColumns={2}
         ListHeaderComponent={
-          <ImageBackground
-            source={{uri: nftCollection?.background_image_uri}}
+          <Div
             style={{
               shadowOffset: {
                 width: 0,
@@ -88,23 +87,28 @@ export default function StoreScreen() {
               shadowOpacity: 0.25,
               shadowRadius: 4,
               elevation: 4,
-              backgroundColor: Colors.primary.DEFAULT,
-            }}
-            h80
-            wFull
-            my12
-            rounded10
-            overflowHidden>
-            <Div wFull h80 bgBlack opacity={0.75}></Div>
-            <Div absolute top0 wFull h80 px16 py8 justifyCenter>
-              <Span white gray400 fontSize={12}>
-                에어드랍 쿠폰 보유시 주문 가능합니다.
-              </Span>
-              <Span white bold mt4>
-                업그래이드된 베터월드 드랍 샵을 기대해주세요!
-              </Span>
-            </Div>
-          </ImageBackground>
+            }}>
+            <ImageBackground
+              source={{uri: nftCollection?.background_image_uri}}
+              style={{
+                backgroundColor: Colors.primary.DEFAULT,
+              }}
+              h80
+              wFull
+              my12
+              rounded10
+              overflowHidden>
+              <Div wFull h80 bgBlack opacity={0.75}></Div>
+              <Div absolute top0 wFull h80 px16 py8 justifyCenter>
+                <Span white gray400 fontSize={12}>
+                  에어드랍 쿠폰 보유시 주문 가능합니다.
+                </Span>
+                <Span white bold mt4>
+                  업그래이드된 베터월드 드랍 샵을 기대해주세요!
+                </Span>
+              </Div>
+            </ImageBackground>
+          </Div>
         }
         ListEmptyComponent={
           !isLoading && (
