@@ -82,19 +82,7 @@ export default function ReportScreen({
       flex={1}
       bgWhite
       relative>
-      <Div h={headerHeight} zIndex={100}>
-        <Animated.View style={headerStyles}>
-          <CustomBlurView
-            blurType="xlight"
-            blurAmount={30}
-            blurRadius={20}
-            overlayColor=""
-            style={{
-              width: DEVICE_WIDTH,
-              height: '100%',
-              position: 'absolute',
-            }}></CustomBlurView>
-        </Animated.View>
+      <Div h={headerHeight} zIndex={100} borderBottom={0.5} borderGray200>
         <Div zIndex={100} absolute w={DEVICE_WIDTH} top={notchHeight + 5}>
           <Row itemsCenter py5 h40 px8>
             <Col itemsStart>

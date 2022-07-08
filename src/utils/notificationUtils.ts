@@ -1,5 +1,7 @@
 import notifee, { AndroidImportance, AndroidStyle  } from '@notifee/react-native';
 import { createNavigationContainerRef } from '@react-navigation/native';
+import { updateNotificationCountEvent } from 'App';
+import { EventRegister } from 'react-native-event-listeners';
 import {BETTER_WORLD_MAIN_PUSH_CHANNEL} from 'src/modules/constants';
 
 export const navigationRef = createNavigationContainerRef()
@@ -21,9 +23,9 @@ const onDisplayNotification = async(title, body, data) => {
         vibration: true,
         importance: AndroidImportance.HIGH,
     });
-    if( data.unread_notification_count + data.unread_message_count >= 0) {
-        notifee.setBadgeCount(data.unread_notification_count + data.unread_message_count);
-    } 
+    const unreadNotificationCount = parseInt(data.unread_notification_count)
+    const unreadChatRoomCount = parseInt(data.unread_message_count)
+    EventRegister.emit(updateNotificationCountEvent(), {unreadNotificationCount, unreadChatRoomCount})
     if (data.event === 'chat') {
         if(!navigationRef.isReady() || navigationRef.getCurrentRoute().name != 'ChatList' && 
         (navigationRef.getCurrentRoute().name != 'ChatRoom' || 

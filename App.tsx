@@ -3,7 +3,7 @@ import {LogBox, StatusBar} from 'react-native';
 import codePush from 'react-native-code-push';
 import {withRootReducer} from './src/redux/withRootReducer';
 import {AppContent} from 'src/components/AppContent';
-import {shallowEqual, useSelector} from 'react-redux';
+import {shallowEqual, useDispatch, useSelector} from 'react-redux';
 import {RootState} from 'src/redux/rootReducer';
 import messaging from '@react-native-firebase/messaging';
 import {usePostPromiseFnWithToken} from 'src/redux/asyncReducer';
@@ -17,7 +17,10 @@ import {NativeBaseProvider} from 'native-base';
 import {NavigationContainer} from '@react-navigation/native';
 import BottomPopups from 'src/components/common/BottomPopups';
 import {navigationRef, onMessageReceived} from 'src/utils/notificationUtils';
+import {EventRegister} from 'react-native-event-listeners';
+import {appActions} from 'src/redux/appReducer';
 
+export const updateNotificationCountEvent = () => 'update-notification-count';
 
 const App = () => {
   const {
@@ -33,6 +36,7 @@ const App = () => {
   const firebaseMessaging = messaging();
   const gotoWithNotification = useGotoWithNotification();
   const postPromiseFnWithToken = usePostPromiseFnWithToken();
+  const dispatch = useDispatch();
   const [notificationOpenData, setNotificationOpenData] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -100,6 +104,22 @@ const App = () => {
     if (unreadChatRoomCount + unreadNotificationCount >= 0)
       notifee.setBadgeCount(unreadChatRoomCount + unreadNotificationCount);
   }, [unreadChatRoomCount, unreadNotificationCount]);
+
+  useEffect(() => {
+    const listenerId = EventRegister.addEventListener(
+      updateNotificationCountEvent(),
+      ({unreadChatRoomCount, unreadNotificationCount}) => {
+        dispatch(
+          appActions.updateUnreadNotificationCount({unreadNotificationCount}),
+        );
+        dispatch(appActions.updateUnreadChatRoomCount({unreadChatRoomCount}));
+      },
+    );
+    return () => {
+      if (typeof listenerId == 'string')
+        EventRegister.removeEventListener(listenerId);
+    };
+  }, []);
 
   if (loading) {
     return null;

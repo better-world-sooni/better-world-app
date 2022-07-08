@@ -43,7 +43,7 @@ const NftCollectionScreen = ({
       {isAdmin && (
         <Div
           rounded100
-          bgBlack
+          bgAdmin
           zIndex={200}
           absolute
           w54

@@ -325,6 +325,7 @@ export const AppContent = ({notificationOpenData}) => {
     {
       name: NAV_NAMES.CollectionEvent,
       component: CollectionEventScreen,
+      options: TransitionPresets.ModalTransition,
     },
     {
       name: NAV_NAMES.Qr,

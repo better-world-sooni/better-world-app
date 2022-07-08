@@ -52,9 +52,6 @@ const apis = {
     klaytnAddress: (klaytnAddress) => apiV1(`/profile/${klaytnAddress}`),
     _: () => apiV1(`/profile`)
   },
-  search: {
-    nft: (keyword) => apiV1(`/search/nft/${keyword}`)
-  },
   hug: {
     qr: () => apiV1(`/hug/qr`),
   },

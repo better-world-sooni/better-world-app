@@ -74,7 +74,7 @@ export default function NftCollectionProfile({
   const [isFollowing, followerCount, handlePressFollowing] = useFollow(
     nftCollection?.is_following,
     nftCollection?.follower_count,
-    apis.follow.contractAddress(nftCollectionCore.contract_address).url,
+    nftCollectionCore.contract_address,
   );
   const {goBack} = useNavigation();
   const gotoFollowList = useGotoFollowList({

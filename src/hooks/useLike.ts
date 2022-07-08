@@ -18,11 +18,11 @@ export default function useLike(initialLiked, initialLikesCount, likableType, li
     const promiseFnWithToken = usePromiseFnWithToken();
     useEffect(() => {
         setLiked(initialLiked);
-        EventRegister.addEventListener(likeEventId(likableType, likableId), (data) => {
+        const listenerId = EventRegister.addEventListener(likeEventId(likableType, likableId), (data) => {
             setLiked(data)
         })
         return () => {
-            EventRegister.removeEventListener(likeEventId(likableType, likableId));
+            if(typeof listenerId == 'string') EventRegister.removeEventListener(listenerId);
         }
     }, [initialLiked]);
     const handlePressLike = () => {
