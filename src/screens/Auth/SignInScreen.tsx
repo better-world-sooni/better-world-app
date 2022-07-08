@@ -34,14 +34,15 @@ const SignInScreen = () => {
         <Div>
           <Carousel
             data={[
-              '가스비 없이 모바일에서 포럼과 거버넌스에 참여해요.',
-              '커뮤니티 지갑을 투명하고 편리하게 모니터해요.',
-              '커뮤니티원들과 PFP 계정으로 쉽고 재밌게 소통해요.',
+              '홀더 굿즈를 쉽게 주문하고 수령해요.',
+              '가스비 없이 모바일로 포럼과 거버넌스에 참여해요.',
+              '커뮤니티 지갑을 투명하게 모니터해요.',
+              '커뮤니티원들과 편리하게 소통해요.',
             ]}
             itemWidth={DEVICE_WIDTH}
             autoplay
             loop
-            autoplayInterval={8000}
+            autoplayInterval={6000}
             sliderWidth={DEVICE_WIDTH}
             renderItem={renderItem}
           />

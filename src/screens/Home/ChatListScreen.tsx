@@ -90,7 +90,7 @@ function ChatListScreen() {
       await cable(token).subscribe(channel);
       setChatSocket(channel);
       channel.on('fetchList', res => {
-        setChatRooms(res.data.list_data);
+        setChatRooms(res.data?.list_data);
         dispatch(
           appActions.updateUnreadChatRoomCount({
             unreadChatRoomCount: res.data.total_unread,

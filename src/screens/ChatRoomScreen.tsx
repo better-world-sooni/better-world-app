@@ -22,11 +22,12 @@ import {getNftProfileImage, getNftName} from 'src/utils/nftUtils';
 import {resizeImageUri} from 'src/utils/uriUtils';
 import {HAS_NOTCH} from 'src/modules/constants';
 import { EventRegister } from 'react-native-event-listeners'
+import {useGotoNftProfile} from 'src/hooks/useGoto';
 
 export enum ChatRoomEnterType {
   List,
   Profile,
-  Notification
+  Notification,
 }
 
 function ChatRoomScreen({
@@ -41,10 +42,10 @@ function ChatRoomScreen({
   const {data: chatRoomRes, isLoading: chatRoomLoad} = useApiSelector(
     chatRoomEnterType == ChatRoomEnterType.Profile
       ? apis.chat.chatRoom.contractAddressAndTokenId(
-        opponentNft.contract_address,
-        opponentNft.token_id,
-      )
-      : apis.chat.chatRoom.roomId(roomId) 
+          opponentNft.contract_address,
+          opponentNft.token_id,
+        )
+      : apis.chat.chatRoom.roomId(roomId),
   );
   const currentNftId = {
     token_id: currentNft.token_id,
@@ -67,7 +68,7 @@ function ChatRoomScreen({
   const [chatSocket, setChatSocket] = useState(null);
   const [enterNfts, setEnterNfts] = useState([]);
   const [connectRoomId, setConnectRoomId] = useState(
-    roomId ? roomId : (chatRoomRes ? chatRoomRes.room_id : null)
+    roomId ? roomId : chatRoomRes ? chatRoomRes.room_id : null,
   );
   const [messages, setMessages] = useState(
     chatRoomRes ? chatRoomRes.init_messages : [],
@@ -89,14 +90,16 @@ function ChatRoomScreen({
         setChatSocket(channel);
         channel.on('enter', res => {
           setEnterNfts(res.entered_nfts);
-          setChatReady(true)
-          if (currentNftId.token_id != res.enter_nft.token_id || 
-            currentNftId.contract_address != res.enter_nft.contract_address) {
-              const updateMsgLength = res.update_msgs.length;
-              setMessages(prevMsgs => [
-                ...res.update_msgs,
-                ...prevMsgs.slice(updateMsgLength),
-              ]);
+          setChatReady(true);
+          if (
+            currentNftId.token_id != res.enter_nft.token_id ||
+            currentNftId.contract_address != res.enter_nft.contract_address
+          ) {
+            const updateMsgLength = res.update_msgs.length;
+            setMessages(prevMsgs => [
+              ...res.update_msgs,
+              ...prevMsgs.slice(updateMsgLength),
+            ]);
           }
         });
         channel.on('nextPageMessage', res => {
@@ -120,8 +123,8 @@ function ChatRoomScreen({
           setEnterNfts(prevNfts => [
             ...prevNfts.filter(
               nft =>
-              nft.token_id != res.leave_nft.token_id ||
-              nft.contract_address != res.leave_nft.contract_address,
+                nft.token_id != res.leave_nft.token_id ||
+                nft.contract_address != res.leave_nft.contract_address,
             ),
           ]);
         });
@@ -129,7 +132,7 @@ function ChatRoomScreen({
       wsConnect();
       channel.enter();
       return () => {
-        setChatReady(false)
+        setChatReady(false);
         if (channel) {
           channel.disconnect();
           channel.close();
@@ -143,8 +146,8 @@ function ChatRoomScreen({
       setMessages(chatRoomRes.init_messages);
       setConnectRoomId(chatRoomRes.room_id);
       setPage(chatRoomRes.init_page);
-      if(chatRoomEnterType !== ChatRoomEnterType.List) {
-        EventRegister.emit('roomUnreadCountUpdate', chatRoomRes.room_id)
+      if (chatRoomEnterType !== ChatRoomEnterType.List) {
+        EventRegister.emit('roomUnreadCountUpdate', chatRoomRes.room_id);
       }
     }
   }, [chatRoomRes]);
