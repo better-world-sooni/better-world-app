@@ -30,8 +30,15 @@ export default function useFollow(initialIsFollowing, initialFollowingCount, con
     }, [initialIsFollowing]);
     const handlePressFollowing = () => {
         const method = isFollowing ? 'DELETE' : 'POST';
+        const tobeFollowCategory = followCategory == FollowCategory.NONE ? FollowCategory.FOLLOW : FollowCategory.NONE
         promiseFnWithToken({url, method});
-        EventRegister.emit(followEventId(contractAddress, tokenId), !isFollowing)
-      };
-    return [isFollowing, followerCount, handlePressFollowing, isBlocked];
+        EventRegister.emit(followEventId(contractAddress, tokenId), tobeFollowCategory)
+    };
+    const handlePressBlock = () => {
+        const method = isBlocked ? 'DELETE' : 'POST';
+        const tobeFollowCategory = followCategory == FollowCategory.BLOCK ? FollowCategory.NONE : FollowCategory.BLOCK
+        promiseFnWithToken({url, method, body: {is_block: true}});
+        EventRegister.emit(followEventId(contractAddress, tokenId), tobeFollowCategory)
+    };
+    return {isFollowing, followerCount, handlePressFollowing, isBlocked, handlePressBlock};
 };

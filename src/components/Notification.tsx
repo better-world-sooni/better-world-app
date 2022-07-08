@@ -104,12 +104,12 @@ const NotificationContent = ({
       return;
     }
   };
-  const [following, _followerCount, handlePressFollowing] = useFollow(
-    isFollowing,
-    0,
-    contractAddress,
-    tokenId,
-  );
+  const {
+    handlePressFollowing,
+    isFollowing: following,
+    isBlocked,
+    handlePressBlock,
+  } = useFollow(isFollowing, 0, contractAddress, tokenId);
   const handlePressNotification = () => {
     if (event == NotificationEventType.Comment) {
       gotoPost();
@@ -241,20 +241,34 @@ const NotificationContent = ({
           <Span gray700>{createdAtText(createdAt)}</Span>
         </Span>
       </Col>
-      {!isCurrentNft && (
-        <Col
-          auto
-          bgBlack={!following}
-          p8
-          rounded100
-          border1={following}
-          borderGray200={following}
-          onPress={handlePressFollowing}>
-          <Span white={!following} bold px5>
-            {following ? '팔로잉' : '팔로우'}
-          </Span>
-        </Col>
-      )}
+      {!isCurrentNft &&
+        (isBlocked ? (
+          <Col
+            auto
+            bgWhite
+            p8
+            rounded100
+            border1
+            borderDanger
+            onPress={handlePressBlock}>
+            <Span danger bold px5>
+              차단 해제
+            </Span>
+          </Col>
+        ) : (
+          <Col
+            auto
+            bgBlack={!following}
+            p8
+            rounded100
+            border1={following}
+            borderGray200={following}
+            onPress={handlePressFollowing}>
+            <Span white={!following} bold px5>
+              {following ? '팔로잉' : '팔로우'}
+            </Span>
+          </Col>
+        ))}
     </Row>
   );
 };

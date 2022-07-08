@@ -37,13 +37,18 @@ export default function NftProfileHeader({nftCore, nft, isCurrentNft, qrScan}) {
   const gotoNftCollectionProfile = useGotoNftCollectionProfile({
     nftCollection: nft?.nft_collection,
   });
-  const [isFollowing, followerCount, handlePressFollowing] = useFollow(
+  const {
+    isFollowing,
+    followerCount,
+    handlePressFollowing,
+    isBlocked,
+    handlePressBlock,
+  } = useFollow(
     nft?.is_following,
     nft?.follower_count,
     nft?.contract_address,
     nft?.token_id,
   );
-  console.log(followerCount);
   const gotoFollowList = useGotoFollowList({
     followOwnerType: FollowOwnerType.Nft,
     contractAddress: nftCore.contract_address,
@@ -53,6 +58,7 @@ export default function NftProfileHeader({nftCore, nft, isCurrentNft, qrScan}) {
   const gotoScan = useGotoScan({scanType: ScanType.Nft});
   const gotoChatRoom = useGotoChatRoomFromProfile();
   const gotoNftProfileEdit = useGotoNftProfileEdit();
+  console.log(isBlocked);
   return (
     <>
       <Row zIndex={100} px15 relative>
@@ -90,18 +96,33 @@ export default function NftProfileHeader({nftCore, nft, isCurrentNft, qrScan}) {
                     width={22}
                   />
                 </Col>
-                <Col
-                  auto
-                  bgBlack={!isFollowing}
-                  p8
-                  rounded100
-                  border1={isFollowing}
-                  borderGray200
-                  onPress={handlePressFollowing}>
-                  <Span white={!isFollowing} bold px5 fontSize={14}>
-                    {!nft ? '불러오는 중' : isFollowing ? '팔로잉' : '팔로우'}
-                  </Span>
-                </Col>
+                {isBlocked ? (
+                  <Col
+                    auto
+                    bgWhite
+                    p8
+                    rounded100
+                    border1
+                    borderDanger
+                    onPress={handlePressBlock}>
+                    <Span danger bold px5>
+                      차단 해제
+                    </Span>
+                  </Col>
+                ) : (
+                  <Col
+                    auto
+                    bgBlack={!isFollowing}
+                    p8
+                    rounded100
+                    border1={isFollowing}
+                    borderGray200
+                    onPress={handlePressFollowing}>
+                    <Span white={!isFollowing} bold px5 fontSize={14}>
+                      {!nft ? '불러오는 중' : isFollowing ? '팔로잉' : '팔로우'}
+                    </Span>
+                  </Col>
+                )}
               </Row>
             </Div>
           ) : (

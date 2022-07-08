@@ -71,7 +71,13 @@ export default function NftCollectionProfile({
     (root: RootState) => root.app.session,
     shallowEqual,
   );
-  const [isFollowing, followerCount, handlePressFollowing] = useFollow(
+  const {
+    isFollowing,
+    followerCount,
+    handlePressFollowing,
+    isBlocked,
+    handlePressBlock,
+  } = useFollow(
     nftCollection?.is_following,
     nftCollection?.follower_count,
     nftCollectionCore.contract_address,
@@ -225,22 +231,37 @@ export default function NftCollectionProfile({
                   <Div>
                     <Row py8>
                       <Col />
-                      <Col
-                        auto
-                        bgBlack={!isFollowing}
-                        p8
-                        rounded100
-                        border1={isFollowing}
-                        borderGray200
-                        onPress={handlePressFollowing}>
-                        <Span white={!isFollowing} bold px5 fontSize={14}>
-                          {!nftCollection
-                            ? '불러오는 중'
-                            : isFollowing
-                            ? '팔로잉'
-                            : '팔로우'}
-                        </Span>
-                      </Col>
+                      {isBlocked ? (
+                        <Col
+                          auto
+                          bgWhite
+                          p8
+                          rounded100
+                          border1
+                          borderDanger
+                          onPress={handlePressBlock}>
+                          <Span danger bold px5>
+                            차단 해제
+                          </Span>
+                        </Col>
+                      ) : (
+                        <Col
+                          auto
+                          bgBlack={!isFollowing}
+                          p8
+                          rounded100
+                          border1={isFollowing}
+                          borderGray200
+                          onPress={handlePressFollowing}>
+                          <Span white={!isFollowing} bold px5 fontSize={14}>
+                            {!nftCollection
+                              ? '불러오는 중'
+                              : isFollowing
+                              ? '팔로잉'
+                              : '팔로우'}
+                          </Span>
+                        </Col>
+                      )}
                     </Row>
                   </Div>
                 ) : (

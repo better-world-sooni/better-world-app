@@ -61,7 +61,13 @@ export function NftProfileSummary({nft, token = null}) {
   );
   const isCurrentNft = useIsCurrentNft(nft);
   const apiPOSTWithToken = useApiPOSTWithToken();
-  const [isFollowing, followerCount, handlePressFollowing] = useFollow(
+  const {
+    isFollowing,
+    followerCount,
+    handlePressFollowing,
+    isBlocked,
+    handlePressBlock,
+  } = useFollow(
     nft.is_following,
     nft.follower_count,
     nft.contract_address,
@@ -187,18 +193,33 @@ export function NftProfileSummary({nft, token = null}) {
                     </Div>
                   </Col>
                 )}
-                <Col
-                  auto
-                  bgBlack={!isFollowing}
-                  p8
-                  rounded100
-                  border1={isFollowing}
-                  borderGray200={isFollowing}
-                  onPress={handlePressFollowing}>
-                  <Span white={!isFollowing} bold px5>
-                    {isFollowing ? '팔로잉' : '팔로우'}
-                  </Span>
-                </Col>
+                {isBlocked ? (
+                  <Col
+                    auto
+                    bgWhite
+                    p8
+                    rounded100
+                    border1
+                    borderDanger
+                    onPress={handlePressBlock}>
+                    <Span danger bold px5>
+                      차단 해제
+                    </Span>
+                  </Col>
+                ) : (
+                  <Col
+                    auto
+                    bgBlack={!isFollowing}
+                    p8
+                    rounded100
+                    border1={isFollowing}
+                    borderGray200={isFollowing}
+                    onPress={handlePressFollowing}>
+                    <Span white={!isFollowing} bold px5>
+                      {isFollowing ? '팔로잉' : '팔로우'}
+                    </Span>
+                  </Col>
+                )}
               </Row>
             </Div>
           )}
