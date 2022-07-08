@@ -26,6 +26,10 @@ const App = () => {
     unreadChatRoomCount,
     session: {token},
   } = useSelector((root: RootState) => root.app, shallowEqual);
+  const {currentNft} = useSelector(
+    (root: RootState) => root.app.session,
+    shallowEqual,
+  );
   const firebaseMessaging = messaging();
   const gotoWithNotification = useGotoWithNotification();
   const postPromiseFnWithToken = usePostPromiseFnWithToken();
@@ -37,7 +41,7 @@ const App = () => {
       const token = await firebaseMessaging.getToken();
       if (token) return token;
     } catch (error) {}
-  }, [token]);
+  }, [token, currentNft]);
   const setFCMToken = useCallback(async () => {
     try {
       const authorized = await firebaseMessaging.hasPermission();
@@ -60,7 +64,7 @@ const App = () => {
         });
       }
     } catch {}
-  }, [token, isLoggedIn]);
+  }, [token, isLoggedIn, currentNft]);
 
   useEffect(() => {
     LogBox.ignoreAllLogs();
