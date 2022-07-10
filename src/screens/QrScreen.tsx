@@ -84,8 +84,8 @@ const QrScreen = () => {
           absolute
           w={DEVICE_WIDTH}
           top={notchHeight + 5}>
-          <Col justifyStart>
-            <Div auto rounded100 onPress={goBack}>
+          <Col onPress={goBack} justifyStart>
+            <Div  >
               <X width={30} height={30} color={Colors.white} strokeWidth={2} />
             </Div>
           </Col>

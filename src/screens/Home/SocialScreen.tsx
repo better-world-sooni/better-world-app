@@ -51,19 +51,15 @@ export default function SocialScreen() {
     {
       id: SocialFeedFilter.All,
       title: `커뮤니티 피드`,
-      titleColor: '#46F289',
       image: Platform.select({
         ios: 'globe.asia.australia',
-        android: 'ic_menu_mapmode',
       }),
     },
     {
       id: SocialFeedFilter.Following,
       title: `팔로잉 피드`,
-      titleColor: '#46F289',
       image: Platform.select({
         ios: 'star',
-        android: 'star_big_on',
       }),
     },
   ];

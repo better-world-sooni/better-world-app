@@ -1,5 +1,5 @@
 import {ChevronLeft, Settings} from 'react-native-feather';
-import React, {useRef} from 'react';
+import React, {useRef, useState, useEffect} from 'react';
 import {Col} from './Col';
 import {Div} from './Div';
 import {Img} from './Img';
@@ -27,6 +27,7 @@ import {shallowEqual, useSelector} from 'react-redux';
 import {RootState} from 'src/redux/rootReducer';
 import TruncatedMarkdown from './TruncatedMarkdown';
 import Post from './Post';
+import {BlurView} from '@react-native-community/blur';
 import {getNftName, getNftProfileImage} from 'src/utils/nftUtils';
 import {
   useApiSelector,
@@ -37,6 +38,8 @@ import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {ICONS} from 'src/modules/icons';
 import ListEmptyComponent from './ListEmptyComponent';
 import {handlePressContribution} from 'src/utils/bottomPopupUtils';
+import ImageColors from 'react-native-image-colors';
+import FocusAwareStatusBar from 'src/components/FocusAwareStatusBar';
 
 export default function NftCollectionProfile({
   nftCollectionCore,
@@ -71,6 +74,7 @@ export default function NftCollectionProfile({
     (root: RootState) => root.app.session,
     shallowEqual,
   );
+  const [bgImgColor, setBgImgColor] = useState(Colors.gray[400]);
   const {
     isFollowing,
     followerCount,
@@ -138,28 +142,60 @@ export default function NftCollectionProfile({
     };
   });
 
+  useEffect(() => {
+    if (nftCollection?.background_image_uri) {
+      ImageColors.getColors(nftCollection.background_image_uri, {
+        fallback: '#228B22',
+        cache: true,
+        key: nftCollection.background_image_uri,
+      }).then(colors => {
+        setBgImgColor(colors['average']);
+      });
+    }
+    else {
+      setBgImgColor(Colors.gray[400]);
+    }
+  }, [nftCollection, bgImgColor, setBgImgColor]);
+
   return (
     <>
+      {Platform.OS === 'android' && (
+        <FocusAwareStatusBar
+          barStyle="dark-content"
+          backgroundColor={bgImgColor}
+        />
+      )}
       <Div h={headerHeight}>
         {nftCollection?.background_image_uri ? (
           <Animated.Image
             style={backgroundImageStyles}
             source={{uri: nftCollection.background_image_uri}}></Animated.Image>
         ) : (
-          <Div absolute top0 h={headerHeight} bgGray400 w={DEVICE_WIDTH}></Div>
+          <Div absolute top0 h={headerHeight + 30} bgGray400 w={DEVICE_WIDTH}></Div>
         )}
         <Animated.View style={headerStyles}>
-          <CustomBlurView
-            blurType="light"
-            blurAmount={20}
-            blurRadius={10}
-            overlayColor=""
-            style={{
-              width: DEVICE_WIDTH,
-              height: '100%',
-              position: 'absolute',
-            }}
-            reducedTransparencyFallbackColor={Colors.white}></CustomBlurView>
+          {Platform.OS === 'ios' ? (
+            <BlurView
+              blurType="light"
+              blurAmount={20}
+              blurRadius={10}
+              overlayColor=""
+              style={{
+                width: DEVICE_WIDTH,
+                height: '100%',
+                position: 'absolute',
+              }}
+              reducedTransparencyFallbackColor={Colors.white}
+            />
+          ) : (
+            <Div
+              style={{
+                width: DEVICE_WIDTH,
+                height: '100%',
+                position: 'absolute',
+              }}
+              backgroundColor={bgImgColor}></Div>
+          )}
           <Row itemsCenter justifyCenter width={DEVICE_WIDTH} absolute>
             <Animated.View style={titleStyles}>
               <Span

@@ -101,10 +101,8 @@ function PostContent({
     {
       id: PostEventTypes.Report,
       title: '게시물 신고',
-      titleColor: '#46F289',
       image: Platform.select({
         ios: 'flag',
-        android: 'stat_sys_warning',
       }),
     },
     (isCurrentNft || (!post.nft.token_id && isAdmin)) && {
@@ -112,7 +110,6 @@ function PostContent({
       title: '게시물 삭제',
       image: Platform.select({
         ios: 'trash',
-        android: 'ic_menu_delete',
       }),
     },
   ].filter(option => option);
