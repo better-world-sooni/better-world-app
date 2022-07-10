@@ -74,7 +74,7 @@ const QrScreen = () => {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       flex={1}
       bgBlack>
-      <Div h={headerHeight} zIndex={100} absolute top0>
+      <Div h={headerHeight} absolute top0>
         <Row
           itemsCenter
           py5
@@ -84,8 +84,8 @@ const QrScreen = () => {
           absolute
           w={DEVICE_WIDTH}
           top={notchHeight + 5}>
-          <Col onPress={goBack} justifyStart>
-            <Div  >
+          <Col justifyStart>
+            <Div auto rounded100 onPress={goBack}>
               <X width={30} height={30} color={Colors.white} strokeWidth={2} />
             </Div>
           </Col>
