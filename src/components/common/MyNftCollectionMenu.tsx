@@ -212,7 +212,7 @@ const MyNftCollectionMenu = ({nftCollection}) => {
               </Row>
             )
           )}
-          <Row itemsCenter py16 onPress={gotoSocialSetting}>
+          {/* <Row itemsCenter py16 onPress={gotoSocialSetting}>
             <Col auto mr16>
               <Home
                 strokeWidth={2}
@@ -224,13 +224,13 @@ const MyNftCollectionMenu = ({nftCollection}) => {
             <Col>
               <Span fontSize={16}>게시물 피드 설정</Span>
             </Col>
-          </Row>
+          </Row> */}
           <Row itemsCenter py16 onPress={gotoForumSetting}>
             <Col auto mr16>
               <Img source={ICONS.lightBulb} h22 w22></Img>
             </Col>
             <Col>
-              <Span fontSize={16}>제안 피드 설정</Span>
+              <Span fontSize={16}>제안 피드 설정 보기</Span>
             </Col>
           </Row>
           {isAdmin && (
