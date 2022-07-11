@@ -97,7 +97,7 @@ const MainBottomTabs = () => {
             ),
         }}
       />
-      <Tab.Screen
+      {/* <Tab.Screen
         name={NAV_NAMES.Store}
         component={StoreScreen}
         options={{
@@ -111,7 +111,7 @@ const MainBottomTabs = () => {
               }></ShoppingBag>
           ),
         }}
-      />
+      /> */}
       <Tab.Screen
         name={NAV_NAMES.ChatList}
         component={ChatListScreen}
