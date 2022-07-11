@@ -4,11 +4,13 @@ import apis from 'src/modules/apis';
 import NftCollectionProfile from 'src/components/common/NftCollectionProfile';
 import {useIsAdmin} from 'src/utils/nftUtils';
 import {useGotoNewPost} from 'src/hooks/useGoto';
-import {PostOwnerType} from './NewPostScreen';
+import {PostOwnerType, PostType} from './NewPostScreen';
 import {Plus} from 'react-native-feather';
 import {Colors} from 'src/modules/styles';
 import {shallowEqual, useSelector} from 'react-redux';
 import {RootState} from 'src/redux/rootReducer';
+import {Img} from 'src/components/common/Img';
+import {ICONS} from 'src/modules/icons';
 
 const NftCollectionScreen = ({
   route: {
@@ -43,15 +45,16 @@ const NftCollectionScreen = ({
       {isAdmin && (
         <Div
           rounded100
-          bgAdmin
-          zIndex={200}
+          bgWhite
           absolute
           w54
           h54
           p12
           bottom55
           right15
-          onPress={() => gotoNewPost()}
+          itemsCenter
+          justifyCenter
+          onPress={() => gotoNewPost(null, null, null, PostType.Proposal)}
           style={{
             shadowOffset: {
               width: 0,
@@ -61,11 +64,7 @@ const NftCollectionScreen = ({
             shadowRadius: 4,
             elevation: 4,
           }}>
-          <Plus
-            strokeWidth={2}
-            color={Colors.white}
-            height={30}
-            width={30}></Plus>
+          <Img source={ICONS.lightBulb} h22 w22 />
         </Div>
       )}
     </Div>

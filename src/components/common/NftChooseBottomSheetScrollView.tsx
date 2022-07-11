@@ -18,7 +18,7 @@ export default function NftChooseBottomSheetScrollView({
   const logout = useLogout(gotoSignIn);
   return (
     <BottomSheetScrollView>
-      <Row px20 itemsCenter>
+      <Row px15 itemsCenter>
         <Col />
         <Col auto onPress={logout}>
           <Span info bold>
@@ -26,7 +26,7 @@ export default function NftChooseBottomSheetScrollView({
           </Span>
         </Col>
       </Row>
-      <Div px20>
+      <Div px15>
         <Div>
           {nfts?.map((nft, index) => {
             return (

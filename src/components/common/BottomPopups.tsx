@@ -11,7 +11,7 @@ import {Div} from './Div';
 import NftChooseBottomSheetScrollView from './NftChooseBottomSheetScrollView';
 import {Span} from './Span';
 
-const bottomMargin = HAS_NOTCH ? 100 : 80;
+const bottomMargin = HAS_NOTCH ? 50 : 20;
 
 export default function BottomPopups() {
   const getSnapPoints = itemsLength => {

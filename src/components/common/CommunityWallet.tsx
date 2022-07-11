@@ -99,17 +99,17 @@ function CommunityWallet({communityWallet, width, verticalList = false}) {
           </Div>
         </Col>
         <Col>
-          <Row itemsCenter>
-            <Col auto mr8 onPress={gotoCommunityWalletProfile}>
+          <Row itemsCenter onPress={copyToClipboard}>
+            <Col auto mr8>
               <Span fontSize={14} bold>
                 {communityWallet.name}
               </Span>
             </Col>
-            <Col auto mr8>
+            {/* <Col auto mr8>
               <Span gray700 fontSize={14} onPress={copyToClipboard}>
                 {truncateAddress(communityWallet.address)}
               </Span>
-            </Col>
+            </Col> */}
             <Col>
               <Copy {...actionIconDefaultProps} />
             </Col>

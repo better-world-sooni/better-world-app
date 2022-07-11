@@ -39,18 +39,23 @@ export default function CommunityWalletTopBar({communityWallet}) {
           />
         </Div>
       </Col>
-      <Col onPress={() => handlePressWalletExpand(communityWallet.about)} pr7>
+      <Col
+        onPress={() =>
+          communityWallet.about &&
+          handlePressWalletExpand(communityWallet.about)
+        }
+        pr7>
         <Row itemsCenter>
           <Col auto mr8>
             <Span fontSize={14} bold>
               {communityWallet.name}
             </Span>
           </Col>
-          <Col auto mr8>
+          {/* <Col auto mr8>
             <Span gray700 fontSize={14}>
               {truncateAddress(communityWallet.address)}
             </Span>
-          </Col>
+          </Col> */}
         </Row>
         <Row itemsCenter>
           <Col auto mr2>
@@ -61,9 +66,11 @@ export default function CommunityWalletTopBar({communityWallet}) {
           <Col auto ml2>
             <Img h14 w14 source={ICONS.klayIcon}></Img>
           </Col>
-          <Col auto ml2>
-            <ChevronDown color={Colors.gray[200]} width={20} height={20} />
-          </Col>
+          {communityWallet.about ? (
+            <Col auto ml2>
+              <ChevronDown color={Colors.gray[200]} width={20} height={20} />
+            </Col>
+          ) : null}
         </Row>
       </Col>
     </Row>
