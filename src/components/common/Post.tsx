@@ -230,15 +230,14 @@ function PostContent({
                   선택하기
                 </Span>
               </Div>
-            ) : (
-              displayLabel && (
-                <Div mt1 mb4>
-                  <Span bold gray fontSize={12}>
-                    {post.type == PostType.Proposal ? '제안' : '게시물'}
-                  </Span>
-                </Div>
-              )
-            )}
+            ) : // displayLabel && (
+            //   <Div mt1 mb4>
+            //     <Span bold gray fontSize={12}>
+            //       {post.type == PostType.Proposal ? '제안' : '게시물'}
+            //     </Span>
+            //   </Div>
+            // )
+            null}
             <Row>
               <Col auto>
                 <Span>

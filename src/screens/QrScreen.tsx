@@ -13,7 +13,7 @@ import {RootState} from 'src/redux/rootReducer';
 import {ActivityIndicator, Platform} from 'react-native';
 import {getNftName, getNftProfileImage} from 'src/utils/nftUtils';
 import {Col} from 'src/components/common/Col';
-import {ChevronLeft, RefreshCw, X} from 'react-native-feather';
+import {RefreshCw, X} from 'react-native-feather';
 import {useNavigation} from '@react-navigation/native';
 import {Row} from 'src/components/common/Row';
 import {CustomBlurView} from 'src/components/common/CustomBlurView';
