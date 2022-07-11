@@ -1,3 +1,5 @@
+export const GATEWAY_PREFIX = "https://betterworld.mypinata.cloud/ipfs"
+
 export const resizeImageUri = (uri: string, width: number, height: number) => {
     if(!uri) return null
     const url = new URL(uri)

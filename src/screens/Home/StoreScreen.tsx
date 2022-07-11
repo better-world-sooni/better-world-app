@@ -112,7 +112,7 @@ export default function StoreScreen() {
         }
         ListEmptyComponent={
           !isLoading && (
-            <ListEmptyComponent h={DEVICE_HEIGHT - headerHeight * 2} />
+            <ListEmptyComponent h={DEVICE_HEIGHT - headerHeight * 2 - 100} />
           )
         }
         refreshControl={

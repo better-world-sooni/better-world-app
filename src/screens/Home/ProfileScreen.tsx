@@ -1,15 +1,13 @@
 import React from 'react';
-import {StatusBar} from 'react-native';
 import {Div} from 'src/components/common/Div';
 import apis from 'src/modules/apis';
 import NftProfile from 'src/components/common/NftProfile';
 import {shallowEqual, useSelector} from 'react-redux';
 import {RootState} from 'src/redux/rootReducer';
-import {Plus} from 'react-native-feather';
 import {useGotoNewPost} from 'src/hooks/useGoto';
-import {PostOwnerType} from '../NewPostScreen';
-import {Colors} from 'src/modules/styles';
-import FocusAwareStatusBar from 'src/components/FocusAwareStatusBar';
+import {PostOwnerType, PostType} from '../NewPostScreen';
+import {Img} from 'src/components/common/Img';
+import {ICONS} from 'src/modules/icons';
 
 const ProfileScreen = () => {
   const {currentNft} = useSelector(
@@ -19,7 +17,7 @@ const ProfileScreen = () => {
   const pageableNftPostFn = (page?) => {
     return apis.post.list._(page);
   };
-  const gotoNewPost = useGotoNewPost({postOwnerType: PostOwnerType.Nft});
+  const gotoNewProposal = useGotoNewPost({postOwnerType: PostOwnerType.Nft});
   return (
     <Div flex={1} bgWhite overflowHidden>
       <NftProfile
@@ -31,14 +29,16 @@ const ProfileScreen = () => {
       />
       <Div
         rounded100
-        bgBlack
+        bgWhite
         absolute
         w54
         h54
         p12
         bottom15
         right15
-        onPress={() => gotoNewPost()}
+        itemsCenter
+        justifyCenter
+        onPress={() => gotoNewProposal(null, null, null, PostType.Proposal)}
         style={{
           shadowOffset: {
             width: 0,
@@ -48,11 +48,7 @@ const ProfileScreen = () => {
           shadowRadius: 4,
           elevation: 4,
         }}>
-        <Plus
-          strokeWidth={2}
-          color={Colors.white}
-          height={30}
-          width={30}></Plus>
+        <Img source={ICONS.lightBulb} h22 w22 />
       </Div>
     </Div>
   );

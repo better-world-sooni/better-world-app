@@ -80,7 +80,6 @@ const QrScreen = () => {
           py5
           h40
           px15
-          zIndex={100}
           absolute
           w={DEVICE_WIDTH}
           top={notchHeight + 5}>
@@ -124,7 +123,7 @@ const QrScreen = () => {
                     position: 'absolute',
                   }}></CustomBlurView>
                 <Img
-                  source={IMAGES.betterWorldBlueLogo}
+                  source={IMAGES.betterWorldPlanet}
                   h100
                   w100
                   top50

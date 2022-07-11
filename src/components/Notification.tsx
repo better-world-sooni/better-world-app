@@ -233,7 +233,7 @@ const NotificationContent = ({
           w50
           {...(hasNft
             ? {uri: profileImgUri}
-            : {source: IMAGES.betterWorldBlueLogo})}></Img>
+            : {source: IMAGES.betterWorldPlanet})}></Img>
       </Col>
       <Col px15>
         <Span>

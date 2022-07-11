@@ -309,7 +309,7 @@ const NewPostScreen = ({
               </Col>
             </Row>
           </Col>
-          <Col auto ml10>
+          {/* <Col auto ml10>
             <MenuView onPressAction={handlePressMenu} actions={postTypes}>
               <Row itemsCenter border={0.5} rounded10 borderGray200 p8>
                 <Col auto mr5>
@@ -327,7 +327,7 @@ const NewPostScreen = ({
                 </Col>
               </Row>
             </MenuView>
-          </Col>
+          </Col> */}
         </Row>
       </KeyboardAvoidingView>
       <Div h={HAS_NOTCH ? 27 : 0} bgWhite />

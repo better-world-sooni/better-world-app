@@ -86,19 +86,6 @@ const MainBottomTabs = () => {
         headerShown: false,
       }}>
       <Tab.Screen
-        name={NAV_NAMES.Social}
-        component={SocialScreen}
-        options={{
-          tabBarIcon: ({focused}) => (
-            <Home
-              width={22}
-              height={22}
-              strokeWidth={2}
-              color={focused ? Colors.black : Colors.gray.DEFAULT}></Home>
-          ),
-        }}
-      />
-      <Tab.Screen
         name={NAV_NAMES.Home + 'bottom'}
         component={HomeScreen}
         options={{
