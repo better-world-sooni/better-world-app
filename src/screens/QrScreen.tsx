@@ -74,7 +74,7 @@ const QrScreen = () => {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       flex={1}
       bgBlack>
-      <Div h={headerHeight} zIndex={100} absolute top0>
+      <Div h={headerHeight} absolute top0>
         <Row
           itemsCenter
           py5
