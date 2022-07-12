@@ -73,6 +73,7 @@ const onDisplayNotification = async(title, body, data) => {
     }
 }
 export async function onMessageReceived(message) {
+    console.log(message)
     const notificationData = JSON.parse(message.data.data)
     Object.keys(notificationData).forEach(key => {
         if (notificationData[key] === null) {
