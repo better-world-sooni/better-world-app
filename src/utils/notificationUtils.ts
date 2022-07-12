@@ -10,9 +10,6 @@ export function notificationNavigate(name, params?) {
     if (navigationRef.isReady()) {
         navigationRef.navigate(name as never, params as never);
     } 
-    else {
-        console.log("navigation not ready")
-    }
 }
 
 const onDisplayNotification = async(title, body, data) => {

@@ -153,7 +153,7 @@ export default function NftProfile({
     <>
       {Platform.OS === 'android' && (
         <FocusAwareStatusBar
-          barStyle="dark-content"
+          barStyle="light-content"
           backgroundColor={bgImgColor}
         />
       )}

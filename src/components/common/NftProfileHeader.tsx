@@ -58,7 +58,7 @@ export default function NftProfileHeader({nftCore, nft, isCurrentNft, qrScan}) {
   const gotoScan = useGotoScan({scanType: ScanType.Nft});
   const gotoChatRoom = useGotoChatRoomFromProfile();
   const gotoNftProfileEdit = useGotoNftProfileEdit();
-  console.log(nft);
+
   return (
     <>
       <Row zIndex={100} px15 relative>
