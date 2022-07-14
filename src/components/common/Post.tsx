@@ -199,7 +199,7 @@ function PostContent({
       <Div py5 borderBottom={0.5} borderGray200 bgWhite>
         <Row px15 pt5>
           <Col auto mr8>
-            {displayLabel && (
+            {/* {displayLabel && (
               <Div itemsEnd mb5>
                 {post.type == PostType.Proposal ? (
                   <Img source={ICONS.lightBulbGray} h16 w16 />
@@ -207,7 +207,7 @@ function PostContent({
                   <Heart height={16} width={16} color={Colors.gray.DEFAULT} />
                 )}
               </Div>
-            )}
+            )} */}
             <Div onPress={goToProfile}>
               <Img
                 w54
