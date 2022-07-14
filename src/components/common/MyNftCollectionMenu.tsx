@@ -225,14 +225,14 @@ const MyNftCollectionMenu = ({nftCollection}) => {
               <Span fontSize={16}>게시물 피드 설정</Span>
             </Col>
           </Row> */}
-          <Row itemsCenter py16 onPress={gotoForumSetting}>
+          {/* <Row itemsCenter py16 onPress={gotoForumSetting}>
             <Col auto mr16>
               <Img source={ICONS.lightBulb} h22 w22></Img>
             </Col>
             <Col>
               <Span fontSize={16}>제안 피드 설정 보기</Span>
             </Col>
-          </Row>
+          </Row> */}
           {/* {isAdmin && (
             <Row itemsCenter py16 onPress={gotoStoreSetting}>
               <Col auto mr16>

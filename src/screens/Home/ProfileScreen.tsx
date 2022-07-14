@@ -8,6 +8,8 @@ import {useGotoNewPost} from 'src/hooks/useGoto';
 import {PostOwnerType, PostType} from '../NewPostScreen';
 import {Img} from 'src/components/common/Img';
 import {ICONS} from 'src/modules/icons';
+import {Plus} from 'react-native-feather';
+import {Colors} from 'src/modules/styles';
 
 const ProfileScreen = () => {
   const {currentNft} = useSelector(
@@ -17,7 +19,7 @@ const ProfileScreen = () => {
   const pageableNftPostFn = (page?) => {
     return apis.post.list._(page);
   };
-  const gotoNewProposal = useGotoNewPost({postOwnerType: PostOwnerType.Nft});
+  const gotoNewPost = useGotoNewPost({postOwnerType: PostOwnerType.Nft});
   return (
     <Div flex={1} bgWhite overflowHidden>
       <NftProfile
@@ -29,16 +31,14 @@ const ProfileScreen = () => {
       />
       <Div
         rounded100
-        bgWhite
+        bgBlack
         absolute
         w54
         h54
         p12
         bottom15
         right15
-        itemsCenter
-        justifyCenter
-        onPress={() => gotoNewProposal(null, null, null, PostType.Proposal)}
+        onPress={() => gotoNewPost()}
         style={{
           shadowOffset: {
             width: 0,
@@ -48,7 +48,11 @@ const ProfileScreen = () => {
           shadowRadius: 4,
           elevation: 4,
         }}>
-        <Img source={ICONS.lightBulb} h22 w22 />
+        <Plus
+          strokeWidth={2}
+          color={Colors.white}
+          height={30}
+          width={30}></Plus>
       </Div>
     </Div>
   );

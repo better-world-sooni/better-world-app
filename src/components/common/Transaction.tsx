@@ -84,7 +84,7 @@ function Transaction({transaction, mainAddress = null, enablePress = false}) {
   const handlePressMenu = ({nativeEvent: {event}}) => {
     if (event == TransactionEventTypes.Klaytnfinder) searchKlaytnfinder();
     if (event == TransactionEventTypes.AdminShare)
-      gotoNewPostAsAdmin(null, null, transaction, PostType.Proposal);
+      gotoNewPostAsAdmin(null, null, transaction, PostType.Default);
     if (event == TransactionEventTypes.Tag)
       gotoNewCollectionFeedTagSelect(
         transaction.transaction_hash,

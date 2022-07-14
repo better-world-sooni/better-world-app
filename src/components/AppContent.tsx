@@ -87,17 +87,18 @@ const MainBottomTabs = () => {
       }}>
       <Tab.Screen
         name={NAV_NAMES.Home + 'bottom'}
-        component={HomeScreen}
+        component={SocialScreen}
         options={{
-          tabBarIcon: ({focused}) =>
-            focused ? (
-              <Img source={ICONS.lightBulb} h22 w22></Img>
-            ) : (
-              <Img source={ICONS.lightBulbGray} h22 w22></Img>
-            ),
+          tabBarIcon: ({focused}) => (
+            <Home
+              width={22}
+              height={22}
+              strokeWidth={2}
+              color={focused ? Colors.black : Colors.gray.DEFAULT}></Home>
+          ),
         }}
       />
-      {/* <Tab.Screen
+      <Tab.Screen
         name={NAV_NAMES.Store}
         component={StoreScreen}
         options={{
@@ -111,7 +112,7 @@ const MainBottomTabs = () => {
               }></ShoppingBag>
           ),
         }}
-      /> */}
+      />
       <Tab.Screen
         name={NAV_NAMES.ChatList}
         component={ChatListScreen}

@@ -45,16 +45,14 @@ const NftCollectionScreen = ({
       {isAdmin && (
         <Div
           rounded100
-          bgWhite
+          bgAdmin
           absolute
           w54
           h54
           p12
           bottom55
           right15
-          itemsCenter
-          justifyCenter
-          onPress={() => gotoNewPost(null, null, null, PostType.Proposal)}
+          onPress={() => gotoNewPost()}
           style={{
             shadowOffset: {
               width: 0,
@@ -64,7 +62,11 @@ const NftCollectionScreen = ({
             shadowRadius: 4,
             elevation: 4,
           }}>
-          <Img source={ICONS.lightBulb} h22 w22 />
+          <Plus
+            strokeWidth={2}
+            color={Colors.white}
+            height={30}
+            width={30}></Plus>
         </Div>
       )}
     </Div>

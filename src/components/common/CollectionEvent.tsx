@@ -92,7 +92,7 @@ export default function CollectionEvent({
   const handlePressMenu = ({nativeEvent: {event}}) => {
     if (event == CollectionEventActionTypes.Delete) deleteCollectionEvent();
     if (event == CollectionEventActionTypes.AdminShare)
-      gotoNewPostAsAdmin(null, collectionEvent, null, PostType.Proposal);
+      gotoNewPostAsAdmin(null, collectionEvent, null, PostType.Default);
     if (event == CollectionEventActionTypes.Tag)
       gotoNewCollectionFeedTagSelect(collectionEvent.id, 'collection_event_id');
   };
