@@ -357,6 +357,20 @@ function PostContent({
                     <Span
                       fontSize={12}
                       style={{fontWeight: '600'}}
+                      onPress={() => gotoVoteList(VoteCategory.For)}>
+                      찬성 <Span black>{forVotesCount}</Span>표 (
+                      {Math.round(
+                        (againstVotesCount + forVotesCount > 0
+                          ? forVotesCount / (againstVotesCount + forVotesCount)
+                          : 0) * 100,
+                      )}
+                      %)
+                    </Span>
+                  </Col>
+                  <Col auto mr12>
+                    <Span
+                      fontSize={12}
+                      style={{fontWeight: '600'}}
                       onPress={() => gotoVoteList(VoteCategory.Against)}>
                       반대 <Span>{againstVotesCount}</Span>표 (
                       {Math.round(
@@ -368,28 +382,14 @@ function PostContent({
                       %)
                     </Span>
                   </Col>
-                  <Col auto mr12>
-                    <Span
-                      fontSize={12}
-                      style={{fontWeight: '600'}}
-                      onPress={() => gotoVoteList(VoteCategory.For)}>
-                      찬성 <Span black>{forVotesCount}</Span>표 (
-                      {Math.round(
-                        (againstVotesCount + forVotesCount > 0
-                          ? forVotesCount / (againstVotesCount + forVotesCount)
-                          : 0) * 100,
-                      )}
-                      %)
-                    </Span>
-                  </Col>
                   <Col />
                   {isCurrentCollection && votingStatus == null && (
                     <>
-                      <Col auto pr12 onPress={handlePressVoteAgainst}>
-                        {<ThumbsDown {...againstVoteProps}></ThumbsDown>}
-                      </Col>
                       <Col auto pr12={!full} onPress={handlePressVoteFor}>
                         {<ThumbsUp {...forVoteProps}></ThumbsUp>}
+                      </Col>
+                      <Col auto pr12 onPress={handlePressVoteAgainst}>
+                        {<ThumbsDown {...againstVoteProps}></ThumbsDown>}
                       </Col>
                     </>
                   )}
