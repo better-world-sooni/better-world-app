@@ -186,15 +186,10 @@ const NewPostScreen = ({
               <Col itemsEnd onPress={handlePressUpload}>
                 {loading ? (
                   <ActivityIndicator />
-                ) : currentPostType == '' ? (
-                  <Upload
-                    width={22}
-                    height={22}
-                    strokeWidth={2}
-                    color={Colors.black}></Upload>
-                ) : (
-                  <Img source={ICONS.lightBulb} h22 w22 />
-                )}
+                ) : 
+                <Span bold fontSize={19}>
+                  {'게시'}
+                </Span>}
               </Col>
             </Row>
           </Div>
