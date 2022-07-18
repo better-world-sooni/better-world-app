@@ -48,10 +48,8 @@ function CommunityWallet({communityWallet, width, verticalList = false}) {
     {
       id: CommunityWalletEventTypes.Klaytnfinder,
       title: 'Klaytnfinder에서 확인',
-      titleColor: '#46F289',
       image: Platform.select({
         ios: 'magnifyingglass',
-        android: 'ic_search_category_default',
       }),
     },
     isAdmin && {
@@ -59,7 +57,6 @@ function CommunityWallet({communityWallet, width, verticalList = false}) {
       title: '커뮤니티 지갑 제거',
       image: Platform.select({
         ios: 'trash',
-        android: 'ic_menu_delete',
       }),
     },
   ].filter(option => option);

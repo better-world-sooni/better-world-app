@@ -28,6 +28,8 @@ export default function ImageSlideShow({
           data={imageUris}
           itemWidth={sliderWidth}
           sliderWidth={sliderWidth}
+          enableMomentum={true}
+          decelerationRate={0.5}
           renderItem={({item}) => {
             if (
               typeof lookup(item) == 'string' &&
