@@ -35,6 +35,7 @@ export default function NftProfile({
   nftProfileApiObject,
   pageableNftPostFn,
 }) {
+  console.log(nftCore)
   const {data: profileData, isLoading: refreshing} =
     useApiSelector(nftProfileApiObject);
   const {

@@ -35,6 +35,7 @@ function ChatRoomScreen({
     params: {roomId, roomName, roomImage, opponentNft, chatRoomEnterType},
   },
 }) {
+  console.log(opponentNft);
   const {currentNft, token} = useSelector(
     (root: RootState) => root.app.session,
     shallowEqual,
@@ -64,6 +65,15 @@ function ChatRoomScreen({
     [currentNft],
   );
   const currentNftName = useMemo(() => getNftName(currentNft), [currentNft]);
+  const gotoNftProfile = useGotoNftProfile({
+    nft: {
+      contract_address: opponentNft.contract_address,
+      token_id: opponentNft.token_id,
+      name: roomName,
+      image_uri: roomImage,
+      story: opponentNft.story
+    }
+  });
 
   const [chatSocket, setChatSocket] = useState(null);
   const [enterNfts, setEnterNfts] = useState([]);
@@ -255,7 +265,7 @@ function ChatRoomScreen({
             </Div>
           </Col>
           <Col auto>
-            <Span bold fontSize={19}>
+            <Span bold fontSize={19} onPress={()=>gotoNftProfile()}>
               {roomName}
             </Span>
           </Col>
@@ -315,6 +325,7 @@ function ChatRoomScreen({
                 showAuthor={showAuthor}
                 showDate={showDate}
                 roomName={roomName}
+                gotoNftProfile={gotoNftProfile}
               />
             );
           }}
@@ -342,6 +353,7 @@ const Message = ({
   showAuthor,
   showDate,
   roomName,
+  gotoNftProfile
 }) => {
   const unreadCount = 2 - readNftIdLength;
   return (
@@ -353,7 +365,7 @@ const Message = ({
         mb12={showTime}
         itemsStart>
         {!isMine && (
-          <Col auto w32 h32 px0>
+          <Col auto w32 h32 px0 onPress={gotoNftProfile}>
             {showAuthor && <Img rounded100 uri={avatar} h32 w32 />}
           </Col>
         )}

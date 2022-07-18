@@ -160,6 +160,7 @@ export function NftProfileSummary({nft, token = null}) {
                       getNftProfileImage(nft),
                       nft.contract_address,
                       nft.token_id,
+                      nft.story,
                     )
                   }>
                   <MessageCircle

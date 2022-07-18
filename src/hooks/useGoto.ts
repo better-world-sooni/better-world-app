@@ -15,6 +15,7 @@ export function useGotoNftProfile({nft}){
     const apiGET = useApiGET()
     const navigation = useNavigation()
     const gotoProfile = (notificationOpened=false, jwt=null) => {
+      console.log("\nhere\n",  notificationOpened)
       if(notificationOpened) {
         apiGET(
           apis.nft.contractAddressAndTokenId(
@@ -35,6 +36,7 @@ export function useGotoNftProfile({nft}){
         );
       }
       else {
+        console.log("jere", nft)
         apiGETWithToken(
           apis.nft.contractAddressAndTokenId(
             nft.contract_address,
@@ -101,7 +103,7 @@ export function useGotoChatRoomFromList() {
 export function useGotoChatRoomFromProfile() {
   const navigation = useNavigation()
   const apiPOSTWithToken = useApiPOSTWithToken()
-  const gotoChatRoomFromProfile = (roomName, roomImage, contractAddress, tokenId)  => {
+  const gotoChatRoomFromProfile = (roomName, roomImage, contractAddress, tokenId, story)  => {
     apiPOSTWithToken(
       apis.chat.chatRoom.contractAddressAndTokenId(
         contractAddress,
@@ -113,7 +115,8 @@ export function useGotoChatRoomFromProfile() {
       roomImage,
       opponentNft: {
         contract_address: contractAddress,
-        token_id: tokenId
+        token_id: tokenId,
+        story,
       },
       chatRoomEnterType: ChatRoomEnterType.Profile
     } as never);

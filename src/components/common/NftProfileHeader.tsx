@@ -87,6 +87,7 @@ export default function NftProfileHeader({nftCore, nft, isCurrentNft, qrScan}) {
                       getNftProfileImage(nftCore),
                       nftCore.contract_address,
                       nftCore.token_id,
+                      nftCore.story,
                     )
                   }>
                   <Send
