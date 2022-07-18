@@ -269,7 +269,7 @@ function PostContent({
                       <ActivityIndicator />
                     ) : (
                       <MoreHorizontal
-                        color={Colors.gray[200]}
+                        color={Colors.gray[700]}
                         width={22}
                         height={18}
                       />
