@@ -68,6 +68,7 @@ function PostContent({
   selectableFn = null,
   displayLabel = false,
   full = false,
+  isProfile = false,
 }) {
   const [liked, likesCount, handlePressLike] = useLike(
     post.is_liked,
@@ -208,7 +209,7 @@ function PostContent({
                 )}
               </Div>
             )} */}
-            <Div onPress={goToProfile}>
+            <Div onPress={()=>{!isProfile && goToProfile()}}>
               <Img
                 w54
                 h54
@@ -241,12 +242,12 @@ function PostContent({
             <Row>
               <Col auto>
                 <Span>
-                  <Span fontSize={15} bold onPress={goToProfile}>
+                  <Span fontSize={15} bold onPress={()=>{!isProfile && goToProfile()}}>
                     {getNftName(post.nft)}{' '}
                   </Span>
                   {post.nft.token_id ? (
                     post.nft.nft_metadatum.name != getNftName(post.nft) && (
-                      <Span fontSize={12} bold gray700 onPress={goToProfile}>
+                      <Span fontSize={12} bold gray700 onPress={()=>{!isProfile && goToProfile()}}>
                         {' '}
                         {post.nft.nft_metadatum.name}
                       </Span>

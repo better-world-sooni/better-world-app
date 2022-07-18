@@ -132,7 +132,7 @@ export default function NftProfile({
   const handlePressMenu = ({nativeEvent: {event}}) => {
     handlePressBlock();
   };
-  const renderItem = ({item}) => <Post post={item} displayLabel />;
+  const renderItem = ({item}) => <Post post={item} displayLabel isProfile={true}/>;
 
   useEffect(() => {
     if (nft?.background_image_uri) {

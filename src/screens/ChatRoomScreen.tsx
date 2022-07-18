@@ -245,7 +245,7 @@ function ChatRoomScreen({
         zIndex={100}>
         <Row itemsCenter>
           <Col justifyStart mr10>
-            <Div auto rounded100 onPress={chatReady && goBack}>
+            <Div auto rounded100 onPress={goBack}>
               <ChevronLeft
                 width={30}
                 height={30}
