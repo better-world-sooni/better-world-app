@@ -38,6 +38,8 @@ export const TextField = props => {
           <TextInput
             innerRef={autoFocus && autoFocusRef}
             autoCorrect={false}
+            multiline={true}
+            numberOfLines={4}
             h48
             border={0.5}
             borderGray400
