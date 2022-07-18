@@ -126,7 +126,7 @@ export default function NftProfileEditScreen() {
       <ScrollView bgWhite bounces={false}>
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-          <Div h120 relative onPress={handleAddImage}>
+          <Div h120 relative onPress={!uploading && handleAddImage}>
             {image?.uri ? (
               <Img uri={image.uri} top0 absolute w={DEVICE_WIDTH} h120></Img>
             ) : (
@@ -147,20 +147,16 @@ export default function NftProfileEditScreen() {
                 top12
                 right12
                 zIndex={1000}
-                onPress={handleRemoveImage}
+                onPress={!uploading && handleRemoveImage}
                 rounded100
                 bgBlack
                 p8>
-                {uploading ? (
-                  <ActivityIndicator />
-                ) : (
                   <Trash
                     strokeWidth={2}
                     color={Colors.white}
                     height={18}
                     width={18}
                   />
-                )}
               </Div>
             ) : null}
           </Div>
@@ -223,7 +219,8 @@ export default function NftProfileEditScreen() {
                 multiline
                 mt={-4}
                 bold
-                onChangeText={handleChangeStory}></TextInput>
+                onChangeText={handleChangeStory}
+                maxLength={100}></TextInput>
             </Col>
           </Row>
           {storyError ? (
