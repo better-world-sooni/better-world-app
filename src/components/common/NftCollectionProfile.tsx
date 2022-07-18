@@ -384,7 +384,7 @@ export default function NftCollectionProfile({
             </Div>
           </>
         }
-        renderItem={({item}) => <Post post={item} displayLabel />}
+        renderItem={({item}) => <Post post={item} displayLabel isProfile={true}/>}
         ListFooterComponent={
           <>
             {(nftCollectionPostListPaginating ||
