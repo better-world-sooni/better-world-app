@@ -79,7 +79,7 @@ function FeedFlatlist(
         (enableAddType == EnableAddType.Post ? (
           <Div
             rounded100
-            bgBlack
+            bgPrimary
             absolute
             w54
             h54
