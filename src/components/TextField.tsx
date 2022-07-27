@@ -16,6 +16,8 @@ export const TextField = props => {
     mt = 16,
     value,
     onChangeText,
+    onContentSizeChange,
+    onSubmitEditing,
     disabled,
     placeholder,
     password,
@@ -52,6 +54,8 @@ export const TextField = props => {
             secureTextEntry={password}
             placeholder={placeholder}
             onChangeText={onChangeText}
+            onContentSizeChange={onContentSizeChange}
+            onSubmitEditing={onSubmitEditing}
             value={value}
             color={'#000000'}
           />
