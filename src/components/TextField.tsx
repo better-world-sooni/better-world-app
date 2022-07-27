@@ -16,6 +16,8 @@ export const TextField = props => {
     mt = 16,
     value,
     onChangeText,
+    onContentSizeChange,
+    onSubmitEditing,
     disabled,
     placeholder,
     password,
@@ -39,10 +41,7 @@ export const TextField = props => {
             innerRef={autoFocus && autoFocusRef}
             autoCorrect={false}
             multiline={true}
-            numberOfLines={4}
-            h48
-            border={0.5}
-            borderGray400
+            blurOnSubmit={true}
             rounded10
             p12
             {...others}
@@ -54,6 +53,8 @@ export const TextField = props => {
             secureTextEntry={password}
             placeholder={placeholder}
             onChangeText={onChangeText}
+            onContentSizeChange={onContentSizeChange}
+            onSubmitEditing={onSubmitEditing}
             value={value}
             color={'#000000'}
           />
