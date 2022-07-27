@@ -74,7 +74,7 @@ const QrScreen = () => {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       flex={1}
       bgBlack>
-      <Div h={headerHeight} absolute top0>
+      <Div h={headerHeight} absolute top0 zIndex={5}>
         <Row
           itemsCenter
           py5
@@ -83,14 +83,14 @@ const QrScreen = () => {
           absolute
           w={DEVICE_WIDTH}
           top={notchHeight + 5}>
-          <Col justifyStart>
-            <Div auto rounded100 onPress={goBack}>
+          <Col justifyStart onPress={goBack}>
+            <Div auto rounded100>
               <X width={30} height={30} color={Colors.white} strokeWidth={2} />
             </Div>
           </Col>
           <Col auto>
             <Span bold fontSize={19} white>
-              인증코드
+              인증큐알
             </Span>
           </Col>
           <Col />
