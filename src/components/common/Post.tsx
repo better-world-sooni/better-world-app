@@ -198,7 +198,7 @@ function PostContent({
   return (
     <>
       <Div py5 borderBottom={0.5} borderGray200 bgWhite>
-        <Row px15 pt5>
+        <Row px15 pt5 {...(!full && {onPress: () => gotoPost()})}>
           <Col auto mr8>
             {/* {displayLabel && (
               <Div itemsEnd mb5>
@@ -209,7 +209,10 @@ function PostContent({
                 )}
               </Div>
             )} */}
-            <Div onPress={()=>{!isProfile && goToProfile()}}>
+            <Div
+              onPress={() => {
+                !isProfile && goToProfile();
+              }}>
               <Img
                 w54
                 h54
@@ -242,12 +245,23 @@ function PostContent({
             <Row>
               <Col auto>
                 <Span>
-                  <Span fontSize={15} bold onPress={()=>{!isProfile && goToProfile()}}>
+                  <Span
+                    fontSize={15}
+                    bold
+                    onPress={() => {
+                      !isProfile && goToProfile();
+                    }}>
                     {getNftName(post.nft)}{' '}
                   </Span>
                   {post.nft.token_id ? (
                     post.nft.nft_metadatum.name != getNftName(post.nft) && (
-                      <Span fontSize={12} bold gray700 onPress={()=>{!isProfile && goToProfile()}}>
+                      <Span
+                        fontSize={12}
+                        bold
+                        gray700
+                        onPress={() => {
+                          !isProfile && goToProfile();
+                        }}>
                         {' '}
                         {post.nft.nft_metadatum.name}
                       </Span>

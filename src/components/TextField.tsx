@@ -43,7 +43,6 @@ export const TextField = props => {
             autoCorrect={false}
             multiline={true}
             blurOnSubmit={newLineButton || false}
-            rounded10
             p12
             {...others}
             styleComp={[

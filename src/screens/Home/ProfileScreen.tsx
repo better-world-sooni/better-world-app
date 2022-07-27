@@ -6,8 +6,6 @@ import {shallowEqual, useSelector} from 'react-redux';
 import {RootState} from 'src/redux/rootReducer';
 import {useGotoNewPost} from 'src/hooks/useGoto';
 import {PostOwnerType, PostType} from '../NewPostScreen';
-import {Img} from 'src/components/common/Img';
-import {ICONS} from 'src/modules/icons';
 import {Plus} from 'react-native-feather';
 import {Colors} from 'src/modules/styles';
 
@@ -31,7 +29,7 @@ const ProfileScreen = () => {
       />
       <Div
         rounded100
-        bgBlack
+        bgPrimary
         absolute
         w54
         h54

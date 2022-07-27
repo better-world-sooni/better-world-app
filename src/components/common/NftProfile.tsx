@@ -94,6 +94,7 @@ export default function NftProfile({
       top: 0,
       width: DEVICE_WIDTH,
       height: headerHeight + 30,
+      backgroundColor: Colors.gray[400],
       transform: [
         {
           scale: Math.max(-(translationY.value - headerHeight) / 100, 1),
@@ -158,18 +159,9 @@ export default function NftProfile({
         />
       )}
       <Div h={headerHeight}>
-        {nft?.background_image_uri ? (
-          <Animated.Image
-            style={backgroundImageStyles}
-            source={{uri: nft.background_image_uri}}></Animated.Image>
-        ) : (
-          <Div
-            absolute
-            top0
-            h={headerHeight + 30}
-            bgGray400
-            w={DEVICE_WIDTH}></Div>
-        )}
+        <Animated.Image
+          style={backgroundImageStyles}
+          source={{uri: nft?.background_image_uri}}></Animated.Image>
         <Animated.View style={headerStyles}>
           {Platform.OS === 'ios' ? (
             <BlurView
