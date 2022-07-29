@@ -15,6 +15,7 @@ export const TextField = props => {
     error,
     mt = 16,
     value,
+    newLineButton,
     onChangeText,
     onContentSizeChange,
     onSubmitEditing,
@@ -40,10 +41,8 @@ export const TextField = props => {
           <TextInput
             innerRef={autoFocus && autoFocusRef}
             autoCorrect={false}
-            h48
-            border={0.5}
-            borderGray400
-            rounded10
+            multiline={true}
+            blurOnSubmit={newLineButton || false}
             p12
             {...others}
             styleComp={[

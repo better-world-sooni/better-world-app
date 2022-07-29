@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {varStyle} from 'src/modules/styles';
 import {TextField} from '../TextField';
 import {Div} from './Div';
@@ -16,6 +16,8 @@ export default function NewMessage({
   roomLoading,
   ready
 }) {
+  const [textHeight, setTextHeight] = useState(33)
+
   return (
     <Div
       zIndex={100}
@@ -23,17 +25,21 @@ export default function NewMessage({
       w={'100%'}
       borderTop={0.5}
       borderColor={varStyle.gray200}>
-      <Div px15 py4>
+      <Div px15 py8>
         <TextField
           w={'100%'}
-          h40
+          h={textHeight}
           py0
           px10
-          rounded100
           placeholder={'메세지를 전송해요.'}
           value={text}
           mt={0}
           onChangeText={onTextChange}
+          onContentSizeChange={(event) => {
+            if(event.nativeEvent.contentSize.height > 33) setTextHeight(event.nativeEvent.contentSize.height);
+            else setTextHeight(33);
+          }}
+          newLineButton={false}
           rightComp={
             <Div
               flex

@@ -33,7 +33,12 @@ export default function NewComment({
   );
   const [newComment, setNewComment] = useState('');
   const [loading, setLoading] = useState(false);
-  const [commentHeight, setCommentHeight] = useState(40)
+  const [commentHeight, setCommentHeight] = useState(33)
+
+    useEffect(() =>{
+      console.log(commentHeight)
+
+    }, [commentHeight])
 
   const handleCommentChange = text => {
     setNewComment(text);
@@ -79,7 +84,7 @@ export default function NewComment({
           </Col>
         </Row>
       )}
-      <Div px15 py4>
+      <Div px15 py9>
         <TextField
           w={'100%'}
           h={commentHeight}
@@ -91,9 +96,10 @@ export default function NewComment({
           mt={0}
           onChangeText={handleCommentChange}
           onContentSizeChange={(event) => {
-            if(event.nativeEvent.contentSize.height > 40) setCommentHeight(event.nativeEvent.contentSize.height);
-            else setCommentHeight(40);
+            if(event.nativeEvent.contentSize.height > 33) setCommentHeight(event.nativeEvent.contentSize.height);
+            else setCommentHeight(33);
           }}
+          newLineButton={true}
           onSubmitEditing={handlePostComment}
           leftComp={
             <Img
