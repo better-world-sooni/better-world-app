@@ -158,7 +158,7 @@ const QrScreen = () => {
               <Span
                 bold
                 fontSize={20}
-                primary={!qrLoad}
+                // primary={!qrLoad}
                 danger={ttl.minutes < 0 && !qrLoad}>
                 {error
                   ? '인증코드 요청 오류'

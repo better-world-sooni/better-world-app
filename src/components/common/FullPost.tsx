@@ -13,7 +13,11 @@ import useScrollToEndRef from 'src/hooks/useScrollToEndRef';
 import Post from './Post';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
-export default function FullPost({post, autoFocus = false}) {
+export default function FullPost({
+  onlyComments = false,
+  post,
+  autoFocus = false,
+}) {
   const scrollToEndRef = useScrollToEndRef();
   const {goBack} = useNavigation();
   const [cachedComments, setCachedComments] = useState(post.comments || []);
@@ -81,7 +85,7 @@ export default function FullPost({post, autoFocus = false}) {
           </Col>
           <Col auto onPress={goBack}>
             <Span bold fontSize={19}>
-              {post.type ? '제안' : '게시물'}
+              {onlyComments ? '댓글' : post.type ? '제안' : '게시물'}
             </Span>
           </Col>
           <Col itemsEnd></Col>
@@ -92,7 +96,7 @@ export default function FullPost({post, autoFocus = false}) {
           contentContainerStyle={{paddingBottom: 100}}
           ref={scrollToEndRef}
           showsVerticalScrollIndicator={false}
-          ListHeaderComponent={<Post post={post} full></Post>}
+          ListHeaderComponent={!onlyComments && <Post post={post} full></Post>}
           data={cachedComments}
           renderItem={({item}) => {
             return (

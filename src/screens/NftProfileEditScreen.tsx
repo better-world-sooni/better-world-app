@@ -151,12 +151,12 @@ export default function NftProfileEditScreen() {
                 rounded100
                 bgBlack
                 p8>
-                  <Trash
-                    strokeWidth={2}
-                    color={Colors.white}
-                    height={18}
-                    width={18}
-                  />
+                <Trash
+                  strokeWidth={2}
+                  color={Colors.white}
+                  height={18}
+                  width={18}
+                />
               </Div>
             ) : null}
           </Div>
@@ -205,7 +205,7 @@ export default function NftProfileEditScreen() {
               <Span danger>{nameError}</Span>
             </Div>
           ) : null}
-          <Row px15 py15 borderTop={0.5} borderGray200>
+          <Row px15 py15 borderTop={0.5} borderGray200 flex={1}>
             <Col auto w50 m5 mt3>
               <Span fontSize={16} bold>
                 스토리

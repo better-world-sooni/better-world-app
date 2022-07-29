@@ -301,7 +301,7 @@ function PostContent({
                     text={post.content}
                     maxLength={300}
                     spanProps={{fontSize: 14}}
-                    onPressTruncated={gotoPost}
+                    onPressTruncated={() => gotoPost()}
                   />
                 )}
               </Div>
@@ -475,7 +475,7 @@ function PostContent({
           </Col>
         </Row>
         {post.comment && !full && (
-          <Div onPress={gotoPost}>
+          <Div onPress={() => gotoPost(false, false, false, true)}>
             <Comment hot key={post.comment.id} comment={post.comment}></Comment>
           </Div>
         )}

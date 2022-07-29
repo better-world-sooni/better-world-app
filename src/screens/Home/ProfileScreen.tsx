@@ -29,7 +29,7 @@ const ProfileScreen = () => {
       />
       <Div
         rounded100
-        bgPrimary
+        bgBlack
         absolute
         w54
         h54

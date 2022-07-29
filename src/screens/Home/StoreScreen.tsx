@@ -55,7 +55,7 @@ export default function StoreScreen() {
         <Row itemsCenter py5 h40 px15>
           <Col auto>
             <Span bold fontSize={19}>
-              {'굿즈 드랍'}
+              {'홀더 혜택 이벤트'}
             </Span>
           </Col>
           <Col />
@@ -101,10 +101,10 @@ export default function StoreScreen() {
               <Div wFull h80 bgBlack opacity={0.75}></Div>
               <Div absolute top0 wFull h80 px16 py8 justifyCenter>
                 <Span white gray400 fontSize={12}>
-                  에어드랍 쿠폰 보유시 주문 가능합니다.
+                  오직 홀더를 위한 이벤트에 응모라여 굿즈 및 혜택을 수령하세요
                 </Span>
                 <Span white bold mt4>
-                  업그래이드된 베터월드 드랍 샵을 기대해주세요!
+                  응모와 수령이 쉬운 BetterWorld NFT Events!
                 </Span>
               </Div>
             </ImageBackground>
