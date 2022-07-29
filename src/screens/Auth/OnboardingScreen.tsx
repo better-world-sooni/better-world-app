@@ -36,10 +36,10 @@ const OnboardingScreen = ({navigation}) => {
   const headerHeight = notchHeight + 50;
 
   return (
-    <Div bgPrimary flex={1}>
+    <Div bgWhite flex={1}>
       <Div h={headerHeight}></Div>
       <Div px15>
-        <Span bold fontSize={30} white>
+        <Span bold fontSize={30}>
           사용하실 PFP를{'\n'}선택해 주세요{'\n'}
         </Span>
       </Div>
