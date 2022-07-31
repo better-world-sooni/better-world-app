@@ -17,6 +17,7 @@ import {
   useGotoProfile,
 } from 'src/hooks/useGoto';
 import {LikeListType} from 'src/screens/LikeListScreen';
+import TruncatedText from './TruncatedText';
 
 export default function Comment({
   comment,
@@ -110,8 +111,8 @@ function CommentContent({
   });
   return (
     <Div py2={!nested}>
-      <Row py6 mr15 ml16 pl16 rounded10 borderGray200>
-        <Col auto mr8 onPress={() => goToProfile()}>
+      <Row py6 mr15 ml16 rounded10 borderGray200>
+        <Col auto ml8 mr16 onPress={() => goToProfile()}>
           <Img
             rounded={100}
             h={profileImageSize}
@@ -126,7 +127,11 @@ function CommentContent({
                 <Span bold fontSize={14} onPress={() => goToProfile()}>
                   {nftName || nftMetadatumName}{' '}
                 </Span>{' '}
-                <Span fontSize={14}>{content}</Span>
+                {hot ? (
+                  <TruncatedText text={content} maxLength={100} />
+                ) : (
+                  <Span fontSize={14}>{content}</Span>
+                )}
               </Span>
             </Col>
             <Col auto onPress={handlePressLike} mt4>
@@ -156,13 +161,15 @@ function CommentContent({
           </Row>
         </Col>
       </Row>
-      <Div ml40>
-        {cachedComments.map(nestedComment => {
-          return (
-            <Comment nested key={nestedComment.id} comment={nestedComment} />
-          );
-        })}
-      </Div>
+      {!hot && (
+        <Div ml40>
+          {cachedComments.map(nestedComment => {
+            return (
+              <Comment nested key={nestedComment.id} comment={nestedComment} />
+            );
+          })}
+        </Div>
+      )}
     </Div>
   );
 }

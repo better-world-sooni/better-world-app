@@ -104,8 +104,8 @@ export default function SocialScreen() {
   };
   useFocusReloadWithTimeOut({
     reloadUriObject: apis.feed.social(feedRes?.filter),
-    cacheTimeoutInSeconds: 300,
-    onStart: scrollToTop,
+    cacheTimeoutInSeconds: 480,
+    // onStart: scrollToTop,
   });
   const unreadNotificationCount = useSelector(
     (root: RootState) => root.app.unreadNotificationCount,
