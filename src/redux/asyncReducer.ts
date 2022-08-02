@@ -280,6 +280,32 @@ export const useApiPUTWithToken = (props = {}) => {
   };
 };
 
+export const useApiPATCHWithToken = (props = {}) => {
+  const {scope, token} = props as any;
+  const { userToken } = useSelector(
+    (root: RootState) => ({ userToken: root.app.session.token }),
+    shallowEqual,
+  );
+  const finalToken = token ? token : userToken;
+  const dispatch = useDispatch();
+  return (api, body?, successHandler?, errHandler?) => {
+    const key = getKeyByApi(api, scope);
+    dispatch(
+      asyncThunk({
+        key: key,
+        args: {
+          url: api.url,
+          ...(body && {body}),
+          ...(finalToken && {token: finalToken}),
+        },
+        promiseFn: patchPromiseFn,
+        successHandler,
+        errHandler,
+      }),
+    );
+  };
+};
+
 export const useReloadPOSTWithToken = (props = {}) => {
   const {scope, token} = props as any;
   const {userToken} = useSelector(

@@ -59,6 +59,7 @@ import OrderListScreen from 'src/screens/OrderListScreen';
 import CouponListScreen from 'src/screens/CouponListScreen';
 import CollectionOrderListScreen from 'src/screens/CollectionOrderListScreen';
 import { ChatRoomEnterType } from "src/screens/ChatRoomScreen";
+import NftSettingScreen from 'src/screens/NftSettingScreen';
 
 const RootStack = createStackNavigator();
 
@@ -183,24 +184,26 @@ const setInitialRouteParams = notificationOpenData => {
           },
         },
       };
-    } 
-    else if(notificationOpenData.event === 'chat') {
+    } else if (notificationOpenData.event === 'chat') {
       return {
         notificationOpened: true,
         routeDestination: {
           navName: NAV_NAMES.ChatRoom,
-          id: {         
+          id: {
             roomId: notificationOpenData.room_id,
-            roomName: notificationOpenData?.name || notificationOpenData.meta_name,
-            roomImage: notificationOpenData?.image_uri || notificationOpenData.meta_image_uri,
+            roomName:
+              notificationOpenData?.name || notificationOpenData.meta_name,
+            roomImage:
+              notificationOpenData?.image_uri ||
+              notificationOpenData.meta_image_uri,
             opponentNft: {
               contract_address: notificationOpenData.contract_address,
-              token_id: notificationOpenData.token_id
+              token_id: notificationOpenData.token_id,
             },
             chatRoomEnterType: ChatRoomEnterType.Notification,
-          }
-        }
-      }
+          },
+        },
+      };
     }
   } else {
     return {
@@ -426,6 +429,10 @@ export const AppContent = ({notificationOpenData}) => {
     {
       name: NAV_NAMES.CollectionOrderList,
       component: CollectionOrderListScreen,
+    },
+    {
+      name: NAV_NAMES.NftSetting,
+      component: NftSettingScreen,
     },
   ];
 

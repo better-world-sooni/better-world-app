@@ -198,8 +198,8 @@ function PostContent({
   return (
     <>
       <Div py5 borderBottom={0.5} borderGray200 bgWhite>
-        <Row px15 pt5 {...(!full && {onPress: () => gotoPost()})}>
-          <Col auto mr8>
+        <Row px15 pt5>
+          <Col auto mr8 {...(!full && {onPress: () => gotoPost()})}>
             {/* {displayLabel && (
               <Div itemsEnd mb5>
                 {post.type == PostType.Proposal ? (

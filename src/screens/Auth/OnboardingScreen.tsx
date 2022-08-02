@@ -38,9 +38,9 @@ const OnboardingScreen = ({navigation}) => {
   return (
     <Div bgWhite flex={1}>
       <Div h={headerHeight}></Div>
-      <Div px15>
+      <Div mx15 borderBottom={0.5} borderGray200>
         <Span bold fontSize={30}>
-          사용하실 PFP를{'\n'}선택해 주세요{'\n'}
+          주로 사용하실 PFP를{'\n'}선택해 주세요{'\n'}
         </Span>
       </Div>
       <FlatList

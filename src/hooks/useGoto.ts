@@ -253,6 +253,17 @@ export function useGotoNftProfileEdit() {
   };
   return gotoNftProfileEdit
 }
+export function useGotoNftSetting() {
+  const navigation = useNavigation()
+  const apiGETWithToken = useApiGETWithToken()
+  const gotoNftSetting = () => {
+    apiGETWithToken(
+      apis.pushNotificationSetting._(),
+    );
+    navigation.navigate(NAV_NAMES.NftSetting as never)
+  };
+  return gotoNftSetting
+}
 
 export function useGotoNftCollectionProfileEdit() {
   const navigation = useNavigation()
