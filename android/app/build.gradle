@@ -82,6 +82,9 @@ project.ext.react = [
     enableHermes: true,  // clean and rebuild if changing
 ]
 
+apply from: "../../node_modules/react-native/react.gradle"
+apply from: "../../node_modules/react-native-code-push/android/codepush.gradle"
+
 /**
  * Set this to true to create two separate APKs instead of one:
  *   - An APK that only works on ARM devices
@@ -128,15 +131,6 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-    signingConfigs {
-        release {
-            storeFile file('sehan_android_key.keystore')
-            storePassword 'Heavenisnear0830'
-            keyAlias 'sehan_android_key'
-            keyPassword 'Heavenisnear0830'
-        }
-    }
-
     defaultConfig {
         applicationId "com.betterworld"
         minSdkVersion rootProject.ext.minSdkVersion
@@ -245,5 +239,3 @@ task copyDownloadableDepsToLibs(type: Copy) {
 }
 
 apply from: file("../../node_modules/@react-native-community/cli-platform-android/native_modules.gradle"); applyNativeModulesAppBuildGradle(project)
-apply from: "../../node_modules/react-native/react.gradle"
-apply from: "../../node_modules/react-native-code-push/android/codepush.gradle"
