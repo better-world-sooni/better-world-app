@@ -24,28 +24,26 @@ public class MainApplication extends Application implements ReactApplication {
       return BuildConfig.DEBUG;
     }
 
-    @Override
-    protected String getJSMainModuleName() {
-      return "index";
-    }
+        @Override
+        protected String getJSMainModuleName() {
+          return "index";
+        }
 
-    @Override
-    protected String getJSBundleFile() {
-      return CodePush.getJSBundleFile();
-    }
+        @Override
+        protected String getJSBundleFile() {
+          return CodePush.getJSBundleFile();
+        }
 
-    @Override
-    protected List<ReactPackage> getPackages() {
-      // 3. Instantiate an instance of the CodePush runtime and add it to the list of
-      // existing packages, specifying the right deployment key. If you don't already
-      // have it, you can run "appcenter codepush deployment list -a
-      // <ownerName>/<appName> -k" to retrieve your key.
-      return Arrays.<ReactPackage>asList(
-          new MainReactPackage(),
-          new CodePush("mLiDU9OEAUxUwBrByrLZGN-rtUpRzGUdTswyE", MainApplication.this, BuildConfig.DEBUG));
-    }
-
-  };
+        @Override
+        protected List<ReactPackage> getPackages() {
+          @SuppressWarnings("UnnecessaryLocalVariable")
+          List<ReactPackage> packages = new PackageList(this).getPackages();
+          // Packages that cannot be autolinked yet can be added manually here, for
+          // example:
+          // packages.add(new MyReactNativePackage());
+          return packages;
+        }
+      };
 
   @Override
   public ReactNativeHost getReactNativeHost() {
