@@ -35,11 +35,6 @@ export default function NewComment({
   const [loading, setLoading] = useState(false);
   const [commentHeight, setCommentHeight] = useState(33)
 
-    useEffect(() =>{
-      console.log(commentHeight)
-
-    }, [commentHeight])
-
   const handleCommentChange = text => {
     setNewComment(text);
   };
