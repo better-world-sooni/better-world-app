@@ -67,13 +67,7 @@ export default function NftProfileEditScreen() {
   const {goBack} = useNavigation();
   const reloadGetWithToken = useReloadGETWithToken();
   const putPromiseFnWithToken = usePutPromiseFnWithToken();
-  const [pushNotificationEnabled, setPushNotificationEnabled] = useState(
-    !nft.is_push_notification_disabled,
-  );
   const [loading, setLoading] = useState(false);
-  const handleSwitchPushNotification = async bool => {
-    setPushNotificationEnabled(bool);
-  };
   const save = async () => {
     if (!isSaveable) return;
     setLoading(true);
@@ -84,17 +78,12 @@ export default function NftProfileEditScreen() {
       name,
       story,
       background_image_uri_key: backgroundImageUriKey,
-      push_notification_setting_is_disabled_globally: !pushNotificationEnabled,
     };
     const {data} = await putPromiseFnWithToken({url: apis.nft._().url, body});
     setLoading(false);
     reloadGetWithToken(apis.nft._());
   };
-  const isSaveable =
-    nameHasChanged ||
-    storyHasChanged ||
-    imageHasChanged ||
-    pushNotificationEnabled != !nft.is_push_notification_disabled;
+  const isSaveable = nameHasChanged || storyHasChanged || imageHasChanged;
   return (
     <>
       <Div bgWhite px15 h={50} justifyCenter borderBottom={0.5} borderGray200>
@@ -170,21 +159,6 @@ export default function NftProfileEditScreen() {
               h70
               w70
               uri={getNftProfileImage(nft)}></Img>
-          </Row>
-          <Row px15 py12 itemsCenter borderTop={0.5} borderGray200>
-            <Col auto w50 m5>
-              <Span fontSize={16} bold>
-                알림
-              </Span>
-            </Col>
-            <Col></Col>
-            <Col auto>
-              <Switch
-                value={pushNotificationEnabled}
-                onValueChange={handleSwitchPushNotification}
-                style={{transform: [{scaleX: 0.8}, {scaleY: 0.8}]}}
-              />
-            </Col>
           </Row>
           <Row px15 py15 itemsCenter borderTop={0.5} borderGray200>
             <Col auto w50 m5>

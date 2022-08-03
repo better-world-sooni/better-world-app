@@ -10,12 +10,7 @@ import {Div} from './Div';
 import {Img} from './Img';
 import {Row} from './Row';
 import {Span} from './Span';
-import {
-  useGotoLikeList,
-  useGotoNftProfile,
-  useGotoPost,
-  useGotoProfile,
-} from 'src/hooks/useGoto';
+import {useGotoLikeList, useGotoNftProfile} from 'src/hooks/useGoto';
 import {LikeListType} from 'src/screens/LikeListScreen';
 import TruncatedText from './TruncatedText';
 
@@ -25,18 +20,23 @@ export default function Comment({
   nested = false,
   onPressReplyTo = comment => {},
 }) {
+  console.log(comment);
   return (
-    <CommentMemo
-      {...comment}
-      nftContractAddress={comment.nft.contract_address}
-      nftTokenId={comment.nft.token_id}
-      nftName={comment.nft.name}
-      nftMetadatumName={comment.nft.nft_metadatum.name}
-      hot={hot}
-      nftImageUri={getNftProfileImage(comment.nft, 100, 100)}
-      nested={nested}
-      onPressReplyTo={onPressReplyTo}
-    />
+    <>
+      {comment.nft && (
+        <CommentMemo
+          {...comment}
+          nftContractAddress={comment.nft.contract_address}
+          nftTokenId={comment.nft.token_id}
+          nftName={comment.nft.name}
+          nftMetadatumName={comment.nft.nft_metadatum.name}
+          hot={hot}
+          nftImageUri={getNftProfileImage(comment.nft, 100, 100)}
+          nested={nested}
+          onPressReplyTo={onPressReplyTo}
+        />
+      )}
+    </>
   );
 }
 
