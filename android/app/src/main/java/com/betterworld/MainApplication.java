@@ -24,26 +24,26 @@ public class MainApplication extends Application implements ReactApplication {
       return BuildConfig.DEBUG;
     }
 
-        @Override
-        protected String getJSMainModuleName() {
-          return "index";
-        }
+    @Override
+    protected String getJSMainModuleName() {
+      return "index";
+    }
 
-        @Override
-        protected String getJSBundleFile() {
-          return CodePush.getJSBundleFile();
-        }
+    @Override
+    protected String getJSBundleFile() {
+      return CodePush.getJSBundleFile();
+    }
 
-        @Override
-        protected List<ReactPackage> getPackages() {
-          @SuppressWarnings("UnnecessaryLocalVariable")
-          List<ReactPackage> packages = new PackageList(this).getPackages();
-          // Packages that cannot be autolinked yet can be added manually here, for
-          // example:
-          // packages.add(new MyReactNativePackage());
-          return packages;
-        }
-      };
+    @Override
+    protected List<ReactPackage> getPackages() {
+      @SuppressWarnings("UnnecessaryLocalVariable")
+      List<ReactPackage> packages = new PackageList(this).getPackages();
+      // Packages that cannot be autolinked yet can be added manually here, for
+      // example:
+      // packages.add(new MyReactNativePackage());
+      return packages;
+    }
+  };
 
   @Override
   public ReactNativeHost getReactNativeHost() {
