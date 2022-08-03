@@ -12,12 +12,12 @@ export default function ConfirmationModalScreen({
   },
 }) {
   const {goBack} = useNavigation();
-  const handleCancel = () => {
-    if (onCancel) onCancel();
+  const handleCancel = async () => {
+    if (onCancel) await onCancel();
     goBack();
   };
-  const handleConfirm = () => {
-    if (onConfirm) onConfirm();
+  const handleConfirm = async () => {
+    if (onConfirm) await onConfirm();
     goBack();
   };
   return (
@@ -31,7 +31,11 @@ export default function ConfirmationModalScreen({
         border={0.5}
         borderGray200>
         <Div itemsCenter px12 py8>
-          <Span bold fontSize={18} style={{textAlign: 'center'}}>
+          <Span
+            bold
+            fontSize={18}
+            style={{textAlign: 'center'}}
+            lineHeight={26}>
             {text}
           </Span>
         </Div>
@@ -46,7 +50,7 @@ export default function ConfirmationModalScreen({
             onPress={handleCancel}>
             <Span bold>취소</Span>
           </Col>
-          <Col bgPrimary p12 itemsCenter rounded100 ml4 onPress={handleConfirm}>
+          <Col bgBlack p12 itemsCenter rounded100 ml4 onPress={handleConfirm}>
             <Span bold white>
               확인
             </Span>

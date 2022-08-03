@@ -186,10 +186,11 @@ const NewPostScreen = ({
               <Col itemsEnd onPress={handlePressUpload}>
                 {loading ? (
                   <ActivityIndicator />
-                ) : 
-                <Span bold fontSize={19}>
-                  {'게시'}
-                </Span>}
+                ) : (
+                  <Span bold info fontSize={16}>
+                    {'게시'}
+                  </Span>
+                )}
               </Col>
             </Row>
           </Div>

@@ -50,6 +50,10 @@ const PasswordSigninScreen = () => {
       password,
       props => {
         setLoading(false);
+        if (props.data.user.nfts.length == 0) {
+          expandBottomPopupWithText('홀더가 아닙니다.');
+          return;
+        }
         if (props.data.user.main_nft) {
           gotoHome();
           return;

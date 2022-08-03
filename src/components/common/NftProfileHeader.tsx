@@ -1,6 +1,7 @@
 import React from 'react';
 import {
   ChevronDown,
+  Edit2,
   Grid,
   Maximize,
   Send,
@@ -15,6 +16,7 @@ import {
   useGotoQR,
   useGotoScan,
   useGotoNftProfileEdit,
+  useGotoNftSetting,
 } from 'src/hooks/useGoto';
 import apis from 'src/modules/apis';
 import {handlePressContribution, openNftList} from 'src/utils/bottomPopupUtils';
@@ -150,7 +152,7 @@ export default function NftProfileHeader({nftCore, nft, isCurrentNft, qrScan}) {
                   </Col>
                 )}
                 <Col auto onPress={gotoNftProfileEdit} px8>
-                  <Settings
+                  <Edit2
                     strokeWidth={2}
                     color={Colors.black}
                     height={22}
@@ -187,7 +189,7 @@ export default function NftProfileHeader({nftCore, nft, isCurrentNft, qrScan}) {
             </Span>
           </Div>
         )}
-        {nftCore.story ? (
+        {(nft || nftCore).story ? (
           <Div mt8 bgWhite>
             <TruncatedMarkdown text={(nft || nftCore).story} maxLength={100} />
           </Div>

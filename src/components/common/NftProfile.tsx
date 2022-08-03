@@ -1,4 +1,4 @@
-import {ChevronLeft, MoreHorizontal} from 'react-native-feather';
+import {ChevronLeft, MoreHorizontal, Settings} from 'react-native-feather';
 import React, {useEffect, useState} from 'react';
 import {getNftName, useIsCurrentNft} from 'src/utils/nftUtils';
 import {Col} from './Col';
@@ -27,6 +27,7 @@ import FocusAwareStatusBar from 'src/components/FocusAwareStatusBar';
 import {BlurView} from '@react-native-community/blur';
 import useFollow from 'src/hooks/useFollow';
 import {MenuView} from '@react-native-menu/menu';
+import {useGotoNftSetting} from 'src/hooks/useGoto';
 
 export default function NftProfile({
   nftCore,
@@ -50,6 +51,7 @@ export default function NftProfile({
     paginateGetWithToken(pageableNftPostFn(page + 1), 'posts');
   };
   const reloadGetWithToken = useReloadGETWithToken();
+  const gotoNftSetting = useGotoNftSetting();
   const handleRefresh = () => {
     reloadGetWithToken(nftProfileApiObject);
     reloadGetWithToken(pageableNftPostFn());
@@ -133,7 +135,9 @@ export default function NftProfile({
   const handlePressMenu = ({nativeEvent: {event}}) => {
     handlePressBlock();
   };
-  const renderItem = ({item}) => <Post post={item} displayLabel isProfile={true}/>;
+  const renderItem = ({item}) => (
+    <Post post={item} displayLabel isProfile={true} />
+  );
 
   useEffect(() => {
     if (nft?.background_image_uri) {
@@ -144,8 +148,7 @@ export default function NftProfile({
       }).then(colors => {
         setBgImgColor(colors['average']);
       });
-    }
-    else {
+    } else {
       setBgImgColor(Colors.gray[400]);
     }
   }, [nft, bgImgColor, setBgImgColor]);
@@ -217,7 +220,16 @@ export default function NftProfile({
             </Col>
           )}
           <Col></Col>
-          {!isCurrentNft && (
+          {isCurrentNft ? (
+            <Col auto mr15 bgBlack p5 rounded100 onPress={gotoNftSetting}>
+              <MoreHorizontal
+                width={20}
+                height={20}
+                color={Colors.white}
+                strokeWidth={2.4}
+              />
+            </Col>
+          ) : (
             <Col auto mr15 bgBlack p5 rounded100>
               <MenuView onPressAction={handlePressMenu} actions={menuOptions}>
                 <MoreHorizontal
