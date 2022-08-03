@@ -5,6 +5,7 @@
   "scripts": {
     "postinstall": "patch-package && cd ios && pod install",
     "android": "react-native run-android",
+    "android-release": "react-native run-android --variant=release",
     "ios": "ENV=development react-native run-ios --simulator='iPhone 12'",
     "iosSehan": "yarn react-native run-ios --device 'iPhone'",
     "ios2": "ENV=development react-native run-ios --simulator='iPhone 13' --port=8088",
