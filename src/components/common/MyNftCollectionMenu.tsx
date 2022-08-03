@@ -161,7 +161,7 @@ const MyNftCollectionMenu = ({nftCollection}) => {
                 <Col auto mr16>
                   <CreditCard
                     strokeWidth={2}
-                    color={Colors.admin.DEFAULT}
+                    color={Colors.info.DEFAULT}
                     height={22}
                     width={22}
                   />
@@ -199,7 +199,7 @@ const MyNftCollectionMenu = ({nftCollection}) => {
                 <Col auto mr16>
                   <Calendar
                     strokeWidth={2}
-                    color={Colors.admin.DEFAULT}
+                    color={Colors.info.DEFAULT}
                     height={24}
                     width={24}
                   />
@@ -238,7 +238,7 @@ const MyNftCollectionMenu = ({nftCollection}) => {
               <Col auto mr16>
                 <ShoppingBag
                   strokeWidth={2}
-                  color={Colors.admin.DEFAULT}
+                  color={Colors.info.DEFAULT}
                   height={22}
                   width={22}
                 />

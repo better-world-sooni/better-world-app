@@ -57,6 +57,7 @@ import {getAdjustedHeightFromDimensions} from 'src/utils/imageUtils';
 import RepostedTransaction from './RepostedTransaction';
 import {ICONS} from 'src/modules/icons';
 import useDelete from 'src/hooks/useDelete';
+import AutolinkTextWrapper from './AutolinkTextWrapper';
 
 export enum PostEventTypes {
   Delete = 'DELETE',
@@ -293,9 +294,11 @@ function PostContent({
               </Col>
             </Row>
             {post.content ? (
-              <Div>
+              <Div onPress={() => gotoPost()}>
                 {full ? (
-                  <Span fontSize={14}>{post.content}</Span>
+                  <AutolinkTextWrapper>
+                    <Span fontSize={14}>{post.content}</Span>
+                  </AutolinkTextWrapper>
                 ) : (
                   <TruncatedText
                     text={post.content}
