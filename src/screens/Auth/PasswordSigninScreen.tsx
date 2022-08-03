@@ -83,19 +83,19 @@ const PasswordSigninScreen = () => {
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       flex={1}
-      bgWhite>
-      <Div h={headerHeight} zIndex={100} absolute top0>
+      bgWhite
+      relative
+    >
+      <Div h={headerHeight} top0 zIndex={5}>
         <Row
           itemsCenter
-          py5
           h40
           px15
-          zIndex={100}
           absolute
           w={DEVICE_WIDTH}
           top={notchHeight + 5}>
-          <Col justifyStart>
-            <Div auto rounded100 onPress={goBack}>
+          <Col justifyStart onPress={goBack}>
+            <Div auto rounded100>
               <ChevronLeft
                 width={30}
                 height={30}

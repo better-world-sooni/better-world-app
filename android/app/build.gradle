@@ -79,6 +79,7 @@ import com.android.build.OutputFile
  */
 
 project.ext.react = [
+    bundleInRelease: true,
     enableHermes: true,  // clean and rebuild if changing
     bundleInRelease: true,
 ]
@@ -170,9 +171,9 @@ android {
             signingConfig signingConfigs.debug
         }
         release {
-            signingConfig signingConfigs.release
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+            signingConfig signingConfigs.release
         }
     }
 

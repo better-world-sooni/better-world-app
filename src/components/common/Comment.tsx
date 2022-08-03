@@ -20,7 +20,6 @@ export default function Comment({
   nested = false,
   onPressReplyTo = comment => {},
 }) {
-  console.log(comment);
   return (
     <>
       {comment.nft && (
