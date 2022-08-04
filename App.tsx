@@ -49,7 +49,7 @@ const App = () => {
   const setFCMToken = useCallback(async () => {
     try {
       const authorized = await firebaseMessaging.hasPermission();
-      if (authorized) {
+      if (authorized > 0) {
         const fcmToken = await getToken();
         const res = await postPromiseFnWithToken({
           url: apis.pushNotificationSetting.registrationToken().url,

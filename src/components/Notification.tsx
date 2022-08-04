@@ -37,7 +37,7 @@ export default function Notification({notification}) {
   const isCurrentNft = useIsCurrentNft(notification.nft);
   return (
     <NotificationMemo
-      postId={notification.metadata.target_id?.post_id}
+      postId={notification.metadata.post_id}
       isFollowing={notification.is_following}
       hasNft={!!notification.nft}
       profileImgUri={getNftProfileImage(notification.nft, 100, 100)}
