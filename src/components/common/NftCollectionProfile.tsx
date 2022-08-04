@@ -171,7 +171,12 @@ export default function NftCollectionProfile({
             style={backgroundImageStyles}
             source={{uri: nftCollection.background_image_uri}}></Animated.Image>
         ) : (
-          <Div absolute top0 h={headerHeight + 30} bgGray400 w={DEVICE_WIDTH}></Div>
+          <Div
+            absolute
+            top0
+            h={headerHeight + 30}
+            bgGray400
+            w={DEVICE_WIDTH}></Div>
         )}
         <Animated.View style={headerStyles}>
           {Platform.OS === 'ios' ? (
@@ -309,7 +314,7 @@ export default function NftCollectionProfile({
                           <Div>
                             <Settings
                               strokeWidth={2}
-                              color={Colors.admin.DEFAULT}
+                              color={Colors.black}
                               height={22}
                               width={22}
                             />
@@ -384,7 +389,9 @@ export default function NftCollectionProfile({
             </Div>
           </>
         }
-        renderItem={({item}) => <Post post={item} displayLabel isProfile={true}/>}
+        renderItem={({item}) => (
+          <Post post={item} displayLabel isProfile={true} />
+        )}
         ListFooterComponent={
           <>
             {(nftCollectionPostListPaginating ||

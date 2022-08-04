@@ -45,7 +45,7 @@ const NftCollectionScreen = ({
       {isAdmin && (
         <Div
           rounded100
-          bgAdmin
+          bgBlack
           absolute
           w54
           h54
