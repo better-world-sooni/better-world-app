@@ -28,6 +28,7 @@ import {BlurView} from '@react-native-community/blur';
 import useFollow from 'src/hooks/useFollow';
 import {MenuView} from '@react-native-menu/menu';
 import {useGotoNftSetting} from 'src/hooks/useGoto';
+import {expandImageViewer} from 'src/utils/imageViewerUtils';
 
 export default function NftProfile({
   nftCore,
@@ -161,7 +162,11 @@ export default function NftProfile({
           backgroundColor={bgImgColor}
         />
       )}
-      <Div h={headerHeight}>
+      <Div
+        h={headerHeight}
+        onPress={() => {
+          if (nft) expandImageViewer([{uri: nft.background_image_uri}], 0);
+        }}>
         <Animated.Image
           style={backgroundImageStyles}
           source={{uri: nft?.background_image_uri}}></Animated.Image>

@@ -19,6 +19,7 @@ import BottomPopups from 'src/components/common/BottomPopups';
 import {navigationRef, onMessageReceived} from 'src/utils/notificationUtils';
 import {EventRegister} from 'react-native-event-listeners';
 import {appActions} from 'src/redux/appReducer';
+import ImageViewer from 'src/components/common/ImageViewer';
 
 export const updateNotificationCountEvent = () => 'update-notification-count';
 
@@ -133,6 +134,7 @@ const App = () => {
           <BottomSheetModalProvider>
             <AppContent notificationOpenData={notificationOpenData} />
             <BottomPopups />
+            <ImageViewer />
           </BottomSheetModalProvider>
         </NativeBaseProvider>
       </NavigationContainer>

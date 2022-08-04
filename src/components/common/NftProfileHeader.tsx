@@ -34,6 +34,7 @@ import {Img} from './Img';
 import {Row} from './Row';
 import {Span} from './Span';
 import TruncatedMarkdown from './TruncatedMarkdown';
+import {expandImageViewer} from 'src/utils/imageViewerUtils';
 
 export default function NftProfileHeader({nftCore, nft, isCurrentNft, qrScan}) {
   const gotoNftCollectionProfile = useGotoNftCollectionProfile({
@@ -65,7 +66,13 @@ export default function NftProfileHeader({nftCore, nft, isCurrentNft, qrScan}) {
     <>
       <Row zIndex={100} px15 relative>
         <Div absolute bottom0 w={DEVICE_WIDTH} bgWhite h={48}></Div>
-        <Col auto mr10 relative>
+        <Col
+          auto
+          mr10
+          relative
+          onPress={() =>
+            expandImageViewer([{uri: getNftProfileImage(nft)}], 0)
+          }>
           <Img
             rounded100
             border4

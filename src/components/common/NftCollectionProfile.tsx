@@ -40,6 +40,7 @@ import ListEmptyComponent from './ListEmptyComponent';
 import {handlePressContribution} from 'src/utils/bottomPopupUtils';
 import ImageColors from 'react-native-image-colors';
 import FocusAwareStatusBar from 'src/components/FocusAwareStatusBar';
+import {expandImageViewer} from 'src/utils/imageViewerUtils';
 
 export default function NftCollectionProfile({
   nftCollectionCore,
@@ -151,8 +152,7 @@ export default function NftCollectionProfile({
       }).then(colors => {
         setBgImgColor(colors['average']);
       });
-    }
-    else {
+    } else {
       setBgImgColor(Colors.gray[400]);
     }
   }, [nftCollection, bgImgColor, setBgImgColor]);
@@ -165,7 +165,12 @@ export default function NftCollectionProfile({
           backgroundColor={bgImgColor}
         />
       )}
-      <Div h={headerHeight}>
+      <Div
+        h={headerHeight}
+        onPress={() => {
+          if (nftCollection)
+            expandImageViewer([{uri: nftCollection.background_image_uri}], 0);
+        }}>
         {nftCollection?.background_image_uri ? (
           <Animated.Image
             style={backgroundImageStyles}
@@ -222,13 +227,13 @@ export default function NftCollectionProfile({
           zIndex={100}
           absolute
           top={notchHeight + 5}>
-          <Col auto bg={Colors.black} p8 rounded100 mr12 onPress={goBack}>
+          <Col auto bg={Colors.black} p5 rounded100 mr12 onPress={goBack}>
             <Div>
               <ChevronLeft
-                strokeWidth={2.4}
+                width={20}
+                height={20}
                 color={Colors.white}
-                height={15}
-                width={15}
+                strokeWidth={2.4}
               />
             </Div>
           </Col>
@@ -251,7 +256,23 @@ export default function NftCollectionProfile({
           <>
             <Row zIndex={100} px15 relative>
               <Div absolute bottom0 w={DEVICE_WIDTH} bgWhite h={48}></Div>
-              <Col auto mr10 relative>
+              <Col
+                auto
+                mr10
+                relative
+                onPress={() => {
+                  if (nftCollection || nftCollectionCore)
+                    expandImageViewer(
+                      [
+                        {
+                          uri: getNftProfileImage(
+                            nftCollection || nftCollectionCore,
+                          ),
+                        },
+                      ],
+                      0,
+                    );
+                }}>
                 <Img
                   rounded100
                   border4

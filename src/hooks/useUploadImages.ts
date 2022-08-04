@@ -9,7 +9,7 @@ export default function useUploadImages({attachedRecord = "post", selectionLimit
     const handleAddImages = async () => {
         try {
           const {assets} = await launchImageLibrary({
-            mediaType: 'mixed',
+            mediaType: 'photo',
             selectionLimit,
             maxHeight: 1600,
             maxWidth: 1600,

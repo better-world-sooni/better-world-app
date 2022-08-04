@@ -34,9 +34,11 @@ export default function NewMessage({
           placeholder={'메세지를 전송해요.'}
           value={text}
           mt={0}
+          pt={8}
           onChangeText={onTextChange}
-          onContentSizeChange={(event) => {
-            if(event.nativeEvent.contentSize.height > 33) setTextHeight(event.nativeEvent.contentSize.height);
+          onContentSizeChange={event => {
+            if (event.nativeEvent.contentSize.height > 33)
+              setTextHeight(event.nativeEvent.contentSize.height);
             else setTextHeight(33);
           }}
           newLineButton={false}

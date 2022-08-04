@@ -8,6 +8,7 @@ import {
   ChevronLeft,
   ChevronUp,
   Feather,
+  Film,
   Image,
   Upload,
   Zap,
@@ -279,7 +280,7 @@ const NewPostScreen = ({
             </Col>
           </Row>
         </Animated.ScrollView>
-        <Row px15 py8>
+        <Row px15 py8 borderTop={0.5} borderGray200>
           <Col />
           <Col auto>
             <Row
@@ -290,40 +291,41 @@ const NewPostScreen = ({
               borderGray200
               p9>
               <Col auto mr10>
-                <Image
+                <Film
                   strokeWidth={2}
-                  color={!addImages ? Colors.info.DEFAULT : Colors.black}
+                  color={Colors.black}
                   height={22}
-                  width={22}></Image>
+                  width={22}></Film>
               </Col>
               <Col auto>
-                <Span
-                  color={!addImages ? Colors.info.DEFAULT : Colors.black}
-                  bold>
-                  미디어 {addImages ? '제거' : '추가'}
+                <Span color={Colors.black} bold>
+                  비디오 {addImages ? '제거' : '추가'}
                 </Span>
               </Col>
             </Row>
           </Col>
-          {/* <Col auto ml10>
-            <MenuView onPressAction={handlePressMenu} actions={postTypes}>
-              <Row itemsCenter border={0.5} rounded10 borderGray200 p8>
-                <Col auto mr5>
-                  <ChevronUp
-                    color={Colors.black}
-                    height={24}
-                    width={24}
-                    strokeWidth={2}
-                  />
-                </Col>
-                <Col auto>
-                  <Span bold>
-                    {postTypes.filter(pt => pt.id == currentPostType)[0].title}
-                  </Span>
-                </Col>
-              </Row>
-            </MenuView>
-          </Col> */}
+          <Col auto ml10>
+            <Row
+              itemsCenter
+              onPress={() => setAddImages(prev => !prev)}
+              border={0.5}
+              rounded10
+              borderGray200
+              p9>
+              <Col auto mr10>
+                <Image
+                  strokeWidth={2}
+                  color={Colors.black}
+                  height={22}
+                  width={22}></Image>
+              </Col>
+              <Col auto>
+                <Span color={Colors.black} bold>
+                  이미지 {addImages ? '제거' : '추가'}
+                </Span>
+              </Col>
+            </Row>
+          </Col>
         </Row>
       </KeyboardAvoidingView>
       <Div h={HAS_NOTCH ? 27 : 0} bgWhite />

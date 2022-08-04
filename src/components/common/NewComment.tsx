@@ -83,15 +83,16 @@ export default function NewComment({
         <TextField
           w={'100%'}
           h={commentHeight}
-          py0
           px8
           autoFocus
           placeholder={'댓글을 달아주세요'}
           value={newComment}
-          mt={0}
+          mt={2}
+          pt={8}
           onChangeText={handleCommentChange}
-          onContentSizeChange={(event) => {
-            if(event.nativeEvent.contentSize.height > 33) setCommentHeight(event.nativeEvent.contentSize.height);
+          onContentSizeChange={event => {
+            if (event.nativeEvent.contentSize.height > 33)
+              setCommentHeight(event.nativeEvent.contentSize.height);
             else setCommentHeight(33);
           }}
           newLineButton={true}
