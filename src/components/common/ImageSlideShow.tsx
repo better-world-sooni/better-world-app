@@ -1,10 +1,6 @@
 import React, {useRef, useState} from 'react';
-import Carousel, {Pagination} from 'react-native-snap-carousel';
-import {Colors} from 'src/modules/styles';
 import {Div} from './Div';
 import {Img} from './Img';
-import Video from 'react-native-video';
-import {lookup} from 'react-native-mime-types';
 import {Row} from './Row';
 import {Col} from './Col';
 import {expandImageViewer} from 'src/utils/imageViewerUtils';
@@ -119,31 +115,5 @@ function ExpandableImages({itemWidth, itemHeight, data}) {
         </Div>
       </Col>
     </Row>
-  );
-}
-
-function ImageItem({url, width, height}) {
-  return (
-    <Div>
-      <Img w={width} h={height} uri={url}></Img>
-    </Div>
-  );
-}
-
-function VideoItem({url, width, height}) {
-  const ref = useRef(null);
-  const handlePress = () => {
-    ref?.current?.presentFullscreenPlayer();
-  };
-  return (
-    <Div onPress={handlePress}>
-      <Video
-        ref={ref}
-        source={{uri: url}}
-        style={{width, height}}
-        muted
-        repeat
-      />
-    </Div>
   );
 }

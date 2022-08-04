@@ -58,6 +58,7 @@ import RepostedTransaction from './RepostedTransaction';
 import {ICONS} from 'src/modules/icons';
 import useDelete from 'src/hooks/useDelete';
 import AutolinkTextWrapper from './AutolinkTextWrapper';
+import ExpandableVideo from './ExpandableVideo';
 
 export enum PostEventTypes {
   Delete = 'DELETE',
@@ -329,6 +330,23 @@ function PostContent({
                       : itemWidth * 0.7
                   }
                   sliderWidth={itemWidth}
+                />
+              </Div>
+            ) : null}
+            {post.video_uri ? (
+              <Div mt5>
+                <ExpandableVideo
+                  url={post.video_uri}
+                  height={
+                    post.image_width && post.image_height
+                      ? getAdjustedHeightFromDimensions({
+                          width: post.image_width,
+                          height: post.image_height,
+                          frameWidth: itemWidth,
+                        })
+                      : itemWidth * 0.7
+                  }
+                  width={itemWidth}
                 />
               </Div>
             ) : null}

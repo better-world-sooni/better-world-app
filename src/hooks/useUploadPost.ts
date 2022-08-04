@@ -9,7 +9,7 @@ export default function useUploadPost({initialPostType = ''}){
 	const [currentPostType, setPostType] = useState(initialPostType)
 	const [votingDeadline, setVotingDeadline] = useState(null)
 	const [addImages, setAddImages] = useState(false)
-    const { images, error, setError, handleAddImages, handleRemoveImage, uploadAllSelectedFiles } = useUploadImages({attachedRecord:"post"})
+    const { images, video, error, setError, handleAddImages, handleAddVideo, handleRemoveImage, handleRemoveVideo, uploadAllSelectedFiles, uploadVideo } = useUploadImages({attachedRecord:"post"})
     const postPromiseFnWithToken = usePostPromiseFnWithToken()
 
     const uploadPost = async ({admin, uploadSuccessCallback, repostId = null, collectionEventId = null, transactionHash=null}) => {
@@ -24,6 +24,7 @@ export default function useUploadPost({initialPostType = ''}){
         const body =  {
 			content,
 			images: [],
+			video: null,
             admin,
 			type: currentPostType || null,
 			voting_deadline: votingDeadline,
@@ -41,6 +42,12 @@ export default function useUploadPost({initialPostType = ''}){
 				body.image_height = images[0].height
 			}
 		}
+		if(video){
+			const signedId = await uploadVideo();
+			body.video = signedId
+			body.image_width = video.width
+			body.image_height = video.height
+		}
 		const {data} = await postPromiseFnWithToken({url: apis.post._().url, body});
 		if (!data.success) {
 			setError("게시물 업로드중 문제가 발생하였습니다.");
@@ -57,5 +64,5 @@ export default function useUploadPost({initialPostType = ''}){
 		setError("");
 	};
 
-    return { error, loading, addImages, setAddImages, currentPostType, setPostType, votingDeadline, setVotingDeadline, content, handleContentChange, images, handleAddImages, handleRemoveImage, uploadPost }
+    return { error, loading, addImages, setAddImages, currentPostType, setPostType, votingDeadline, setVotingDeadline, content, handleContentChange, images, video, handleAddImages, handleAddVideo, handleRemoveImage, handleRemoveVideo, uploadPost }
 }

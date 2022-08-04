@@ -44,6 +44,7 @@ import CollectionEvent from 'src/components/common/CollectionEvent';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import RepostedTransaction from 'src/components/common/RepostedTransaction';
 import {ICONS} from 'src/modules/icons';
+import Video from 'react-native-video';
 
 const postTypes = [
   {
@@ -106,8 +107,11 @@ const NewPostScreen = ({
     content,
     handleContentChange,
     images,
+    video,
     handleAddImages,
+    handleAddVideo,
     handleRemoveImage,
+    handleRemoveVideo,
     uploadPost,
   } = useUploadPost({
     initialPostType: postType,
@@ -268,6 +272,19 @@ const NewPostScreen = ({
                   />
                 </Div>
               )}
+              {video && (
+                <Div mt8 rounded10 borderGray200 border={0.5}>
+                  <Video
+                    source={video}
+                    style={{
+                      width: sliderWidth,
+                      height: (sliderWidth * video.height) / video.width,
+                    }}
+                    muted
+                    repeat
+                  />
+                </Div>
+              )}
               {collectionEvent && (
                 <Div mt8>
                   <CollectionEvent
@@ -285,7 +302,7 @@ const NewPostScreen = ({
           <Col auto>
             <Row
               itemsCenter
-              onPress={() => setAddImages(prev => !prev)}
+              onPress={() => (video ? handleRemoveVideo() : handleAddVideo())}
               border={0.5}
               rounded10
               borderGray200
@@ -293,13 +310,13 @@ const NewPostScreen = ({
               <Col auto mr10>
                 <Film
                   strokeWidth={2}
-                  color={Colors.black}
+                  color={addImages ? Colors.gray[400] : Colors.black}
                   height={22}
                   width={22}></Film>
               </Col>
               <Col auto>
-                <Span color={Colors.black} bold>
-                  비디오 {addImages ? '제거' : '추가'}
+                <Span color={addImages ? Colors.gray[400] : Colors.black} bold>
+                  비디오 {video ? '제거' : '추가'}
                 </Span>
               </Col>
             </Row>
@@ -315,12 +332,12 @@ const NewPostScreen = ({
               <Col auto mr10>
                 <Image
                   strokeWidth={2}
-                  color={Colors.black}
+                  color={video ? Colors.gray[400] : Colors.black}
                   height={22}
                   width={22}></Image>
               </Col>
               <Col auto>
-                <Span color={Colors.black} bold>
+                <Span color={video ? Colors.gray[400] : Colors.black} bold>
                   이미지 {addImages ? '제거' : '추가'}
                 </Span>
               </Col>
