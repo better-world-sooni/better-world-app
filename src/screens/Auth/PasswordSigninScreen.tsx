@@ -5,6 +5,7 @@ import {Div} from 'src/components/common/Div';
 import {Row} from 'src/components/common/Row';
 import {Span} from 'src/components/common/Span';
 import {TextField} from 'src/components/TextField';
+import {TextInput} from 'src/components/common/ViewComponents';
 import {useLogin} from 'src/redux/appReducer';
 import BottomPopup from 'src/components/common/BottomPopup';
 import {BottomSheetModal} from '@gorhom/bottom-sheet';
@@ -122,25 +123,46 @@ const PasswordSigninScreen = () => {
           </Div>
           <Div px30>
             <Row mt15>
-              <TextField
-                rounded100
-                label={<Span fontSize={14}>Klaytn 주소</Span>}
-                placeholder={'0x...'}
-                mt={0}
-                onChangeText={handleChangeAddress}
-                autoCapitalize="none"
-              />
+              <Div w="100%">
+                <Span fontSize={14}>Klaytn 주소</Span>
+                <Row itemsCenter my2>
+                  <Col>
+                    <TextInput
+                      autoCorrect={false}
+                      h48
+                      p12
+                      border={0.5}
+                      borderGray400
+                      rounded10
+                      placeholder={'0x...'}
+                      autoCapitalize="none"
+                      onChangeText={handleChangeAddress}
+                      color={'#000000'}
+                    />
+                  </Col>
+                </Row>
+              </Div>
             </Row>
             <Row>
-              <TextField
-                rounded100
-                mt={10}
-                label={<Span fontSize={14}>비밀번호</Span>}
-                placeholder={'비밀번호'}
-                onChangeText={handleChangePassword}
-                autoCapitalize="none"
-                password
-              />
+              <Div w="100%" mt={10}>
+                <Span fontSize={14}>비밀번호</Span>
+                <Row itemsCenter my2>
+                  <Col>
+                    <TextInput
+                      autoCorrect={false}
+                      h48
+                      p12
+                      border={0.5}
+                      borderGray400
+                      rounded10
+                      autoCapitalize="none"
+                      secureTextEntry={true}
+                      onChangeText={handleChangePassword}
+                      color={'#000000'}
+                    />
+                  </Col>
+                </Row>
+              </Div>
             </Row>
             <Div h48 my15>
               <Row
