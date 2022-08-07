@@ -69,7 +69,7 @@ export default function ForumSettingScreen() {
             <X width={30} height={30} color={Colors.black} strokeWidth={2} />
           </Col>
           <Col auto>
-            <Span bold fontSize={19}>
+            <Span bold fontSize={17}>
               포럼 설정
             </Span>
           </Col>

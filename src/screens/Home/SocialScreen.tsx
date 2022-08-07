@@ -151,7 +151,7 @@ export default function SocialScreen() {
               <MenuView onPressAction={handlePressMenu} actions={menuOptions}>
                 <Row itemsCenter>
                   <Col auto>
-                    <Span fontSize={19} bold mx4>
+                    <Span fontSize={17} bold mx4>
                       {menuOptions.filter(
                         menuOption => menuOption.id == feedRes?.filter,
                       )[0]?.title || '피드를 다시 로드해주세요'}

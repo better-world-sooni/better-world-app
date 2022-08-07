@@ -255,7 +255,7 @@ function ChatRoomScreen({
             </Div>
           </Col>
           <Col auto>
-            <Span bold fontSize={19}>
+            <Span bold fontSize={17}>
               {roomName}
             </Span>
           </Col>
@@ -350,7 +350,6 @@ const Message = ({
         px15
         {...(isMine && {style: {flexDirection: 'row-reverse'}})}
         my2
-        mb12={showTime}
         itemsStart>
         {!isMine && (
           <Col auto w32 h32 px0>
@@ -373,21 +372,21 @@ const Message = ({
             itemsEnd>
             <Col
               bgGray100={!isMine}
-              bgPrimary={isMine}
-              rounded30
-              p8
-              px16
+              bgInfo={isMine}
+              rounded20
+              p10
+              px14
               mx10
               mr0={isMine}
               maxW={(DEVICE_WIDTH - 30) / 2}
               auto>
-              <Span fontSize={16} white={isMine}>
+              <Span fontSize={15} white={isMine}>
                 {text}
               </Span>
             </Col>
             {unreadCount > 0 && (
               <Col auto pl8={isMine} pr8={!isMine}>
-                <Span primary>{unreadCount}</Span>
+                <Span info>{unreadCount}</Span>
               </Col>
             )}
             <Col itemsEnd={isMine} auto>
@@ -403,8 +402,8 @@ const Message = ({
       </Row>
       {showDate && (
         <Div itemsCenter py16>
-          <Div rounded100 bgBlack>
-            <Span py8 px16 white>
+          <Div rounded100>
+            <Span py8 px16 bold>
               {getCalendarDay(createdAt)}
             </Span>
           </Div>

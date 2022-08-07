@@ -71,7 +71,12 @@ export default function FullPost({
   return (
     <>
       <Div h={notchHeight}></Div>
-      <Div bgWhite h={50} justifyCenter borderBottom={0.5} borderGray200>
+      <Div
+        bgWhite
+        h={50}
+        justifyCenter
+        borderBottom={onlyComments ? 0.5 : 0}
+        borderGray200>
         <Row itemsCenter py5 h40 px8>
           <Col itemsStart>
             <Div auto rounded100 onPress={goBack}>
@@ -84,7 +89,7 @@ export default function FullPost({
             </Div>
           </Col>
           <Col auto onPress={goBack}>
-            <Span bold fontSize={19}>
+            <Span bold fontSize={17}>
               {onlyComments ? '댓글' : post.type ? '제안' : '게시물'}
             </Span>
           </Col>

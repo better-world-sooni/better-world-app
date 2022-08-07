@@ -33,7 +33,8 @@ const ProfileScreen = () => {
         absolute
         w54
         h54
-        p12
+        justifyCenter
+        itemsCenter
         bottom15
         right15
         onPress={() => gotoNewPost()}
@@ -49,8 +50,8 @@ const ProfileScreen = () => {
         <Plus
           strokeWidth={2}
           color={Colors.white}
-          height={30}
-          width={30}></Plus>
+          height={28}
+          width={28}></Plus>
       </Div>
     </Div>
   );

@@ -30,7 +30,6 @@ const onDisplayNotification = async(title, body, data) => {
             navigationRef.getCurrentRoute().params["opponentNft"].contract_address != data.contract_address)
         )) {
             notifee.displayNotification({
-                id: data.room_id,
                 title,
                 body: `${data.name || data.meta_name}: ${body}`,
                 android: {

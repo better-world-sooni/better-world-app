@@ -106,7 +106,8 @@ export default function PolymorphicOwner({
           <Col
             auto
             bgBlack={!following}
-            p8
+            py8
+            px10
             rounded100
             border={following && 0.5}
             borderGray200

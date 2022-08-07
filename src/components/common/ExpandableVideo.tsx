@@ -8,7 +8,12 @@ export default function ExpandableVideo({url, width, height}) {
     ref?.current?.presentFullscreenPlayer();
   };
   return (
-    <Div onPress={handlePress} rounded10 borderGray200 border={0.5}>
+    <Div
+      onPress={handlePress}
+      rounded10
+      borderGray200
+      border={0.5}
+      overflowHidden>
       <Video
         ref={ref}
         source={{uri: url}}

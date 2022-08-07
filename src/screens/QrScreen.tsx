@@ -89,8 +89,8 @@ const QrScreen = () => {
             </Div>
           </Col>
           <Col auto>
-            <Span bold fontSize={19} white>
-              인증큐알
+            <Span bold fontSize={17} white>
+              인증 QR
             </Span>
           </Col>
           <Col />

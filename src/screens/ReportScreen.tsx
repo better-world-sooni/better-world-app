@@ -96,7 +96,7 @@ export default function ReportScreen({
               </Div>
             </Col>
             <Col auto onPress={goBack}>
-              <Span bold fontSize={19}>
+              <Span bold fontSize={17}>
                 게시물 신고하기
               </Span>
             </Col>

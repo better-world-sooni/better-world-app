@@ -121,9 +121,12 @@ function ChatListScreen() {
   }, [currentNft]);
 
   useEffect(() => {
-    const listener = EventRegister.addEventListener('roomUnreadCountUpdate', (roomId) => {
-      readCountRefresh(roomId)
-    });
+    const listener = EventRegister.addEventListener(
+      'roomUnreadCountUpdate',
+      roomId => {
+        readCountRefresh(roomId);
+      },
+    );
     const updateList = (room, read) => {
       const index = chatRooms.findIndex(x => x.room_id === room.room_id);
       if (index > -1) {
@@ -146,23 +149,27 @@ function ChatListScreen() {
     chatRoomsRef.current = chatRooms;
 
     return () => {
-      if(typeof(listener) === 'string') EventRegister.removeEventListener(listener)
-    }
+      if (typeof listener === 'string')
+        EventRegister.removeEventListener(listener);
+    };
   }, [chatRooms, chatSocket]);
 
-  const readCountRefresh = useCallback(roomId => {
-    const index = chatRooms.findIndex(x => x.room_id === roomId);
-    if (chatRooms[index]?.unread_count > 0) {
-      const room = Object.assign({}, chatRooms[index]);
-      room.unread_count = 0;
-      setChatRooms(prev => [
-        ...prev.slice(0, index),
-        room,
-        ...prev.slice(index + 1),
-      ]);
-      dispatch(appActions.incrementUnreadChatRoomCount({deltum: -1}));
-    }
-  }, [chatRooms]);
+  const readCountRefresh = useCallback(
+    roomId => {
+      const index = chatRooms.findIndex(x => x.room_id === roomId);
+      if (chatRooms[index]?.unread_count > 0) {
+        const room = Object.assign({}, chatRooms[index]);
+        room.unread_count = 0;
+        setChatRooms(prev => [
+          ...prev.slice(0, index),
+          room,
+          ...prev.slice(index + 1),
+        ]);
+        dispatch(appActions.incrementUnreadChatRoomCount({deltum: -1}));
+      }
+    },
+    [chatRooms],
+  );
 
   const notchHeight = useSafeAreaInsets().top;
   const headerHeight = notchHeight + 50;
@@ -173,7 +180,7 @@ function ChatListScreen() {
         <Row itemsCenter py5 h40 p8 zIndex={100}>
           <Col itemsStart></Col>
           <Col auto>
-            <Span bold fontSize={19}>
+            <Span bold fontSize={17}>
               채팅
             </Span>
           </Col>
@@ -247,13 +254,12 @@ function ChatRoomItem({onPress, room}) {
           <Row w={'100%'} pt2>
             <Col pr10>
               <Div>
-                {text && (
-                  <TruncatedText
-                    spanProps={{...(unreadMessageCount > 0 && {bold: true})}}
-                    text={text}
-                    maxLength={30}
-                  />
-                )}
+                <Span
+                  numberOfLines={1}
+                  ellipsizeMode="tail"
+                  {...(unreadMessageCount > 0 && {bold: true})}>
+                  {text}
+                </Span>
               </Div>
             </Col>
           </Row>

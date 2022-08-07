@@ -49,7 +49,8 @@ const NftCollectionScreen = ({
           absolute
           w54
           h54
-          p12
+          justifyCenter
+          itemsCenter
           bottom55
           right15
           onPress={() => gotoNewPost()}
@@ -65,8 +66,8 @@ const NftCollectionScreen = ({
           <Plus
             strokeWidth={2}
             color={Colors.white}
-            height={30}
-            width={30}></Plus>
+            height={28}
+            width={28}></Plus>
         </Div>
       )}
     </Div>

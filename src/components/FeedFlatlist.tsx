@@ -83,7 +83,8 @@ function FeedFlatlist(
             absolute
             w54
             h54
-            p12
+            itemsCenter
+            justifyCenter
             bottom15
             right15
             onPress={() => gotoNewPost()}
@@ -99,8 +100,8 @@ function FeedFlatlist(
             <Plus
               strokeWidth={2}
               color={Colors.white}
-              height={30}
-              width={30}></Plus>
+              height={28}
+              width={28}></Plus>
           </Div>
         ) : (
           <Div

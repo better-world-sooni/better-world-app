@@ -102,7 +102,7 @@ export function NftProfileSummary({nft, token = null}) {
     huggable == HugState.UnHuggable
       ? '내일 다시 허그를 해주세요.'
       : huggable == HugState.Huggable
-      ? '허그로 상대의 존재감을 높여줘요.'
+      ? '허그로 따뜻한 위로를 보내요.'
       : `${getNftName(currentNft)}가 ${getNftName(nft)}를 허그했습니다!`;
   const gotoNftProfile = useGotoNftProfile({
     nft,

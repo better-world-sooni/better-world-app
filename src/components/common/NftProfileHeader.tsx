@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   ChevronDown,
   Edit2,
@@ -35,6 +35,7 @@ import {Row} from './Row';
 import {Span} from './Span';
 import TruncatedMarkdown from './TruncatedMarkdown';
 import {expandImageViewer} from 'src/utils/imageViewerUtils';
+import TruncatedText from './TruncatedText';
 
 export default function NftProfileHeader({nftCore, nft, isCurrentNft, qrScan}) {
   const gotoNftCollectionProfile = useGotoNftCollectionProfile({
@@ -61,6 +62,7 @@ export default function NftProfileHeader({nftCore, nft, isCurrentNft, qrScan}) {
   const gotoScan = useGotoScan({scanType: ScanType.Nft});
   const gotoChatRoom = useGotoChatRoomFromProfile();
   const gotoNftProfileEdit = useGotoNftProfileEdit();
+  const [enlargeStory, setEnlargeStory] = useState(false);
 
   return (
     <>
@@ -78,8 +80,8 @@ export default function NftProfileHeader({nftCore, nft, isCurrentNft, qrScan}) {
             border4
             borderWhite
             bgGray200
-            h70
-            w70
+            h78
+            w78
             uri={getNftProfileImage(nft, 200, 200)}></Img>
         </Col>
         <Col justifyEnd>
@@ -136,15 +138,15 @@ export default function NftProfileHeader({nftCore, nft, isCurrentNft, qrScan}) {
             </Div>
           ) : (
             <Div>
-              <Row py12>
+              <Row py10 itemsCenter>
                 <Col />
                 {qrScan && (
                   <Col auto onPress={gotoScan} px8>
                     <Maximize
                       strokeWidth={2}
                       color={Colors.black}
-                      height={22}
-                      width={22}
+                      height={20}
+                      width={20}
                     />
                   </Col>
                 )}
@@ -153,18 +155,21 @@ export default function NftProfileHeader({nftCore, nft, isCurrentNft, qrScan}) {
                     <Grid
                       strokeWidth={2}
                       color={Colors.black}
-                      height={22}
-                      width={22}
+                      height={20}
+                      width={20}
                     />
                   </Col>
                 )}
-                <Col auto onPress={gotoNftProfileEdit} px8>
-                  <Edit2
-                    strokeWidth={2}
-                    color={Colors.black}
-                    height={22}
-                    width={22}
-                  />
+                <Col
+                  auto
+                  p6
+                  rounded100
+                  border={0.5}
+                  borderGray200
+                  onPress={gotoNftProfileEdit}>
+                  <Span bold px5 fontSize={13}>
+                    프로필 편집
+                  </Span>
                 </Col>
               </Row>
             </Div>
@@ -198,7 +203,15 @@ export default function NftProfileHeader({nftCore, nft, isCurrentNft, qrScan}) {
         )}
         {(nft || nftCore).story ? (
           <Div mt8 bgWhite>
-            <TruncatedMarkdown text={(nft || nftCore).story} maxLength={100} />
+            {!enlargeStory ? (
+              <TruncatedText
+                text={(nft || nftCore).story}
+                maxLength={100}
+                onPressTruncated={() => setEnlargeStory(true)}
+              />
+            ) : (
+              <Span>{(nft || nftCore).story}</Span>
+            )}
           </Div>
         ) : null}
         {nft && (

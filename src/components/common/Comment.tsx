@@ -77,7 +77,7 @@ function CommentContent({
     : {
         width: heartSize,
         height: heartSize,
-        color: Colors.black,
+        color: Colors.gray[600],
         strokeWidth: 2,
       };
   const handlePressReplyTo = () => {
@@ -111,53 +111,76 @@ function CommentContent({
   return (
     <Div py2={!nested}>
       <Row py6 mr15 ml16 rounded10 borderGray200>
-        <Col auto ml8 mr16 onPress={() => goToProfile()}>
-          <Img
-            rounded={100}
-            h={profileImageSize}
-            w={profileImageSize}
-            uri={nftImageUri}
-          />
+        <Col auto ml14={hot} mr12 onPress={() => goToProfile()}>
+          {hot ? (
+            <Div w={profileImageSize}></Div>
+          ) : (
+            <Img
+              rounded={100}
+              h={profileImageSize}
+              w={profileImageSize}
+              uri={nftImageUri}
+            />
+          )}
         </Col>
         <Col>
-          <Row>
+          <Row itemsCenter>
+            {hot && (
+              <Col auto>
+                <Div mr6>
+                  <Img rounded={100} h={20} w={20} uri={nftImageUri} />
+                </Div>
+              </Col>
+            )}
             <Col mr10>
               <Span>
-                <Span bold fontSize={14} onPress={() => goToProfile()}>
+                <Span
+                  bold
+                  fontSize={hot ? 13 : 14}
+                  onPress={() => goToProfile()}>
                   {nftName || nftMetadatumName}{' '}
                 </Span>{' '}
                 {hot ? (
-                  <TruncatedText text={content} maxLength={100} />
+                  <Span
+                    numberOfLines={1}
+                    ellipsizeMode="tail"
+                    fontSize={hot ? 13 : 14}>
+                    {content}
+                  </Span>
                 ) : (
                   <Span fontSize={14}>{content}</Span>
                 )}
               </Span>
             </Col>
-            <Col auto onPress={handlePressLike} mt4>
-              <Heart {...heartProps}></Heart>
-            </Col>
+            {!hot && (
+              <Col auto onPress={handlePressLike} mt4>
+                <Heart {...heartProps}></Heart>
+              </Col>
+            )}
           </Row>
-          <Row mt5>
-            <Col auto mr10>
-              <Span fontSize={12} gray600>
-                {createdAtText(updated_at)}
-              </Span>
-            </Col>
-            {likesCount > 0 ? (
+          {!hot && (
+            <Row mt5>
               <Col auto mr10>
-                <Span fontSize={12} gray600 onPress={gotoLikeList}>
-                  좋아요 {likesCount}개
-                </Span>
-              </Col>
-            ) : null}
-            {!nested && !hot ? (
-              <Col auto onPress={handlePressReplyTo}>
                 <Span fontSize={12} gray600>
-                  답글 달기
+                  {createdAtText(updated_at)}
                 </Span>
               </Col>
-            ) : null}
-          </Row>
+              {likesCount > 0 ? (
+                <Col auto mr10>
+                  <Span fontSize={12} gray600 onPress={gotoLikeList}>
+                    좋아요 {likesCount}개
+                  </Span>
+                </Col>
+              ) : null}
+              {!nested && !hot ? (
+                <Col auto onPress={handlePressReplyTo}>
+                  <Span fontSize={12} gray600>
+                    답글 달기
+                  </Span>
+                </Col>
+              ) : null}
+            </Row>
+          )}
         </Col>
       </Row>
       {!hot && (

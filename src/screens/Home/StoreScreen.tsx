@@ -54,8 +54,8 @@ export default function StoreScreen() {
       <Div bgWhite h={50} justifyCenter borderBottom={0.5} borderGray200>
         <Row itemsCenter py5 h40 px15>
           <Col auto>
-            <Span bold fontSize={19}>
-              {'홀더 혜택 이벤트'}
+            <Span bold fontSize={17}>
+              {'이벤트'}
             </Span>
           </Col>
           <Col />
@@ -101,10 +101,10 @@ export default function StoreScreen() {
               <Div wFull h80 bgBlack opacity={0.75}></Div>
               <Div absolute top0 wFull h80 px16 py8 justifyCenter>
                 <Span white gray400 fontSize={12}>
-                  오직 홀더를 위한 이벤트에 응모라여 굿즈 및 혜택을 수령하세요
+                  오직 홀더를 위한 이벤트에 응모하여 굿즈 및 혜택을 수령하세요
                 </Span>
                 <Span white bold mt4>
-                  응모와 수령이 쉬운 BetterWorld NFT Events!
+                  응모와 수령이 쉬운 BetterWorld Events!
                 </Span>
               </Div>
             </ImageBackground>

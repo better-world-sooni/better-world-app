@@ -34,7 +34,7 @@ export default function StoreSettingScreen() {
             />
           </Col>
           <Col auto>
-            <Span bold fontSize={19}>
+            <Span bold fontSize={17}>
               스토어 관리
             </Span>
           </Col>

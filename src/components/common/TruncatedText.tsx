@@ -49,8 +49,11 @@ const TruncatedText: TruncatedTextType = function ({
       {result.length != text.length ? (
         onPressTruncated ? (
           <Span {...spanProps}>
-            {result.concat('...')}
-            <Span onPress={onPressTruncated}> 더보기</Span>
+            {result}
+            <Span onPress={onPressTruncated} gray600>
+              {' ...'}
+              더보기
+            </Span>
           </Span>
         ) : (
           <Span {...spanProps}>{result.concat('...')}</Span>
