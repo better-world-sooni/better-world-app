@@ -193,7 +193,7 @@ function PostContent({
     postId: post.id,
   });
 
-  const itemWidth = DEVICE_WIDTH - 30 - (full ? 3 : 62);
+  const itemWidth = DEVICE_WIDTH - 30 - (full ? 0 : 62);
 
   if (deleted) return null;
 

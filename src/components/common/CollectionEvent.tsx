@@ -194,70 +194,89 @@ export default function CollectionEvent({
                 </Div>
               )
             )}
-            <Div
+            <Row
               bottom0
               absolute
               w={'100%'}
               {...(!full && {onPress: handlePressCollectionEvent})}
-              bgWhite
-              py12
-              px18>
-              <Div zIndex={100}>
-                <Span
-                  fontSize={reposted ? 18 : 20}
-                  bold
-                  numberOfLines={1}
-                  ellipsizeMode="tail"
-                  my={reposted ? -2 : 0}>
-                  {collectionEvent.title}
-                </Span>
-              </Div>
-              <Row mt12 zIndex={100} itemsCenter>
-                <Col auto mr6>
-                  <MapPin
-                    strokeWidth={2}
-                    color={Colors.black}
-                    height={14}
-                    width={14}></MapPin>
+              itemsCenter>
+              <Div
+                bottom0
+                absolute
+                w={'100%'}
+                h={reposted ? 74 : 80}
+                bgWhite
+                itemsEnd></Div>
+              {reposted && (
+                <Col auto ml15 mb8>
+                  <Img
+                    border3
+                    borderWhite
+                    rounded100
+                    h80
+                    w80
+                    uri={getNftProfileImage(
+                      collectionEvent.nft_collection,
+                    )}></Img>
                 </Col>
-                <Col>
+              )}
+              <Col ml={reposted ? 8 : 15}>
+                <Div zIndex={100} mt8>
                   <Span
-                    fontSize={12}
+                    fontSize={reposted ? 12 : 20}
                     bold
-                    black
                     numberOfLines={1}
                     ellipsizeMode="tail">
-                    {collectionEvent.location_string}
+                    {collectionEvent.title}
                   </Span>
-                </Col>
-              </Row>
-              <Row mt6 itemsCenter>
-                <Col auto mr6>
-                  <Clock
-                    strokeWidth={2}
-                    color={Colors.black}
-                    height={14}
-                    width={14}></Clock>
-                </Col>
-                <Col>
-                  <Span numberOfLines={1} ellipsizeMode="tail" gray700>
-                    <Span bold fontSize={reposted ? 10 : 12}>
-                      {kmoment(collectionEvent.start_time).format(
-                        'YY.M.D a h:mm',
-                      )}
-                    </Span>{' '}
-                    <Span bold fontSize={reposted ? 10 : 12}>
-                      ~
-                    </Span>{' '}
-                    <Span bold fontSize={reposted ? 10 : 12}>
-                      {kmoment(collectionEvent.end_time).format(
-                        'YY.M.D a h:mm',
-                      )}
+                </Div>
+                <Row mt={reposted ? 8 : 12} zIndex={100} itemsCenter>
+                  <Col auto mr6>
+                    <MapPin
+                      strokeWidth={2}
+                      color={Colors.black}
+                      height={reposted ? 8 : 14}
+                      width={reposted ? 8 : 14}></MapPin>
+                  </Col>
+                  <Col>
+                    <Span
+                      fontSize={reposted ? 8 : 12}
+                      bold
+                      black
+                      numberOfLines={1}
+                      ellipsizeMode="tail">
+                      {collectionEvent.location_string}
                     </Span>
-                  </Span>
-                </Col>
-              </Row>
-            </Div>
+                  </Col>
+                </Row>
+                <Row mt={reposted ? 4 : 6} itemsCenter>
+                  <Col auto mr6>
+                    <Clock
+                      strokeWidth={2}
+                      color={Colors.black}
+                      height={reposted ? 8 : 14}
+                      width={reposted ? 8 : 14}></Clock>
+                  </Col>
+                  <Col mb3>
+                    <Span numberOfLines={1} ellipsizeMode="tail" gray700>
+                      <Span bold fontSize={reposted ? 8 : 12}>
+                        {kmoment(collectionEvent.start_time).format(
+                          'YY.M.D a h:mm',
+                        )}
+                      </Span>{' '}
+                      <Span bold fontSize={reposted ? 8 : 12}>
+                        ~
+                      </Span>{' '}
+                      <Span bold fontSize={reposted ? 8 : 12}>
+                        {kmoment(collectionEvent.end_time).format(
+                          'YY.M.D a h:mm',
+                        )}
+                      </Span>
+                    </Span>
+                  </Col>
+                </Row>
+              </Col>
+            </Row>
           </Div>
           {!reposted && (
             <Div px18 pb14 pt8 bgWhite>

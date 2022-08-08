@@ -101,7 +101,7 @@ export default function StoreScreen() {
               <Div wFull h80 bgBlack opacity={0.75}></Div>
               <Div absolute top0 wFull h80 px16 py8 justifyCenter>
                 <Span white gray400 fontSize={12}>
-                  오직 홀더를 위한 이벤트에 응모하여 굿즈 및 혜택을 수령하세요
+                  오직 홀더를 위한 이벤트에 응모하여 굿즈와 혜택을 수령하세요
                 </Span>
                 <Span white bold mt4>
                   응모와 수령이 쉬운 BetterWorld Events!

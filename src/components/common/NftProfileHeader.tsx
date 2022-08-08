@@ -151,7 +151,7 @@ export default function NftProfileHeader({nftCore, nft, isCurrentNft, qrScan}) {
                   </Col>
                 )}
                 {isCurrentNft && qrScan && (
-                  <Col auto onPress={gotoQr} px8>
+                  <Col auto onPress={gotoQr} px8 mr4>
                     <Grid
                       strokeWidth={2}
                       color={Colors.black}
