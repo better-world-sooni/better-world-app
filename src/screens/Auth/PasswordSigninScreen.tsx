@@ -85,7 +85,8 @@ const PasswordSigninScreen = () => {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       flex={1}
       bgWhite
-      relative>
+      relative
+    >
       <Div h={headerHeight} top0 zIndex={5}>
         <Row
           itemsCenter
@@ -105,7 +106,7 @@ const PasswordSigninScreen = () => {
             </Div>
           </Col>
           <Col auto>
-            <Span bold fontSize={17}>
+            <Span bold fontSize={19}>
               비밀번호로 연결
             </Span>
           </Col>
@@ -132,7 +133,7 @@ const PasswordSigninScreen = () => {
                       p12
                       border={0.5}
                       borderGray400
-                      rounded100
+                      rounded10
                       placeholder={'0x...'}
                       autoCapitalize="none"
                       onChangeText={handleChangeAddress}
@@ -153,7 +154,7 @@ const PasswordSigninScreen = () => {
                       p12
                       border={0.5}
                       borderGray400
-                      rounded100
+                      rounded10
                       autoCapitalize="none"
                       secureTextEntry={true}
                       onChangeText={handleChangePassword}
