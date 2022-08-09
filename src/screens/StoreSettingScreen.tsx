@@ -35,7 +35,7 @@ export default function StoreSettingScreen() {
           </Col>
           <Col auto>
             <Span bold fontSize={17}>
-              스토어 관리
+              이벤트 관리
             </Span>
           </Col>
           <Col itemsEnd></Col>
@@ -51,7 +51,7 @@ export default function StoreSettingScreen() {
           onPress={gotoCollectionOrderList}>
           <Col>
             <Span fontSize={16} bold>
-              주문 관리
+              응모 관리
             </Span>
           </Col>
           <Col auto>
@@ -72,7 +72,7 @@ export default function StoreSettingScreen() {
           onPress={gotoNewMerchandise}>
           <Col>
             <Span fontSize={16} bold>
-              상품 추가
+              이벤트 추가
             </Span>
           </Col>
           <Col auto>

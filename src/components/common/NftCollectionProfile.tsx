@@ -331,15 +331,16 @@ export default function NftCollectionProfile({
                     <Div>
                       <Row py10>
                         <Col />
-                        <Col auto mx8 onPress={gotoNftCollectionProfileEdit}>
-                          <Div>
-                            <Settings
-                              strokeWidth={2}
-                              color={Colors.black}
-                              height={22}
-                              width={22}
-                            />
-                          </Div>
+                        <Col
+                          auto
+                          p6
+                          rounded100
+                          border={0.5}
+                          borderGray200
+                          onPress={gotoNftCollectionProfileEdit}>
+                          <Span bold px5 fontSize={13}>
+                            프로필 편집
+                          </Span>
                         </Col>
                       </Row>
                     </Div>
@@ -422,8 +423,10 @@ export default function NftCollectionProfile({
               </Div>
             )}
             {isNotPaginatable && (
-              <Div itemsCenter py15 bold>
-                <Span textCenter>게시물을 모두 확인했습니다.</Span>
+              <Div itemsCenter py15>
+                <Span textCenter bold>
+                  게시물을 모두 확인했습니다.
+                </Span>
               </Div>
             )}
             <Div h={HAS_NOTCH ? 27 : 12} />

@@ -29,7 +29,7 @@ export default function CollectionOrderListScreen() {
       refreshing={isLoading}
       onEndReached={handleEndReached}
       isPaginating={isPaginating}
-      title={'주문 기록'}
+      title={'응모 기록'}
       renderItem={({item}) => {
         return <OrderMerchandise admin order={item} />;
       }}
