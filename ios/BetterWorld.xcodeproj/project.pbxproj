@@ -30,6 +30,7 @@
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		84ED35E67A294CE58D67DD5B /* Uni Sans SemiBold Italic.otf in Resources */ = {isa = PBXBuildFile; fileRef = B21D244718064C408CDD1C9E /* Uni Sans SemiBold Italic.otf */; };
 		8C14521A273912FB009592BD /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8C145219273912FA009592BD /* GoogleService-Info.plist */; };
+		8C5044B628A4309D00ED8AE1 /* AppCenter-Config.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8C5044B528A4309D00ED8AE1 /* AppCenter-Config.plist */; };
 		8C914AB92861AC15004DF33D /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C914AB82861AC15004DF33D /* AVFoundation.framework */; };
 		8C916B5126FF182F00AB49D1 /* libswiftWebKit.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C916B5026FF182F00AB49D1 /* libswiftWebKit.tbd */; };
 		913AC4605F064EFF9789DD91 /* Uni Sans Heavy.otf in Resources */ = {isa = PBXBuildFile; fileRef = C5DD4D96F0A54A3A960AE4E8 /* Uni Sans Heavy.otf */; };
@@ -87,6 +88,7 @@
 		822E0F6174BB00DDAE08A9A8 /* Pods-sungan-sunganTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-sungan-sunganTests.debug.xcconfig"; path = "Target Support Files/Pods-sungan-sunganTests/Pods-sungan-sunganTests.debug.xcconfig"; sourceTree = "<group>"; };
 		8C145219273912FA009592BD /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "sungan/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		8C14521B273919B3009592BD /* sungan.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = sungan.entitlements; path = sungan/sungan.entitlements; sourceTree = "<group>"; };
+		8C5044B528A4309D00ED8AE1 /* AppCenter-Config.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "AppCenter-Config.plist"; path = "sungan/AppCenter-Config.plist"; sourceTree = "<group>"; };
 		8C914AB82861AC15004DF33D /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		8C916B4D26FF154A00AB49D1 /* libswiftWebKit.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libswiftWebKit.tbd; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk/System/iOSSupport/usr/lib/swift/libswiftWebKit.tbd; sourceTree = DEVELOPER_DIR; };
 		8C916B5026FF182F00AB49D1 /* libswiftWebKit.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libswiftWebKit.tbd; path = usr/lib/swift/libswiftWebKit.tbd; sourceTree = SDKROOT; };
@@ -154,6 +156,7 @@
 		13B07FAE1A68108700A75B9A /* sungan */ = {
 			isa = PBXGroup;
 			children = (
+				8C5044B528A4309D00ED8AE1 /* AppCenter-Config.plist */,
 				8C14521B273919B3009592BD /* sungan.entitlements */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
@@ -370,6 +373,7 @@
 				FE094677BE2E42BC9A4D4C39 /* NotoSansKR-Medium.otf in Resources */,
 				3C3501F342304254A2A2B1CE /* NotoSansKR-Regular.otf in Resources */,
 				21E6837221B64868AA24C220 /* NotoSansKR-Thin.otf in Resources */,
+				8C5044B628A4309D00ED8AE1 /* AppCenter-Config.plist in Resources */,
 				B14140B7513C4ACCAF531E24 /* Uni Sans Bold Italic.otf in Resources */,
 				7ECB5099698B46E1A4A1EE27 /* Uni Sans Bold.otf in Resources */,
 				24985D2512AA4CBCA98DA33A /* Uni Sans Book Italic.otf in Resources */,
