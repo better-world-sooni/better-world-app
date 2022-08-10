@@ -6,6 +6,7 @@ import { Span } from "src/components/common/Span"
 import { Style } from "src/components/common/Style"
 import useAutoFocusRef from 'src/hooks/useAutoFocusRef';
 import {TextInput} from 'src/components/common/ViewComponents';
+import {Platform} from 'react-native';
 
 export const TextField = props => {
   const {
@@ -39,7 +40,7 @@ export const TextField = props => {
         {leftComp && <Col auto>{leftComp}</Col>}
         <Col>
           <TextInput
-            py1
+            py1={Platform.OS === 'android'}
             innerRef={autoFocus && autoFocusRef}
             autoCorrect={false}
             multiline={true}
