@@ -106,6 +106,7 @@ const QrScreen = () => {
                 size={200}
                 logoSize={60}
                 value={qrRes ? qrRes.jwt : 'BetterWorld'}
+                logoBorderRadius={100}
                 logo={{uri: getNftProfileImage(currentNft)}}
               />
             )}

@@ -60,7 +60,7 @@ function Transaction({transaction, mainAddress = null, enablePress = false}) {
     },
     isAdmin && {
       id: TransactionEventTypes.AdminShare,
-      title: '커뮤니티 계정으로 리포스트',
+      title: '커뮤니티 계정으로 퍼가기',
       image: Platform.select({
         ios: 'square.and.arrow.up',
       }),

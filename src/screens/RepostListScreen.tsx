@@ -39,7 +39,7 @@ const RepostListScreen = ({
       refreshing={repostListLoading}
       onEndReached={handleEndReached}
       isPaginating={repostPaginating}
-      title={'리포스트'}
+      title={'퍼가기'}
     />
   );
 };

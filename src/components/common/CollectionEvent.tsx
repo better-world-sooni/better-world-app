@@ -66,7 +66,7 @@ export default function CollectionEvent({
     },
     {
       id: CollectionEventActionTypes.AdminShare,
-      title: '커뮤니티 계정으로 리포스트',
+      title: '커뮤니티 계정으로 퍼가기',
       image: Platform.select({
         ios: 'square.and.arrow.up',
         android: 'ic_menu_set_as',
@@ -74,7 +74,7 @@ export default function CollectionEvent({
     },
     {
       id: CollectionEventActionTypes.MyShare,
-      title: '내 계정으로 리포스트',
+      title: '내 계정으로 퍼가기',
       image: Platform.select({
         ios: 'square.and.arrow.up',
         android: 'ic_menu_set_as',

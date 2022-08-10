@@ -12,7 +12,7 @@ import {Div} from './Div';
 import {Img} from './Img';
 import {Row} from './Row';
 import {Span} from './Span';
-import {Heart, MessageCircle} from 'react-native-feather';
+import {Heart, MessageCircle, Send} from 'react-native-feather';
 import apis from 'src/modules/apis';
 import {useApiPOSTWithToken, useApiSelector} from 'src/redux/asyncReducer';
 import {
@@ -97,12 +97,12 @@ export function NftProfileSummary({nft, token = null}) {
       ? {borderGray200: true}
       : huggable == HugState.Huggable
       ? {borderDanger: true}
-      : {borderDanger: true, bgDanger: true};
+      : {borderDanger: true};
   const hugText =
     huggable == HugState.UnHuggable
       ? '내일 다시 허그를 해주세요.'
       : huggable == HugState.Huggable
-      ? '허그로 따뜻한 위로를 보내요.'
+      ? '허그로 따뜻한 마음을 보내요.'
       : `${getNftName(currentNft)}가 ${getNftName(nft)}를 허그했습니다!`;
   const gotoNftProfile = useGotoNftProfile({
     nft,
@@ -146,14 +146,11 @@ export function NftProfileSummary({nft, token = null}) {
         <Col justifyEnd>
           {!isCurrentNft && (
             <Div>
-              <Row py8>
+              <Row py8 itemsCenter>
                 <Col />
                 <Col
                   auto
-                  bgBlack
-                  p8
-                  mr8
-                  rounded100
+                  px10
                   onPress={() =>
                     gotoChatRoom(
                       getNftName(nft),
@@ -162,22 +159,15 @@ export function NftProfileSummary({nft, token = null}) {
                       nft.token_id,
                     )
                   }>
-                  <MessageCircle
+                  <Send
                     strokeWidth={2}
-                    color={Colors.white}
-                    height={15}
-                    width={15}
+                    color={Colors.black}
+                    height={22}
+                    width={22}
                   />
                 </Col>
                 {token && (
-                  <Col
-                    auto
-                    border1
-                    p8
-                    mr8
-                    rounded100
-                    {...hugButtonProps}
-                    onPress={hug}>
+                  <Col auto px10 {...hugButtonProps} onPress={hug}>
                     <Div>
                       <Heart
                         strokeWidth={2}
@@ -186,9 +176,13 @@ export function NftProfileSummary({nft, token = null}) {
                             ? Colors.gray[200]
                             : Colors.danger.DEFAULT
                         }
-                        fill={Colors.white}
-                        height={15}
-                        width={15}
+                        fill={
+                          HugState.Hugged == huggable
+                            ? Colors.danger.DEFAULT
+                            : Colors.white
+                        }
+                        height={22}
+                        width={22}
                       />
                     </Div>
                   </Col>

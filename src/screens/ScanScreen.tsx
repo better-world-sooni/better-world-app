@@ -97,7 +97,7 @@ export default function ScanScreen({
           </Col>
           <Col auto>
             <Span bold fontSize={17}>
-              {ScanType.Login == scanType ? '큐알로 연결' : '인증코드 스캔'}
+              {ScanType.Login == scanType ? 'QR로 로그인' : '인증코드 스캔'}
             </Span>
           </Col>
           <Col />

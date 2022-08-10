@@ -34,11 +34,11 @@ const PasswordSigninScreen = () => {
       return;
     }
     if (address === '') {
-      expandBottomPopupWithText('클레이튼 주소를 입력해 주세요');
+      expandBottomPopupWithText('Kaikas 지갑 주소를 입력해 주세요');
       return;
     }
     if (!isAddress(address)) {
-      expandBottomPopupWithText('클레이튼 주소가 유효하지 않습니다.');
+      expandBottomPopupWithText('Kaikas 지갑 주소가 유효하지 않습니다.');
       return;
     }
     if (password === '') {
@@ -63,7 +63,9 @@ const PasswordSigninScreen = () => {
       },
       props => {
         setLoading(false);
-        expandBottomPopupWithText('클레이튼 주소, 비밀번호를 확인해 주세요.');
+        expandBottomPopupWithText(
+          'Kaikas 지갑 주소, 비밀번호를 확인해 주세요.',
+        );
       },
     );
   }, [address, password]);
@@ -106,7 +108,7 @@ const PasswordSigninScreen = () => {
           </Col>
           <Col auto>
             <Span bold fontSize={17}>
-              비밀번호로 연결
+              비밀번호로 로그인
             </Span>
           </Col>
           <Col />
@@ -115,16 +117,17 @@ const PasswordSigninScreen = () => {
       <Div flex={1} justifyCenter>
         <Div>
           <Div rounded10 overflowHidden itemsCenter justifyCenter px30>
-            <Span fontSize={24} bold style={{textAlign: 'center'}}>
-              비밀번호는 betterworldapp.io에서 지갑 인증 후 설정/재설정 하실 수
-              있습니다.
+            <Span fontSize={20} bold style={{textAlign: 'center'}}>
+              {
+                '회원가입은 betterworldapp.io에서\n 데스크톱을 이용해 하실 수 있습니다.'
+              }
             </Span>
           </Div>
-          <Div px30>
-            <Row mt15>
+          <Div px30 pb30>
+            <Row mt40>
               <Div w="100%">
-                <Span fontSize={14}>Klaytn 주소</Span>
-                <Row itemsCenter my2>
+                <Span fontSize={14}>Kaikas 지갑 주소</Span>
+                <Row itemsCenter my2 pt5>
                   <Col>
                     <TextInput
                       autoCorrect={false}
@@ -145,7 +148,7 @@ const PasswordSigninScreen = () => {
             <Row>
               <Div w="100%" mt={10}>
                 <Span fontSize={14}>비밀번호</Span>
-                <Row itemsCenter my2>
+                <Row itemsCenter my2 pt5>
                   <Col>
                     <TextInput
                       autoCorrect={false}
@@ -163,22 +166,22 @@ const PasswordSigninScreen = () => {
                 </Row>
               </Div>
             </Row>
-            <Div h48 my15>
+            <Div h48 mt20>
               <Row
                 bgBlack
                 rounded100
-                h48
+                h50
                 flex={1}
                 itemsCenter
                 onPress={handleAddressSignIn}>
                 <Col />
                 <Col auto>
                   <Div>
-                    <Span white bold>
+                    <Span white bold fontSize={14}>
                       {loading ? (
                         <ActivityIndicator></ActivityIndicator>
                       ) : (
-                        '연결'
+                        '로그인'
                       )}
                     </Span>
                   </Div>

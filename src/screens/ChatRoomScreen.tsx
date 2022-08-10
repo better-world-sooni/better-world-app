@@ -350,13 +350,14 @@ const Message = ({
         px15
         {...(isMine && {style: {flexDirection: 'row-reverse'}})}
         my2
+        mb12={showTime}
         itemsStart>
         {!isMine && (
           <Col auto w32 h32 px0>
             {showAuthor && <Img rounded100 uri={avatar} h32 w32 />}
           </Col>
         )}
-        <Col auto={!isMine} style={{flex: 3, wordBreak: 'break-all'}}>
+        <Col auto={!isMine} style={{flex: 7, wordBreak: 'break-all'}}>
           {showAuthor && !isMine && (
             <Row itemsEnd>
               <Col auto px8 pb8>
@@ -375,7 +376,7 @@ const Message = ({
               bgInfo={isMine}
               rounded20
               p10
-              px14
+              px16
               mx10
               mr0={isMine}
               maxW={(DEVICE_WIDTH - 30) / 2}
