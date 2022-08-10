@@ -13,7 +13,7 @@ export const TextField = props => {
     labelStyle,
     note,
     error,
-    mt = 16,
+    mt,
     value,
     onChangeText,
     newLineButton,
@@ -35,10 +35,11 @@ export const TextField = props => {
           {label}
         </Span>
       ) : null}
-      <Row itemsCenter my2>
+      <Row itemsCenter>
         {leftComp && <Col auto>{leftComp}</Col>}
         <Col>
           <TextInput
+            py1
             innerRef={autoFocus && autoFocusRef}
             autoCorrect={false}
             multiline={true}

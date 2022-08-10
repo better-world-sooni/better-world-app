@@ -79,7 +79,7 @@ export default function NewComment({
           </Col>
         </Row>
       )}
-      <Div px15 py9>
+      <Div px15 py10>
         <TextField
           w={'100%'}
           h={commentHeight}
@@ -87,11 +87,9 @@ export default function NewComment({
           autoFocus
           placeholder={'댓글을 달아주세요'}
           value={newComment}
-          mt={2}
-          pt={8}
           onChangeText={handleCommentChange}
           onContentSizeChange={event => {
-            if (event.nativeEvent.contentSize.height > 33)
+            if (event.nativeEvent.contentSize.height > 40)
               setCommentHeight(event.nativeEvent.contentSize.height);
             else setCommentHeight(33);
           }}

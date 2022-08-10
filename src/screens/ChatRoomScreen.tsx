@@ -373,13 +373,13 @@ const Message = ({
             itemsEnd>
             <Col
               bgGray100={!isMine}
-              bgInfo={isMine}
+              bgSecondary={isMine}
               rounded20
               p10
               px16
               mx10
               mr0={isMine}
-              maxW={(DEVICE_WIDTH - 30) / 2}
+              maxW={(DEVICE_WIDTH - 30) / 1.5}
               auto>
               <Span fontSize={15} white={isMine}>
                 {text}

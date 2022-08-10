@@ -25,19 +25,16 @@ export default function NewMessage({
       w={'100%'}
       borderTop={0.5}
       borderColor={varStyle.gray200}>
-      <Div px15 py8>
+      <Div px15 py10>
         <TextField
           w={'100%'}
           h={textHeight}
-          py0
           px10
-          placeholder={'메세지를 전송해요.'}
+          placeholder={'메세지를 전송하세요.'}
           value={text}
-          mt={0}
-          pt={8}
           onChangeText={onTextChange}
           onContentSizeChange={event => {
-            if (event.nativeEvent.contentSize.height > 33)
+            if (event.nativeEvent.contentSize.height > 40)
               setTextHeight(event.nativeEvent.contentSize.height);
             else setTextHeight(33);
           }}
