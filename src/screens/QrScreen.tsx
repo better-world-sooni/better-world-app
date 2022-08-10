@@ -73,8 +73,9 @@ const QrScreen = () => {
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       flex={1}
-      bgBlack>
-      <Div h={headerHeight} absolute top0 zIndex={5}>
+      bgBlack
+      relative>
+      <Div h={headerHeight} top0 zIndex={5}>
         <Row
           itemsCenter
           py5

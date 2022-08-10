@@ -82,12 +82,12 @@ const PasswordSigninScreen = () => {
   const notchHeight = useSafeAreaInsets().top;
   const headerHeight = notchHeight + 50;
 
-  return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       flex={1}
       bgWhite
-      relative>
+      relative
+    >
       <Div h={headerHeight} top0 zIndex={5}>
         <Row
           itemsCenter
@@ -135,7 +135,7 @@ const PasswordSigninScreen = () => {
                       p12
                       border={0.5}
                       borderGray400
-                      rounded100
+                      rounded10
                       placeholder={'0x...'}
                       autoCapitalize="none"
                       onChangeText={handleChangeAddress}
@@ -156,7 +156,7 @@ const PasswordSigninScreen = () => {
                       p12
                       border={0.5}
                       borderGray400
-                      rounded100
+                      rounded10
                       autoCapitalize="none"
                       secureTextEntry={true}
                       onChangeText={handleChangePassword}
