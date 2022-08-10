@@ -41,6 +41,7 @@ export const TextField = props => {
         <Col>
           <TextInput
             py1={Platform.OS === 'android'}
+            mt6={Platform.OS === 'ios'}
             innerRef={autoFocus && autoFocusRef}
             autoCorrect={false}
             multiline={true}
