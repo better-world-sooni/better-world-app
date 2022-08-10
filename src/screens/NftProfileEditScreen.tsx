@@ -67,13 +67,7 @@ export default function NftProfileEditScreen() {
   const {goBack} = useNavigation();
   const reloadGetWithToken = useReloadGETWithToken();
   const putPromiseFnWithToken = usePutPromiseFnWithToken();
-  const [pushNotificationEnabled, setPushNotificationEnabled] = useState(
-    !nft.is_push_notification_disabled,
-  );
   const [loading, setLoading] = useState(false);
-  const handleSwitchPushNotification = async bool => {
-    setPushNotificationEnabled(bool);
-  };
   const save = async () => {
     if (!isSaveable) return;
     setLoading(true);
@@ -84,17 +78,12 @@ export default function NftProfileEditScreen() {
       name,
       story,
       background_image_uri_key: backgroundImageUriKey,
-      push_notification_setting_is_disabled_globally: !pushNotificationEnabled,
     };
     const {data} = await putPromiseFnWithToken({url: apis.nft._().url, body});
     setLoading(false);
     reloadGetWithToken(apis.nft._());
   };
-  const isSaveable =
-    nameHasChanged ||
-    storyHasChanged ||
-    imageHasChanged ||
-    pushNotificationEnabled != !nft.is_push_notification_disabled;
+  const isSaveable = nameHasChanged || storyHasChanged || imageHasChanged;
   return (
     <>
       <Div bgWhite px15 h={50} justifyCenter borderBottom={0.5} borderGray200>
@@ -103,7 +92,7 @@ export default function NftProfileEditScreen() {
             <X width={30} height={30} color={Colors.black} strokeWidth={2} />
           </Col>
           <Col auto>
-            <Span bold fontSize={19}>
+            <Span bold fontSize={17}>
               프로필 수정
             </Span>
           </Col>
@@ -126,7 +115,7 @@ export default function NftProfileEditScreen() {
       <ScrollView bgWhite bounces={false}>
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-          <Div h120 relative onPress={handleAddImage}>
+          <Div h120 relative onPress={!uploading && handleAddImage}>
             {image?.uri ? (
               <Img uri={image.uri} top0 absolute w={DEVICE_WIDTH} h120></Img>
             ) : (
@@ -147,20 +136,16 @@ export default function NftProfileEditScreen() {
                 top12
                 right12
                 zIndex={1000}
-                onPress={handleRemoveImage}
+                onPress={!uploading && handleRemoveImage}
                 rounded100
                 bgBlack
                 p8>
-                {uploading ? (
-                  <ActivityIndicator />
-                ) : (
-                  <Trash
-                    strokeWidth={2}
-                    color={Colors.white}
-                    height={18}
-                    width={18}
-                  />
-                )}
+                <Trash
+                  strokeWidth={2}
+                  color={Colors.white}
+                  height={18}
+                  width={18}
+                />
               </Div>
             ) : null}
           </Div>
@@ -174,21 +159,6 @@ export default function NftProfileEditScreen() {
               h70
               w70
               uri={getNftProfileImage(nft)}></Img>
-          </Row>
-          <Row px15 py12 itemsCenter borderTop={0.5} borderGray200>
-            <Col auto w50 m5>
-              <Span fontSize={16} bold>
-                알림
-              </Span>
-            </Col>
-            <Col></Col>
-            <Col auto>
-              <Switch
-                value={pushNotificationEnabled}
-                onValueChange={handleSwitchPushNotification}
-                style={{transform: [{scaleX: 0.8}, {scaleY: 0.8}]}}
-              />
-            </Col>
           </Row>
           <Row px15 py15 itemsCenter borderTop={0.5} borderGray200>
             <Col auto w50 m5>
@@ -209,7 +179,7 @@ export default function NftProfileEditScreen() {
               <Span danger>{nameError}</Span>
             </Div>
           ) : null}
-          <Row px15 py15 borderTop={0.5} borderGray200>
+          <Row px15 py15 borderTop={0.5} borderGray200 flex={1}>
             <Col auto w50 m5 mt3>
               <Span fontSize={16} bold>
                 스토리
@@ -223,7 +193,8 @@ export default function NftProfileEditScreen() {
                 multiline
                 mt={-4}
                 bold
-                onChangeText={handleChangeStory}></TextInput>
+                onChangeText={handleChangeStory}
+                maxLength={100}></TextInput>
             </Col>
           </Row>
           {storyError ? (

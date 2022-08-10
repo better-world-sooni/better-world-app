@@ -11,7 +11,7 @@ import {Div} from './Div';
 import NftChooseBottomSheetScrollView from './NftChooseBottomSheetScrollView';
 import {Span} from './Span';
 
-const bottomMargin = HAS_NOTCH ? 100 : 80;
+const bottomMargin = 60;
 
 export default function BottomPopups() {
   const getSnapPoints = itemsLength => {
@@ -38,16 +38,24 @@ export default function BottomPopups() {
   };
 
   useEffect(() => {
-    EventRegister.addEventListener(nftListEvent(), () => {
-      bottomPopupRef?.current?.expand();
-    });
-    EventRegister.addEventListener(infoBottomPopupEvent(), data => {
-      setBottomInfoPopupText(data);
-      bottomInfoPopupRef?.current?.expand();
-    });
+    const nftListEventListenerId = EventRegister.addEventListener(
+      nftListEvent(),
+      () => {
+        bottomPopupRef?.current?.expand();
+      },
+    );
+    const infoBottomPopupEventListenerId = EventRegister.addEventListener(
+      infoBottomPopupEvent(),
+      data => {
+        setBottomInfoPopupText(data);
+        bottomInfoPopupRef?.current?.expand();
+      },
+    );
     return () => {
-      EventRegister.removeEventListener(nftListEvent());
-      EventRegister.removeEventListener(infoBottomPopupEvent());
+      if (typeof nftListEventListenerId == 'string')
+        EventRegister.removeEventListener(nftListEventListenerId);
+      if (typeof infoBottomPopupEventListenerId == 'string')
+        EventRegister.removeEventListener(infoBottomPopupEventListenerId);
     };
   }, []);
   return (

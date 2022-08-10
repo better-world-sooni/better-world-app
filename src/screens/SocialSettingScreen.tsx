@@ -38,7 +38,7 @@ export default function SocialSettingScreen() {
             <X width={30} height={30} color={Colors.black} strokeWidth={2} />
           </Col>
           <Col auto>
-            <Span bold fontSize={19}>
+            <Span bold fontSize={17}>
               게시물 피드 설정
             </Span>
           </Col>

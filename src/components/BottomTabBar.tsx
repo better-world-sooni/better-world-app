@@ -6,7 +6,7 @@ import {Row} from 'src/components/common/Row';
 import {Col} from 'src/components/common/Col';
 import {Span} from 'src/components/common/Span';
 import {NAV_NAMES} from 'src/modules/navNames';
-import {Colors} from 'src/modules/styles';
+import {Colors, DEVICE_WIDTH} from 'src/modules/styles';
 import {openNftList} from 'src/utils/bottomPopupUtils';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {useSelector} from 'react-redux';
@@ -71,17 +71,17 @@ const BottomTabBar = ({state, descriptors, navigation}) => {
           {name == NAV_NAMES.ChatList && unreadChatRoomCount > 0 && (
             <Div
               absolute
-              w17
-              h17
-              top0
-              right0
+              px4
+              py2
+              top5
+              right={(DEVICE_WIDTH - 30) / 6 - 17}
               auto
               rounded100
               bgDanger
               itemsCenter
               justifyCenter>
               <Span white fontSize={10} bold>
-                {unreadChatRoomCount}
+                {unreadChatRoomCount} 명
               </Span>
             </Div>
           )}

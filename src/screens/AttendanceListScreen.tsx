@@ -49,7 +49,7 @@ const AttendanceListScreen = ({
       refreshing={attendanceListLoading}
       onEndReached={handleEndReached}
       isPaginating={attendanceListPaginating}
-      title={attendanceCategory == AttendanceCategory.Yes ? 'Yes' : 'Maybe'}
+      title={attendanceCategory == AttendanceCategory.Yes ? '참석' : '불참'}
     />
   );
 };

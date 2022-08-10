@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {ActivityIndicator} from 'react-native';
 import {X} from 'react-native-feather';
 import {shallowEqual, useSelector} from 'react-redux';
@@ -33,6 +33,8 @@ export default function NewComment({
   );
   const [newComment, setNewComment] = useState('');
   const [loading, setLoading] = useState(false);
+  const [commentHeight, setCommentHeight] = useState(33)
+
   const handleCommentChange = text => {
     setNewComment(text);
   };
@@ -77,18 +79,22 @@ export default function NewComment({
           </Col>
         </Row>
       )}
-      <Div px15 py4>
+      <Div px15 py10>
         <TextField
           w={'100%'}
-          h40
-          py0
-          px10
-          rounded100
+          h={commentHeight}
+          px8
           autoFocus
           placeholder={'댓글을 달아주세요'}
           value={newComment}
-          mt={0}
           onChangeText={handleCommentChange}
+          onContentSizeChange={event => {
+            if (event.nativeEvent.contentSize.height > 40)
+              setCommentHeight(event.nativeEvent.contentSize.height);
+            else setCommentHeight(33);
+          }}
+          newLineButton={true}
+          onSubmitEditing={handlePostComment}
           leftComp={
             <Img
               mr10

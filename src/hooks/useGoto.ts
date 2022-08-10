@@ -157,7 +157,7 @@ export function useGotoPost({postId}){
   const apiGETWithToken = useApiGETWithToken()
   const apiGET = useApiGET()
   const navigation = useNavigation()
-  const gotoPost = (autoFocus=false, notificationOpened=false, jwt=null) => {
+  const gotoPost = (autoFocus=false, notificationOpened=false, jwt=null, onlyComments=false) => {
     if(notificationOpened) {
       apiGET(apis.post.postId._(postId), jwt)
       navigation.dispatch(
@@ -169,7 +169,7 @@ export function useGotoPost({postId}){
     }
     else{
       apiGETWithToken(apis.post.postId._(postId));
-      navigation.navigate(NAV_NAMES.Post as never, {postId, autoFocus} as never);
+      navigation.navigate(NAV_NAMES.Post as never, {postId, autoFocus, onlyComments} as never);
     }
   }
   return gotoPost
@@ -252,6 +252,17 @@ export function useGotoNftProfileEdit() {
     navigation.navigate(NAV_NAMES.NftProfileEdit as never)
   };
   return gotoNftProfileEdit
+}
+export function useGotoNftSetting() {
+  const navigation = useNavigation()
+  const apiGETWithToken = useApiGETWithToken()
+  const gotoNftSetting = () => {
+    apiGETWithToken(
+      apis.pushNotificationSetting._(),
+    );
+    navigation.navigate(NAV_NAMES.NftSetting as never)
+  };
+  return gotoNftSetting
 }
 
 export function useGotoNftCollectionProfileEdit() {

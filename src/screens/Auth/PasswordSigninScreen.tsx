@@ -5,6 +5,7 @@ import {Div} from 'src/components/common/Div';
 import {Row} from 'src/components/common/Row';
 import {Span} from 'src/components/common/Span';
 import {TextField} from 'src/components/TextField';
+import {TextInput} from 'src/components/common/ViewComponents';
 import {useLogin} from 'src/redux/appReducer';
 import BottomPopup from 'src/components/common/BottomPopup';
 import {BottomSheetModal} from '@gorhom/bottom-sheet';
@@ -33,11 +34,11 @@ const PasswordSigninScreen = () => {
       return;
     }
     if (address === '') {
-      expandBottomPopupWithText('클레이튼 주소를 입력해 주세요');
+      expandBottomPopupWithText('Kaikas 지갑 주소를 입력해 주세요');
       return;
     }
     if (!isAddress(address)) {
-      expandBottomPopupWithText('클레이튼 주소가 유효하지 않습니다.');
+      expandBottomPopupWithText('Kaikas 지갑 주소가 유효하지 않습니다.');
       return;
     }
     if (password === '') {
@@ -50,6 +51,10 @@ const PasswordSigninScreen = () => {
       password,
       props => {
         setLoading(false);
+        if (props.data.user.nfts.length == 0) {
+          expandBottomPopupWithText('홀더가 아닙니다.');
+          return;
+        }
         if (props.data.user.main_nft) {
           gotoHome();
           return;
@@ -58,7 +63,9 @@ const PasswordSigninScreen = () => {
       },
       props => {
         setLoading(false);
-        expandBottomPopupWithText('클레이튼 주소, 비밀번호를 확인해 주세요.');
+        expandBottomPopupWithText(
+          'Kaikas 지갑 주소, 비밀번호를 확인해 주세요.',
+        );
       },
     );
   }, [address, password]);
@@ -75,23 +82,23 @@ const PasswordSigninScreen = () => {
   const notchHeight = useSafeAreaInsets().top;
   const headerHeight = notchHeight + 50;
 
-  return (
+  return(
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       flex={1}
-      bgWhite>
-      <Div h={headerHeight} zIndex={100} absolute top0>
+      bgWhite
+      relative
+    >
+      <Div h={headerHeight} top0 zIndex={5}>
         <Row
           itemsCenter
-          py5
           h40
           px15
-          zIndex={100}
           absolute
           w={DEVICE_WIDTH}
           top={notchHeight + 5}>
-          <Col justifyStart>
-            <Div auto rounded100 onPress={goBack}>
+          <Col justifyStart onPress={goBack}>
+            <Div auto rounded100>
               <ChevronLeft
                 width={30}
                 height={30}
@@ -101,8 +108,8 @@ const PasswordSigninScreen = () => {
             </Div>
           </Col>
           <Col auto>
-            <Span bold fontSize={19}>
-              비밀번호로 연결
+            <Span bold fontSize={17}>
+              비밀번호로 로그인
             </Span>
           </Col>
           <Col />
@@ -111,49 +118,71 @@ const PasswordSigninScreen = () => {
       <Div flex={1} justifyCenter>
         <Div>
           <Div rounded10 overflowHidden itemsCenter justifyCenter px30>
-            <Span fontSize={24} bold style={{textAlign: 'center'}}>
-              비밀번호는 betterworldapp.io에서 지갑 인증 후 설정/재설정 하실 수
-              있습니다.
+            <Span fontSize={20} bold style={{textAlign: 'center'}}>
+              {
+                '회원가입은 betterworldapp.io에서\n 데스크톱을 이용해 하실 수 있습니다.'
+              }
             </Span>
           </Div>
-          <Div px30>
-            <Row mt15>
-              <TextField
-                rounded100
-                label={<Span fontSize={14}>Klaytn 주소</Span>}
-                placeholder={'0x...'}
-                mt={0}
-                onChangeText={handleChangeAddress}
-                autoCapitalize="none"
-              />
+          <Div px30 pb30>
+            <Row mt40>
+              <Div w="100%">
+                <Span fontSize={14}>Kaikas 지갑 주소</Span>
+                <Row itemsCenter my2 pt5>
+                  <Col>
+                    <TextInput
+                      autoCorrect={false}
+                      h48
+                      p12
+                      border={0.5}
+                      borderGray400
+                      rounded100
+                      placeholder={'0x...'}
+                      autoCapitalize="none"
+                      onChangeText={handleChangeAddress}
+                      color={'#000000'}
+                    />
+                  </Col>
+                </Row>
+              </Div>
             </Row>
             <Row>
-              <TextField
-                rounded100
-                mt={10}
-                label={<Span fontSize={14}>비밀번호</Span>}
-                placeholder={'비밀번호'}
-                onChangeText={handleChangePassword}
-                autoCapitalize="none"
-                password
-              />
+              <Div w="100%" mt={10}>
+                <Span fontSize={14}>비밀번호</Span>
+                <Row itemsCenter my2 pt5>
+                  <Col>
+                    <TextInput
+                      autoCorrect={false}
+                      h48
+                      p12
+                      border={0.5}
+                      borderGray400
+                      rounded100
+                      autoCapitalize="none"
+                      secureTextEntry={true}
+                      onChangeText={handleChangePassword}
+                      color={'#000000'}
+                    />
+                  </Col>
+                </Row>
+              </Div>
             </Row>
-            <Div h48 my15>
+            <Div h48 mt20>
               <Row
                 bgBlack
                 rounded100
-                h48
+                h50
                 flex={1}
                 itemsCenter
                 onPress={handleAddressSignIn}>
                 <Col />
                 <Col auto>
                   <Div>
-                    <Span white bold>
+                    <Span white bold fontSize={14}>
                       {loading ? (
                         <ActivityIndicator></ActivityIndicator>
                       ) : (
-                        '연결'
+                        '로그인'
                       )}
                     </Span>
                   </Div>

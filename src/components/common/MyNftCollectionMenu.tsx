@@ -60,7 +60,7 @@ const MyNftCollectionMenu = ({nftCollection}) => {
   const gotoSocialSetting = useGotoSocialSetting();
   const gotoStoreSetting = useGotoStoreSetting();
   const notchHeight = HAS_NOTCH ? 44 : 0;
-  const headerHeight = notchHeight + 18;
+  const headerHeight = notchHeight + 30;
   const isAdmin = useIsAdmin();
   return (
     <Div flex={1} bg={backgroundColor} relative borderRight={0.5} borderGray200>
@@ -161,7 +161,7 @@ const MyNftCollectionMenu = ({nftCollection}) => {
                 <Col auto mr16>
                   <CreditCard
                     strokeWidth={2}
-                    color={Colors.admin.DEFAULT}
+                    color={Colors.black}
                     height={22}
                     width={22}
                   />
@@ -199,7 +199,7 @@ const MyNftCollectionMenu = ({nftCollection}) => {
                 <Col auto mr16>
                   <Calendar
                     strokeWidth={2}
-                    color={Colors.admin.DEFAULT}
+                    color={Colors.black}
                     height={24}
                     width={24}
                   />
@@ -212,44 +212,23 @@ const MyNftCollectionMenu = ({nftCollection}) => {
               </Row>
             )
           )}
-          <Row itemsCenter py16 onPress={gotoSocialSetting}>
-            <Col auto mr16>
-              <Home
-                strokeWidth={2}
-                color={Colors.black}
-                height={22}
-                width={22}
-              />
-            </Col>
-            <Col>
-              <Span fontSize={16}>게시물 피드 설정</Span>
-            </Col>
-          </Row>
-          <Row itemsCenter py16 onPress={gotoForumSetting}>
-            <Col auto mr16>
-              <Img source={ICONS.lightBulb} h22 w22></Img>
-            </Col>
-            <Col>
-              <Span fontSize={16}>제안 피드 설정</Span>
-            </Col>
-          </Row>
-          {isAdmin && (
+          {/* {isAdmin && (
             <Row itemsCenter py16 onPress={gotoStoreSetting}>
               <Col auto mr16>
                 <ShoppingBag
                   strokeWidth={2}
-                  color={Colors.admin.DEFAULT}
+                  color={Colors.black}
                   height={22}
                   width={22}
                 />
               </Col>
               <Col>
-                <Span fontSize={16} admin>
-                  스토어 관리
+                <Span fontSize={16} black>
+                  이벤트 관리
                 </Span>
               </Col>
             </Row>
-          )}
+          )} */}
         </Div>
       )}
     </Div>

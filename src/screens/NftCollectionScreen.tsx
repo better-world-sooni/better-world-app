@@ -4,11 +4,13 @@ import apis from 'src/modules/apis';
 import NftCollectionProfile from 'src/components/common/NftCollectionProfile';
 import {useIsAdmin} from 'src/utils/nftUtils';
 import {useGotoNewPost} from 'src/hooks/useGoto';
-import {PostOwnerType} from './NewPostScreen';
+import {PostOwnerType, PostType} from './NewPostScreen';
 import {Plus} from 'react-native-feather';
 import {Colors} from 'src/modules/styles';
 import {shallowEqual, useSelector} from 'react-redux';
 import {RootState} from 'src/redux/rootReducer';
+import {Img} from 'src/components/common/Img';
+import {ICONS} from 'src/modules/icons';
 
 const NftCollectionScreen = ({
   route: {
@@ -44,11 +46,11 @@ const NftCollectionScreen = ({
         <Div
           rounded100
           bgBlack
-          zIndex={200}
           absolute
           w54
           h54
-          p12
+          justifyCenter
+          itemsCenter
           bottom55
           right15
           onPress={() => gotoNewPost()}
@@ -64,8 +66,8 @@ const NftCollectionScreen = ({
           <Plus
             strokeWidth={2}
             color={Colors.white}
-            height={30}
-            width={30}></Plus>
+            height={28}
+            width={28}></Plus>
         </Div>
       )}
     </Div>

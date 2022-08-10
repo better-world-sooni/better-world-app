@@ -68,28 +68,22 @@ export default function HomeScreen() {
     {
       id: ForumFeedFilter.All,
       title: '모든 제안',
-      titleColor: '#46F289',
       image: Platform.select({
         ios: 'globe.asia.australia',
-        android: 'ic_menu_mapmode',
       }),
     },
     {
       id: ForumFeedFilter.Following,
       title: '팔로잉 제안',
-      titleColor: '#46F289',
       image: Platform.select({
         ios: 'star',
-        android: 'star_big_on',
       }),
     },
     {
       id: ForumFeedFilter.Approved,
       title: '통과된 제안',
-      titleColor: '#46F289',
       image: Platform.select({
         ios: 'checkmark.circle',
-        android: 'checkbox_on_background',
       }),
     },
   ];
@@ -169,7 +163,7 @@ export default function HomeScreen() {
               <MenuView onPressAction={handlePressMenu} actions={menuOptions}>
                 <Row itemsCenter>
                   <Col auto mx4>
-                    <Span fontSize={19} bold>
+                    <Span fontSize={17} bold>
                       {menuOptions.filter(
                         menuOption => menuOption.id == feedRes?.filter,
                       )[0]?.title || '피드를 다시 로드해주세요'}

@@ -1,5 +1,6 @@
 import {Span} from './Span';
 import React from 'react';
+import AutolinkTextWrapper from './AutolinkTextWrapper';
 
 type TruncatedTextProps = {
   text: string;
@@ -43,17 +44,25 @@ const TruncatedText: TruncatedTextType = function ({
     resultLines.push(lines[lineIndex]);
   }
   const result = resultLines.join('\n');
-  if (result.length != text.length) {
-    if (onPressTruncated) {
-      return (
-        <Span onPress={onPressTruncated} {...spanProps}>
-          {result.concat('...') + ' 더보기'}
-        </Span>
-      );
-    }
-    return <Span {...spanProps}>{result.concat('...')}</Span>;
-  }
-  return <Span {...spanProps}>{result}</Span>;
+  return (
+    <AutolinkTextWrapper>
+      {result.length != text.length ? (
+        onPressTruncated ? (
+          <Span {...spanProps}>
+            {result}
+            <Span onPress={onPressTruncated} gray600>
+              {' ...'}
+              더보기
+            </Span>
+          </Span>
+        ) : (
+          <Span {...spanProps}>{result.concat('...')}</Span>
+        )
+      ) : (
+        <Span {...spanProps}>{result}</Span>
+      )}
+    </AutolinkTextWrapper>
+  );
 };
 
 export default TruncatedText;

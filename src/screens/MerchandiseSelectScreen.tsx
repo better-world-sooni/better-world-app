@@ -64,7 +64,7 @@ export default function MerchandiseSelectScreen({
             <X width={30} height={30} color={Colors.black} strokeWidth={2} />
           </Col>
           <Col auto>
-            <Span bold fontSize={19}>
+            <Span bold fontSize={17}>
               {'굿즈 선택하기'}
             </Span>
           </Col>

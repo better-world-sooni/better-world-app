@@ -9,11 +9,11 @@ export default function useDelete({url}){
     const [deleted, setDeleted] = useState(false)
     const deletePromiseFnWithToken = useDeletePromiseFnWithToken();
     useEffect(() => {
-        EventRegister.addEventListener(deleteByUrl(url), (deleted) => {
+        const deleteEventListenerId = EventRegister.addEventListener(deleteByUrl(url), (deleted) => {
             setDeleted(deleted)
         })
         return () => {
-            EventRegister.removeEventListener(deleteByUrl(url));
+            if(typeof deleteEventListenerId == 'string') EventRegister.removeEventListener(deleteEventListenerId);
         }
     }, [url]);
     const deleteObject = async () => {

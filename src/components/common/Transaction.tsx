@@ -47,10 +47,8 @@ function Transaction({transaction, mainAddress = null, enablePress = false}) {
     {
       id: TransactionEventTypes.Klaytnfinder,
       title: 'Klaytnfinder에서 확인',
-      titleColor: '#46F289',
       image: Platform.select({
         ios: 'magnifyingglass',
-        android: 'ic_search_category_default',
       }),
     },
     isAdmin && {
@@ -58,15 +56,13 @@ function Transaction({transaction, mainAddress = null, enablePress = false}) {
       title: '통과된 제안에 참조',
       image: Platform.select({
         ios: 'tag',
-        android: 'ic_input_get',
       }),
     },
     isAdmin && {
       id: TransactionEventTypes.AdminShare,
-      title: '커뮤니티 계정으로 리포스트',
+      title: '커뮤니티 계정으로 퍼가기',
       image: Platform.select({
         ios: 'square.and.arrow.up',
-        android: 'ic_menu_set_as',
       }),
     },
   ].filter(option => option);

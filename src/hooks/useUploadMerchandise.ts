@@ -6,6 +6,7 @@ import useUploadImages from "./useUploadImages";
 export type OrderCategory = {
 	name: string
 	options: string[]
+	isInput: boolean
 }
   
 export default function useUploadMerchandise(){
@@ -14,8 +15,8 @@ export default function useUploadMerchandise(){
 	const [name, setName] = useState('')
     const [description, setDescription] = useState('')
 	const [expiresAt, setExpiresAt] = useState(null)
-	const [isDeliverable, setIsDeliverable] = useState(false)
-	const [isAirdropOnly, setIsAirdropOnly] = useState(true)
+	const [isDeliverable, setIsDeliverable] = useState(true)
+	const [isAirdropOnly, setIsAirdropOnly] = useState(false)
 	const [orderCategories, setOrderCategories] = useState<OrderCategory[]>([])
 	const [price, setPrice]= useState(0)
 	const [maxPerAmountPerOrder, setMaxAmountPerOrder] = useState(1);
@@ -37,10 +38,6 @@ export default function useUploadMerchandise(){
 			setError("설명을 작성해주세요.");
 			return;
 		}
-		if (!(price)) {
-			setError("가격을 추가해주세요.");
-			return;
-		}
 		if(images.length == 0){
 			setError("이미지를 추가해주세요.");
 			return;
@@ -58,7 +55,6 @@ export default function useUploadMerchandise(){
         const body =  {
 			name,
 			description,
-			price,
 			images: signedIdArray,
 			expires_at: expiresAt,
 			is_deliverable: isDeliverable,
@@ -91,8 +87,8 @@ export default function useUploadMerchandise(){
 		setError("");
 	};
 
-	const handleAddOrderCategory = (name) => {
-		setOrderCategories([...orderCategories, {name, options: []}])
+	const handleAddOrderCategory = (name, isInput) => {
+		setOrderCategories([...orderCategories, {name, options: [], isInput}])
 	}
 
 	const handleRemoveOrderCategory = (index) => {

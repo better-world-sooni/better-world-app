@@ -3,7 +3,7 @@ import querystring from 'querystring'
 import {isEmpty, omitBy, isNil} from 'lodash'
 
 // const BASE_URL = 'http://3.39.22.255:3000';
-// const BASE_URL = 'http://192.168.31.148:3000';
+// const BASE_URL = 'http://192.168.1.185:3000';
 // const BASE_URL = 'http://localhost:3000';
 const BASE_URL = 'https://api.betterworldapp.io';
 
@@ -51,9 +51,6 @@ const apis = {
   profile: {
     klaytnAddress: (klaytnAddress) => apiV1(`/profile/${klaytnAddress}`),
     _: () => apiV1(`/profile`)
-  },
-  search: {
-    nft: (keyword) => apiV1(`/search/nft/${keyword}`)
   },
   hug: {
     qr: () => apiV1(`/hug/qr`),

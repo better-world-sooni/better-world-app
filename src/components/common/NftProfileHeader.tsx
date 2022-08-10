@@ -1,6 +1,7 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   ChevronDown,
+  Edit2,
   Grid,
   Maximize,
   Send,
@@ -15,6 +16,7 @@ import {
   useGotoQR,
   useGotoScan,
   useGotoNftProfileEdit,
+  useGotoNftSetting,
 } from 'src/hooks/useGoto';
 import apis from 'src/modules/apis';
 import {handlePressContribution, openNftList} from 'src/utils/bottomPopupUtils';
@@ -32,16 +34,24 @@ import {Img} from './Img';
 import {Row} from './Row';
 import {Span} from './Span';
 import TruncatedMarkdown from './TruncatedMarkdown';
+import {expandImageViewer} from 'src/utils/imageViewerUtils';
+import TruncatedText from './TruncatedText';
 
 export default function NftProfileHeader({nftCore, nft, isCurrentNft, qrScan}) {
   const gotoNftCollectionProfile = useGotoNftCollectionProfile({
     nftCollection: nft?.nft_collection,
   });
-  const [isFollowing, followerCount, handlePressFollowing] = useFollow(
+  const {
+    isFollowing,
+    followerCount,
+    handlePressFollowing,
+    isBlocked,
+    handlePressBlock,
+  } = useFollow(
     nft?.is_following,
     nft?.follower_count,
-    apis.follow.contractAddressAndTokenId(nft?.contract_address, nft?.token_id)
-      .url,
+    nft?.contract_address,
+    nft?.token_id,
   );
   const gotoFollowList = useGotoFollowList({
     followOwnerType: FollowOwnerType.Nft,
@@ -52,19 +62,27 @@ export default function NftProfileHeader({nftCore, nft, isCurrentNft, qrScan}) {
   const gotoScan = useGotoScan({scanType: ScanType.Nft});
   const gotoChatRoom = useGotoChatRoomFromProfile();
   const gotoNftProfileEdit = useGotoNftProfileEdit();
+  const [enlargeStory, setEnlargeStory] = useState(false);
+
   return (
     <>
       <Row zIndex={100} px15 relative>
         <Div absolute bottom0 w={DEVICE_WIDTH} bgWhite h={48}></Div>
-        <Col auto mr10 relative>
+        <Col
+          auto
+          mr10
+          relative
+          onPress={() =>
+            expandImageViewer([{uri: getNftProfileImage(nft)}], 0)
+          }>
           <Img
             rounded100
             border4
             borderWhite
             bgGray200
-            h70
-            w70
-            uri={getNftProfileImage(nft || nftCore, 200, 200)}></Img>
+            h78
+            w78
+            uri={getNftProfileImage(nft, 200, 200)}></Img>
         </Col>
         <Col justifyEnd>
           {!isCurrentNft ? (
@@ -89,51 +107,69 @@ export default function NftProfileHeader({nftCore, nft, isCurrentNft, qrScan}) {
                     width={22}
                   />
                 </Col>
-                <Col
-                  auto
-                  bgBlack={!isFollowing}
-                  p8
-                  rounded100
-                  border1={isFollowing}
-                  borderGray200
-                  onPress={handlePressFollowing}>
-                  <Span white={!isFollowing} bold px5 fontSize={14}>
-                    {!nft ? '불러오는 중' : isFollowing ? '팔로잉' : '팔로우'}
-                  </Span>
-                </Col>
+                {isBlocked ? (
+                  <Col
+                    auto
+                    bgWhite
+                    p8
+                    rounded100
+                    border1
+                    borderDanger
+                    onPress={handlePressBlock}>
+                    <Span danger bold px5>
+                      차단 해제
+                    </Span>
+                  </Col>
+                ) : (
+                  <Col
+                    auto
+                    bgBlack={!isFollowing}
+                    p8
+                    rounded100
+                    border1={isFollowing}
+                    borderGray200
+                    onPress={handlePressFollowing}>
+                    <Span white={!isFollowing} bold px5 fontSize={14}>
+                      {!nft ? '불러오는 중' : isFollowing ? '팔로잉' : '팔로우'}
+                    </Span>
+                  </Col>
+                )}
               </Row>
             </Div>
           ) : (
             <Div>
-              <Row py12>
+              <Row py10 itemsCenter>
                 <Col />
                 {qrScan && (
                   <Col auto onPress={gotoScan} px8>
                     <Maximize
                       strokeWidth={2}
                       color={Colors.black}
-                      height={22}
-                      width={22}
+                      height={20}
+                      width={20}
                     />
                   </Col>
                 )}
                 {isCurrentNft && qrScan && (
-                  <Col auto onPress={gotoQr} px8>
+                  <Col auto onPress={gotoQr} px8 mr4>
                     <Grid
                       strokeWidth={2}
                       color={Colors.black}
-                      height={22}
-                      width={22}
+                      height={20}
+                      width={20}
                     />
                   </Col>
                 )}
-                <Col auto onPress={gotoNftProfileEdit} px8>
-                  <Settings
-                    strokeWidth={2}
-                    color={Colors.black}
-                    height={22}
-                    width={22}
-                  />
+                <Col
+                  auto
+                  p6
+                  rounded100
+                  border={0.5}
+                  borderGray200
+                  onPress={gotoNftProfileEdit}>
+                  <Span bold px5 fontSize={13}>
+                    프로필 편집
+                  </Span>
                 </Col>
               </Row>
             </Div>
@@ -165,9 +201,17 @@ export default function NftProfileHeader({nftCore, nft, isCurrentNft, qrScan}) {
             </Span>
           </Div>
         )}
-        {nftCore.story ? (
+        {(nft || nftCore).story ? (
           <Div mt8 bgWhite>
-            <TruncatedMarkdown text={(nft || nftCore).story} maxLength={500} />
+            {!enlargeStory ? (
+              <TruncatedText
+                text={(nft || nftCore).story}
+                maxLength={100}
+                onPressTruncated={() => setEnlargeStory(true)}
+              />
+            ) : (
+              <Span>{(nft || nftCore).story}</Span>
+            )}
           </Div>
         ) : null}
         {nft && (

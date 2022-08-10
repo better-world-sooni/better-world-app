@@ -1,4 +1,4 @@
-import {ChevronLeft} from 'react-native-feather';
+import {ChevronLeft, MoreHorizontal, Settings} from 'react-native-feather';
 import React, {useEffect, useState} from 'react';
 import {getNftName, useIsCurrentNft} from 'src/utils/nftUtils';
 import {Col} from './Col';
@@ -25,6 +25,10 @@ import ImageColors from 'react-native-image-colors';
 import ListEmptyComponent from './ListEmptyComponent';
 import FocusAwareStatusBar from 'src/components/FocusAwareStatusBar';
 import {BlurView} from '@react-native-community/blur';
+import useFollow from 'src/hooks/useFollow';
+import {MenuView} from '@react-native-menu/menu';
+import {useGotoNftSetting} from 'src/hooks/useGoto';
+import {expandImageViewer} from 'src/utils/imageViewerUtils';
 
 export default function NftProfile({
   nftCore,
@@ -48,12 +52,25 @@ export default function NftProfile({
     paginateGetWithToken(pageableNftPostFn(page + 1), 'posts');
   };
   const reloadGetWithToken = useReloadGETWithToken();
+  const gotoNftSetting = useGotoNftSetting();
   const handleRefresh = () => {
     reloadGetWithToken(nftProfileApiObject);
     reloadGetWithToken(pageableNftPostFn());
   };
   const nft = profileData?.nft;
   const [bgImgColor, setBgImgColor] = useState(Colors.gray[400]);
+  const {
+    isFollowing,
+    followerCount,
+    handlePressFollowing,
+    isBlocked,
+    handlePressBlock,
+  } = useFollow(
+    nft?.is_following,
+    nft?.follower_count,
+    nft?.contract_address,
+    nft?.token_id,
+  );
   const translationY = useSharedValue(0);
   const scrollHandler = useAnimatedScrollHandler(event => {
     translationY.value = event.contentOffset.y;
@@ -80,6 +97,7 @@ export default function NftProfile({
       top: 0,
       width: DEVICE_WIDTH,
       height: headerHeight + 30,
+      backgroundColor: Colors.gray[400],
       transform: [
         {
           scale: Math.max(-(translationY.value - headerHeight) / 100, 1),
@@ -105,7 +123,22 @@ export default function NftProfile({
       ],
     };
   });
-  const renderItem = ({item}) => <Post post={item} displayLabel />;
+  const menuOptions = [
+    {
+      id: 'block',
+      title: isBlocked ? '차단 해제' : '차단',
+      image: Platform.select({
+        ios: 'flag',
+        android: 'stat_sys_warning',
+      }),
+    },
+  ];
+  const handlePressMenu = ({nativeEvent: {event}}) => {
+    handlePressBlock();
+  };
+  const renderItem = ({item}) => (
+    <Post post={item} displayLabel isProfile={true} />
+  );
 
   useEffect(() => {
     if (nft?.background_image_uri) {
@@ -116,6 +149,8 @@ export default function NftProfile({
       }).then(colors => {
         setBgImgColor(colors['average']);
       });
+    } else {
+      setBgImgColor(Colors.gray[400]);
     }
   }, [nft, bgImgColor, setBgImgColor]);
 
@@ -123,23 +158,18 @@ export default function NftProfile({
     <>
       {Platform.OS === 'android' && (
         <FocusAwareStatusBar
-          barStyle="dark-content"
+          barStyle="light-content"
           backgroundColor={bgImgColor}
         />
       )}
-      <Div h={headerHeight}>
-        {nft?.background_image_uri ? (
-          <Animated.Image
-            style={backgroundImageStyles}
-            source={{uri: nft.background_image_uri}}></Animated.Image>
-        ) : (
-          <Div
-            absolute
-            top0
-            h={headerHeight + 30}
-            bgGray400
-            w={DEVICE_WIDTH}></Div>
-        )}
+      <Div
+        h={headerHeight}
+        onPress={() => {
+          if (nft) expandImageViewer([{uri: nft.background_image_uri}], 0);
+        }}>
+        <Animated.Image
+          style={backgroundImageStyles}
+          source={{uri: nft?.background_image_uri}}></Animated.Image>
         <Animated.View style={headerStyles}>
           {Platform.OS === 'ios' ? (
             <BlurView
@@ -176,7 +206,14 @@ export default function NftProfile({
             </Animated.View>
           </Row>
         </Animated.View>
-        <Row itemsCenter py5 h40 zIndex={100} absolute top={notchHeight + 5}>
+        <Row
+          itemsCenter
+          py5
+          h40
+          zIndex={100}
+          absolute
+          top={notchHeight + 5}
+          w={DEVICE_WIDTH}>
           {enableBack && (
             <Col auto ml15 bgBlack p5 rounded100 onPress={goBack}>
               <ChevronLeft
@@ -187,7 +224,28 @@ export default function NftProfile({
               />
             </Col>
           )}
-          <Col ml10></Col>
+          <Col></Col>
+          {isCurrentNft ? (
+            <Col auto mr15 bgBlack p5 rounded100 onPress={gotoNftSetting}>
+              <MoreHorizontal
+                width={20}
+                height={20}
+                color={Colors.white}
+                strokeWidth={2.4}
+              />
+            </Col>
+          ) : (
+            <Col auto mr15 bgBlack p5 rounded100>
+              <MenuView onPressAction={handlePressMenu} actions={menuOptions}>
+                <MoreHorizontal
+                  width={20}
+                  height={20}
+                  color={Colors.white}
+                  strokeWidth={2.4}
+                />
+              </MenuView>
+            </Col>
+          )}
         </Row>
       </Div>
       <Animated.FlatList
@@ -198,7 +256,7 @@ export default function NftProfile({
         }}
         showsVerticalScrollIndicator={false}
         onScroll={scrollHandler}
-        data={nftPostListRes?.posts || []}
+        data={nftPostListRes && !isBlocked ? nftPostListRes?.posts : []}
         onEndReached={handleEndReached}
         keyExtractor={keyExtractor}
         initialNumToRender={5}

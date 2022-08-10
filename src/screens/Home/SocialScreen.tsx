@@ -51,19 +51,15 @@ export default function SocialScreen() {
     {
       id: SocialFeedFilter.All,
       title: `커뮤니티 피드`,
-      titleColor: '#46F289',
       image: Platform.select({
         ios: 'globe.asia.australia',
-        android: 'ic_menu_mapmode',
       }),
     },
     {
       id: SocialFeedFilter.Following,
       title: `팔로잉 피드`,
-      titleColor: '#46F289',
       image: Platform.select({
         ios: 'star',
-        android: 'star_big_on',
       }),
     },
   ];
@@ -108,8 +104,8 @@ export default function SocialScreen() {
   };
   useFocusReloadWithTimeOut({
     reloadUriObject: apis.feed.social(feedRes?.filter),
-    cacheTimeoutInSeconds: 300,
-    onStart: scrollToTop,
+    cacheTimeoutInSeconds: 480,
+    // onStart: scrollToTop,
   });
   const unreadNotificationCount = useSelector(
     (root: RootState) => root.app.unreadNotificationCount,
@@ -155,7 +151,7 @@ export default function SocialScreen() {
               <MenuView onPressAction={handlePressMenu} actions={menuOptions}>
                 <Row itemsCenter>
                   <Col auto>
-                    <Span fontSize={19} bold mx4>
+                    <Span fontSize={17} bold mx4>
                       {menuOptions.filter(
                         menuOption => menuOption.id == feedRes?.filter,
                       )[0]?.title || '피드를 다시 로드해주세요'}

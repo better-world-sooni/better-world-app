@@ -33,12 +33,12 @@ import NumberPlease from 'react-native-number-please';
 const airdropTypes = [
   {
     id: 'airdrop_only',
-    title: '에어드랍 전용',
+    title: '재응모 불가능',
   },
-  // {
-  //   id: '',
-  //   title: '홀더 전용',
-  // },
+  {
+    id: '',
+    title: '재응모 가능',
+  },
 ];
 
 const deliverTypes = [
@@ -46,10 +46,10 @@ const deliverTypes = [
     id: '',
     title: '미배송',
   },
-  // {
-  //   id: 'deliverable',
-  //   title: '배송',
-  // },
+  {
+    id: 'deliverable',
+    title: '배송',
+  },
 ];
 
 export default function NewMerchandiseScreen() {
@@ -174,28 +174,6 @@ export default function NewMerchandiseScreen() {
                 style={{fontWeight: 'bold'}}
                 onChangeText={handleNameChange}></TextInput>
             </Div>
-            <Row py8 itemsCenter>
-              <Col auto mr8 medium>
-                <Span gray700>
-                  좋아요 <Span bold>0</Span>개
-                </Span>
-              </Col>
-            </Row>
-            <Row py12 itemsCenter borderBottom={0.5} borderGray200>
-              <Col auto mr4>
-                <TextInput
-                  value={price}
-                  keyboardType="numeric"
-                  placeholder={'1000'}
-                  fontSize={24}
-                  w={'100%'}
-                  style={{fontWeight: 'bold'}}
-                  onChangeText={handlePriceChange}></TextInput>
-              </Col>
-              <Col auto>
-                <Span>원</Span>
-              </Col>
-            </Row>
             <Div mt16 border={0.5} borderGray200 rounded10 overflowHidden>
               <Row py12 px16 itemsCenter>
                 <Col>
@@ -204,7 +182,7 @@ export default function NewMerchandiseScreen() {
                       {kmoment(expiresAt).format('YY.M.D a h:mm')}
                     </Span>
                   ) : (
-                    <Span>상품 마감 시간 추가</Span>
+                    <Span>이벤트 마감 시간 추가</Span>
                   )}
                 </Col>
                 <Col
@@ -245,7 +223,7 @@ export default function NewMerchandiseScreen() {
                   onPressAction={handlePressAirdropMenu}
                   actions={airdropTypes}>
                   <Span fontSize={14} bold color={Colors.black}>
-                    {isAirdropOnly ? '에어드랍 전용' : '홀더 전용'}
+                    {isAirdropOnly ? '에어드랍 전용' : '재응모 가능'}
                   </Span>
                 </MenuView>
               </Col>
@@ -264,22 +242,6 @@ export default function NewMerchandiseScreen() {
                     {isDeliverable ? '배송' : '미배송'}
                   </Span>
                 </MenuView>
-              </Col>
-              <Col>
-                <NumberPlease
-                  digits={maxPerAmountPerOrderPickerOptions}
-                  itemStyle={{
-                    height: 35,
-                    width: 60,
-                    fontSize: 16,
-                  }}
-                  values={[
-                    {id: 'maxPerAmountPerOrder', value: maxPerAmountPerOrder},
-                  ]}
-                  onChange={values => {
-                    setMaxAmountPerOrder(values[0].value);
-                  }}
-                />
               </Col>
               <Col />
             </Row>
@@ -319,6 +281,17 @@ export default function NewMerchandiseScreen() {
   );
 }
 
+const addOptions = [
+  {
+    id: 'select',
+    title: '선택 옵션 추가',
+  },
+  {
+    id: 'input',
+    title: '유저 입력 추가',
+  },
+];
+
 function OrderCategories({
   orderCategories,
   addOrderCategory,
@@ -335,10 +308,15 @@ function OrderCategories({
     if (index == activeSection) setActiveSection(null);
     else setActiveSection(index);
   };
-  const handlePressAddOrderCategory = () => {
+  const handlePressAddOrderCategory = event => {
     if (categoryToAdd) {
-      addOrderCategory(categoryToAdd);
-      setCategoryToAdd('');
+      if (event == 'select') {
+        addOrderCategory(categoryToAdd, false);
+        setCategoryToAdd('');
+      } else {
+        addOrderCategory(categoryToAdd, true);
+        setCategoryToAdd('');
+      }
     }
   };
   return (
@@ -357,7 +335,7 @@ function OrderCategories({
             itemsCenter
             onPress={() => handlePressSection(index)}>
             <Col>
-              <Span bold fontSize={16}>
+              <Span bold fontSize={16} gray400={content.isInput}>
                 {content.name}
               </Span>
             </Col>
@@ -366,14 +344,16 @@ function OrderCategories({
             </Col>
           </Row>
         )}
-        renderContent={(content, index) => (
-          <OrderOptions
-            orderCategory={content}
-            categoryIndex={index}
-            addOrderOption={addOrderOption}
-            removeOrderOption={removeOrderOption}
-          />
-        )}
+        renderContent={(content, index) =>
+          !content.isInput && (
+            <OrderOptions
+              orderCategory={content}
+              categoryIndex={index}
+              addOrderOption={addOrderOption}
+              removeOrderOption={removeOrderOption}
+            />
+          )
+        }
         onChange={() => {}}
       />
       <Row py12 px16 itemsCenter>
@@ -385,12 +365,16 @@ function OrderCategories({
             w={'100%'}
             onChangeText={handleChangeCategoryToAdd}></TextInput>
         </Col>
-        <Col auto onPress={handlePressAddOrderCategory}>
-          <Plus
-            height={22}
-            color={!!categoryToAdd ? Colors.black : Colors.gray[400]}
-            strokeWidth={2}
-          />
+        <Col auto>
+          <MenuView
+            onPressAction={handlePressAddOrderCategory}
+            actions={addOptions}>
+            <Plus
+              height={22}
+              color={!!categoryToAdd ? Colors.black : Colors.gray[400]}
+              strokeWidth={2}
+            />
+          </MenuView>
         </Col>
       </Row>
     </Div>

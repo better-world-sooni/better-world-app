@@ -8,6 +8,7 @@ import {
   ChevronLeft,
   ChevronUp,
   Feather,
+  Film,
   Image,
   Upload,
   Zap,
@@ -43,6 +44,7 @@ import CollectionEvent from 'src/components/common/CollectionEvent';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import RepostedTransaction from 'src/components/common/RepostedTransaction';
 import {ICONS} from 'src/modules/icons';
+import Video from 'react-native-video';
 
 const postTypes = [
   {
@@ -105,8 +107,11 @@ const NewPostScreen = ({
     content,
     handleContentChange,
     images,
+    video,
     handleAddImages,
+    handleAddVideo,
     handleRemoveImage,
+    handleRemoveVideo,
     uploadPost,
   } = useUploadPost({
     initialPostType: postType,
@@ -186,14 +191,10 @@ const NewPostScreen = ({
               <Col itemsEnd onPress={handlePressUpload}>
                 {loading ? (
                   <ActivityIndicator />
-                ) : currentPostType == '' ? (
-                  <Upload
-                    width={22}
-                    height={22}
-                    strokeWidth={2}
-                    color={Colors.black}></Upload>
                 ) : (
-                  <Img source={ICONS.lightBulb} h22 w22 />
+                  <Span bold info fontSize={16}>
+                    {'게시'}
+                  </Span>
                 )}
               </Col>
             </Row>
@@ -271,6 +272,19 @@ const NewPostScreen = ({
                   />
                 </Div>
               )}
+              {video && (
+                <Div mt8 rounded10 borderGray200 border={0.5}>
+                  <Video
+                    source={video}
+                    style={{
+                      width: sliderWidth,
+                      height: (sliderWidth * video.height) / video.width,
+                    }}
+                    muted
+                    repeat
+                  />
+                </Div>
+              )}
               {collectionEvent && (
                 <Div mt8>
                   <CollectionEvent
@@ -283,9 +297,31 @@ const NewPostScreen = ({
             </Col>
           </Row>
         </Animated.ScrollView>
-        <Row px15 py8>
+        <Row px15 py8 borderTop={0.5} borderGray200>
           <Col />
           <Col auto>
+            <Row
+              itemsCenter
+              onPress={() => (video ? handleRemoveVideo() : handleAddVideo())}
+              border={0.5}
+              rounded10
+              borderGray200
+              p9>
+              <Col auto mr10>
+                <Film
+                  strokeWidth={2}
+                  color={addImages ? Colors.gray[400] : Colors.black}
+                  height={22}
+                  width={22}></Film>
+              </Col>
+              <Col auto>
+                <Span color={addImages ? Colors.gray[400] : Colors.black} bold>
+                  비디오 {video ? '제거' : '추가'}
+                </Span>
+              </Col>
+            </Row>
+          </Col>
+          <Col auto ml10>
             <Row
               itemsCenter
               onPress={() => setAddImages(prev => !prev)}
@@ -296,37 +332,16 @@ const NewPostScreen = ({
               <Col auto mr10>
                 <Image
                   strokeWidth={2}
-                  color={!addImages ? Colors.info.DEFAULT : Colors.black}
+                  color={video ? Colors.gray[400] : Colors.black}
                   height={22}
                   width={22}></Image>
               </Col>
               <Col auto>
-                <Span
-                  color={!addImages ? Colors.info.DEFAULT : Colors.black}
-                  bold>
-                  미디어 {addImages ? '제거' : '추가'}
+                <Span color={video ? Colors.gray[400] : Colors.black} bold>
+                  이미지 {addImages ? '제거' : '추가'}
                 </Span>
               </Col>
             </Row>
-          </Col>
-          <Col auto ml10>
-            <MenuView onPressAction={handlePressMenu} actions={postTypes}>
-              <Row itemsCenter border={0.5} rounded10 borderGray200 p8>
-                <Col auto mr5>
-                  <ChevronUp
-                    color={Colors.black}
-                    height={24}
-                    width={24}
-                    strokeWidth={2}
-                  />
-                </Col>
-                <Col auto>
-                  <Span bold>
-                    {postTypes.filter(pt => pt.id == currentPostType)[0].title}
-                  </Span>
-                </Col>
-              </Row>
-            </MenuView>
           </Col>
         </Row>
       </KeyboardAvoidingView>

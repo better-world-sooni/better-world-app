@@ -54,8 +54,8 @@ export default function StoreScreen() {
       <Div bgWhite h={50} justifyCenter borderBottom={0.5} borderGray200>
         <Row itemsCenter py5 h40 px15>
           <Col auto>
-            <Span bold fontSize={19}>
-              {'굿즈 드랍'}
+            <Span bold fontSize={17}>
+              {'이벤트'}
             </Span>
           </Col>
           <Col />
@@ -78,8 +78,7 @@ export default function StoreScreen() {
         contentContainerStyle={{paddingRight: paddingX, paddingLeft: paddingX}}
         numColumns={2}
         ListHeaderComponent={
-          <ImageBackground
-            source={{uri: nftCollection?.background_image_uri}}
+          <Div
             style={{
               shadowOffset: {
                 width: 0,
@@ -88,24 +87,32 @@ export default function StoreScreen() {
               shadowOpacity: 0.25,
               shadowRadius: 4,
               elevation: 4,
-              backgroundColor: Colors.primary.DEFAULT,
-            }}
-            h80
-            wFull
-            my12
-            rounded10
-            overflowHidden>
-            <Div wFull h80 bgBlack opacity={0.75}></Div>
-            <Div absolute top0 wFull h80 px16 py8 justifyCenter>
-              <Span white bold>
-                정식 베터월드 드랍 샵을 기대해주세요!
-              </Span>
-            </Div>
-          </ImageBackground>
+            }}>
+            <ImageBackground
+              source={{uri: nftCollection?.background_image_uri}}
+              style={{
+                backgroundColor: Colors.primary.DEFAULT,
+              }}
+              h80
+              wFull
+              my12
+              rounded10
+              overflowHidden>
+              <Div wFull h80 bgBlack opacity={0.75}></Div>
+              <Div absolute top0 wFull h80 px16 py8 justifyCenter>
+                <Span white gray400 fontSize={12}>
+                  오직 홀더를 위한 이벤트에 응모하여 굿즈와 혜택을 수령하세요
+                </Span>
+                <Span white bold mt4>
+                  응모와 수령이 쉬운 BetterWorld Events!
+                </Span>
+              </Div>
+            </ImageBackground>
+          </Div>
         }
         ListEmptyComponent={
           !isLoading && (
-            <ListEmptyComponent h={DEVICE_HEIGHT - headerHeight * 2} />
+            <ListEmptyComponent h={DEVICE_HEIGHT - headerHeight * 2 - 100} />
           )
         }
         refreshControl={

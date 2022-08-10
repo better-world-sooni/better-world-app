@@ -1,5 +1,5 @@
 import {ChevronLeft, Settings} from 'react-native-feather';
-import React, {useRef} from 'react';
+import React, {useRef, useState, useEffect} from 'react';
 import {Col} from './Col';
 import {Div} from './Div';
 import {Img} from './Img';
@@ -27,6 +27,7 @@ import {shallowEqual, useSelector} from 'react-redux';
 import {RootState} from 'src/redux/rootReducer';
 import TruncatedMarkdown from './TruncatedMarkdown';
 import Post from './Post';
+import {BlurView} from '@react-native-community/blur';
 import {getNftName, getNftProfileImage} from 'src/utils/nftUtils';
 import {
   useApiSelector,
@@ -37,6 +38,9 @@ import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {ICONS} from 'src/modules/icons';
 import ListEmptyComponent from './ListEmptyComponent';
 import {handlePressContribution} from 'src/utils/bottomPopupUtils';
+import ImageColors from 'react-native-image-colors';
+import FocusAwareStatusBar from 'src/components/FocusAwareStatusBar';
+import {expandImageViewer} from 'src/utils/imageViewerUtils';
 
 export default function NftCollectionProfile({
   nftCollectionCore,
@@ -71,10 +75,17 @@ export default function NftCollectionProfile({
     (root: RootState) => root.app.session,
     shallowEqual,
   );
-  const [isFollowing, followerCount, handlePressFollowing] = useFollow(
+  const [bgImgColor, setBgImgColor] = useState(Colors.gray[400]);
+  const {
+    isFollowing,
+    followerCount,
+    handlePressFollowing,
+    isBlocked,
+    handlePressBlock,
+  } = useFollow(
     nftCollection?.is_following,
     nftCollection?.follower_count,
-    apis.follow.contractAddress(nftCollectionCore.contract_address).url,
+    nftCollectionCore.contract_address,
   );
   const {goBack} = useNavigation();
   const gotoFollowList = useGotoFollowList({
@@ -132,28 +143,69 @@ export default function NftCollectionProfile({
     };
   });
 
+  useEffect(() => {
+    if (nftCollection?.background_image_uri) {
+      ImageColors.getColors(nftCollection.background_image_uri, {
+        fallback: '#228B22',
+        cache: true,
+        key: nftCollection.background_image_uri,
+      }).then(colors => {
+        setBgImgColor(colors['average']);
+      });
+    } else {
+      setBgImgColor(Colors.gray[400]);
+    }
+  }, [nftCollection, bgImgColor, setBgImgColor]);
+
   return (
     <>
-      <Div h={headerHeight}>
+      {Platform.OS === 'android' && (
+        <FocusAwareStatusBar
+          barStyle="light-content"
+          backgroundColor={bgImgColor}
+        />
+      )}
+      <Div
+        h={headerHeight}
+        onPress={() => {
+          if (nftCollection)
+            expandImageViewer([{uri: nftCollection.background_image_uri}], 0);
+        }}>
         {nftCollection?.background_image_uri ? (
           <Animated.Image
             style={backgroundImageStyles}
             source={{uri: nftCollection.background_image_uri}}></Animated.Image>
         ) : (
-          <Div absolute top0 h={headerHeight} bgGray400 w={DEVICE_WIDTH}></Div>
+          <Div
+            absolute
+            top0
+            h={headerHeight + 30}
+            bgGray400
+            w={DEVICE_WIDTH}></Div>
         )}
         <Animated.View style={headerStyles}>
-          <CustomBlurView
-            blurType="light"
-            blurAmount={20}
-            blurRadius={10}
-            overlayColor=""
-            style={{
-              width: DEVICE_WIDTH,
-              height: '100%',
-              position: 'absolute',
-            }}
-            reducedTransparencyFallbackColor={Colors.white}></CustomBlurView>
+          {Platform.OS === 'ios' ? (
+            <BlurView
+              blurType="light"
+              blurAmount={20}
+              blurRadius={10}
+              overlayColor=""
+              style={{
+                width: DEVICE_WIDTH,
+                height: '100%',
+                position: 'absolute',
+              }}
+              reducedTransparencyFallbackColor={Colors.white}
+            />
+          ) : (
+            <Div
+              style={{
+                width: DEVICE_WIDTH,
+                height: '100%',
+                position: 'absolute',
+              }}
+              backgroundColor={bgImgColor}></Div>
+          )}
           <Row itemsCenter justifyCenter width={DEVICE_WIDTH} absolute>
             <Animated.View style={titleStyles}>
               <Span
@@ -175,13 +227,13 @@ export default function NftCollectionProfile({
           zIndex={100}
           absolute
           top={notchHeight + 5}>
-          <Col auto bg={Colors.black} p8 rounded100 mr12 onPress={goBack}>
+          <Col auto bg={Colors.black} p5 rounded100 mr12 onPress={goBack}>
             <Div>
               <ChevronLeft
-                strokeWidth={2.4}
+                width={20}
+                height={20}
                 color={Colors.white}
-                height={15}
-                width={15}
+                strokeWidth={2.4}
               />
             </Div>
           </Col>
@@ -204,7 +256,23 @@ export default function NftCollectionProfile({
           <>
             <Row zIndex={100} px15 relative>
               <Div absolute bottom0 w={DEVICE_WIDTH} bgWhite h={48}></Div>
-              <Col auto mr10 relative>
+              <Col
+                auto
+                mr10
+                relative
+                onPress={() => {
+                  if (nftCollection || nftCollectionCore)
+                    expandImageViewer(
+                      [
+                        {
+                          uri: getNftProfileImage(
+                            nftCollection || nftCollectionCore,
+                          ),
+                        },
+                      ],
+                      0,
+                    );
+                }}>
                 <Img
                   rounded100
                   border4
@@ -225,22 +293,37 @@ export default function NftCollectionProfile({
                   <Div>
                     <Row py8>
                       <Col />
-                      <Col
-                        auto
-                        bgBlack={!isFollowing}
-                        p8
-                        rounded100
-                        border1={isFollowing}
-                        borderGray200
-                        onPress={handlePressFollowing}>
-                        <Span white={!isFollowing} bold px5 fontSize={14}>
-                          {!nftCollection
-                            ? '불러오는 중'
-                            : isFollowing
-                            ? '팔로잉'
-                            : '팔로우'}
-                        </Span>
-                      </Col>
+                      {isBlocked ? (
+                        <Col
+                          auto
+                          bgWhite
+                          p8
+                          rounded100
+                          border1
+                          borderDanger
+                          onPress={handlePressBlock}>
+                          <Span danger bold px5>
+                            차단 해제
+                          </Span>
+                        </Col>
+                      ) : (
+                        <Col
+                          auto
+                          bgBlack={!isFollowing}
+                          p8
+                          rounded100
+                          border1={isFollowing}
+                          borderGray200
+                          onPress={handlePressFollowing}>
+                          <Span white={!isFollowing} bold px5 fontSize={14}>
+                            {!nftCollection
+                              ? '불러오는 중'
+                              : isFollowing
+                              ? '팔로잉'
+                              : '팔로우'}
+                          </Span>
+                        </Col>
+                      )}
                     </Row>
                   </Div>
                 ) : (
@@ -248,15 +331,16 @@ export default function NftCollectionProfile({
                     <Div>
                       <Row py10>
                         <Col />
-                        <Col auto mx8 onPress={gotoNftCollectionProfileEdit}>
-                          <Div>
-                            <Settings
-                              strokeWidth={2}
-                              color={Colors.admin.DEFAULT}
-                              height={22}
-                              width={22}
-                            />
-                          </Div>
+                        <Col
+                          auto
+                          p6
+                          rounded100
+                          border={0.5}
+                          borderGray200
+                          onPress={gotoNftCollectionProfileEdit}>
+                          <Span bold px5 fontSize={13}>
+                            프로필 편집
+                          </Span>
                         </Col>
                       </Row>
                     </Div>
@@ -327,7 +411,9 @@ export default function NftCollectionProfile({
             </Div>
           </>
         }
-        renderItem={({item}) => <Post post={item} displayLabel />}
+        renderItem={({item}) => (
+          <Post post={item} displayLabel isProfile={true} />
+        )}
         ListFooterComponent={
           <>
             {(nftCollectionPostListPaginating ||
@@ -337,8 +423,10 @@ export default function NftCollectionProfile({
               </Div>
             )}
             {isNotPaginatable && (
-              <Div itemsCenter py15 bold>
-                <Span textCenter>게시물을 모두 확인했습니다.</Span>
+              <Div itemsCenter py15>
+                <Span textCenter bold>
+                  게시물을 모두 확인했습니다.
+                </Span>
               </Div>
             )}
             <Div h={HAS_NOTCH ? 27 : 12} />

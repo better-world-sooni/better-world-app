@@ -28,6 +28,7 @@ export function NftIdentity({nft, setCloseDisable, onSuccess}) {
   );
   const changeAccount = useChangeAccount();
   const handlePressIdentity = async () => {
+    if (isCurrentNft) return;
     setStateType(StateType.Loading);
     if (setCloseDisable) setCloseDisable(true);
     await changeAccount(
@@ -69,16 +70,6 @@ export function NftIdentity({nft, setCloseDisable, onSuccess}) {
           </Div>
         )}
       </Col>
-      {isCurrentNft && (
-        <Col auto>
-          <RefreshCw
-            strokeWidth={2}
-            height={18}
-            width={18}
-            color={Colors.black}
-          />
-        </Col>
-      )}
       <Col></Col>
       {stateType !== StateType.None && (
         <Col auto>

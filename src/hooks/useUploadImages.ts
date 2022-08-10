@@ -1,15 +1,16 @@
-import React, {useEffect, useState} from 'react';
+import{ useState} from 'react';
 import { launchImageLibrary } from 'react-native-image-picker';
 import useFileUpload, { FileUploadReturnType } from './useFileUpload';
 
 export default function useUploadImages({attachedRecord = "post", selectionLimit = 0, fileLimit=4}){
     const [images, setImages] = useState([])
+    const [video, setVideo] = useState(null)
     const [error, setError] = useState('')
     const {uploadFile} = useFileUpload({attachedRecord})
     const handleAddImages = async () => {
         try {
           const {assets} = await launchImageLibrary({
-            mediaType: 'mixed',
+            mediaType: 'photo',
             selectionLimit,
             maxHeight: 1600,
             maxWidth: 1600,
@@ -33,6 +34,21 @@ export default function useUploadImages({attachedRecord = "post", selectionLimit
           console.log(e);
         }
     };
+    const handleAddVideo = async () => {
+      try {
+        const {assets} = await launchImageLibrary({
+          mediaType: 'video',
+          selectionLimit: 1,
+          maxHeight: 1600,
+          maxWidth: 1600,
+          includeBase64: true,
+        });
+          setVideo(createFileObject(assets[0]))
+          setError("");
+      } catch (e) {
+        console.log(e);
+      }
+  };
     const createFileObject = (file) => {
       const fileObject = {
         ...file,
@@ -46,6 +62,10 @@ export default function useUploadImages({attachedRecord = "post", selectionLimit
 		    setError("");
         setImages(reducedArray)
     }
+    const handleRemoveVideo = () => {
+      setError("");
+      setVideo(null)
+  }
     const uploadAllSelectedFiles = async () => {
       try {
         const signedIdArray = await Promise.all(images.map((file, index) => uploadFileAtIndex(index)));
@@ -54,6 +74,17 @@ export default function useUploadImages({attachedRecord = "post", selectionLimit
         console.log(e)
         setError("이미지 업로드중 문제가 발생하였습니다.");
         setImages(setAllSelectedFileNotLoading);
+        return [];
+      }
+    };
+    const uploadVideo = async () => {
+      try {
+        const signedId = await updateVideoUploadStatus();
+        return signedId;
+      } catch (e){
+        console.log(e)
+        setError("이미지 업로드중 문제가 발생하였습니다.");
+        setVideo({...video, loading: false});
         return [];
       }
     };
@@ -70,6 +101,12 @@ export default function useUploadImages({attachedRecord = "post", selectionLimit
       setImages((prevSelectedFiles) => setSelectedFileLoadingAtIndex(prevSelectedFiles, index, false));
       return res;
     };
+    const updateVideoUploadStatus = async () => {
+      setVideo({...video, loading: true});
+      const res = await upload(video);
+      setVideo({...video, loading: false});
+      return res;
+    };
     const setSelectedFileLoadingAtIndex = (prevSelectedFiles, index, bool) => {
       const newSelectedFiles = [...prevSelectedFiles];
       newSelectedFiles[index].loading = bool;
@@ -79,5 +116,5 @@ export default function useUploadImages({attachedRecord = "post", selectionLimit
         const blob_signed_id = await uploadFile(file, FileUploadReturnType.BlobSignedId)
         return blob_signed_id
     }
-    return { images, error, setError, handleAddImages, handleRemoveImage, uploadAllSelectedFiles }
+    return { images, video, error, setError, handleAddImages, handleAddVideo, handleRemoveImage, handleRemoveVideo, uploadAllSelectedFiles, uploadVideo }
 }

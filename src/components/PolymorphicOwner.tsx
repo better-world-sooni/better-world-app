@@ -27,12 +27,12 @@ export default function PolymorphicOwner({
   showFollowing = true,
   showPrivilege = false,
 }) {
-  const [following, _followerCount, handlePressFollowing] = useFollow(
-    isFollowing,
-    0,
-    apis.follow.contractAddressAndTokenId(nft.contract_address, nft.token_id)
-      .url,
-  );
+  const {
+    handlePressFollowing,
+    isFollowing: following,
+    isBlocked,
+    handlePressBlock,
+  } = useFollow(isFollowing, 0, nft.contract_address, nft.token_id);
   const isCurrentNft = useIsCurrentNft(nft);
   const isAdmin = useIsAdmin();
   const {privilege, handlePressPrivilege} = usePrivilege(nft);
@@ -86,20 +86,37 @@ export default function PolymorphicOwner({
           </Span>
         </Col>
       )}
-      {showFollowing && !isCurrentNft && nft.token_id && (
-        <Col
-          auto
-          bgBlack={!following}
-          p8
-          rounded100
-          border={following && 0.5}
-          borderGray200
-          onPress={handlePressFollowing}>
-          <Span white={!following} bold px5 fontSize={14}>
-            {!nft ? '불러오는 중' : following ? '팔로잉' : '팔로우'}
-          </Span>
-        </Col>
-      )}
+      {showFollowing &&
+        !isCurrentNft &&
+        nft.token_id &&
+        (isBlocked ? (
+          <Col
+            auto
+            bgWhite
+            p8
+            rounded100
+            border1
+            borderDanger
+            onPress={handlePressBlock}>
+            <Span danger bold px5>
+              차단 해제
+            </Span>
+          </Col>
+        ) : (
+          <Col
+            auto
+            bgBlack={!following}
+            py8
+            px10
+            rounded100
+            border={following && 0.5}
+            borderGray200
+            onPress={handlePressFollowing}>
+            <Span white={!following} bold px5 fontSize={14}>
+              {!nft ? '불러오는 중' : following ? '팔로잉' : '팔로우'}
+            </Span>
+          </Col>
+        ))}
     </Row>
   );
 }

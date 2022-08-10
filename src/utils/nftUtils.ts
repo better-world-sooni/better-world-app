@@ -1,6 +1,6 @@
 import { shallowEqual, useSelector } from "react-redux"
 import { RootState } from "src/redux/rootReducer"
-import { resizeImageUri } from "./uriUtils"
+import { GATEWAY_PREFIX, resizeImageUri } from "./uriUtils"
 
 export function getNftProfileImage(nft, width=null, height= null){
     if(!nft) return null
@@ -10,10 +10,12 @@ export function getNftProfileImage(nft, width=null, height= null){
         }
         return nft.image_uri
     }
+    if(nft?.nft_metadatum?.image_uri.startsWith("ipfs:/")) return nft?.nft_metadatum?.image_uri.replace("ipfs:/", GATEWAY_PREFIX)
     return nft?.nft_metadatum?.image_uri
 }
 
 export function getNftCollectionProfileImage(nftCollection, width=null, height= null){
+    if(!nftCollection) return null
     if(width && height){
         return resizeImageUri(nftCollection?.image_uri, width, height)
     }

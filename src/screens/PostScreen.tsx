@@ -12,7 +12,7 @@ import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 export default function PostScreen({
   route: {
-    params: {postId, autoFocus = false},
+    params: {onlyComments = false, postId, autoFocus = false},
   },
 }) {
   const {
@@ -35,7 +35,10 @@ export default function PostScreen({
         relative
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
         {postRes?.post ? (
-          <FullPost autoFocus={autoFocus} post={postRes?.post}></FullPost>
+          <FullPost
+            autoFocus={autoFocus}
+            post={postRes?.post}
+            onlyComments={onlyComments}></FullPost>
         ) : null}
       </KeyboardAvoidingView>
       <Div h={notchHeight} bgWhite />

@@ -60,7 +60,9 @@ function FeedFlatlist(
             )}
             {isNotPaginatable && (
               <Div itemsCenter py15>
-                <Span textCenter>피드를 모두 확인했습니다.</Span>
+                <Span textCenter bold>
+                  피드를 모두 확인했습니다.
+                </Span>
               </Div>
             )}
             <Div h={50}></Div>
@@ -81,7 +83,8 @@ function FeedFlatlist(
             absolute
             w54
             h54
-            p12
+            itemsCenter
+            justifyCenter
             bottom15
             right15
             onPress={() => gotoNewPost()}
@@ -97,8 +100,8 @@ function FeedFlatlist(
             <Plus
               strokeWidth={2}
               color={Colors.white}
-              height={30}
-              width={30}></Plus>
+              height={28}
+              width={28}></Plus>
           </Div>
         ) : (
           <Div

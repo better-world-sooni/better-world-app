@@ -57,6 +57,8 @@ import {getAdjustedHeightFromDimensions} from 'src/utils/imageUtils';
 import RepostedTransaction from './RepostedTransaction';
 import {ICONS} from 'src/modules/icons';
 import useDelete from 'src/hooks/useDelete';
+import AutolinkTextWrapper from './AutolinkTextWrapper';
+import ExpandableVideo from './ExpandableVideo';
 
 export enum PostEventTypes {
   Delete = 'DELETE',
@@ -68,6 +70,7 @@ function PostContent({
   selectableFn = null,
   displayLabel = false,
   full = false,
+  isProfile = false,
 }) {
   const [liked, likesCount, handlePressLike] = useLike(
     post.is_liked,
@@ -101,10 +104,8 @@ function PostContent({
     {
       id: PostEventTypes.Report,
       title: '게시물 신고',
-      titleColor: '#46F289',
       image: Platform.select({
         ios: 'flag',
-        android: 'stat_sys_warning',
       }),
     },
     (isCurrentNft || (!post.nft.token_id && isAdmin)) && {
@@ -112,22 +113,21 @@ function PostContent({
       title: '게시물 삭제',
       image: Platform.select({
         ios: 'trash',
-        android: 'ic_menu_delete',
       }),
     },
   ].filter(option => option);
 
   const actionIconDefaultProps = {
-    width: 18,
-    height: 18,
-    color: Colors.black,
-    strokeWidth: 2,
+    width: 16,
+    height: 16,
+    color: Colors.gray[600],
+    strokeWidth: 1.6,
   };
   const heartProps = liked
     ? {
         fill: Colors.danger.DEFAULT,
-        width: 18,
-        height: 18,
+        width: 16,
+        height: 16,
         color: Colors.danger.DEFAULT,
         strokeWidth: 2,
       }
@@ -135,8 +135,8 @@ function PostContent({
   const forVoteProps = hasVotedFor
     ? {
         fill: Colors.info.DEFAULT,
-        width: 18,
-        height: 18,
+        width: 16,
+        height: 16,
         color: Colors.info.DEFAULT,
         strokeWidth: 2,
       }
@@ -144,8 +144,8 @@ function PostContent({
   const againstVoteProps = hasVotedAgainst
     ? {
         fill: Colors.danger.DEFAULT,
-        width: 18,
-        height: 18,
+        width: 16,
+        height: 16,
         color: Colors.danger.DEFAULT,
         strokeWidth: 2,
       }
@@ -193,37 +193,33 @@ function PostContent({
     postId: post.id,
   });
 
-  const itemWidth = DEVICE_WIDTH - 30 - 62;
+  const itemWidth = DEVICE_WIDTH - 30 - (full ? 0 : 62);
 
   if (deleted) return null;
 
   return (
     <>
       <Div py5 borderBottom={0.5} borderGray200 bgWhite>
-        <Row px15 pt5>
-          <Col auto mr8>
-            {displayLabel && (
-              <Div itemsEnd mb5>
-                {post.type == PostType.Proposal ? (
-                  <Img source={ICONS.lightBulbGray} h16 w16 />
-                ) : (
-                  <Heart height={16} width={16} color={Colors.gray.DEFAULT} />
-                )}
+        <Row px={full ? 18 : 15} pt5>
+          {!full && (
+            <Col auto mr10 {...(!full && {onPress: () => gotoPost()})}>
+              <Div
+                onPress={() => {
+                  !isProfile && goToProfile();
+                }}>
+                <Img
+                  w54
+                  h54
+                  border={0.5}
+                  borderGray200
+                  rounded100
+                  uri={getNftProfileImage(post.nft, 200, 200)}
+                />
               </Div>
-            )}
-            <Div onPress={goToProfile}>
-              <Img
-                w54
-                h54
-                border={0.5}
-                borderGray200
-                rounded100
-                uri={getNftProfileImage(post.nft, 200, 200)}
-              />
-            </Div>
-          </Col>
+            </Col>
+          )}
           <Col>
-            {selectableFn ? (
+            {selectableFn && (
               <Div mt1 mb4>
                 <Span
                   bold
@@ -233,36 +229,63 @@ function PostContent({
                   선택하기
                 </Span>
               </Div>
-            ) : (
-              displayLabel && (
-                <Div mt1 mb4>
-                  <Span bold gray fontSize={12}>
-                    {post.type == PostType.Proposal ? '제안' : '게시물'}
-                  </Span>
-                </Div>
-              )
             )}
-            <Row>
+            <Row itemsCenter>
+              {full && (
+                <Col auto mr10 {...(!full && {onPress: () => gotoPost()})}>
+                  <Div
+                    onPress={() => {
+                      !isProfile && goToProfile();
+                    }}>
+                    <Img
+                      w48
+                      h48
+                      border={0.5}
+                      borderGray200
+                      rounded100
+                      uri={getNftProfileImage(post.nft, 200, 200)}
+                    />
+                  </Div>
+                </Col>
+              )}
               <Col auto>
                 <Span>
-                  <Span fontSize={15} bold onPress={goToProfile}>
-                    {getNftName(post.nft)}{' '}
+                  <Span
+                    fontSize={15}
+                    bold
+                    onPress={() => {
+                      !isProfile && goToProfile();
+                    }}>
+                    {getNftName(post.nft)}
+                    {!post.nft.token_id && ' '}
                   </Span>
-                  {post.nft.token_id ? (
-                    post.nft.nft_metadatum.name != getNftName(post.nft) && (
-                      <Span fontSize={12} bold gray700 onPress={goToProfile}>
-                        {' '}
-                        {post.nft.nft_metadatum.name}
-                      </Span>
-                    )
-                  ) : (
+                  {!post.nft.token_id && (
                     <Img source={ICONS.sealCheck} h15 w15></Img>
                   )}
-                  <Span fontSize={12} gray700>
-                    {' · '}
-                    {createdAtText(post.updated_at)}
-                  </Span>
+                  {!full && (
+                    <Span fontSize={12} gray700>
+                      {' · '}
+                      {createdAtText(post.updated_at)}
+                    </Span>
+                  )}
                 </Span>
+                {full && (
+                  <Span>
+                    <Span
+                      fontSize={12}
+                      bold
+                      gray600
+                      onPress={() => {
+                        !isProfile && goToProfile();
+                      }}>
+                      {post.nft.nft_metadatum.name}
+                    </Span>
+                    <Span fontSize={12} gray700>
+                      {' · '}
+                      {createdAtText(post.updated_at)}
+                    </Span>
+                  </Span>
+                )}
               </Col>
               <Col />
               <Col auto>
@@ -272,7 +295,7 @@ function PostContent({
                       <ActivityIndicator />
                     ) : (
                       <MoreHorizontal
-                        color={Colors.gray[200]}
+                        color={Colors.gray[700]}
                         width={22}
                         height={18}
                       />
@@ -282,15 +305,19 @@ function PostContent({
               </Col>
             </Row>
             {post.content ? (
-              <Div>
+              <Div onPress={() => gotoPost()}>
                 {full ? (
-                  <Span fontSize={14}>{post.content}</Span>
+                  <AutolinkTextWrapper>
+                    <Span fontSize={15} py12>
+                      {post.content}
+                    </Span>
+                  </AutolinkTextWrapper>
                 ) : (
                   <TruncatedText
                     text={post.content}
                     maxLength={300}
                     spanProps={{fontSize: 14}}
-                    onPressTruncated={gotoPost}
+                    onPressTruncated={() => gotoPost()}
                   />
                 )}
               </Div>
@@ -318,6 +345,23 @@ function PostContent({
                 />
               </Div>
             ) : null}
+            {post.video_uri ? (
+              <Div mt5>
+                <ExpandableVideo
+                  url={post.video_uri}
+                  height={
+                    post.image_width && post.image_height
+                      ? getAdjustedHeightFromDimensions({
+                          width: post.image_width,
+                          height: post.image_height,
+                          frameWidth: itemWidth,
+                        })
+                      : itemWidth * 0.7
+                  }
+                  width={itemWidth}
+                />
+              </Div>
+            ) : null}
             {post.collection_event && (
               <Div mt5>
                 <CollectionEvent
@@ -330,141 +374,58 @@ function PostContent({
             <Row itemsCenter mb8 mt8>
               {!post.type ? (
                 <>
-                  {likesCount > 0 && (
-                    <Col auto mr12>
-                      <Span
-                        fontSize={12}
-                        style={{fontWeight: '600'}}
-                        onPress={gotoLikeList}>
-                        좋아요 <Span black>{likesCount}</Span>개
-                      </Span>
-                    </Col>
-                  )}
-                  {post.repost_count > 0 && (
-                    <Col auto mr12>
-                      <Span
-                        fontSize={12}
-                        style={{fontWeight: '600'}}
-                        onPress={gotoRepostList}>
-                        리포스트 <Span black>{post.repost_count}</Span>번
-                      </Span>
-                    </Col>
-                  )}
                   <Col />
-                  <Col auto mr16 onPress={handlePressLike}>
-                    {<Heart {...heartProps}></Heart>}
-                  </Col>
-                </>
-              ) : post.type == 'Proposal' ? (
-                <>
-                  <Col auto mr12>
-                    <Span
-                      fontSize={12}
-                      style={{fontWeight: '600'}}
-                      onPress={() => gotoVoteList(VoteCategory.Against)}>
-                      반대 <Span>{againstVotesCount}</Span>표 (
-                      {Math.round(
-                        (againstVotesCount + forVotesCount > 0
-                          ? againstVotesCount /
-                            (againstVotesCount + forVotesCount)
-                          : 0) * 100,
-                      )}
-                      %)
-                    </Span>
+                  <Col auto onPress={() => gotoNewPost(post)} mr4>
+                    <Repeat {...actionIconDefaultProps} />
                   </Col>
                   <Col auto mr12>
                     <Span
                       fontSize={12}
+                      color={Colors.gray[600]}
                       style={{fontWeight: '600'}}
-                      onPress={() => gotoVoteList(VoteCategory.For)}>
-                      찬성 <Span black>{forVotesCount}</Span>표 (
-                      {Math.round(
-                        (againstVotesCount + forVotesCount > 0
-                          ? forVotesCount / (againstVotesCount + forVotesCount)
-                          : 0) * 100,
-                      )}
-                      %)
+                      onPress={gotoRepostList}>
+                      퍼가기 {post.repost_count}회
                     </Span>
                   </Col>
-                  <Col />
-                  {isCurrentCollection && votingStatus == null && (
+                  {votingStatus == null && !full && (
                     <>
-                      <Col auto pr12 onPress={handlePressVoteAgainst}>
-                        {<ThumbsDown {...againstVoteProps}></ThumbsDown>}
+                      <Col auto mr4 onPress={() => gotoPost(true)}>
+                        <MessageCircle {...actionIconDefaultProps} />
                       </Col>
-                      <Col auto pr12={!full} onPress={handlePressVoteFor}>
-                        {<ThumbsUp {...forVoteProps}></ThumbsUp>}
+                      <Col auto mr12>
+                        <Span
+                          fontSize={12}
+                          style={{fontWeight: '600'}}
+                          color={Colors.gray[600]}
+                          onPress={() => gotoPost(true)}>
+                          댓글 {post.comments_count}개
+                        </Span>
                       </Col>
                     </>
                   )}
+                  {
+                    <>
+                      <Col auto mr4 onPress={handlePressLike}>
+                        {<Heart {...heartProps}></Heart>}
+                      </Col>
+                      <Col auto>
+                        <Span
+                          fontSize={12}
+                          style={{fontWeight: '600'}}
+                          color={Colors.gray[600]}
+                          onPress={gotoLikeList}>
+                          좋아요 {likesCount}개
+                        </Span>
+                      </Col>
+                    </>
+                  }
                 </>
               ) : null}
-              {!post.type && (
-                <Col auto onPress={() => gotoNewPost(post)} pr16={!full}>
-                  <Repeat {...actionIconDefaultProps} />
-                </Col>
-              )}
-              {votingStatus == VotingStatus.Approved ? (
-                <>
-                  <Col auto rounded100 p2 bgSuccess mr4>
-                    <Check
-                      strokeWidth={2}
-                      height={14}
-                      width={14}
-                      color={Colors.white}
-                    />
-                  </Col>
-                  <Col auto>
-                    <Span bold fontSize={12}>
-                      통과됨
-                    </Span>
-                  </Col>
-                </>
-              ) : votingStatus == VotingStatus.Rejected ? (
-                <>
-                  <Col auto>
-                    <X
-                      strokeWidth={2}
-                      height={22}
-                      width={22}
-                      color={Colors.danger.DEFAULT}
-                    />
-                  </Col>
-                  <Col auto>
-                    <Span bold fontSize={12}>
-                      거절됨
-                    </Span>
-                  </Col>
-                </>
-              ) : (
-                votingStatus == VotingStatus.Error && (
-                  <>
-                    <Col auto mr4>
-                      <AlertTriangle
-                        strokeWidth={2}
-                        height={22}
-                        width={22}
-                        color={Colors.warning.DEFAULT}
-                      />
-                    </Col>
-                    <Col auto>
-                      <Span bold fontSize={12}>
-                        투표 불가
-                      </Span>
-                    </Col>
-                  </>
-                )
-              )}
-              {votingStatus == null && !full && (
-                <Col auto onPress={() => gotoPost(true)}>
-                  <MessageCircle {...actionIconDefaultProps} />
-                </Col>
-              )}
             </Row>
           </Col>
         </Row>
         {post.comment && !full && (
-          <Div onPress={gotoPost}>
+          <Div onPress={() => gotoPost(false, false, false, true)}>
             <Comment hot key={post.comment.id} comment={post.comment}></Comment>
           </Div>
         )}

@@ -13,7 +13,7 @@ import {RootState} from 'src/redux/rootReducer';
 import {ActivityIndicator, Platform} from 'react-native';
 import {getNftName, getNftProfileImage} from 'src/utils/nftUtils';
 import {Col} from 'src/components/common/Col';
-import {ChevronLeft, RefreshCw, X} from 'react-native-feather';
+import {RefreshCw, X} from 'react-native-feather';
 import {useNavigation} from '@react-navigation/native';
 import {Row} from 'src/components/common/Row';
 import {CustomBlurView} from 'src/components/common/CustomBlurView';
@@ -73,25 +73,25 @@ const QrScreen = () => {
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       flex={1}
-      bgBlack>
-      <Div h={headerHeight} zIndex={100} absolute top0>
+      bgBlack
+      relative>
+      <Div h={headerHeight} top0 zIndex={5}>
         <Row
           itemsCenter
           py5
           h40
           px15
-          zIndex={100}
           absolute
           w={DEVICE_WIDTH}
           top={notchHeight + 5}>
-          <Col justifyStart>
-            <Div auto rounded100 onPress={goBack}>
+          <Col justifyStart onPress={goBack}>
+            <Div auto rounded100>
               <X width={30} height={30} color={Colors.white} strokeWidth={2} />
             </Div>
           </Col>
           <Col auto>
-            <Span bold fontSize={19} white>
-              인증코드
+            <Span bold fontSize={17} white>
+              인증 QR
             </Span>
           </Col>
           <Col />
@@ -107,6 +107,7 @@ const QrScreen = () => {
                 size={200}
                 logoSize={60}
                 value={qrRes ? qrRes.jwt : 'BetterWorld'}
+                logoBorderRadius={100}
                 logo={{uri: getNftProfileImage(currentNft)}}
               />
             )}
@@ -124,7 +125,7 @@ const QrScreen = () => {
                     position: 'absolute',
                   }}></CustomBlurView>
                 <Img
-                  source={IMAGES.betterWorldBlueLogo}
+                  source={IMAGES.betterWorldPlanet}
                   h100
                   w100
                   top50
@@ -159,7 +160,7 @@ const QrScreen = () => {
               <Span
                 bold
                 fontSize={20}
-                primary={!qrLoad}
+                // primary={!qrLoad}
                 danger={ttl.minutes < 0 && !qrLoad}>
                 {error
                   ? '인증코드 요청 오류'

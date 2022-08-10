@@ -57,9 +57,9 @@ export default function useStory(storyOwner, storyOwnerType) {
         setStoryError(error)
         handleChangeText(text)
     }
-    const getStoryError = (value) => {
-		if (new Blob([value]).size > 60000) {
-			return "스토리는 60KB 이하여야합니다.";
+    const getStoryError = (text) => {
+		if (text.length == 101) {
+			return "스토리는 100자 이하여야합니다.";
 		}
 		return "";
 	};

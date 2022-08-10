@@ -3,7 +3,7 @@ import {LogBox, StatusBar} from 'react-native';
 import codePush from 'react-native-code-push';
 import {withRootReducer} from './src/redux/withRootReducer';
 import {AppContent} from 'src/components/AppContent';
-import {shallowEqual, useSelector} from 'react-redux';
+import {shallowEqual, useDispatch, useSelector} from 'react-redux';
 import {RootState} from 'src/redux/rootReducer';
 import messaging from '@react-native-firebase/messaging';
 import {usePostPromiseFnWithToken} from 'src/redux/asyncReducer';
@@ -17,7 +17,11 @@ import {NativeBaseProvider} from 'native-base';
 import {NavigationContainer} from '@react-navigation/native';
 import BottomPopups from 'src/components/common/BottomPopups';
 import {navigationRef, onMessageReceived} from 'src/utils/notificationUtils';
+import {EventRegister} from 'react-native-event-listeners';
+import {appActions} from 'src/redux/appReducer';
+import ImageViewer from 'src/components/common/ImageViewer';
 
+export const updateNotificationCountEvent = () => 'update-notification-count';
 
 const App = () => {
   const {
@@ -26,9 +30,14 @@ const App = () => {
     unreadChatRoomCount,
     session: {token},
   } = useSelector((root: RootState) => root.app, shallowEqual);
+  const {currentNft} = useSelector(
+    (root: RootState) => root.app.session,
+    shallowEqual,
+  );
   const firebaseMessaging = messaging();
   const gotoWithNotification = useGotoWithNotification();
   const postPromiseFnWithToken = usePostPromiseFnWithToken();
+  const dispatch = useDispatch();
   const [notificationOpenData, setNotificationOpenData] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -37,11 +46,11 @@ const App = () => {
       const token = await firebaseMessaging.getToken();
       if (token) return token;
     } catch (error) {}
-  }, [token]);
+  }, [token, currentNft]);
   const setFCMToken = useCallback(async () => {
     try {
       const authorized = await firebaseMessaging.hasPermission();
-      if (authorized) {
+      if (authorized > 0) {
         const fcmToken = await getToken();
         const res = await postPromiseFnWithToken({
           url: apis.pushNotificationSetting.registrationToken().url,
@@ -60,7 +69,7 @@ const App = () => {
         });
       }
     } catch {}
-  }, [token, isLoggedIn]);
+  }, [token, isLoggedIn, currentNft]);
 
   useEffect(() => {
     LogBox.ignoreAllLogs();
@@ -97,6 +106,22 @@ const App = () => {
       notifee.setBadgeCount(unreadChatRoomCount + unreadNotificationCount);
   }, [unreadChatRoomCount, unreadNotificationCount]);
 
+  useEffect(() => {
+    const listenerId = EventRegister.addEventListener(
+      updateNotificationCountEvent(),
+      ({unreadChatRoomCount, unreadNotificationCount}) => {
+        dispatch(
+          appActions.updateUnreadNotificationCount({unreadNotificationCount}),
+        );
+        dispatch(appActions.updateUnreadChatRoomCount({unreadChatRoomCount}));
+      },
+    );
+    return () => {
+      if (typeof listenerId == 'string')
+        EventRegister.removeEventListener(listenerId);
+    };
+  }, []);
+
   if (loading) {
     return null;
   }
@@ -109,6 +134,7 @@ const App = () => {
           <BottomSheetModalProvider>
             <AppContent notificationOpenData={notificationOpenData} />
             <BottomPopups />
+            <ImageViewer />
           </BottomSheetModalProvider>
         </NativeBaseProvider>
       </NavigationContainer>

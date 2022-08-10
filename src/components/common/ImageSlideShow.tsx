@@ -1,10 +1,9 @@
 import React, {useRef, useState} from 'react';
-import Carousel, {Pagination} from 'react-native-snap-carousel';
-import {Colors} from 'src/modules/styles';
 import {Div} from './Div';
 import {Img} from './Img';
-import Video from 'react-native-video';
-import {lookup} from 'react-native-mime-types';
+import {Row} from './Row';
+import {Col} from './Col';
+import {expandImageViewer} from 'src/utils/imageViewerUtils';
 
 export default function ImageSlideShow({
   imageUris,
@@ -24,78 +23,97 @@ export default function ImageSlideShow({
         border={0.5}
         borderGray200
         overflowHidden>
-        <Carousel
+        <ExpandableImages
           data={imageUris}
           itemWidth={sliderWidth}
-          sliderWidth={sliderWidth}
-          renderItem={({item}) => {
-            if (
-              typeof lookup(item) == 'string' &&
-              lookup(item).startsWith('video')
-            ) {
-              return (
-                <VideoItem
-                  url={item}
-                  width={sliderWidth}
-                  height={sliderHeight}
-                />
-              );
-            }
-            return (
-              <ImageItem url={item} width={sliderWidth} height={sliderHeight} />
-            );
-          }}
-          onSnapToItem={index => setCurrentPage(index)}
+          itemHeight={sliderHeight}
         />
       </Div>
-      {enablePagination && (
-        <Div flex={1} itemsCenter justifyCenter>
-          <Pagination
-            dotsLength={imageUris.length}
-            activeDotIndex={currentPage}
-            containerStyle={{
-              paddingTop: 8,
-              paddingBottom: 0,
-              borderRadius: 100,
-            }}
-            dotStyle={{
-              width: 7,
-              height: 7,
-              borderRadius: 5,
-              marginHorizontal: -5,
-            }}
-            inactiveDotColor={Colors.gray[400]}
-            inactiveDotScale={1}
-            dotColor={Colors.primary.DEFAULT}
-          />
-        </Div>
-      )}
     </>
   );
 }
 
-function ImageItem({url, width, height}) {
+function ExpandableImages({itemWidth, itemHeight, data}) {
+  const defaultRatio = 0.7;
+  const images = data.map(url => ({uri: url}));
+  if (data.length == 1)
+    return (
+      <Div onPress={() => expandImageViewer(images, 0)}>
+        <Img w={itemWidth} h={itemHeight} uri={data[0]}></Img>
+      </Div>
+    );
+  if (data.length == 2)
+    return (
+      <Row w={itemWidth} h={itemWidth * defaultRatio}>
+        <Col onPress={() => expandImageViewer(images, 0)}>
+          <Img
+            w={itemWidth / 2}
+            h={itemWidth * defaultRatio}
+            uri={data[0]}></Img>
+        </Col>
+        <Col onPress={() => expandImageViewer(images, 1)}>
+          <Img
+            w={itemWidth / 2}
+            h={itemWidth * defaultRatio}
+            uri={data[1]}></Img>
+        </Col>
+      </Row>
+    );
+  if (data.length == 3)
+    return (
+      <Row w={itemWidth} h={itemWidth * defaultRatio}>
+        <Col onPress={() => expandImageViewer(images, 0)}>
+          <Img
+            w={itemWidth / 2}
+            h={itemWidth * defaultRatio}
+            uri={data[0]}></Img>
+        </Col>
+        <Col>
+          <Div onPress={() => expandImageViewer(images, 1)}>
+            <Img
+              w={itemWidth / 2}
+              h={(itemWidth * defaultRatio) / 2}
+              uri={data[1]}></Img>
+          </Div>
+          <Div onPress={() => expandImageViewer(images, 2)}>
+            <Img
+              w={itemWidth / 2}
+              h={(itemWidth * defaultRatio) / 2}
+              uri={data[2]}></Img>
+          </Div>
+        </Col>
+      </Row>
+    );
   return (
-    <Div>
-      <Img w={width} h={height} uri={url}></Img>
-    </Div>
-  );
-}
-
-function VideoItem({url, width, height}) {
-  const ref = useRef(null);
-  const handlePress = () => {
-    ref?.current?.presentFullscreenPlayer();
-  };
-  return (
-    <Div onPress={handlePress}>
-      <Video
-        ref={ref}
-        source={{uri: url}}
-        style={{width, height}}
-        muted
-        repeat
-      />
-    </Div>
+    <Row w={itemWidth} h={itemWidth * 0.7}>
+      <Col>
+        <Div onPress={() => expandImageViewer(images, 0)}>
+          <Img
+            w={itemWidth / 2}
+            h={(itemWidth * defaultRatio) / 2}
+            uri={data[0]}></Img>
+        </Div>
+        <Div onPress={() => expandImageViewer(images, 1)}>
+          <Img
+            w={itemWidth / 2}
+            h={(itemWidth * defaultRatio) / 2}
+            uri={data[1]}></Img>
+        </Div>
+      </Col>
+      <Col>
+        <Div onPress={() => expandImageViewer(images, 2)}>
+          <Img
+            w={itemWidth / 2}
+            h={(itemWidth * defaultRatio) / 2}
+            uri={data[2]}></Img>
+        </Div>
+        <Div onPress={() => expandImageViewer(images, 3)}>
+          <Img
+            w={itemWidth / 2}
+            h={(itemWidth * defaultRatio) / 2}
+            uri={data[3]}></Img>
+        </Div>
+      </Col>
+    </Row>
   );
 }

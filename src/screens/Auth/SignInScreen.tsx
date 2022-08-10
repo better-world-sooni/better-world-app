@@ -34,19 +34,20 @@ const SignInScreen = () => {
         <Div>
           <Carousel
             data={[
-              '가스비 없이 모바일에서 포럼과 거버넌스에 참여해요.',
-              '커뮤니티 지갑을 투명하고 편리하게 모니터해요.',
-              '커뮤니티원들과 PFP 계정으로 쉽고 재밌게 소통해요.',
+              '내 NFT 프로필로\n 커뮤니티원들과 소통하세요',
+              '커뮤니티 지갑 사용 내역을\n 투명하게 확인하세요',
+              '홀더 혜택을 한눈에\n 모아보세요',
+              '오프라인에서 편리하게\n 홀더임을 인증하세요',
             ]}
             itemWidth={DEVICE_WIDTH}
             autoplay
             loop
-            autoplayInterval={8000}
+            autoplayInterval={6000}
             sliderWidth={DEVICE_WIDTH}
             renderItem={renderItem}
           />
           <Div px30>
-            <Div h20></Div>
+            <Div h40></Div>
             <Div h48>
               <Row
                 bgBlack
@@ -58,8 +59,8 @@ const SignInScreen = () => {
                 <Col />
                 <Col auto>
                   <Div>
-                    <Span white bold>
-                      큐알로 연결
+                    <Span white bold fontSize={14}>
+                      QR로 로그인
                     </Span>
                   </Div>
                 </Col>
@@ -78,7 +79,9 @@ const SignInScreen = () => {
                 <Col />
                 <Col auto>
                   <Div>
-                    <Span bold>비밀번호로 연결</Span>
+                    <Span bold fontSize={14}>
+                      비밀번호로 로그인
+                    </Span>
                   </Div>
                 </Col>
                 <Col />

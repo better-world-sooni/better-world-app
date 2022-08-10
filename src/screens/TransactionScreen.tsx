@@ -47,7 +47,7 @@ export default function TransactionScreen({
             </Div>
           </Col>
           <Col auto>
-            <Span bold fontSize={19}>
+            <Span bold fontSize={17}>
               전송내역
             </Span>
           </Col>

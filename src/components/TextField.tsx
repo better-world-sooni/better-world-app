@@ -6,6 +6,7 @@ import { Span } from "src/components/common/Span"
 import { Style } from "src/components/common/Style"
 import useAutoFocusRef from 'src/hooks/useAutoFocusRef';
 import {TextInput} from 'src/components/common/ViewComponents';
+import {Platform} from 'react-native';
 
 export const TextField = props => {
   const {
@@ -13,9 +14,12 @@ export const TextField = props => {
     labelStyle,
     note,
     error,
-    mt = 16,
+    mt,
     value,
     onChangeText,
+    newLineButton,
+    onContentSizeChange,
+    onSubmitEditing,
     disabled,
     placeholder,
     password,
@@ -32,17 +36,16 @@ export const TextField = props => {
           {label}
         </Span>
       ) : null}
-      <Row itemsCenter my2>
+      <Row itemsCenter>
         {leftComp && <Col auto>{leftComp}</Col>}
         <Col>
           <TextInput
+            py1={Platform.OS === 'android'}
+            mt6={Platform.OS === 'ios'}
             innerRef={autoFocus && autoFocusRef}
             autoCorrect={false}
-            h48
-            border={0.5}
-            borderGray400
-            rounded10
-            p12
+            multiline={true}
+            blurOnSubmit={newLineButton || false}
             {...others}
             styleComp={[
               <Style borderDanger isActive={error} />,
@@ -52,6 +55,8 @@ export const TextField = props => {
             secureTextEntry={password}
             placeholder={placeholder}
             onChangeText={onChangeText}
+            onContentSizeChange={onContentSizeChange}
+            onSubmitEditing={onSubmitEditing}
             value={value}
             color={'#000000'}
           />

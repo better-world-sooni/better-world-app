@@ -61,6 +61,15 @@ const SplashScreen = ({route}) => {
               initialRoute.gotoInitial(...initialRoute.params, props.data.jwt)
               return;
             }
+            if (props.data.user.nfts.length == 0) {
+              navigation.dispatch(
+                CommonActions.reset({
+                  index: 0,
+                  routes: [{name: NAV_NAMES.SignIn}],
+                }),
+              );
+              return;
+            }
             navigation.dispatch(
               CommonActions.reset({
                 index: 0,
