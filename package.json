@@ -14,7 +14,7 @@
     "bundleReleaseAndroid": "react-native run-android --variant=release",
     "releaseAndroid": "react-native run-android --variant=release",
     "codePushIos": "appcenter codepush release-react -a noMacGuffins/better-world-ios --plist-file ios/sungan/Info.plist -d Production",
-    "codePushAndroid": "appcenter codepush release-react -a noMacGuffins/better-world-android",
+    "codePushAndroid": "appcenter codepush release-react -a noMacGuffins/better-world-android -d Production",
     "start": "react-native start --reset-cache",
     "test": "jest",
     "lint": "eslint .",
