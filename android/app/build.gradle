@@ -140,6 +140,7 @@ android {
         versionCode 4
         versionName "0.5.5"
         missingDimensionStrategy 'react-native-camera', 'general'
+        resValue 'string', "CODE_PUSH_APK_BUILD_TIME", String.format("\"%d\"", System.currentTimeMillis())
     }
     splits {
         abi {
