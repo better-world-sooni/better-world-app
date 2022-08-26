@@ -38,7 +38,7 @@ export default function Notification({notification}) {
   return (
     <NotificationMemo
       postId={notification.metadata.post_id}
-      isFollowing={notification.is_following}
+      isFollowing={!!notification.is_following}
       hasNft={!!notification.nft}
       profileImgUri={getNftProfileImage(notification.nft, 100, 100)}
       contractAddress={notification.nft.contract_address}
@@ -241,7 +241,7 @@ const NotificationContent = ({
           <Span gray700>{createdAtText(createdAt)}</Span>
         </Span>
       </Col>
-      {!isCurrentNft &&
+      {/* {!isCurrentNft &&
         (isBlocked ? (
           <Col
             auto
@@ -268,7 +268,7 @@ const NotificationContent = ({
               {following ? '팔로잉' : '팔로우'}
             </Span>
           </Col>
-        ))}
+        ))} */}
     </Row>
   );
 };

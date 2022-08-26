@@ -212,7 +212,7 @@ const MyNftCollectionMenu = ({nftCollection}) => {
               </Row>
             )
           )}
-          {/* {isAdmin && (
+          {isAdmin && (
             <Row itemsCenter py16 onPress={gotoStoreSetting}>
               <Col auto mr16>
                 <ShoppingBag
@@ -228,7 +228,7 @@ const MyNftCollectionMenu = ({nftCollection}) => {
                 </Span>
               </Col>
             </Row>
-          )} */}
+          )}
         </Div>
       )}
     </Div>
