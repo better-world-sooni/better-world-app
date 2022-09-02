@@ -84,7 +84,7 @@ export default function StoreSettingScreen() {
             />
           </Col>
         </Row>
-        <Row
+        {/* <Row
           py20
           px15
           borderBottom={0.5}
@@ -104,7 +104,7 @@ export default function StoreSettingScreen() {
               strokeWidth={2}
             />
           </Col>
-        </Row>
+        </Row> */}
         <Div h={50}></Div>
       </ScrollView>
     </Div>

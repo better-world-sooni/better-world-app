@@ -209,7 +209,10 @@ export default function NewMerchandiseScreen() {
                 removeOrderOption={handleRemoveOrderOption}
               />
             </Div>
-            <Row itemsCenter>
+            <Div mb16>
+              <Div></Div>
+            </Div>
+            {/* <Row itemsCenter>
               <Col
                 auto
                 border={0.5}
@@ -244,8 +247,8 @@ export default function NewMerchandiseScreen() {
                 </MenuView>
               </Col>
               <Col />
-            </Row>
-            <Div mt16>
+            </Row> */}
+            <Div>
               <TextInput
                 value={description}
                 placeholder={'상품 설명 (마크다운 사용 가능)'}

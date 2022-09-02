@@ -244,7 +244,7 @@ export default function NftProfileHeader({nftCore, nft, isCurrentNft, qrScan}) {
               <Col auto mr4>
                 <Img h={20} w={20} source={ICONS.twitter} />
               </Col>
-              <Col auto onPress={handleChangeTwitterId}>
+              <Col auto onPress={handlePressTwitterLink}>
                 <Span gray700 bold>
                   @{nft.twitter_id}
                 </Span>

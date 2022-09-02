@@ -29,6 +29,7 @@ import {RootState} from 'src/redux/rootReducer';
 enum SocialFeedFilter {
   All = 'all',
   Following = 'following',
+  Community = 'community',
 }
 
 export default function SocialScreen() {
@@ -50,9 +51,16 @@ export default function SocialScreen() {
   const menuOptions = [
     {
       id: SocialFeedFilter.All,
-      title: `커뮤니티 피드`,
+      title: `전체 피드`,
       image: Platform.select({
         ios: 'globe.asia.australia',
+      }),
+    },
+    {
+      id: SocialFeedFilter.Community,
+      title: `커뮤니티 피드`,
+      image: Platform.select({
+        ios: 'person.3',
       }),
     },
     {
@@ -84,6 +92,12 @@ export default function SocialScreen() {
       feedRes?.filter !== SocialFeedFilter.Following
     ) {
       reloadGETWithToken(apis.feed.social(SocialFeedFilter.Following));
+    }
+    if (
+      event == SocialFeedFilter.Community &&
+      feedRes?.filter !== SocialFeedFilter.Community
+    ) {
+      reloadGETWithToken(apis.feed.social(SocialFeedFilter.Community));
     }
   };
   const updateUnreadNotificationCount = useUpdateUnreadNotificationCount();

@@ -35,6 +35,8 @@ export default function Notification({notification}) {
     shallowEqual,
   );
   const isCurrentNft = useIsCurrentNft(notification.nft);
+  console.log(notification.is_following);
+  console.log(notification);
   return (
     <NotificationMemo
       postId={notification.metadata.post_id}
@@ -241,7 +243,7 @@ const NotificationContent = ({
           <Span gray700>{createdAtText(createdAt)}</Span>
         </Span>
       </Col>
-      {/* {!isCurrentNft &&
+      {!isCurrentNft &&
         (isBlocked ? (
           <Col
             auto
@@ -268,7 +270,7 @@ const NotificationContent = ({
               {following ? '팔로잉' : '팔로우'}
             </Span>
           </Col>
-        ))} */}
+        ))}
     </Row>
   );
 };
