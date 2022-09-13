@@ -17,33 +17,6 @@ import BottomPopup from './BottomPopup';
 import { BottomSheetModal, BottomSheetScrollView } from '@gorhom/bottom-sheet';
 
 export default function NewEventApplication({drawEvent}) {
-  const sampleOption = [
-      {"category": "디스코드 아이디", "created_at": "2022-09-08T19:49:30.585+09:00", "draw_event_id": 1, "id": 10, "input_type": 3, "name": "디스코드 아이디", "updated_at": "2022-09-08T19:49:30.585+09:00"}, 
-      {"category": "트위터 아이디", "created_at": "2022-09-08T19:49:30.585+09:00", "draw_event_id": 1, "id": 10, "input_type": 2, "name": "트위터 아이디", "updated_at": "2022-09-08T19:49:30.585+09:00"}, 
-      {"category": "커스텀 인풋", "created_at": "2022-09-08T19:49:30.585+09:00", "draw_event_id": 1, "id": 10, "input_type": 1, "name": "커스텀", "updated_at": "2022-09-08T19:49:30.585+09:00"}, 
-      {"category": "옵션1", "created_at": "2022-09-08T19:49:30.585+09:00", "draw_event_id": 1, "id": 1, "input_type": 0, "name": "선택지1", "updated_at": "2022-09-08T19:49:30.585+09:00"}, 
-      {"category": "옵션1", "created_at": "2022-09-08T19:49:30.585+09:00", "draw_event_id": 1, "id": 2, "input_type": 0, "name": "선택지2", "updated_at": "2022-09-08T19:49:30.585+09:00"}, 
-      {"category": "옵션1", "created_at": "2022-09-08T19:49:30.585+09:00", "draw_event_id": 1, "id": 3, "input_type": 0, "name": "선택지3", "updated_at": "2022-09-08T19:49:30.585+09:00"}, 
-      {"category": "옵션2", "created_at": "2022-09-08T19:49:30.585+09:00", "draw_event_id": 1, "id": 4, "input_type": 0, "name": "선택지1", "updated_at": "2022-09-08T19:49:30.585+09:00"},
-      {"category": "옵션2", "created_at": "2022-09-08T19:49:30.585+09:00", "draw_event_id": 1, "id": 5, "input_type": 0, "name": "선택지2", "updated_at": "2022-09-08T19:49:30.585+09:00"},
-      {"category": "옵션3", "created_at": "2022-09-08T19:49:30.585+09:00", "draw_event_id": 1, "id": 6, "input_type": 0, "name": "선택지1", "updated_at": "2022-09-08T19:49:30.585+09:00"},
-      {"category": "옵션3", "created_at": "2022-09-08T19:49:30.585+09:00", "draw_event_id": 1, "id": 7, "input_type": 0, "name": "선택지2", "updated_at": "2022-09-08T19:49:30.585+09:00"},
-      {"category": "옵션3", "created_at": "2022-09-08T19:49:30.585+09:00", "draw_event_id": 1, "id": 8, "input_type": 0, "name": "선택지3", "updated_at": "2022-09-08T19:49:30.585+09:00"},
-      {"category": "옵션3", "created_at": "2022-09-08T19:49:30.585+09:00", "draw_event_id": 1, "id": 9, "input_type": 0, "name": "선택지4", "updated_at": "2022-09-08T19:49:30.585+09:00"},
-    ]
-    const sample = {
-      "application_link": null, 
-      "created_at": "2022-09-08T19:49:30.574+09:00", 
-      "description": "가자가자가자가자", 
-      "draw_event_options": sampleOption, 
-      "event_application": null, 
-      "expires_at": null, 
-      "giveaway_merchandise": "Eric or Jaesus", 
-      "id": 1, 
-      "image_uris": ["https://d122m4njb70d8u.cloudfront.net/draw_event/image/eb64901b-3598-4209-9a27-f0419f7d47ad.jpeg", "https://d122m4njb70d8u.cloudfront.net/draw_event/image/ada1fb3b-8e46-49eb-8cd4-7dea88e8d834.jpeg"], 
-      "name": "Manhood Event", 
-      "nft_collection": {"about": "현실과 가상 세계에 공존하는 문화의 프랜차이즈, 기꺼이 이상해지고자 하는 젊고 세계적인 혁신가들을 위해.", "background_image_uri": "https://d122m4njb70d8u.cloudfront.net/nft_collection/image/7019606d-37f2-416c-ab2b-1a75be2234eb.jpeg", "contract_address": "0x858efce380470eea04fe7ccf39133905b46811f5", "created_at": "2022-07-12T05:14:32.460+09:00", "image_uri": "https://d122m4njb70d8u.cloudfront.net/nft_collection/image/85af5e84-547e-4145-b7ae-d1f68dc7384d.png", "name": "WeBe", "network": "Klaytn", "symbol": "WBE", "total_supply": 8, "updated_at": "2022-08-04T01:55:02.531+09:00"}, 
-      "status": 0}
   const [expandOptions, setExpandOptions] = useState(-1);
   const gotoOrderList = useGotoOrderList();
   const uploadSuccessCallback = () => {
@@ -57,7 +30,7 @@ export default function NewEventApplication({drawEvent}) {
     handleSelectOption,
     uploadEventApplication,
   } = useUploadEventApplication({
-    drawEvent:sample,
+    drawEvent,
     uploadSuccessCallback,
   });
   const orderable = drawEventStatus.orderable;
