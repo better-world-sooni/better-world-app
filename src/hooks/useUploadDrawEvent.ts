@@ -61,7 +61,7 @@ export default function useUploadDrawEvent(){
 			description,
 			images: signedIdArray,
 			expires_at: expiresAt,
-			application_link: applicationLink,
+			application_link: applicationLink ? applicationLink : null,
 			giveaway_merchandise: giveawayMerchandise,
 			draw_event_options_attributes: applicationOptions,
 		}
