@@ -3,6 +3,7 @@ import apis from "src/modules/apis";
 import { usePostPromiseFnWithToken } from "src/redux/asyncReducer";
 import {chain} from 'lodash';
 import useDrawEventStatus from "./useDrawEventStatus";
+import { EventApplicationInputType } from "src/components/NewEventApplicationOptions";
   
 export type OrderOption = {
 	name: string;
@@ -23,7 +24,10 @@ export default function useUploadEventApplication({drawEvent, uploadSuccessCallb
 		  .groupBy('category')
 		  .map((value, key) => {
 			const options = value.map((item) => ({...item, selected: false }))
-			return {name: key, selectedOption: null, options} 
+			if (options.length==1 && options[0].input_type==EventApplicationInputType.CUSTOM_INPUT) return {name: key, drawEventId:EventApplicationInputType.CUSTOM_INPUT, selectedOption: null, options} 
+			if (options.length==1 && options[0].input_type==EventApplicationInputType.DISCORD_ID) return {name: key, drawEventId:EventApplicationInputType.DISCORD_ID, selectedOption: null, options} 
+			if (options.length==1 && options[0].input_type==EventApplicationInputType.TWITTER_ID) return {name: key, drawEventId:EventApplicationInputType.TWITTER_ID, selectedOption: null, options} 
+			return {name: key, drawEventId:EventApplicationInputType.SELECT, selectedOption: null, options} 
 		  })
 		  .value();
 	  };

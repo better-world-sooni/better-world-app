@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useCallback, useRef, useState} from 'react';
 import {Colors, varStyle} from 'src/modules/styles';
 import {Div} from './Div';
 import {Span} from './Span';
@@ -13,9 +13,11 @@ import useUploadOrder, {
 import {ActivityIndicator, Linking} from 'react-native';
 import {useGotoOrderList} from 'src/hooks/useGoto';
 import useUploadEventApplication from 'src/hooks/useUploadEventApplication';
+import BottomPopup from './BottomPopup';
+import { BottomSheetModal, BottomSheetScrollView } from '@gorhom/bottom-sheet';
 
 export default function NewEventApplication({drawEvent}) {
-  const [expandOptions, setExpandOptions] = useState(false);
+  const [expandOptions, setExpandOptions] = useState(-1);
   const gotoOrderList = useGotoOrderList();
   const uploadSuccessCallback = () => {
     gotoOrderList();
@@ -32,20 +34,22 @@ export default function NewEventApplication({drawEvent}) {
     uploadSuccessCallback,
   });
   const orderable = drawEventStatus.orderable;
+  const bottomPopupRef = useRef<BottomSheetModal>(null);
   const handlePressInitialOrder = () => {
     if (!orderable) return;
     if (drawEvent.application_link) {
       Linking.openURL(drawEvent.application_link);
       return;
     }
-    setExpandOptions(true);
+    bottomPopupRef?.current?.snapToIndex(0);
   };
   return (
+    <>
     <Div
       zIndex={100}
       bgWhite
       w={'100%'}
-      borderTop={0.5}
+      borderTop={expandOptions==-1 ?0.5:0}
       style={{
         shadowOffset: {
           width: 0,
@@ -57,37 +61,6 @@ export default function NewEventApplication({drawEvent}) {
       }}
       borderColor={varStyle.gray200}>
       <Div px15 py8>
-        {expandOptions ? (
-          <>
-            {error ? (
-              <Div mb8>
-                <Span danger bold>
-                  {error}
-                </Span>
-              </Div>
-            ) : null}
-            <Div itemsCenter pb4 onPress={() => setExpandOptions(false)}>
-              <ChevronDown color={Colors.gray[400]} width={22} height={22} />
-            </Div>
-            {orderOptions.length > 0 && (
-              <Div mb8>
-                <OrderCategories
-                  orderCategories={orderOptions}
-                  onPressOption={handleSelectOption}
-                />
-              </Div>
-            )}
-            <Row itemsCenter onPress={uploadEventApplication}>
-              <Col>
-                <Div bgBlack h50 rounded10 itemsCenter justifyCenter>
-                  <Span white bold>
-                    {loading ? <ActivityIndicator /> : '응모하기'}
-                  </Span>
-                </Div>
-              </Col>
-            </Row>
-          </>
-        ) : (
           <Row itemsCenter>
             <Col>
               <Div
@@ -97,17 +70,45 @@ export default function NewEventApplication({drawEvent}) {
                 itemsCenter
                 justifyCenter
                 bgGray400={!orderable}
-                onPress={handlePressInitialOrder}>
+                onPress={expandOptions==-1 ? handlePressInitialOrder : uploadEventApplication}>
                 <Span white bold>
-                  응모하기
+                  {expandOptions==-1 ? "응모하기" : (loading ? <ActivityIndicator /> : '응모하기')}
                 </Span>
               </Div>
             </Col>
           </Row>
-        )}
       </Div>
       <Div h={HAS_NOTCH ? 27 : 12} bgWhite />
     </Div>
+    <BottomPopup
+        ref={bottomPopupRef}
+        snapPoints={["50%", "80%"]}
+        index={-1}
+        onChange={(_,t)=>setExpandOptions(t)}
+        >
+          <Div px20 py10>
+          <Row itemsCenter>
+          <Col>
+              <Div mb8>
+              {error ? (
+                <Span danger bold>
+                  {error}
+                </Span>) : 
+                <Span mb2/>}
+              </Div>
+                {orderOptions.length > 0 && (
+                  <Div mb8>
+                    <OrderCategories
+                      orderCategories={orderOptions}
+                      onPressOption={handleSelectOption}
+                    />
+                  </Div>
+                )}
+          </Col>
+          </Row>
+          </Div>
+      </BottomPopup>
+    </>
   );
 }
 
