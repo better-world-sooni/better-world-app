@@ -13,6 +13,7 @@ const BottomPopup = (
     backdrop = true,
     enablePanDownToClose = true,
     handleComponent = BottomSheetHandle,
+    onChange=null,
   },
   ref,
 ) => {
@@ -32,7 +33,8 @@ const BottomPopup = (
       ref={ref}
       index={index}
       backdropComponent={backdrop && renderBackdrop}
-      snapPoints={snapPoints}>
+      snapPoints={snapPoints}
+      onAnimate={onChange}>
       {children}
     </BottomSheet>
   );

@@ -26,7 +26,7 @@ export default function DrawEventScreen() {
     apis.draw_event.drawEventId,
   );
   const drawEvent = drawEventRes?.draw_event;
-  console.log(drawEvent);
+  // console.log(drawEvent);
 
   const {goBack} = useNavigation();
   const notchHeight = useSafeAreaInsets().top;
