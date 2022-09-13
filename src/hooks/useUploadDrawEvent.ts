@@ -61,8 +61,8 @@ export default function useUploadDrawEvent(){
 			description,
 			images: signedIdArray,
 			expires_at: expiresAt,
-			application_link: applicationLink,
-			giveaway_merchandise: giveawayMerchandise,
+			application_link: applicationLink ? applicationLink : null,
+			giveaway_merchandise: giveawayMerchandise ? giveawayMerchandise : null,
 			draw_event_options_attributes: applicationOptions,
 		}
 		const {data} = await postPromiseFnWithToken({url: apis.draw_event._().url, body});

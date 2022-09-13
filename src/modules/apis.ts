@@ -151,6 +151,11 @@ const apis = {
     list: () => apiV1(`/order/list`),
     orderId: (orderId) => apiV1(`/order/${orderId}`),
   },
+  event_application: {
+    _: () => apiV1(`/event_application`),
+    list: () => apiV1(`/event_application/list`),
+    eventApplicationId: (eventApplicationId) => apiV1(`/event_application/${eventApplicationId}`),
+  },
   coupon: {
     list: () => apiV1(`/coupon/list`),
   },
