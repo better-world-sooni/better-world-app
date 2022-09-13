@@ -9,16 +9,14 @@ import {Span} from 'src/components/common/Span';
 import {ScrollView} from 'src/components/common/ViewComponents';
 import {
   useGotoCollectionOrderList,
-  useGotoNewCoupon,
-  useGotoNewMerchandise,
+  useGotoNewDrawEvent,
 } from 'src/hooks/useGoto';
 import {Colors} from 'src/modules/styles';
 
 export default function StoreSettingScreen() {
   const notchHeight = useSafeAreaInsets().top;
   const {goBack} = useNavigation();
-  const gotoNewMerchandise = useGotoNewMerchandise();
-  const gotoNewCoupon = useGotoNewCoupon();
+  const gotoNewDrawEvent = useGotoNewDrawEvent();
   const gotoCollectionOrderList = useGotoCollectionOrderList();
   return (
     <Div bgWhite flex={1}>
@@ -69,7 +67,7 @@ export default function StoreSettingScreen() {
           borderBottom={0.5}
           borderGray200
           itemsCenter
-          onPress={gotoNewMerchandise}>
+          onPress={gotoNewDrawEvent}>
           <Col>
             <Span fontSize={16} bold>
               이벤트 추가
@@ -84,27 +82,6 @@ export default function StoreSettingScreen() {
             />
           </Col>
         </Row>
-        {/* <Row
-          py20
-          px15
-          borderBottom={0.5}
-          borderGray200
-          itemsCenter
-          onPress={gotoNewCoupon}>
-          <Col>
-            <Span fontSize={16} bold>
-              쿠폰 뿌리기
-            </Span>
-          </Col>
-          <Col auto>
-            <ChevronRight
-              width={22}
-              height={22}
-              color={Colors.black}
-              strokeWidth={2}
-            />
-          </Col>
-        </Row> */}
         <Div h={50}></Div>
       </ScrollView>
     </Div>

@@ -14,6 +14,8 @@ export default function useUploadMerchandise(){
     const [loading, setLoading] = useState(false);
 	const [name, setName] = useState('')
     const [description, setDescription] = useState('')
+	const [applicationLink, setApplicationLink] = useState('')
+	const [enableApplicationLink, setEnableApplicationLink] = useState(false);
 	const [expiresAt, setExpiresAt] = useState(null)
 	const [isDeliverable, setIsDeliverable] = useState(true)
 	const [isAirdropOnly, setIsAirdropOnly] = useState(false)
@@ -72,12 +74,17 @@ export default function useUploadMerchandise(){
         setLoading(false);
 		setError("");
     }
-
+	const handleApplicationLinkChange = (text) => {
+		setApplicationLink(text);
+		setError("");
+	};
+	const toggleEnableApplicationLink = () => {
+		setEnableApplicationLink((prev) => !prev);
+	};
     const handleDescriptionChange = (text) => {
 		setDescription(text);
 		setError("");
 	};
-
 	const handleNameChange = (text) => {
 		setName(text);
 		setError("");
@@ -112,5 +119,5 @@ export default function useUploadMerchandise(){
 		}
 	}
 
-    return { error, loading, maxPerAmountPerOrderPickerOptions, maxPerAmountPerOrder, setMaxAmountPerOrder, orderCategories, handleAddOrderCategory, handleRemoveOrderCategory, handleAddOrderOption, handleRemoveOrderOption, price, handlePriceChange, expiresAt, setExpiresAt, name, handleNameChange, isDeliverable, setIsDeliverable, isAirdropOnly, setIsAirdropOnly, description, handleDescriptionChange, images, handleAddImages, handleRemoveImage, uploadMerchandise }
+    return { error, loading, maxPerAmountPerOrderPickerOptions, maxPerAmountPerOrder, setMaxAmountPerOrder, orderCategories, handleAddOrderCategory, handleRemoveOrderCategory, handleAddOrderOption, handleRemoveOrderOption, enableApplicationLink, toggleEnableApplicationLink, applicationLink, handleApplicationLinkChange, price, handlePriceChange, expiresAt, setExpiresAt, name, handleNameChange, isDeliverable, setIsDeliverable, isAirdropOnly, setIsAirdropOnly, description, handleDescriptionChange, images, handleAddImages, handleRemoveImage, uploadMerchandise }
 }

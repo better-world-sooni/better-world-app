@@ -18,26 +18,24 @@ import {HAS_NOTCH} from 'src/modules/constants';
 import Merchandise from 'src/components/common/Merchandise';
 import {Clock, Gift} from 'react-native-feather';
 import {useGotoCouponList, useGotoOrderList} from 'src/hooks/useGoto';
+import DrawEvent from 'src/components/common/DrawEvent';
 
 export default function StoreScreen() {
   const {data, isLoading, isPaginating, page, isNotPaginatable} =
-    useApiSelector(apis.nft_collection.merchandise.list);
+    useApiSelector(apis.feed.draw_event);
   const {data: nftCollectionRes, isLoading: nftCollectionLoad} = useApiSelector(
     apis.nft_collection._(),
   );
   const nftCollection = nftCollectionRes?.nft_collection;
-  const merchandises = data ? data.merchandises : [];
+  const drawEvents = data ? data.draw_events : [];
   const reloadGetWithToken = useReloadGETWithToken();
   const paginateGetWithToken = usePaginateGETWithToken();
   const handleEndReached = () => {
     if (isPaginating || isNotPaginatable) return;
-    paginateGetWithToken(
-      apis.nft_collection.merchandise.list(page + 1),
-      'merchandises',
-    );
+    paginateGetWithToken(apis.feed.draw_event(page + 1), 'draw_events');
   };
   const handleRefresh = () => {
-    reloadGetWithToken(apis.nft_collection.merchandise.list());
+    reloadGetWithToken(apis.feed.draw_event());
   };
   const gotoOrderList = useGotoOrderList();
   const gotoCouponList = useGotoCouponList();
@@ -119,12 +117,12 @@ export default function StoreScreen() {
           <RefreshControl refreshing={isLoading} onRefresh={handleRefresh} />
         }
         onEndReached={handleEndReached}
-        data={merchandises}
+        data={drawEvents}
         renderItem={({item}) => {
           return (
-            <Merchandise
+            <DrawEvent
               key={(item as any).id}
-              merchandise={item}
+              drawEvent={item}
               mx={mx}
               my={my}
               width={

@@ -461,6 +461,27 @@ export function useGotoNewMerchandise() {
   return gotoNewMerchandise
 }
 
+export function useGotoNewDrawEvent() {
+  const navigation = useNavigation()
+  
+  const gotoNewDrawEvent= () => {
+    navigation.navigate(NAV_NAMES.NewDrawEvent as never)
+  }
+  return gotoNewDrawEvent
+}
+
+export function useGotoDrawEvent({drawEventId}) {
+  const navigation = useNavigation()
+  const apiGETWithToken = useApiGETWithToken()
+  const gotoDrawEvent= () => {
+    apiGETWithToken(
+      apis.draw_event.drawEventId(drawEventId)
+    );
+    navigation.navigate(NAV_NAMES.DrawEvent as never)
+  }
+  return gotoDrawEvent
+}
+
 export function useGotoOnboarding() {
   const navigation = useNavigation()
   const gotoOnboarding = () => {

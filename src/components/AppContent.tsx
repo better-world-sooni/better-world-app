@@ -51,15 +51,15 @@ import SocialSettingScreen from 'src/screens/SocialSettingScreen';
 import NftProfileEditScreen from 'src/screens/NftProfileEditScreen';
 import NftCollectionProfileEditScreen from 'src/screens/NftCollectionProfileEditScreen';
 import StoreSettingScreen from 'src/screens/StoreSettingScreen';
-import NewMerchandiseScreen from 'src/screens/NewMerchandiseScreen';
 import MerchandiseScreen from 'src/screens/MerchandiseScreen';
-import NewCouponScreen from 'src/screens/NewCouponScreen';
 import MerchandiseSelectScreen from 'src/screens/MerchandiseSelectScreen';
 import OrderListScreen from 'src/screens/OrderListScreen';
 import CouponListScreen from 'src/screens/CouponListScreen';
 import CollectionOrderListScreen from 'src/screens/CollectionOrderListScreen';
-import { ChatRoomEnterType } from "src/screens/ChatRoomScreen";
+import {ChatRoomEnterType} from 'src/screens/ChatRoomScreen';
 import NftSettingScreen from 'src/screens/NftSettingScreen';
+import NewDrawEventScreen from 'src/screens/NewDrawEventScreen';
+import DrawEventScreen from 'src/screens/DrawEventScreen';
 
 const RootStack = createStackNavigator();
 
@@ -407,16 +407,12 @@ export const AppContent = ({notificationOpenData}) => {
       component: StoreSettingScreen,
     },
     {
-      name: NAV_NAMES.NewMerchandise,
-      component: NewMerchandiseScreen,
-    },
-    {
       name: NAV_NAMES.Merchandise,
       component: MerchandiseScreen,
     },
     {
-      name: NAV_NAMES.NewCoupon,
-      component: NewCouponScreen,
+      name: NAV_NAMES.NewDrawEvent,
+      component: NewDrawEventScreen,
     },
     {
       name: NAV_NAMES.OrderList,
@@ -433,6 +429,10 @@ export const AppContent = ({notificationOpenData}) => {
     {
       name: NAV_NAMES.NftSetting,
       component: NftSettingScreen,
+    },
+    {
+      name: NAV_NAMES.DrawEvent,
+      component: DrawEventScreen,
     },
   ];
 

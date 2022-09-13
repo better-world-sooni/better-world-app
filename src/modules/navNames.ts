@@ -52,5 +52,7 @@ export const NAV_NAMES = {
     OrderList: "OrderList",
     CouponList: "CouponList",
     CollectionOrderList: "CollectionOrderList",
+    NewDrawEvent: "NewDrawEvent",
+    DrawEvent: "DrawEvent"
 };
 

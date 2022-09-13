@@ -212,7 +212,7 @@ export default function NewMerchandiseScreen() {
             <Div mb16>
               <Div></Div>
             </Div>
-            {/* <Row itemsCenter>
+            <Row itemsCenter>
               <Col
                 auto
                 border={0.5}
@@ -247,7 +247,7 @@ export default function NewMerchandiseScreen() {
                 </MenuView>
               </Col>
               <Col />
-            </Row> */}
+            </Row>
             <Div>
               <TextInput
                 value={description}
