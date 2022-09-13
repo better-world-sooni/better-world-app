@@ -50,10 +50,10 @@ export default function useUploadEventApplication({drawEvent, uploadSuccessCallb
 		}
 		setLoading(true);
         const body =  {
-			merchandise_id: drawEvent.id,
-			order_options: selectedOptions
+			draw_event_id: drawEvent.id,
+			draw_event_options: selectedOptions
 		}
-		const {data} = await postPromiseFnWithToken({url: apis.order._().url, body});
+		const {data} = await postPromiseFnWithToken({url: apis.event_application._().url, body});
 		if (!data.success) {
 			setLoading(false);
 			return;
