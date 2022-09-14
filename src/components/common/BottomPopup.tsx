@@ -34,7 +34,7 @@ const BottomPopup = (
       index={index}
       backdropComponent={backdrop && renderBackdrop}
       snapPoints={snapPoints}
-      onAnimate={onChange}>
+      onAnimate={onChange&&((_,t)=>onChange(t))}>
       {children}
     </BottomSheet>
   );

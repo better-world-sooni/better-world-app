@@ -1,11 +1,11 @@
-import React, {useCallback, useRef, useState} from 'react';
+import React, {useRef, useState} from 'react';
 import {Colors, varStyle} from 'src/modules/styles';
 import {Div} from './Div';
 import {Span} from './Span';
 import Accordion from 'react-native-collapsible/Accordion';
 import {Row} from './Row';
 import {Col} from './Col';
-import {Check, ChevronDown, Minus, Plus} from 'react-native-feather';
+import {Check} from 'react-native-feather';
 import {HAS_NOTCH} from 'src/modules/constants';
 import useUploadOrder, {
   SelectableOrderCategory,
@@ -14,7 +14,7 @@ import {ActivityIndicator, Linking} from 'react-native';
 import {useGotoOrderList} from 'src/hooks/useGoto';
 import useUploadEventApplication from 'src/hooks/useUploadEventApplication';
 import BottomPopup from './BottomPopup';
-import { BottomSheetModal, BottomSheetScrollView } from '@gorhom/bottom-sheet';
+import { BottomSheetModal } from '@gorhom/bottom-sheet';
 
 export default function NewEventApplication({drawEvent}) {
   const [expandOptions, setExpandOptions] = useState(-1);
@@ -42,8 +42,9 @@ export default function NewEventApplication({drawEvent}) {
       Linking.openURL(drawEvent.application_link);
       return;
     }
-    bottomPopupRef?.current?.snapToIndex(0);
+    bottomPopupRef?.current?.snapToIndex(1);
   };
+  console.log("loading", loading, "expandIndex", expandOptions)
   return (
     <>
     <Div
@@ -73,7 +74,7 @@ export default function NewEventApplication({drawEvent}) {
                 bgGray400={!(orderable&&!loading&&(expandOptions==-1||(expandOptions!=-1&&canUploadEventApplication)))}
                 onPress={orderable && (expandOptions==-1 ? !loading && handlePressInitialOrder : canUploadEventApplication && (()=>{bottomPopupRef?.current?.close();uploadEventApplication();}))}>
                 <Span white bold>
-                  {expandOptions!=-1 ? "응모하기" : (loading ? <ActivityIndicator /> : '응모하기')}
+                  {loading ? <ActivityIndicator /> : '응모하기'}
                 </Span>
               </Div>
             </Col>
@@ -83,9 +84,9 @@ export default function NewEventApplication({drawEvent}) {
     </Div>
     <BottomPopup
         ref={bottomPopupRef}
-        snapPoints={["50%", "80%"]}
+        snapPoints={["30%", "55%", "80%"]}
         index={-1}
-        onChange={(_,t)=>setExpandOptions(t)}
+        onChange={(index)=>setExpandOptions(index)}
         >
           <Div px20 py10>
           <Row itemsCenter>
