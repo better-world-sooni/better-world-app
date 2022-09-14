@@ -19,6 +19,7 @@ import { BottomSheetModal, BottomSheetScrollView } from '@gorhom/bottom-sheet';
 export default function NewEventApplication({drawEvent}) {
   const [expandOptions, setExpandOptions] = useState(-1);
   const gotoOrderList = useGotoOrderList();
+  const [canUploadEventApplication, setCanUploadEventApplication] = useState(false)
   const uploadSuccessCallback = () => {
     gotoOrderList();
   };
@@ -55,7 +56,7 @@ export default function NewEventApplication({drawEvent}) {
           width: 0,
           height: 4,
         },
-        shadowOpacity: 0.1,
+        shadowOpacity: expandOptions==-1 ? 0.1:0,
         shadowRadius: 4,
         elevation: 2,
       }}
@@ -64,15 +65,15 @@ export default function NewEventApplication({drawEvent}) {
           <Row itemsCenter>
             <Col>
               <Div
-                bgBlack={orderable}
+                bgBlack={orderable&&!loading&&(expandOptions==-1||(expandOptions!=-1&&canUploadEventApplication))}
                 h50
                 rounded10
                 itemsCenter
                 justifyCenter
-                bgGray400={!orderable}
-                onPress={expandOptions==-1 ? handlePressInitialOrder : uploadEventApplication}>
+                bgGray400={!(orderable&&!loading&&(expandOptions==-1||(expandOptions!=-1&&canUploadEventApplication)))}
+                onPress={orderable && (expandOptions==-1 ? !loading && handlePressInitialOrder : canUploadEventApplication && (()=>{bottomPopupRef?.current?.close();uploadEventApplication();}))}>
                 <Span white bold>
-                  {expandOptions==-1 ? "응모하기" : (loading ? <ActivityIndicator /> : '응모하기')}
+                  {expandOptions!=-1 ? "응모하기" : (loading ? <ActivityIndicator /> : '응모하기')}
                 </Span>
               </Div>
             </Col>
@@ -101,6 +102,7 @@ export default function NewEventApplication({drawEvent}) {
                     <OrderCategories
                       orderCategories={orderOptions}
                       onPressOption={handleSelectOption}
+                      setCanUploadEventApplication={setCanUploadEventApplication}
                     />
                   </Div>
                 )}
@@ -112,12 +114,17 @@ export default function NewEventApplication({drawEvent}) {
   );
 }
 
-function OrderCategories({orderCategories, onPressOption}) {
+function OrderCategories({orderCategories, onPressOption, setCanUploadEventApplication}) {
   const [activeSection, setActiveSection] = useState(0);
   const handlePressSection = index => {
     if (index == activeSection) setActiveSection(null);
     else setActiveSection(index);
   };
+  const handleNextSection = index => {
+    const nextIndex = orderCategories.reduce((nextIndex, orderCategory, idx)=> (orderCategory.selectedOption==null && idx!=index && idx<nextIndex) ? idx:nextIndex, orderCategories.length)
+    if (nextIndex >= orderCategories.length) {setActiveSection(null);setCanUploadEventApplication(true)}
+    else setActiveSection(nextIndex);
+  }
   return (
     <Div border={0.5} borderGray200 rounded10 overflowHidden>
       <Accordion
@@ -150,6 +157,7 @@ function OrderCategories({orderCategories, onPressOption}) {
             orderCategory={content}
             orderCategoryIndex={index}
             onPressOption={onPressOption}
+            onPressToNext={handleNextSection}
           />
         )}
         onChange={() => {}}
@@ -158,7 +166,7 @@ function OrderCategories({orderCategories, onPressOption}) {
   );
 }
 
-function OrderOptions({orderCategory, orderCategoryIndex, onPressOption}) {
+function OrderOptions({orderCategory, orderCategoryIndex, onPressOption, onPressToNext}) {
   return (
     <>
       {orderCategory.options.map((option, index) => (
@@ -168,7 +176,7 @@ function OrderOptions({orderCategory, orderCategoryIndex, onPressOption}) {
           px16
           bgGray100
           itemsCenter
-          onPress={() => onPressOption(orderCategoryIndex, index)}>
+          onPress={() => {onPressOption(orderCategoryIndex, index);onPressToNext(orderCategoryIndex)}}>
           <Col>
             <Span fontSize={14}>{option.name}</Span>
           </Col>
