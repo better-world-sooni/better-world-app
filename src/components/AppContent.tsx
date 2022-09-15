@@ -10,7 +10,6 @@ import {Home, Send, User, ShoppingBag} from 'react-native-feather';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createStackNavigator, TransitionPresets} from '@react-navigation/stack';
 import {NAV_NAMES} from 'src/modules/navNames';
-import HomeScreen from 'src/screens/Home/HomeScreen';
 import ProfileScreen from 'src/screens/Home/ProfileScreen';
 import SplashScreen from 'src/screens/Common/SplashScreen';
 import SignInScreen from 'src/screens/Auth/SignInScreen';
@@ -54,7 +53,6 @@ import StoreSettingScreen from 'src/screens/StoreSettingScreen';
 import MerchandiseScreen from 'src/screens/MerchandiseScreen';
 import MerchandiseSelectScreen from 'src/screens/MerchandiseSelectScreen';
 import OrderListScreen from 'src/screens/OrderListScreen';
-import CouponListScreen from 'src/screens/CouponListScreen';
 import CollectionOrderListScreen from 'src/screens/CollectionOrderListScreen';
 import {ChatRoomEnterType} from 'src/screens/ChatRoomScreen';
 import NftSettingScreen from 'src/screens/NftSettingScreen';
@@ -417,10 +415,6 @@ export const AppContent = ({notificationOpenData}) => {
     {
       name: NAV_NAMES.OrderList,
       component: OrderListScreen,
-    },
-    {
-      name: NAV_NAMES.CouponList,
-      component: CouponListScreen,
     },
     {
       name: NAV_NAMES.CollectionOrderList,

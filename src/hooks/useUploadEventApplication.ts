@@ -11,13 +11,14 @@ export type OrderOption = {
 	merchandise_id: number;
 	category: string;
 	selected: boolean;
+	value?: string;
 };
 export type SelectableOrderCategory = {
 	name: string;
-	drawEventId:EventApplicationInputType
+	inputType:EventApplicationInputType
 	selectedOption: OrderOption
 	options: OrderOption[];
-};
+}; 
 
 export default function useUploadEventApplication({drawEvent, uploadSuccessCallback}){
 	const getOrderCategories = orderOptions => {
@@ -25,10 +26,10 @@ export default function useUploadEventApplication({drawEvent, uploadSuccessCallb
 		  .groupBy('category')
 		  .map((value, key) => {
 			const options = value.map((item) => ({...item, selected: false }))
-			if (options.length==1 && options[0].input_type==EventApplicationInputType.CUSTOM_INPUT) return {name: key, drawEventId:EventApplicationInputType.CUSTOM_INPUT, selectedOption: null, options} 
-			if (options.length==1 && options[0].input_type==EventApplicationInputType.DISCORD_ID) return {name: key, drawEventId:EventApplicationInputType.DISCORD_ID, selectedOption: null, options} 
-			if (options.length==1 && options[0].input_type==EventApplicationInputType.TWITTER_ID) return {name: key, drawEventId:EventApplicationInputType.TWITTER_ID, selectedOption: null, options} 
-			return {name: key, drawEventId:EventApplicationInputType.SELECT, selectedOption: null, options} 
+			if (options.length==1 && options[0].input_type==EventApplicationInputType.CUSTOM_INPUT) return {name: key, inputType: EventApplicationInputType.CUSTOM_INPUT, selectedOption: null, options} 
+			if (options.length==1 && options[0].input_type==EventApplicationInputType.DISCORD_ID) return {name: key, inputType: EventApplicationInputType.DISCORD_ID, selectedOption: null, options} 
+			if (options.length==1 && options[0].input_type==EventApplicationInputType.TWITTER_ID) return {name: key, inputType: EventApplicationInputType.TWITTER_ID, selectedOption: null, options} 
+			return {name: key, inputType: EventApplicationInputType.SELECT, selectedOption: null, options} 
 		  })
 		  .value();
 	  };
@@ -48,7 +49,7 @@ export default function useUploadEventApplication({drawEvent, uploadSuccessCallb
 		}
 		const selectedOptions= {}
 		for(const orderCategory of orderOptions){
-			if(orderCategory.selectedOption) selectedOptions[orderCategory.selectedOption.category] = orderCategory.selectedOption.id
+			if(orderCategory.selectedOption) selectedOptions[orderCategory.selectedOption.category] = orderCategory.selectedOption
 			else {
 				setError('옵션을 선택해 주세요.')
 			}

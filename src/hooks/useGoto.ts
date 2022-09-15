@@ -495,14 +495,6 @@ export function useGotoOnboarding() {
   return gotoOnboarding
 }
 
-export function useGotoNewCoupon(){
-  const navigation = useNavigation()
-  const gotoNewCoupon = () => {
-    navigation.navigate(NAV_NAMES.NewCoupon as never)
-  };
-  return gotoNewCoupon
-}
-
 export function useGotoConfirmationModal() {
   const navigation = useNavigation()
   const gotoConfirmation = ({onCancel = null, onConfirm = null, text}) => {
@@ -588,18 +580,6 @@ export function useGotoCollectionOrderList(){
     navigation.navigate(NAV_NAMES.CollectionOrderList as never)
   }
   return gotoCollectionOrderList
-}
-
-export function useGotoCouponList(){
-  const navigation = useNavigation()
-  const apiGETWithToken = useApiGETWithToken()
-  const gotoCouponList = () => {
-    apiGETWithToken(
-      apis.nft.coupon.list()
-    )
-    navigation.navigate(NAV_NAMES.CouponList as never)
-  }
-  return gotoCouponList
 }
 
 export function useGotoCollectionEventList({nftCollection}){

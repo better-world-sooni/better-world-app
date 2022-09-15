@@ -47,10 +47,8 @@ export const NAV_NAMES = {
     StoreSetting: "StoreSetting",
     NewMerchandise: "NewMerchandise",
     Merchandise: "Merchandise",
-    NewCoupon: "NewCoupon",
     MerchandiseSelect: "MerchandiseSelect",
     OrderList: "OrderList",
-    CouponList: "CouponList",
     CollectionOrderList: "CollectionOrderList",
     NewDrawEvent: "NewDrawEvent",
     DrawEvent: "DrawEvent"

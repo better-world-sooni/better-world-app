@@ -1,37 +1,17 @@
-import React, {useRef} from 'react';
-import {Col} from 'src/components/common/Col';
+import React from 'react';
 import {Div} from 'src/components/common/Div';
-import {Row} from 'src/components/common/Row';
 import {Span} from 'src/components/common/Span';
-import {FlatList, ScrollView} from 'src/components/common/ViewComponents';
-import BottomPopup from 'src/components/common/BottomPopup';
-import {BottomSheetModal} from '@gorhom/bottom-sheet';
+import {FlatList} from 'src/components/common/ViewComponents';
 import {useApiSelector} from 'src/redux/asyncReducer';
 import apis from 'src/modules/apis';
-import NftChooseBottomSheetScrollView from 'src/components/common/NftChooseBottomSheetScrollView';
 import {NAV_NAMES} from 'src/modules/navNames';
-import {DEVICE_HEIGHT} from 'src/modules/styles';
-import {HAS_NOTCH} from 'src/modules/constants';
-import {shallowEqual, useSelector} from 'react-redux';
-import {RootState} from 'src/redux/rootReducer';
 import {NftIdentity} from 'src/components/NftIdentity';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 const OnboardingScreen = ({navigation}) => {
-  const bottomPopupRef = useRef<BottomSheetModal>(null);
   const {data: profileRes, isLoading: profileLoad} = useApiSelector(
     apis.profile._,
   );
-  const {currentUser} = useSelector(
-    (root: RootState) => root.app.session,
-    shallowEqual,
-  );
-  const getSnapPoints = itemsLength => {
-    const fullHeight = 0.9 * DEVICE_HEIGHT;
-    const unceilingedHeight = itemsLength * 70 + (HAS_NOTCH ? 130 : 110);
-    if (unceilingedHeight > fullHeight) return [fullHeight];
-    return [unceilingedHeight];
-  };
   const notchHeight = useSafeAreaInsets().top;
   const headerHeight = notchHeight + 50;
 

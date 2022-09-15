@@ -15,9 +15,8 @@ import {FlatList, ImageBackground} from 'src/components/common/ViewComponents';
 import ListEmptyComponent from 'src/components/common/ListEmptyComponent';
 import {ActivityIndicator, RefreshControl} from 'react-native';
 import {HAS_NOTCH} from 'src/modules/constants';
-import Merchandise from 'src/components/common/Merchandise';
 import {Clock, Gift} from 'react-native-feather';
-import {useGotoCouponList, useGotoOrderList} from 'src/hooks/useGoto';
+import {useGotoOrderList} from 'src/hooks/useGoto';
 import DrawEvent from 'src/components/common/DrawEvent';
 
 export default function StoreScreen() {
@@ -38,7 +37,6 @@ export default function StoreScreen() {
     reloadGetWithToken(apis.feed.draw_event());
   };
   const gotoOrderList = useGotoOrderList();
-  const gotoCouponList = useGotoCouponList();
   const paddingX = 7;
   const mx = 8;
   const my = 8;
@@ -57,16 +55,13 @@ export default function StoreScreen() {
             </Span>
           </Col>
           <Col />
-          <Col auto mr16 onPress={gotoOrderList}>
+          <Col auto onPress={gotoOrderList}>
             <Clock
               width={22}
               height={22}
               color={Colors.black}
               strokeWidth={2}
             />
-          </Col>
-          <Col auto onPress={gotoCouponList}>
-            <Gift width={22} height={22} color={Colors.black} strokeWidth={2} />
           </Col>
         </Row>
       </Div>

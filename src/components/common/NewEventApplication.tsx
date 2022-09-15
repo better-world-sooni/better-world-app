@@ -142,40 +142,65 @@ function OrderCategories({orderCategories, onPressOption, setCanUploadEventAppli
     else setActiveSection(nextIndex);
   }
   return (
-    <Div border={0.5} borderGray200 rounded10 overflowHidden mb={90+(HAS_NOTCH ? 27 : 12)}>
+    <Div
+      border={0.5}
+      borderGray200
+      rounded10
+      overflowHidden
+      mb={90 + (HAS_NOTCH ? 27 : 12)}>
       <Accordion
         activeSections={[activeSection]}
         sections={orderCategories as SelectableOrderCategory[]}
         underlayColor={Colors.opacity[100]}
-        renderHeader={(content, index) => (
-           content.drawEventId==EventApplicationInputType.SELECT ? <Row
-            wFull
-            py12
-            px16
-            borderBottom={index == orderCategories.length - 1 ? 0 : 0.5}
-            borderGray200
-            itemsCenter
-            onPress={() => handlePressSection(index)}>
-            <Col>
-              <Span bold fontSize={16}>
-                {content.name}
-              </Span>
-            </Col>
-            <Col auto>
-              {content.selectedOption && (
-                <Span>{content.selectedOption.name}</Span>
-              )}
-            </Col>
-          </Row> : <WriteOption props={{wFull:true, py:2, px:8, borderBottom:index == orderCategories.length - 1 ? 0 : 0.5, borderGray200:true }} orderCategoryIndex={index} activeSection={activeSection} onPressToNext={handleNextSection} onPressOption={onPressOption} inputType={content.drawEventId} onPress={()=>handlePressSection(index)}/>
-        )}
-        renderContent={(content, index) => (
-          content.drawEventId==EventApplicationInputType.SELECT ?<OrderOptions
-            orderCategory={content}
-            orderCategoryIndex={index}
-            onPressOption={onPressOption}
-            onPressToNext={handleNextSection}
-          />:null
-        )}
+        renderHeader={(content, index) =>
+          content.inputType == EventApplicationInputType.SELECT ? (
+            <Row
+              wFull
+              py12
+              px16
+              borderBottom={index == orderCategories.length - 1 ? 0 : 0.5}
+              borderGray200
+              itemsCenter
+              onPress={() => handlePressSection(index)}>
+              <Col>
+                <Span bold fontSize={16}>
+                  {content.name}
+                </Span>
+              </Col>
+              <Col auto>
+                {content.selectedOption && (
+                  <Span>{content.selectedOption.name}</Span>
+                )}
+              </Col>
+            </Row>
+          ) : (
+            <WriteOption
+              props={{
+                wFull: true,
+                py: 2,
+                px: 8,
+                borderBottom: index == orderCategories.length - 1 ? 0 : 0.5,
+                borderGray200: true,
+              }}
+              orderCategoryIndex={index}
+              activeSection={activeSection}
+              onPressToNext={handleNextSection}
+              onPressOption={onPressOption}
+              inputType={content.inputType}
+              onPress={() => handlePressSection(index)}
+            />
+          )
+        }
+        renderContent={(content, index) =>
+          content.inputType == EventApplicationInputType.SELECT ? (
+            <OrderOptions
+              orderCategory={content}
+              orderCategoryIndex={index}
+              onPressOption={onPressOption}
+              onPressToNext={handleNextSection}
+            />
+          ) : null
+        }
         onChange={() => {}}
       />
     </Div>
