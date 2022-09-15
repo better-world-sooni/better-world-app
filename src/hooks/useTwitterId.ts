@@ -9,6 +9,13 @@ export default function useTwitterId(nft) {
     const twitterProfileLink = twitterId ?`https://www.twitter.com/${twitterId}` : null;
     const isTwitterIdSavable = isTwitterIdEditting && !twitterIdError
     
+    const isError = (value) => {
+		if (!/^@?(\w){1,15}$/.test(value)) {
+			return true;
+		}
+		return false;
+    }
+
     const handlePressTwitterLink = () => {
         if(twitterProfileLink) Linking.openURL(twitterProfileLink)
     }
@@ -25,11 +32,11 @@ export default function useTwitterId(nft) {
         handleChangeText(text)
     }
     const getNameError = (value) => {
-		if (!/^@?(\w){1,15}$/.test(value)) {
+		if (isError(value)) {
 			return "유효한 트위터 아이디가 아닙니다.";
 		}
 		return "";
 	};
 
-    return {twitterId, twitterProfileLink, twitterIdHasChanged, twitterIdError, isTwitterIdEditting, isTwitterIdSavable, toggleTwitterIdEdit, handlePressTwitterLink, handleChangeTwitterId};
+    return {twitterId, twitterProfileLink, twitterIdHasChanged, twitterIdError, isTwitterIdEditting, isTwitterIdSavable, toggleTwitterIdEdit, handlePressTwitterLink, handleChangeTwitterId, isError};
 };
