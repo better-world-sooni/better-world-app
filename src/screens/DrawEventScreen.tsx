@@ -6,7 +6,7 @@ import {ChevronLeft} from 'react-native-feather';
 import apis from 'src/modules/apis';
 import {useNavigation} from '@react-navigation/native';
 import {Span} from 'src/components/common/Span';
-import {ScrollView} from 'src/components/common/ViewComponents';
+import {KeyboardAvoidingView, ScrollView} from 'src/components/common/ViewComponents';
 import {useApiSelector} from 'src/redux/asyncReducer';
 import {Colors, DEVICE_WIDTH} from 'src/modules/styles';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
@@ -17,6 +17,8 @@ import MerchandiseLoading from 'src/components/loading/MerchandiseLoading';
 import ImageCarousel from 'src/components/common/ImageCarousel';
 import useDrawEventStatus from 'src/hooks/useDrawEventStatus';
 import NewEventApplication from 'src/components/common/NewEventApplication';
+import { Platform } from 'react-native';
+import { HAS_NOTCH } from 'src/modules/constants';
 
 export default function DrawEventScreen() {
   const {data: drawEventRes, isLoading: drawEventLoading} = useApiSelector(
@@ -29,9 +31,15 @@ export default function DrawEventScreen() {
   const headerHeight = notchHeight + 50;
   const drawEventStatus = useDrawEventStatus({drawEvent});
   return (
+    <>
+    <KeyboardAvoidingView
+    flex={1}
+    bgWhite
+    relative
+    behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
     <Div relative bgWhite flex={1}>
-      <Div h={headerHeight} zIndex={100}>
-        <Div zIndex={100} absolute w={DEVICE_WIDTH} top={notchHeight + 5}>
+      <Div h={headerHeight}>
+        <Div absolute w={DEVICE_WIDTH} top={notchHeight + 5}>
           <Row itemsCenter py5 h40 px8>
             <Col auto onPress={goBack}>
               <ChevronLeft height={30} color={Colors.black} strokeWidth={2} />
@@ -108,5 +116,8 @@ export default function DrawEventScreen() {
       </ScrollView>
       {drawEvent && <NewEventApplication drawEvent={drawEvent} />}
     </Div>
+    </KeyboardAvoidingView>
+    <Div h={HAS_NOTCH ? 27 : 12} bgWhite />
+    </>
   );
 }
