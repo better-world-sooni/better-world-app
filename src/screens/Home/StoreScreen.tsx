@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useRef} from 'react';
 import apis from 'src/modules/apis';
 import {
   useApiSelector,
@@ -19,7 +19,13 @@ import {Clock, Gift} from 'react-native-feather';
 import {useGotoOrderList} from 'src/hooks/useGoto';
 import DrawEvent from 'src/components/common/DrawEvent';
 
+enum DrawEventFeedFilter {
+  All = 'all',
+  Eligible = 'eligible',
+}
+
 export default function StoreScreen() {
+  const flatlistRef = useRef(null);
   const {data, isLoading, isPaginating, page, isNotPaginatable} =
     useApiSelector(apis.feed.draw_event);
   const {data: nftCollectionRes, isLoading: nftCollectionLoad} = useApiSelector(
@@ -27,14 +33,37 @@ export default function StoreScreen() {
   );
   const nftCollection = nftCollectionRes?.nft_collection;
   const drawEvents = data ? data.draw_events : [];
-  const reloadGetWithToken = useReloadGETWithToken();
+  const reloadGETWithToken = useReloadGETWithToken();
   const paginateGetWithToken = usePaginateGETWithToken();
   const handleEndReached = () => {
     if (isPaginating || isNotPaginatable) return;
-    paginateGetWithToken(apis.feed.draw_event(page + 1), 'draw_events');
+    paginateGetWithToken(
+      apis.feed.draw_event(data?.filter, page + 1),
+      'draw_events',
+    );
   };
   const handleRefresh = () => {
-    reloadGetWithToken(apis.feed.draw_event());
+    reloadGETWithToken(apis.feed.draw_event());
+  };
+  const scrollToTop = () => {
+    flatlistRef?.current
+      ?.getScrollResponder()
+      ?.scrollTo({x: 0, y: 0, animated: true});
+  };
+  const handlePressFilter = filter => {
+    scrollToTop();
+    if (
+      filter == DrawEventFeedFilter.All &&
+      data?.filter !== DrawEventFeedFilter.All
+    ) {
+      reloadGETWithToken(apis.feed.draw_event(filter));
+    }
+    if (
+      filter == DrawEventFeedFilter.Eligible &&
+      data?.filter !== DrawEventFeedFilter.Eligible
+    ) {
+      reloadGETWithToken(apis.feed.draw_event(filter));
+    }
   };
   const gotoOrderList = useGotoOrderList();
   const paddingX = 7;
@@ -49,9 +78,30 @@ export default function StoreScreen() {
       <Div h={notchHeight}></Div>
       <Div bgWhite h={50} justifyCenter borderBottom={0.5} borderGray200>
         <Row itemsCenter py5 h40 px15>
-          <Col auto>
-            <Span bold fontSize={19}>
-              {'이벤트'}
+          <Col
+            auto
+            mr16
+            py2
+            borderBottom={data?.filter == DrawEventFeedFilter.Eligible ? 2 : 0}
+            onPress={() => handlePressFilter(DrawEventFeedFilter.Eligible)}>
+            <Span
+              bold
+              fontSize={19}
+              gray400={data?.filter !== DrawEventFeedFilter.Eligible}>
+              {'응모가능'}
+            </Span>
+          </Col>
+          <Col
+            auto
+            mr16
+            py2
+            borderBottom={data?.filter == DrawEventFeedFilter.All ? 2 : 0}
+            onPress={() => handlePressFilter(DrawEventFeedFilter.All)}>
+            <Span
+              bold
+              fontSize={19}
+              gray400={data?.filter !== DrawEventFeedFilter.All}>
+              {'전체'}
             </Span>
           </Col>
           <Col />
@@ -66,6 +116,7 @@ export default function StoreScreen() {
         </Row>
       </Div>
       <FlatList
+        ref={flatlistRef}
         showsVerticalScrollIndicator={false}
         keyExtractor={item => (item as any).id}
         contentContainerStyle={{paddingRight: paddingX, paddingLeft: paddingX}}

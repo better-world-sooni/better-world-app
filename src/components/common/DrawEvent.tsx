@@ -1,7 +1,6 @@
 import React from 'react';
 import useDrawEventStatus from 'src/hooks/useDrawEventStatus';
-import {useGotoDrawEvent, useGotoMerchandise} from 'src/hooks/useGoto';
-import {getCommaSeparatedNumber} from 'src/utils/numberUtils';
+import {useGotoDrawEvent} from 'src/hooks/useGoto';
 import {Div} from './Div';
 import {Img} from './Img';
 import {Span} from './Span';
@@ -45,12 +44,12 @@ export default function DrawEvent({
         </Div>
       </Div>
       <Div mt8>
-        <Span gray700 bold>
+        <Span gray700 bold numberOfLines={1}>
           {drawEvent.name}
         </Span>
       </Div>
       <Div mt4>
-        <Span bold fontSize={16}>
+        <Span bold fontSize={16} numberOfLines={1}>
           {drawEvent.giveaway_merchandise}
         </Span>
       </Div>

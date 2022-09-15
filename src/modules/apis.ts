@@ -195,7 +195,7 @@ const apis = {
     count: () => apiV1(`/feed/count`),
     forum: (filter?, page?) => apiV1(`/feed/forum${urlParams({page, filter})}`),
     social: (filter?,page?) => apiV1(`/feed/social${urlParams({page, filter})}`),
-    draw_event: (page?) => apiV1(`/feed/draw_event${urlParams({page})}`),
+    draw_event: (filter?,page?) => apiV1(`/feed/draw_event${urlParams({page, filter})}`),
     collection: (contractAddress, type?, page?) => apiV1(`/feed/collection?contract_address${urlParams({contract_address: contractAddress, type, page})}`),
   },
   presignedUrl: {

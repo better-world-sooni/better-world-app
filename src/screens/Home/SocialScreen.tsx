@@ -51,7 +51,7 @@ export default function SocialScreen() {
   const menuOptions = [
     {
       id: SocialFeedFilter.All,
-      title: `전체 피드`,
+      title: `전체`,
       image: Platform.select({
         ios: 'globe.asia.australia',
       }),
@@ -65,7 +65,7 @@ export default function SocialScreen() {
     // },
     {
       id: SocialFeedFilter.Following,
-      title: `팔로잉 피드`,
+      title: `팔로잉`,
       image: Platform.select({
         ios: 'star',
       }),
@@ -275,7 +275,7 @@ export default function SocialScreen() {
                       px8
                       py4
                       justifyCenter>
-                      <Span white fontSize={10} bold>
+                      <Span white fontSize={10} bold numberOfLines={1}>
                         {unreadNotificationCount}
                       </Span>
                     </Div>

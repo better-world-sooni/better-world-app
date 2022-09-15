@@ -7,12 +7,10 @@ import {
   asyncActions,
   useApiGET,
   useApiGETAsync,
-  useApiGETWithToken,
   useApiPOSTWithToken,
   useApiPUTWithToken,
   useReloadGETWithToken,
 } from 'src/redux/asyncReducer';
-import notifee from '@notifee/react-native';
 
 const usePreloadData = () => {
   const apiGETAsync = useApiGETAsync();
