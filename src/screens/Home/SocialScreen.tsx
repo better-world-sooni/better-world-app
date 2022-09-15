@@ -44,7 +44,6 @@ export default function SocialScreen() {
   } = useApiSelector(apis.feed.social);
   const {data: nftProfileRes} = useApiSelector(apis.nft._());
   const nft = nftProfileRes?.nft;
-  console.log(nft);
   const {data: nftCollectionRes, isLoading: nftCollectionLoad} = useApiSelector(
     apis.nft_collection._(),
   );
@@ -57,13 +56,13 @@ export default function SocialScreen() {
         ios: 'globe.asia.australia',
       }),
     },
-    {
-      id: SocialFeedFilter.Community,
-      title: `커뮤니티 피드`,
-      image: Platform.select({
-        ios: 'person.3',
-      }),
-    },
+    // {
+    //   id: SocialFeedFilter.Community,
+    //   title: `커뮤니티 피드`,
+    //   image: Platform.select({
+    //     ios: 'person.3',
+    //   }),
+    // },
     {
       id: SocialFeedFilter.Following,
       title: `팔로잉 피드`,
@@ -148,10 +147,10 @@ export default function SocialScreen() {
         }}
         data={feedRes ? feedRes.feed : []}
         TopComponent={
-          <Row itemsCenter>
-            <Col itemsStart rounded100 onPress={openSideMenu}>
-              {nft!.privilege ? (
-                nftCollectionRes?.nft_collection ? (
+          nft?.privilege ? (
+            <Row itemsCenter>
+              <Col itemsStart rounded100 onPress={openSideMenu}>
+                {nftCollectionRes?.nft_collection ? (
                   <Img
                     h30
                     w30
@@ -162,64 +161,129 @@ export default function SocialScreen() {
                     uri={nftCollectionRes.nft_collection.image_uri}></Img>
                 ) : (
                   <Div bgGray200 h30 w30 rounded100 />
-                )
-              ) : (
+                )}
+              </Col>
+              <Col auto>
+                <MenuView onPressAction={handlePressMenu} actions={menuOptions}>
+                  <Row itemsCenter>
+                    <Col auto>
+                      <Span fontSize={19} bold mx4>
+                        {menuOptions.filter(
+                          menuOption => menuOption.id == feedRes?.filter,
+                        )[0]?.title || '피드를 다시 로드해주세요'}
+                      </Span>
+                    </Col>
+                    <Col auto>
+                      <ChevronDown
+                        strokeWidth={2}
+                        color={Colors.black}
+                        height={20}
+                        width={20}
+                      />
+                    </Col>
+                  </Row>
+                </MenuView>
+              </Col>
+              <Col itemsEnd>
+                <Div onPress={() => gotoNotifications()} relative>
+                  <Bell
+                    strokeWidth={2}
+                    color={Colors.black}
+                    height={22}
+                    width={22}
+                  />
+                  {unreadNotificationCount > 0 && (
+                    <Div
+                      absolute
+                      top={-10}
+                      right={-10}
+                      auto
+                      rounded100
+                      bgDanger
+                      px8
+                      py4
+                      justifyCenter>
+                      <Span white fontSize={10} bold>
+                        {unreadNotificationCount}
+                      </Span>
+                    </Div>
+                  )}
+                </Div>
+              </Col>
+            </Row>
+          ) : (
+            <Row itemsCenter>
+              <Col
+                auto
+                mr16
+                py2
+                borderBottom={menuOptions[0].id == feedRes?.filter ? 2 : 0}
+                onPress={() =>
+                  handlePressMenu({nativeEvent: {event: SocialFeedFilter.All}})
+                }>
+                <Span
+                  fontSize={19}
+                  bold
+                  gray400={menuOptions[0].id !== feedRes?.filter}
+                  mx4>
+                  {menuOptions[0].title}
+                </Span>
+              </Col>
+              <Col
+                auto
+                mr16
+                py2
+                borderBottom={menuOptions[1].id == feedRes?.filter ? 2 : 0}
+                onPress={() =>
+                  handlePressMenu({
+                    nativeEvent: {event: SocialFeedFilter.Following},
+                  })
+                }>
+                <Span
+                  fontSize={19}
+                  bold
+                  gray400={menuOptions[1].id !== feedRes?.filter}
+                  mx4>
+                  {menuOptions[1].title}
+                </Span>
+              </Col>
+              <Col />
+              <Col auto onPress={openSideMenu} pl16>
                 <Search
                   strokeWidth={2}
                   color={Colors.black}
                   height={22}
                   width={22}
                 />
-              )}
-            </Col>
-            <Col auto>
-              <MenuView onPressAction={handlePressMenu} actions={menuOptions}>
-                <Row itemsCenter>
-                  <Col auto>
-                    <Span fontSize={17} bold mx4>
-                      {menuOptions.filter(
-                        menuOption => menuOption.id == feedRes?.filter,
-                      )[0]?.title || '피드를 다시 로드해주세요'}
-                    </Span>
-                  </Col>
-                  <Col auto>
-                    <ChevronDown
-                      strokeWidth={2}
-                      color={Colors.black}
-                      height={20}
-                      width={20}
-                    />
-                  </Col>
-                </Row>
-              </MenuView>
-            </Col>
-            <Col itemsEnd>
-              <Div onPress={() => gotoNotifications()} relative>
-                <Bell
-                  strokeWidth={2}
-                  color={Colors.black}
-                  height={22}
-                  width={22}
-                />
-                {unreadNotificationCount > 0 && (
-                  <Div
-                    absolute
-                    top={-10}
-                    right={-10}
-                    auto
-                    rounded100
-                    bgDanger
-                    px8
-                    py4
-                    justifyCenter>
-                    <Span white fontSize={10} bold>
-                      {unreadNotificationCount}
-                    </Span>
-                  </Div>
-                )}
-              </Div>
-            </Col>
-          </Row>
+              </Col>
+              <Col auto pl16>
+                <Div onPress={() => gotoNotifications()} relative>
+                  <Bell
+                    strokeWidth={2}
+                    color={Colors.black}
+                    height={22}
+                    width={22}
+                  />
+                  {unreadNotificationCount > 0 && (
+                    <Div
+                      absolute
+                      top={-10}
+                      right={-10}
+                      auto
+                      rounded100
+                      bgDanger
+                      px8
+                      py4
+                      justifyCenter>
+                      <Span white fontSize={10} bold>
+                        {unreadNotificationCount}
+                      </Span>
+                    </Div>
+                  )}
+                </Div>
+              </Col>
+            </Row>
+          )
         }
       />
     </SideMenu>
