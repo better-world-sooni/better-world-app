@@ -118,16 +118,16 @@ function PostContent({
   ].filter(option => option);
 
   const actionIconDefaultProps = {
-    width: 16,
-    height: 16,
+    width: 17,
+    height: 17,
     color: Colors.gray[600],
     strokeWidth: 1.6,
   };
   const heartProps = liked
     ? {
         fill: Colors.danger.DEFAULT,
-        width: 16,
-        height: 16,
+        width: 17,
+        height: 17,
         color: Colors.danger.DEFAULT,
         strokeWidth: 2,
       }
@@ -135,8 +135,8 @@ function PostContent({
   const forVoteProps = hasVotedFor
     ? {
         fill: Colors.info.DEFAULT,
-        width: 16,
-        height: 16,
+        width: 17,
+        height: 17,
         color: Colors.info.DEFAULT,
         strokeWidth: 2,
       }
@@ -144,8 +144,8 @@ function PostContent({
   const againstVoteProps = hasVotedAgainst
     ? {
         fill: Colors.danger.DEFAULT,
-        width: 16,
-        height: 16,
+        width: 17,
+        height: 17,
         color: Colors.danger.DEFAULT,
         strokeWidth: 2,
       }
@@ -378,13 +378,17 @@ function PostContent({
                   <Col auto onPress={() => gotoNewPost(post)} mr4>
                     <Repeat {...actionIconDefaultProps} />
                   </Col>
-                  <Col auto mr12>
+                  <Col
+                    auto
+                    mr12
+                    onPress={full ? gotoRepostList : () => gotoNewPost(post)}>
                     <Span
-                      fontSize={12}
+                      fontSize={13}
                       color={Colors.gray[600]}
-                      style={{fontWeight: '600'}}
-                      onPress={gotoRepostList}>
-                      퍼가기 {post.repost_count}회
+                      style={{fontWeight: '600'}}>
+                      {full
+                        ? `퍼가기 ${post.repost_count}회`
+                        : post.repost_count}
                     </Span>
                   </Col>
                   {votingStatus == null && !full && (
@@ -394,11 +398,11 @@ function PostContent({
                       </Col>
                       <Col auto mr12>
                         <Span
-                          fontSize={12}
+                          fontSize={13}
                           style={{fontWeight: '600'}}
                           color={Colors.gray[600]}
                           onPress={() => gotoPost(true)}>
-                          댓글 {post.comments_count}개
+                          {post.comments_count}
                         </Span>
                       </Col>
                     </>
@@ -408,13 +412,12 @@ function PostContent({
                       <Col auto mr4 onPress={handlePressLike}>
                         {<Heart {...heartProps}></Heart>}
                       </Col>
-                      <Col auto>
+                      <Col auto onPress={full ? gotoLikeList : handlePressLike}>
                         <Span
-                          fontSize={12}
+                          fontSize={13}
                           style={{fontWeight: '600'}}
-                          color={Colors.gray[600]}
-                          onPress={gotoLikeList}>
-                          좋아요 {likesCount}개
+                          color={Colors.gray[600]}>
+                          {full ? `좋아요 ${likesCount}개` : likesCount}
                         </Span>
                       </Col>
                     </>

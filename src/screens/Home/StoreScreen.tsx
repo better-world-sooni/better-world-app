@@ -52,7 +52,7 @@ export default function StoreScreen() {
       <Div bgWhite h={50} justifyCenter borderBottom={0.5} borderGray200>
         <Row itemsCenter py5 h40 px15>
           <Col auto>
-            <Span bold fontSize={17}>
+            <Span bold fontSize={19}>
               {'이벤트'}
             </Span>
           </Col>

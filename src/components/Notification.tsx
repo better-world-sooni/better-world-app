@@ -35,8 +35,6 @@ export default function Notification({notification}) {
     shallowEqual,
   );
   const isCurrentNft = useIsCurrentNft(notification.nft);
-  console.log(notification.is_following);
-  console.log(notification);
   return (
     <NotificationMemo
       postId={notification.metadata.post_id}

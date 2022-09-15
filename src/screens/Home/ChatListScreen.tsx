@@ -180,7 +180,7 @@ function ChatListScreen() {
         <Row itemsCenter py5 h40 p8 zIndex={100}>
           <Col itemsStart></Col>
           <Col auto>
-            <Span bold fontSize={17}>
+            <Span bold fontSize={19}>
               채팅
             </Span>
           </Col>
