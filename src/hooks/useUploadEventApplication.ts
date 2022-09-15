@@ -1,6 +1,6 @@
 import { useState } from "react";
 import apis from "src/modules/apis";
-import { usePostPromiseFnWithToken } from "src/redux/asyncReducer";
+import { useApiSelector, usePostPromiseFnWithToken } from "src/redux/asyncReducer";
 import {chain} from 'lodash';
 import useDrawEventStatus from "./useDrawEventStatus";
 import { EventApplicationInputType } from "src/components/NewEventApplicationOptions";
@@ -20,15 +20,16 @@ export type SelectableOrderCategory = {
 	options: OrderOption[];
 }; 
 
-export default function useUploadEventApplication({drawEvent, uploadSuccessCallback}){
+export default function useUploadEventApplication({drawEvent, uploadSuccessCallback}) {
+	const { data } = useApiSelector(apis.nft._());
 	const getOrderCategories = orderOptions => {
 		return chain(orderOptions)
 		  .groupBy('category')
 		  .map((value, key) => {
 			const options = value.map((item) => ({...item, selected: false }))
 			if (options.length==1 && options[0].input_type==EventApplicationInputType.CUSTOM_INPUT) return {name: key, inputType: EventApplicationInputType.CUSTOM_INPUT, selectedOption: null, options} 
-			if (options.length==1 && options[0].input_type==EventApplicationInputType.DISCORD_ID) return {name: key, inputType: EventApplicationInputType.DISCORD_ID, selectedOption: null, options} 
-			if (options.length==1 && options[0].input_type==EventApplicationInputType.TWITTER_ID) return {name: key, inputType: EventApplicationInputType.TWITTER_ID, selectedOption: null, options} 
+			if (options.length==1 && options[0].input_type==EventApplicationInputType.DISCORD_ID) return {name: key, inputType: EventApplicationInputType.DISCORD_ID, selectedOption: data?.nft?.discord_id ? {...options[0], value:data?.nft?.discord_id}: null, options} 
+			if (options.length==1 && options[0].input_type==EventApplicationInputType.TWITTER_ID) return {name: key, inputType: EventApplicationInputType.TWITTER_ID, selectedOption: data?.nft?.twitter_id ? {...options[0], value:data?.nft?.twitter_id}: null, options} 
 			return {name: key, inputType: EventApplicationInputType.SELECT, selectedOption: null, options} 
 		  })
 		  .value();
@@ -81,5 +82,15 @@ export default function useUploadEventApplication({drawEvent, uploadSuccessCallb
 		setOrderOptions(newOrderOptions)
 	}
 
-    return { error, loading, drawEventStatus, orderOptions, handleSelectOption, uploadEventApplication }
+	const handleWriteOption = (categoryIndex, optionValue) => {
+		setError('')
+		const newOrderOptions = [...orderOptions]
+		const categoryToChange = orderOptions[categoryIndex]
+		const changedOptions = {...categoryToChange.options[0], value:optionValue}
+		const changedSelectedCategory = {...categoryToChange, selectedOption: optionValue ? changedOptions:null, options: [orderOptions[categoryIndex]]}
+		newOrderOptions[categoryIndex] = changedSelectedCategory
+		setOrderOptions(newOrderOptions)
+	}
+
+    return { error, loading, drawEventStatus, orderOptions, handleSelectOption, handleWriteOption, uploadEventApplication }
 }

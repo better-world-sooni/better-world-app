@@ -8,6 +8,13 @@ export default function useDiscordId(nft) {
     const [isDiscordIdEditting, setIsEditting] = useState(false)
     const discordProfileLink = discordId ?`https://www.discordapp.com/users/${discordId}` : null;
     const isDiscordIdSavable = isDiscordIdEditting && !discordIdError
+
+    const isError = (value) => {
+		if (!/^.{3,32}#[0-9]{4}$/.test(value)) {
+			return true;
+		}
+		return false;
+    }
     
     const handlePressDiscordLink = () => {
         if(discordProfileLink) Linking.openURL(discordProfileLink)
@@ -25,11 +32,11 @@ export default function useDiscordId(nft) {
         handleChangeText(text)
     }
     const getNameError = (value) => {
-		if (!/^.{3,32}#[0-9]{4}$/.test(value)) {
+		if (isError(value)) {
 			return "유효한 디스코드 아이디가 아닙니다.";
 		}
 		return "";
 	};
 
-    return {discordId, discordProfileLink, discordIdHasChanged, discordIdError, isDiscordIdEditting, isDiscordIdSavable, toggleDiscordIdEdit, handlePressDiscordLink, handleChangeDiscordId};
+    return {discordId, discordProfileLink, discordIdHasChanged, discordIdError, isDiscordIdEditting, isDiscordIdSavable, toggleDiscordIdEdit, handlePressDiscordLink, handleChangeDiscordId, isError};
 };
