@@ -1,20 +1,24 @@
-import React, {useRef, useState} from 'react';
+import React, {useEffect, useMemo, useRef, useState} from 'react';
 import {Colors, varStyle} from 'src/modules/styles';
 import {Div} from './Div';
 import {Span} from './Span';
 import Accordion from 'react-native-collapsible/Accordion';
 import {Row} from './Row';
 import {Col} from './Col';
-import {Check} from 'react-native-feather';
+import {Check, ArrowRight} from 'react-native-feather';
 import {HAS_NOTCH} from 'src/modules/constants';
-import useUploadOrder, {
-  SelectableOrderCategory,
-} from 'src/hooks/useUploadOrder';
-import {ActivityIndicator, Linking} from 'react-native';
+import useUploadOrder from 'src/hooks/useUploadOrder';
+import {ActivityIndicator, Keyboard, KeyboardAvoidingView, Linking, TextInput} from 'react-native';
 import {useGotoOrderList} from 'src/hooks/useGoto';
-import useUploadEventApplication from 'src/hooks/useUploadEventApplication';
+import useUploadEventApplication, { SelectableOrderCategory } from 'src/hooks/useUploadEventApplication';
 import BottomPopup from './BottomPopup';
-import { BottomSheetModal } from '@gorhom/bottom-sheet';
+import { BottomSheetModal, BottomSheetScrollView } from '@gorhom/bottom-sheet';
+import { Img } from './Img';
+import { ICONS } from 'src/modules/icons';
+import useTwitterId from 'src/hooks/useTwitterId';
+import { EventApplicationInputType } from '../NewEventApplicationOptions';
+import BottomSheetTextInput from './BottomSheetTextInput';
+import useDiscordId from 'src/hooks/useDiscordId';
 
 export default function NewEventApplication({drawEvent}) {
   const [expandOptions, setExpandOptions] = useState(-1);
@@ -44,6 +48,10 @@ export default function NewEventApplication({drawEvent}) {
     }
     bottomPopupRef?.current?.snapToIndex(1);
   };
+  const onChangeBottomSheet = (index) => {
+    // if (index==-1) Keyboard.dismiss()
+    setExpandOptions(index);
+  }
   console.log("loading", loading, "expandIndex", expandOptions)
   return (
     <>
@@ -82,13 +90,21 @@ export default function NewEventApplication({drawEvent}) {
       </Div>
       <Div h={HAS_NOTCH ? 27 : 12} bgWhite />
     </Div>
+    <BottomPopupOptions bottomPopupRef={bottomPopupRef} onChangeBottomSheet={onChangeBottomSheet} error={error} orderOptions={orderOptions} handleSelectOption={handleSelectOption} setCanUploadEventApplication={setCanUploadEventApplication} />
+    </>
+  );
+}
+
+const BottomPopupOptions = ({bottomPopupRef, onChangeBottomSheet, error, orderOptions, handleSelectOption, setCanUploadEventApplication}) => {
+  return (
     <BottomPopup
         ref={bottomPopupRef}
-        snapPoints={["30%", "55%", "80%"]}
+        snapPoints={useMemo(() => ["30%", "55%", "80%"], [])}
+        enableContentPanningGesture={true}
         index={-1}
-        onChange={(index)=>setExpandOptions(index)}
+        onChange={onChangeBottomSheet}
         >
-          <Div px20 py10>
+          <BottomSheetScrollView style={{paddingLeft:20, paddingRight:20, paddingTop:10, paddingBottom:10}}>
           <Row itemsCenter>
           <Col>
               <Div mb8>
@@ -109,10 +125,9 @@ export default function NewEventApplication({drawEvent}) {
                 )}
           </Col>
           </Row>
-          </Div>
+          </BottomSheetScrollView>
       </BottomPopup>
-    </>
-  );
+  )
 }
 
 function OrderCategories({orderCategories, onPressOption, setCanUploadEventApplication}) {
@@ -127,13 +142,13 @@ function OrderCategories({orderCategories, onPressOption, setCanUploadEventAppli
     else setActiveSection(nextIndex);
   }
   return (
-    <Div border={0.5} borderGray200 rounded10 overflowHidden>
+    <Div border={0.5} borderGray200 rounded10 overflowHidden mb={90+(HAS_NOTCH ? 27 : 12)}>
       <Accordion
         activeSections={[activeSection]}
         sections={orderCategories as SelectableOrderCategory[]}
         underlayColor={Colors.opacity[100]}
         renderHeader={(content, index) => (
-          <Row
+           content.drawEventId==EventApplicationInputType.SELECT ? <Row
             wFull
             py12
             px16
@@ -151,15 +166,15 @@ function OrderCategories({orderCategories, onPressOption, setCanUploadEventAppli
                 <Span>{content.selectedOption.name}</Span>
               )}
             </Col>
-          </Row>
+          </Row> : <WriteOption props={{wFull:true, py:2, px:8, borderBottom:index == orderCategories.length - 1 ? 0 : 0.5, borderGray200:true }} orderCategoryIndex={index} activeSection={activeSection} onPressToNext={handleNextSection} onPressOption={onPressOption} inputType={content.drawEventId} onPress={()=>handlePressSection(index)}/>
         )}
         renderContent={(content, index) => (
-          <OrderOptions
+          content.drawEventId==EventApplicationInputType.SELECT ?<OrderOptions
             orderCategory={content}
             orderCategoryIndex={index}
             onPressOption={onPressOption}
             onPressToNext={handleNextSection}
-          />
+          />:null
         )}
         onChange={() => {}}
       />
@@ -194,4 +209,77 @@ function OrderOptions({orderCategory, orderCategoryIndex, onPressOption, onPress
       ))}
     </>
   );
+}
+
+const WriteOption = ({orderCategoryIndex, activeSection, onPressToNext, onPressOption, inputType, onPress, props}) => {
+
+  if (inputType==EventApplicationInputType.TWITTER_ID) {
+    const {
+      twitterId,
+      twitterProfileLink,
+      twitterIdHasChanged,
+      twitterIdError,
+      isTwitterIdEditting,
+      isTwitterIdSavable,
+      toggleTwitterIdEdit,
+      handlePressTwitterLink,
+      handleChangeTwitterId,
+    } = useTwitterId({twitter_id:""});
+    return (
+      <BasicInput id={twitterId} handleChangeId={handleChangeTwitterId} idProfileLink={twitterProfileLink} handlePressLink={handlePressTwitterLink} idError={twitterIdError} inputType={inputType} placeholder={"트위터"} props={props} orderCategoryIndex={orderCategoryIndex} activeSection={activeSection} onPressToNext={onPressToNext} onPressOption={onPressOption} onPress={onPress}/>
+    )
+  } else {
+    const {
+      discordId,
+      discordProfileLink,
+      discordIdHasChanged,
+      discordIdError,
+      isDiscordIdEditting,
+      isDiscordIdSavable,
+      handlePressDiscordLink,
+      toggleDiscordIdEdit,
+      handleChangeDiscordId,
+    } = useDiscordId({discord_id:""});
+  return (
+    <BasicInput id={discordId} handleChangeId={handleChangeDiscordId} idProfileLink={discordProfileLink} handlePressLink={handlePressDiscordLink} idError={discordIdError} inputType={inputType} placeholder={"디스코드"} props={props} orderCategoryIndex={orderCategoryIndex} activeSection={activeSection} onPressToNext={onPressToNext} onPressOption={onPressOption} onPress={onPress}/>
+  )
+  }
+}
+
+const BasicInput = ({id, handleChangeId, idProfileLink, handlePressLink, idError, inputType, placeholder, orderCategoryIndex, activeSection, onPressToNext, onPressOption, onPress, props}) => {
+  const ref = useRef<TextInput | null>(null)
+  console.log(activeSection, orderCategoryIndex)
+  useEffect(() => {
+    if (activeSection==orderCategoryIndex) ref.current?.focus()
+  },[activeSection]);
+  return (
+    <Col auto {...props} onPress={onPress}>
+    <Row px15 py15 itemsCenter>
+    <Col auto w50>
+      <Img h={23} w={23} source={inputType==EventApplicationInputType.TWITTER_ID ? ICONS.twitter : ICONS.discord} />
+    </Col>
+    <Col>
+        <TextInput
+          ref={ref}
+          value={id}
+          style={{fontSize:16}}
+          onChangeText={handleChangeId}
+          placeholder={placeholder}/>
+    </Col>
+    <Col auto onPress={!idError&&idProfileLink&&handlePressLink}>
+        <ArrowRight
+          strokeWidth={2}
+          color={Colors.black}
+          height={18}
+          width={18}
+        />
+    </Col>
+  </Row>
+  {idError ? (
+    <Div px15>
+      <Span danger mb5>{idError}</Span>
+    </Div>
+  ) : null}
+  </Col>
+  )
 }

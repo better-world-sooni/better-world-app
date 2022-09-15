@@ -14,6 +14,7 @@ export type OrderOption = {
 };
 export type SelectableOrderCategory = {
 	name: string;
+	drawEventId:EventApplicationInputType
 	selectedOption: OrderOption
 	options: OrderOption[];
 };
