@@ -1,6 +1,6 @@
 import React, {useRef} from 'react';
 import {Row} from 'src/components/common/Row';
-import {Bell, ChevronDown} from 'react-native-feather';
+import {Bell, ChevronDown, Search} from 'react-native-feather';
 import apis from 'src/modules/apis';
 import {
   useApiSelector,
@@ -8,7 +8,7 @@ import {
   useReloadGETWithToken,
 } from 'src/redux/asyncReducer';
 import Post from 'src/components/common/Post';
-import {useGotoNotification} from 'src/hooks/useGoto';
+import {useGotoNotification, useGotoSearch} from 'src/hooks/useGoto';
 import FeedFlatlist from 'src/components/FeedFlatlist';
 import {Platform} from 'react-native';
 import {useScrollToTop} from '@react-navigation/native';
@@ -44,6 +44,7 @@ export default function SocialScreen() {
   } = useApiSelector(apis.feed.social);
   const {data: nftProfileRes} = useApiSelector(apis.nft._());
   const nft = nftProfileRes?.nft;
+  console.log(nft);
   const {data: nftCollectionRes, isLoading: nftCollectionLoad} = useApiSelector(
     apis.nft_collection._(),
   );
@@ -111,10 +112,10 @@ export default function SocialScreen() {
     if (feedPaginating || isNotPaginatable) return;
     paginateGetWithToken(apis.feed.social(feedRes?.filter, page + 1), 'feed');
   };
-
   const sideMenuRef = useRef(null);
+  const gotoSearch = useGotoSearch();
   const openSideMenu = () => {
-    sideMenuRef?.current?.openMenu(true);
+    nft?.privilege ? sideMenuRef?.current?.openMenu(true) : gotoSearch();
   };
   useFocusReloadWithTimeOut({
     reloadUriObject: apis.feed.social(feedRes?.filter),
@@ -130,6 +131,7 @@ export default function SocialScreen() {
       ref={sideMenuRef}
       toleranceX={0}
       edgeHitWidth={70}
+      disableGestures={!nft?.privilege}
       menu={<MyNftCollectionMenu nftCollection={nftCollection} />}
       bounceBackOnOverdraw={false}
       openMenuOffset={DEVICE_WIDTH - 65}>
@@ -148,17 +150,26 @@ export default function SocialScreen() {
         TopComponent={
           <Row itemsCenter>
             <Col itemsStart rounded100 onPress={openSideMenu}>
-              {nftCollectionRes?.nft_collection ? (
-                <Img
-                  h30
-                  w30
-                  rounded100
-                  bgGray200
-                  border={0.5}
-                  borderGray200
-                  uri={nftCollectionRes.nft_collection.image_uri}></Img>
+              {nft!.privilege ? (
+                nftCollectionRes?.nft_collection ? (
+                  <Img
+                    h30
+                    w30
+                    rounded100
+                    bgGray200
+                    border={0.5}
+                    borderGray200
+                    uri={nftCollectionRes.nft_collection.image_uri}></Img>
+                ) : (
+                  <Div bgGray200 h30 w30 rounded100 />
+                )
               ) : (
-                <Div bgGray200 h30 w30 rounded100 />
+                <Search
+                  strokeWidth={2}
+                  color={Colors.black}
+                  height={22}
+                  width={22}
+                />
               )}
             </Col>
             <Col auto>

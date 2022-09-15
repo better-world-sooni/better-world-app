@@ -1,6 +1,6 @@
 import React, {useRef} from 'react';
 import {Div} from 'src/components/common/Div';
-import {FlatList, RefreshControl} from 'react-native';
+import {ActivityIndicator, FlatList, RefreshControl} from 'react-native';
 import {Row} from 'src/components/common/Row';
 import {Col} from 'src/components/common/Col';
 import {Search, ChevronLeft} from 'react-native-feather';
@@ -17,6 +17,7 @@ import RankedOwner from 'src/components/RankOwner';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import ListEmptyComponent from 'src/components/common/ListEmptyComponent';
 import {useNavigation} from '@react-navigation/native';
+import {Span} from 'src/components/common/Span';
 
 const SearchScreen = () => {
   const searchRef = useRef(null);
@@ -106,6 +107,24 @@ const SearchScreen = () => {
         data={rankRes ? rankRes.ranks : []}
         keyExtractor={item =>
           `${(item as any)?.contract_address}-${(item as any)?.token_id}`
+        }
+        ListFooterComponent={
+          <>
+            {rankPaginating && (
+              <Div itemsCenter py15>
+                <ActivityIndicator />
+              </Div>
+            )}
+            {isNotPaginatable && (
+              <Div itemsCenter py15>
+                <Span textCenter bold>
+                  모두 확인했습니다.
+                </Span>
+              </Div>
+            )}
+            <Div h={50}></Div>
+            <Div h={27} />
+          </>
         }
         renderItem={({item, index}) => {
           return <RankedOwner rankItem={item} />;
