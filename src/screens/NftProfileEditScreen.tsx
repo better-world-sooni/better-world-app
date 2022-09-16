@@ -6,7 +6,15 @@ import {
   RefreshControl,
   Switch,
 } from 'react-native';
-import {Check, Tool, Trash, Upload, X} from 'react-native-feather';
+import {
+  Check,
+  Edit2,
+  Pocket,
+  Tool,
+  Trash,
+  Upload,
+  X,
+} from 'react-native-feather';
 import {Col} from 'src/components/common/Col';
 import {Div} from 'src/components/common/Div';
 import {Img} from 'src/components/common/Img';
@@ -17,11 +25,14 @@ import {
   ScrollView,
   TextInput,
 } from 'src/components/common/ViewComponents';
+import useDiscordId from 'src/hooks/useDiscordId';
 import useName, {NameOwnerType} from 'src/hooks/useName';
 import useStory, {StoryOwnerType} from 'src/hooks/useStory';
+import useTwitterId from 'src/hooks/useTwitterId';
 import useUploadImage from 'src/hooks/useUploadImage';
 import useUploadImageUriKey from 'src/hooks/useUploadImageUriKey';
 import apis from 'src/modules/apis';
+import {ICONS} from 'src/modules/icons';
 import {Colors, DEVICE_WIDTH} from 'src/modules/styles';
 import {
   useApiSelector,
@@ -36,7 +47,30 @@ export default function NftProfileEditScreen() {
   const {data: profileData, isLoading: refreshing} = useApiSelector(
     apis.nft._(),
   );
+
   const nft = profileData?.nft;
+  const {
+    discordId,
+    discordProfileLink,
+    discordIdHasChanged,
+    discordIdError,
+    isDiscordIdEditting,
+    isDiscordIdSavable,
+    handlePressDiscordLink,
+    toggleDiscordIdEdit,
+    handleChangeDiscordId,
+  } = useDiscordId(nft);
+  const {
+    twitterId,
+    twitterProfileLink,
+    twitterIdHasChanged,
+    twitterIdError,
+    isTwitterIdEditting,
+    isTwitterIdSavable,
+    toggleTwitterIdEdit,
+    handlePressTwitterLink,
+    handleChangeTwitterId,
+  } = useTwitterId(nft);
   const {
     name,
     nameHasChanged,
@@ -77,13 +111,20 @@ export default function NftProfileEditScreen() {
     const body = {
       name,
       story,
+      discord_id: discordId,
+      twitter_id: twitterId,
       background_image_uri_key: backgroundImageUriKey,
     };
     const {data} = await putPromiseFnWithToken({url: apis.nft._().url, body});
     setLoading(false);
     reloadGetWithToken(apis.nft._());
   };
-  const isSaveable = nameHasChanged || storyHasChanged || imageHasChanged;
+  const isSaveable =
+    nameHasChanged ||
+    storyHasChanged ||
+    imageHasChanged ||
+    discordIdHasChanged ||
+    twitterIdHasChanged;
   return (
     <>
       <Div bgWhite px15 h={50} justifyCenter borderBottom={0.5} borderGray200>
@@ -177,6 +218,98 @@ export default function NftProfileEditScreen() {
           {nameError ? (
             <Div px15 mb15>
               <Span danger>{nameError}</Span>
+            </Div>
+          ) : null}
+          <Row px15 py15 itemsCenter borderTop={0.5} borderGray200>
+            <Col auto w50 m5>
+              <Img h={232 / 12} w={300 / 12} source={ICONS.discord} />
+            </Col>
+            <Col>
+              {isDiscordIdEditting ? (
+                <TextInput
+                  value={discordId}
+                  fontSize={16}
+                  bold
+                  onChangeText={handleChangeDiscordId}></TextInput>
+              ) : discordProfileLink ? (
+                <Span fontSize={16} onPress={handlePressDiscordLink}>
+                  {discordId}
+                </Span>
+              ) : (
+                <Span gray400 fontSize={16}>
+                  Discord#8888
+                </Span>
+              )}
+            </Col>
+            <Col auto onPress={toggleDiscordIdEdit}>
+              {isDiscordIdEditting ? (
+                <Pocket
+                  strokeWidth={2}
+                  color={
+                    isDiscordIdSavable ? Colors.info.DEFAULT : Colors.gray[400]
+                  }
+                  height={18}
+                  width={18}
+                />
+              ) : (
+                <Edit2
+                  strokeWidth={2}
+                  color={Colors.black}
+                  height={18}
+                  width={18}
+                />
+              )}
+            </Col>
+          </Row>
+          {discordIdError ? (
+            <Div px15 mb15>
+              <Span danger>{discordIdError}</Span>
+            </Div>
+          ) : null}
+          <Row px15 py15 itemsCenter borderTop={0.5} borderGray200>
+            <Col auto w50 m5>
+              <Img h={23} w={23} source={ICONS.twitter} />
+            </Col>
+            <Col>
+              {isTwitterIdEditting ? (
+                <TextInput
+                  value={twitterId}
+                  fontSize={16}
+                  bold
+                  onChangeText={handleChangeTwitterId}></TextInput>
+              ) : twitterProfileLink ? (
+                <Span fontSize={16} onPress={handlePressTwitterLink}>
+                  {twitterId}
+                </Span>
+              ) : (
+                <Span gray400 fontSize={16}>
+                  irlyglo
+                </Span>
+              )}
+            </Col>
+            <Col auto onPress={toggleTwitterIdEdit}>
+              {isTwitterIdEditting ? (
+                <Pocket
+                  strokeWidth={2}
+                  color={
+                    isTwitterIdSavable ? Colors.info.DEFAULT : Colors.gray[400]
+                  }
+                  height={18}
+                  width={18}
+                />
+              ) : (
+                <Edit2
+                  strokeWidth={2}
+                  color={Colors.black}
+                  height={18}
+                  width={18}
+                />
+              )}
+            </Col>
+          </Row>
+          {twitterIdError ? (
+            <Div px15 mb15>
+              <Span danger>{twitterIdError}</Span>
             </Div>
           ) : null}
           <Row px15 py15 borderTop={0.5} borderGray200 flex={1}>

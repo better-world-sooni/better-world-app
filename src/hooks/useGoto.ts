@@ -425,40 +425,25 @@ export function useGotoStoreSetting() {
   return gotoStoreSetting
 }
 
-export function useGotoMerchandise({merchandiseId}) {
-  const navigation = useNavigation()
-  const apiGETWithToken = useApiGETWithToken()
-  const gotoMerchandise =() => {
-    apiGETWithToken(
-      apis.merchandise.merchandiseId(merchandiseId)
-    );
-    navigation.navigate(NAV_NAMES.Merchandise as never)
-  }
-  return gotoMerchandise
-}
-
-export function useGotoMerchandiseSelect({onConfirm}) {
-  const navigation = useNavigation()
-  const reloadGETWithToken = useReloadGETWithToken()
-  const gotoMerchandise =() => {
-    reloadGETWithToken(
-      apis.nft_collection.merchandise.list()
-    );
-    navigation.navigate(NAV_NAMES.MerchandiseSelect as never, {
-      onConfirm
-    } as never)
-  }
-  return gotoMerchandise
-}
-
-
-export function useGotoNewMerchandise() {
+export function useGotoNewDrawEvent() {
   const navigation = useNavigation()
   
-  const gotoNewMerchandise= () => {
-    navigation.navigate(NAV_NAMES.NewMerchandise as never)
+  const gotoNewDrawEvent= () => {
+    navigation.navigate(NAV_NAMES.NewDrawEvent as never)
   }
-  return gotoNewMerchandise
+  return gotoNewDrawEvent
+}
+
+export function useGotoDrawEvent({drawEventId}) {
+  const navigation = useNavigation()
+  const apiGETWithToken = useApiGETWithToken()
+  const gotoDrawEvent= () => {
+    apiGETWithToken(
+      apis.draw_event.drawEventId(drawEventId)
+    );
+    navigation.navigate(NAV_NAMES.DrawEvent as never)
+  }
+  return gotoDrawEvent
 }
 
 export function useGotoOnboarding() {
@@ -474,12 +459,12 @@ export function useGotoOnboarding() {
   return gotoOnboarding
 }
 
-export function useGotoNewCoupon(){
+export function useGotoKlipSignIn() {
   const navigation = useNavigation()
-  const gotoNewCoupon = () => {
-    navigation.navigate(NAV_NAMES.NewCoupon as never)
+  const gotoKlipSignIn = () => {
+    navigation.navigate(NAV_NAMES.KlipSignIn)
   };
-  return gotoNewCoupon
+  return gotoKlipSignIn
 }
 
 export function useGotoConfirmationModal() {
@@ -545,40 +530,28 @@ export function useGotoMyCollectionEventList(){
   return gotoCollectionEventList
 }
 
-export function useGotoOrderList(){
+export function useGotoEventApplicationList(){
   const navigation = useNavigation()
   const apiGETWithToken = useApiGETWithToken()
-  const gotoOrderList = () => {
+  const gotoEventApplicationList = () => {
     apiGETWithToken(
-      apis.nft.order.list()
+      apis.nft.eventApplication.list()
     )
-    navigation.navigate(NAV_NAMES.OrderList as never)
+    navigation.navigate(NAV_NAMES.EventApplicationList as never)
   }
-  return gotoOrderList
+  return gotoEventApplicationList
 }
 
-export function useGotoCollectionOrderList(){
+export function useGotoCollectionEventApplicationList(){
   const navigation = useNavigation()
   const apiGETWithToken = useApiGETWithToken()
-  const gotoCollectionOrderList = () => {
+  const gotoCollectionEventApplicationList = () => {
     apiGETWithToken(
-      apis.nft_collection.order.list()
+      apis.nft_collection.eventApplication.list()
     )
-    navigation.navigate(NAV_NAMES.CollectionOrderList as never)
+    navigation.navigate(NAV_NAMES.CollectionEventApplicationList as never)
   }
-  return gotoCollectionOrderList
-}
-
-export function useGotoCouponList(){
-  const navigation = useNavigation()
-  const apiGETWithToken = useApiGETWithToken()
-  const gotoCouponList = () => {
-    apiGETWithToken(
-      apis.nft.coupon.list()
-    )
-    navigation.navigate(NAV_NAMES.CouponList as never)
-  }
-  return gotoCouponList
+  return gotoCollectionEventApplicationList
 }
 
 export function useGotoCollectionEventList({nftCollection}){

@@ -36,6 +36,9 @@ import {Span} from './Span';
 import TruncatedMarkdown from './TruncatedMarkdown';
 import {expandImageViewer} from 'src/utils/imageViewerUtils';
 import TruncatedText from './TruncatedText';
+import useDiscordId from 'src/hooks/useDiscordId';
+import useTwitterId from 'src/hooks/useTwitterId';
+import {ICONS} from 'src/modules/icons';
 
 export default function NftProfileHeader({nftCore, nft, isCurrentNft, qrScan}) {
   const gotoNftCollectionProfile = useGotoNftCollectionProfile({
@@ -53,6 +56,28 @@ export default function NftProfileHeader({nftCore, nft, isCurrentNft, qrScan}) {
     nft?.contract_address,
     nft?.token_id,
   );
+  const {
+    discordId,
+    discordProfileLink,
+    discordIdHasChanged,
+    discordIdError,
+    isDiscordIdEditting,
+    isDiscordIdSavable,
+    handlePressDiscordLink,
+    toggleDiscordIdEdit,
+    handleChangeDiscordId,
+  } = useDiscordId(nft);
+  const {
+    twitterId,
+    twitterProfileLink,
+    twitterIdHasChanged,
+    twitterIdError,
+    isTwitterIdEditting,
+    isTwitterIdSavable,
+    toggleTwitterIdEdit,
+    handlePressTwitterLink,
+    handleChangeTwitterId,
+  } = useTwitterId(nft);
   const gotoFollowList = useGotoFollowList({
     followOwnerType: FollowOwnerType.Nft,
     contractAddress: nftCore.contract_address,
@@ -195,12 +220,39 @@ export default function NftProfileHeader({nftCore, nft, isCurrentNft, qrScan}) {
           )}
         </Row>
         {nft && (
-          <Div pt3 onPress={gotoNftCollectionProfile}>
+          <Div pt3>
             <Span gray700 bold>
               {nftCore.nft_metadatum.name}
             </Span>
           </Div>
         )}
+        <Row itemsCenter mt4={nft?.discord_id && nft?.twitter_id}>
+          {nft?.discord_id && (
+            <>
+              <Col auto mr5>
+                <Img h={232 / 16} w={300 / 16} source={ICONS.discord} />
+              </Col>
+              <Col auto onPress={handlePressDiscordLink} mr12>
+                <Span gray700 bold>
+                  {nft.discord_id}
+                </Span>
+              </Col>
+            </>
+          )}
+          {nft?.twitter_id && (
+            <>
+              <Col auto mr4>
+                <Img h={20} w={20} source={ICONS.twitter} />
+              </Col>
+              <Col auto onPress={handlePressTwitterLink}>
+                <Span gray700 bold>
+                  @{nft.twitter_id}
+                </Span>
+              </Col>
+            </>
+          )}
+        </Row>
+
         {(nft || nftCore).story ? (
           <Div mt8 bgWhite>
             {!enlargeStory ? (

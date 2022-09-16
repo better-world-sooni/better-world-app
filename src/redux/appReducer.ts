@@ -7,12 +7,10 @@ import {
   asyncActions,
   useApiGET,
   useApiGETAsync,
-  useApiGETWithToken,
   useApiPOSTWithToken,
   useApiPUTWithToken,
   useReloadGETWithToken,
 } from 'src/redux/asyncReducer';
-import notifee from '@notifee/react-native';
 
 const usePreloadData = () => {
   const apiGETAsync = useApiGETAsync();
@@ -22,12 +20,11 @@ const usePreloadData = () => {
       apiGETAsync(apis.profile._(), jwt),
       apiGETAsync(apis.nft._(), jwt),
       apiGETAsync(apis.post.list._(), jwt),
-      updateUnreadNotificationCount(jwt),
-      apiGETAsync(apis.feed.forum(), jwt),
       apiGETAsync(apis.feed.social(), jwt),
-      apiGETAsync(apis.nft_collection.merchandise.list(), jwt),
+      apiGETAsync(apis.feed.draw_event(), jwt),
       apiGETAsync(apis.nft_collection._(), jwt),
       apiGETAsync(apis.chat.chatRoom.all(), jwt),
+      updateUnreadNotificationCount(jwt),
     ])
   }
 }

@@ -10,7 +10,6 @@ import {Home, Send, User, ShoppingBag} from 'react-native-feather';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createStackNavigator, TransitionPresets} from '@react-navigation/stack';
 import {NAV_NAMES} from 'src/modules/navNames';
-import HomeScreen from 'src/screens/Home/HomeScreen';
 import ProfileScreen from 'src/screens/Home/ProfileScreen';
 import SplashScreen from 'src/screens/Common/SplashScreen';
 import SignInScreen from 'src/screens/Auth/SignInScreen';
@@ -51,15 +50,13 @@ import SocialSettingScreen from 'src/screens/SocialSettingScreen';
 import NftProfileEditScreen from 'src/screens/NftProfileEditScreen';
 import NftCollectionProfileEditScreen from 'src/screens/NftCollectionProfileEditScreen';
 import StoreSettingScreen from 'src/screens/StoreSettingScreen';
-import NewMerchandiseScreen from 'src/screens/NewMerchandiseScreen';
-import MerchandiseScreen from 'src/screens/MerchandiseScreen';
-import NewCouponScreen from 'src/screens/NewCouponScreen';
-import MerchandiseSelectScreen from 'src/screens/MerchandiseSelectScreen';
-import OrderListScreen from 'src/screens/OrderListScreen';
-import CouponListScreen from 'src/screens/CouponListScreen';
-import CollectionOrderListScreen from 'src/screens/CollectionOrderListScreen';
-import { ChatRoomEnterType } from "src/screens/ChatRoomScreen";
+import EventApplicationListScreen from 'src/screens/EventApplicationListScreen';
+import {ChatRoomEnterType} from 'src/screens/ChatRoomScreen';
 import NftSettingScreen from 'src/screens/NftSettingScreen';
+import NewDrawEventScreen from 'src/screens/NewDrawEventScreen';
+import DrawEventScreen from 'src/screens/DrawEventScreen';
+import CollectionEventApplicationListScreen from 'src/screens/CollectionEventApplicationListScreen';
+import KlipSignInScreen from 'src/screens/Auth/KlipSignInScreen';
 
 const RootStack = createStackNavigator();
 
@@ -99,7 +96,7 @@ const MainBottomTabs = () => {
           ),
         }}
       />
-      {/* <Tab.Screen
+      <Tab.Screen
         name={NAV_NAMES.Store}
         component={StoreScreen}
         options={{
@@ -113,7 +110,7 @@ const MainBottomTabs = () => {
               }></ShoppingBag>
           ),
         }}
-      /> */}
+      />
       <Tab.Screen
         name={NAV_NAMES.ChatList}
         component={ChatListScreen}
@@ -390,11 +387,6 @@ export const AppContent = ({notificationOpenData}) => {
       options: TransitionPresets.ModalTransition,
     },
     {
-      name: NAV_NAMES.MerchandiseSelect,
-      component: MerchandiseSelectScreen,
-      options: TransitionPresets.ModalTransition,
-    },
-    {
       name: NAV_NAMES.Transaction,
       component: TransactionScreen,
     },
@@ -407,32 +399,28 @@ export const AppContent = ({notificationOpenData}) => {
       component: StoreSettingScreen,
     },
     {
-      name: NAV_NAMES.NewMerchandise,
-      component: NewMerchandiseScreen,
+      name: NAV_NAMES.NewDrawEvent,
+      component: NewDrawEventScreen,
     },
     {
-      name: NAV_NAMES.Merchandise,
-      component: MerchandiseScreen,
-    },
-    {
-      name: NAV_NAMES.NewCoupon,
-      component: NewCouponScreen,
-    },
-    {
-      name: NAV_NAMES.OrderList,
-      component: OrderListScreen,
-    },
-    {
-      name: NAV_NAMES.CouponList,
-      component: CouponListScreen,
-    },
-    {
-      name: NAV_NAMES.CollectionOrderList,
-      component: CollectionOrderListScreen,
+      name: NAV_NAMES.EventApplicationList,
+      component: EventApplicationListScreen,
     },
     {
       name: NAV_NAMES.NftSetting,
       component: NftSettingScreen,
+    },
+    {
+      name: NAV_NAMES.DrawEvent,
+      component: DrawEventScreen,
+    },
+    {
+      name: NAV_NAMES.CollectionEventApplicationList,
+      component: CollectionEventApplicationListScreen,
+    },
+    {
+      name: NAV_NAMES.KlipSignIn,
+      component: KlipSignInScreen,
     },
   ];
 

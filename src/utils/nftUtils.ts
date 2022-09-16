@@ -10,7 +10,7 @@ export function getNftProfileImage(nft, width=null, height= null){
         }
         return nft.image_uri
     }
-    if(nft?.nft_metadatum?.image_uri.startsWith("ipfs:/")) return nft?.nft_metadatum?.image_uri.replace("ipfs:/", GATEWAY_PREFIX)
+    if(nft?.nft_metadatum?.image_uri?.startsWith("ipfs:/")) return nft?.nft_metadatum?.image_uri.replace("ipfs:/", GATEWAY_PREFIX)
     return nft?.nft_metadatum?.image_uri
 }
 
@@ -38,6 +38,14 @@ export function useIsCurrentNft(nft) {
     );
     const isCurrentNft = currentNft && nft ? (currentNft.contract_address == nft.contract_address && currentNft.token_id == nft.token_id) : false
     return isCurrentNft
+}
+
+export function useIsCurrentNftAdmin() {
+    const {currentNft} = useSelector(
+        (root: RootState) => root.app.session,
+        shallowEqual,
+    );
+    return currentNft.privilege
 }
 
 export function useIsCurrentCollection(nftCollection) {

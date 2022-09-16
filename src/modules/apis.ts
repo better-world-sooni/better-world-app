@@ -28,7 +28,7 @@ const apis = {
       nonce: () => apiV1(`/auth/kaikas/nonce`),
     },
     klip: {
-      verify: () =>apiV1('/auth/klip/verification')
+      verification: () =>apiV1('/auth/klip/verification')
     },
     password: {
       _: () => apiV1('/auth/password')
@@ -68,11 +68,8 @@ const apis = {
     contractAddressAndTokenId: (contractAddress, tokenId) => apiV1(`/nft/${contractAddress}/${tokenId}`),
     qr: (token) => apiV1(`/nft/qr?token=${token}`),
     _: () => apiV1(`/nft`),
-    order: {
-      list: (page?) => apiV1(`/nft/order/list${urlParams({page})}`),
-    },
-    coupon: {
-      list: (page?) => apiV1(`/nft/coupon/list${urlParams({page})}`),
+    eventApplication: {
+      list: (page?) => apiV1(`/nft/event_application/list${urlParams({page})}`),
     },
   },
   follow: {
@@ -88,11 +85,8 @@ const apis = {
     collectionEvent: {
       list: (page?) => apiV1(`/nft_collection/collection_event/list${urlParams({page})}`),
     },
-    merchandise: {
-      list: (page?) => apiV1(`/nft_collection/merchandise/list${urlParams({page})}`),
-    },
-    order: {
-      list: (page?) => apiV1(`/nft/order/list${urlParams({page})}`),
+    eventApplication: {
+      list: (page?) => apiV1(`/nft_collection/event_application/list${urlParams({page})}`),
     },
     contractAddress: {
       _: (contractAddress) => apiV1(`/nft_collection/${contractAddress}`),
@@ -138,17 +132,14 @@ const apis = {
   rank:{
     list: (keyword?, page?) => apiV1(`/rank/list${urlParams({page, keyword})}`)
   },
-  merchandise: {
-    _: () => apiV1(`/merchandise`),
-    merchandiseId: (merchandiseId) => apiV1(`/merchandise/${merchandiseId}`),
+  draw_event: {
+    _: () => apiV1(`/draw_event`),
+    drawEventId: (drawEventId) => apiV1(`/draw_event/${drawEventId}`),
   },
-  order: {
-    _: () => apiV1(`/order`),
-    list: () => apiV1(`/order/list`),
-    orderId: (orderId) => apiV1(`/order/${orderId}`),
-  },
-  coupon: {
-    list: () => apiV1(`/coupon/list`),
+  event_application: {
+    _: () => apiV1(`/event_application`),
+    list: () => apiV1(`/event_application/list`),
+    eventApplicationId: (eventApplicationId) => apiV1(`/event_application/${eventApplicationId}`),
   },
   post: {
     _: () => apiV1(`/post`),
@@ -186,6 +177,7 @@ const apis = {
     count: () => apiV1(`/feed/count`),
     forum: (filter?, page?) => apiV1(`/feed/forum${urlParams({page, filter})}`),
     social: (filter?,page?) => apiV1(`/feed/social${urlParams({page, filter})}`),
+    draw_event: (filter?,page?) => apiV1(`/feed/draw_event${urlParams({page, filter})}`),
     collection: (contractAddress, type?, page?) => apiV1(`/feed/collection?contract_address${urlParams({contract_address: contractAddress, type, page})}`),
   },
   presignedUrl: {

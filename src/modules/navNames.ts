@@ -45,12 +45,10 @@ export const NAV_NAMES = {
     Qr: "Qr",
     Store: "Store",
     StoreSetting: "StoreSetting",
-    NewMerchandise: "NewMerchandise",
-    Merchandise: "Merchandise",
-    NewCoupon: "NewCoupon",
-    MerchandiseSelect: "MerchandiseSelect",
-    OrderList: "OrderList",
-    CouponList: "CouponList",
-    CollectionOrderList: "CollectionOrderList",
+    KlipSignIn: "KlipSignIn",
+    EventApplicationList: "EventApplicationList",
+    CollectionEventApplicationList: "CollectionEventApplicationList",
+    NewDrawEvent: "NewDrawEvent",
+    DrawEvent: "DrawEvent"
 };
 

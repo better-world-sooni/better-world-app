@@ -38,7 +38,7 @@ export default function Notification({notification}) {
   return (
     <NotificationMemo
       postId={notification.metadata.post_id}
-      isFollowing={notification.is_following}
+      isFollowing={!!notification.is_following}
       hasNft={!!notification.nft}
       profileImgUri={getNftProfileImage(notification.nft, 100, 100)}
       contractAddress={notification.nft.contract_address}

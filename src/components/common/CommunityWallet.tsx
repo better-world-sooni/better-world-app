@@ -102,11 +102,6 @@ function CommunityWallet({communityWallet, width, verticalList = false}) {
                 {communityWallet.name}
               </Span>
             </Col>
-            {/* <Col auto mr8>
-              <Span gray700 fontSize={14} onPress={copyToClipboard}>
-                {truncateAddress(communityWallet.address)}
-              </Span>
-            </Col> */}
             <Col>
               <Copy {...actionIconDefaultProps} />
             </Col>

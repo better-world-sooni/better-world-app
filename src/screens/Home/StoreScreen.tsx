@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useRef} from 'react';
 import apis from 'src/modules/apis';
 import {
   useApiSelector,
@@ -15,32 +15,57 @@ import {FlatList, ImageBackground} from 'src/components/common/ViewComponents';
 import ListEmptyComponent from 'src/components/common/ListEmptyComponent';
 import {ActivityIndicator, RefreshControl} from 'react-native';
 import {HAS_NOTCH} from 'src/modules/constants';
-import Merchandise from 'src/components/common/Merchandise';
 import {Clock, Gift} from 'react-native-feather';
-import {useGotoCouponList, useGotoOrderList} from 'src/hooks/useGoto';
+import {useGotoEventApplicationList} from 'src/hooks/useGoto';
+import DrawEvent from 'src/components/common/DrawEvent';
+
+enum DrawEventFeedFilter {
+  All = 'all',
+  Eligible = 'eligible',
+}
 
 export default function StoreScreen() {
+  const flatlistRef = useRef(null);
   const {data, isLoading, isPaginating, page, isNotPaginatable} =
-    useApiSelector(apis.nft_collection.merchandise.list);
+    useApiSelector(apis.feed.draw_event);
   const {data: nftCollectionRes, isLoading: nftCollectionLoad} = useApiSelector(
     apis.nft_collection._(),
   );
   const nftCollection = nftCollectionRes?.nft_collection;
-  const merchandises = data ? data.merchandises : [];
-  const reloadGetWithToken = useReloadGETWithToken();
+  const drawEvents = data ? data.draw_events : [];
+  const reloadGETWithToken = useReloadGETWithToken();
   const paginateGetWithToken = usePaginateGETWithToken();
   const handleEndReached = () => {
     if (isPaginating || isNotPaginatable) return;
     paginateGetWithToken(
-      apis.nft_collection.merchandise.list(page + 1),
-      'merchandises',
+      apis.feed.draw_event(data?.filter, page + 1),
+      'draw_events',
     );
   };
   const handleRefresh = () => {
-    reloadGetWithToken(apis.nft_collection.merchandise.list());
+    reloadGETWithToken(apis.feed.draw_event());
   };
-  const gotoOrderList = useGotoOrderList();
-  const gotoCouponList = useGotoCouponList();
+  const scrollToTop = () => {
+    flatlistRef?.current
+      ?.getScrollResponder()
+      ?.scrollTo({x: 0, y: 0, animated: true});
+  };
+  const handlePressFilter = filter => {
+    scrollToTop();
+    if (
+      filter == DrawEventFeedFilter.All &&
+      data?.filter !== DrawEventFeedFilter.All
+    ) {
+      reloadGETWithToken(apis.feed.draw_event(filter));
+    }
+    if (
+      filter == DrawEventFeedFilter.Eligible &&
+      data?.filter !== DrawEventFeedFilter.Eligible
+    ) {
+      reloadGETWithToken(apis.feed.draw_event(filter));
+    }
+  };
+  const gotoEventApplicationList = useGotoEventApplicationList();
   const paddingX = 7;
   const mx = 8;
   const my = 8;
@@ -53,13 +78,34 @@ export default function StoreScreen() {
       <Div h={notchHeight}></Div>
       <Div bgWhite h={50} justifyCenter borderBottom={0.5} borderGray200>
         <Row itemsCenter py5 h40 px15>
-          <Col auto>
-            <Span bold fontSize={17}>
-              {'이벤트'}
+          <Col
+            auto
+            mr16
+            py2
+            borderBottom={data?.filter == DrawEventFeedFilter.Eligible ? 2 : 0}
+            onPress={() => handlePressFilter(DrawEventFeedFilter.Eligible)}>
+            <Span
+              bold
+              fontSize={19}
+              gray400={data?.filter !== DrawEventFeedFilter.Eligible}>
+              {'응모가능'}
+            </Span>
+          </Col>
+          <Col
+            auto
+            mr16
+            py2
+            borderBottom={data?.filter == DrawEventFeedFilter.All ? 2 : 0}
+            onPress={() => handlePressFilter(DrawEventFeedFilter.All)}>
+            <Span
+              bold
+              fontSize={19}
+              gray400={data?.filter !== DrawEventFeedFilter.All}>
+              {'전체'}
             </Span>
           </Col>
           <Col />
-          <Col auto mr16 onPress={gotoOrderList}>
+          <Col auto onPress={gotoEventApplicationList}>
             <Clock
               width={22}
               height={22}
@@ -67,12 +113,10 @@ export default function StoreScreen() {
               strokeWidth={2}
             />
           </Col>
-          <Col auto onPress={gotoCouponList}>
-            <Gift width={22} height={22} color={Colors.black} strokeWidth={2} />
-          </Col>
         </Row>
       </Div>
       <FlatList
+        ref={flatlistRef}
         showsVerticalScrollIndicator={false}
         keyExtractor={item => (item as any).id}
         contentContainerStyle={{paddingRight: paddingX, paddingLeft: paddingX}}
@@ -119,12 +163,12 @@ export default function StoreScreen() {
           <RefreshControl refreshing={isLoading} onRefresh={handleRefresh} />
         }
         onEndReached={handleEndReached}
-        data={merchandises}
+        data={drawEvents}
         renderItem={({item}) => {
           return (
-            <Merchandise
+            <DrawEvent
               key={(item as any).id}
-              merchandise={item}
+              drawEvent={item}
               mx={mx}
               my={my}
               width={
