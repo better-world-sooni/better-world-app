@@ -1,4 +1,6 @@
+import { shallowEqual, useSelector } from "react-redux";
 import { Colors } from "src/modules/styles"
+import { RootState } from "src/redux/rootReducer";
 
 export enum DrawEventStatus {
     IN_PROGRESS = 0, 
@@ -13,12 +15,21 @@ export enum EventApplicationStatus {
 }
 
 export default function useDrawEventStatus({drawEvent}){
+    const {currentNft} = useSelector(
+        (root: RootState) => root.app.session,
+        shallowEqual,
+      );
     if (!drawEvent) return {
         orderable: false,
         string: "불러오는중",
         color: Colors.white
     }
-    const drawEventStatus = drawEvent.status == DrawEventStatus.IN_PROGRESS ? ( drawEvent.expires_at && new Date(drawEvent.expires_at) < new Date() ? {
+    const drawEventStatus = drawEvent.nft_collection.contract_address !== currentNft.contract_address ? {
+        orderable: false,
+        string: "응모 불가능",
+        color: Colors.gray[400]
+    } :
+    drawEvent.status == DrawEventStatus.IN_PROGRESS ? ( drawEvent.expires_at && new Date(drawEvent.expires_at) < new Date() ? {
         orderable: false,
         string: "마감",
         color: Colors.gray[400]

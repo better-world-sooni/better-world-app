@@ -425,42 +425,6 @@ export function useGotoStoreSetting() {
   return gotoStoreSetting
 }
 
-export function useGotoMerchandise({merchandiseId}) {
-  const navigation = useNavigation()
-  const apiGETWithToken = useApiGETWithToken()
-  const gotoMerchandise =() => {
-    apiGETWithToken(
-      apis.merchandise.merchandiseId(merchandiseId)
-    );
-    navigation.navigate(NAV_NAMES.Merchandise as never)
-  }
-  return gotoMerchandise
-}
-
-export function useGotoMerchandiseSelect({onConfirm}) {
-  const navigation = useNavigation()
-  const reloadGETWithToken = useReloadGETWithToken()
-  const gotoMerchandise =() => {
-    reloadGETWithToken(
-      apis.nft_collection.merchandise.list()
-    );
-    navigation.navigate(NAV_NAMES.MerchandiseSelect as never, {
-      onConfirm
-    } as never)
-  }
-  return gotoMerchandise
-}
-
-
-export function useGotoNewMerchandise() {
-  const navigation = useNavigation()
-  
-  const gotoNewMerchandise= () => {
-    navigation.navigate(NAV_NAMES.NewMerchandise as never)
-  }
-  return gotoNewMerchandise
-}
-
 export function useGotoNewDrawEvent() {
   const navigation = useNavigation()
   
@@ -570,16 +534,16 @@ export function useGotoEventApplicationList(){
   return gotoEventApplicationList
 }
 
-export function useGotoCollectionOrderList(){
+export function useGotoCollectionEventApplicationList(){
   const navigation = useNavigation()
   const apiGETWithToken = useApiGETWithToken()
-  const gotoCollectionOrderList = () => {
+  const gotoCollectionEventApplicationList = () => {
     apiGETWithToken(
-      apis.nft_collection.order.list()
+      apis.nft_collection.eventApplication.list()
     )
-    navigation.navigate(NAV_NAMES.CollectionOrderList as never)
+    navigation.navigate(NAV_NAMES.CollectionEventApplicationList as never)
   }
-  return gotoCollectionOrderList
+  return gotoCollectionEventApplicationList
 }
 
 export function useGotoCollectionEventList({nftCollection}){

@@ -8,7 +8,7 @@ import {Row} from 'src/components/common/Row';
 import {Span} from 'src/components/common/Span';
 import {ScrollView} from 'src/components/common/ViewComponents';
 import {
-  useGotoCollectionOrderList,
+  useGotoCollectionEventApplicationList,
   useGotoNewDrawEvent,
 } from 'src/hooks/useGoto';
 import {Colors} from 'src/modules/styles';
@@ -17,7 +17,8 @@ export default function StoreSettingScreen() {
   const notchHeight = useSafeAreaInsets().top;
   const {goBack} = useNavigation();
   const gotoNewDrawEvent = useGotoNewDrawEvent();
-  const gotoCollectionOrderList = useGotoCollectionOrderList();
+  const gotoCollectionEventApplicationList =
+    useGotoCollectionEventApplicationList();
   return (
     <Div bgWhite flex={1}>
       <Div h={notchHeight}></Div>
@@ -46,7 +47,7 @@ export default function StoreSettingScreen() {
           borderBottom={0.5}
           borderGray200
           itemsCenter
-          onPress={gotoCollectionOrderList}>
+          onPress={gotoCollectionEventApplicationList}>
           <Col>
             <Span fontSize={16} bold>
               응모 관리

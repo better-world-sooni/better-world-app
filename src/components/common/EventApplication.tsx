@@ -1,7 +1,7 @@
 import {MenuView} from '@react-native-menu/menu';
 import React from 'react';
 import {ActivityIndicator} from 'react-native';
-import {useGotoDrawEvent, useGotoMerchandise} from 'src/hooks/useGoto';
+import {useGotoDrawEvent} from 'src/hooks/useGoto';
 import useUpdateEventApplication from 'src/hooks/useUpdateEventApplication';
 import {EventApplicationInputType} from '../NewEventApplicationOptions';
 import PolymorphicOwner from '../PolymorphicOwner';
@@ -49,15 +49,7 @@ export default function EventApplication({eventApplication, admin = false}) {
       ? '당첨'
       : '수령 완료';
   return (
-    <Div px15 py8>
-      {admin && (
-        <Div rounded10 overflowHidden border={0.5} borderGray200 mb8>
-          <PolymorphicOwner
-            showFollowing={false}
-            nft={cachedEventApplication.nft}
-          />
-        </Div>
-      )}
+    <Div px15 py8 borderBottom={0.5} borderGray200>
       <Row itemsCenter>
         <Col auto relative mr12 onPress={gotoDrawEvent}>
           <Img uri={drawEvent.image_uri} h100 w100 rounded10 />
@@ -74,17 +66,17 @@ export default function EventApplication({eventApplication, admin = false}) {
             </Span>
           </Div>
           <Row mt8 itemsCenter>
-            <Col>
+            <Col rounded10 p8 auto bgBlack>
               {admin ? (
                 <MenuView
                   onPressAction={handlePressStatus}
                   actions={airdropTypes}>
-                  <Span fontSize={19} info bold>
+                  <Span fontSize={17} bold white>
                     {loading ? <ActivityIndicator /> : status}
                   </Span>
                 </MenuView>
               ) : (
-                <Span info bold fontSize={19}>
+                <Span bold fontSize={17} white>
                   {status}
                 </Span>
               )}
@@ -93,8 +85,16 @@ export default function EventApplication({eventApplication, admin = false}) {
           </Row>
         </Col>
       </Row>
+      {admin && (
+        <Div rounded10 overflowHidden border={0.5} borderGray200 mt8>
+          <PolymorphicOwner
+            showFollowing={false}
+            nft={cachedEventApplication.nft}
+          />
+        </Div>
+      )}
       {cachedEventApplication.event_application_options?.length > 0 && (
-        <Div p16 my8 border={0.5} rounded10 borderGray200>
+        <Div p16 mt8 border={0.5} rounded10 borderGray200>
           <Span bold fontSize={16} mb8 info>
             선택된 옵션
           </Span>

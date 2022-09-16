@@ -25,13 +25,10 @@ import NewEventApplicationOptions from 'src/components/NewEventApplicationOption
 
 export default function NewDrawEventScreen() {
   const autoFocusRef = useAutoFocusRef();
-  const {data: nftCollectionRes, isLoading: nftCollectionLoading} =
-    useApiSelector(apis.nft_collection._());
-  const nftCollection = nftCollectionRes.nft_collection;
   const {goBack} = useNavigation();
   const reloadGetWithToken = useReloadGETWithToken();
   const uploadSuccessCallback = () => {
-    reloadGetWithToken(apis.nft_collection.merchandise.list());
+    reloadGetWithToken(apis.nft_collection.eventApplication.list());
     goBack();
   };
   const [datetimePickerOpen, setDatetimePickerOpen] = useState(false);

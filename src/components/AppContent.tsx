@@ -50,14 +50,12 @@ import SocialSettingScreen from 'src/screens/SocialSettingScreen';
 import NftProfileEditScreen from 'src/screens/NftProfileEditScreen';
 import NftCollectionProfileEditScreen from 'src/screens/NftCollectionProfileEditScreen';
 import StoreSettingScreen from 'src/screens/StoreSettingScreen';
-import MerchandiseScreen from 'src/screens/MerchandiseScreen';
-import MerchandiseSelectScreen from 'src/screens/MerchandiseSelectScreen';
 import EventApplicationListScreen from 'src/screens/EventApplicationListScreen';
-import CollectionOrderListScreen from 'src/screens/CollectionOrderListScreen';
 import {ChatRoomEnterType} from 'src/screens/ChatRoomScreen';
 import NftSettingScreen from 'src/screens/NftSettingScreen';
 import NewDrawEventScreen from 'src/screens/NewDrawEventScreen';
 import DrawEventScreen from 'src/screens/DrawEventScreen';
+import CollectionEventApplicationListScreen from 'src/screens/CollectionEventApplicationListScreen';
 
 const RootStack = createStackNavigator();
 
@@ -388,11 +386,6 @@ export const AppContent = ({notificationOpenData}) => {
       options: TransitionPresets.ModalTransition,
     },
     {
-      name: NAV_NAMES.MerchandiseSelect,
-      component: MerchandiseSelectScreen,
-      options: TransitionPresets.ModalTransition,
-    },
-    {
       name: NAV_NAMES.Transaction,
       component: TransactionScreen,
     },
@@ -405,10 +398,6 @@ export const AppContent = ({notificationOpenData}) => {
       component: StoreSettingScreen,
     },
     {
-      name: NAV_NAMES.Merchandise,
-      component: MerchandiseScreen,
-    },
-    {
       name: NAV_NAMES.NewDrawEvent,
       component: NewDrawEventScreen,
     },
@@ -417,16 +406,16 @@ export const AppContent = ({notificationOpenData}) => {
       component: EventApplicationListScreen,
     },
     {
-      name: NAV_NAMES.CollectionOrderList,
-      component: CollectionOrderListScreen,
-    },
-    {
       name: NAV_NAMES.NftSetting,
       component: NftSettingScreen,
     },
     {
       name: NAV_NAMES.DrawEvent,
       component: DrawEventScreen,
+    },
+    {
+      name: NAV_NAMES.CollectionEventApplicationList,
+      component: CollectionEventApplicationListScreen,
     },
   ];
 

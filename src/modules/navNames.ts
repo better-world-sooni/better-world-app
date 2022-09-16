@@ -45,11 +45,8 @@ export const NAV_NAMES = {
     Qr: "Qr",
     Store: "Store",
     StoreSetting: "StoreSetting",
-    NewMerchandise: "NewMerchandise",
-    Merchandise: "Merchandise",
-    MerchandiseSelect: "MerchandiseSelect",
     EventApplicationList: "EventApplicationList",
-    CollectionOrderList: "CollectionOrderList",
+    CollectionEventApplicationList: "CollectionEventApplicationList",
     NewDrawEvent: "NewDrawEvent",
     DrawEvent: "DrawEvent"
 };
