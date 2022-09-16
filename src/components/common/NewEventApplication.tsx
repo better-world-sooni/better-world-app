@@ -19,12 +19,8 @@ import useDiscordId from 'src/hooks/useDiscordId';
 import useOptionValue from 'src/hooks/useOptionValue';
 import {useApiSelector, useReloadGETWithToken} from 'src/redux/asyncReducer';
 import apis from 'src/modules/apis';
-<<<<<<< HEAD
 import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from 'native-base';
-=======
-import { ChevronDownIcon, ChevronUpIcon } from 'native-base';
 import { useGotoEventApplicationList } from 'src/hooks/useGoto';
->>>>>>> 6d04c997b8f912ed301169a661470af0699011b8
 
 export default function NewEventApplication({drawEvent}) {
   const [expandOptions, setExpandOptions] = useState(-1);
@@ -119,12 +115,7 @@ export default function NewEventApplication({drawEvent}) {
         </Div>
         <Div h={HAS_NOTCH ? 27 : 12} bgWhite />
       </Div>
-<<<<<<< HEAD
-    </Div>
     <BottomPopupOptions bottomPopupRef={bottomPopupRef} onChangeBottomSheet={onChangeBottomSheet} error={error} orderOptions={orderOptions} handleSelectOption={handleSelectOption} handleWriteOption={handleWriteOption} setCanUploadEventApplication={setCanUploadEventApplication} expanded={expandOptions!=-1}/>
-=======
-    <BottomPopupOptions bottomPopupRef={bottomPopupRef} onChangeBottomSheet={onChangeBottomSheet} error={error} orderOptions={orderOptions} handleSelectOption={handleSelectOption} handleWriteOption={handleWriteOption} setCanUploadEventApplication={setCanUploadEventApplication} />
->>>>>>> 6d04c997b8f912ed301169a661470af0699011b8
     </>
   );
 }
