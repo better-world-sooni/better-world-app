@@ -3,11 +3,14 @@ import React from 'react';
 import {ActivityIndicator} from 'react-native';
 import {MoreHorizontal} from 'react-native-feather';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
+import {shallowEqual, useSelector} from 'react-redux';
 import useDrawEventStatus, {
   DrawEventStatus,
 } from 'src/hooks/useDrawEventStatus';
 import {useGotoDrawEvent} from 'src/hooks/useGoto';
 import useUpdateDrawEvent from 'src/hooks/useUpdateDrawEvent';
+import {RootState} from 'src/redux/rootReducer';
+import {useIsCurrentNftAdmin} from 'src/utils/nftUtils';
 import {Div} from './Div';
 import {Img} from './Img';
 import {Span} from './Span';
@@ -50,6 +53,10 @@ export default function DrawEvent({
   my,
   selectableFn = null,
 }) {
+  const {currentNft} = useSelector(
+    (root: RootState) => root.app.session,
+    shallowEqual,
+  );
   const {drawEvent, loading, deleted, deleteDrawEvent, updateDrawEventStatus} =
     useUpdateDrawEvent({
       initialDrawEvent,
@@ -95,17 +102,23 @@ export default function DrawEvent({
         </Span>
       </Div>
 
-      <Div absolute right0 m8 zIndex={1} rounded100 bgBlack z100>
-        <MenuView onPressAction={handlePressMenu} actions={drawEventOptions}>
-          <Div p4>
-            {loading ? (
-              <ActivityIndicator />
-            ) : (
-              <MoreHorizontal color={Colors.white} width={18} height={18} />
-            )}
+      {currentNft.privilege &&
+        currentNft.contract_address ==
+          drawEvent.nft_collection.contract_address && (
+          <Div absolute right0 m8 zIndex={1} rounded100 bgBlack z100>
+            <MenuView
+              onPressAction={handlePressMenu}
+              actions={drawEventOptions}>
+              <Div p4>
+                {loading ? (
+                  <ActivityIndicator />
+                ) : (
+                  <MoreHorizontal color={Colors.white} width={18} height={18} />
+                )}
+              </Div>
+            </MenuView>
           </Div>
-        </MenuView>
-      </Div>
+        )}
 
       <Div>
         <Img uri={drawEvent.image_uri} w={width} h={width} rounded10></Img>

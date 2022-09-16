@@ -56,6 +56,7 @@ import NftSettingScreen from 'src/screens/NftSettingScreen';
 import NewDrawEventScreen from 'src/screens/NewDrawEventScreen';
 import DrawEventScreen from 'src/screens/DrawEventScreen';
 import CollectionEventApplicationListScreen from 'src/screens/CollectionEventApplicationListScreen';
+import KlipSignInScreen from 'src/screens/Auth/KlipSignInScreen';
 
 const RootStack = createStackNavigator();
 
@@ -416,6 +417,10 @@ export const AppContent = ({notificationOpenData}) => {
     {
       name: NAV_NAMES.CollectionEventApplicationList,
       component: CollectionEventApplicationListScreen,
+    },
+    {
+      name: NAV_NAMES.KlipSignIn,
+      component: KlipSignInScreen,
     },
   ];
 

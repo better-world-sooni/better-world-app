@@ -45,6 +45,7 @@ export const NAV_NAMES = {
     Qr: "Qr",
     Store: "Store",
     StoreSetting: "StoreSetting",
+    KlipSignIn: "KlipSignIn",
     EventApplicationList: "EventApplicationList",
     CollectionEventApplicationList: "CollectionEventApplicationList",
     NewDrawEvent: "NewDrawEvent",

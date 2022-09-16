@@ -27,12 +27,12 @@ export default function useDrawEventStatus({drawEvent}){
     const drawEventStatus = drawEvent.nft_collection.contract_address !== currentNft.contract_address ? {
         orderable: false,
         string: "응모 불가능",
-        color: Colors.gray[400]
+        color: Colors.gray[500]
     } :
     drawEvent.status == DrawEventStatus.IN_PROGRESS ? ( drawEvent.expires_at && new Date(drawEvent.expires_at) < new Date() ? {
         orderable: false,
         string: "마감",
-        color: Colors.gray[400]
+        color: Colors.gray[500]
     } : drawEvent.event_application ? {
         orderable: false,
         string: "응모 완료",
@@ -44,7 +44,7 @@ export default function useDrawEventStatus({drawEvent}){
     }) : drawEvent.status == DrawEventStatus.FINISHED ? {
         orderable: false,
         string: "마감",
-        color: Colors.gray[400]
+        color: Colors.gray[500]
     } : drawEvent.event_application ? (drawEvent.event_application.status == EventApplicationStatus.APPLIED ? {
         orderable: false,
         string: "응모 완료",
@@ -56,7 +56,7 @@ export default function useDrawEventStatus({drawEvent}){
     } : {
         orderable: false,
         string: "수령 완료",
-        color: Colors.gray[400]
+        color: Colors.gray[500]
     } ) : {
         orderable: false,
         string: "당첨 발표",

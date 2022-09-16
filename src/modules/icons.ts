@@ -1,5 +1,6 @@
 export const ICONS = {
   klayIcon: require('assets/icons/klayIcon.png'),
+  klip: require('assets/icons/klip.png'),
   discord: require('assets/icons/discord.png'),
   twitter: require('assets/icons/twitter.png'),
   sealCheck: require('assets/icons/sealCheck.png'),

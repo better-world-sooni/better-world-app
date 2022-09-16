@@ -459,6 +459,14 @@ export function useGotoOnboarding() {
   return gotoOnboarding
 }
 
+export function useGotoKlipSignIn() {
+  const navigation = useNavigation()
+  const gotoKlipSignIn = () => {
+    navigation.navigate(NAV_NAMES.KlipSignIn)
+  };
+  return gotoKlipSignIn
+}
+
 export function useGotoConfirmationModal() {
   const navigation = useNavigation()
   const gotoConfirmation = ({onCancel = null, onConfirm = null, text}) => {

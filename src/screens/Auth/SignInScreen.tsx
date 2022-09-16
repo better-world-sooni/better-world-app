@@ -1,5 +1,5 @@
 import React from 'react';
-import {Platform} from 'react-native';
+import {ActivityIndicator, Platform} from 'react-native';
 import {Col} from 'src/components/common/Col';
 import {Div} from 'src/components/common/Div';
 import {Img} from 'src/components/common/Img';
@@ -9,13 +9,19 @@ import {IMAGES} from 'src/modules/images';
 import {KeyboardAvoidingView} from 'src/components/common/ViewComponents';
 import {DEVICE_WIDTH} from 'src/modules/styles';
 import Carousel from 'react-native-snap-carousel';
-import {useGotoPasswordSignIn, useGotoScan} from 'src/hooks/useGoto';
+import {
+  useGotoKlipSignIn,
+  useGotoPasswordSignIn,
+  useGotoScan,
+} from 'src/hooks/useGoto';
 import {ScanType} from 'src/screens/ScanScreen';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {ICONS} from 'src/modules/icons';
 
 const SignInScreen = () => {
   const gotoScan = useGotoScan({scanType: ScanType.Login});
   const gotoPasswordSignIn = useGotoPasswordSignIn();
+  const gotoKlipSignIn = useGotoKlipSignIn();
 
   return (
     <KeyboardAvoidingView
@@ -49,6 +55,28 @@ const SignInScreen = () => {
           <Div px30>
             <Div h40></Div>
             <Div h48>
+              <Row
+                bg={'rgb(254, 229, 0)'}
+                rounded100
+                h48
+                flex={1}
+                itemsCenter
+                onPress={gotoKlipSignIn}>
+                <Col />
+                <Col auto mr4>
+                  <Img source={ICONS.klip} h20 w40></Img>
+                </Col>
+                <Col auto>
+                  <Div>
+                    <Span bold fontSize={14}>
+                      으로 로그인
+                    </Span>
+                  </Div>
+                </Col>
+                <Col />
+              </Row>
+            </Div>
+            <Div h48 mt15>
               <Row
                 bgBlack
                 rounded100
