@@ -22,6 +22,10 @@ export default function useDrawEventStatus({drawEvent}){
         orderable: false,
         string: "마감",
         color: Colors.gray[400]
+    } : drawEvent.event_application ? {
+        orderable: false,
+        string: "응모 완료",
+        color: Colors.info.DEFAULT
     } : {
         orderable: true,
         string: "진행 중",

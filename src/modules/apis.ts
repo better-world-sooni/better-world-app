@@ -68,6 +68,9 @@ const apis = {
     contractAddressAndTokenId: (contractAddress, tokenId) => apiV1(`/nft/${contractAddress}/${tokenId}`),
     qr: (token) => apiV1(`/nft/qr?token=${token}`),
     _: () => apiV1(`/nft`),
+    eventApplication: {
+      list: (page?) => apiV1(`/nft/event_application/list${urlParams({page})}`),
+    },
     order: {
       list: (page?) => apiV1(`/nft/order/list${urlParams({page})}`),
     },

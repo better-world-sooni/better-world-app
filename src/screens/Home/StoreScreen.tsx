@@ -16,7 +16,7 @@ import ListEmptyComponent from 'src/components/common/ListEmptyComponent';
 import {ActivityIndicator, RefreshControl} from 'react-native';
 import {HAS_NOTCH} from 'src/modules/constants';
 import {Clock, Gift} from 'react-native-feather';
-import {useGotoOrderList} from 'src/hooks/useGoto';
+import {useGotoEventApplicationList} from 'src/hooks/useGoto';
 import DrawEvent from 'src/components/common/DrawEvent';
 
 enum DrawEventFeedFilter {
@@ -65,7 +65,7 @@ export default function StoreScreen() {
       reloadGETWithToken(apis.feed.draw_event(filter));
     }
   };
-  const gotoOrderList = useGotoOrderList();
+  const gotoEventApplicationList = useGotoEventApplicationList();
   const paddingX = 7;
   const mx = 8;
   const my = 8;
@@ -105,7 +105,7 @@ export default function StoreScreen() {
             </Span>
           </Col>
           <Col />
-          <Col auto onPress={gotoOrderList}>
+          <Col auto onPress={gotoEventApplicationList}>
             <Clock
               width={22}
               height={22}

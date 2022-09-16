@@ -52,7 +52,7 @@ import NftCollectionProfileEditScreen from 'src/screens/NftCollectionProfileEdit
 import StoreSettingScreen from 'src/screens/StoreSettingScreen';
 import MerchandiseScreen from 'src/screens/MerchandiseScreen';
 import MerchandiseSelectScreen from 'src/screens/MerchandiseSelectScreen';
-import OrderListScreen from 'src/screens/OrderListScreen';
+import EventApplicationListScreen from 'src/screens/EventApplicationListScreen';
 import CollectionOrderListScreen from 'src/screens/CollectionOrderListScreen';
 import {ChatRoomEnterType} from 'src/screens/ChatRoomScreen';
 import NftSettingScreen from 'src/screens/NftSettingScreen';
@@ -413,8 +413,8 @@ export const AppContent = ({notificationOpenData}) => {
       component: NewDrawEventScreen,
     },
     {
-      name: NAV_NAMES.OrderList,
-      component: OrderListScreen,
+      name: NAV_NAMES.EventApplicationList,
+      component: EventApplicationListScreen,
     },
     {
       name: NAV_NAMES.CollectionOrderList,
