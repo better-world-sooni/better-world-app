@@ -9,26 +9,31 @@ import {Check, ArrowRight, Edit2} from 'react-native-feather';
 import {HAS_NOTCH} from 'src/modules/constants';
 import useUploadOrder from 'src/hooks/useUploadOrder';
 import {ActivityIndicator, Keyboard, KeyboardAvoidingView, Linking, TextInput} from 'react-native';
-import {useGotoOrderList} from 'src/hooks/useGoto';
-import useUploadEventApplication, { SelectableOrderCategory } from 'src/hooks/useUploadEventApplication';
+import {useGotoEventApplicationList} from 'src/hooks/useGoto';
+import useUploadEventApplication, {
+  SelectableOrderCategory,
+} from 'src/hooks/useUploadEventApplication';
 import BottomPopup from './BottomPopup';
-import { BottomSheetModal, BottomSheetScrollView } from '@gorhom/bottom-sheet';
-import { Img } from './Img';
-import { ICONS } from 'src/modules/icons';
+import {BottomSheetModal, BottomSheetScrollView} from '@gorhom/bottom-sheet';
+import {Img} from './Img';
+import {ICONS} from 'src/modules/icons';
 import useTwitterId from 'src/hooks/useTwitterId';
-import { EventApplicationInputType } from '../NewEventApplicationOptions';
+import {EventApplicationInputType} from '../NewEventApplicationOptions';
 import BottomSheetTextInput from './BottomSheetTextInput';
 import useDiscordId from 'src/hooks/useDiscordId';
 import useOptionValue from 'src/hooks/useOptionValue';
-import { useApiSelector } from 'src/redux/asyncReducer';
+import {useApiSelector, useReloadGETWithToken} from 'src/redux/asyncReducer';
 import apis from 'src/modules/apis';
 
 export default function NewEventApplication({drawEvent}) {
   const [expandOptions, setExpandOptions] = useState(-1);
-  const gotoOrderList = useGotoOrderList();
-  const [canUploadEventApplication, setCanUploadEventApplication] = useState(false)
+  const gotoEventApplicationList = useGotoEventApplicationList();
+  const reloadGETWithToken = useReloadGETWithToken();
+  const [canUploadEventApplication, setCanUploadEventApplication] =
+    useState(false);
   const uploadSuccessCallback = () => {
-    gotoOrderList();
+    reloadGETWithToken(apis.feed.draw_event());
+    gotoEventApplicationList();
   };
   const {
     error,
@@ -52,48 +57,77 @@ export default function NewEventApplication({drawEvent}) {
     }
     bottomPopupRef?.current?.snapToIndex(1);
   };
-  const onChangeBottomSheet = (index) => {
+  const onChangeBottomSheet = index => {
     // if (index==-1) Keyboard.dismiss()
     setExpandOptions(index);
-  }
+  };
   return (
     <>
-    <Div
-      zIndex={100}
-      bgWhite
-      w={'100%'}
-      borderTop={expandOptions==-1 ?0.5:0}
-      style={{
-        shadowOffset: {
-          width: 0,
-          height: 4,
-        },
-        shadowOpacity: expandOptions==-1 ? 0.1:0,
-        shadowRadius: 4,
-        elevation: 2,
-      }}
-      borderColor={varStyle.gray200}>
-      <Div px15 py8>
+      <Div
+        zIndex={100}
+        bgWhite
+        w={'100%'}
+        borderTop={expandOptions == -1 ? 0.5 : 0}
+        style={{
+          shadowOffset: {
+            width: 0,
+            height: 4,
+          },
+          shadowOpacity: expandOptions == -1 ? 0.1 : 0,
+          shadowRadius: 4,
+          elevation: 2,
+        }}
+        borderColor={varStyle.gray200}>
+        <Div px15 py8>
           <Row itemsCenter>
             <Col>
               <Div
-                bgBlack={orderable&&!loading&&(expandOptions==-1||(expandOptions!=-1&&canUploadEventApplication))}
+                bgBlack={
+                  orderable &&
+                  !loading &&
+                  (expandOptions == -1 ||
+                    (expandOptions != -1 && canUploadEventApplication))
+                }
                 h50
                 rounded10
                 itemsCenter
                 justifyCenter
-                bgGray400={!(orderable&&!loading&&(expandOptions==-1||(expandOptions!=-1&&canUploadEventApplication)))}
-                onPress={orderable && (expandOptions==-1 ? !loading && handlePressInitialOrder : canUploadEventApplication && (()=>{bottomPopupRef?.current?.close();uploadEventApplication();}))}>
+                bgGray400={
+                  !(
+                    orderable &&
+                    !loading &&
+                    (expandOptions == -1 ||
+                      (expandOptions != -1 && canUploadEventApplication))
+                  )
+                }
+                onPress={
+                  orderable &&
+                  (expandOptions == -1
+                    ? !loading && handlePressInitialOrder
+                    : canUploadEventApplication &&
+                      (() => {
+                        bottomPopupRef?.current?.close();
+                        uploadEventApplication();
+                      }))
+                }>
                 <Span white bold>
                   {loading ? <ActivityIndicator /> : '응모하기'}
                 </Span>
               </Div>
             </Col>
           </Row>
+        </Div>
+        <Div h={HAS_NOTCH ? 27 : 12} bgWhite />
       </Div>
-      <Div h={HAS_NOTCH ? 27 : 12} bgWhite />
-    </Div>
-    <BottomPopupOptions bottomPopupRef={bottomPopupRef} onChangeBottomSheet={onChangeBottomSheet} error={error} orderOptions={orderOptions} handleSelectOption={handleSelectOption} handleWriteOption={handleWriteOption} setCanUploadEventApplication={setCanUploadEventApplication} />
+      <BottomPopupOptions
+        bottomPopupRef={bottomPopupRef}
+        onChangeBottomSheet={onChangeBottomSheet}
+        error={error}
+        orderOptions={orderOptions}
+        handleSelectOption={handleSelectOption}
+        handleWriteOption={handleWriteOption}
+        setCanUploadEventApplication={setCanUploadEventApplication}
+      />
     </>
   );
 }

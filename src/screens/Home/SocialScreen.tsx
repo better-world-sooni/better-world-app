@@ -23,7 +23,7 @@ import MyNftCollectionMenu from 'src/components/common/MyNftCollectionMenu';
 import {DEVICE_WIDTH} from 'src/modules/styles';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import {useUpdateUnreadNotificationCount} from 'src/redux/appReducer';
-import {useSelector} from 'react-redux';
+import {shallowEqual, useSelector} from 'react-redux';
 import {RootState} from 'src/redux/rootReducer';
 
 enum SocialFeedFilter {
@@ -42,8 +42,10 @@ export default function SocialScreen() {
     page,
     isNotPaginatable,
   } = useApiSelector(apis.feed.social);
-  const {data: nftProfileRes} = useApiSelector(apis.nft._());
-  const nft = nftProfileRes?.nft;
+  const {currentNft} = useSelector(
+    (root: RootState) => root.app.session,
+    shallowEqual,
+  );
   const {data: nftCollectionRes, isLoading: nftCollectionLoad} = useApiSelector(
     apis.nft_collection._(),
   );
@@ -114,7 +116,7 @@ export default function SocialScreen() {
   const sideMenuRef = useRef(null);
   const gotoSearch = useGotoSearch();
   const openSideMenu = () => {
-    nft?.privilege ? sideMenuRef?.current?.openMenu(true) : gotoSearch();
+    currentNft?.privilege ? sideMenuRef?.current?.openMenu(true) : gotoSearch();
   };
   useFocusReloadWithTimeOut({
     reloadUriObject: apis.feed.social(feedRes?.filter),
@@ -130,7 +132,7 @@ export default function SocialScreen() {
       ref={sideMenuRef}
       toleranceX={0}
       edgeHitWidth={70}
-      disableGestures={!nft?.privilege}
+      disableGestures={!currentNft?.privilege}
       menu={<MyNftCollectionMenu nftCollection={nftCollection} />}
       bounceBackOnOverdraw={false}
       openMenuOffset={DEVICE_WIDTH - 65}>
@@ -147,7 +149,7 @@ export default function SocialScreen() {
         }}
         data={feedRes ? feedRes.feed : []}
         TopComponent={
-          nft?.privilege ? (
+          currentNft?.privilege ? (
             <Row itemsCenter>
               <Col itemsStart rounded100 onPress={openSideMenu}>
                 {nftCollectionRes?.nft_collection ? (

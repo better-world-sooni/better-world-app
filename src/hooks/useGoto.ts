@@ -558,16 +558,16 @@ export function useGotoMyCollectionEventList(){
   return gotoCollectionEventList
 }
 
-export function useGotoOrderList(){
+export function useGotoEventApplicationList(){
   const navigation = useNavigation()
   const apiGETWithToken = useApiGETWithToken()
-  const gotoOrderList = () => {
+  const gotoEventApplicationList = () => {
     apiGETWithToken(
-      apis.nft.order.list()
+      apis.nft.eventApplication.list()
     )
-    navigation.navigate(NAV_NAMES.OrderList as never)
+    navigation.navigate(NAV_NAMES.EventApplicationList as never)
   }
-  return gotoOrderList
+  return gotoEventApplicationList
 }
 
 export function useGotoCollectionOrderList(){
