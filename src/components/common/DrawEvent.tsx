@@ -4,13 +4,12 @@ import {ActivityIndicator} from 'react-native';
 import {MoreHorizontal} from 'react-native-feather';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import {shallowEqual, useSelector} from 'react-redux';
-import useDrawEventStatus, {
+import getDrawEventStatus, {
   DrawEventStatus,
-} from 'src/hooks/useDrawEventStatus';
+} from 'src/hooks/getDrawEventStatus';
 import {useGotoDrawEvent} from 'src/hooks/useGoto';
 import useUpdateDrawEvent from 'src/hooks/useUpdateDrawEvent';
 import {RootState} from 'src/redux/rootReducer';
-import {useIsCurrentNftAdmin} from 'src/utils/nftUtils';
 import {Div} from './Div';
 import {Img} from './Img';
 import {Span} from './Span';
@@ -64,7 +63,7 @@ export default function DrawEvent({
   const gotoDrawEvent = useGotoDrawEvent({
     drawEventId: drawEvent.id,
   });
-  const drawEventStatus = useDrawEventStatus({drawEvent});
+  const drawEventStatus = getDrawEventStatus({drawEvent});
   const handlePressMenu = ({nativeEvent: {event}}) => {
     if (event == DrawEventOption.DELETE) {
       deleteDrawEvent();

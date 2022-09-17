@@ -15,7 +15,7 @@ import DefaultMarkdown from 'src/components/common/DefaultMarkdown';
 import {Img} from 'src/components/common/Img';
 import MerchandiseLoading from 'src/components/loading/MerchandiseLoading';
 import ImageCarousel from 'src/components/common/ImageCarousel';
-import useDrawEventStatus from 'src/hooks/useDrawEventStatus';
+import useDrawEventStatus from 'src/hooks/getDrawEventStatus';
 import NewEventApplication from 'src/components/common/NewEventApplication';
 import { Platform } from 'react-native';
 import { HAS_NOTCH } from 'src/modules/constants';

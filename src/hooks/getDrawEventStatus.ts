@@ -14,7 +14,7 @@ export enum EventApplicationStatus {
     RECEIVED = 2
 }
 
-export default function useDrawEventStatus({drawEvent}){
+export default function getDrawEventStatus({drawEvent}){
     const {currentNft} = useSelector(
         (root: RootState) => root.app.session,
         shallowEqual,
