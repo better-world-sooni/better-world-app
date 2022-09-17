@@ -101,7 +101,7 @@ export default function EventApplication({eventApplication, admin = false}) {
           {cachedEventApplication.event_application_options.map(
             event_application_option => {
               return (
-                <Row itemsCenter>
+                <Row itemsCenter py2>
                   <Col auto pr8>
                     <Span gray600>
                       {event_application_option.draw_event_option.category} :

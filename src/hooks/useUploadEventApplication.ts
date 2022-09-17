@@ -86,8 +86,8 @@ export default function useUploadEventApplication({drawEvent, uploadSuccessCallb
 		setError('')
 		const newOrderOptions = [...orderOptions]
 		const categoryToChange = orderOptions[categoryIndex]
-		const changedOptions = {...categoryToChange.options[0], value:optionValue}
-		const changedSelectedCategory = {...categoryToChange, selectedOption: optionValue ? changedOptions:null, options: [orderOptions[categoryIndex]]}
+		const changedOptions = {...categoryToChange.options[0], value: optionValue}
+		const changedSelectedCategory = {...categoryToChange, selectedOption: optionValue ? changedOptions : null, value: optionValue}
 		newOrderOptions[categoryIndex] = changedSelectedCategory
 		setOrderOptions(newOrderOptions)
 	}
