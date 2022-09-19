@@ -131,7 +131,7 @@ const SplashScreen = ({route}) => {
       <Div itemsCenter>
         <Div absolute w80 h80 top={-40} itemsCenter justifyCenter><Animated.Image style={bwLogo1Style} source={IMAGES.bwLogo1}/></Div>
         <Div absolute w80 h80 top={-40} itemsCenter justifyCenter><Animated.Image style={bwLogo2Style} source={IMAGES.bwLogo2}/></Div>
-        <Div top={55}><Animated.Image style={bwWordStyle} source={IMAGES.bwWord}/></Div>
+        <Div top={50}><Animated.Image style={bwWordStyle} source={IMAGES.bwWord}/></Div>
       </Div>
     </Div>
   );
