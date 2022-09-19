@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {CommonActions, useNavigation} from '@react-navigation/native';
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Alert, StatusBar} from 'react-native';
 import {Div} from 'src/components/common/Div';
 import {Img} from 'src/components/common/Img';
@@ -10,6 +10,7 @@ import { IMAGES } from 'src/modules/images';
 import {JWT} from 'src/modules/constants';
 import {Span} from 'src/components/common/Span';
 import {useGotoHome, useGotoPost, useGotoNftProfile, useGotoChatRoomFromNotification} from 'src/hooks/useGoto';
+import Animated, { useAnimatedStyle, useSharedValue, withDelay, withTiming } from 'react-native-reanimated';
 
 const getInitialRoute = (routeParams) => {
   if(routeParams.notificationOpened) {
@@ -48,6 +49,7 @@ const SplashScreen = ({route}) => {
   const initialRoute = getInitialRoute(routeParams)
 
   useEffect(() => {
+    logoAnimation()
     isAutoLoginChecked();
   }, []);
 
@@ -86,12 +88,50 @@ const SplashScreen = ({route}) => {
       }
     });
   };
-
+  const bwLogo1Scale = useSharedValue(1);
+  const bwLogo2Scale = useSharedValue(1);
+  const bwWordOpacity = useSharedValue(0);
+  const bwLogo1Style = useAnimatedStyle(() => {
+    return {
+      width: 80,
+      height: 80,
+      transform: [
+        {
+          scale: bwLogo1Scale.value,
+        },
+      ],
+    };
+  });
+  const bwLogo2Style = useAnimatedStyle(() => {
+    return {
+      width: 80,
+      height: 80,
+      transform: [
+        {
+          scale: bwLogo2Scale.value,
+        },
+      ],
+    };
+  });
+  const bwWordStyle = useAnimatedStyle(() => {
+    return {
+      width: 280,
+      height: 40,
+      opacity: bwWordOpacity.value,
+    };
+  });
+  const logoAnimation = () => {
+    bwLogo1Scale.value=withDelay(1000, withTiming(20, { duration: 1000 }));
+    bwLogo2Scale.value=withDelay(1200, withTiming(2, { duration: 800 }));
+    bwWordOpacity.value=withDelay(2000, withTiming(1, { duration: 500 }));
+  }
   return (
     <Div bgWhite flex={1} itemsCenter justifyCenter>
       <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
       <Div itemsCenter>
-        <Img w80 h80 source={IMAGES.betterWorldPlanet} legacy rounded10 />
+        <Div absolute w80 h80 top={-40} itemsCenter justifyCenter><Animated.Image style={bwLogo1Style} source={IMAGES.bwLogo1}/></Div>
+        <Div absolute w80 h80 top={-40} itemsCenter justifyCenter><Animated.Image style={bwLogo2Style} source={IMAGES.bwLogo2}/></Div>
+        <Div top={55}><Animated.Image style={bwWordStyle} source={IMAGES.bwWord}/></Div>
       </Div>
     </Div>
   );
