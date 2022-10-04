@@ -318,45 +318,76 @@ const BasicInput = ({id, handleChangeId, idProfileLink, handlePressLink, idError
   const onFocus = () => {setActiveSection(orderCategoryIndex);setFocus(true)}
   return (
     <Col auto {...props} onPress={onPress}>
-    <Row px15 py15 itemsCenter>
-    <Col auto w50>
-      {inputType!=EventApplicationInputType.CUSTOM_INPUT&&<Img h={23} w={23} source={inputType==EventApplicationInputType.TWITTER_ID ? ICONS.twitter : ICONS.discord} />}
-      {inputType==EventApplicationInputType.CUSTOM_INPUT&& <Edit2 strokeWidth={2} color={Colors.black} height={18} width={18}/>}
+      <Row px15 py15 itemsCenter>
+        <Col auto w50>
+          {inputType != EventApplicationInputType.CUSTOM_INPUT && (
+            <Img
+              h={23}
+              w={23}
+              source={
+                inputType == EventApplicationInputType.TWITTER_ID
+                  ? ICONS.twitter
+                  : ICONS.discord
+              }
+            />
+          )}
+          {inputType == EventApplicationInputType.CUSTOM_INPUT && (
+            <Edit2
+              strokeWidth={2}
+              color={Colors.black}
+              height={18}
+              width={18}
+            />
+          )}
+        </Col>
+        <Col>
+          <TextInput
+            ref={ref}
+            value={id}
+            style={{fontSize: 16, fontWeight: '500'}}
+            placeholderTextColor={Colors.gray[600]}
+            onChangeText={value => {
+              handleChangeId(value);
+              onWriteOption(orderCategoryIndex, isError(value) ? null : value);
+              isError(value) && setCanUploadEventApplication(false);
+            }}
+            onSubmitEditing={() => {
+              !idError && onPressToNext(orderCategoryIndex);
+            }}
+            placeholder={placeholder}
+            onFocus={onFocus}
+            onBlur={() => setFocus(false)}
+          />
+        </Col>
+        {!focus && inputType != EventApplicationInputType.CUSTOM_INPUT && (
+          <Col auto onPress={!idError && idProfileLink && handlePressLink}>
+            <ArrowRight
+              strokeWidth={2}
+              color={Colors.gray[!idError && idProfileLink ? '600' : '400']}
+              height={18}
+              width={18}
+            />
+          </Col>
+        )}
+        {focus && !isError(id) && (
+          <Col auto onPress={() => onPressToNext(orderCategoryIndex)}>
+            <CheckIcon
+              strokeWidth={2}
+              color={Colors.success.DEFAULT}
+              height={18}
+              width={18}
+              style={{marginRight: 2}}
+            />
+          </Col>
+        )}
+      </Row>
+      {idError ? (
+        <Div px15>
+          <Span danger mb5>
+            {idError}
+          </Span>
+        </Div>
+      ) : null}
     </Col>
-    <Col>
-        <TextInput
-          ref={ref}
-          value={id}
-          style={{fontSize:16}}
-          onChangeText={(value) => {handleChangeId(value);onWriteOption(orderCategoryIndex, isError(value) ? null:value);isError(value) && setCanUploadEventApplication(false)}}
-          onSubmitEditing={()=>{!idError&&onPressToNext(orderCategoryIndex)}}
-          placeholder={placeholder}
-          onFocus={onFocus}
-          onBlur={()=>setFocus(false)}/>
-    </Col>
-    {!focus&&inputType!=EventApplicationInputType.CUSTOM_INPUT&&<Col auto onPress={!idError&&idProfileLink&&handlePressLink}>
-        <ArrowRight
-          strokeWidth={2}
-          color={Colors.gray[!idError&&idProfileLink ? "600":"400"]}
-          height={18}
-          width={18}
-        />
-    </Col>}
-    {focus&&!isError(id)&&<Col auto onPress={()=>onPressToNext(orderCategoryIndex)}>
-        <CheckIcon
-          strokeWidth={2}
-          color={Colors.success.DEFAULT}
-          height={18}
-          width={18}
-          style={{marginRight:2}}
-        />
-    </Col>}
-  </Row>
-  {idError ? (
-    <Div px15>
-      <Span danger mb5>{idError}</Span>
-    </Div>
-  ) : null}
-  </Col>
-  )
+  );
 }

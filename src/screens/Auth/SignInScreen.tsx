@@ -88,7 +88,7 @@ const SignInScreen = () => {
                 <Col auto>
                   <Div>
                     <Span white bold fontSize={14}>
-                      QR로 로그인
+                      BetterWorld QR로 로그인
                     </Span>
                   </Div>
                 </Col>

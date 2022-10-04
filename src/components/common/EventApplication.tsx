@@ -66,12 +66,24 @@ export default function EventApplication({eventApplication, admin = false}) {
             </Span>
           </Div>
           <Row mt8 itemsCenter>
-            <Col rounded10 p8 auto bgBlack>
+            <Col
+              rounded10
+              p8
+              auto
+              bgInfo={
+                cachedEventApplication.status == EventApplicationStatus.RECEIVED
+              }
+              bgSuccess={
+                cachedEventApplication.status == EventApplicationStatus.SELECTED
+              }
+              bgBlack={
+                cachedEventApplication.status == EventApplicationStatus.APPLIED
+              }>
               {admin ? (
                 <MenuView
                   onPressAction={handlePressStatus}
                   actions={airdropTypes}>
-                  <Span fontSize={17} bold white>
+                  <Span fontSize={17} bold>
                     {loading ? <ActivityIndicator /> : status}
                   </Span>
                 </MenuView>

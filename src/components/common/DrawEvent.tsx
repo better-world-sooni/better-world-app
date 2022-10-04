@@ -6,12 +6,17 @@ import {Colors} from 'react-native/Libraries/NewAppScreen';
 import {shallowEqual, useSelector} from 'react-redux';
 import getDrawEventStatus, {
   DrawEventStatus,
+  EventApplicationStatus,
 } from 'src/hooks/getDrawEventStatus';
 import {useGotoDrawEvent} from 'src/hooks/useGoto';
 import useUpdateDrawEvent from 'src/hooks/useUpdateDrawEvent';
 import {RootState} from 'src/redux/rootReducer';
+import {getNftName} from 'src/utils/nftUtils';
+import {Col} from './Col';
+import CountdownText from './CountdownText';
 import {Div} from './Div';
 import {Img} from './Img';
+import {Row} from './Row';
 import {Span} from './Span';
 
 enum DrawEventOption {
@@ -64,6 +69,7 @@ export default function DrawEvent({
     drawEventId: drawEvent.id,
   });
   const drawEventStatus = getDrawEventStatus({drawEvent});
+
   const handlePressMenu = ({nativeEvent: {event}}) => {
     if (event == DrawEventOption.DELETE) {
       deleteDrawEvent();
@@ -120,21 +126,37 @@ export default function DrawEvent({
         )}
 
       <Div>
-        <Img uri={drawEvent.image_uri} w={width} h={width} rounded10></Img>
-        <Div absolute bottom0 right0 m8 zIndex={1}>
-          <Img uri={drawEvent.nft_collection.image_uri} h20 w20 rounded50 />
-        </Div>
+        <Img
+          uri={drawEvent.image_uri}
+          w={width}
+          h={width}
+          rounded10
+          opacity={
+            drawEvent.status == DrawEventStatus.FINISHED ? 0.6 : 1
+          }></Img>
+        {drawEvent.expires_at ? (
+          <Div absolute bottom8 right8 bgDanger py6 px8 rounded10>
+            <CountdownText dueDate={drawEvent.expires_at} />
+          </Div>
+        ) : null}
       </Div>
-      <Div mt8>
-        <Span gray700 bold numberOfLines={1}>
-          {drawEvent.name}
-        </Span>
-      </Div>
-      <Div mt4>
-        <Span bold fontSize={16} numberOfLines={1}>
-          {drawEvent.giveaway_merchandise}
-        </Span>
-      </Div>
+      <Row mt8 itemsCenter>
+        <Col auto pr8>
+          <Img uri={drawEvent.nft_collection.image_uri} h25 w25 rounded50 />
+        </Col>
+        <Col>
+          <Div>
+            <Span gray700 bold numberOfLines={1}>
+              {drawEvent.name}
+            </Span>
+          </Div>
+          <Div mt4>
+            <Span bold fontSize={16} numberOfLines={1}>
+              {drawEvent.giveaway_merchandise}
+            </Span>
+          </Div>
+        </Col>
+      </Row>
     </Div>
   );
 }

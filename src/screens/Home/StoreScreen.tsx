@@ -1,4 +1,4 @@
-import React, {useRef} from 'react';
+import React, {useEffect, useRef} from 'react';
 import apis from 'src/modules/apis';
 import {
   useApiSelector,
@@ -15,9 +15,10 @@ import {FlatList, ImageBackground} from 'src/components/common/ViewComponents';
 import ListEmptyComponent from 'src/components/common/ListEmptyComponent';
 import {ActivityIndicator, RefreshControl} from 'react-native';
 import {HAS_NOTCH} from 'src/modules/constants';
-import {Clock, Gift} from 'react-native-feather';
+import {Archive, Clock, Gift} from 'react-native-feather';
 import {useGotoEventApplicationList} from 'src/hooks/useGoto';
 import DrawEvent from 'src/components/common/DrawEvent';
+import {useNavigation} from '@react-navigation/native';
 
 enum DrawEventFeedFilter {
   All = 'all',
@@ -26,6 +27,7 @@ enum DrawEventFeedFilter {
 
 export default function StoreScreen() {
   const flatlistRef = useRef(null);
+  const navigation = useNavigation();
   const {data, isLoading, isPaginating, page, isNotPaginatable} =
     useApiSelector(apis.feed.draw_event);
   const {data: nftCollectionRes, isLoading: nftCollectionLoad} = useApiSelector(
@@ -43,7 +45,7 @@ export default function StoreScreen() {
     );
   };
   const handleRefresh = () => {
-    reloadGETWithToken(apis.feed.draw_event());
+    reloadGETWithToken(apis.feed.draw_event(data?.filter));
   };
   const scrollToTop = () => {
     flatlistRef?.current
@@ -72,6 +74,26 @@ export default function StoreScreen() {
   const numColumns = 2;
   const notchHeight = useSafeAreaInsets().top;
   const headerHeight = notchHeight + 50;
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener(
+      // @ts-expect-error
+      'tabDoublePress',
+      e => {
+        const isFocused = navigation.isFocused();
+        if (isFocused) {
+          if (data?.filter == DrawEventFeedFilter.All) {
+            reloadGETWithToken(
+              apis.feed.draw_event(DrawEventFeedFilter.Eligible),
+            );
+          } else {
+            reloadGETWithToken(apis.feed.draw_event(DrawEventFeedFilter.All));
+          }
+        }
+      },
+    );
+    return unsubscribe;
+  }, [data?.filter]);
 
   return (
     <Div flex={1} bgWhite>
@@ -106,7 +128,7 @@ export default function StoreScreen() {
           </Col>
           <Col />
           <Col auto onPress={gotoEventApplicationList}>
-            <Clock
+            <Archive
               width={22}
               height={22}
               color={Colors.black}
@@ -167,7 +189,9 @@ export default function StoreScreen() {
         renderItem={({item}) => {
           return (
             <DrawEvent
-              key={(item as any).id}
+              key={`${(item as any).id}-${
+                (item as any).event_application?.status
+              }-${(item as any).status}`}
               drawEvent={item}
               mx={mx}
               my={my}
