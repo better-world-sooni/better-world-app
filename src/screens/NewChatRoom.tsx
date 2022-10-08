@@ -28,8 +28,9 @@ const NewChatRoom = () => {
     searchRef,
     text,
     textHasChanged,
-    nftSelected,
-    onPressNft,
+    addSelectedNft,
+    removeSelectedNft,
+    nftEnabled,
   } = useMakeNewChat();
   const {goBack} = useNavigation();
   const notchHeight = useSafeAreaInsets().top;
@@ -79,9 +80,16 @@ const NewChatRoom = () => {
                       contract_address={item?.contract_address}
                       token_id={item?.token_id}
                       image_uri={item?.image_uri}
-                      onPressNft={() =>
-                        onPressNft(item?.contract_address, item?.token_id, item)
+                      removeNft={() =>
+                        removeSelectedNft(
+                          item?.contract_address,
+                          item?.token_id,
+                        )
                       }
+                      enabled={nftEnabled(
+                        item?.contract_address,
+                        item?.token_id,
+                      )}
                     />
                   </Div>
                 );
@@ -155,10 +163,11 @@ const NewChatRoom = () => {
           return (
             <BriefNftContent
               nftsItem={item}
-              onPressNft={() =>
-                onPressNft(item?.contract_address, item?.token_id, item)
+              addNft={() => addSelectedNft(item)}
+              removeNft={() =>
+                removeSelectedNft(item?.contract_address, item?.token_id)
               }
-              selected={nftSelected(item?.contract_address, item?.token_id)}
+              enabled={nftEnabled(item?.contract_address, item?.token_id)}
             />
           );
         }}></FlatList>
@@ -166,17 +175,35 @@ const NewChatRoom = () => {
   );
 };
 
-function BriefNftContent({nftsItem, onPressNft, selected}) {
+function BriefNftContent({nftsItem, addNft, removeNft, enabled}) {
   return (
-    <NftContentMemo {...nftsItem} onPressNft={onPressNft} selected={selected} />
+    <NftContentMemo
+      {...nftsItem}
+      addNft={addNft}
+      removeNft={removeNft}
+      enabled={enabled}
+    />
   );
 }
 
 const NftContentMemo = memo(NftContent);
 
-function NftContent({nft_metadatum, name, image_uri, onPressNft, selected}) {
+function NftContent({
+  nft_metadatum,
+  name,
+  image_uri,
+  addNft,
+  removeNft,
+  enabled,
+}) {
+  const [checked, setChecked] = useState(!enabled);
+  const toggleChecked = () => {
+    if (checked) removeNft();
+    else addNft();
+    setChecked(!checked);
+  };
   return (
-    <Row itemsCenter h64 onPress={onPressNft} px15 relative>
+    <Row itemsCenter h64 onPress={enabled && toggleChecked} px15 relative>
       <Img
         w50
         h50
@@ -202,7 +229,7 @@ function NftContent({nft_metadatum, name, image_uri, onPressNft, selected}) {
         )}
       </Col>
       <Col auto mr10 itemsCenter justifyCenter>
-        {selected && (
+        {checked && (
           <Div auto rounded100 p3 bgSuccess>
             <Check
               strokeWidth={2}
@@ -217,21 +244,29 @@ function NftContent({nft_metadatum, name, image_uri, onPressNft, selected}) {
   );
 }
 
-function NftProfile({contract_address, token_id, image_uri, onPressNft}) {
+function NftProfile({
+  contract_address,
+  token_id,
+  image_uri,
+  removeNft,
+  enabled,
+}) {
   return (
-    <Div onPress={onPressNft}>
+    <Div onPress={enabled && removeNft}>
       <Img mt3 w50 h50 rounded100 uri={image_uri} />
-      <Div absolute left={35} opacity={0.7}>
-        <Col bgBlack w20 h20 rounded={40} itemsCenter justifyCenter>
-          <X
-            strokeWidth={4}
-            height={12}
-            width={12}
-            color={Colors.white}
-            style={{marginBottom: 1}}
-          />
-        </Col>
-      </Div>
+      {enabled && (
+        <Div absolute left={35} opacity={0.7}>
+          <Col bgBlack w20 h20 rounded={40} itemsCenter justifyCenter>
+            <X
+              strokeWidth={4}
+              height={12}
+              width={12}
+              color={Colors.white}
+              style={{marginBottom: 1}}
+            />
+          </Col>
+        </Div>
+      )}
     </Div>
   );
 }
