@@ -48,13 +48,20 @@ export default function useMakeNewChat(uploadSuccessCallback = null) {
     ) != null
       ? true
       : false;
-
-  const nftEnabled = (contract_address, token_id) =>
-    currentNft &&
-    currentNft?.contract_address == contract_address &&
-    currentNft?.token_id == token_id
-      ? false
-      : true;
+  const onPressNft = (contract_address, token_id, data) => {
+    if (
+      currentNft &&
+      currentNft?.contract_address == contract_address &&
+      currentNft?.token_id == token_id &&
+      nftSelected(contract_address, token_id)
+    )
+      return;
+    if (nftSelected(contract_address, token_id)) {
+      removeSelectedNft(contract_address, token_id);
+    } else {
+      addSelectedNft(data);
+    }
+  };
 
   const removeSelectedNft = (contract_address, token_id) => {
     setSelectedNft(selectedNft =>
@@ -105,8 +112,7 @@ export default function useMakeNewChat(uploadSuccessCallback = null) {
     searchRef,
     text,
     textHasChanged,
-    addSelectedNft,
-    removeSelectedNft,
-    nftEnabled,
+    nftSelected,
+    onPressNft,
   };
 }

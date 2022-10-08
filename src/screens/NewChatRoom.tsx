@@ -28,9 +28,8 @@ const NewChatRoom = () => {
     searchRef,
     text,
     textHasChanged,
-    addSelectedNft,
-    removeSelectedNft,
-    nftEnabled,
+    nftSelected,
+    onPressNft,
   } = useMakeNewChat();
   const {goBack} = useNavigation();
   const notchHeight = useSafeAreaInsets().top;
@@ -80,16 +79,9 @@ const NewChatRoom = () => {
                       contract_address={item?.contract_address}
                       token_id={item?.token_id}
                       image_uri={item?.image_uri}
-                      removeNft={() =>
-                        removeSelectedNft(
-                          item?.contract_address,
-                          item?.token_id,
-                        )
+                      onPressNft={() =>
+                        onPressNft(item?.contract_address, item?.token_id, item)
                       }
-                      enabled={nftEnabled(
-                        item?.contract_address,
-                        item?.token_id,
-                      )}
                     />
                   </Div>
                 );
@@ -163,11 +155,10 @@ const NewChatRoom = () => {
           return (
             <BriefNftContent
               nftsItem={item}
-              addNft={() => addSelectedNft(item)}
-              removeNft={() =>
-                removeSelectedNft(item?.contract_address, item?.token_id)
+              onPressNft={() =>
+                onPressNft(item?.contract_address, item?.token_id, item)
               }
-              enabled={nftEnabled(item?.contract_address, item?.token_id)}
+              selected={nftSelected(item?.contract_address, item?.token_id)}
             />
           );
         }}></FlatList>
@@ -175,35 +166,17 @@ const NewChatRoom = () => {
   );
 };
 
-function BriefNftContent({nftsItem, addNft, removeNft, enabled}) {
+function BriefNftContent({nftsItem, onPressNft, selected}) {
   return (
-    <NftContentMemo
-      {...nftsItem}
-      addNft={addNft}
-      removeNft={removeNft}
-      enabled={enabled}
-    />
+    <NftContentMemo {...nftsItem} onPressNft={onPressNft} selected={selected} />
   );
 }
 
 const NftContentMemo = memo(NftContent);
 
-function NftContent({
-  nft_metadatum,
-  name,
-  image_uri,
-  addNft,
-  removeNft,
-  enabled,
-}) {
-  const [checked, setChecked] = useState(!enabled);
-  const toggleChecked = () => {
-    if (checked) removeNft();
-    else addNft();
-    setChecked(!checked);
-  };
+function NftContent({nft_metadatum, name, image_uri, onPressNft, selected}) {
   return (
-    <Row itemsCenter h64 onPress={enabled && toggleChecked} px15 relative>
+    <Row itemsCenter h64 onPress={onPressNft} px15 relative>
       <Img
         w50
         h50
@@ -229,7 +202,7 @@ function NftContent({
         )}
       </Col>
       <Col auto mr10 itemsCenter justifyCenter>
-        {checked && (
+        {selected && (
           <Div auto rounded100 p3 bgSuccess>
             <Check
               strokeWidth={2}
@@ -244,29 +217,21 @@ function NftContent({
   );
 }
 
-function NftProfile({
-  contract_address,
-  token_id,
-  image_uri,
-  removeNft,
-  enabled,
-}) {
+function NftProfile({contract_address, token_id, image_uri, onPressNft}) {
   return (
-    <Div onPress={enabled && removeNft}>
+    <Div onPress={onPressNft}>
       <Img mt3 w50 h50 rounded100 uri={image_uri} />
-      {enabled && (
-        <Div absolute left={35} opacity={0.7}>
-          <Col bgBlack w20 h20 rounded={40} itemsCenter justifyCenter>
-            <X
-              strokeWidth={4}
-              height={12}
-              width={12}
-              color={Colors.white}
-              style={{marginBottom: 1}}
-            />
-          </Col>
-        </Div>
-      )}
+      <Div absolute left={35} opacity={0.7}>
+        <Col bgBlack w20 h20 rounded={40} itemsCenter justifyCenter>
+          <X
+            strokeWidth={4}
+            height={12}
+            width={12}
+            color={Colors.white}
+            style={{marginBottom: 1}}
+          />
+        </Col>
+      </Div>
     </Div>
   );
 }
