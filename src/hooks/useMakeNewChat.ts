@@ -1,4 +1,4 @@
-import {useRef, useState} from 'react';
+import {useMemo, useRef, useState} from 'react';
 import {shallowEqual, useSelector} from 'react-redux';
 import apis from 'src/modules/apis';
 import {
@@ -14,6 +14,8 @@ export type SelectedNft = {
   contract_address: string;
   token_id: number;
   image_uri: string;
+  name: string;
+  nft_name: string;
 };
 
 export default function useMakeNewChat(uploadSuccessCallback = null) {
@@ -33,11 +35,13 @@ export default function useMakeNewChat(uploadSuccessCallback = null) {
     data
       ? [
           {
-            contract_address: data.contract_address,
-            token_id: data.token_id,
-            image_uri: data.image_uri
+            contract_address: data?.contract_address,
+            token_id: data?.token_id,
+            image_uri: data?.image_uri
               ? resizeImageUri(data.image_uri, 200, 200)
-              : data.nft_metadatum?.image_uri,
+              : data?.nft_metadatum?.image_uri,
+            name: data?.name,
+            nft_name: data?.nft_metadatum?.name,
           },
         ]
       : [];
@@ -49,20 +53,18 @@ export default function useMakeNewChat(uploadSuccessCallback = null) {
       ? true
       : false;
   const onPressNft = (contract_address, token_id, data) => {
-    if (
-      currentNft &&
-      currentNft?.contract_address == contract_address &&
-      currentNft?.token_id == token_id &&
-      nftSelected(contract_address, token_id)
-    )
-      return;
     if (nftSelected(contract_address, token_id)) {
       removeSelectedNft(contract_address, token_id);
     } else {
       addSelectedNft(data);
     }
   };
-
+  const nftEnabled = (contract_address, token_id) =>
+    currentNft &&
+    currentNft?.contract_address == contract_address &&
+    currentNft?.token_id == token_id
+      ? false
+      : true;
   const removeSelectedNft = (contract_address, token_id) => {
     setSelectedNft(selectedNft =>
       selectedNft.filter(
@@ -98,6 +100,7 @@ export default function useMakeNewChat(uploadSuccessCallback = null) {
       reloadGetWithToken(apis.chat.nftList(text));
     }
   };
+  const canMakeNewChat = () => selectedNft.length >= 2;
 
   return {
     selectedNft,
@@ -114,5 +117,8 @@ export default function useMakeNewChat(uploadSuccessCallback = null) {
     textHasChanged,
     nftSelected,
     onPressNft,
+    removeSelectedNft,
+    nftEnabled,
+    canMakeNewChat,
   };
 }
