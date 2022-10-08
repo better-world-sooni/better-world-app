@@ -26,12 +26,13 @@ import {ChatChannel} from 'src/components/ChatChannel';
 import TruncatedText from 'src/components/common/TruncatedText';
 import {DEVICE_HEIGHT} from 'src/modules/styles';
 import {createdAtText} from 'src/utils/timeUtils';
-import {useGotoChatRoomFromList} from 'src/hooks/useGoto';
+import {useGotoChatRoomFromList, useGotoNewChatRoom} from 'src/hooks/useGoto';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {resizeImageUri} from 'src/utils/uriUtils';
 import ListEmptyComponent from 'src/components/common/ListEmptyComponent';
 import {FlatList} from 'react-native';
-import { EventRegister } from 'react-native-event-listeners'
+import {EventRegister} from 'react-native-event-listeners';
+import {PlusSquare} from 'react-native-feather';
 
 function ChatListScreen() {
   const {currentNft, token} = useSelector(
@@ -51,7 +52,7 @@ function ChatListScreen() {
 
   const dispatch = useDispatch();
   const gotoChatRoom = useGotoChatRoomFromList();
-
+  const gotoNewChat = useGotoNewChatRoom();
   const currentNftId = {
     token_id: currentNft.token_id,
     contract_address: currentNft.contract_address,
@@ -184,7 +185,11 @@ function ChatListScreen() {
               채팅
             </Span>
           </Col>
-          <Col />
+          <Col itemsEnd onPress={gotoNewChat}>
+            <Span bold fontSize={23}>
+              +
+            </Span>
+          </Col>
         </Row>
       </Div>
       <FlatList

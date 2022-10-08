@@ -21,7 +21,7 @@ import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {getNftProfileImage, getNftName} from 'src/utils/nftUtils';
 import {resizeImageUri} from 'src/utils/uriUtils';
 import {HAS_NOTCH} from 'src/modules/constants';
-import { EventRegister } from 'react-native-event-listeners'
+import {EventRegister} from 'react-native-event-listeners';
 import {useGotoNftProfile} from 'src/hooks/useGoto';
 
 export enum ChatRoomEnterType {
@@ -181,6 +181,7 @@ function ChatRoomScreen({
         last_message: text,
       };
       chatSocket.send(msg, myRoom, opponentRoom, opponentNft);
+      console.log(msg, myRoom, opponentRoom, opponentNft);
     } else Alert.alert('네트워크가 불안정하여 메세지를 보내지 못했습니다');
     setText('');
   }, [

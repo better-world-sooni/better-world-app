@@ -57,6 +57,7 @@ import NewDrawEventScreen from 'src/screens/NewDrawEventScreen';
 import DrawEventScreen from 'src/screens/DrawEventScreen';
 import CollectionEventApplicationListScreen from 'src/screens/CollectionEventApplicationListScreen';
 import KlipSignInScreen from 'src/screens/Auth/KlipSignInScreen';
+import NewChatRoom from 'src/screens/NewChatRoom';
 
 const RootStack = createStackNavigator();
 
@@ -421,6 +422,10 @@ export const AppContent = ({notificationOpenData}) => {
     {
       name: NAV_NAMES.KlipSignIn,
       component: KlipSignInScreen,
+    },
+    {
+      name: NAV_NAMES.NewChatRoom,
+      component: NewChatRoom,
     },
   ];
 
