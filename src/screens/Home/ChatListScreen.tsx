@@ -42,7 +42,6 @@ function ChatListScreen() {
   const {data: chatListRes, isLoading: chatListLoad} = useApiSelector(
     apis.chat.chatRoom.all,
   );
-
   const [chatRooms, setChatRooms] = useState(
     chatListRes ? chatListRes.chat_list_data : [],
   );

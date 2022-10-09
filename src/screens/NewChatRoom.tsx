@@ -53,7 +53,13 @@ const NewChatRoom = () => {
     <>
       <Div flex={1} bgWhite>
         <Div h={notchHeight}></Div>
-        <Div bgWhite px8 h={180} justifyCenter borderBottom={0.5} borderGray200>
+        <Div
+          bgWhite
+          px8
+          h={110 + (nftsRes ? 70 : 0)}
+          justifyCenter
+          borderBottom={0.5}
+          borderGray200>
           <Col itemsCenter py5 h40 px8>
             <Row itemsCenter>
               <Col itemsStart rounded100 onPress={goBack}>
@@ -78,55 +84,58 @@ const NewChatRoom = () => {
                 />
               </Col>
             </Row>
-            <Row itemsStart h={70} mt20>
-              <FlatList
-                horizontal={true}
-                data={selectedNft}
-                showsHorizontalScrollIndicator={false}
-                keyExtractor={item =>
-                  `${(item as any)?.contract_address}-${
-                    (item as any)?.token_id
-                  }`
-                }
-                ListFooterComponent={
-                  <Col
-                    mt3
-                    w50
-                    h50
-                    rounded100
-                    bgGray600
-                    itemsCenter
-                    justifyCenter
-                    onPress={openModal}>
-                    <Row>
-                      <Div w={6} h={6} rounded={12} bgWhite mr4 />
-                      <Div w={6} h={6} rounded={12} bgWhite mr4 />
-                      <Div w={6} h={6} rounded={12} bgWhite />
-                    </Row>
-                  </Col>
-                }
-                renderItem={({item}) => {
-                  return (
-                    <Div mr10>
-                      <NftProfilememo
-                        image_uri={item?.image_uri}
-                        enabled={nftEnabled(
-                          item?.contract_address,
-                          item?.token_id,
-                        )}
-                        onPressNft={() =>
-                          onPressNft(
+            <Div h={20} />
+            {nftsRes && (
+              <Row itemsStart h={70}>
+                <FlatList
+                  horizontal={true}
+                  data={selectedNft}
+                  showsHorizontalScrollIndicator={false}
+                  keyExtractor={item =>
+                    `${(item as any)?.contract_address}-${
+                      (item as any)?.token_id
+                    }`
+                  }
+                  ListFooterComponent={
+                    <Col
+                      mt3
+                      w50
+                      h50
+                      rounded100
+                      bgGray600
+                      itemsCenter
+                      justifyCenter
+                      onPress={openModal}>
+                      <Row>
+                        <Div w={6} h={6} rounded={12} bgWhite mr4 />
+                        <Div w={6} h={6} rounded={12} bgWhite mr4 />
+                        <Div w={6} h={6} rounded={12} bgWhite />
+                      </Row>
+                    </Col>
+                  }
+                  renderItem={({item}) => {
+                    return (
+                      <Div mr10>
+                        <NftProfilememo
+                          image_uri={item?.image_uri}
+                          enabled={nftEnabled(
                             item?.contract_address,
                             item?.token_id,
-                            item,
-                            true,
-                          )
-                        }
-                      />
-                    </Div>
-                  );
-                }}></FlatList>
-            </Row>
+                          )}
+                          onPressNft={() =>
+                            onPressNft(
+                              item?.contract_address,
+                              item?.token_id,
+                              item,
+                              true,
+                            )
+                          }
+                        />
+                      </Div>
+                    );
+                  }}></FlatList>
+              </Row>
+            )}
             <Row itemsCenter>
               <Col mr10>
                 <TextInput
