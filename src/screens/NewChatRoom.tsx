@@ -54,7 +54,7 @@ const NewChatRoom = () => {
       <Div flex={1} bgWhite>
         <Div h={notchHeight}></Div>
         <Div bgWhite px8 h={180} justifyCenter borderBottom={0.5} borderGray200>
-          <Col itemsCenter py5 h40>
+          <Col itemsCenter py5 h40 px8>
             <Row itemsCenter>
               <Col itemsStart rounded100 onPress={goBack}>
                 <ChevronLeft
@@ -78,7 +78,7 @@ const NewChatRoom = () => {
                 />
               </Col>
             </Row>
-            <Row itemsStart h={70} mt20 px10>
+            <Row itemsStart h={70} mt20>
               <FlatList
                 horizontal={true}
                 data={selectedNft}
@@ -119,6 +119,7 @@ const NewChatRoom = () => {
                             item?.contract_address,
                             item?.token_id,
                             item,
+                            true,
                           )
                         }
                       />
@@ -126,7 +127,7 @@ const NewChatRoom = () => {
                   );
                 }}></FlatList>
             </Row>
-            <Row itemsCenter px10>
+            <Row itemsCenter>
               <Col mr10>
                 <TextInput
                   innerRef={searchRef}
@@ -196,8 +197,13 @@ const NewChatRoom = () => {
                 nftsItem={item}
                 onPressNft={
                   nftEnabled(item?.contract_address, item?.token_id) &&
-                  (() =>
-                    onPressNft(item?.contract_address, item?.token_id, item))
+                  (selected =>
+                    onPressNft(
+                      item?.contract_address,
+                      item?.token_id,
+                      item,
+                      selected,
+                    ))
                 }
                 selected={nftSelected(item?.contract_address, item?.token_id)}
               />
@@ -239,7 +245,12 @@ function NftContent({
   removeNft = null,
 }) {
   return (
-    <Row itemsCenter h64 onPress={!removeNft && onPressNft} px15 relative>
+    <Row
+      itemsCenter
+      h64
+      onPress={!removeNft && onPressNft && (() => onPressNft(selected))}
+      px15
+      relative>
       <Img
         w50
         h50

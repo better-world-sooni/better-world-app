@@ -52,8 +52,8 @@ export default function useMakeNewChat(uploadSuccessCallback = null) {
     ) != null
       ? true
       : false;
-  const onPressNft = (contract_address, token_id, data) => {
-    if (nftSelected(contract_address, token_id)) {
+  const onPressNft = (contract_address, token_id, data, selected) => {
+    if (selected) {
       removeSelectedNft(contract_address, token_id);
     } else {
       addSelectedNft(data);
@@ -78,7 +78,7 @@ export default function useMakeNewChat(uploadSuccessCallback = null) {
   };
 
   const addSelectedNft = data => {
-    setSelectedNft([...selectedNft, ...dataToNftValue(data)]);
+    setSelectedNft(selectedNft => [...selectedNft, ...dataToNftValue(data)]);
   };
   const reloadGetWithToken = useReloadGETWithToken();
   const paginateGetWithToken = usePaginateGETWithToken();
