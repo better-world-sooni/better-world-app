@@ -108,7 +108,7 @@ const NewChatRoom = () => {
                 renderItem={({item}) => {
                   return (
                     <Div mr10>
-                      <NftProfile
+                      <NftProfilememo
                         image_uri={item?.image_uri}
                         enabled={nftEnabled(
                           item?.contract_address,
@@ -193,7 +193,7 @@ const NewChatRoom = () => {
           }
           renderItem={({item}) => {
             return (
-              <BriefNftContent
+              <BriefNftContentMemo
                 nftsItem={item}
                 onPressNft={
                   nftEnabled(item?.contract_address, item?.token_id) &&
@@ -222,7 +222,7 @@ const NewChatRoom = () => {
 
 function BriefNftContent({nftsItem, onPressNft, selected}) {
   return (
-    <NftContentMemo
+    <NftContent
       nft_name={nftsItem?.nft_metadatum?.name}
       nft_image_uri={nftsItem?.nft_metadatum?.image_uri}
       name={nftsItem?.name}
@@ -233,7 +233,9 @@ function BriefNftContent({nftsItem, onPressNft, selected}) {
   );
 }
 
-const NftContentMemo = memo(NftContent);
+const BriefNftContentMemo = React.memo(BriefNftContent, (props, nextProps) =>
+  props.selected === nextProps.selected ? true : false,
+);
 
 function NftContent({
   nft_name,
@@ -298,6 +300,10 @@ function NftContent({
   );
 }
 
+const NftContentmemo = React.memo(NftContent, (props, nextProps) =>
+  props.selected === nextProps.selected ? true : false,
+);
+
 function NftProfile({image_uri, onPressNft, enabled}) {
   return (
     <Div onPress={enabled && onPressNft}>
@@ -318,6 +324,10 @@ function NftProfile({image_uri, onPressNft, enabled}) {
     </Div>
   );
 }
+
+const NftProfilememo = React.memo(NftProfile, (props, nextProps) =>
+  props.image_uri === nextProps.image_uri ? true : false,
+);
 
 const BottomPopupOptions = ({
   bottomPopupRef,
@@ -353,7 +363,7 @@ const BottomPopupOptions = ({
           ListFooterComponent={<Div h={50} />}
           renderItem={({item}) => {
             return (
-              <NftContentMemo
+              <NftContentmemo
                 nft_name={(item as any)?.nft_name}
                 nft_image_uri={null}
                 name={(item as any)?.name}
