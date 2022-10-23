@@ -23,7 +23,7 @@ import {kmoment} from 'src/utils/timeUtils';
 import useUploadDrawEvent from 'src/hooks/useUploadDrawEvent';
 import NewEventApplicationOptions from 'src/components/NewEventApplicationOptions';
 
-export default function NewDrawEventScreen() {
+export default function NewAnnouncementScreen() {
   const autoFocusRef = useAutoFocusRef();
   const {goBack} = useNavigation();
   const reloadGetWithToken = useReloadGETWithToken();
@@ -56,7 +56,7 @@ export default function NewDrawEventScreen() {
     handleAddImages,
     handleRemoveImage,
     uploadDrawEvent,
-  } = useUploadDrawEvent({initialHasApplication: true});
+  } = useUploadDrawEvent({initialHasApplication: false});
   const handlePressUpload = () => {
     uploadDrawEvent({
       uploadSuccessCallback,
@@ -123,92 +123,16 @@ export default function NewDrawEventScreen() {
               <TextInput
                 innerRef={autoFocusRef}
                 value={name}
-                placeholder={'이벤트 이름'}
-                fontSize={18}
+                placeholder={'제목'}
+                fontSize={24}
                 w={'100%'}
                 style={{fontWeight: 'bold'}}
                 onChangeText={handleNameChange}></TextInput>
             </Div>
-            <Div mt8>
-              <TextInput
-                innerRef={autoFocusRef}
-                value={giveawayMerchandise}
-                placeholder={'경품'}
-                fontSize={24}
-                w={'100%'}
-                style={{fontWeight: 'bold'}}
-                onChangeText={handleGiveawayMerchandiseChange}></TextInput>
-            </Div>
-            <Row mt16 itemsCenter>
-              <Col auto m5>
-                <Span fontSize={14}>
-                  응모시 링크로 이동 {enableApplicationLink ? '활성' : '비활성'}
-                </Span>
-              </Col>
-              <Col></Col>
-              <Col auto>
-                <Switch
-                  value={enableApplicationLink}
-                  onValueChange={toggleEnableApplicationLink}
-                  style={{transform: [{scaleX: 0.8}, {scaleY: 0.8}]}}
-                />
-              </Col>
-            </Row>
-            <Div mt16>
-              {enableApplicationLink ? (
-                <Div
-                  border={0.5}
-                  borderGray200
-                  rounded10
-                  overflowHidden
-                  py12
-                  px16>
-                  <TextInput
-                    value={applicationLink}
-                    placeholder={'응모 링크 (google form, typeform, etc..)'}
-                    w={'100%'}
-                    onChangeText={handleApplicationLinkChange}></TextInput>
-                </Div>
-              ) : (
-                <NewEventApplicationOptions
-                  applicationCategories={applicationCategories}
-                  addApplicationCategory={handleAddApplicationCategory}
-                  removeApplicationCategory={handleRemoveApplicationCategory}
-                  addApplicationOption={handleAddApplicationOption}
-                  removeApplicationOption={handleRemoveApplicationOption}
-                />
-              )}
-            </Div>
-            <Div mt16 border={0.5} borderGray200 rounded10 overflowHidden>
-              <Row py12 px16 itemsCenter>
-                <Col>
-                  {expiresAt ? (
-                    <Span onPress={handlePressExpiresAt}>
-                      {kmoment(expiresAt).format('YY.M.D a h:mm')}
-                    </Span>
-                  ) : (
-                    <Span>이벤트 마감 시간 추가</Span>
-                  )}
-                </Col>
-                <Col
-                  auto
-                  onPress={
-                    expiresAt
-                      ? handlePressRemoveExpiresAt
-                      : handlePressAddExpiresAt
-                  }>
-                  {expiresAt ? (
-                    <Minus height={22} color={Colors.black} strokeWidth={2} />
-                  ) : (
-                    <Plus height={22} color={Colors.black} strokeWidth={2} />
-                  )}
-                </Col>
-              </Row>
-            </Div>
             <Div mt16>
               <TextInput
                 value={description}
-                placeholder={'상품 설명 (마크다운 사용 가능)'}
+                placeholder={'공지 내용 (마크다운 사용 가능)'}
                 fontSize={16}
                 multiline
                 w={'100%'}

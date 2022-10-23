@@ -133,7 +133,7 @@ const MyNftCollectionMenu = ({nftCollection}) => {
               />
             </Col>
             <Col>
-              <Span fontSize={16}>커뮤니티 멤버 검색</Span>
+              <Span fontSize={16}>NFT 검색</Span>
             </Col>
           </Row>
           {communityWalletCount ? (

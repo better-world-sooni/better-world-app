@@ -82,13 +82,12 @@ const PasswordSigninScreen = () => {
   const notchHeight = useSafeAreaInsets().top;
   const headerHeight = notchHeight + 50;
 
-  return(
+  return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       flex={1}
       bgWhite
-      relative
-    >
+      relative>
       <Div h={headerHeight} top0 zIndex={5}>
         <Row
           itemsCenter
@@ -119,25 +118,27 @@ const PasswordSigninScreen = () => {
         <Div>
           <Div rounded10 overflowHidden itemsCenter justifyCenter px30>
             <Span fontSize={20} bold style={{textAlign: 'center'}}>
-              {
-                '회원가입은 betterworldapp.io에서\n 데스크톱을 이용해 하실 수 있습니다.'
-              }
+              {'betterworldapp.io에서\n 비밀번호 설정을 하실 수 있습니다.'}
             </Span>
           </Div>
           <Div px30 pb30>
             <Row mt40>
               <Div w="100%">
-                <Span fontSize={14}>Kaikas 지갑 주소</Span>
-                <Row itemsCenter my2 pt5>
+                <Div pl11>
+                  <Span fontSize={11} bold>
+                    Kaikas 주소
+                  </Span>
+                </Div>
+                <Row itemsCenter mb2 pt5>
                   <Col>
                     <TextInput
                       autoCorrect={false}
                       h48
                       p12
-                      border={0.5}
-                      borderGray400
-                      rounded100
-                      placeholder={'0x...'}
+                      border={1}
+                      borderGray200
+                      rounded22
+                      placeholder={'ex) 0x123abc...'}
                       autoCapitalize="none"
                       onChangeText={handleChangeAddress}
                       color={'#000000'}
@@ -148,17 +149,22 @@ const PasswordSigninScreen = () => {
             </Row>
             <Row>
               <Div w="100%" mt={10}>
-                <Span fontSize={14}>비밀번호</Span>
-                <Row itemsCenter my2 pt5>
+                <Div pl11>
+                  <Span fontSize={11} bold>
+                    비밀번호
+                  </Span>
+                </Div>
+                <Row itemsCenter mb2 pt5>
                   <Col>
                     <TextInput
                       autoCorrect={false}
                       h48
                       p12
-                      border={0.5}
-                      borderGray400
-                      rounded100
+                      border={1}
+                      borderGray200
+                      rounded22
                       autoCapitalize="none"
+                      placeholder={'ex) p@sw0rd'}
                       secureTextEntry={true}
                       onChangeText={handleChangePassword}
                       color={'#000000'}
@@ -170,8 +176,8 @@ const PasswordSigninScreen = () => {
             <Div h48 mt20>
               <Row
                 bgBlack
-                rounded100
-                h50
+                rounded22
+                h48
                 flex={1}
                 itemsCenter
                 onPress={handleAddressSignIn}>
@@ -204,14 +210,5 @@ const PasswordSigninScreen = () => {
   );
 };
 
-const renderItem = ({item, index}) => {
-  return (
-    <Div rounded10 overflowHidden itemsCenter justifyCenter px30>
-      <Span fontSize={28} bold style={{textAlign: 'center'}}>
-        {item}
-      </Span>
-    </Div>
-  );
-};
 
 export default PasswordSigninScreen;

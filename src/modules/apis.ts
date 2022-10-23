@@ -3,9 +3,9 @@ import querystring from 'querystring'
 import {isEmpty, omitBy, isNil} from 'lodash'
 
 // const BASE_URL = 'http://3.39.22.255:3000';
-// const BASE_URL = 'http://192.168.1.185:3000';
+const BASE_URL = 'http://192.168.1.185:3000';
 // const BASE_URL = 'http://localhost:3000';
-const BASE_URL = 'https://api.betterworldapp.io';
+// const BASE_URL = 'https://api.betterworldapp.io';
 
 const toUrl = (...args) => ({url: urljoin(...args)});
 const apiV1 = path => toUrl(BASE_URL, '/api/v1', path);
@@ -24,11 +24,12 @@ export const urlParams = (obj, nullable?) => {
 const apis = {
   auth: {
     kaikas: {
+      app2app: () =>apiV1('/auth/kaikas/app2app'),
       verification: () => apiV1('/auth/kaikas/verification'),
       nonce: () => apiV1(`/auth/kaikas/nonce`),
     },
     klip: {
-      verification: () =>apiV1('/auth/klip/verification')
+      app2app: () =>apiV1('/auth/klip/app2app')
     },
     password: {
       _: () => apiV1('/auth/password')
@@ -43,6 +44,12 @@ const apis = {
         login: (token) => apiV1(`/auth/jwt/qr/login${urlParams({token})}`)
       }
     },
+  },
+  donation: {
+    postId: {
+      _: (postId) => apiV1(`/donation/${postId}`),
+      list: (postId, page?) => apiV1(`/donation/${postId}/list${urlParams({page})}`),
+    }
   },
   pushNotificationSetting: {
     _: () => apiV1(`/push_notification_setting`),
@@ -79,6 +86,7 @@ const apis = {
   },
   nft_collection: {
     _: () => apiV1(`/nft_collection`),
+    list: (keyword?, page?) => apiV1(`/nft_collection/list${urlParams({keyword, page})}`),
     communityWallet: {
       list: (page?) => apiV1(`/nft_collection/community_wallet/list${urlParams({page})}`),
     },

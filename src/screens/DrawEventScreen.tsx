@@ -2,11 +2,14 @@ import React from 'react';
 import {Div} from 'src/components/common/Div';
 import {Row} from 'src/components/common/Row';
 import {Col} from 'src/components/common/Col';
-import {ChevronLeft} from 'react-native-feather';
+import {ChevronLeft, Eye} from 'react-native-feather';
 import apis from 'src/modules/apis';
 import {useNavigation} from '@react-navigation/native';
 import {Span} from 'src/components/common/Span';
-import {KeyboardAvoidingView, ScrollView} from 'src/components/common/ViewComponents';
+import {
+  KeyboardAvoidingView,
+  ScrollView,
+} from 'src/components/common/ViewComponents';
 import {useApiSelector} from 'src/redux/asyncReducer';
 import {Colors, DEVICE_WIDTH} from 'src/modules/styles';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
@@ -20,6 +23,8 @@ import NewEventApplication from 'src/components/common/NewEventApplication';
 import {Platform} from 'react-native';
 import {HAS_NOTCH} from 'src/modules/constants';
 import CountdownText from 'src/components/common/CountdownText';
+import AutolinkTextWrapper from 'src/components/common/AutolinkTextWrapper';
+import ImageSlideShow from 'src/components/common/ImageSlideShow';
 
 export default function DrawEventScreen() {
   const {data: drawEventRes, isLoading: drawEventLoading} = useApiSelector(
@@ -67,16 +72,38 @@ export default function DrawEventScreen() {
                       rounded50
                     />
                   </Div>
-                  <ImageCarousel
-                    images={drawEvent.image_uris}
+                  <ImageSlideShow
+                    borderRadius={0}
+                    imageUris={drawEvent.image_uris}
                     sliderWidth={DEVICE_WIDTH}
                     sliderHeight={DEVICE_WIDTH}
                   />
-                  {drawEvent.expires_at ? (
-                    <Div absolute bottom8 right8 bgDanger py6 px8 rounded10>
+                  {drawEvent.expires_at && drawEvent.expires_at > new Date() ? (
+                    <Div absolute top8 right8 bgDanger py6 px8 rounded10>
                       <CountdownText dueDate={drawEvent.expires_at} />
                     </Div>
                   ) : null}
+                  <Div>
+                    <Row
+                      absolute
+                      bottom8
+                      right8
+                      bg={'rgba(0,0,0,0.5)'}
+                      px10
+                      py7
+                      rounded7
+                      itemsCenter>
+                      <Col auto mr4>
+                        <Eye color={Colors.white} width={12} height={12} />
+                      </Col>
+                      <Col auto>
+                        <Span
+                          white
+                          bold
+                          fontSize={10}>{`${drawEvent.read_count}`}</Span>
+                      </Col>
+                    </Row>
+                  </Div>
                 </Div>
                 <Div px15>
                   <Row mt16>
@@ -97,13 +124,15 @@ export default function DrawEventScreen() {
                       {drawEvent.name}
                     </Span>
                   </Div>
-                  <Row py12 itemsCenter borderBottom={0.5} borderGray200>
-                    <Col auto mr4>
-                      <Span bold fontSize={16}>
-                        {drawEvent.giveaway_merchandise}
-                      </Span>
-                    </Col>
-                  </Row>
+                  {drawEvent?.has_application && (
+                    <Row py12 itemsCenter borderBottom={0.5} borderGray200>
+                      <Col auto mr4>
+                        <Span bold fontSize={16}>
+                          {drawEvent.giveaway_merchandise}
+                        </Span>
+                      </Col>
+                    </Row>
+                  )}
                   <Div mt16>
                     <DefaultMarkdown children={drawEvent.description} />
                   </Div>
@@ -112,7 +141,9 @@ export default function DrawEventScreen() {
               </>
             )}
           </ScrollView>
-          {drawEvent && <NewEventApplication drawEvent={drawEvent} />}
+          {drawEvent?.has_application && (
+            <NewEventApplication drawEvent={drawEvent} />
+          )}
         </Div>
       </KeyboardAvoidingView>
       <Div h={HAS_NOTCH ? 27 : 12} bgWhite />

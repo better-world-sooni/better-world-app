@@ -12,14 +12,15 @@ import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import useKlipLogin from 'src/hooks/useKlipLogin';
 import {Img} from 'src/components/common/Img';
 import {ICONS} from 'src/modules/icons';
+import useKaikasLogin from 'src/hooks/useKaikasLogin';
 
-const KlipSignInScreen = () => {
+const KaikasSignInScreen = () => {
   const {goBack} = useNavigation();
   const notchHeight = useSafeAreaInsets().top;
   const notchBottom = useSafeAreaInsets().bottom;
   const headerHeight = notchHeight + 50;
   const {error, loading, prepareAuthResult, requestAuth, checkResultAndLogin} =
-    useKlipLogin();
+    useKaikasLogin();
   useEffect(() => {
     requestAuth();
   }, []);
@@ -50,7 +51,7 @@ const KlipSignInScreen = () => {
           </Col>
           <Col auto>
             <Span bold fontSize={17}>
-              Klip으로 로그인
+              Kaikas로 로그인
             </Span>
           </Col>
           <Col />
@@ -59,13 +60,13 @@ const KlipSignInScreen = () => {
       <Div flex={1} px15>
         <Div flex={1} itemsCenter justifyCenter>
           <Div>
-            <Img source={ICONS.klip} h60 w120></Img>
+            <Img source={ICONS.kaikas} h60 w60></Img>
           </Div>
           <Div mt16>
             <Span fontSize={19} bold textCenter>
               {prepareAuthResult
-                ? 'Klip 정보 제공에 동의하셨나요?'
-                : 'BetterWorld가 Klip 지갑 정보를 사용하는 것을 허용해주세요.'}
+                ? 'Kaikas 정보 제공에 동의하셨나요?'
+                : 'BetterWorld가 Kaikas 지갑 정보를 사용하는 것을 허용해주세요.'}
             </Span>
           </Div>
           {error ? (
@@ -77,7 +78,7 @@ const KlipSignInScreen = () => {
           ) : null}
         </Div>
         <Row
-          bg={loading ? Colors.klip.light : Colors.klip.DEFAULT}
+          bg={loading ? Colors.kaikas.light : Colors.kaikas.DEFAULT}
           rounded22
           onPress={
             !loading
@@ -93,13 +94,13 @@ const KlipSignInScreen = () => {
               <ActivityIndicator />
             ) : prepareAuthResult ? (
               <Div>
-                <Span bold fontSize={16}>
+                <Span bold white fontSize={16}>
                   로그인 하기
                 </Span>
               </Div>
             ) : (
               <Div>
-                <Span bold fontSize={16}>
+                <Span bold white fontSize={16}>
                   Klip 지갑 허용하기
                 </Span>
               </Div>
@@ -113,4 +114,4 @@ const KlipSignInScreen = () => {
   );
 };
 
-export default KlipSignInScreen;
+export default KaikasSignInScreen;

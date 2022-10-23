@@ -25,6 +25,7 @@ import {Colors} from 'react-native/Libraries/NewAppScreen';
 import {useUpdateUnreadNotificationCount} from 'src/redux/appReducer';
 import {shallowEqual, useSelector} from 'react-redux';
 import {RootState} from 'src/redux/rootReducer';
+import {smallBump} from 'src/utils/hapticFeedBackUtils';
 
 enum SocialFeedFilter {
   All = 'all',
@@ -154,6 +155,7 @@ export default function SocialScreen() {
           } else {
             reloadGETWithToken(apis.feed.social(SocialFeedFilter.All));
           }
+          smallBump();
         }
       },
     );

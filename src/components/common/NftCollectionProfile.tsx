@@ -9,7 +9,7 @@ import {Colors, DEVICE_WIDTH} from 'src/modules/styles';
 import useFollow from 'src/hooks/useFollow';
 import apis from 'src/modules/apis';
 import {
-  useGotoCollectionSearch,
+  useGotoCollectionMemberSearch,
   useGotoFollowList,
   useGotoNftCollectionProfileEdit,
 } from 'src/hooks/useGoto';
@@ -92,7 +92,7 @@ export default function NftCollectionProfile({
     followOwnerType: FollowOwnerType.NftCollection,
     contractAddress: nftCollectionCore.contract_address,
   });
-  const gotoCollectionSearch = useGotoCollectionSearch({
+  const gotoCollectionMemberSearch = useGotoCollectionMemberSearch({
     contractAddress: nftCollectionCore.contract_address,
   });
   const translationY = useSharedValue(0);
@@ -396,7 +396,7 @@ export default function NftCollectionProfile({
                     <Col />
                   </Row>
                   {nftCollection.admin_nfts.length > 0 && (
-                    <Row mt10 itemsCenter onPress={gotoCollectionSearch}>
+                    <Row mt10 itemsCenter onPress={gotoCollectionMemberSearch}>
                       <Col auto>
                         <AdminProfiles admin={nftCollection.admin_nfts} />
                       </Col>

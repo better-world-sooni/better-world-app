@@ -15,14 +15,19 @@ import {FlatList, ImageBackground} from 'src/components/common/ViewComponents';
 import ListEmptyComponent from 'src/components/common/ListEmptyComponent';
 import {ActivityIndicator, RefreshControl} from 'react-native';
 import {HAS_NOTCH} from 'src/modules/constants';
-import {Archive, Clock, Gift} from 'react-native-feather';
-import {useGotoEventApplicationList} from 'src/hooks/useGoto';
+import {Archive, Clock, Gift, Search} from 'react-native-feather';
+import {
+  useGotoEventApplicationList,
+  useGotoNftCollectionSearch,
+} from 'src/hooks/useGoto';
 import DrawEvent from 'src/components/common/DrawEvent';
 import {useNavigation} from '@react-navigation/native';
+import {smallBump} from 'src/utils/hapticFeedBackUtils';
 
 enum DrawEventFeedFilter {
   All = 'all',
   Eligible = 'eligible',
+  Following = 'following',
 }
 
 export default function StoreScreen() {
@@ -61,17 +66,14 @@ export default function StoreScreen() {
       reloadGETWithToken(apis.feed.draw_event(filter));
     }
     if (
-      filter == DrawEventFeedFilter.Eligible &&
-      data?.filter !== DrawEventFeedFilter.Eligible
+      filter == DrawEventFeedFilter.Following &&
+      data?.filter !== DrawEventFeedFilter.Following
     ) {
       reloadGETWithToken(apis.feed.draw_event(filter));
     }
   };
   const gotoEventApplicationList = useGotoEventApplicationList();
-  const paddingX = 7;
-  const mx = 8;
-  const my = 8;
-  const numColumns = 2;
+  const gotoNftCollectionSearch = useGotoNftCollectionSearch();
   const notchHeight = useSafeAreaInsets().top;
   const headerHeight = notchHeight + 50;
 
@@ -84,11 +86,12 @@ export default function StoreScreen() {
         if (isFocused) {
           if (data?.filter == DrawEventFeedFilter.All) {
             reloadGETWithToken(
-              apis.feed.draw_event(DrawEventFeedFilter.Eligible),
+              apis.feed.draw_event(DrawEventFeedFilter.Following),
             );
           } else {
             reloadGETWithToken(apis.feed.draw_event(DrawEventFeedFilter.All));
           }
+          smallBump();
         }
       },
     );
@@ -104,13 +107,13 @@ export default function StoreScreen() {
             auto
             mr16
             py2
-            borderBottom={data?.filter == DrawEventFeedFilter.Eligible ? 2 : 0}
-            onPress={() => handlePressFilter(DrawEventFeedFilter.Eligible)}>
+            borderBottom={data?.filter == DrawEventFeedFilter.Following ? 2 : 0}
+            onPress={() => handlePressFilter(DrawEventFeedFilter.Following)}>
             <Span
               bold
               fontSize={19}
-              gray400={data?.filter !== DrawEventFeedFilter.Eligible}>
-              {'응모가능'}
+              gray400={data?.filter !== DrawEventFeedFilter.Following}>
+              {'팔로잉'}
             </Span>
           </Col>
           <Col
@@ -127,7 +130,15 @@ export default function StoreScreen() {
             </Span>
           </Col>
           <Col />
-          <Col auto onPress={gotoEventApplicationList}>
+          <Col auto onPress={gotoNftCollectionSearch} pl16>
+            <Search
+              strokeWidth={2}
+              color={Colors.black}
+              height={22}
+              width={22}
+            />
+          </Col>
+          <Col auto onPress={gotoEventApplicationList} pl16>
             <Archive
               width={22}
               height={22}
@@ -141,36 +152,24 @@ export default function StoreScreen() {
         ref={flatlistRef}
         showsVerticalScrollIndicator={false}
         keyExtractor={item => (item as any).id}
-        contentContainerStyle={{paddingRight: paddingX, paddingLeft: paddingX}}
-        numColumns={2}
         ListHeaderComponent={
-          <Div
-            style={{
-              shadowOffset: {
-                width: 0,
-                height: 2,
-              },
-              shadowOpacity: 0.25,
-              shadowRadius: 4,
-              elevation: 4,
-            }}>
+          <Div>
             <ImageBackground
               source={{uri: nftCollection?.background_image_uri}}
               style={{
                 backgroundColor: Colors.primary.DEFAULT,
               }}
-              h80
+              h90
               wFull
-              my12
-              rounded10
+              mb12
               overflowHidden>
-              <Div wFull h80 bgBlack opacity={0.75}></Div>
-              <Div absolute top0 wFull h80 px16 py8 justifyCenter>
+              <Div wFull h90 bgBlack opacity={0.75}></Div>
+              <Div absolute top0 wFull h90 px16 py8 justifyCenter>
                 <Span white gray400 fontSize={12}>
-                  오직 홀더를 위한 이벤트에 응모하여 굿즈와 혜택을 수령하세요
+                  오직 홀더를 위한 공지와 이벤트
                 </Span>
                 <Span white bold mt4>
-                  응모와 수령이 쉬운 BetterWorld Events!
+                  BetterWorld Events
                 </Span>
               </Div>
             </ImageBackground>
@@ -191,13 +190,11 @@ export default function StoreScreen() {
             <DrawEvent
               key={`${(item as any).id}-${
                 (item as any).event_application?.status
-              }-${(item as any).status}`}
+              }-${(item as any).status}-${(item as any).read_count}`}
               drawEvent={item}
-              mx={mx}
-              my={my}
-              width={
-                (DEVICE_WIDTH - paddingX * numColumns - mx * numColumns * 2) / 2
-              }
+              mx={15}
+              my={15}
+              width={DEVICE_WIDTH - 15 * 2}
             />
           );
         }}

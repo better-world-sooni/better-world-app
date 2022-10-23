@@ -1,7 +1,7 @@
 import {MenuView} from '@react-native-menu/menu';
 import React from 'react';
 import {ActivityIndicator} from 'react-native';
-import {MoreHorizontal} from 'react-native-feather';
+import {Eye, MoreHorizontal} from 'react-native-feather';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import {shallowEqual, useSelector} from 'react-redux';
 import getDrawEventStatus, {
@@ -18,6 +18,7 @@ import {Div} from './Div';
 import {Img} from './Img';
 import {Row} from './Row';
 import {Span} from './Span';
+import TruncatedText from './TruncatedText';
 
 enum DrawEventOption {
   DELETE = '0',
@@ -84,79 +85,114 @@ export default function DrawEvent({
       updateDrawEventStatus(DrawEventStatus.IN_PROGRESS);
     }
   };
+  const shadowProps = {
+    style: {
+      shadowOffset: {
+        width: 4,
+        height: 4,
+      },
+      shadowOpacity: 0.2,
+      shadowRadius: 10,
+      elevation: 2,
+    },
+  };
+
   if (deleted) return null;
 
   return (
-    <Div
-      w={width}
-      mx={mx}
-      my={my}
-      relative
-      onPress={selectableFn ? () => selectableFn(drawEvent) : gotoDrawEvent}>
+    <Div borderBottom={0.5} borderGray200>
       <Div
-        absolute
-        mt={-8}
-        mx8
-        zIndex={1}
-        px12
-        py6
-        rounded12
-        backgroundColor={drawEventStatus.color}>
-        <Span bold white>
-          {drawEventStatus.string}
-        </Span>
-      </Div>
-
-      {currentNft.privilege &&
-        currentNft.contract_address ==
-          drawEvent.nft_collection.contract_address && (
-          <Div absolute right0 m8 zIndex={1} rounded100 bgBlack z100>
-            <MenuView
-              onPressAction={handlePressMenu}
-              actions={drawEventOptions}>
-              <Div p4>
-                {loading ? (
-                  <ActivityIndicator />
-                ) : (
-                  <MoreHorizontal color={Colors.white} width={18} height={18} />
-                )}
-              </Div>
-            </MenuView>
+        w={width}
+        mx={mx}
+        my={my}
+        relative
+        onPress={selectableFn ? () => selectableFn(drawEvent) : gotoDrawEvent}>
+        {currentNft.privilege &&
+          currentNft.contract_address ==
+            drawEvent.nft_collection.contract_address && (
+            <Div absolute right0 m8 zIndex={1} rounded100 bgBlack z100>
+              <MenuView
+                onPressAction={handlePressMenu}
+                actions={drawEventOptions}>
+                <Div p4>
+                  {loading ? (
+                    <ActivityIndicator />
+                  ) : (
+                    <MoreHorizontal
+                      color={Colors.white}
+                      width={18}
+                      height={18}
+                    />
+                  )}
+                </Div>
+              </MenuView>
+            </Div>
+          )}
+        <Div rounded10 {...shadowProps}>
+          <Img
+            uri={drawEvent.image_uri}
+            w={width}
+            h={width / 2}
+            rounded10
+            opacity={
+              drawEvent.status == DrawEventStatus.FINISHED ? 0.6 : 1
+            }></Img>
+          <Row
+            absolute
+            bottom8
+            right8
+            bg={'rgba(0,0,0,0.5)'}
+            px10
+            py7
+            rounded7
+            itemsCenter>
+            <Col auto mr4>
+              <Eye color={Colors.white} width={12} height={12} />
+            </Col>
+            <Col auto>
+              <Span white bold fontSize={10}>{`${drawEvent.read_count}`}</Span>
+            </Col>
+          </Row>
+          <Div absolute top8 left8>
+            <Img uri={drawEvent.nft_collection.image_uri} h30 w30 rounded50 />
           </Div>
-        )}
-
-      <Div>
-        <Img
-          uri={drawEvent.image_uri}
-          w={width}
-          h={width}
-          rounded10
-          opacity={
-            drawEvent.status == DrawEventStatus.FINISHED ? 0.6 : 1
-          }></Img>
-        {drawEvent.expires_at ? (
-          <Div absolute bottom8 right8 bgDanger py6 px8 rounded10>
-            <CountdownText dueDate={drawEvent.expires_at} />
-          </Div>
-        ) : null}
-      </Div>
-      <Row mt8 itemsCenter>
-        <Col auto pr8>
-          <Img uri={drawEvent.nft_collection.image_uri} h25 w25 rounded50 />
-        </Col>
-        <Col>
-          <Div>
-            <Span gray700 bold numberOfLines={1}>
+        </Div>
+        <Row mt4 itemsCenter>
+          <Div mt4>
+            <Span bold fontSize={20}>
+              <Div
+                px10
+                py4
+                rounded10
+                bgPrimary={drawEvent?.has_application}
+                bgInfo={!drawEvent?.has_application}>
+                <Span white bold>
+                  {drawEvent?.has_application ? '공지' : '이벤트'}
+                </Span>
+              </Div>{' '}
               {drawEvent.name}
             </Span>
           </Div>
-          <Div mt4>
-            <Span bold fontSize={16} numberOfLines={1}>
+        </Row>
+        <Div mt8>
+          {drawEvent.has_application ? (
+            <Span gray600 medium fontSize={14} numberOfLines={1}>
               {drawEvent.giveaway_merchandise}
             </Span>
-          </Div>
-        </Col>
-      </Row>
+          ) : (
+            <TruncatedText
+              maxLength={30}
+              text={drawEvent.description}
+              spanProps={{
+                gray600: true,
+                medium: true,
+                fontSize: 14,
+                numberOfLines: 2,
+              }}
+            />
+          )}
+        </Div>
+      </Div>
     </Div>
   );
 }

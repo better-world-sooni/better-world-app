@@ -1,5 +1,4 @@
 import { CommonActions, useNavigation } from '@react-navigation/native';
-import {prepare, request, getResult} from 'klip-sdk';
 import { useState } from 'react';
 import { Linking, Platform } from 'react-native';
 import apis from 'src/modules/apis';
@@ -9,8 +8,36 @@ import { useAutoLogin } from 'src/redux/appReducer';
 import { postPromiseFn } from 'src/redux/asyncReducer';
 import { openInfoPopup } from 'src/utils/bottomPopupUtils';
 import { largeBump, smallBump } from 'src/utils/hapticFeedBackUtils';
-import { klipApp2AppRequestUrl } from 'src/utils/uriUtils';
+import { kaikasApp2AppRequestUrl, klipApp2AppRequestUrl } from 'src/utils/uriUtils';
 import { useGotoHome } from './useGoto';
+
+const SERVER_URL = "https://api.kaikas.io/api/v1/k"
+
+const prepare = {
+  auth: ({ bappName, successLink = null, failLink = null }) => {
+    return fetch(`${SERVER_URL}/prepare`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        bapp: {
+          name: bappName,
+          callback: {
+            success: successLink,
+            fail: failLink,
+          },
+        },
+        type: "auth",
+      }),
+    }).then((res) => res.json());
+  },
+}
+const getResult = (requestKey) => {
+  return fetch(`${SERVER_URL}/result/${requestKey}`, {
+    method: "GET",
+  }).then((res) => res.json());
+};
 
 type PrepareResult = {
     expiration_time: number;
@@ -18,7 +45,7 @@ type PrepareResult = {
     status: string;
 }
 
-export default function useKlipLogin(){
+export default function useKaikasLogin(){
     const autoLogin = useAutoLogin();
     const gotoHome = useGotoHome()
     const {goBack} = useNavigation()
@@ -31,7 +58,7 @@ export default function useKlipLogin(){
         setError('')
         const prepareRes = await prepare.auth({ bappName }) as PrepareResult
         setPrepareAuthResult(prepareRes)
-        Linking.openURL(klipApp2AppRequestUrl(prepareRes.request_key))
+        Linking.openURL(kaikasApp2AppRequestUrl(prepareRes.request_key))
     }
     
     async function checkResultAndLogin(){
@@ -76,7 +103,7 @@ export default function useKlipLogin(){
     }
 
     async function getVerification({klaytnAddress}){
-        const {data: verificationResponse} = await postPromiseFn({url: apis.auth.klip.app2app().url, body: {
+        const {data: verificationResponse} = await postPromiseFn({url: apis.auth.kaikas.app2app().url, body: {
             address: klaytnAddress,
             request_key: prepareAuthResult.request_key,
             platform: PLATFORM,
@@ -93,7 +120,7 @@ export default function useKlipLogin(){
             return res.result
         }
         if (res.status == "requested") {
-            setError("클립 지갑에 주소를 요청하였지만 아직 수락하지 않았습니다.")
+            setError("카이카스 지갑에 주소를 요청하였지만 아직 수락하지 않았습니다.")
             return null;
         }
         setPrepareAuthResult(null)

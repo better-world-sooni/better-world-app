@@ -116,15 +116,14 @@ export const useChangeAccount = () => {
 
 export const useAutoLogin = () => {
   const dispatch = useDispatch();
-  const apiGET = useApiGET();
+  const apiGETAsync = useApiGETAsync();
   const preloadData = usePreloadData()
-  return (token, successHandler?, errHandler?) => {
-    apiGET(
+  return async (token, successHandler?, errHandler?) => {
+    await apiGETAsync(
       apis.auth.user._(),
       token,
-      props => {
-        dispatch(async () => {
-          const { jwt, user, current_nft } = props.data;
+      async props => {
+        const { jwt, user, current_nft } = props.data;
           await AsyncStorage.setItem(JWT, jwt);
           await preloadData(jwt)
           dispatch(appActions.login({
@@ -135,7 +134,6 @@ export const useAutoLogin = () => {
           if (successHandler) {
             await successHandler(props);
           }
-        });
       },
       async props => {
         await errHandler(props);

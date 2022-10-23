@@ -220,7 +220,7 @@ export default function NftProfileHeader({nftCore, nft, isCurrentNft, qrScan}) {
           )}
         </Row>
         {nft && (
-          <Div pt3>
+          <Div pt3 onPress={gotoNftCollectionProfile}>
             <Span gray700 bold>
               {nftCore.nft_metadatum.name}
             </Span>

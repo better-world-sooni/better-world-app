@@ -178,7 +178,6 @@ function ChatListScreen() {
       <Div h={notchHeight}></Div>
       <Div bgWhite px15 h={50} justifyCenter borderBottom={0.5} borderGray200>
         <Row itemsCenter py5 h40 p8 zIndex={100}>
-          <Col itemsStart></Col>
           <Col auto>
             <Span bold fontSize={19}>
               채팅
@@ -231,11 +230,11 @@ function ChatRoomItem({onPress, room}) {
   );
 
   return (
-    <Div px15>
+    <Div px15 py3>
       <Row bgWhite onPress={() => onPress()} py5 cursorPointer itemsCenter>
-        <Col auto relative mr10>
-          <Div rounded100 overflowHidden h50>
-            <Img uri={imgUri} w50 h50></Img>
+        <Col auto relative mr5>
+          <Div rounded100 overflowHidden h60 border={0.5} borderGray400>
+            <Img uri={imgUri} w60 h60></Img>
           </Div>
         </Col>
         <Col pl5>
@@ -245,14 +244,15 @@ function ChatRoomItem({onPress, room}) {
                 {roomName}
               </Span>
             </Col>
+            <Col />
             <Col auto>
-              <Span fontSize={13} gray700>
+              <Span fontSize={11} gray600>
                 {createdAtText(updatedAt)}
               </Span>
             </Col>
           </Row>
-          <Row w={'100%'} pt2>
-            <Col pr10>
+          <Row w={'100%'} mt5 itemsCenter>
+            <Col pr5 auto>
               <Div>
                 <Span
                   numberOfLines={1}
@@ -262,11 +262,11 @@ function ChatRoomItem({onPress, room}) {
                 </Span>
               </Div>
             </Col>
+            {unreadMessageCount > 0 && (
+              <Col auto rounded100 bgInfo h8 w8 justifyCenter />
+            )}
           </Row>
         </Col>
-        {unreadMessageCount > 0 && (
-          <Col auto rounded100 bgInfo p4 justifyCenter />
-        )}
       </Row>
     </Div>
   );

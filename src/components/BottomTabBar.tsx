@@ -46,7 +46,6 @@ const BottomTabBar = ({state, descriptors, navigation}) => {
         const multiTapDelay = 500;
         const now = Date.now();
         setLastPress(now);
-        console.log(now - lastPress <= multiTapDelay);
         if (isFocused && now - lastPress <= multiTapDelay) {
           const event = navigation.emit({
             type: 'tabDoublePress',

@@ -54,13 +54,13 @@ const SplashScreen = ({route}) => {
   }, []);
 
   const isAutoLoginChecked = () => {
-    AsyncStorage.getItem(JWT).then(value => {
+    AsyncStorage.getItem(JWT).then(async value => {
       if (value) {
-        autoLogin(
+        await autoLogin(
           value,
           props => {
             if (props.data.user.main_nft) {
-              initialRoute.gotoInitial(...initialRoute.params, props.data.jwt)
+              initialRoute.gotoInitial(...initialRoute.params, props.data.jwt);
               return;
             }
             if (props.data.user.nfts.length == 0) {

@@ -1,5 +1,5 @@
 import React from 'react';
-import {Shield} from 'react-native-feather';
+import {Shield, Zap} from 'react-native-feather';
 import {Colors} from 'src/modules/styles';
 import useFollow from 'src/hooks/useFollow';
 import {
@@ -26,6 +26,7 @@ export default function PolymorphicOwner({
   isFollowing = false,
   showFollowing = true,
   showPrivilege = false,
+  value = null,
 }) {
   const {
     handlePressFollowing,
@@ -70,6 +71,23 @@ export default function PolymorphicOwner({
           </Div>
         )}
       </Col>
+      {value ? (
+        <>
+          <Col auto pr2>
+            <Zap
+              strokeWidth={1.8}
+              color={Colors.black}
+              height={20}
+              width={20}
+            />
+          </Col>
+          <Col auto>
+            <Span bold fontSize={14}>
+              {value}
+            </Span>
+          </Col>
+        </>
+      ) : null}
       {showPrivilege && isAdmin && !isCurrentNft && (
         <Col
           auto
@@ -77,7 +95,6 @@ export default function PolymorphicOwner({
           px8
           py6
           rounded100
-          mx5
           border={privilege && 0.5}
           borderAdminSoft={privilege}
           onPress={handlePressPrivilege}>
@@ -97,6 +114,7 @@ export default function PolymorphicOwner({
             rounded100
             border1
             borderDanger
+            ml12
             onPress={handlePressBlock}>
             <Span danger bold px5>
               차단 해제
@@ -108,6 +126,7 @@ export default function PolymorphicOwner({
             bgBlack={!following}
             py8
             px10
+            ml12
             rounded100
             border={following && 0.5}
             borderGray200

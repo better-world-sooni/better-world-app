@@ -2,6 +2,7 @@ import React, {memo} from 'react';
 import {shallowEqual, useSelector} from 'react-redux';
 import useFollow from 'src/hooks/useFollow';
 import {
+  useGotoDrawEvent,
   useGotoNftCollectionProfile,
   useGotoNftProfile,
   useGotoPost,
@@ -19,6 +20,7 @@ import {Col} from './common/Col';
 import {Img} from './common/Img';
 import {Row} from './common/Row';
 import {Span} from './common/Span';
+import {ICONS} from 'src/modules/icons';
 
 enum NotificationEventType {
   Follow = 'follow',
@@ -27,6 +29,7 @@ enum NotificationEventType {
   LikePost = 'like_post',
   LikeComment = 'like_comment',
   Hug = 'hug',
+  EventApplicationSelected = 'event_application_selected',
 }
 
 export default function Notification({notification}) {
@@ -38,25 +41,32 @@ export default function Notification({notification}) {
   return (
     <NotificationMemo
       postId={notification.metadata.post_id}
+      drawEventId={notification.metadata.draw_event_id}
       isFollowing={!!notification.is_following}
+      content={notification.content}
       hasNft={!!notification.nft}
-      profileImgUri={getNftProfileImage(notification.nft, 100, 100)}
-      contractAddress={notification.nft.contract_address}
-      tokenId={notification.nft.token_id}
+      profileImgUri={
+        getNftProfileImage(notification.nft, 100, 100) ||
+        IMAGES.betterWorldPlanet
+      }
+      contractAddress={notification.nft?.contract_address}
+      tokenId={notification.nft?.token_id}
       event={notification.metadata?.event}
       createdAt={notification.created_at}
       isCurrentNft={isCurrentNft}
       currentNftName={getNftName(currentNft)}
       nftName={getNftName(notification.nft)}
-      nftMetadatumName={notification.nft.nft_metadatum.name}
+      nftMetadatumName={notification.nft?.nft_metadatum.name}
     />
   );
 }
 
 const NotificationContent = ({
   postId,
+  drawEventId,
   isFollowing,
   hasNft,
+  content,
   profileImgUri,
   contractAddress,
   tokenId,
@@ -70,6 +80,7 @@ const NotificationContent = ({
   const gotoPost = useGotoPost({
     postId,
   });
+  const gotoDrawEvent = useGotoDrawEvent({drawEventId});
   const gotoNftCollectionProfile = useGotoNftCollectionProfile({
     nftCollection: {
       contract_address: contractAddress,
@@ -133,6 +144,10 @@ const NotificationContent = ({
     }
     if (event == NotificationEventType.Hug) {
       gotoNftProfile();
+      return;
+    }
+    if (event == NotificationEventType.EventApplicationSelected) {
+      gotoDrawEvent();
       return;
     }
   };
@@ -222,6 +237,13 @@ const NotificationContent = ({
         </Span>
       );
     }
+    if (event == NotificationEventType.EventApplicationSelected) {
+      return (
+        <Span bold fontSize={14}>
+          {content}
+        </Span>
+      );
+    }
   };
 
   return (
@@ -229,6 +251,8 @@ const NotificationContent = ({
       <Col auto onPress={handlePressProfile}>
         <Img
           rounded100
+          border={0.5}
+          borderGray200
           h50
           w50
           {...(hasNft
@@ -241,7 +265,8 @@ const NotificationContent = ({
           <Span gray700>{createdAtText(createdAt)}</Span>
         </Span>
       </Col>
-      {!isCurrentNft &&
+      {event != NotificationEventType.EventApplicationSelected &&
+        !isCurrentNft &&
         (isBlocked ? (
           <Col
             auto

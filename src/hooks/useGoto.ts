@@ -222,6 +222,22 @@ export function useGotoLikeList({likableType, likableId}) {
   return gotoCapsule
 }
 
+export function useGotoDonationList({postId}) {
+  const navigation = useNavigation()
+  const apiGETWithToken = useApiGETWithToken()
+  const gotoDonationList = () => {
+    apiGETWithToken(
+      apis.donation.postId.list(
+        postId
+      ),
+    );
+    navigation.navigate(NAV_NAMES.DonationList as never, {
+      postId
+    } as never)
+  };
+  return gotoDonationList
+}
+
 export function useGotoForumSetting() {
   const navigation = useNavigation()
   const apiGETWithToken = useApiGETWithToken()
@@ -459,10 +475,26 @@ export function useGotoOnboarding() {
   return gotoOnboarding
 }
 
+export function useGotoNewAnnouncement() {
+  const navigation = useNavigation()
+  const gotoNewAnnouncement = () => {
+    navigation.navigate(NAV_NAMES.NewAnnouncement as never)
+  };
+  return gotoNewAnnouncement
+}
+
 export function useGotoKlipSignIn() {
   const navigation = useNavigation()
   const gotoKlipSignIn = () => {
-    navigation.navigate(NAV_NAMES.KlipSignIn)
+    navigation.navigate(NAV_NAMES.KlipSignIn as never)
+  };
+  return gotoKlipSignIn
+}
+
+export function useGotoKaikasSignIn() {
+  const navigation = useNavigation()
+  const gotoKlipSignIn = () => {
+    navigation.navigate(NAV_NAMES.KaikasSignIn as never)
   };
   return gotoKlipSignIn
 }
@@ -473,6 +505,14 @@ export function useGotoConfirmationModal() {
     navigation.navigate(NAV_NAMES.ConfirmationModal as never, {onCancel, onConfirm, text} as never)
   };
   return gotoConfirmation
+}
+
+export function useGotoDonationConfirmation() {
+  const navigation = useNavigation()
+  const gotoDonationConfirmation = ({onConfirm = null, nft, postId}) => {
+    navigation.navigate(NAV_NAMES.DonationConfirmation as never, {onConfirm, nft, postId} as never)
+  };
+  return gotoDonationConfirmation
 }
 
 export function useGotoCollectionFeed({contractAddress}) {
@@ -624,18 +664,30 @@ export function useGotoCollectionEvent({collectionEvent}){
   return gotoCollectionEvent
 }
 
-export function useGotoCollectionSearch({contractAddress}){
+export function useGotoCollectionMemberSearch({contractAddress}){
   const navigation = useNavigation()
   const apiGETWithToken = useApiGETWithToken()
-  const gotoCollectionEvent = () => {
+  const gotoCollectionMemberSearch = () => {
     apiGETWithToken(
       apis.nft_collection.contractAddress.nft.list(contractAddress)
     )
-    navigation.navigate(NAV_NAMES.CollectionSearch as never, {
+    navigation.navigate(NAV_NAMES.CollectionMemberSearch as never, {
       contractAddress
     } as never)
   }
-  return gotoCollectionEvent
+  return gotoCollectionMemberSearch
+}
+
+export function useGotoNftCollectionSearch(){
+  const navigation = useNavigation()
+  const apiGETWithToken = useApiGETWithToken()
+  const gotoNftCollectionSearch = () => {
+    apiGETWithToken(
+      apis.nft_collection.list()
+    )
+    navigation.navigate(NAV_NAMES.NftCollectionSearch as never)
+  }
+  return gotoNftCollectionSearch
 }
 
 export function useGotoTransaction({transactionHash}){

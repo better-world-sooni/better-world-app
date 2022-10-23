@@ -5,7 +5,7 @@ import { usePostPromiseFnWithToken } from "src/redux/asyncReducer";
 import useUploadImages from "./useUploadImages";
 
   
-export default function useUploadDrawEvent(){
+export default function useUploadDrawEvent({initialHasApplication}){
     const [loading, setLoading] = useState(false);
 	const [name, setName] = useState('')
 	const [giveawayMerchandise, setGiveawayMerchandise] = useState('')
@@ -24,7 +24,7 @@ export default function useUploadDrawEvent(){
 			setError("이름을 작성해주세요.");
 			return;
 		}
-		if (!(name)) {
+		if (initialHasApplication && !giveawayMerchandise) {
 			setError("경품을 작성해주세요.");
 			return;
 		}
@@ -32,7 +32,7 @@ export default function useUploadDrawEvent(){
 			setError("설명을 작성해주세요.");
 			return;
 		}
-		if ((enableApplicationLink && !applicationLink)) {
+		if ((initialHasApplication && enableApplicationLink && !applicationLink)) {
 			setError("응모 링크를 작성해주세요.");
 			return;
 		}
@@ -61,6 +61,7 @@ export default function useUploadDrawEvent(){
 			description,
 			images: signedIdArray,
 			expires_at: expiresAt,
+			has_application: initialHasApplication,
 			application_link: applicationLink ? applicationLink : null,
 			giveaway_merchandise: giveawayMerchandise ? giveawayMerchandise : null,
 			draw_event_options_attributes: applicationOptions,

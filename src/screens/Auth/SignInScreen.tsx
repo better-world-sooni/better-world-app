@@ -7,9 +7,10 @@ import {Row} from 'src/components/common/Row';
 import {Span} from 'src/components/common/Span';
 import {IMAGES} from 'src/modules/images';
 import {KeyboardAvoidingView} from 'src/components/common/ViewComponents';
-import {DEVICE_WIDTH} from 'src/modules/styles';
+import {Colors, DEVICE_WIDTH} from 'src/modules/styles';
 import Carousel from 'react-native-snap-carousel';
 import {
+  useGotoKaikasSignIn,
   useGotoKlipSignIn,
   useGotoPasswordSignIn,
   useGotoScan,
@@ -22,6 +23,7 @@ const SignInScreen = () => {
   const gotoScan = useGotoScan({scanType: ScanType.Login});
   const gotoPasswordSignIn = useGotoPasswordSignIn();
   const gotoKlipSignIn = useGotoKlipSignIn();
+  const gotoKaikasSignIn = useGotoKaikasSignIn();
 
   return (
     <KeyboardAvoidingView
@@ -52,24 +54,24 @@ const SignInScreen = () => {
             sliderWidth={DEVICE_WIDTH}
             renderItem={renderItem}
           />
-          <Div px30>
+          <Div px20>
             <Div h40></Div>
             <Div h48>
               <Row
-                bg={'rgb(254, 229, 0)'}
-                rounded100
-                h48
+                bg={Colors.klip.DEFAULT}
+                rounded={22}
+                h64
                 flex={1}
                 itemsCenter
                 onPress={gotoKlipSignIn}>
                 <Col />
-                <Col auto mr4>
-                  <Img source={ICONS.klip} h20 w40></Img>
+                <Col auto mr11>
+                  <Img source={ICONS.klip} h15 w30></Img>
                 </Col>
                 <Col auto>
                   <Div>
                     <Span bold fontSize={14}>
-                      으로 로그인
+                      클립으로 로그인
                     </Span>
                   </Div>
                 </Col>
@@ -78,17 +80,20 @@ const SignInScreen = () => {
             </Div>
             <Div h48 mt15>
               <Row
-                bgBlack
-                rounded100
-                h48
+                rounded={22}
+                bg={Colors.kaikas.DEFAULT}
+                h64
                 flex={1}
                 itemsCenter
-                onPress={gotoScan}>
+                onPress={gotoKaikasSignIn}>
                 <Col />
+                <Col auto mr11>
+                  <Img source={ICONS.kaikasWhite} h15 w15></Img>
+                </Col>
                 <Col auto>
                   <Div>
-                    <Span white bold fontSize={14}>
-                      BetterWorld QR로 로그인
+                    <Span bold white fontSize={13}>
+                      카이카스로 로그인
                     </Span>
                   </Div>
                 </Col>
@@ -99,7 +104,7 @@ const SignInScreen = () => {
               <Row
                 border1
                 borderGray200
-                rounded100
+                rounded={22}
                 h48
                 flex={1}
                 itemsCenter
@@ -107,7 +112,7 @@ const SignInScreen = () => {
                 <Col />
                 <Col auto>
                   <Div>
-                    <Span bold fontSize={14}>
+                    <Span bold fontSize={13}>
                       비밀번호로 로그인
                     </Span>
                   </Div>

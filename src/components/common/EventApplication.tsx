@@ -83,7 +83,7 @@ export default function EventApplication({eventApplication, admin = false}) {
                 <MenuView
                   onPressAction={handlePressStatus}
                   actions={airdropTypes}>
-                  <Span fontSize={17} bold>
+                  <Span fontSize={17} bold white>
                     {loading ? <ActivityIndicator /> : status}
                   </Span>
                 </MenuView>
