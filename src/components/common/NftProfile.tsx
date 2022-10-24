@@ -234,17 +234,17 @@ export default function NftProfile({
                 strokeWidth={2.4}
               />
             </Col>
-          ) : ( 
-              <MenuView onPressAction={handlePressMenu} actions={menuOptions}>
-                <Col auto mr15 bgBlack p5 rounded100>
-                  <MoreHorizontal
-                    width={20}
-                    height={20}
-                    color={Colors.white}
-                    strokeWidth={2.4}
-                  />
-                </Col>
-              </MenuView>
+          ) : (
+            <MenuView onPressAction={handlePressMenu} actions={menuOptions}>
+              <Col auto mr15 bgBlack p5 rounded100>
+                <MoreHorizontal
+                  width={20}
+                  height={20}
+                  color={Colors.white}
+                  strokeWidth={2.4}
+                />
+              </Col>
+            </MenuView>
           )}
         </Row>
       </Div>

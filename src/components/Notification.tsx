@@ -28,6 +28,7 @@ enum NotificationEventType {
   VotePost = 'vote_post',
   LikePost = 'like_post',
   LikeComment = 'like_comment',
+  Donation = 'donation',
   Hug = 'hug',
   EventApplicationSelected = 'event_application_selected',
 }
@@ -130,6 +131,10 @@ const NotificationContent = ({
       gotoPost();
       return;
     }
+    if (event == NotificationEventType.Donation) {
+      gotoPost();
+      return;
+    }
     if (event == NotificationEventType.VotePost) {
       gotoPost();
       return;
@@ -178,6 +183,20 @@ const NotificationContent = ({
             {currentNftName}
           </Span>
           의 게시물을 좋아요 했습니다.
+        </Span>
+      );
+    }
+    if (event == NotificationEventType.Donation) {
+      return (
+        <Span fontSize={14}>
+          <Span bold fontSize={14}>
+            {name}
+          </Span>
+          님이{' '}
+          <Span bold fontSize={14}>
+            {currentNftName}
+          </Span>
+          의 게시물을 응원 했습니다.
         </Span>
       );
     }

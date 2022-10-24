@@ -226,8 +226,8 @@ export default function NftProfileHeader({nftCore, nft, isCurrentNft, qrScan}) {
             </Span>
           </Div>
         )}
-        <Row itemsCenter mt4={nft?.discord_id && nft?.twitter_id}>
-          {nft?.discord_id && (
+        <Row itemsCenter mt4={nft?.discord_id || nft?.twitter_id}>
+          {nft?.discord_id ? (
             <>
               <Col auto mr5>
                 <Img h={232 / 16} w={300 / 16} source={ICONS.discord} />
@@ -238,8 +238,8 @@ export default function NftProfileHeader({nftCore, nft, isCurrentNft, qrScan}) {
                 </Span>
               </Col>
             </>
-          )}
-          {nft?.twitter_id && (
+          ) : null}
+          {nft?.twitter_id ? (
             <>
               <Col auto mr4>
                 <Img h={20} w={20} source={ICONS.twitter} />
@@ -250,7 +250,7 @@ export default function NftProfileHeader({nftCore, nft, isCurrentNft, qrScan}) {
                 </Span>
               </Col>
             </>
-          )}
+          ) : null}
         </Row>
 
         {(nft || nftCore).story ? (
