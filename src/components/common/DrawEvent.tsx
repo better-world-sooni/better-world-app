@@ -1,15 +1,16 @@
 import {MenuView} from '@react-native-menu/menu';
 import React from 'react';
 import {ActivityIndicator} from 'react-native';
-import {Eye, MoreHorizontal} from 'react-native-feather';
+import {Eye, MoreHorizontal, User} from 'react-native-feather';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import {shallowEqual, useSelector} from 'react-redux';
 import getDrawEventStatus, {
   DrawEventStatus,
   EventApplicationStatus,
 } from 'src/hooks/getDrawEventStatus';
-import {useGotoDrawEvent} from 'src/hooks/useGoto';
+import {useGotoDrawEvent, useGotoNftCollectionProfile} from 'src/hooks/useGoto';
 import useUpdateDrawEvent from 'src/hooks/useUpdateDrawEvent';
+import {IMAGES} from 'src/modules/images';
 import {RootState} from 'src/redux/rootReducer';
 import {getNftName} from 'src/utils/nftUtils';
 import {Col} from './Col';
@@ -70,6 +71,9 @@ export default function DrawEvent({
     drawEventId: drawEvent.id,
   });
   const drawEventStatus = getDrawEventStatus({drawEvent});
+  const gotoNftCollection = useGotoNftCollectionProfile({
+    nftCollection: drawEvent.nft_collection,
+  });
 
   const handlePressMenu = ({nativeEvent: {event}}) => {
     if (event == DrawEventOption.DELETE) {
@@ -85,17 +89,6 @@ export default function DrawEvent({
       updateDrawEventStatus(DrawEventStatus.IN_PROGRESS);
     }
   };
-  const shadowProps = {
-    style: {
-      shadowOffset: {
-        width: 4,
-        height: 4,
-      },
-      shadowOpacity: 0.2,
-      shadowRadius: 10,
-      elevation: 2,
-    },
-  };
 
   if (deleted) return null;
 
@@ -110,7 +103,14 @@ export default function DrawEvent({
         {currentNft.privilege &&
           currentNft.contract_address ==
             drawEvent.nft_collection.contract_address && (
-            <Div absolute right0 m8 zIndex={1} rounded100 bgBlack z100>
+            <Div
+              absolute
+              right0
+              m8
+              zIndex={1}
+              rounded100
+              bg={'rgba(0,0,0,0.5)'}
+              z100>
               <MenuView
                 onPressAction={handlePressMenu}
                 actions={drawEventOptions}>
@@ -128,70 +128,66 @@ export default function DrawEvent({
               </MenuView>
             </Div>
           )}
-        <Div rounded10 {...shadowProps}>
+        <Div rounded5 relative>
           <Img
             uri={drawEvent.image_uri}
             w={width}
-            h={width / 2}
-            rounded10
-            opacity={
-              drawEvent.status == DrawEventStatus.FINISHED ? 0.6 : 1
-            }></Img>
+            h={(width * 163) / 350}
+            rounded5></Img>
+          {drawEvent.status == DrawEventStatus.FINISHED && (
+            <Div
+              w={width}
+              h={(width * 163) / 350}
+              bg={'rgba(0,0,0,0.5)'}
+              rounded5
+              absolute
+              top0
+              left0></Div>
+          )}
+          <Div absolute top10 left={-8}>
+            {drawEvent.status == DrawEventStatus.FINISHED ? (
+              <Img source={IMAGES.finished} h24 w={(24 * 196) / 112} />
+            ) : drawEvent.has_application ? (
+              <Img source={IMAGES.event} h30 w={(30 * 212) / 128} />
+            ) : (
+              <Img source={IMAGES.announcement} h30 w={(30 * 197) / 128} />
+            )}
+          </Div>
           <Row
             absolute
-            bottom8
-            right8
+            right6
+            bottom6
             bg={'rgba(0,0,0,0.5)'}
-            px10
-            py7
-            rounded7
+            rounded6
+            py2
+            px4
             itemsCenter>
-            <Col auto mr4>
-              <Eye color={Colors.white} width={12} height={12} />
+            <Col auto mr2>
+              <User
+                color={Colors.white}
+                height={10}
+                width={10}
+                strokeWidth={3}
+              />
             </Col>
             <Col auto>
-              <Span white bold fontSize={10}>{`${drawEvent.read_count}`}</Span>
+              <Span
+                white
+                medium
+                fontSize={10}>{`${drawEvent.read_count}`}</Span>
             </Col>
           </Row>
-          <Div absolute top8 left8>
-            <Img uri={drawEvent.nft_collection.image_uri} h30 w30 rounded50 />
-          </Div>
         </Div>
-        <Row mt4 itemsCenter>
-          <Div mt4>
-            <Span bold fontSize={20}>
-              <Div
-                px10
-                py4
-                rounded10
-                bgPrimary={drawEvent?.has_application}
-                bgInfo={!drawEvent?.has_application}>
-                <Span white bold>
-                  {drawEvent?.has_application ? '공지' : '이벤트'}
-                </Span>
-              </Div>{' '}
+        <Row mt10 itemsCenter px4>
+          <Col auto mr7 onPress={gotoNftCollection}>
+            <Img uri={drawEvent.nft_collection.image_uri} h34 w34 rounded50 />
+          </Col>
+          <Col>
+            <Span bold fontSize={16} numberOfLines={2}>
               {drawEvent.name}
             </Span>
-          </Div>
+          </Col>
         </Row>
-        <Div mt8>
-          {drawEvent.has_application ? (
-            <Span gray600 medium fontSize={14} numberOfLines={1}>
-              {drawEvent.giveaway_merchandise}
-            </Span>
-          ) : (
-            <TruncatedText
-              maxLength={30}
-              text={drawEvent.description}
-              spanProps={{
-                gray600: true,
-                medium: true,
-                fontSize: 14,
-                numberOfLines: 2,
-              }}
-            />
-          )}
-        </Div>
       </Div>
     </Div>
   );

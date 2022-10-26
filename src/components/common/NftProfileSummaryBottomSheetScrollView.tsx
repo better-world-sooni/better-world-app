@@ -28,6 +28,7 @@ import {shallowEqual, useSelector} from 'react-redux';
 import {RootState} from 'src/redux/rootReducer';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {handlePressContribution} from 'src/utils/bottomPopupUtils';
+import GradientColorRect from './GradientColorRect';
 
 export default function NftProfileSummaryBottomSheetScrollView({
   contractAddress,
@@ -203,12 +204,19 @@ export function NftProfileSummary({nft, token = null}) {
                 ) : (
                   <Col
                     auto
-                    bgBlack={!isFollowing}
+                    bgPrimary={!isFollowing}
                     p8
                     rounded100
                     border1={isFollowing}
                     borderGray200={isFollowing}
+                    relative
+                    overflowHidden
                     onPress={handlePressFollowing}>
+                    {!isFollowing && (
+                      <Div absolute>
+                        <GradientColorRect width={100} height={50} />
+                      </Div>
+                    )}
                     <Span white={!isFollowing} bold px5>
                       {isFollowing ? '팔로잉' : '팔로우'}
                     </Span>

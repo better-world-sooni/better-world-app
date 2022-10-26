@@ -21,6 +21,8 @@ import {Img} from './common/Img';
 import {Row} from './common/Row';
 import {Span} from './common/Span';
 import {ICONS} from 'src/modules/icons';
+import {Div} from './common/Div';
+import GradientColorRect from './common/GradientColorRect';
 
 enum NotificationEventType {
   Follow = 'follow',
@@ -302,12 +304,19 @@ const NotificationContent = ({
         ) : (
           <Col
             auto
-            bgBlack={!following}
+            bgPrimary={!following}
             p8
             rounded100
+            relative
             border1={following}
             borderGray200={following}
+            overflowHidden
             onPress={handlePressFollowing}>
+            {!following && (
+              <Div absolute>
+                <GradientColorRect width={100} height={50} />
+              </Div>
+            )}
             <Span white={!following} bold px5>
               {following ? '팔로잉' : '팔로우'}
             </Span>

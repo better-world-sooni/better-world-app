@@ -219,10 +219,7 @@ function ChatRoomItem({onPress, room}) {
   const updatedAt = room.updated_at;
   const roomName = room.room_name;
   const unreadMessageCount = room.unread_count;
-  const text =
-    unreadMessageCount > 0
-      ? `새 메세지 ${unreadMessageCount}개`
-      : room.last_message;
+  const text = room.last_message;
   const roomImage = room.room_image;
   const imgUri = useMemo(
     () => resizeImageUri(room.room_image, 200, 200),
@@ -262,8 +259,13 @@ function ChatRoomItem({onPress, room}) {
                 </Span>
               </Div>
             </Col>
+            <Col></Col>
             {unreadMessageCount > 0 && (
-              <Col auto rounded100 bgInfo h8 w8 justifyCenter />
+              <Col auto rounded100 bgPrimary p6 py2 justifyCenter>
+                <Span white fontSize={11} bold>
+                  {unreadMessageCount}
+                </Span>
+              </Col>
             )}
           </Row>
         </Col>

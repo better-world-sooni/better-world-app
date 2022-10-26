@@ -39,6 +39,8 @@ import TruncatedText from './TruncatedText';
 import useDiscordId from 'src/hooks/useDiscordId';
 import useTwitterId from 'src/hooks/useTwitterId';
 import {ICONS} from 'src/modules/icons';
+import GradientColorButton from './GradientColorButton';
+import GradientColorRect from './GradientColorRect';
 
 export default function NftProfileHeader({nftCore, nft, isCurrentNft, qrScan}) {
   const gotoNftCollectionProfile = useGotoNftCollectionProfile({
@@ -148,12 +150,18 @@ export default function NftProfileHeader({nftCore, nft, isCurrentNft, qrScan}) {
                 ) : (
                   <Col
                     auto
-                    bgBlack={!isFollowing}
                     p8
                     rounded100
+                    relative
                     border1={isFollowing}
                     borderGray200
+                    overflowHidden
                     onPress={handlePressFollowing}>
+                    {!isFollowing && (
+                      <Div absolute>
+                        <GradientColorRect width={100} height={50} />
+                      </Div>
+                    )}
                     <Span white={!isFollowing} bold px5 fontSize={14}>
                       {!nft ? '불러오는 중' : isFollowing ? '팔로잉' : '팔로우'}
                     </Span>

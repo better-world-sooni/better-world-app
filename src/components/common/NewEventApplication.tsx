@@ -1,5 +1,5 @@
 import React, {useEffect, useMemo, useRef, useState} from 'react';
-import {Colors, varStyle} from 'src/modules/styles';
+import {Colors, DEVICE_WIDTH, varStyle} from 'src/modules/styles';
 import {Div} from './Div';
 import {Span} from './Span';
 import Accordion from 'react-native-collapsible/Accordion';
@@ -8,7 +8,9 @@ import {Col} from './Col';
 import {Check, ArrowRight, Edit2} from 'react-native-feather';
 import {HAS_NOTCH} from 'src/modules/constants';
 import {ActivityIndicator, Keyboard, Linking, TextInput} from 'react-native';
-import useUploadEventApplication, { SelectableOrderCategory } from 'src/hooks/useUploadEventApplication';
+import useUploadEventApplication, {
+  SelectableOrderCategory,
+} from 'src/hooks/useUploadEventApplication';
 import BottomPopup from './BottomPopup';
 import {BottomSheetModal, BottomSheetScrollView} from '@gorhom/bottom-sheet';
 import {Img} from './Img';
@@ -19,15 +21,15 @@ import useDiscordId from 'src/hooks/useDiscordId';
 import useOptionValue from 'src/hooks/useOptionValue';
 import {useApiSelector, useReloadGETWithToken} from 'src/redux/asyncReducer';
 import apis from 'src/modules/apis';
-import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from 'native-base';
-import { useGotoEventApplicationList } from 'src/hooks/useGoto';
+import {CheckIcon, ChevronDownIcon, ChevronUpIcon} from 'native-base';
+import {useGotoEventApplicationList} from 'src/hooks/useGoto';
+import GradientColorButton from './GradientColorButton';
 
 export default function NewEventApplication({drawEvent}) {
   const [expandOptions, setExpandOptions] = useState(-1);
   const gotoEventApplicationList = useGotoEventApplicationList();
   const reloadGETWithToken = useReloadGETWithToken();
-  const [canUploadEventApplication, setCanUploadEventApplication] =
-    useState(false);
+
   const uploadSuccessCallback = () => {
     reloadGETWithToken(apis.feed.draw_event());
     gotoEventApplicationList();
@@ -44,6 +46,8 @@ export default function NewEventApplication({drawEvent}) {
     drawEvent,
     uploadSuccessCallback,
   });
+  const [canUploadEventApplication, setCanUploadEventApplication] =
+    useState(false);
   const orderable = drawEventStatus.orderable;
   const bottomPopupRef = useRef<BottomSheetModal>(null);
   const handlePressInitialOrder = () => {
@@ -54,7 +58,7 @@ export default function NewEventApplication({drawEvent}) {
     }
     bottomPopupRef?.current?.expand();
   };
-  const onChangeBottomSheet = (index) => {
+  const onChangeBottomSheet = index => {
     setExpandOptions(index);
   };
   return (
@@ -75,111 +79,155 @@ export default function NewEventApplication({drawEvent}) {
         }}
         borderColor={varStyle.gray200}>
         <Div px15 py8>
-          <Row itemsCenter>
-            <Col>
-              <Div
-                bgBlack={
-                  orderable &&
-                  !loading &&
-                  (expandOptions == -1 ||
-                    (expandOptions != -1 && canUploadEventApplication))
-                }
-                h50
-                rounded10
-                itemsCenter
-                justifyCenter
-                bgGray400={
-                  !(
+          {orderable &&
+          !loading &&
+          (expandOptions == -1 ||
+            (expandOptions != -1 && canUploadEventApplication)) ? (
+            <GradientColorButton
+              borderRadius={10}
+              text={'응모하기'}
+              width={DEVICE_WIDTH - 30}
+              height={50}
+              fontSize={16}
+              onPress={
+                orderable &&
+                (expandOptions == -1
+                  ? !loading && handlePressInitialOrder
+                  : canUploadEventApplication &&
+                    (() => {
+                      bottomPopupRef?.current?.close();
+                      uploadEventApplication();
+                    }))
+              }
+            />
+          ) : (
+            <Row itemsCenter>
+              <Col>
+                <Div
+                  h50
+                  rounded10
+                  itemsCenter
+                  justifyCenter
+                  bgGray400
+                  onPress={
                     orderable &&
-                    !loading &&
-                    (expandOptions == -1 ||
-                      (expandOptions != -1 && canUploadEventApplication))
-                  )
-                }
-                onPress={
-                  orderable &&
-                  (expandOptions == -1
-                    ? !loading && handlePressInitialOrder
-                    : canUploadEventApplication &&
-                      (() => {
-                        bottomPopupRef?.current?.close();
-                        uploadEventApplication();
-                      }))
-                }>
-                <Span white bold>
-                  {loading ? <ActivityIndicator /> : '응모하기'}
-                </Span>
-              </Div>
-            </Col>
-          </Row>
+                    (expandOptions == -1
+                      ? !loading && handlePressInitialOrder
+                      : canUploadEventApplication &&
+                        (() => {
+                          bottomPopupRef?.current?.close();
+                          uploadEventApplication();
+                        }))
+                  }>
+                  <Span white bold fontSize={16}>
+                    {loading ? <ActivityIndicator /> : '응모하기'}
+                  </Span>
+                </Div>
+              </Col>
+            </Row>
+          )}
         </Div>
         <Div h={HAS_NOTCH ? 27 : 12} bgWhite />
       </Div>
-    <BottomPopupOptions bottomPopupRef={bottomPopupRef} onChangeBottomSheet={onChangeBottomSheet} error={error} orderOptions={orderOptions} handleSelectOption={handleSelectOption} handleWriteOption={handleWriteOption} setCanUploadEventApplication={setCanUploadEventApplication} expanded={expandOptions!=-1}/>
+      <BottomPopupOptions
+        bottomPopupRef={bottomPopupRef}
+        onChangeBottomSheet={onChangeBottomSheet}
+        error={error}
+        orderOptions={orderOptions}
+        handleSelectOption={handleSelectOption}
+        handleWriteOption={handleWriteOption}
+        setCanUploadEventApplication={setCanUploadEventApplication}
+        expanded={expandOptions != -1}
+      />
     </>
   );
 }
 
-const BottomPopupOptions = ({bottomPopupRef, onChangeBottomSheet, error, orderOptions, handleSelectOption, handleWriteOption, setCanUploadEventApplication, expanded}) => {
+const BottomPopupOptions = ({
+  bottomPopupRef,
+  onChangeBottomSheet,
+  error,
+  orderOptions,
+  handleSelectOption,
+  handleWriteOption,
+  setCanUploadEventApplication,
+  expanded,
+}) => {
   return (
     <BottomPopup
-        ref={bottomPopupRef}
-        snapPoints={useMemo(() => ["85%"], [])}
-        enableContentPanningGesture={true}
-        index={-1}
-        onChange={onChangeBottomSheet}
-        onClose={()=>Keyboard.dismiss()}
-        bottomInset={60}
-        >
-          <BottomSheetScrollView style={{paddingLeft:20, paddingRight:20, paddingTop:10, paddingBottom:10}}>
-          <Row itemsCenter>
+      ref={bottomPopupRef}
+      snapPoints={useMemo(() => ['85%'], [])}
+      enableContentPanningGesture={true}
+      index={-1}
+      onChange={onChangeBottomSheet}
+      onClose={() => Keyboard.dismiss()}
+      bottomInset={60}>
+      <BottomSheetScrollView
+        style={{
+          paddingLeft: 20,
+          paddingRight: 20,
+          paddingTop: 10,
+          paddingBottom: 10,
+        }}>
+        <Row itemsCenter>
           <Col>
-              <Div mb8>
+            <Div mb8>
               {error ? (
                 <Span danger bold>
                   {error}
-                </Span>) : 
-                <Span mb2/>}
+                </Span>
+              ) : (
+                <Span mb2 />
+              )}
+            </Div>
+            {orderOptions.length > 0 && (
+              <Div mb8>
+                <OrderCategories
+                  orderCategories={orderOptions}
+                  handleSelectOption={handleSelectOption}
+                  handleWriteOption={handleWriteOption}
+                  setCanUploadEventApplication={setCanUploadEventApplication}
+                  expanded={expanded}
+                />
               </Div>
-                {orderOptions.length > 0 && (
-                  <Div mb8>
-                    <OrderCategories
-                      orderCategories={orderOptions}
-                      handleSelectOption={handleSelectOption}
-                      handleWriteOption={handleWriteOption}
-                      setCanUploadEventApplication={setCanUploadEventApplication}
-                      expanded={expanded}
-                    />
-                  </Div>
-                )}
+            )}
           </Col>
-          </Row>
-          </BottomSheetScrollView>
-      </BottomPopup>
-  )
-}
+        </Row>
+      </BottomSheetScrollView>
+    </BottomPopup>
+  );
+};
 
-function OrderCategories({orderCategories, handleSelectOption, handleWriteOption, setCanUploadEventApplication, expanded}) {
-  const getNextSection = (index=orderCategories.length) => {
-    const nextIndex = orderCategories.reduce((nextIndex, orderCategory, idx)=> (orderCategory.selectedOption==null && idx!=index && idx<nextIndex) ? idx:nextIndex, orderCategories.length)
-    if (nextIndex >= orderCategories.length) {setCanUploadEventApplication(true);return null}
-    else return nextIndex;
-  }
+function OrderCategories({
+  orderCategories,
+  handleSelectOption,
+  handleWriteOption,
+  setCanUploadEventApplication,
+  expanded,
+}) {
+  const getNextSection = (index = orderCategories.length) => {
+    const nextIndex = orderCategories.reduce(
+      (nextIndex, orderCategory, idx) =>
+        orderCategory.selectedOption == null && idx != index && idx < nextIndex
+          ? idx
+          : nextIndex,
+      orderCategories.length,
+    );
+    if (nextIndex >= orderCategories.length) {
+      setCanUploadEventApplication(true);
+      return null;
+    } else return nextIndex;
+  };
   const [activeSection, setActiveSection] = useState(getNextSection());
   const handlePressSection = index => {
     if (index == activeSection) setActiveSection(null);
     else setActiveSection(index);
   };
   const handleNextSection = index => {
-      setActiveSection(getNextSection(index));
-  }
+    setActiveSection(getNextSection(index));
+  };
   return (
-    <Div
-      border={0.5}
-      borderGray200
-      rounded10
-      overflowHidden
-      >
+    <Div border={0.5} borderGray200 rounded10 overflowHidden>
       <Accordion
         activeSections={[activeSection]}
         sections={orderCategories as SelectableOrderCategory[]}
@@ -204,7 +252,25 @@ function OrderCategories({orderCategories, handleSelectOption, handleWriteOption
                   <Span mr10>{content.selectedOption.name}</Span>
                 )}
                 {!content.selectedOption && (
-                  <Span>{activeSection==index ? <ChevronUpIcon strokeWidth={2} color={Colors.black} height={18} width={18} style={{marginRight:10}}/>: <ChevronDownIcon strokeWidth={2} color={Colors.gray["400"]} height={18} width={18} style={{marginRight:10}}/>}</Span>
+                  <Span>
+                    {activeSection == index ? (
+                      <ChevronUpIcon
+                        strokeWidth={2}
+                        color={Colors.black}
+                        height={18}
+                        width={18}
+                        style={{marginRight: 10}}
+                      />
+                    ) : (
+                      <ChevronDownIcon
+                        strokeWidth={2}
+                        color={Colors.gray['400']}
+                        height={18}
+                        width={18}
+                        style={{marginRight: 10}}
+                      />
+                    )}
+                  </Span>
                 )}
               </Col>
             </Row>
@@ -246,7 +312,12 @@ function OrderCategories({orderCategories, handleSelectOption, handleWriteOption
   );
 }
 
-function OrderOptions({orderCategory, orderCategoryIndex, onPressOption, onPressToNext}) {
+function OrderOptions({
+  orderCategory,
+  orderCategoryIndex,
+  onPressOption,
+  onPressToNext,
+}) {
   return (
     <>
       {orderCategory.options.map((option, index) => (
@@ -256,7 +327,10 @@ function OrderOptions({orderCategory, orderCategoryIndex, onPressOption, onPress
           px16
           bgGray100
           itemsCenter
-          onPress={() => {onPressOption(orderCategoryIndex, index);onPressToNext(orderCategoryIndex)}}>
+          onPress={() => {
+            onPressOption(orderCategoryIndex, index);
+            onPressToNext(orderCategoryIndex);
+          }}>
           <Col>
             <Span fontSize={14}>{option.name}</Span>
           </Col>
@@ -264,7 +338,7 @@ function OrderOptions({orderCategory, orderCategoryIndex, onPressOption, onPress
             {option.selected && (
               <Check
                 height={16}
-                color={Colors.success.DEFAULT}
+                color={Colors.primary.DEFAULT}
                 strokeWidth={2}
               />
             )}
@@ -275,9 +349,21 @@ function OrderOptions({orderCategory, orderCategoryIndex, onPressOption, onPress
   );
 }
 
-const WriteOption = ({orderCategoryIndex, activeSection, onPressToNext, onWriteOption, inputType, onPress, orderCategory, setCanUploadEventApplication, props, setActiveSection, expanded}) => {
-  const { data } = useApiSelector(apis.nft._());
-  if (inputType==EventApplicationInputType.TWITTER_ID) {
+const WriteOption = ({
+  orderCategoryIndex,
+  activeSection,
+  onPressToNext,
+  onWriteOption,
+  inputType,
+  onPress,
+  orderCategory,
+  setCanUploadEventApplication,
+  props,
+  setActiveSection,
+  expanded,
+}) => {
+  const {data} = useApiSelector(apis.nft._());
+  if (inputType == EventApplicationInputType.TWITTER_ID) {
     const {
       twitterId,
       twitterProfileLink,
@@ -285,11 +371,29 @@ const WriteOption = ({orderCategoryIndex, activeSection, onPressToNext, onWriteO
       isError,
       handlePressTwitterLink,
       handleChangeTwitterId,
-    } = useTwitterId({twitter_id: data?.nft?.twitter_id });
+    } = useTwitterId({twitter_id: data?.nft?.twitter_id});
     return (
-      <BasicInput id={twitterId} handleChangeId={handleChangeTwitterId} idProfileLink={twitterProfileLink} handlePressLink={handlePressTwitterLink} idError={twitterIdError} inputType={inputType} placeholder={"Twitter ID"} props={props} orderCategoryIndex={orderCategoryIndex} activeSection={activeSection} onPressToNext={onPressToNext} onWriteOption={onWriteOption} onPress={onPress} isError={isError} setCanUploadEventApplication={setCanUploadEventApplication} setActiveSection={setActiveSection} expanded={expanded}/>
-    )
-  } else if (inputType==EventApplicationInputType.DISCORD_ID) {
+      <BasicInput
+        id={twitterId}
+        handleChangeId={handleChangeTwitterId}
+        idProfileLink={twitterProfileLink}
+        handlePressLink={handlePressTwitterLink}
+        idError={twitterIdError}
+        inputType={inputType}
+        placeholder={'Twitter ID'}
+        props={props}
+        orderCategoryIndex={orderCategoryIndex}
+        activeSection={activeSection}
+        onPressToNext={onPressToNext}
+        onWriteOption={onWriteOption}
+        onPress={onPress}
+        isError={isError}
+        setCanUploadEventApplication={setCanUploadEventApplication}
+        setActiveSection={setActiveSection}
+        expanded={expanded}
+      />
+    );
+  } else if (inputType == EventApplicationInputType.DISCORD_ID) {
     const {
       discordId,
       discordProfileLink,
@@ -297,25 +401,82 @@ const WriteOption = ({orderCategoryIndex, activeSection, onPressToNext, onWriteO
       isError,
       handlePressDiscordLink,
       handleChangeDiscordId,
-    } = useDiscordId({discord_id: data?.nft?.discord_id });
-  return (
-    <BasicInput id={discordId} handleChangeId={handleChangeDiscordId} idProfileLink={discordProfileLink} handlePressLink={handlePressDiscordLink} idError={discordIdError} inputType={inputType} placeholder={"Discord#8888"} props={props} orderCategoryIndex={orderCategoryIndex} activeSection={activeSection} onPressToNext={onPressToNext} onWriteOption={onWriteOption} onPress={onPress} isError={isError} setCanUploadEventApplication={setCanUploadEventApplication} setActiveSection={setActiveSection} expanded={expanded}/>
-  )
+    } = useDiscordId({discord_id: data?.nft?.discord_id});
+    return (
+      <BasicInput
+        id={discordId}
+        handleChangeId={handleChangeDiscordId}
+        idProfileLink={discordProfileLink}
+        handlePressLink={handlePressDiscordLink}
+        idError={discordIdError}
+        inputType={inputType}
+        placeholder={'Discord#8888'}
+        props={props}
+        orderCategoryIndex={orderCategoryIndex}
+        activeSection={activeSection}
+        onPressToNext={onPressToNext}
+        onWriteOption={onWriteOption}
+        onPress={onPress}
+        isError={isError}
+        setCanUploadEventApplication={setCanUploadEventApplication}
+        setActiveSection={setActiveSection}
+        expanded={expanded}
+      />
+    );
   } else {
-    const {text, textError, handleChangeText, isError} = useOptionValue()
-    return(
-    <BasicInput id={text} handleChangeId={handleChangeText} idProfileLink={null} handlePressLink={null} idError={textError} inputType={inputType} placeholder={orderCategory.name} props={props} orderCategoryIndex={orderCategoryIndex} activeSection={activeSection} onPressToNext={onPressToNext} onWriteOption={onWriteOption} onPress={onPress} isError={isError} setCanUploadEventApplication={setCanUploadEventApplication} setActiveSection={setActiveSection} expanded={expanded}/>
-    )
+    const {text, textError, handleChangeText, isError} = useOptionValue();
+    return (
+      <BasicInput
+        id={text}
+        handleChangeId={handleChangeText}
+        idProfileLink={null}
+        handlePressLink={null}
+        idError={textError}
+        inputType={inputType}
+        placeholder={orderCategory.name}
+        props={props}
+        orderCategoryIndex={orderCategoryIndex}
+        activeSection={activeSection}
+        onPressToNext={onPressToNext}
+        onWriteOption={onWriteOption}
+        onPress={onPress}
+        isError={isError}
+        setCanUploadEventApplication={setCanUploadEventApplication}
+        setActiveSection={setActiveSection}
+        expanded={expanded}
+      />
+    );
   }
-}
+};
 
-const BasicInput = ({id, handleChangeId, idProfileLink, handlePressLink, idError, inputType, placeholder, orderCategoryIndex, activeSection, onPressToNext, onWriteOption, onPress, props, isError, setCanUploadEventApplication, setActiveSection, expanded}) => {
-  const ref = useRef<TextInput | null>(null)
+const BasicInput = ({
+  id,
+  handleChangeId,
+  idProfileLink,
+  handlePressLink,
+  idError,
+  inputType,
+  placeholder,
+  orderCategoryIndex,
+  activeSection,
+  onPressToNext,
+  onWriteOption,
+  onPress,
+  props,
+  isError,
+  setCanUploadEventApplication,
+  setActiveSection,
+  expanded,
+}) => {
+  const ref = useRef<TextInput | null>(null);
   useEffect(() => {
-    if (expanded&&activeSection==orderCategoryIndex) ref.current?.focus()
-  },[expanded, activeSection]);
-  const [focus, setFocus] = useState(false)
-  const onFocus = () => {setActiveSection(orderCategoryIndex);setFocus(true)}
+    if (expanded && activeSection == orderCategoryIndex) ref.current?.focus();
+  }, [expanded, activeSection]);
+  const [focus, setFocus] = useState(false);
+  const onFocus = () => {
+    setActiveSection(orderCategoryIndex);
+    setFocus(true);
+  };
   return (
     <Col auto {...props} onPress={onPress}>
       <Row px15 py15 itemsCenter>
@@ -373,7 +534,7 @@ const BasicInput = ({id, handleChangeId, idProfileLink, handlePressLink, idError
           <Col auto onPress={() => onPressToNext(orderCategoryIndex)}>
             <CheckIcon
               strokeWidth={2}
-              color={Colors.success.DEFAULT}
+              color={Colors.primary.DEFAULT}
               height={18}
               width={18}
               style={{marginRight: 2}}
@@ -390,4 +551,4 @@ const BasicInput = ({id, handleChangeId, idProfileLink, handlePressLink, idError
       ) : null}
     </Col>
   );
-}
+};

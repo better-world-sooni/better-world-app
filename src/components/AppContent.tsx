@@ -63,6 +63,8 @@ import CollectionMemberSearchScreen from 'src/screens/CollectionMemberSearchScre
 import NftCollectionSearchScreen from 'src/screens/NftCollectionSearchScreen';
 import DonationConfirmationScreen from 'src/screens/DonationConfirmationScreen';
 import DonationListScreen from 'src/screens/DonationListScreen';
+import {Div} from './common/Div';
+import PickNftCollectionScreen from 'src/screens/Auth/PickNftCollectionScreen';
 
 const RootStack = createStackNavigator();
 
@@ -75,8 +77,16 @@ const MainBottomTabs = () => {
     shallowEqual,
   );
 
+  const profileTabIconBackgroundProps = {
+    w: 28,
+    h: 28,
+    rounded: 100,
+  };
   const profileTabIconProps = {
     uri: getNftProfileImage(currentNft, 50, 50),
+    absolute: true,
+    top: 2,
+    left: 2,
     w: 24,
     h: 24,
     rounded: 100,
@@ -137,16 +147,24 @@ const MainBottomTabs = () => {
           tabBarLabel: NAV_NAMES.Social,
           tabBarIcon: ({focused}) =>
             currentNft ? (
-              <Img
-                {...profileTabIconProps}
-                border2={focused}
-                borderBlack={focused}></Img>
+              <Div {...profileTabIconBackgroundProps}>
+                {focused && (
+                  <Img
+                    {...profileTabIconBackgroundProps}
+                    source={ICONS.primaryCircle}></Img>
+                )}
+                <Img {...profileTabIconProps}></Img>
+              </Div>
             ) : (
-              <User
-                width={22}
-                height={22}
-                strokeWidth={2}
-                color={focused ? Colors.black : Colors.gray.DEFAULT}></User>
+              <Div>
+                <User
+                  width={22}
+                  height={22}
+                  strokeWidth={2}
+                  color={
+                    focused ? Colors.primary.DEFAULT : Colors.gray.DEFAULT
+                  }></User>
+              </Div>
             ),
         }}
       />
@@ -450,6 +468,10 @@ export const AppContent = ({notificationOpenData}) => {
       options: {
         presentation: 'transparentModal',
       },
+    },
+    {
+      name: NAV_NAMES.PickNftCollection,
+      component: PickNftCollectionScreen,
     },
   ];
 

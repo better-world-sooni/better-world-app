@@ -690,6 +690,22 @@ export function useGotoNftCollectionSearch(){
   return gotoNftCollectionSearch
 }
 
+export function useGotoPickNftCollection(){
+  const navigation = useNavigation()
+  const apiGETWithToken = useApiGETWithToken()
+  const apiGET = useApiGET()
+  const gotoPickNftCollection = (token?) => {
+    token ? apiGET(
+      apis.nft_collection.list(),
+      token
+    ) : apiGETWithToken(
+      apis.nft_collection.list()
+    )
+    navigation.navigate(NAV_NAMES.PickNftCollection as never)
+  }
+  return gotoPickNftCollection
+}
+
 export function useGotoTransaction({transactionHash}){
   const navigation = useNavigation()
   const apiGETWithToken = useApiGETWithToken()

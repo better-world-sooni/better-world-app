@@ -41,6 +41,7 @@ import {handlePressContribution} from 'src/utils/bottomPopupUtils';
 import ImageColors from 'react-native-image-colors';
 import FocusAwareStatusBar from 'src/components/FocusAwareStatusBar';
 import {expandImageViewer} from 'src/utils/imageViewerUtils';
+import GradientColorRect from './GradientColorRect';
 
 export default function NftCollectionProfile({
   nftCollectionCore,
@@ -227,15 +228,24 @@ export default function NftCollectionProfile({
           zIndex={100}
           absolute
           top={notchHeight + 5}>
-          <Col auto bg={Colors.black} p5 rounded100 mr12 onPress={goBack}>
-            <Div>
-              <ChevronLeft
-                width={20}
-                height={20}
-                color={Colors.white}
-                strokeWidth={2.4}
-              />
+          <Col
+            relative
+            auto
+            bg={Colors.black}
+            overflowHidden
+            p5
+            rounded100
+            mr12
+            onPress={goBack}>
+            <Div absolute>
+              <GradientColorRect width={100} height={50} />
             </Div>
+            <ChevronLeft
+              width={20}
+              height={20}
+              color={Colors.white}
+              strokeWidth={2.4}
+            />
           </Col>
           <Col ml10></Col>
         </Row>
@@ -309,12 +319,19 @@ export default function NftCollectionProfile({
                       ) : (
                         <Col
                           auto
-                          bgBlack={!isFollowing}
+                          bgPrimary={!isFollowing}
                           p8
                           rounded100
+                          relative
                           border1={isFollowing}
                           borderGray200
+                          overflowHidden
                           onPress={handlePressFollowing}>
+                          {!isFollowing && (
+                            <Div absolute>
+                              <GradientColorRect width={100} height={50} />
+                            </Div>
+                          )}
                           <Span white={!isFollowing} bold px5 fontSize={14}>
                             {!nftCollection
                               ? '불러오는 중'

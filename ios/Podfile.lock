@@ -435,6 +435,35 @@ PODS:
     - RCTTypeSafety
     - React
     - ReactCommon/turbomodule/core
+  - react-native-skia (0.1.156):
+    - React
+    - React-callinvoker
+    - React-Core
+    - react-native-skia/Api (= 0.1.156)
+    - react-native-skia/Jsi (= 0.1.156)
+    - react-native-skia/RNSkia (= 0.1.156)
+    - react-native-skia/SkiaHeaders (= 0.1.156)
+    - react-native-skia/Utils (= 0.1.156)
+  - react-native-skia/Api (0.1.156):
+    - React
+    - React-callinvoker
+    - React-Core
+  - react-native-skia/Jsi (0.1.156):
+    - React
+    - React-callinvoker
+    - React-Core
+  - react-native-skia/RNSkia (0.1.156):
+    - React
+    - React-callinvoker
+    - React-Core
+  - react-native-skia/SkiaHeaders (0.1.156):
+    - React
+    - React-callinvoker
+    - React-Core
+  - react-native-skia/Utils (0.1.156):
+    - React
+    - React-callinvoker
+    - React-Core
   - react-native-sms (1.11.0):
     - React
   - react-native-video (5.2.0):
@@ -653,6 +682,7 @@ DEPENDENCIES:
   - react-native-image-picker (from `../node_modules/react-native-image-picker`)
   - "react-native-menu (from `../node_modules/@react-native-menu/menu`)"
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
+  - "react-native-skia (from `../node_modules/@shopify/react-native-skia`)"
   - react-native-sms (from `../node_modules/react-native-sms`)
   - react-native-video (from `../node_modules/react-native-video`)
   - react-native-webview (from `../node_modules/react-native-webview`)
@@ -802,6 +832,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-menu/menu"
   react-native-safe-area-context:
     :path: "../node_modules/react-native-safe-area-context"
+  react-native-skia:
+    :path: "../node_modules/@shopify/react-native-skia"
   react-native-sms:
     :path: "../node_modules/react-native-sms"
   react-native-video:
@@ -943,6 +975,7 @@ SPEC CHECKSUMS:
   react-native-image-picker: e95b4785b685cfc06609bc50ed6fb55b59990c99
   react-native-menu: 52089949cbe30b035c51e54f92a7d99136c2fed4
   react-native-safe-area-context: 6c12e3859b6f27b25de4fee8201cfb858432d8de
+  react-native-skia: 3947424d5927ad64eb7cb76a26399cd45bb6d9b0
   react-native-sms: 31fbb9d6ebb565ad32e409eaf9dc70329936a129
   react-native-video: a4c2635d0802f983594b7057e1bce8f442f0ad28
   react-native-webview: 0b7bd2bffced115aefd393e1841babd9b9a557b1

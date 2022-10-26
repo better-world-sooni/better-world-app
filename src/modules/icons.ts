@@ -1,6 +1,9 @@
 export const ICONS = {
   klayIcon: require('assets/icons/klayIcon.png'),
   kaikas: require('assets/icons/kaikas.png'),
+  list: require('assets/icons/list.png'),
+  xCircle: require('assets/icons/xCircle.png'),
+  primaryCircle: require('assets/icons/primaryCircle.png'),
   kaikasWhite: require('assets/icons/kaikasWhite.png'),
   klip: require('assets/icons/klip.png'),
   discord: require('assets/icons/discord.png'),

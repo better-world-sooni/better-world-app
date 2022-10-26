@@ -313,7 +313,7 @@ function PostContent({
               </Col>
             </Row>
             {post.content ? (
-              <Div onPress={() => gotoPost()}>
+              <Div {...(!full && {onPress: () => gotoPost()})}>
                 {full ? (
                   <AutolinkTextWrapper>
                     <Span fontSize={15} py12>

@@ -11,6 +11,7 @@ import {shallowEqual, useSelector} from 'react-redux';
 import {RootState} from 'src/redux/rootReducer';
 import {Img} from 'src/components/common/Img';
 import {ICONS} from 'src/modules/icons';
+import GradientColorRect from 'src/components/common/GradientColorRect';
 
 const NftCollectionScreen = ({
   route: {
@@ -52,6 +53,7 @@ const NftCollectionScreen = ({
           justifyCenter
           itemsCenter
           bottom55
+          overflowHidden
           right15
           onPress={() => gotoNewPost()}
           style={{
@@ -63,6 +65,9 @@ const NftCollectionScreen = ({
             shadowRadius: 4,
             elevation: 4,
           }}>
+          <Div absolute>
+            <GradientColorRect width={100} height={100} />
+          </Div>
           <Plus
             strokeWidth={2}
             color={Colors.white}

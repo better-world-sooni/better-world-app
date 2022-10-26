@@ -35,8 +35,6 @@ export default function NewDrawEventScreen() {
   const {
     error,
     loading,
-    giveawayMerchandise,
-    handleGiveawayMerchandiseChange,
     applicationCategories,
     handleAddApplicationCategory,
     handleRemoveApplicationCategory,
@@ -124,20 +122,10 @@ export default function NewDrawEventScreen() {
                 innerRef={autoFocusRef}
                 value={name}
                 placeholder={'이벤트 이름'}
-                fontSize={18}
-                w={'100%'}
-                style={{fontWeight: 'bold'}}
-                onChangeText={handleNameChange}></TextInput>
-            </Div>
-            <Div mt8>
-              <TextInput
-                innerRef={autoFocusRef}
-                value={giveawayMerchandise}
-                placeholder={'경품'}
                 fontSize={24}
                 w={'100%'}
                 style={{fontWeight: 'bold'}}
-                onChangeText={handleGiveawayMerchandiseChange}></TextInput>
+                onChangeText={handleNameChange}></TextInput>
             </Div>
             <Row mt16 itemsCenter>
               <Col auto m5>

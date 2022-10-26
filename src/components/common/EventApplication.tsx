@@ -3,6 +3,7 @@ import React from 'react';
 import {ActivityIndicator} from 'react-native';
 import {useGotoDrawEvent} from 'src/hooks/useGoto';
 import useUpdateEventApplication from 'src/hooks/useUpdateEventApplication';
+import {IMAGES} from 'src/modules/images';
 import {EventApplicationInputType} from '../NewEventApplicationOptions';
 import PolymorphicOwner from '../PolymorphicOwner';
 import {Col} from './Col';
@@ -49,52 +50,46 @@ export default function EventApplication({eventApplication, admin = false}) {
       ? '당첨'
       : '수령 완료';
   return (
-    <Div px15 py8 borderBottom={0.5} borderGray200>
+    <Div
+      mx15
+      my8
+      px20
+      py15
+      borderBottom={0.5}
+      borderGray200
+      border={0.5}
+      rounded10>
+      <Div absolute top={-4} right10>
+        {admin ? (
+          <MenuView onPressAction={handlePressStatus} actions={airdropTypes}>
+            {loading ? (
+              <ActivityIndicator />
+            ) : cachedEventApplication.status ==
+              EventApplicationStatus.RECEIVED ? (
+              <Img source={IMAGES.received} w={35} h={(35 * 183) / 152}></Img>
+            ) : cachedEventApplication.status ==
+              EventApplicationStatus.SELECTED ? (
+              <Img source={IMAGES.selected} w={35} h={(35 * 183) / 152}></Img>
+            ) : (
+              <Img source={IMAGES.applied} w={35} h={(35 * 183) / 152}></Img>
+            )}
+          </MenuView>
+        ) : cachedEventApplication.status == EventApplicationStatus.RECEIVED ? (
+          <Img source={IMAGES.received} w={35} h={(35 * 183) / 152}></Img>
+        ) : cachedEventApplication.status == EventApplicationStatus.SELECTED ? (
+          <Img source={IMAGES.selected} w={35} h={(35 * 183) / 152}></Img>
+        ) : null}
+      </Div>
       <Row itemsCenter>
         <Col auto relative mr12 onPress={gotoDrawEvent}>
-          <Img uri={drawEvent.image_uri} h100 w100 rounded10 />
+          <Img uri={drawEvent.image_uri} h60 w60 rounded10 />
         </Col>
         <Col>
-          <Div>
-            <Span gray700 bold numberOfLines={1}>
+          <Div mt4>
+            <Span bold fontSize={14} numberOfLines={1}>
               {drawEvent.name}
             </Span>
           </Div>
-          <Div mt4>
-            <Span bold fontSize={19} numberOfLines={1}>
-              {drawEvent.giveaway_merchandise}
-            </Span>
-          </Div>
-          <Row mt8 itemsCenter>
-            <Col
-              rounded10
-              p8
-              auto
-              bgInfo={
-                cachedEventApplication.status == EventApplicationStatus.RECEIVED
-              }
-              bgSuccess={
-                cachedEventApplication.status == EventApplicationStatus.SELECTED
-              }
-              bgBlack={
-                cachedEventApplication.status == EventApplicationStatus.APPLIED
-              }>
-              {admin ? (
-                <MenuView
-                  onPressAction={handlePressStatus}
-                  actions={airdropTypes}>
-                  <Span fontSize={17} bold white>
-                    {loading ? <ActivityIndicator /> : status}
-                  </Span>
-                </MenuView>
-              ) : (
-                <Span bold fontSize={17} white>
-                  {status}
-                </Span>
-              )}
-            </Col>
-            <Col></Col>
-          </Row>
         </Col>
       </Row>
       {admin && (
@@ -106,8 +101,8 @@ export default function EventApplication({eventApplication, admin = false}) {
         </Div>
       )}
       {cachedEventApplication.event_application_options?.length > 0 && (
-        <Div p16 mt8 border={0.5} rounded10 borderGray200>
-          <Span bold fontSize={16} mb8 info>
+        <Div mt16>
+          <Span bold fontSize={16} mb8 primary>
             선택된 옵션
           </Span>
           {cachedEventApplication.event_application_options.map(

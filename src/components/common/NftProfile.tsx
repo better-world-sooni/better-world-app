@@ -29,6 +29,7 @@ import useFollow from 'src/hooks/useFollow';
 import {MenuView} from '@react-native-menu/menu';
 import {useGotoNftSetting} from 'src/hooks/useGoto';
 import {expandImageViewer} from 'src/utils/imageViewerUtils';
+import GradientColorRect from './GradientColorRect';
 
 export default function NftProfile({
   nftCore,
@@ -215,7 +216,17 @@ export default function NftProfile({
           top={notchHeight + 5}
           w={DEVICE_WIDTH}>
           {enableBack && (
-            <Col auto ml15 bgBlack p5 rounded100 onPress={goBack}>
+            <Col
+              auto
+              ml15
+              relative
+              overflowHidden
+              p5
+              rounded100
+              onPress={goBack}>
+              <Div absolute>
+                <GradientColorRect width={100} height={50} />
+              </Div>
               <ChevronLeft
                 width={20}
                 height={20}
@@ -226,7 +237,13 @@ export default function NftProfile({
           )}
           <Col></Col>
           {isCurrentNft ? (
-            <Col auto mr15 bgBlack p5 rounded100 onPress={gotoNftSetting}>
+            <Col
+              auto
+              mr15
+              bg={'rgba(0,0,0,0.5)'}
+              p5
+              rounded100
+              onPress={gotoNftSetting}>
               <MoreHorizontal
                 width={20}
                 height={20}
@@ -236,7 +253,7 @@ export default function NftProfile({
             </Col>
           ) : (
             <MenuView onPressAction={handlePressMenu} actions={menuOptions}>
-              <Col auto mr15 bgBlack p5 rounded100>
+              <Col auto mr15 bg={'rgba(0,0,0,0.5)'} p5 rounded100>
                 <MoreHorizontal
                   width={20}
                   height={20}

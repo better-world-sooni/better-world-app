@@ -20,6 +20,7 @@ import {Img} from './common/Img';
 import {Row} from './common/Row';
 import {Span} from './common/Span';
 import {ICONS} from 'src/modules/icons';
+import GradientColorRect from './common/GradientColorRect';
 
 export default function PolymorphicOwner({
   nft,
@@ -123,14 +124,21 @@ export default function PolymorphicOwner({
         ) : (
           <Col
             auto
-            bgBlack={!following}
+            bgPrimary={!following}
             py8
             px10
             ml12
+            relative
             rounded100
             border={following && 0.5}
             borderGray200
+            overflowHidden
             onPress={handlePressFollowing}>
+            {!following && (
+              <Div absolute>
+                <GradientColorRect width={100} height={50} />
+              </Div>
+            )}
             <Span white={!following} bold px5 fontSize={14}>
               {!nft ? '불러오는 중' : following ? '팔로잉' : '팔로우'}
             </Span>

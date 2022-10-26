@@ -1,4 +1,4 @@
-import React, {useEffect, useRef} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import apis from 'src/modules/apis';
 import {
   useApiSelector,
@@ -15,7 +15,7 @@ import {FlatList, ImageBackground} from 'src/components/common/ViewComponents';
 import ListEmptyComponent from 'src/components/common/ListEmptyComponent';
 import {ActivityIndicator, RefreshControl} from 'react-native';
 import {HAS_NOTCH} from 'src/modules/constants';
-import {Archive, Clock, Gift, Search} from 'react-native-feather';
+import {Archive, ChevronDown, Clock, Gift, Search} from 'react-native-feather';
 import {
   useGotoEventApplicationList,
   useGotoNftCollectionSearch,
@@ -23,12 +23,42 @@ import {
 import DrawEvent from 'src/components/common/DrawEvent';
 import {useNavigation} from '@react-navigation/native';
 import {smallBump} from 'src/utils/hapticFeedBackUtils';
+import {Img} from 'src/components/common/Img';
+import {IMAGES} from 'src/modules/images';
+import {ICONS} from 'src/modules/icons';
+import {MenuView} from '@react-native-menu/menu';
 
 enum DrawEventFeedFilter {
   All = 'all',
   Eligible = 'eligible',
   Following = 'following',
 }
+
+enum DrawEventOrder {
+  Recent = 'recent',
+  Popular = 'popular',
+  Event = 'event',
+  Announcement = 'announcement',
+}
+
+const orderTypes = [
+  {
+    id: `${DrawEventOrder.Popular}`,
+    title: '인기 순',
+  },
+  {
+    id: `${DrawEventOrder.Recent}`,
+    title: '최신 순',
+  },
+  {
+    id: `${DrawEventOrder.Event}`,
+    title: '이벤트',
+  },
+  {
+    id: `${DrawEventOrder.Announcement}`,
+    title: '공지',
+  },
+];
 
 export default function StoreScreen() {
   const flatlistRef = useRef(null);
@@ -38,6 +68,7 @@ export default function StoreScreen() {
   const {data: nftCollectionRes, isLoading: nftCollectionLoad} = useApiSelector(
     apis.nft_collection._(),
   );
+  const [order, setOrder] = useState(DrawEventOrder.Recent);
   const nftCollection = nftCollectionRes?.nft_collection;
   const drawEvents = data ? data.draw_events : [];
   const reloadGETWithToken = useReloadGETWithToken();
@@ -45,12 +76,12 @@ export default function StoreScreen() {
   const handleEndReached = () => {
     if (isPaginating || isNotPaginatable) return;
     paginateGetWithToken(
-      apis.feed.draw_event(data?.filter, page + 1),
+      apis.feed.draw_event(data?.filter, order, page + 1),
       'draw_events',
     );
   };
   const handleRefresh = () => {
-    reloadGETWithToken(apis.feed.draw_event(data?.filter));
+    reloadGETWithToken(apis.feed.draw_event(data?.filter, order));
   };
   const scrollToTop = () => {
     flatlistRef?.current
@@ -60,17 +91,23 @@ export default function StoreScreen() {
   const handlePressFilter = filter => {
     scrollToTop();
     if (
-      filter == DrawEventFeedFilter.All &&
-      data?.filter !== DrawEventFeedFilter.All
+      filter == DrawEventFeedFilter.Eligible &&
+      data?.filter !== DrawEventFeedFilter.Eligible
     ) {
-      reloadGETWithToken(apis.feed.draw_event(filter));
+      reloadGETWithToken(apis.feed.draw_event(filter, order));
     }
     if (
       filter == DrawEventFeedFilter.Following &&
       data?.filter !== DrawEventFeedFilter.Following
     ) {
-      reloadGETWithToken(apis.feed.draw_event(filter));
+      reloadGETWithToken(apis.feed.draw_event(filter, order));
     }
+  };
+  const handlePressOrder = ({nativeEvent: {event}}) => {
+    // scrollToTop();
+    console.log(event);
+    setOrder(event);
+    reloadGETWithToken(apis.feed.draw_event(data?.filter, event));
   };
   const gotoEventApplicationList = useGotoEventApplicationList();
   const gotoNftCollectionSearch = useGotoNftCollectionSearch();
@@ -84,12 +121,14 @@ export default function StoreScreen() {
       e => {
         const isFocused = navigation.isFocused();
         if (isFocused) {
-          if (data?.filter == DrawEventFeedFilter.All) {
+          if (data?.filter == DrawEventFeedFilter.Eligible) {
             reloadGETWithToken(
               apis.feed.draw_event(DrawEventFeedFilter.Following),
             );
           } else {
-            reloadGETWithToken(apis.feed.draw_event(DrawEventFeedFilter.All));
+            reloadGETWithToken(
+              apis.feed.draw_event(DrawEventFeedFilter.Eligible),
+            );
           }
           smallBump();
         }
@@ -105,32 +144,38 @@ export default function StoreScreen() {
         <Row itemsCenter py5 h40 px15>
           <Col
             auto
-            mr16
-            py2
-            borderBottom={data?.filter == DrawEventFeedFilter.Following ? 2 : 0}
-            onPress={() => handlePressFilter(DrawEventFeedFilter.Following)}>
-            <Span
-              bold
-              fontSize={19}
-              gray400={data?.filter !== DrawEventFeedFilter.Following}>
-              {'팔로잉'}
-            </Span>
+            h30
+            w={(30 * 742) / 512}
+            mr12
+            itemsCenter
+            justifyCenter
+            onPress={() => handlePressFilter(DrawEventFeedFilter.Eligible)}>
+            {data?.filter !== DrawEventFeedFilter.Eligible ? (
+              <Span bold fontSize={19} gray400>
+                {'MY'}
+              </Span>
+            ) : (
+              <Img source={IMAGES.my} h30 w={(30 * 742) / 512}></Img>
+            )}
           </Col>
           <Col
             auto
-            mr16
-            py2
-            borderBottom={data?.filter == DrawEventFeedFilter.All ? 2 : 0}
-            onPress={() => handlePressFilter(DrawEventFeedFilter.All)}>
-            <Span
-              bold
-              fontSize={19}
-              gray400={data?.filter !== DrawEventFeedFilter.All}>
-              {'전체'}
-            </Span>
+            h30
+            w={(30 * 1624) / 512}
+            mr12
+            itemsCenter
+            justifyCenter
+            onPress={() => handlePressFilter(DrawEventFeedFilter.Following)}>
+            {data?.filter !== DrawEventFeedFilter.Following ? (
+              <Span bold fontSize={19} gray400>
+                {'Following'}
+              </Span>
+            ) : (
+              <Img source={IMAGES.following} h30 w={(30 * 1624) / 512}></Img>
+            )}
           </Col>
           <Col />
-          <Col auto onPress={gotoNftCollectionSearch} pl16>
+          <Col auto onPress={gotoNftCollectionSearch} pl18>
             <Search
               strokeWidth={2}
               color={Colors.black}
@@ -138,13 +183,8 @@ export default function StoreScreen() {
               width={22}
             />
           </Col>
-          <Col auto onPress={gotoEventApplicationList} pl16>
-            <Archive
-              width={22}
-              height={22}
-              color={Colors.black}
-              strokeWidth={2}
-            />
+          <Col auto onPress={gotoEventApplicationList} pl18>
+            <Img source={ICONS.list} h={22} w={(22 * 81) / 96} />
           </Col>
         </Row>
       </Div>
@@ -159,12 +199,23 @@ export default function StoreScreen() {
               style={{
                 backgroundColor: Colors.primary.DEFAULT,
               }}
-              h90
+              h={(DEVICE_WIDTH * 93) / 390}
               wFull
               mb12
               overflowHidden>
-              <Div wFull h90 bgBlack opacity={0.75}></Div>
-              <Div absolute top0 wFull h90 px16 py8 justifyCenter>
+              <Div
+                wFull
+                h={(DEVICE_WIDTH * 93) / 390}
+                bgBlack
+                opacity={0.6}></Div>
+              <Div
+                absolute
+                top0
+                wFull
+                h={(DEVICE_WIDTH * 93) / 390}
+                px30
+                py8
+                justifyCenter>
                 <Span white gray400 fontSize={12}>
                   오직 홀더를 위한 공지와 이벤트
                 </Span>
@@ -173,6 +224,28 @@ export default function StoreScreen() {
                 </Span>
               </Div>
             </ImageBackground>
+            <Div px15>
+              <MenuView onPressAction={handlePressOrder} actions={orderTypes}>
+                <Row itemsCenter onPress={() => {}}>
+                  <Col auto mr2>
+                    <Span bold fontSize={15}>
+                      {
+                        orderTypes.filter(orderType => order == orderType.id)[0]
+                          .title
+                      }
+                    </Span>
+                  </Col>
+                  <Col auto>
+                    <ChevronDown
+                      color={Colors.black}
+                      height={18}
+                      width={18}
+                      strokeWidth={2.4}
+                    />
+                  </Col>
+                </Row>
+              </MenuView>
+            </Div>
           </Div>
         }
         ListEmptyComponent={
@@ -193,7 +266,7 @@ export default function StoreScreen() {
               }-${(item as any).status}-${(item as any).read_count}`}
               drawEvent={item}
               mx={15}
-              my={15}
+              my={17}
               width={DEVICE_WIDTH - 15 * 2}
             />
           );

@@ -3,7 +3,7 @@ import {Div} from 'src/components/common/Div';
 import {ActivityIndicator, FlatList, RefreshControl} from 'react-native';
 import {Row} from 'src/components/common/Row';
 import {Col} from 'src/components/common/Col';
-import {Search, ChevronLeft} from 'react-native-feather';
+import {Search, ChevronLeft, XCircle} from 'react-native-feather';
 import apis from 'src/modules/apis';
 import {
   useApiSelector,
@@ -21,6 +21,9 @@ import {Span} from 'src/components/common/Span';
 import {Img} from 'src/components/common/Img';
 import useFollow from 'src/hooks/useFollow';
 import {useGotoNftCollectionProfile} from 'src/hooks/useGoto';
+import {TextField} from 'src/components/TextField';
+import {ICONS} from 'src/modules/icons';
+import GradientColorRect from 'src/components/common/GradientColorRect';
 
 const NftCollectionSearchScreen = () => {
   const searchRef = useRef(null);
@@ -46,8 +49,8 @@ const NftCollectionSearchScreen = () => {
     );
   };
   const [text, textHasChanged, handleChangeText] = useEdittableText('');
-  const onPressSearch = () => {
-    searchRef?.current?.focus();
+  const onPressX = () => {
+    handleChangeText('');
   };
   const handleChangeQuery = text => {
     handleChangeText(text);
@@ -57,42 +60,45 @@ const NftCollectionSearchScreen = () => {
   };
   const notchHeight = useSafeAreaInsets().top;
   const headerHeight = notchHeight + 50;
+  const shadowProps = {
+    style: {
+      shadowOffset: {
+        width: 1,
+        height: 1,
+      },
+      shadowOpacity: 0.1,
+      shadowRadius: 1,
+      elevation: 2,
+    },
+  };
   return (
     <Div flex={1} bgWhite>
       <Div h={notchHeight}></Div>
-      <Div bgWhite px8 h={50} justifyCenter borderBottom={0.5} borderGray200>
-        <Row itemsCenter py5 h40>
-          <Div auto rounded100 onPress={goBack}>
-            <ChevronLeft
-              width={30}
-              height={30}
-              color={Colors.black}
-              strokeWidth={2}
-            />
-          </Div>
-          <Col mr10>
+      <Div bgWhite px13 h={56} justifyCenter borderBottom={0.5} borderGray200>
+        <Row itemsCenter>
+          <Col px5 relative>
             <TextInput
               innerRef={searchRef}
               value={text}
               placeholder="NFT 컬렉션을 찾아보세요"
-              fontSize={16}
+              placeholderTextColor={Colors.gray[600]}
               bgGray200
               rounded100
-              m0
-              p0
-              px8
-              h32
+              pl15
+              pr31
+              h34
               bold
               onChangeText={handleChangeQuery}
+              {...shadowProps}
             />
+            <Div absolute px16 py9 right0 top0 onPress={onPressX}>
+              <Img source={ICONS.xCircle} h16 w16></Img>
+            </Div>
           </Col>
-          <Col auto rounded100 onPress={onPressSearch} pr7>
-            <Search
-              strokeWidth={2}
-              color={Colors.black}
-              height={22}
-              width={22}
-            />
+          <Col auto rounded100 onPress={goBack} px10>
+            <Span bold info fontSize={14}>
+              취소
+            </Span>
           </Col>
         </Row>
       </Div>
@@ -133,13 +139,21 @@ const NftCollectionSearchScreen = () => {
           </>
         }
         renderItem={({item, index}) => {
-          return <NftCollection nftCollection={item} />;
+          const prevFollowing =
+            rankRes.nft_collections[index - 1]?.is_following;
+          return (
+            <NftCollection
+              nftCollection={item}
+              index={index}
+              prevFollowing={prevFollowing}
+            />
+          );
         }}></FlatList>
     </Div>
   );
 };
 
-function NftCollection({nftCollection}) {
+function NftCollection({nftCollection, index, prevFollowing}) {
   const shadowProps = {
     style: {
       shadowOffset: {
@@ -149,6 +163,17 @@ function NftCollection({nftCollection}) {
       shadowOpacity: 0.1,
       shadowRadius: 6,
       elevation: 2,
+    },
+  };
+  const shadowProps1 = {
+    style: {
+      shadowOffset: {
+        width: 3,
+        height: 3,
+      },
+      shadowOpacity: 0.1,
+      shadowRadius: 2,
+      elevation: 1,
     },
   };
   const {
@@ -162,19 +187,40 @@ function NftCollection({nftCollection}) {
 
   return (
     <Div pt15 px20 onPress={gotoNftCollection}>
+      {index == 0 && isFollowing ? (
+        <Div py12>
+          <Span bold fontSize={16}>
+            MY NFT
+          </Span>
+        </Div>
+      ) : prevFollowing && !isFollowing ? (
+        <Div py12 borderTop={0.5} borderGray200 mx={-20} px20>
+          <Span bold fontSize={16}>
+            더 많은 NFT
+          </Span>
+        </Div>
+      ) : null}
       <Row {...shadowProps} bgWhite py15 px20 rounded20 itemsCenter>
-        <Col auto h75 w75 rounded100 bgGray200 borderGray200 border={0.5}>
+        <Col
+          auto
+          h75
+          w75
+          rounded100
+          bgGray200
+          borderGray200
+          border={0.5}
+          {...shadowProps1}>
           <Img uri={nftCollection.image_uri} h75 w75 rounded100 />
         </Col>
         <Col pl15>
           <Div>
-            <Span bold numberOfLines={1}>
+            <Span bold numberOfLines={1} fontSize={14}>
               {nftCollection.name}
             </Span>
           </Div>
           {nftCollection.about && (
-            <Div mt4>
-              <Span gray400 numberOfLines={2}>
+            <Div mt2>
+              <Span gray400 numberOfLines={2} fontSize={11}>
                 {nftCollection.about}
               </Span>
             </Div>
@@ -185,9 +231,16 @@ function NftCollection({nftCollection}) {
             rounded7
             bgPrimary={!isFollowing}
             bgGray200={isFollowing}
+            relative
             py7
+            overflowHidden
             px15
             onPress={handlePressFollowing}>
+            {!isFollowing && (
+              <Div absolute>
+                <GradientColorRect width={100} height={50} />
+              </Div>
+            )}
             <Span bold white={!isFollowing} gray600={isFollowing}>
               {isFollowing ? '팔로잉' : '팔로우'}
             </Span>

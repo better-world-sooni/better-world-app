@@ -26,6 +26,10 @@ export const Colors = {
     DEFAULT:  '#2a97ff',
     light: '#2a97ff90'
   },
+  blue: {
+    DEFAULT: 'rgb(40, 112, 255)',
+    light: 'rgb(210, 224, 255)'
+  },
   warning: {DEFAULT: '#f6c343', light: '#f6c34390',},
   success: { DEFAULT: '#3cd278', light: '#3cd27890' },
   danger: { DEFAULT: '#ff3051', light: '#ff305190' },
@@ -49,6 +53,8 @@ export const varStyle = {
   black: Colors.black,
   primary: Colors.primary.DEFAULT,
   primarySoft: Colors.primary.light,
+  blue: Colors.blue.DEFAULT,
+  blueSoft: Colors.blue.light,
   secondary: Colors.secondary.DEFAULT,
   secondarySoft: Colors.secondary.light,
   danger: Colors.danger.DEFAULT,
@@ -83,6 +89,8 @@ export const COLOR_PALETTE = [
   {name: 'PrimarySoft', color: varStyle.primarySoft},
   {name: 'Secondary', color: varStyle.secondary},
   {name: 'SecondarySoft', color: varStyle.secondarySoft},
+  {name: 'Blue', color: varStyle.blue},
+  {name: 'BlueSoft', color: varStyle.blueSoft},
   {name: 'Gray700', color: varStyle.gray700},
   {name: 'Gray600', color: varStyle.gray600},
   {name: 'Gray500', color: varStyle.gray500},
@@ -115,6 +123,12 @@ export const globalStyle = {
   },
   bgSecondary: {
     backgroundColor: varStyle.secondary,
+  },
+  bgBlue: {
+    backgroundColor: varStyle.blue,
+  },
+  bgBlueSoft: {
+    backgroundColor: varStyle.blueSoft,
   },
   bgDanger: {
     backgroundColor: varStyle.danger,

@@ -54,6 +54,7 @@ export const NAV_NAMES = {
     NewAnnouncement: "NewAnnouncement",
     NftCollectionSearch: "NftCollectionSearch",
     DonationConfirmation: "DonationConfirmation",
-    DonationList: "DonationList"
+    DonationList: "DonationList",
+    PickNftCollection: "PickNftCollection",
 };
 

@@ -34,9 +34,10 @@ export function NftIdentity({nft, setCloseDisable, onSuccess}) {
       contract_address,
       token_id,
       props => {
+        const {jwt, user, nft} = props.data;
         setStateType(StateType.Success);
         if (setCloseDisable) setCloseDisable(false);
-        if (onSuccess) onSuccess();
+        if (onSuccess) onSuccess(jwt);
       },
       props => {
         setStateType(StateType.Error);

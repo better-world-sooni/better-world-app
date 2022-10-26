@@ -39,7 +39,7 @@ export default function getDrawEventStatus({drawEvent}){
         color: Colors.warning.DEFAULT
     } : drawEvent.event_application.status == EventApplicationStatus.SELECTED ? {
         orderable: false,
-        string: "당첨됨",
+        string: "당첨",
         color: Colors.success.DEFAULT
     } : {
         orderable: false,
