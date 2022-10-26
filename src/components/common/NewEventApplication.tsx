@@ -92,7 +92,9 @@ export default function NewEventApplication({drawEvent}) {
               onPress={
                 orderable &&
                 (expandOptions == -1
-                  ? !loading && handlePressInitialOrder
+                  ? drawEvent?.draw_evnet_options
+                    ? !loading && handlePressInitialOrder
+                    : !loading && uploadEventApplication
                   : canUploadEventApplication &&
                     (() => {
                       bottomPopupRef?.current?.close();
@@ -109,24 +111,24 @@ export default function NewEventApplication({drawEvent}) {
                   itemsCenter
                   justifyCenter
                   bgGray400
-                onPress={
-                  orderable &&
-                  (expandOptions == -1
-                    ? drawEvent?.draw_evnet_options
-                      ? !loading && handlePressInitialOrder
-                      : !loading && uploadEventApplication
-                    : canUploadEventApplication &&
-                      (() => {
-                        bottomPopupRef?.current?.close();
-                        uploadEventApplication();
-                      }))
-                }>
-                <Span white bold>
-                  {loading ? <ActivityIndicator /> : '응모하기'}
-                </Span>
-              </Div>
-            </Col>
-          </Row>
+                  onPress={
+                    orderable &&
+                    (expandOptions == -1
+                      ? drawEvent?.draw_evnet_options
+                        ? !loading && handlePressInitialOrder
+                        : !loading && uploadEventApplication
+                      : canUploadEventApplication &&
+                        (() => {
+                          bottomPopupRef?.current?.close();
+                          uploadEventApplication();
+                        }))
+                  }>
+                  <Span white bold>
+                    {loading ? <ActivityIndicator /> : '응모하기'}
+                  </Span>
+                </Div>
+              </Col>
+            </Row>
           )}
         </Div>
         <Div h={HAS_NOTCH ? 27 : 12} bgWhite />
