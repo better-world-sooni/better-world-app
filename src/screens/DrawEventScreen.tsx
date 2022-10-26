@@ -22,7 +22,7 @@ import getDrawEventStatus, {
   EventApplicationStatus,
 } from 'src/hooks/getDrawEventStatus';
 import NewEventApplication from 'src/components/common/NewEventApplication';
-import {Platform} from 'react-native';
+import {Linking, Platform} from 'react-native';
 import {HAS_NOTCH} from 'src/modules/constants';
 import CountdownText from 'src/components/common/CountdownText';
 import AutolinkTextWrapper from 'src/components/common/AutolinkTextWrapper';
@@ -189,6 +189,20 @@ export default function DrawEventScreen() {
                     </Col>
                     <Col auto></Col>
                   </Row>
+                  {drawEvent?.discord_link ? (
+                    <Row px15 py15>
+                      <Col></Col>
+                      <Col
+                        auto
+                        onPress={() =>
+                          Linking.openURL(drawEvent?.discord_link)
+                        }>
+                        <Span bold gray600>
+                          본문 바로가기
+                        </Span>
+                      </Col>
+                    </Row>
+                  ) : null}
                   <Div itemsCenter px15 py15>
                     <DefaultMarkdown children={drawEvent.description} />
                   </Div>

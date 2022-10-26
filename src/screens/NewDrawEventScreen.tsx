@@ -42,6 +42,8 @@ export default function NewDrawEventScreen() {
     handleRemoveApplicationOption,
     enableApplicationLink,
     toggleEnableApplicationLink,
+    discordLink,
+    handleDiscordLinkChange,
     applicationLink,
     handleApplicationLinkChange,
     expiresAt,
@@ -120,6 +122,16 @@ export default function NewDrawEventScreen() {
             <Div mt16>
               <TextInput
                 innerRef={autoFocusRef}
+                value={discordLink}
+                placeholder={'본문 링크'}
+                fontSize={16}
+                w={'100%'}
+                style={{fontWeight: 'bold', color: Colors.info.DEFAULT}}
+                onChangeText={handleDiscordLinkChange}></TextInput>
+            </Div>
+            <Div mt8>
+              <TextInput
+                innerRef={autoFocusRef}
                 value={name}
                 placeholder={'이벤트 이름'}
                 fontSize={24}
@@ -130,7 +142,7 @@ export default function NewDrawEventScreen() {
             <Row mt16 itemsCenter>
               <Col auto m5>
                 <Span fontSize={14}>
-                  응모시 링크로 이동 {enableApplicationLink ? '활성' : '비활성'}
+                  응모 링크 {enableApplicationLink ? '활성' : '비활성'}
                 </Span>
               </Col>
               <Col></Col>

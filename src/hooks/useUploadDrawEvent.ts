@@ -8,6 +8,7 @@ import useUploadImages from "./useUploadImages";
 export default function useUploadDrawEvent({initialHasApplication}){
     const [loading, setLoading] = useState(false);
 	const [name, setName] = useState('')
+	const [discordLink, setDiscordLink] = useState('')
     const [description, setDescription] = useState('')
 	const [applicationLink, setApplicationLink] = useState('')
 	const [enableApplicationLink, setEnableApplicationLink] = useState(false);
@@ -58,6 +59,7 @@ export default function useUploadDrawEvent({initialHasApplication}){
 			expires_at: expiresAt,
 			has_application: initialHasApplication,
 			application_link: applicationLink ? applicationLink : null,
+			discord_link: discordLink ? discordLink : null,
 			draw_event_options_attributes: applicationOptions,
 		}
 		const {data} = await postPromiseFnWithToken({url: apis.draw_event._().url, body});
@@ -70,6 +72,10 @@ export default function useUploadDrawEvent({initialHasApplication}){
         setLoading(false);
 		setError("");
     }
+	const handleDiscordLinkChange = (text) => {
+		setDiscordLink(text);
+		setError("");
+	};
 	const handleApplicationLinkChange = (text) => {
 		setApplicationLink(text);
 		setError("");
@@ -110,5 +116,5 @@ export default function useUploadDrawEvent({initialHasApplication}){
 		}
 	}
 
-    return { error, loading, applicationCategories, handleAddApplicationCategory, handleRemoveApplicationCategory, handleAddApplicationOption, handleRemoveApplicationOption, enableApplicationLink, toggleEnableApplicationLink, applicationLink, handleApplicationLinkChange, expiresAt, setExpiresAt, name, handleNameChange, description, handleDescriptionChange, images, handleAddImages, handleRemoveImage, uploadDrawEvent }
+    return { error, loading, discordLink, handleDiscordLinkChange, applicationCategories, handleAddApplicationCategory, handleRemoveApplicationCategory, handleAddApplicationOption, handleRemoveApplicationOption, enableApplicationLink, toggleEnableApplicationLink, applicationLink, handleApplicationLinkChange, expiresAt, setExpiresAt, name, handleNameChange, description, handleDescriptionChange, images, handleAddImages, handleRemoveImage, uploadDrawEvent }
 }

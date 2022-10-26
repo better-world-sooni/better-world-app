@@ -35,17 +35,8 @@ export default function NewAnnouncementScreen() {
   const {
     error,
     loading,
-    giveawayMerchandise,
-    handleGiveawayMerchandiseChange,
-    applicationCategories,
-    handleAddApplicationCategory,
-    handleRemoveApplicationCategory,
-    handleAddApplicationOption,
-    handleRemoveApplicationOption,
-    enableApplicationLink,
-    toggleEnableApplicationLink,
-    applicationLink,
-    handleApplicationLinkChange,
+    discordLink,
+    handleDiscordLinkChange,
     expiresAt,
     setExpiresAt,
     name,
@@ -64,17 +55,6 @@ export default function NewAnnouncementScreen() {
   };
   const notchHeight = useSafeAreaInsets().top;
   const headerHeight = notchHeight + 50;
-  const handlePressAddExpiresAt = () => {
-    setExpiresAt(new Date());
-    setDatetimePickerOpen(true);
-  };
-  const handlePressRemoveExpiresAt = () => {
-    setExpiresAt(null);
-    setDatetimePickerOpen(false);
-  };
-  const handlePressExpiresAt = () => {
-    setDatetimePickerOpen(true);
-  };
 
   return (
     <>
@@ -120,6 +100,16 @@ export default function NewAnnouncementScreen() {
           </Div>
           <Div px15>
             <Div mt16>
+              <TextInput
+                innerRef={autoFocusRef}
+                value={discordLink}
+                placeholder={'본문 링크'}
+                fontSize={16}
+                w={'100%'}
+                style={{fontWeight: 'bold', color: Colors.info.DEFAULT}}
+                onChangeText={handleDiscordLinkChange}></TextInput>
+            </Div>
+            <Div mt8>
               <TextInput
                 innerRef={autoFocusRef}
                 value={name}
