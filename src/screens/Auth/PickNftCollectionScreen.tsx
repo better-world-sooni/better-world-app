@@ -4,8 +4,6 @@ import {Span} from 'src/components/common/Span';
 import {FlatList} from 'src/components/common/ViewComponents';
 import {useApiSelector, usePaginateGETWithToken} from 'src/redux/asyncReducer';
 import apis from 'src/modules/apis';
-import {NAV_NAMES} from 'src/modules/navNames';
-import {NftIdentity} from 'src/components/NftIdentity';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {shallowEqual, useSelector} from 'react-redux';
 import {RootState} from 'src/redux/rootReducer';
@@ -118,14 +116,17 @@ const PickNftCollectionScreen = () => {
           );
         }}></FlatList>
       <Div absolute bottom0 itemsCenter>
-        <GradientColorButton
-          width={DEVICE_WIDTH}
-          height={60}
-          text={'다음'}
-          fontSize={16}
-          onPress={gotoHome}
-        />
-        <GradientColorRect width={DEVICE_WIDTH} height={notchBottom} />
+        <Div px15>
+          <GradientColorButton
+            width={DEVICE_WIDTH - 30}
+            borderRadius={10}
+            height={60}
+            text={'다음'}
+            fontSize={16}
+            onPress={gotoHome}
+          />
+        </Div>
+        <Div h={notchBottom}></Div>
       </Div>
     </Div>
   );

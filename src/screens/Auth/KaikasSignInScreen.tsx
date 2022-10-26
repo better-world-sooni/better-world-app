@@ -101,7 +101,7 @@ const KaikasSignInScreen = () => {
             ) : (
               <Div>
                 <Span bold white fontSize={16}>
-                  Klip 지갑 허용하기
+                  Kaikas 지갑 허용하기
                 </Span>
               </Div>
             )}
