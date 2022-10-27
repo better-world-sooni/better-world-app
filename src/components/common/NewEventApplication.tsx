@@ -54,7 +54,6 @@ export default function NewEventApplication({drawEvent}) {
     if (!orderable) return;
     if (drawEvent.application_link) {
       Linking.openURL(drawEvent.application_link);
-      return;
     }
     bottomPopupRef?.current?.expand();
   };
@@ -92,7 +91,11 @@ export default function NewEventApplication({drawEvent}) {
               onPress={
                 orderable &&
                 (expandOptions == -1
-                  ? drawEvent?.draw_evnet_options
+                  ? !(
+                      drawEvent?.draw_event_options == null ||
+                      (drawEvent?.draw_event_options &&
+                        drawEvent?.draw_event_options.length == 0)
+                    ) || drawEvent?.application_link
                     ? !loading && handlePressInitialOrder
                     : !loading && uploadEventApplication
                   : canUploadEventApplication &&
@@ -114,7 +117,11 @@ export default function NewEventApplication({drawEvent}) {
                   onPress={
                     orderable &&
                     (expandOptions == -1
-                      ? drawEvent?.draw_evnet_options
+                      ? !(
+                          drawEvent?.draw_event_options == null ||
+                          (drawEvent?.draw_event_options &&
+                            drawEvent?.draw_event_options.length == 0)
+                        ) || drawEvent?.application_link
                         ? !loading && handlePressInitialOrder
                         : !loading && uploadEventApplication
                       : canUploadEventApplication &&
