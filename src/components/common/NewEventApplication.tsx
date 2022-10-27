@@ -54,6 +54,7 @@ export default function NewEventApplication({drawEvent}) {
     if (!orderable) return;
     if (drawEvent.application_link) {
       Linking.openURL(drawEvent.application_link);
+      return;
     }
     bottomPopupRef?.current?.expand();
   };
