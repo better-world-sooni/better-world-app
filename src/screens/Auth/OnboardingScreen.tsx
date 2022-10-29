@@ -11,6 +11,8 @@ import {useGotoPickNftCollection} from 'src/hooks/useGoto';
 import {Row} from 'src/components/common/Row';
 import {Col} from 'src/components/common/Col';
 import GradientText from 'src/components/common/GradientText';
+import GradientColorRect from 'src/components/common/GradientColorRect';
+import {DEVICE_WIDTH} from 'src/modules/styles';
 
 const OnboardingScreen = ({navigation}) => {
   const {data: profileRes, isLoading: profileLoad} = useApiSelector(
@@ -18,13 +20,12 @@ const OnboardingScreen = ({navigation}) => {
   );
   const gotoPickNftCollection = useGotoPickNftCollection();
   const notchHeight = useSafeAreaInsets().top;
-  const headerHeight = notchHeight + 50;
+  const headerHeight = notchHeight;
 
   return (
     <Div bgWhite flex={1}>
       <Div h={headerHeight}></Div>
-      <Row itemsEnd mx15>
-        <Col></Col>
+      <Row itemsEnd mx30 mt40>
         <Col auto>
           <GradientText
             text={'Welcome!'}
@@ -35,15 +36,17 @@ const OnboardingScreen = ({navigation}) => {
         </Col>
         <Col></Col>
       </Row>
-      <Row itemsEnd mx15 py20>
-        <Col></Col>
+      <Row itemsEnd mx30 mt10>
         <Col auto>
-          <Span fontSize={24} bold>
+          <Span fontSize={18} bold>
             최애 NFT를 선택해주세요
           </Span>
         </Col>
         <Col></Col>
       </Row>
+      <Div mt50>
+        <GradientColorRect width={DEVICE_WIDTH} height={4} />
+      </Div>
       <FlatList
         px20
         bgWhite

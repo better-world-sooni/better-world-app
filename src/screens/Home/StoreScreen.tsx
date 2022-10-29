@@ -138,8 +138,8 @@ export default function StoreScreen() {
   }, [data?.filter]);
 
   return (
-    <Div flex={1} bgWhite>
-      <Div h={notchHeight}></Div>
+    <Div flex={1} bg={'#F4F4F8'}>
+      <Div bgWhite h={notchHeight}></Div>
       <Div bgWhite h={50} justifyCenter borderBottom={0.5} borderGray200>
         <Row itemsCenter py5 h40 px15>
           <Col
@@ -224,11 +224,11 @@ export default function StoreScreen() {
                 </Span>
               </Div>
             </ImageBackground>
-            <Div px15>
+            <Div px20 py5>
               <MenuView onPressAction={handlePressOrder} actions={orderTypes}>
                 <Row itemsCenter onPress={() => {}}>
                   <Col auto mr2>
-                    <Span bold fontSize={15}>
+                    <Span bold fontSize={16}>
                       {
                         orderTypes.filter(orderType => order == orderType.id)[0]
                           .title
@@ -238,8 +238,8 @@ export default function StoreScreen() {
                   <Col auto>
                     <ChevronDown
                       color={Colors.black}
-                      height={18}
-                      width={18}
+                      height={19}
+                      width={19}
                       strokeWidth={2.4}
                     />
                   </Col>
@@ -265,9 +265,9 @@ export default function StoreScreen() {
                 (item as any).event_application?.status
               }-${(item as any).status}-${(item as any).read_count}`}
               drawEvent={item}
-              mx={15}
-              my={17}
-              width={DEVICE_WIDTH - 15 * 2}
+              mx={20}
+              my={10}
+              width={DEVICE_WIDTH - 20 * 2}
             />
           );
         }}

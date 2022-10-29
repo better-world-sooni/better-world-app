@@ -104,13 +104,11 @@ const MainBottomTabs = () => {
         component={StoreScreen}
         options={{
           tabBarIcon: ({focused}) => (
-            <ShoppingBag
-              width={22}
-              height={22}
-              strokeWidth={2}
-              color={
-                focused ? Colors.black : Colors.gray.DEFAULT
-              }></ShoppingBag>
+            <Img
+              w={22}
+              h={24}
+              source={ICONS.drawEvent}
+              opacity={focused ? 1 : 0.6}></Img>
           ),
         }}
       />

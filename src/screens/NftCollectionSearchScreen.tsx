@@ -24,6 +24,7 @@ import {useGotoNftCollectionProfile} from 'src/hooks/useGoto';
 import {TextField} from 'src/components/TextField';
 import {ICONS} from 'src/modules/icons';
 import GradientColorRect from 'src/components/common/GradientColorRect';
+import {getNftCollectionProfileImage} from 'src/utils/nftUtils';
 
 const NftCollectionSearchScreen = () => {
   const searchRef = useRef(null);
@@ -51,6 +52,7 @@ const NftCollectionSearchScreen = () => {
   const [text, textHasChanged, handleChangeText] = useEdittableText('');
   const onPressX = () => {
     handleChangeText('');
+    reloadGetWithToken(apis.nft_collection.list(''));
   };
   const handleChangeQuery = text => {
     handleChangeText(text);
@@ -210,7 +212,12 @@ function NftCollection({nftCollection, index, prevFollowing}) {
           borderGray200
           border={0.5}
           {...shadowProps1}>
-          <Img uri={nftCollection.image_uri} h75 w75 rounded100 />
+          <Img
+            uri={getNftCollectionProfileImage(nftCollection, 200, 200)}
+            h75
+            w75
+            rounded100
+          />
         </Col>
         <Col pl15>
           <Div>

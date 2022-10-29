@@ -12,7 +12,7 @@ import {useGotoDrawEvent, useGotoNftCollectionProfile} from 'src/hooks/useGoto';
 import useUpdateDrawEvent from 'src/hooks/useUpdateDrawEvent';
 import {IMAGES} from 'src/modules/images';
 import {RootState} from 'src/redux/rootReducer';
-import {getNftName} from 'src/utils/nftUtils';
+import {getNftCollectionProfileImage, getNftName} from 'src/utils/nftUtils';
 import {Col} from './Col';
 import CountdownText from './CountdownText';
 import {Div} from './Div';
@@ -93,12 +93,15 @@ export default function DrawEvent({
   if (deleted) return null;
 
   return (
-    <Div borderBottom={0.5} borderGray200>
+    <Div>
       <Div
         w={width}
         mx={mx}
         my={my}
         relative
+        rounded5
+        bgWhite={drawEvent.status !== DrawEventStatus.FINISHED}
+        bgGray200={drawEvent.status == DrawEventStatus.FINISHED}
         onPress={selectableFn ? () => selectableFn(drawEvent) : gotoDrawEvent}>
         {currentNft.privilege &&
           currentNft.contract_address ==
@@ -144,48 +147,37 @@ export default function DrawEvent({
               top0
               left0></Div>
           )}
-          <Div absolute top10 left={-8}>
-            {drawEvent.status == DrawEventStatus.FINISHED ? (
-              <Img source={IMAGES.finished} h24 w={(24 * 196) / 112} />
-            ) : drawEvent.has_application ? (
-              <Img source={IMAGES.event} h30 w={(30 * 212) / 128} />
-            ) : (
-              <Img source={IMAGES.announcement} h30 w={(30 * 197) / 128} />
-            )}
-          </Div>
-          <Row
-            absolute
-            right6
-            bottom6
-            bg={'rgba(0,0,0,0.5)'}
-            rounded6
-            py2
-            px4
-            itemsCenter>
-            <Col auto mr2>
-              <User
-                color={Colors.white}
-                height={10}
-                width={10}
-                strokeWidth={3}
-              />
-            </Col>
-            <Col auto>
-              <Span
-                white
-                medium
-                fontSize={10}>{`${drawEvent.read_count}`}</Span>
-            </Col>
-          </Row>
         </Div>
-        <Row mt10 itemsCenter px4>
-          <Col auto mr7 onPress={gotoNftCollection}>
-            <Img uri={drawEvent.nft_collection.image_uri} h34 w34 rounded50 />
+        <Row py20 itemsCenter px10>
+          <Col
+            auto
+            pr10
+            mr10
+            onPress={gotoNftCollection}
+            borderRight={1.2}
+            borderGray200>
+            <Img
+              uri={getNftCollectionProfileImage(
+                drawEvent.nft_collection,
+                100,
+                100,
+              )}
+              h40
+              w40
+              rounded50
+            />
           </Col>
           <Col>
-            <Span bold fontSize={16} numberOfLines={2}>
-              {drawEvent.name}
-            </Span>
+            <Div>
+              <Span bold fontSize={16} numberOfLines={2}>
+                {drawEvent.name}
+              </Span>
+            </Div>
+            <Div mt5>
+              <Span bold fontSize={12} numberOfLines={1} gray500>
+                {drawEvent.description}
+              </Span>
+            </Div>
           </Col>
         </Row>
       </Div>

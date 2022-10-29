@@ -28,6 +28,7 @@ import CountdownText from 'src/components/common/CountdownText';
 import AutolinkTextWrapper from 'src/components/common/AutolinkTextWrapper';
 import ImageSlideShow from 'src/components/common/ImageSlideShow';
 import GradientText from 'src/components/common/GradientText';
+import {ICONS} from 'src/modules/icons';
 
 export default function DrawEventScreen() {
   const {data: drawEventRes, isLoading: drawEventLoading} = useApiSelector(
@@ -77,7 +78,7 @@ export default function DrawEventScreen() {
                   />
                 </Col>
                 <Col itemsCenter>
-                  <Span bold fontSize={16} numberOfLines={1}>
+                  <Span bold fontSize={18} numberOfLines={1}>
                     {drawEvent?.name}
                   </Span>
                 </Col>
@@ -113,13 +114,13 @@ export default function DrawEventScreen() {
                   <Row borderBottom={0.5} borderGray200 itemsCenter py10 px15>
                     {drawEvent?.has_application ? (
                       <Col auto mr8 px14 justifyCenter rounded10 bgBlue h23>
-                        <Span bold white fontSize={12}>
+                        <Span bold white fontSize={13}>
                           이벤트
                         </Span>
                       </Col>
                     ) : (
                       <Col auto mr8 px14 justifyCenter rounded10 bgPrimary h23>
-                        <Span bold white fontSize={12}>
+                        <Span bold white fontSize={13}>
                           공지사항
                         </Span>
                       </Col>
@@ -144,7 +145,7 @@ export default function DrawEventScreen() {
                               ? Colors.blue.DEFAULT
                               : Colors.primary.DEFAULT
                           }
-                          fontSize={12}>
+                          fontSize={13}>
                           {drawEventStatus.string}
                         </Span>
                       </Col>
@@ -203,7 +204,7 @@ export default function DrawEventScreen() {
                       </Col>
                     </Row>
                   ) : null}
-                  <Div itemsCenter px15 py15>
+                  <Div px15 py15>
                     <DefaultMarkdown children={drawEvent.description} />
                   </Div>
                   <Div h50 />
@@ -240,7 +241,10 @@ export default function DrawEventScreen() {
             </Div>
             <Div itemsCenter justifyCenter>
               <Div mt30>
-                <Span fontSize={64}>🎉</Span>
+                <Img
+                  source={ICONS.partyPopper}
+                  h={(559 / 512) * 100}
+                  w100></Img>
               </Div>
               <Div mt20 itemsCenter justifyCenter>
                 <GradientText

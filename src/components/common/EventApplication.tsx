@@ -74,8 +74,6 @@ export default function EventApplication({eventApplication, admin = false}) {
               <Img source={IMAGES.applied} w={35} h={(35 * 183) / 152}></Img>
             )}
           </MenuView>
-        ) : cachedEventApplication.status == EventApplicationStatus.RECEIVED ? (
-          <Img source={IMAGES.received} w={35} h={(35 * 183) / 152}></Img>
         ) : cachedEventApplication.status == EventApplicationStatus.SELECTED ? (
           <Img source={IMAGES.selected} w={35} h={(35 * 183) / 152}></Img>
         ) : null}

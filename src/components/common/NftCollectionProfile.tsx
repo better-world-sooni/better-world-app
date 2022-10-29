@@ -42,6 +42,7 @@ import ImageColors from 'react-native-image-colors';
 import FocusAwareStatusBar from 'src/components/FocusAwareStatusBar';
 import {expandImageViewer} from 'src/utils/imageViewerUtils';
 import GradientColorRect from './GradientColorRect';
+import TruncatedText from './TruncatedText';
 
 export default function NftCollectionProfile({
   nftCollectionCore,
@@ -77,6 +78,7 @@ export default function NftCollectionProfile({
     shallowEqual,
   );
   const [bgImgColor, setBgImgColor] = useState(Colors.gray[400]);
+  const [enlargeStory, setEnlargeStory] = useState(false);
   const {
     isFollowing,
     followerCount,
@@ -375,11 +377,16 @@ export default function NftCollectionProfile({
               {nftCollection && (
                 <>
                   {nftCollection.about ? (
-                    <Div mt16>
-                      <TruncatedMarkdown
-                        text={nftCollection.about}
-                        maxLength={500}
-                      />
+                    <Div mt8 bgWhite>
+                      {!enlargeStory ? (
+                        <TruncatedText
+                          text={nftCollection.about}
+                          maxLength={100}
+                          onPressTruncated={() => setEnlargeStory(true)}
+                        />
+                      ) : (
+                        <Span>{nftCollection.about}</Span>
+                      )}
                     </Div>
                   ) : null}
                   <Row mt12>

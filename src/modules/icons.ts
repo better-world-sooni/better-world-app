@@ -4,6 +4,8 @@ export const ICONS = {
   list: require('assets/icons/list.png'),
   xCircle: require('assets/icons/xCircle.png'),
   primaryCircle: require('assets/icons/primaryCircle.png'),
+  drawEvent: require('assets/icons/drawEvent.png'),
+  partyPopper: require('assets/icons/partyPopper.png'),
   kaikasWhite: require('assets/icons/kaikasWhite.png'),
   klip: require('assets/icons/klip.png'),
   discord: require('assets/icons/discord.png'),

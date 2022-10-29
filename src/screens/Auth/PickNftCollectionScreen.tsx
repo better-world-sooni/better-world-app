@@ -76,7 +76,7 @@ const PickNftCollectionScreen = () => {
         </Col>
         <Col auto>
           <GradientBorderImg
-            uri={getNftProfileImage(currentNft)}
+            uri={getNftProfileImage(currentNft, 300, 300)}
             radius={33}
             borderWidth={4}
           />
@@ -144,7 +144,7 @@ function PressableNftCollection({nftCollection, px, py, width, height}) {
     <Div px={px} py={py} relative onPress={handlePressFollowing}>
       <Img
         bgGray200
-        uri={getNftCollectionProfileImage(nftCollection)}
+        uri={getNftCollectionProfileImage(nftCollection, 300, 300)}
         w={width}
         h={height}
         rounded1000></Img>
