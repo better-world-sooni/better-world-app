@@ -1,7 +1,7 @@
 import {useNavigation} from '@react-navigation/native';
 import React, {useState} from 'react';
 import {ActivityIndicator} from 'react-native';
-import {CheckCircle, Minus, Plus, X} from 'react-native-feather';
+import {CheckCircle, Info, Minus, Plus, X} from 'react-native-feather';
 import {shallowEqual, useSelector} from 'react-redux';
 import {Col} from 'src/components/common/Col';
 import {Div} from 'src/components/common/Div';
@@ -234,6 +234,16 @@ export default function DonationConfirmationScreen({
             </>
           )}
           <Col></Col>
+        </Row>
+        <Row itemsCenter py10>
+          <Col />
+          <Col auto mr4>
+            <Info color={Colors.gray[400]} width={16} height={16} />
+          </Col>
+          <Col auto>
+            <Span gray400>transaction fee 1%</Span>
+          </Col>
+          <Col />
         </Row>
       </Div>
     </Div>

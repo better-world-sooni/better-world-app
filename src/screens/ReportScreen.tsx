@@ -34,12 +34,11 @@ export default function ReportScreen({
 }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [success, setSuccess] = useState(false);
   const [text, textHasChanged, handleChangeText] = useEdittableText('');
   const {goBack} = useNavigation();
   const postPromiseFnWithToken = usePostPromiseFnWithToken();
   const reportPost = async () => {
-    if (text && !error && !success) {
+    if (text && !error) {
       setLoading(true);
       const url =
         reportType == ReportTypes.Post
@@ -51,7 +50,7 @@ export default function ReportScreen({
       });
       setLoading(false);
       if (data.success) {
-        setSuccess(true);
+        goBack();
       } else {
         setError('업로드 중 문제가 발생하였습니다.');
       }
