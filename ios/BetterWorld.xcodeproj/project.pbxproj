@@ -32,6 +32,7 @@
 		8C14521A273912FB009592BD /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8C145219273912FA009592BD /* GoogleService-Info.plist */; };
 		8C914AB92861AC15004DF33D /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C914AB82861AC15004DF33D /* AVFoundation.framework */; };
 		8C916B5126FF182F00AB49D1 /* libswiftWebKit.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C916B5026FF182F00AB49D1 /* libswiftWebKit.tbd */; };
+		8CAE2949290E5132009553CA /* AppCenter-Config.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8CAE2948290E5131009553CA /* AppCenter-Config.plist */; };
 		913AC4605F064EFF9789DD91 /* Uni Sans Heavy.otf in Resources */ = {isa = PBXBuildFile; fileRef = C5DD4D96F0A54A3A960AE4E8 /* Uni Sans Heavy.otf */; };
 		A45D1B6C7CA477D4B4332FFF /* libPods-BetterWorld-BetterWorldTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FED37267FBF0515C26FCD68C /* libPods-BetterWorld-BetterWorldTests.a */; };
 		A9BF9135596D45B5A2FBB32B /* NotoSansKR-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = E1B2E403CE8E435B84EADF13 /* NotoSansKR-Bold.otf */; };
@@ -90,6 +91,7 @@
 		8C914AB82861AC15004DF33D /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		8C916B4D26FF154A00AB49D1 /* libswiftWebKit.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libswiftWebKit.tbd; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk/System/iOSSupport/usr/lib/swift/libswiftWebKit.tbd; sourceTree = DEVELOPER_DIR; };
 		8C916B5026FF182F00AB49D1 /* libswiftWebKit.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libswiftWebKit.tbd; path = usr/lib/swift/libswiftWebKit.tbd; sourceTree = SDKROOT; };
+		8CAE2948290E5131009553CA /* AppCenter-Config.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "AppCenter-Config.plist"; path = "sungan/AppCenter-Config.plist"; sourceTree = "<group>"; };
 		95E05BA1A60845B7A8BF1840 /* DroidSerif-BoldItalic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "DroidSerif-BoldItalic.ttf"; path = "../assets/fonts/DroidSerif-BoldItalic.ttf"; sourceTree = "<group>"; };
 		9DD7738F6D58410DAD9AABA6 /* Gugi-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Gugi-Regular.ttf"; path = "../assets/fonts/Gugi-Regular.ttf"; sourceTree = "<group>"; };
 		9FA550FF0B2948F098CA5B1C /* NotoSansKR-Black.otf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "NotoSansKR-Black.otf"; path = "../assets/fonts/NotoSansKR-Black.otf"; sourceTree = "<group>"; };
@@ -238,6 +240,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				8CAE2948290E5131009553CA /* AppCenter-Config.plist */,
 				13B07FAE1A68108700A75B9A /* sungan */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* sunganTests */,
@@ -370,6 +373,7 @@
 				FE094677BE2E42BC9A4D4C39 /* NotoSansKR-Medium.otf in Resources */,
 				3C3501F342304254A2A2B1CE /* NotoSansKR-Regular.otf in Resources */,
 				21E6837221B64868AA24C220 /* NotoSansKR-Thin.otf in Resources */,
+				8CAE2949290E5132009553CA /* AppCenter-Config.plist in Resources */,
 				B14140B7513C4ACCAF531E24 /* Uni Sans Bold Italic.otf in Resources */,
 				7ECB5099698B46E1A4A1EE27 /* Uni Sans Bold.otf in Resources */,
 				24985D2512AA4CBCA98DA33A /* Uni Sans Book Italic.otf in Resources */,
