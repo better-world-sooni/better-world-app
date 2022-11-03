@@ -26,6 +26,7 @@ export default function PolymorphicOwnerListFlatlist({
           <PolymorphicOwner
             nft={(item as any).nft}
             isFollowing={(item as any).is_following}
+            value={(item as any).value}
           />
         );
       }}

@@ -36,19 +36,31 @@ const BottomTabBar = ({state, descriptors, navigation}) => {
 
   const List = useCallback(
     state.routes.map((route, index) => {
+      const [lastPress, setLastPress] = useState(null);
       const {key, name} = route;
       const {options} = descriptors[key];
       const changeProfileOnLongPress = options.tabBarLabel == NAV_NAMES.Social;
       const isFocused = state.index === index;
       const image = options.tabBarIcon({focused: isFocused});
       const handlePress = () => {
-        const event = navigation.emit({
-          type: 'tabPress',
-          target: key,
-          canPreventDefault: true,
-        });
-        if (!isFocused && !event.defaultPrevented) {
-          navigation.navigate(name);
+        const multiTapDelay = 500;
+        const now = Date.now();
+        setLastPress(now);
+        if (isFocused && now - lastPress <= multiTapDelay) {
+          const event = navigation.emit({
+            type: 'tabDoublePress',
+            target: key,
+            canPreventDefault: true,
+          });
+        } else {
+          const event = navigation.emit({
+            type: 'tabPress',
+            target: key,
+            canPreventDefault: true,
+          });
+          if (!event.defaultPrevented) {
+            navigation.navigate(name);
+          }
         }
       };
 

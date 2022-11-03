@@ -9,6 +9,7 @@ import {Span} from 'src/components/common/Span';
 import {ScrollView} from 'src/components/common/ViewComponents';
 import {
   useGotoCollectionEventApplicationList,
+  useGotoNewAnnouncement,
   useGotoNewDrawEvent,
 } from 'src/hooks/useGoto';
 import {Colors} from 'src/modules/styles';
@@ -19,6 +20,7 @@ export default function StoreSettingScreen() {
   const gotoNewDrawEvent = useGotoNewDrawEvent();
   const gotoCollectionEventApplicationList =
     useGotoCollectionEventApplicationList();
+  const gotoNewAnnouncement = useGotoNewAnnouncement();
   return (
     <Div bgWhite flex={1}>
       <Div h={notchHeight}></Div>
@@ -72,6 +74,27 @@ export default function StoreSettingScreen() {
           <Col>
             <Span fontSize={16} bold>
               이벤트 추가
+            </Span>
+          </Col>
+          <Col auto>
+            <ChevronRight
+              width={22}
+              height={22}
+              color={Colors.black}
+              strokeWidth={2}
+            />
+          </Col>
+        </Row>
+        <Row
+          py20
+          px15
+          borderBottom={0.5}
+          borderGray200
+          itemsCenter
+          onPress={gotoNewAnnouncement}>
+          <Col>
+            <Span fontSize={16} bold>
+              공지 추가
             </Span>
           </Col>
           <Col auto>

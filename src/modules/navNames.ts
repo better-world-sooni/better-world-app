@@ -28,7 +28,7 @@ export const NAV_NAMES = {
     NewCollectionEvent: "NewCollectionEvent",
     AttendanceList: "AttendanceList",
     CollectionEvent: "CollectionEvent",
-    CollectionSearch: "CollectionSearch",
+    CollectionMemberSearch: "CollectionMemberSearch",
     CommunityWalletProfile: "CommunityWalletProfile",
     CommunityWalletList: "CommunityWalletList",
     NewCommunityWallet: "NewCommunityWallet",
@@ -46,9 +46,16 @@ export const NAV_NAMES = {
     Store: "Store",
     StoreSetting: "StoreSetting",
     KlipSignIn: "KlipSignIn",
+    KaikasSignIn: "KaikasSignIn",
     EventApplicationList: "EventApplicationList",
     CollectionEventApplicationList: "CollectionEventApplicationList",
     NewDrawEvent: "NewDrawEvent",
-    DrawEvent: "DrawEvent"
+    DrawEvent: "DrawEvent",
+    NewAnnouncement: "NewAnnouncement",
+    NftCollectionSearch: "NftCollectionSearch",
+    DonationConfirmation: "DonationConfirmation",
+    DonationList: "DonationList",
+    PickNftCollection: "PickNftCollection",
+    UgcConfirmation: "UgcConfirmation"
 };
 

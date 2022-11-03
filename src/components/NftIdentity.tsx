@@ -13,6 +13,7 @@ import {Div} from './common/Div';
 import {Img} from './common/Img';
 import {Row} from './common/Row';
 import {Span} from './common/Span';
+import GradientColorRect from './common/GradientColorRect';
 
 export function NftIdentity({nft, setCloseDisable, onSuccess}) {
   const isCurrentNft = useIsCurrentNft(nft);
@@ -34,9 +35,10 @@ export function NftIdentity({nft, setCloseDisable, onSuccess}) {
       contract_address,
       token_id,
       props => {
+        const {jwt, user, nft} = props.data;
         setStateType(StateType.Success);
         if (setCloseDisable) setCloseDisable(false);
-        if (onSuccess) onSuccess();
+        if (onSuccess) onSuccess(jwt);
       },
       props => {
         setStateType(StateType.Error);
@@ -75,7 +77,10 @@ export function NftIdentity({nft, setCloseDisable, onSuccess}) {
           {stateType === StateType.Loading ? (
             <ActivityIndicator />
           ) : stateType === StateType.Success ? (
-            <Div auto rounded100 bgBlack p3 bgInfo>
+            <Div auto rounded100 bgBlack p3 overflowHidden>
+              <Div absolute>
+                <GradientColorRect width={50} height={50} />
+              </Div>
               <Check
                 strokeWidth={2}
                 height={18}

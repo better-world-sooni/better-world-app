@@ -2,7 +2,7 @@ import{ useState} from 'react';
 import { launchImageLibrary } from 'react-native-image-picker';
 import useFileUpload, { FileUploadReturnType } from './useFileUpload';
 
-export default function useUploadImages({attachedRecord = "post", selectionLimit = 0, fileLimit=4}){
+export default function useUploadImages({attachedRecord = "post", selectionLimit = 0, fileLimit=10}){
     const [images, setImages] = useState([])
     const [video, setVideo] = useState(null)
     const [error, setError] = useState('')

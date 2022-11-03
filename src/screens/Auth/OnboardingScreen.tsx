@@ -7,21 +7,45 @@ import apis from 'src/modules/apis';
 import {NAV_NAMES} from 'src/modules/navNames';
 import {NftIdentity} from 'src/components/NftIdentity';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {useGotoPickNftCollection} from 'src/hooks/useGoto';
+import {Row} from 'src/components/common/Row';
+import {Col} from 'src/components/common/Col';
+import GradientText from 'src/components/common/GradientText';
+import GradientColorRect from 'src/components/common/GradientColorRect';
+import {DEVICE_WIDTH} from 'src/modules/styles';
 
 const OnboardingScreen = ({navigation}) => {
   const {data: profileRes, isLoading: profileLoad} = useApiSelector(
     apis.profile._,
   );
+  const gotoPickNftCollection = useGotoPickNftCollection();
   const notchHeight = useSafeAreaInsets().top;
-  const headerHeight = notchHeight + 50;
+  const headerHeight = notchHeight;
 
   return (
     <Div bgWhite flex={1}>
       <Div h={headerHeight}></Div>
-      <Div mx15 borderBottom={0.5} borderGray200>
-        <Span bold fontSize={30}>
-          주로 사용하실 PFP를{'\n'}선택해 주세요{'\n'}
-        </Span>
+      <Row itemsEnd mx30 mt40>
+        <Col auto>
+          <GradientText
+            text={'Welcome!'}
+            fontSize={30}
+            width={145}
+            height={35}
+          />
+        </Col>
+        <Col></Col>
+      </Row>
+      <Row itemsEnd mx30 mt10>
+        <Col auto>
+          <Span fontSize={18} bold>
+            최애 NFT를 선택해주세요
+          </Span>
+        </Col>
+        <Col></Col>
+      </Row>
+      <Div mt50>
+        <GradientColorRect width={DEVICE_WIDTH} height={4} />
       </Div>
       <FlatList
         px20
@@ -34,7 +58,7 @@ const OnboardingScreen = ({navigation}) => {
               key={index}
               nft={item}
               setCloseDisable={null}
-              onSuccess={() => navigation.navigate(NAV_NAMES.Home)}
+              onSuccess={gotoPickNftCollection}
             />
           );
         }}></FlatList>

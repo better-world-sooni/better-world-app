@@ -35,7 +35,7 @@ import NewCollectionEventScreen from 'src/screens/NewCollectionEventScreen';
 import AttendanceListScreen from 'src/screens/AttendanceListScreen';
 import CollectionEventScreen from 'src/screens/CollectionEventScreen';
 import PasswordSigninScreen from 'src/screens/Auth/PasswordSigninScreen';
-import CollectionSearchScreen from 'src/screens/CollectionSearchScreen';
+import CollectionSearchScreen from 'src/screens/CollectionMemberSearchScreen';
 import SocialScreen from 'src/screens/Home/SocialScreen';
 import CommunityWalletListScreen from 'src/screens/CommunityWalletListScreen';
 import CommunityWalletProfileScreen from 'src/screens/CommunityWalletProfileScreen';
@@ -57,6 +57,15 @@ import NewDrawEventScreen from 'src/screens/NewDrawEventScreen';
 import DrawEventScreen from 'src/screens/DrawEventScreen';
 import CollectionEventApplicationListScreen from 'src/screens/CollectionEventApplicationListScreen';
 import KlipSignInScreen from 'src/screens/Auth/KlipSignInScreen';
+import KaikasSignInScreen from 'src/screens/Auth/KaikasSignInScreen';
+import NewAnnouncementScreen from 'src/screens/NewAnnouncementScreen';
+import CollectionMemberSearchScreen from 'src/screens/CollectionMemberSearchScreen';
+import NftCollectionSearchScreen from 'src/screens/NftCollectionSearchScreen';
+import DonationConfirmationScreen from 'src/screens/DonationConfirmationScreen';
+import DonationListScreen from 'src/screens/DonationListScreen';
+import {Div} from './common/Div';
+import PickNftCollectionScreen from 'src/screens/Auth/PickNftCollectionScreen';
+import UgcConfirmationScreen from 'src/screens/UgcConfirmationScreen';
 
 const RootStack = createStackNavigator();
 
@@ -69,8 +78,16 @@ const MainBottomTabs = () => {
     shallowEqual,
   );
 
+  const profileTabIconBackgroundProps = {
+    w: 28,
+    h: 28,
+    rounded: 100,
+  };
   const profileTabIconProps = {
     uri: getNftProfileImage(currentNft, 50, 50),
+    absolute: true,
+    top: 2,
+    left: 2,
     w: 24,
     h: 24,
     rounded: 100,
@@ -84,6 +101,19 @@ const MainBottomTabs = () => {
         headerShown: false,
       }}>
       <Tab.Screen
+        name={NAV_NAMES.Store}
+        component={StoreScreen}
+        options={{
+          tabBarIcon: ({focused}) => (
+            <Img
+              w={22}
+              h={24}
+              source={ICONS.drawEvent}
+              opacity={focused ? 1 : 0.6}></Img>
+          ),
+        }}
+      />
+      <Tab.Screen
         name={NAV_NAMES.Home + 'bottom'}
         component={SocialScreen}
         options={{
@@ -93,21 +123,6 @@ const MainBottomTabs = () => {
               height={22}
               strokeWidth={2}
               color={focused ? Colors.black : Colors.gray.DEFAULT}></Home>
-          ),
-        }}
-      />
-      <Tab.Screen
-        name={NAV_NAMES.Store}
-        component={StoreScreen}
-        options={{
-          tabBarIcon: ({focused}) => (
-            <ShoppingBag
-              width={22}
-              height={22}
-              strokeWidth={2}
-              color={
-                focused ? Colors.black : Colors.gray.DEFAULT
-              }></ShoppingBag>
           ),
         }}
       />
@@ -131,16 +146,24 @@ const MainBottomTabs = () => {
           tabBarLabel: NAV_NAMES.Social,
           tabBarIcon: ({focused}) =>
             currentNft ? (
-              <Img
-                {...profileTabIconProps}
-                border2={focused}
-                borderBlack={focused}></Img>
+              <Div {...profileTabIconBackgroundProps}>
+                {focused && (
+                  <Img
+                    {...profileTabIconBackgroundProps}
+                    source={ICONS.primaryCircle}></Img>
+                )}
+                <Img {...profileTabIconProps}></Img>
+              </Div>
             ) : (
-              <User
-                width={22}
-                height={22}
-                strokeWidth={2}
-                color={focused ? Colors.black : Colors.gray.DEFAULT}></User>
+              <Div>
+                <User
+                  width={22}
+                  height={22}
+                  strokeWidth={2}
+                  color={
+                    focused ? Colors.primary.DEFAULT : Colors.gray.DEFAULT
+                  }></User>
+              </Div>
             ),
         }}
       />
@@ -336,8 +359,8 @@ export const AppContent = ({notificationOpenData}) => {
       component: ChatListScreen,
     },
     {
-      name: NAV_NAMES.CollectionSearch,
-      component: CollectionSearchScreen,
+      name: NAV_NAMES.CollectionMemberSearch,
+      component: CollectionMemberSearchScreen,
     },
     {
       name: NAV_NAMES.CommunityWalletProfile,
@@ -421,6 +444,40 @@ export const AppContent = ({notificationOpenData}) => {
     {
       name: NAV_NAMES.KlipSignIn,
       component: KlipSignInScreen,
+    },
+    {
+      name: NAV_NAMES.KaikasSignIn,
+      component: KaikasSignInScreen,
+    },
+    {
+      name: NAV_NAMES.NewAnnouncement,
+      component: NewAnnouncementScreen,
+    },
+    {
+      name: NAV_NAMES.NftCollectionSearch,
+      component: NftCollectionSearchScreen,
+    },
+    {
+      name: NAV_NAMES.DonationList,
+      component: DonationListScreen,
+    },
+    {
+      name: NAV_NAMES.DonationConfirmation,
+      component: DonationConfirmationScreen,
+      options: {
+        presentation: 'transparentModal',
+      },
+    },
+    {
+      name: NAV_NAMES.UgcConfirmation,
+      component: UgcConfirmationScreen,
+      options: {
+        presentation: 'transparentModal',
+      },
+    },
+    {
+      name: NAV_NAMES.PickNftCollection,
+      component: PickNftCollectionScreen,
     },
   ];
 

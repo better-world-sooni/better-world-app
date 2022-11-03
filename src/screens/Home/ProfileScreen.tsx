@@ -8,6 +8,7 @@ import {useGotoNewPost} from 'src/hooks/useGoto';
 import {PostOwnerType, PostType} from '../NewPostScreen';
 import {Plus} from 'react-native-feather';
 import {Colors} from 'src/modules/styles';
+import GradientColorRect from 'src/components/common/GradientColorRect';
 
 const ProfileScreen = () => {
   const {currentNft} = useSelector(
@@ -37,6 +38,7 @@ const ProfileScreen = () => {
         itemsCenter
         bottom15
         right15
+        overflowHidden
         onPress={() => gotoNewPost()}
         style={{
           shadowOffset: {
@@ -47,6 +49,9 @@ const ProfileScreen = () => {
           shadowRadius: 4,
           elevation: 4,
         }}>
+        <Div absolute>
+          <GradientColorRect width={100} height={100} />
+        </Div>
         <Plus
           strokeWidth={2}
           color={Colors.white}

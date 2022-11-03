@@ -9,7 +9,7 @@ import {Colors, DEVICE_WIDTH} from 'src/modules/styles';
 import useFollow from 'src/hooks/useFollow';
 import apis from 'src/modules/apis';
 import {
-  useGotoCollectionSearch,
+  useGotoCollectionMemberSearch,
   useGotoFollowList,
   useGotoNftCollectionProfileEdit,
 } from 'src/hooks/useGoto';
@@ -41,12 +41,15 @@ import {handlePressContribution} from 'src/utils/bottomPopupUtils';
 import ImageColors from 'react-native-image-colors';
 import FocusAwareStatusBar from 'src/components/FocusAwareStatusBar';
 import {expandImageViewer} from 'src/utils/imageViewerUtils';
+import GradientColorRect from './GradientColorRect';
+import TruncatedText from './TruncatedText';
+import DrawEvent from './DrawEvent';
 
 export default function NftCollectionProfile({
   nftCollectionCore,
   isAdmin,
   nftCollectionProfileApiObject,
-  pageableNftCollectionPostFn,
+  pageableNftCollectionDrawEventFn,
 }) {
   const {
     data: nftCollectionProfileRes,
@@ -58,17 +61,20 @@ export default function NftCollectionProfile({
     isPaginating: nftCollectionPostListPaginating,
     page,
     isNotPaginatable,
-  } = useApiSelector(pageableNftCollectionPostFn());
+  } = useApiSelector(pageableNftCollectionDrawEventFn());
   const reloadGetWithToken = useReloadGETWithToken();
   const handleRefresh = () => {
     reloadGetWithToken(nftCollectionProfileApiObject);
-    reloadGetWithToken(pageableNftCollectionPostFn());
+    reloadGetWithToken(pageableNftCollectionDrawEventFn());
   };
   const paginateGetWithToken = usePaginateGETWithToken();
   const gotoNftCollectionProfileEdit = useGotoNftCollectionProfileEdit();
   const handleEndReached = () => {
     if (nftCollectionPostListPaginating || isNotPaginatable) return;
-    paginateGetWithToken(pageableNftCollectionPostFn(page + 1), 'posts');
+    paginateGetWithToken(
+      pageableNftCollectionDrawEventFn(page + 1),
+      'draw_events',
+    );
   };
   const nftCollection = nftCollectionProfileRes?.nft_collection;
   const {currentNft} = useSelector(
@@ -76,6 +82,7 @@ export default function NftCollectionProfile({
     shallowEqual,
   );
   const [bgImgColor, setBgImgColor] = useState(Colors.gray[400]);
+  const [enlargeStory, setEnlargeStory] = useState(false);
   const {
     isFollowing,
     followerCount,
@@ -92,7 +99,7 @@ export default function NftCollectionProfile({
     followOwnerType: FollowOwnerType.NftCollection,
     contractAddress: nftCollectionCore.contract_address,
   });
-  const gotoCollectionSearch = useGotoCollectionSearch({
+  const gotoCollectionMemberSearch = useGotoCollectionMemberSearch({
     contractAddress: nftCollectionCore.contract_address,
   });
   const translationY = useSharedValue(0);
@@ -227,15 +234,24 @@ export default function NftCollectionProfile({
           zIndex={100}
           absolute
           top={notchHeight + 5}>
-          <Col auto bg={Colors.black} p5 rounded100 mr12 onPress={goBack}>
-            <Div>
-              <ChevronLeft
-                width={20}
-                height={20}
-                color={Colors.white}
-                strokeWidth={2.4}
-              />
+          <Col
+            relative
+            auto
+            bg={Colors.black}
+            overflowHidden
+            p5
+            rounded100
+            mr12
+            onPress={goBack}>
+            <Div absolute>
+              <GradientColorRect width={100} height={50} />
             </Div>
+            <ChevronLeft
+              width={20}
+              height={20}
+              color={Colors.white}
+              strokeWidth={2.4}
+            />
           </Col>
           <Col ml10></Col>
         </Row>
@@ -248,7 +264,7 @@ export default function NftCollectionProfile({
           marginTop: -30,
           ...(Platform.OS === 'android' && {paddingTop: 30}),
         }}
-        data={nftCollectionPostListRes?.posts || []}
+        data={nftCollectionPostListRes?.draw_events || []}
         ListEmptyComponent={
           !nftCollectionPostListLoading && <ListEmptyComponent h={450} />
         }
@@ -309,12 +325,19 @@ export default function NftCollectionProfile({
                       ) : (
                         <Col
                           auto
-                          bgBlack={!isFollowing}
+                          bgPrimary={!isFollowing}
                           p8
                           rounded100
+                          relative
                           border1={isFollowing}
                           borderGray200
+                          overflowHidden
                           onPress={handlePressFollowing}>
+                          {!isFollowing && (
+                            <Div absolute>
+                              <GradientColorRect width={100} height={50} />
+                            </Div>
+                          )}
                           <Span white={!isFollowing} bold px5 fontSize={14}>
                             {!nftCollection
                               ? '불러오는 중'
@@ -358,11 +381,16 @@ export default function NftCollectionProfile({
               {nftCollection && (
                 <>
                   {nftCollection.about ? (
-                    <Div mt16>
-                      <TruncatedMarkdown
-                        text={nftCollection.about}
-                        maxLength={500}
-                      />
+                    <Div mt8 bgWhite>
+                      {!enlargeStory ? (
+                        <TruncatedText
+                          text={nftCollection.about}
+                          maxLength={100}
+                          onPressTruncated={() => setEnlargeStory(true)}
+                        />
+                      ) : (
+                        <Span>{nftCollection.about}</Span>
+                      )}
                     </Div>
                   ) : null}
                   <Row mt12>
@@ -396,7 +424,7 @@ export default function NftCollectionProfile({
                     <Col />
                   </Row>
                   {nftCollection.admin_nfts.length > 0 && (
-                    <Row mt10 itemsCenter onPress={gotoCollectionSearch}>
+                    <Row mt10 itemsCenter onPress={gotoCollectionMemberSearch}>
                       <Col auto>
                         <AdminProfiles admin={nftCollection.admin_nfts} />
                       </Col>
@@ -411,9 +439,21 @@ export default function NftCollectionProfile({
             </Div>
           </>
         }
-        renderItem={({item}) => (
-          <Post post={item} displayLabel isProfile={true} />
-        )}
+        renderItem={({item}) => {
+          return (
+            <Div bgGray100>
+              <DrawEvent
+                key={`${(item as any).id}-${
+                  (item as any).event_application?.status
+                }-${(item as any).status}-${(item as any).read_count}`}
+                drawEvent={item}
+                mx={20}
+                my={10}
+                width={DEVICE_WIDTH - 20 * 2}
+              />
+            </Div>
+          );
+        }}
         ListFooterComponent={
           <>
             {(nftCollectionPostListPaginating ||

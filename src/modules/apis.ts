@@ -24,11 +24,12 @@ export const urlParams = (obj, nullable?) => {
 const apis = {
   auth: {
     kaikas: {
+      app2app: () =>apiV1('/auth/kaikas/app2app'),
       verification: () => apiV1('/auth/kaikas/verification'),
       nonce: () => apiV1(`/auth/kaikas/nonce`),
     },
     klip: {
-      verification: () =>apiV1('/auth/klip/verification')
+      app2app: () =>apiV1('/auth/klip/app2app')
     },
     password: {
       _: () => apiV1('/auth/password')
@@ -43,6 +44,12 @@ const apis = {
         login: (token) => apiV1(`/auth/jwt/qr/login${urlParams({token})}`)
       }
     },
+  },
+  donation: {
+    postId: {
+      _: (postId) => apiV1(`/donation/${postId}`),
+      list: (postId, page?) => apiV1(`/donation/${postId}/list${urlParams({page})}`),
+    }
   },
   pushNotificationSetting: {
     _: () => apiV1(`/push_notification_setting`),
@@ -79,6 +86,7 @@ const apis = {
   },
   nft_collection: {
     _: () => apiV1(`/nft_collection`),
+    list: (keyword?, page?) => apiV1(`/nft_collection/list${urlParams({keyword, page})}`),
     communityWallet: {
       list: (page?) => apiV1(`/nft_collection/community_wallet/list${urlParams({page})}`),
     },
@@ -177,7 +185,10 @@ const apis = {
     count: () => apiV1(`/feed/count`),
     forum: (filter?, page?) => apiV1(`/feed/forum${urlParams({page, filter})}`),
     social: (filter?,page?) => apiV1(`/feed/social${urlParams({page, filter})}`),
-    draw_event: (filter?,page?) => apiV1(`/feed/draw_event${urlParams({page, filter})}`),
+    draw_event: {
+      _: (filter?,order?, page?) => apiV1(`/feed/draw_event${urlParams({page, order, filter})}`),
+      nftCollection: (contractAddress, page?) => apiV1(`/feed/draw_event/nft_collection${urlParams({page, contract_address: contractAddress})}`),
+    },
     collection: (contractAddress, type?, page?) => apiV1(`/feed/collection?contract_address${urlParams({contract_address: contractAddress, type, page})}`),
   },
   presignedUrl: {

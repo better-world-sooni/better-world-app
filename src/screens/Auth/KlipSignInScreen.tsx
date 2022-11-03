@@ -49,7 +49,7 @@ const KlipSignInScreen = () => {
             </Div>
           </Col>
           <Col auto>
-            <Span bold fontSize={17}>
+            <Span bold fontSize={18}>
               Klip으로 로그인
             </Span>
           </Col>
@@ -58,7 +58,7 @@ const KlipSignInScreen = () => {
       </Div>
       <Div flex={1} px15>
         <Div flex={1} itemsCenter justifyCenter>
-          <Div>
+          <Div py20>
             <Img source={ICONS.klip} h60 w120></Img>
           </Div>
           <Div mt16>
@@ -77,21 +77,28 @@ const KlipSignInScreen = () => {
           ) : null}
         </Div>
         <Row
-          bg={loading ? 'rgba(254, 229, 0, 0.7)' : 'rgb(254, 229, 0)'}
+          bg={loading ? Colors.klip.light : Colors.klip.DEFAULT}
           rounded10
+          onPress={
+            !loading
+              ? prepareAuthResult
+                ? checkResultAndLogin
+                : requestAuth
+              : null
+          }
           p15>
           <Col />
           <Col auto>
             {loading ? (
               <ActivityIndicator />
             ) : prepareAuthResult ? (
-              <Div onPress={checkResultAndLogin}>
+              <Div>
                 <Span bold fontSize={16}>
                   로그인 하기
                 </Span>
               </Div>
             ) : (
-              <Div onPress={requestAuth}>
+              <Div>
                 <Span bold fontSize={16}>
                   Klip 지갑 허용하기
                 </Span>
@@ -101,7 +108,7 @@ const KlipSignInScreen = () => {
           <Col />
         </Row>
       </Div>
-      <Div h={notchBottom} bgWhite></Div>
+      <Div h={notchBottom + 50} bgWhite></Div>
     </KeyboardAvoidingView>
   );
 };

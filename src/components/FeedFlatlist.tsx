@@ -11,6 +11,7 @@ import ListEmptyComponent from './common/ListEmptyComponent';
 import {Colors} from 'src/modules/styles';
 import {Img} from './common/Img';
 import {ICONS} from 'src/modules/icons';
+import GradientColorRect from './common/GradientColorRect';
 
 export enum EnableAddType {
   Post = 'post',
@@ -87,6 +88,7 @@ function FeedFlatlist(
             justifyCenter
             bottom15
             right15
+            overflowHidden
             onPress={() => gotoNewPost()}
             style={{
               shadowOffset: {
@@ -97,6 +99,9 @@ function FeedFlatlist(
               shadowRadius: 4,
               elevation: 4,
             }}>
+            <Div absolute>
+              <GradientColorRect width={100} height={100} />
+            </Div>
             <Plus
               strokeWidth={2}
               color={Colors.white}

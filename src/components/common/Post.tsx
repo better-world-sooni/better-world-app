@@ -14,6 +14,7 @@ import {
 } from 'react-native-feather';
 import {Colors} from 'src/modules/styles';
 import {
+  useGotoDonationList,
   useGotoLikeList,
   useGotoNewPost,
   useGotoNftCollectionProfile,
@@ -59,6 +60,7 @@ import {ICONS} from 'src/modules/icons';
 import useDelete from 'src/hooks/useDelete';
 import AutolinkTextWrapper from './AutolinkTextWrapper';
 import ExpandableVideo from './ExpandableVideo';
+import useDonation from 'src/hooks/useDonation';
 
 export enum PostEventTypes {
   Delete = 'DELETE',
@@ -93,6 +95,11 @@ function PostContent({
     initialAgainstVotesCount: post.against_votes_count,
     postId: post.id,
     initialVotingStatus: post.voting_status,
+  });
+  const {donationSum, handlePressDonate} = useDonation({
+    initialDonationSum: post.donation_sum,
+    postId: post.id,
+    benefactorNft: post.nft,
   });
   const isCurrentNft = useIsCurrentNft(post.nft);
   const isCurrentCollection = useIsCurrentCollection(post.nft);
@@ -165,6 +172,7 @@ function PostContent({
       gotoNftCollectionProfile();
     }
   };
+  const gotoDonationList = useGotoDonationList({postId: post.id});
 
   const gotoReport = useGotoReport({
     id: post.id,
@@ -305,7 +313,7 @@ function PostContent({
               </Col>
             </Row>
             {post.content ? (
-              <Div onPress={() => gotoPost()}>
+              <Div {...(!full && {onPress: () => gotoPost()})}>
                 {full ? (
                   <AutolinkTextWrapper>
                     <Span fontSize={15} py12>
@@ -374,8 +382,22 @@ function PostContent({
             <Row itemsCenter mb8 mt8>
               {!post.type ? (
                 <>
+                  <Col auto onPress={handlePressDonate} pr4>
+                    <Zap {...actionIconDefaultProps} />
+                  </Col>
+                  <Col
+                    auto
+                    mr12
+                    onPress={full ? gotoDonationList : handlePressDonate}>
+                    <Span
+                      fontSize={13}
+                      color={Colors.gray[600]}
+                      style={{fontWeight: '600'}}>
+                      {full ? `응원 ${donationSum} KLAY` : donationSum}
+                    </Span>
+                  </Col>
                   <Col />
-                  <Col auto onPress={() => gotoNewPost(post)} mr4>
+                  <Col auto onPress={() => gotoNewPost(post)} pr4>
                     <Repeat {...actionIconDefaultProps} />
                   </Col>
                   <Col
@@ -393,10 +415,10 @@ function PostContent({
                   </Col>
                   {votingStatus == null && !full && (
                     <>
-                      <Col auto mr4 onPress={() => gotoPost(true)}>
+                      <Col auto pr4 onPress={() => gotoPost(true)}>
                         <MessageCircle {...actionIconDefaultProps} />
                       </Col>
-                      <Col auto mr12>
+                      <Col auto pr12>
                         <Span
                           fontSize={13}
                           style={{fontWeight: '600'}}

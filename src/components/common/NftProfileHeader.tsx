@@ -39,6 +39,8 @@ import TruncatedText from './TruncatedText';
 import useDiscordId from 'src/hooks/useDiscordId';
 import useTwitterId from 'src/hooks/useTwitterId';
 import {ICONS} from 'src/modules/icons';
+import GradientColorButton from './GradientColorButton';
+import GradientColorRect from './GradientColorRect';
 
 export default function NftProfileHeader({nftCore, nft, isCurrentNft, qrScan}) {
   const gotoNftCollectionProfile = useGotoNftCollectionProfile({
@@ -148,12 +150,18 @@ export default function NftProfileHeader({nftCore, nft, isCurrentNft, qrScan}) {
                 ) : (
                   <Col
                     auto
-                    bgBlack={!isFollowing}
                     p8
                     rounded100
+                    relative
                     border1={isFollowing}
                     borderGray200
+                    overflowHidden
                     onPress={handlePressFollowing}>
+                    {!isFollowing && (
+                      <Div absolute>
+                        <GradientColorRect width={100} height={50} />
+                      </Div>
+                    )}
                     <Span white={!isFollowing} bold px5 fontSize={14}>
                       {!nft ? '불러오는 중' : isFollowing ? '팔로잉' : '팔로우'}
                     </Span>
@@ -220,14 +228,14 @@ export default function NftProfileHeader({nftCore, nft, isCurrentNft, qrScan}) {
           )}
         </Row>
         {nft && (
-          <Div pt3>
+          <Div pt3 onPress={gotoNftCollectionProfile}>
             <Span gray700 bold>
               {nftCore.nft_metadatum.name}
             </Span>
           </Div>
         )}
-        <Row itemsCenter mt4={nft?.discord_id && nft?.twitter_id}>
-          {nft?.discord_id && (
+        <Row itemsCenter mt4={nft?.discord_id || nft?.twitter_id}>
+          {nft?.discord_id ? (
             <>
               <Col auto mr5>
                 <Img h={232 / 16} w={300 / 16} source={ICONS.discord} />
@@ -238,8 +246,8 @@ export default function NftProfileHeader({nftCore, nft, isCurrentNft, qrScan}) {
                 </Span>
               </Col>
             </>
-          )}
-          {nft?.twitter_id && (
+          ) : null}
+          {nft?.twitter_id ? (
             <>
               <Col auto mr4>
                 <Img h={20} w={20} source={ICONS.twitter} />
@@ -250,7 +258,7 @@ export default function NftProfileHeader({nftCore, nft, isCurrentNft, qrScan}) {
                 </Span>
               </Col>
             </>
-          )}
+          ) : null}
         </Row>
 
         {(nft || nftCore).story ? (

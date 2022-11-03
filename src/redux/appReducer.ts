@@ -21,7 +21,7 @@ const usePreloadData = () => {
       apiGETAsync(apis.nft._(), jwt),
       apiGETAsync(apis.post.list._(), jwt),
       apiGETAsync(apis.feed.social(), jwt),
-      apiGETAsync(apis.feed.draw_event(), jwt),
+      apiGETAsync(apis.feed.draw_event._(), jwt),
       apiGETAsync(apis.nft_collection._(), jwt),
       apiGETAsync(apis.chat.chatRoom.all(), jwt),
       updateUnreadNotificationCount(jwt),
@@ -116,15 +116,14 @@ export const useChangeAccount = () => {
 
 export const useAutoLogin = () => {
   const dispatch = useDispatch();
-  const apiGET = useApiGET();
+  const apiGETAsync = useApiGETAsync();
   const preloadData = usePreloadData()
-  return (token, successHandler?, errHandler?) => {
-    apiGET(
+  return async (token, successHandler?, errHandler?) => {
+    await apiGETAsync(
       apis.auth.user._(),
       token,
-      props => {
-        dispatch(async () => {
-          const { jwt, user, current_nft } = props.data;
+      async props => {
+        const { jwt, user, current_nft } = props.data;
           await AsyncStorage.setItem(JWT, jwt);
           await preloadData(jwt)
           dispatch(appActions.login({
@@ -135,7 +134,6 @@ export const useAutoLogin = () => {
           if (successHandler) {
             await successHandler(props);
           }
-        });
       },
       async props => {
         await errHandler(props);

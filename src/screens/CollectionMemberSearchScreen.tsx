@@ -17,7 +17,7 @@ import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import PolymorphicOwner from 'src/components/PolymorphicOwner';
 import {useNavigation} from '@react-navigation/native';
 
-const CollectionSearchScreen = ({
+const CollectionMemberSearchScreen = ({
   route: {
     params: {contractAddress},
   },
@@ -140,4 +140,4 @@ const CollectionSearchScreen = ({
   );
 };
 
-export default CollectionSearchScreen;
+export default CollectionMemberSearchScreen;

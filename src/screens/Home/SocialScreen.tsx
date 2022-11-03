@@ -1,4 +1,4 @@
-import React, {useRef} from 'react';
+import React, {useEffect, useRef} from 'react';
 import {Row} from 'src/components/common/Row';
 import {Bell, ChevronDown, Search} from 'react-native-feather';
 import apis from 'src/modules/apis';
@@ -11,7 +11,7 @@ import Post from 'src/components/common/Post';
 import {useGotoNotification, useGotoSearch} from 'src/hooks/useGoto';
 import FeedFlatlist from 'src/components/FeedFlatlist';
 import {Platform} from 'react-native';
-import {useScrollToTop} from '@react-navigation/native';
+import {useNavigation, useScrollToTop} from '@react-navigation/native';
 import {Span} from 'src/components/common/Span';
 import {Col} from 'src/components/common/Col';
 import {MenuView} from '@react-native-menu/menu';
@@ -25,6 +25,7 @@ import {Colors} from 'react-native/Libraries/NewAppScreen';
 import {useUpdateUnreadNotificationCount} from 'src/redux/appReducer';
 import {shallowEqual, useSelector} from 'react-redux';
 import {RootState} from 'src/redux/rootReducer';
+import {smallBump} from 'src/utils/hapticFeedBackUtils';
 
 enum SocialFeedFilter {
   All = 'all',
@@ -34,7 +35,8 @@ enum SocialFeedFilter {
 
 export default function SocialScreen() {
   const flatlistRef = useRef(null);
-  useScrollToTop(flatlistRef);
+  const navigation = useNavigation();
+  // useScrollToTop(flatlistRef);
   const {
     data: feedRes,
     isLoading: feedLoading,
@@ -126,6 +128,39 @@ export default function SocialScreen() {
   const unreadNotificationCount = useSelector(
     (root: RootState) => root.app.unreadNotificationCount,
   );
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener(
+      // @ts-expect-error
+      'tabPress',
+      e => {
+        const isFocused = navigation.isFocused();
+        if (isFocused) {
+          scrollToTop();
+        }
+      },
+    );
+    return unsubscribe;
+  }, [navigation.isFocused()]);
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener(
+      // @ts-expect-error
+      'tabDoublePress',
+      e => {
+        const isFocused = navigation.isFocused();
+        if (isFocused) {
+          if (feedRes?.filter == SocialFeedFilter.All) {
+            reloadGETWithToken(apis.feed.social(SocialFeedFilter.Following));
+          } else {
+            reloadGETWithToken(apis.feed.social(SocialFeedFilter.All));
+          }
+          smallBump();
+        }
+      },
+    );
+    return unsubscribe;
+  }, [feedRes?.filter]);
 
   return (
     <SideMenu

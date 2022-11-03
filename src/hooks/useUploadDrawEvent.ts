@@ -5,10 +5,10 @@ import { usePostPromiseFnWithToken } from "src/redux/asyncReducer";
 import useUploadImages from "./useUploadImages";
 
   
-export default function useUploadDrawEvent(){
+export default function useUploadDrawEvent({initialHasApplication}){
     const [loading, setLoading] = useState(false);
 	const [name, setName] = useState('')
-	const [giveawayMerchandise, setGiveawayMerchandise] = useState('')
+	const [discordLink, setDiscordLink] = useState('')
     const [description, setDescription] = useState('')
 	const [applicationLink, setApplicationLink] = useState('')
 	const [enableApplicationLink, setEnableApplicationLink] = useState(false);
@@ -24,15 +24,11 @@ export default function useUploadDrawEvent(){
 			setError("이름을 작성해주세요.");
 			return;
 		}
-		if (!(name)) {
-			setError("경품을 작성해주세요.");
-			return;
-		}
 		if (!(description)) {
 			setError("설명을 작성해주세요.");
 			return;
 		}
-		if ((enableApplicationLink && !applicationLink)) {
+		if ((initialHasApplication && enableApplicationLink && !applicationLink)) {
 			setError("응모 링크를 작성해주세요.");
 			return;
 		}
@@ -61,8 +57,9 @@ export default function useUploadDrawEvent(){
 			description,
 			images: signedIdArray,
 			expires_at: expiresAt,
+			has_application: initialHasApplication,
 			application_link: applicationLink ? applicationLink : null,
-			giveaway_merchandise: giveawayMerchandise ? giveawayMerchandise : null,
+			discord_link: discordLink ? discordLink : null,
 			draw_event_options_attributes: applicationOptions,
 		}
 		const {data} = await postPromiseFnWithToken({url: apis.draw_event._().url, body});
@@ -75,8 +72,8 @@ export default function useUploadDrawEvent(){
         setLoading(false);
 		setError("");
     }
-	const handleGiveawayMerchandiseChange = (text) => {
-		setGiveawayMerchandise(text);
+	const handleDiscordLinkChange = (text) => {
+		setDiscordLink(text);
 		setError("");
 	};
 	const handleApplicationLinkChange = (text) => {
@@ -119,5 +116,5 @@ export default function useUploadDrawEvent(){
 		}
 	}
 
-    return { error, loading, giveawayMerchandise, handleGiveawayMerchandiseChange, applicationCategories, handleAddApplicationCategory, handleRemoveApplicationCategory, handleAddApplicationOption, handleRemoveApplicationOption, enableApplicationLink, toggleEnableApplicationLink, applicationLink, handleApplicationLinkChange, expiresAt, setExpiresAt, name, handleNameChange, description, handleDescriptionChange, images, handleAddImages, handleRemoveImage, uploadDrawEvent }
+    return { error, loading, discordLink, handleDiscordLinkChange, applicationCategories, handleAddApplicationCategory, handleRemoveApplicationCategory, handleAddApplicationOption, handleRemoveApplicationOption, enableApplicationLink, toggleEnableApplicationLink, applicationLink, handleApplicationLinkChange, expiresAt, setExpiresAt, name, handleNameChange, description, handleDescriptionChange, images, handleAddImages, handleRemoveImage, uploadDrawEvent }
 }

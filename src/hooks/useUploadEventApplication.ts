@@ -2,7 +2,7 @@ import { useState } from "react";
 import apis from "src/modules/apis";
 import { useApiSelector, usePostPromiseFnWithToken } from "src/redux/asyncReducer";
 import {chain} from 'lodash';
-import useDrawEventStatus from "./useDrawEventStatus";
+import getDrawEventStatus from "./getDrawEventStatus";
 import { EventApplicationInputType } from "src/components/NewEventApplicationOptions";
   
 export type OrderOption = {
@@ -39,7 +39,7 @@ export default function useUploadEventApplication({drawEvent, uploadSuccessCallb
 	const [error, setError] = useState('')
 	const [orderOptions, setOrderOptions] = useState(drawEvent.draw_event_options ? getOrderCategories(drawEvent.draw_event_options) : [])
     const postPromiseFnWithToken = usePostPromiseFnWithToken()
-	const drawEventStatus = useDrawEventStatus({drawEvent})
+	const drawEventStatus = getDrawEventStatus({drawEvent})
 	
     const uploadEventApplication = async () => {
 		if (loading) {
@@ -86,8 +86,8 @@ export default function useUploadEventApplication({drawEvent, uploadSuccessCallb
 		setError('')
 		const newOrderOptions = [...orderOptions]
 		const categoryToChange = orderOptions[categoryIndex]
-		const changedOptions = {...categoryToChange.options[0], value:optionValue}
-		const changedSelectedCategory = {...categoryToChange, selectedOption: optionValue ? changedOptions:null, options: [orderOptions[categoryIndex]]}
+		const changedOptions = {...categoryToChange.options[0], value: optionValue}
+		const changedSelectedCategory = {...categoryToChange, selectedOption: optionValue ? changedOptions : null, value: optionValue}
 		newOrderOptions[categoryIndex] = changedSelectedCategory
 		setOrderOptions(newOrderOptions)
 	}

@@ -44,7 +44,7 @@ export default function useKlipLogin(){
             if(authResult){
                 const verificationResponse = await getVerification({klaytnAddress: authResult.klaytn_address})
                 if (verificationResponse) {
-                    autoLogin(
+                    await autoLogin(
                         verificationResponse.jwt,
                         props => {
                           if (props.data.user.main_nft) {
@@ -76,7 +76,7 @@ export default function useKlipLogin(){
     }
 
     async function getVerification({klaytnAddress}){
-        const {data: verificationResponse} = await postPromiseFn({url: apis.auth.klip.verification().url, body: {
+        const {data: verificationResponse} = await postPromiseFn({url: apis.auth.klip.app2app().url, body: {
             address: klaytnAddress,
             request_key: prepareAuthResult.request_key,
             platform: PLATFORM,

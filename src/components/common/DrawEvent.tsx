@@ -1,19 +1,25 @@
 import {MenuView} from '@react-native-menu/menu';
 import React from 'react';
 import {ActivityIndicator} from 'react-native';
-import {MoreHorizontal} from 'react-native-feather';
+import {Eye, MoreHorizontal, User} from 'react-native-feather';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import {shallowEqual, useSelector} from 'react-redux';
-import useDrawEventStatus, {
+import getDrawEventStatus, {
   DrawEventStatus,
-} from 'src/hooks/useDrawEventStatus';
-import {useGotoDrawEvent} from 'src/hooks/useGoto';
+  EventApplicationStatus,
+} from 'src/hooks/getDrawEventStatus';
+import {useGotoDrawEvent, useGotoNftCollectionProfile} from 'src/hooks/useGoto';
 import useUpdateDrawEvent from 'src/hooks/useUpdateDrawEvent';
+import {IMAGES} from 'src/modules/images';
 import {RootState} from 'src/redux/rootReducer';
-import {useIsCurrentNftAdmin} from 'src/utils/nftUtils';
+import {getNftCollectionProfileImage, getNftName} from 'src/utils/nftUtils';
+import {Col} from './Col';
+import CountdownText from './CountdownText';
 import {Div} from './Div';
 import {Img} from './Img';
+import {Row} from './Row';
 import {Span} from './Span';
+import TruncatedText from './TruncatedText';
 
 enum DrawEventOption {
   DELETE = '0',
@@ -64,7 +70,11 @@ export default function DrawEvent({
   const gotoDrawEvent = useGotoDrawEvent({
     drawEventId: drawEvent.id,
   });
-  const drawEventStatus = useDrawEventStatus({drawEvent});
+  const drawEventStatus = getDrawEventStatus({drawEvent});
+  const gotoNftCollection = useGotoNftCollectionProfile({
+    nftCollection: drawEvent.nft_collection,
+  });
+
   const handlePressMenu = ({nativeEvent: {event}}) => {
     if (event == DrawEventOption.DELETE) {
       deleteDrawEvent();
@@ -79,62 +89,97 @@ export default function DrawEvent({
       updateDrawEventStatus(DrawEventStatus.IN_PROGRESS);
     }
   };
+
   if (deleted) return null;
 
   return (
-    <Div
-      w={width}
-      mx={mx}
-      my={my}
-      relative
-      onPress={selectableFn ? () => selectableFn(drawEvent) : gotoDrawEvent}>
+    <Div>
       <Div
-        absolute
-        mt={-8}
-        mx8
-        zIndex={1}
-        px12
-        py6
-        rounded12
-        backgroundColor={drawEventStatus.color}>
-        <Span bold white>
-          {drawEventStatus.string}
-        </Span>
-      </Div>
-
-      {currentNft.privilege &&
-        currentNft.contract_address ==
-          drawEvent.nft_collection.contract_address && (
-          <Div absolute right0 m8 zIndex={1} rounded100 bgBlack z100>
-            <MenuView
-              onPressAction={handlePressMenu}
-              actions={drawEventOptions}>
-              <Div p4>
-                {loading ? (
-                  <ActivityIndicator />
-                ) : (
-                  <MoreHorizontal color={Colors.white} width={18} height={18} />
-                )}
-              </Div>
-            </MenuView>
-          </Div>
-        )}
-
-      <Div>
-        <Img uri={drawEvent.image_uri} w={width} h={width} rounded10></Img>
-        <Div absolute bottom0 right0 m8 zIndex={1}>
-          <Img uri={drawEvent.nft_collection.image_uri} h20 w20 rounded50 />
+        w={width}
+        mx={mx}
+        my={my}
+        relative
+        rounded5
+        bgWhite={drawEvent.status !== DrawEventStatus.FINISHED}
+        bgGray200={drawEvent.status == DrawEventStatus.FINISHED}
+        onPress={selectableFn ? () => selectableFn(drawEvent) : gotoDrawEvent}>
+        {currentNft.privilege &&
+          currentNft.contract_address ==
+            drawEvent.nft_collection.contract_address && (
+            <Div
+              absolute
+              right0
+              m8
+              zIndex={1}
+              rounded100
+              bg={'rgba(0,0,0,0.5)'}
+              z100>
+              <MenuView
+                onPressAction={handlePressMenu}
+                actions={drawEventOptions}>
+                <Div p4>
+                  {loading ? (
+                    <ActivityIndicator />
+                  ) : (
+                    <MoreHorizontal
+                      color={Colors.white}
+                      width={18}
+                      height={18}
+                    />
+                  )}
+                </Div>
+              </MenuView>
+            </Div>
+          )}
+        <Div rounded5 relative>
+          <Img
+            uri={drawEvent.image_uri}
+            w={width}
+            h={(width * 163) / 350}
+            rounded5></Img>
+          {drawEvent.status == DrawEventStatus.FINISHED && (
+            <Div
+              w={width}
+              h={(width * 163) / 350}
+              bg={'rgba(0,0,0,0.5)'}
+              rounded5
+              absolute
+              top0
+              left0></Div>
+          )}
         </Div>
-      </Div>
-      <Div mt8>
-        <Span gray700 bold numberOfLines={1}>
-          {drawEvent.name}
-        </Span>
-      </Div>
-      <Div mt4>
-        <Span bold fontSize={16} numberOfLines={1}>
-          {drawEvent.giveaway_merchandise}
-        </Span>
+        <Row py20 itemsCenter px10>
+          <Col
+            auto
+            pr10
+            mr10
+            onPress={gotoNftCollection}
+            borderRight={1.2}
+            borderGray200>
+            <Img
+              uri={getNftCollectionProfileImage(
+                drawEvent.nft_collection,
+                100,
+                100,
+              )}
+              h40
+              w40
+              rounded50
+            />
+          </Col>
+          <Col>
+            <Div>
+              <Span bold fontSize={16} numberOfLines={2}>
+                {drawEvent.name}
+              </Span>
+            </Div>
+            <Div mt5>
+              <Span bold fontSize={12} numberOfLines={1} gray500>
+                {drawEvent.description}
+              </Span>
+            </Div>
+          </Col>
+        </Row>
       </Div>
     </Div>
   );

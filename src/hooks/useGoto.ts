@@ -145,7 +145,10 @@ export function useGotoNftCollectionProfile({nftCollection}){
   const navigation = useNavigation()
   const gotoProfile = () => {
     apiGETWithToken(currentNft.contract_address == nftCollection.contract_address ?  apis.nft_collection._() : apis.nft_collection.contractAddress._(nftCollection.contract_address));
-    apiGETWithToken(apis.post.list.nftCollection(nftCollection.contract_address))
+    apiGETWithToken(apis.feed.draw_event.nftCollection(
+      nftCollection.contract_address
+    ))
+    
     navigation.navigate(NAV_NAMES.NftCollection as never, {
       nftCollection
     } as never);
@@ -220,6 +223,33 @@ export function useGotoLikeList({likableType, likableId}) {
     } as never)
   };
   return gotoCapsule
+}
+
+export function useGotoDonationList({postId}) {
+  const navigation = useNavigation()
+  const apiGETWithToken = useApiGETWithToken()
+  const gotoDonationList = () => {
+    apiGETWithToken(
+      apis.donation.postId.list(
+        postId
+      ),
+    );
+    navigation.navigate(NAV_NAMES.DonationList as never, {
+      postId
+    } as never)
+  };
+  return gotoDonationList
+}
+
+
+export function useGotoUgcConfirmation() {
+  const navigation = useNavigation()
+  const gotoUgcConfirmation = ({onConfirm}) => {
+    navigation.navigate(NAV_NAMES.UgcConfirmation as never, {
+      onConfirm
+    } as never)
+  };
+  return gotoUgcConfirmation
 }
 
 export function useGotoForumSetting() {
@@ -459,10 +489,26 @@ export function useGotoOnboarding() {
   return gotoOnboarding
 }
 
+export function useGotoNewAnnouncement() {
+  const navigation = useNavigation()
+  const gotoNewAnnouncement = () => {
+    navigation.navigate(NAV_NAMES.NewAnnouncement as never)
+  };
+  return gotoNewAnnouncement
+}
+
 export function useGotoKlipSignIn() {
   const navigation = useNavigation()
   const gotoKlipSignIn = () => {
-    navigation.navigate(NAV_NAMES.KlipSignIn)
+    navigation.navigate(NAV_NAMES.KlipSignIn as never)
+  };
+  return gotoKlipSignIn
+}
+
+export function useGotoKaikasSignIn() {
+  const navigation = useNavigation()
+  const gotoKlipSignIn = () => {
+    navigation.navigate(NAV_NAMES.KaikasSignIn as never)
   };
   return gotoKlipSignIn
 }
@@ -473,6 +519,14 @@ export function useGotoConfirmationModal() {
     navigation.navigate(NAV_NAMES.ConfirmationModal as never, {onCancel, onConfirm, text} as never)
   };
   return gotoConfirmation
+}
+
+export function useGotoDonationConfirmation() {
+  const navigation = useNavigation()
+  const gotoDonationConfirmation = ({onConfirm = null, nft, postId}) => {
+    navigation.navigate(NAV_NAMES.DonationConfirmation as never, {onConfirm, nft, postId} as never)
+  };
+  return gotoDonationConfirmation
 }
 
 export function useGotoCollectionFeed({contractAddress}) {
@@ -624,18 +678,46 @@ export function useGotoCollectionEvent({collectionEvent}){
   return gotoCollectionEvent
 }
 
-export function useGotoCollectionSearch({contractAddress}){
+export function useGotoCollectionMemberSearch({contractAddress}){
   const navigation = useNavigation()
   const apiGETWithToken = useApiGETWithToken()
-  const gotoCollectionEvent = () => {
+  const gotoCollectionMemberSearch = () => {
     apiGETWithToken(
       apis.nft_collection.contractAddress.nft.list(contractAddress)
     )
-    navigation.navigate(NAV_NAMES.CollectionSearch as never, {
+    navigation.navigate(NAV_NAMES.CollectionMemberSearch as never, {
       contractAddress
     } as never)
   }
-  return gotoCollectionEvent
+  return gotoCollectionMemberSearch
+}
+
+export function useGotoNftCollectionSearch(){
+  const navigation = useNavigation()
+  const apiGETWithToken = useApiGETWithToken()
+  const gotoNftCollectionSearch = () => {
+    apiGETWithToken(
+      apis.nft_collection.list()
+    )
+    navigation.navigate(NAV_NAMES.NftCollectionSearch as never)
+  }
+  return gotoNftCollectionSearch
+}
+
+export function useGotoPickNftCollection(){
+  const navigation = useNavigation()
+  const apiGETWithToken = useApiGETWithToken()
+  const apiGET = useApiGET()
+  const gotoPickNftCollection = (token?) => {
+    token ? apiGET(
+      apis.nft_collection.list(),
+      token
+    ) : apiGETWithToken(
+      apis.nft_collection.list()
+    )
+    navigation.navigate(NAV_NAMES.PickNftCollection as never)
+  }
+  return gotoPickNftCollection
 }
 
 export function useGotoTransaction({transactionHash}){

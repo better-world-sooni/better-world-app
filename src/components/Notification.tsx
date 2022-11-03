@@ -2,6 +2,7 @@ import React, {memo} from 'react';
 import {shallowEqual, useSelector} from 'react-redux';
 import useFollow from 'src/hooks/useFollow';
 import {
+  useGotoDrawEvent,
   useGotoNftCollectionProfile,
   useGotoNftProfile,
   useGotoPost,
@@ -19,6 +20,9 @@ import {Col} from './common/Col';
 import {Img} from './common/Img';
 import {Row} from './common/Row';
 import {Span} from './common/Span';
+import {ICONS} from 'src/modules/icons';
+import {Div} from './common/Div';
+import GradientColorRect from './common/GradientColorRect';
 
 enum NotificationEventType {
   Follow = 'follow',
@@ -26,7 +30,9 @@ enum NotificationEventType {
   VotePost = 'vote_post',
   LikePost = 'like_post',
   LikeComment = 'like_comment',
+  Donation = 'donation',
   Hug = 'hug',
+  EventApplicationSelected = 'event_application_selected',
 }
 
 export default function Notification({notification}) {
@@ -38,25 +44,32 @@ export default function Notification({notification}) {
   return (
     <NotificationMemo
       postId={notification.metadata.post_id}
+      drawEventId={notification.metadata.draw_event_id}
       isFollowing={!!notification.is_following}
+      content={notification.content}
       hasNft={!!notification.nft}
-      profileImgUri={getNftProfileImage(notification.nft, 100, 100)}
-      contractAddress={notification.nft.contract_address}
-      tokenId={notification.nft.token_id}
+      profileImgUri={
+        getNftProfileImage(notification.nft, 100, 100) ||
+        IMAGES.betterWorldPlanet
+      }
+      contractAddress={notification.nft?.contract_address}
+      tokenId={notification.nft?.token_id}
       event={notification.metadata?.event}
       createdAt={notification.created_at}
       isCurrentNft={isCurrentNft}
       currentNftName={getNftName(currentNft)}
       nftName={getNftName(notification.nft)}
-      nftMetadatumName={notification.nft.nft_metadatum.name}
+      nftMetadatumName={notification.nft?.nft_metadatum.name}
     />
   );
 }
 
 const NotificationContent = ({
   postId,
+  drawEventId,
   isFollowing,
   hasNft,
+  content,
   profileImgUri,
   contractAddress,
   tokenId,
@@ -70,6 +83,7 @@ const NotificationContent = ({
   const gotoPost = useGotoPost({
     postId,
   });
+  const gotoDrawEvent = useGotoDrawEvent({drawEventId});
   const gotoNftCollectionProfile = useGotoNftCollectionProfile({
     nftCollection: {
       contract_address: contractAddress,
@@ -119,6 +133,10 @@ const NotificationContent = ({
       gotoPost();
       return;
     }
+    if (event == NotificationEventType.Donation) {
+      gotoPost();
+      return;
+    }
     if (event == NotificationEventType.VotePost) {
       gotoPost();
       return;
@@ -133,6 +151,10 @@ const NotificationContent = ({
     }
     if (event == NotificationEventType.Hug) {
       gotoNftProfile();
+      return;
+    }
+    if (event == NotificationEventType.EventApplicationSelected) {
+      gotoDrawEvent();
       return;
     }
   };
@@ -163,6 +185,20 @@ const NotificationContent = ({
             {currentNftName}
           </Span>
           의 게시물을 좋아요 했습니다.
+        </Span>
+      );
+    }
+    if (event == NotificationEventType.Donation) {
+      return (
+        <Span fontSize={14}>
+          <Span bold fontSize={14}>
+            {name}
+          </Span>
+          님이{' '}
+          <Span bold fontSize={14}>
+            {currentNftName}
+          </Span>
+          의 게시물을 응원 했습니다.
         </Span>
       );
     }
@@ -222,6 +258,13 @@ const NotificationContent = ({
         </Span>
       );
     }
+    if (event == NotificationEventType.EventApplicationSelected) {
+      return (
+        <Span bold fontSize={14}>
+          {content}
+        </Span>
+      );
+    }
   };
 
   return (
@@ -229,6 +272,8 @@ const NotificationContent = ({
       <Col auto onPress={handlePressProfile}>
         <Img
           rounded100
+          border={0.5}
+          borderGray200
           h50
           w50
           {...(hasNft
@@ -241,7 +286,8 @@ const NotificationContent = ({
           <Span gray700>{createdAtText(createdAt)}</Span>
         </Span>
       </Col>
-      {!isCurrentNft &&
+      {event != NotificationEventType.EventApplicationSelected &&
+        !isCurrentNft &&
         (isBlocked ? (
           <Col
             auto
@@ -258,12 +304,19 @@ const NotificationContent = ({
         ) : (
           <Col
             auto
-            bgBlack={!following}
+            bgPrimary={!following}
             p8
             rounded100
+            relative
             border1={following}
             borderGray200={following}
+            overflowHidden
             onPress={handlePressFollowing}>
+            {!following && (
+              <Div absolute>
+                <GradientColorRect width={100} height={50} />
+              </Div>
+            )}
             <Span white={!following} bold px5>
               {following ? '팔로잉' : '팔로우'}
             </Span>

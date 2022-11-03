@@ -1,5 +1,5 @@
 import React from 'react';
-import {Shield} from 'react-native-feather';
+import {Shield, Zap} from 'react-native-feather';
 import {Colors} from 'src/modules/styles';
 import useFollow from 'src/hooks/useFollow';
 import {
@@ -20,12 +20,14 @@ import {Img} from './common/Img';
 import {Row} from './common/Row';
 import {Span} from './common/Span';
 import {ICONS} from 'src/modules/icons';
+import GradientColorRect from './common/GradientColorRect';
 
 export default function PolymorphicOwner({
   nft,
   isFollowing = false,
   showFollowing = true,
   showPrivilege = false,
+  value = null,
 }) {
   const {
     handlePressFollowing,
@@ -70,6 +72,23 @@ export default function PolymorphicOwner({
           </Div>
         )}
       </Col>
+      {value ? (
+        <>
+          <Col auto pr2>
+            <Zap
+              strokeWidth={1.8}
+              color={Colors.black}
+              height={20}
+              width={20}
+            />
+          </Col>
+          <Col auto>
+            <Span bold fontSize={14}>
+              {value}
+            </Span>
+          </Col>
+        </>
+      ) : null}
       {showPrivilege && isAdmin && !isCurrentNft && (
         <Col
           auto
@@ -77,7 +96,6 @@ export default function PolymorphicOwner({
           px8
           py6
           rounded100
-          mx5
           border={privilege && 0.5}
           borderAdminSoft={privilege}
           onPress={handlePressPrivilege}>
@@ -97,6 +115,7 @@ export default function PolymorphicOwner({
             rounded100
             border1
             borderDanger
+            ml12
             onPress={handlePressBlock}>
             <Span danger bold px5>
               차단 해제
@@ -105,13 +124,21 @@ export default function PolymorphicOwner({
         ) : (
           <Col
             auto
-            bgBlack={!following}
+            bgPrimary={!following}
             py8
             px10
+            ml12
+            relative
             rounded100
             border={following && 0.5}
             borderGray200
+            overflowHidden
             onPress={handlePressFollowing}>
+            {!following && (
+              <Div absolute>
+                <GradientColorRect width={100} height={50} />
+              </Div>
+            )}
             <Span white={!following} bold px5 fontSize={14}>
               {!nft ? '불러오는 중' : following ? '팔로잉' : '팔로우'}
             </Span>
