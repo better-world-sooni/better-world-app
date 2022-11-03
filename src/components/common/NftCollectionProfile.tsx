@@ -43,12 +43,13 @@ import FocusAwareStatusBar from 'src/components/FocusAwareStatusBar';
 import {expandImageViewer} from 'src/utils/imageViewerUtils';
 import GradientColorRect from './GradientColorRect';
 import TruncatedText from './TruncatedText';
+import DrawEvent from './DrawEvent';
 
 export default function NftCollectionProfile({
   nftCollectionCore,
   isAdmin,
   nftCollectionProfileApiObject,
-  pageableNftCollectionPostFn,
+  pageableNftCollectionDrawEventFn,
 }) {
   const {
     data: nftCollectionProfileRes,
@@ -60,17 +61,20 @@ export default function NftCollectionProfile({
     isPaginating: nftCollectionPostListPaginating,
     page,
     isNotPaginatable,
-  } = useApiSelector(pageableNftCollectionPostFn());
+  } = useApiSelector(pageableNftCollectionDrawEventFn());
   const reloadGetWithToken = useReloadGETWithToken();
   const handleRefresh = () => {
     reloadGetWithToken(nftCollectionProfileApiObject);
-    reloadGetWithToken(pageableNftCollectionPostFn());
+    reloadGetWithToken(pageableNftCollectionDrawEventFn());
   };
   const paginateGetWithToken = usePaginateGETWithToken();
   const gotoNftCollectionProfileEdit = useGotoNftCollectionProfileEdit();
   const handleEndReached = () => {
     if (nftCollectionPostListPaginating || isNotPaginatable) return;
-    paginateGetWithToken(pageableNftCollectionPostFn(page + 1), 'posts');
+    paginateGetWithToken(
+      pageableNftCollectionDrawEventFn(page + 1),
+      'draw_events',
+    );
   };
   const nftCollection = nftCollectionProfileRes?.nft_collection;
   const {currentNft} = useSelector(
@@ -260,7 +264,7 @@ export default function NftCollectionProfile({
           marginTop: -30,
           ...(Platform.OS === 'android' && {paddingTop: 30}),
         }}
-        data={nftCollectionPostListRes?.posts || []}
+        data={nftCollectionPostListRes?.draw_events || []}
         ListEmptyComponent={
           !nftCollectionPostListLoading && <ListEmptyComponent h={450} />
         }
@@ -435,9 +439,21 @@ export default function NftCollectionProfile({
             </Div>
           </>
         }
-        renderItem={({item}) => (
-          <Post post={item} displayLabel isProfile={true} />
-        )}
+        renderItem={({item}) => {
+          return (
+            <Div bgGray100>
+              <DrawEvent
+                key={`${(item as any).id}-${
+                  (item as any).event_application?.status
+                }-${(item as any).status}-${(item as any).read_count}`}
+                drawEvent={item}
+                mx={20}
+                my={10}
+                width={DEVICE_WIDTH - 20 * 2}
+              />
+            </Div>
+          );
+        }}
         ListFooterComponent={
           <>
             {(nftCollectionPostListPaginating ||

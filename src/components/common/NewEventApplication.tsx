@@ -31,7 +31,7 @@ export default function NewEventApplication({drawEvent}) {
   const reloadGETWithToken = useReloadGETWithToken();
 
   const uploadSuccessCallback = () => {
-    reloadGETWithToken(apis.feed.draw_event());
+    reloadGETWithToken(apis.feed.draw_event._());
     gotoEventApplicationList();
   };
   const {

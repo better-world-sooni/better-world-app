@@ -145,7 +145,10 @@ export function useGotoNftCollectionProfile({nftCollection}){
   const navigation = useNavigation()
   const gotoProfile = () => {
     apiGETWithToken(currentNft.contract_address == nftCollection.contract_address ?  apis.nft_collection._() : apis.nft_collection.contractAddress._(nftCollection.contract_address));
-    apiGETWithToken(apis.post.list.nftCollection(nftCollection.contract_address))
+    apiGETWithToken(apis.feed.draw_event.nftCollection(
+      nftCollection.contract_address
+    ))
+    
     navigation.navigate(NAV_NAMES.NftCollection as never, {
       nftCollection
     } as never);
@@ -236,6 +239,17 @@ export function useGotoDonationList({postId}) {
     } as never)
   };
   return gotoDonationList
+}
+
+
+export function useGotoUgcConfirmation() {
+  const navigation = useNavigation()
+  const gotoUgcConfirmation = ({onConfirm}) => {
+    navigation.navigate(NAV_NAMES.UgcConfirmation as never, {
+      onConfirm
+    } as never)
+  };
+  return gotoUgcConfirmation
 }
 
 export function useGotoForumSetting() {

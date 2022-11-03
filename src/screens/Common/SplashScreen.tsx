@@ -7,51 +7,76 @@ import {Img} from 'src/components/common/Img';
 import {NAV_NAMES} from 'src/modules/navNames';
 import {useAutoLogin} from 'src/redux/appReducer';
 import { IMAGES } from 'src/modules/images';
-import {JWT} from 'src/modules/constants';
+import {HAS_AGREED_TO_UGC, JWT} from 'src/modules/constants';
 import {Span} from 'src/components/common/Span';
-import {useGotoHome, useGotoPost, useGotoNftProfile, useGotoChatRoomFromNotification} from 'src/hooks/useGoto';
-import Animated, { useAnimatedStyle, useSharedValue, withDelay, withTiming } from 'react-native-reanimated';
+import {
+  useGotoHome,
+  useGotoPost,
+  useGotoNftProfile,
+  useGotoChatRoomFromNotification,
+  useGotoUgcConfirmation,
+} from 'src/hooks/useGoto';
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withDelay,
+  withTiming,
+} from 'react-native-reanimated';
 
-const getInitialRoute = (routeParams) => {
-  if(routeParams.notificationOpened) {
-    if(routeParams.routeDestination.navName === NAV_NAMES.Post) {
+const getInitialRoute = routeParams => {
+  if (routeParams.notificationOpened) {
+    if (routeParams.routeDestination.navName === NAV_NAMES.Post) {
       return {
         gotoInitial: useGotoPost(routeParams.routeDestination.id),
-        params: [false, true] 
-      }
-
-    }
-    else if(routeParams.routeDestination.navName === NAV_NAMES.OtherProfile) {
+        params: [false, true],
+      };
+    } else if (
+      routeParams.routeDestination.navName === NAV_NAMES.OtherProfile
+    ) {
       return {
         gotoInitial: useGotoNftProfile({nft: routeParams.routeDestination.id}),
-        params: [true] 
-      }
-    }
-    else if(routeParams.routeDestination.navName === NAV_NAMES.ChatRoom) {
+        params: [true],
+      };
+    } else if (routeParams.routeDestination.navName === NAV_NAMES.ChatRoom) {
       return {
-        gotoInitial: useGotoChatRoomFromNotification(routeParams.routeDestination.id),
-        params: []
-      }
+        gotoInitial: useGotoChatRoomFromNotification(
+          routeParams.routeDestination.id,
+        ),
+        params: [],
+      };
     }
-  }
-  else {
+  } else {
     return {
       gotoInitial: useGotoHome(),
-      params: [] 
-    }
+      params: [],
+    };
   }
-}
+};
 
 const SplashScreen = ({route}) => {
   const navigation = useNavigation();
   const autoLogin = useAutoLogin();
-  const routeParams = route.params
-  const initialRoute = getInitialRoute(routeParams)
+  const routeParams = route.params;
+  const initialRoute = getInitialRoute(routeParams);
+  const gotoUgcConfirmation = useGotoUgcConfirmation();
 
   useEffect(() => {
-    logoAnimation()
-    isAutoLoginChecked();
+    logoAnimation();
+    isUgcConfirmed();
   }, []);
+
+  const isUgcConfirmed = async () => {
+    const ugcConfirmed = await AsyncStorage.getItem(HAS_AGREED_TO_UGC);
+    if (ugcConfirmed) {
+      isAutoLoginChecked();
+    } else {
+      gotoUgcConfirmation({
+        onConfirm: () => {
+          AsyncStorage.setItem(HAS_AGREED_TO_UGC, 'TRUE', isAutoLoginChecked);
+        },
+      });
+    }
+  };
 
   const isAutoLoginChecked = () => {
     AsyncStorage.getItem(JWT).then(async value => {
@@ -88,13 +113,13 @@ const SplashScreen = ({route}) => {
       }
     });
   };
-  const bwLogo1Scale = useSharedValue(1);
+  const bwLogo1Scale = useSharedValue(0.05);
   const bwLogo2Scale = useSharedValue(1);
-  const bwWordOpacity = useSharedValue(0);
+  const bwLogo3Scale = useSharedValue(0);
   const bwLogo1Style = useAnimatedStyle(() => {
     return {
-      width: 80,
-      height: 80,
+      width: 1600,
+      height: 1600,
       transform: [
         {
           scale: bwLogo1Scale.value,
@@ -113,25 +138,32 @@ const SplashScreen = ({route}) => {
       ],
     };
   });
-  const bwWordStyle = useAnimatedStyle(() => {
+  const bwLogo3Style = useAnimatedStyle(() => {
     return {
-      width: 280,
-      height: 40,
-      opacity: bwWordOpacity.value,
+      width: 160,
+      height: 160,
+      transform: [
+        {
+          scale: bwLogo3Scale.value,
+        },
+      ],
     };
   });
   const logoAnimation = () => {
-    bwLogo1Scale.value=withDelay(1000, withTiming(20, { duration: 1000 }));
-    bwLogo2Scale.value=withDelay(1200, withTiming(2, { duration: 800 }));
-    bwWordOpacity.value=withDelay(2000, withTiming(1, { duration: 500 }));
-  }
+    bwLogo1Scale.value = withDelay(1000, withTiming(1, {duration: 1000}));
+    bwLogo2Scale.value = withDelay(1200, withTiming(0, {duration: 800}));
+    bwLogo3Scale.value = withDelay(1200, withTiming(1, {duration: 800}));
+  };
   return (
     <Div bgWhite flex={1} itemsCenter justifyCenter>
       <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
       <Div itemsCenter>
-        <Div absolute w80 h80 top={-40} itemsCenter justifyCenter><Animated.Image style={bwLogo1Style} source={IMAGES.bwLogo1}/></Div>
-        <Div absolute w80 h80 top={-40} itemsCenter justifyCenter><Animated.Image style={bwLogo2Style} source={IMAGES.bwLogo2}/></Div>
-        <Div top={50}><Animated.Image style={bwWordStyle} source={IMAGES.bwWord}/></Div>
+        <Div absolute w80 h80 top={-40} itemsCenter justifyCenter>
+          <Animated.Image style={bwLogo1Style} source={IMAGES.bwLogo1} />
+        </Div>
+        <Div absolute w80 h80 top={-40} itemsCenter justifyCenter>
+          <Animated.Image style={bwLogo3Style} source={IMAGES.bwLogoWhite} />
+        </Div>
       </Div>
     </Div>
   );

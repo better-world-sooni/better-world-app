@@ -64,7 +64,7 @@ export default function StoreScreen() {
   const flatlistRef = useRef(null);
   const navigation = useNavigation();
   const {data, isLoading, isPaginating, page, isNotPaginatable} =
-    useApiSelector(apis.feed.draw_event);
+    useApiSelector(apis.feed.draw_event._);
   const {data: nftCollectionRes, isLoading: nftCollectionLoad} = useApiSelector(
     apis.nft_collection._(),
   );
@@ -76,12 +76,12 @@ export default function StoreScreen() {
   const handleEndReached = () => {
     if (isPaginating || isNotPaginatable) return;
     paginateGetWithToken(
-      apis.feed.draw_event(data?.filter, order, page + 1),
+      apis.feed.draw_event._(data?.filter, order, page + 1),
       'draw_events',
     );
   };
   const handleRefresh = () => {
-    reloadGETWithToken(apis.feed.draw_event(data?.filter, order));
+    reloadGETWithToken(apis.feed.draw_event._(data?.filter, order));
   };
   const scrollToTop = () => {
     flatlistRef?.current
@@ -94,20 +94,20 @@ export default function StoreScreen() {
       filter == DrawEventFeedFilter.Eligible &&
       data?.filter !== DrawEventFeedFilter.Eligible
     ) {
-      reloadGETWithToken(apis.feed.draw_event(filter, order));
+      reloadGETWithToken(apis.feed.draw_event._(filter, order));
     }
     if (
       filter == DrawEventFeedFilter.Following &&
       data?.filter !== DrawEventFeedFilter.Following
     ) {
-      reloadGETWithToken(apis.feed.draw_event(filter, order));
+      reloadGETWithToken(apis.feed.draw_event._(filter, order));
     }
   };
   const handlePressOrder = ({nativeEvent: {event}}) => {
     // scrollToTop();
     console.log(event);
     setOrder(event);
-    reloadGETWithToken(apis.feed.draw_event(data?.filter, event));
+    reloadGETWithToken(apis.feed.draw_event._(data?.filter, event));
   };
   const gotoEventApplicationList = useGotoEventApplicationList();
   const gotoNftCollectionSearch = useGotoNftCollectionSearch();
@@ -123,11 +123,11 @@ export default function StoreScreen() {
         if (isFocused) {
           if (data?.filter == DrawEventFeedFilter.Eligible) {
             reloadGETWithToken(
-              apis.feed.draw_event(DrawEventFeedFilter.Following),
+              apis.feed.draw_event._(DrawEventFeedFilter.Following),
             );
           } else {
             reloadGETWithToken(
-              apis.feed.draw_event(DrawEventFeedFilter.Eligible),
+              apis.feed.draw_event._(DrawEventFeedFilter.Eligible),
             );
           }
           smallBump();

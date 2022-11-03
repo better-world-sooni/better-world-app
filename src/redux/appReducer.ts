@@ -21,7 +21,7 @@ const usePreloadData = () => {
       apiGETAsync(apis.nft._(), jwt),
       apiGETAsync(apis.post.list._(), jwt),
       apiGETAsync(apis.feed.social(), jwt),
-      apiGETAsync(apis.feed.draw_event(), jwt),
+      apiGETAsync(apis.feed.draw_event._(), jwt),
       apiGETAsync(apis.nft_collection._(), jwt),
       apiGETAsync(apis.chat.chatRoom.all(), jwt),
       updateUnreadNotificationCount(jwt),

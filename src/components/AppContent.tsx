@@ -65,6 +65,7 @@ import DonationConfirmationScreen from 'src/screens/DonationConfirmationScreen';
 import DonationListScreen from 'src/screens/DonationListScreen';
 import {Div} from './common/Div';
 import PickNftCollectionScreen from 'src/screens/Auth/PickNftCollectionScreen';
+import UgcConfirmationScreen from 'src/screens/UgcConfirmationScreen';
 
 const RootStack = createStackNavigator();
 
@@ -463,6 +464,13 @@ export const AppContent = ({notificationOpenData}) => {
     {
       name: NAV_NAMES.DonationConfirmation,
       component: DonationConfirmationScreen,
+      options: {
+        presentation: 'transparentModal',
+      },
+    },
+    {
+      name: NAV_NAMES.UgcConfirmation,
+      component: UgcConfirmationScreen,
       options: {
         presentation: 'transparentModal',
       },

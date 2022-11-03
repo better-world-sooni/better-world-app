@@ -49,7 +49,7 @@ const KlipSignInScreen = () => {
             </Div>
           </Col>
           <Col auto>
-            <Span bold fontSize={17}>
+            <Span bold fontSize={18}>
               Klip으로 로그인
             </Span>
           </Col>
@@ -58,7 +58,7 @@ const KlipSignInScreen = () => {
       </Div>
       <Div flex={1} px15>
         <Div flex={1} itemsCenter justifyCenter>
-          <Div>
+          <Div py20>
             <Img source={ICONS.klip} h60 w120></Img>
           </Div>
           <Div mt16>
@@ -78,7 +78,7 @@ const KlipSignInScreen = () => {
         </Div>
         <Row
           bg={loading ? Colors.klip.light : Colors.klip.DEFAULT}
-          rounded22
+          rounded10
           onPress={
             !loading
               ? prepareAuthResult
@@ -108,7 +108,7 @@ const KlipSignInScreen = () => {
           <Col />
         </Row>
       </Div>
-      <Div h={notchBottom} bgWhite></Div>
+      <Div h={notchBottom + 50} bgWhite></Div>
     </KeyboardAvoidingView>
   );
 };

@@ -50,7 +50,7 @@ const KaikasSignInScreen = () => {
             </Div>
           </Col>
           <Col auto>
-            <Span bold fontSize={17}>
+            <Span bold fontSize={18}>
               Kaikas로 로그인
             </Span>
           </Col>
@@ -59,8 +59,8 @@ const KaikasSignInScreen = () => {
       </Div>
       <Div flex={1} px15>
         <Div flex={1} itemsCenter justifyCenter>
-          <Div>
-            <Img source={ICONS.kaikas} h60 w60></Img>
+          <Div py20>
+            <Img source={ICONS.kaikas} h65 w65></Img>
           </Div>
           <Div mt16>
             <Span fontSize={19} bold textCenter>
@@ -79,7 +79,7 @@ const KaikasSignInScreen = () => {
         </Div>
         <Row
           bg={loading ? Colors.kaikas.light : Colors.kaikas.DEFAULT}
-          rounded22
+          rounded10
           onPress={
             !loading
               ? prepareAuthResult
@@ -109,7 +109,7 @@ const KaikasSignInScreen = () => {
           <Col />
         </Row>
       </Div>
-      <Div h={notchBottom} bgWhite></Div>
+      <Div h={notchBottom + 50} bgWhite></Div>
     </KeyboardAvoidingView>
   );
 };

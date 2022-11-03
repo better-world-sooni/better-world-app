@@ -3,9 +3,9 @@ import querystring from 'querystring'
 import {isEmpty, omitBy, isNil} from 'lodash'
 
 // const BASE_URL = 'http://3.39.22.255:3000';
-// const BASE_URL = 'http://192.168.1.185:3000';
+const BASE_URL = 'http://192.168.1.185:3000';
 // const BASE_URL = 'http://localhost:3000';
-const BASE_URL = 'https://api.betterworldapp.io';
+// const BASE_URL = 'https://api.betterworldapp.io';
 
 const toUrl = (...args) => ({url: urljoin(...args)});
 const apiV1 = path => toUrl(BASE_URL, '/api/v1', path);
@@ -185,7 +185,10 @@ const apis = {
     count: () => apiV1(`/feed/count`),
     forum: (filter?, page?) => apiV1(`/feed/forum${urlParams({page, filter})}`),
     social: (filter?,page?) => apiV1(`/feed/social${urlParams({page, filter})}`),
-    draw_event: (filter?,order?, page?) => apiV1(`/feed/draw_event${urlParams({page, order, filter})}`),
+    draw_event: {
+      _: (filter?,order?, page?) => apiV1(`/feed/draw_event${urlParams({page, order, filter})}`),
+      nftCollection: (contractAddress, page?) => apiV1(`/feed/draw_event/nft_collection${urlParams({page, contract_address: contractAddress})}`),
+    },
     collection: (contractAddress, type?, page?) => apiV1(`/feed/collection?contract_address${urlParams({contract_address: contractAddress, type, page})}`),
   },
   presignedUrl: {

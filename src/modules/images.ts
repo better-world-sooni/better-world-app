@@ -1,6 +1,7 @@
 export const IMAGES = {
   bwLogo1: require('assets/images/bwLogo_1.png'),
   bwLogo2: require('assets/images/bwLogo_2.png'),
+  bwLogoWhite: require('assets/images/bwLogoWhite.png'),
   bwWord: require('assets/images/bwWord.png'),
   event: require('assets/images/event.png'),
   announcement: require('assets/images/announcement.png'),
@@ -12,4 +13,8 @@ export const IMAGES = {
   applied: require('assets/images/applied.png'),
   placeholder: require('assets/images/placeholder.png'),
   betterWorldPlanet: require('assets/images/betterWorldPlanet.png'),
+  announcements: require('assets/images/announcements.png'),
+  chatting: require('assets/images/chatting.png'),
+  donate: require('assets/images/donate.png'),
+  scan: require('assets/images/scan.png'),
 };

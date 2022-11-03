@@ -23,12 +23,12 @@ const NftCollectionScreen = ({
     shallowEqual,
   );
   const isAdmin = useIsAdmin(nftCollection);
-  const pageableNftCollectionPostFn = (page?) => {
-    return apis.post.list.nftCollection(nftCollection.contract_address, page);
+  const pageableNftCollectionDrawEventFn = (page?) => {
+    return apis.feed.draw_event.nftCollection(
+      nftCollection.contract_address,
+      page,
+    );
   };
-  const gotoNewPost = useGotoNewPost({
-    postOwnerType: PostOwnerType.NftCollection,
-  });
   return (
     <Div flex={1} bgWhite relative overflowHidden>
       <NftCollectionProfile
@@ -40,41 +40,9 @@ const NftCollectionScreen = ({
                 nftCollection.contract_address,
               )
         }
-        pageableNftCollectionPostFn={pageableNftCollectionPostFn}
+        pageableNftCollectionDrawEventFn={pageableNftCollectionDrawEventFn}
         isAdmin={isAdmin}
       />
-      {isAdmin && (
-        <Div
-          rounded100
-          bgBlack
-          absolute
-          w54
-          h54
-          justifyCenter
-          itemsCenter
-          bottom55
-          overflowHidden
-          right15
-          onPress={() => gotoNewPost()}
-          style={{
-            shadowOffset: {
-              width: 0,
-              height: 2,
-            },
-            shadowOpacity: 0.25,
-            shadowRadius: 4,
-            elevation: 4,
-          }}>
-          <Div absolute>
-            <GradientColorRect width={100} height={100} />
-          </Div>
-          <Plus
-            strokeWidth={2}
-            color={Colors.white}
-            height={28}
-            width={28}></Plus>
-        </Div>
-      )}
     </Div>
   );
 };

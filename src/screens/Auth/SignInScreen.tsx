@@ -1,5 +1,5 @@
-import React from 'react';
-import {ActivityIndicator, Platform} from 'react-native';
+import React, {useState} from 'react';
+import {Platform} from 'react-native';
 import {Col} from 'src/components/common/Col';
 import {Div} from 'src/components/common/Div';
 import {Img} from 'src/components/common/Img';
@@ -8,118 +8,143 @@ import {Span} from 'src/components/common/Span';
 import {IMAGES} from 'src/modules/images';
 import {KeyboardAvoidingView} from 'src/components/common/ViewComponents';
 import {Colors, DEVICE_WIDTH} from 'src/modules/styles';
-import Carousel from 'react-native-snap-carousel';
+import Carousel, {Pagination} from 'react-native-snap-carousel';
 import {
   useGotoKaikasSignIn,
   useGotoKlipSignIn,
   useGotoPasswordSignIn,
-  useGotoScan,
 } from 'src/hooks/useGoto';
-import {ScanType} from 'src/screens/ScanScreen';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {ICONS} from 'src/modules/icons';
+import GradientColorRect from 'src/components/common/GradientColorRect';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 const SignInScreen = () => {
-  const gotoScan = useGotoScan({scanType: ScanType.Login});
-  const gotoPasswordSignIn = useGotoPasswordSignIn();
+  const mottos = [
+    {
+      text: '흩어진 NFT 공지들을\n 한눈에 확인하세요',
+      image: IMAGES.announcements,
+      width: 748,
+      height: 659,
+    },
+    {
+      text: 'NFT 홀더들과\n 편리하고 안전하게 소통하세요',
+      image: IMAGES.chatting,
+      height: 589,
+      width: 714,
+    },
+    {
+      text: '마음에 드는 게시물을\n 코인으로 응원해보세요',
+      image: IMAGES.donate,
+      height: 830,
+      width: 600,
+    },
+    {
+      text: '오프라인에서\n 간편하게 홀더인증하세요',
+      image: IMAGES.scan,
+      height: 652,
+      width: 792,
+    },
+  ];
+  const [activeSlide, setActiveSlide] = useState(0);
   const gotoKlipSignIn = useGotoKlipSignIn();
   const gotoKaikasSignIn = useGotoKaikasSignIn();
+  const gotoPasswordSignIn = useGotoPasswordSignIn();
+  const bottomInset = useSafeAreaInsets().bottom;
+  const topInset = useSafeAreaInsets().top;
 
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       flex={1}
       bgWhite>
-      <Div
-        top={useSafeAreaInsets().top}
-        zIndex={100}
-        itemsCenter
-        justifyEnd
-        w={DEVICE_WIDTH}>
-        <Img source={IMAGES.betterWorldPlanet} h40 w40 rounded10></Img>
-      </Div>
-      <Div flex={1} justifyCenter>
-        <Div>
-          <Carousel
-            data={[
-              '내 NFT 프로필로\n 커뮤니티원들과 소통하세요',
-              '커뮤니티 지갑 사용 내역을\n 투명하게 확인하세요',
-              '홀더 혜택을 한눈에\n 모아보세요',
-              '오프라인에서 편리하게\n 홀더임을 인증하세요',
-            ]}
-            itemWidth={DEVICE_WIDTH}
-            autoplay
-            loop
-            autoplayInterval={6000}
-            sliderWidth={DEVICE_WIDTH}
-            renderItem={renderItem}
-          />
-          <Div px20>
-            <Div h40></Div>
-            <Div h48>
-              <Row
-                bg={Colors.klip.DEFAULT}
-                rounded={22}
-                h64
-                flex={1}
-                itemsCenter
-                onPress={gotoKlipSignIn}>
-                <Col />
-                <Col auto mr11>
-                  <Img source={ICONS.klip} h15 w30></Img>
-                </Col>
-                <Col auto>
-                  <Div>
-                    <Span bold fontSize={14}>
-                      클립으로 로그인
-                    </Span>
-                  </Div>
-                </Col>
-                <Col />
-              </Row>
-            </Div>
-            <Div h48 mt15>
-              <Row
-                rounded={22}
-                bg={Colors.kaikas.DEFAULT}
-                h64
-                flex={1}
-                itemsCenter
-                onPress={gotoKaikasSignIn}>
-                <Col />
-                <Col auto mr11>
-                  <Img source={ICONS.kaikasWhite} h15 w15></Img>
-                </Col>
-                <Col auto>
-                  <Div>
-                    <Span bold white fontSize={13}>
-                      카이카스로 로그인
-                    </Span>
-                  </Div>
-                </Col>
-                <Col />
-              </Row>
-            </Div>
-            <Div h48 my15>
-              <Row
-                border1
-                borderGray200
-                rounded={22}
-                h48
-                flex={1}
-                itemsCenter
-                onPress={gotoPasswordSignIn}>
-                <Col />
-                <Col auto>
-                  <Div>
-                    <Span bold fontSize={13}>
-                      비밀번호로 로그인
-                    </Span>
-                  </Div>
-                </Col>
-                <Col />
-              </Row>
-            </Div>
+      <Div flex={1} justifyCenter pt={topInset} pb={bottomInset}>
+        <Div flex={1} justifyCenter>
+          <Div>
+            <Carousel
+              data={mottos}
+              itemWidth={DEVICE_WIDTH}
+              autoplay
+              loop
+              autoplayInterval={6000}
+              sliderWidth={DEVICE_WIDTH}
+              renderItem={renderItem}
+              onSnapToItem={setActiveSlide}
+            />
+            <Pagination
+              dotsLength={mottos.length}
+              activeDotIndex={activeSlide}
+              containerStyle={{
+                paddingVertical: 0,
+                marginHorizontal: 0,
+                paddingHorizontal: 0,
+              }}
+              dotStyle={{
+                width: 10,
+                height: 10,
+                borderRadius: 10,
+                marginHorizontal: -2,
+                paddingHorizontal: 0,
+                backgroundColor: Colors.gray[300],
+              }}
+              dotElement={
+                <Div w15 h10 rounded5 mx4 overflowHidden>
+                  <GradientColorRect height={10} width={15} />
+                </Div>
+              }
+              inactiveDotOpacity={0.6}
+              inactiveDotScale={1}
+            />
+          </Div>
+        </Div>
+        <Div px20 wFull mb70>
+          <Div h48>
+            <Row
+              bg={Colors.klip.DEFAULT}
+              rounded={10}
+              h64
+              flex={1}
+              itemsCenter
+              onPress={gotoKlipSignIn}>
+              <Col />
+              <Col auto mr11>
+                <Img source={ICONS.klip} h20 w40></Img>
+              </Col>
+              <Col auto>
+                <Div>
+                  <Span bold fontSize={14}>
+                    클립으로 로그인
+                  </Span>
+                </Div>
+              </Col>
+              <Col />
+            </Row>
+          </Div>
+          <Div h48 mt15>
+            <Row
+              rounded={10}
+              bg={Colors.kaikas.DEFAULT}
+              h64
+              flex={1}
+              itemsCenter
+              onPress={gotoKaikasSignIn}>
+              <Col />
+              <Col auto mr11>
+                <Img source={ICONS.kaikasWhite} h20 w20></Img>
+              </Col>
+              <Col auto>
+                <Div>
+                  <Span bold white fontSize={13}>
+                    카이카스로 로그인
+                  </Span>
+                </Div>
+              </Col>
+              <Col />
+            </Row>
+          </Div>
+          <Div h30 mt15 justifyCenter itemsCenter onPress={gotoPasswordSignIn}>
+            <Span bold gray400 fontSize={11}>
+              비밀번호로 로그인
+            </Span>
           </Div>
         </Div>
       </Div>
@@ -130,9 +155,12 @@ const SignInScreen = () => {
 const renderItem = ({item, index}) => {
   return (
     <Div rounded10 overflowHidden itemsCenter justifyCenter px30>
-      <Span fontSize={28} bold style={{textAlign: 'center'}}>
-        {item}
+      <Span fontSize={24} bold style={{textAlign: 'center'}}>
+        {item.text}
       </Span>
+      <Div py70 itemsCenter justifyCenter>
+        <Img source={item.image} w={(150 * item.width) / item.height} h={150} />
+      </Div>
     </Div>
   );
 };

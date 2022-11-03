@@ -7,7 +7,7 @@ import {Span} from './Span';
 
 export default function ListEmptyComponent({h}) {
   return (
-    <Div h={h} itemsCenter justifyCenter bgWhite>
+    <Div h={h} itemsCenter justifyCenter>
       <Img rounded10 h80 w80 source={IMAGES.betterWorldPlanet}></Img>
       <Div justifyCenter itemsCenter mt16>
         <Span bold>내용이 없습니다.</Span>
