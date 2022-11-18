@@ -73,7 +73,7 @@ const App = () => {
 
   useEffect(() => {
     LogBox.ignoreAllLogs();
-  });
+  }, []);
 
   async function initialOpened() {
     const initialNotification = await notifee.getInitialNotification();

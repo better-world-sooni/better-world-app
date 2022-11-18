@@ -9,7 +9,7 @@ import { useAutoLogin } from 'src/redux/appReducer';
 import { postPromiseFn } from 'src/redux/asyncReducer';
 import { openInfoPopup } from 'src/utils/bottomPopupUtils';
 import { largeBump, smallBump } from 'src/utils/hapticFeedBackUtils';
-import { klipApp2AppRequestUrl } from 'src/utils/uriUtils';
+import { klipApp2AppRequestUrl, klipAppDownloadUrl } from 'src/utils/uriUtils';
 import { useGotoHome } from './useGoto';
 
 type PrepareResult = {
@@ -31,7 +31,13 @@ export default function useKlipLogin(){
         setError('')
         const prepareRes = await prepare.auth({ bappName }) as PrepareResult
         setPrepareAuthResult(prepareRes)
-        Linking.openURL(klipApp2AppRequestUrl(prepareRes.request_key))
+        const canOpenUrl = await Linking.canOpenURL(klipApp2AppRequestUrl(prepareRes.request_key))
+        if(canOpenUrl){
+          Linking.openURL(klipApp2AppRequestUrl(prepareRes.request_key))
+        } else {
+          Linking.openURL(klipAppDownloadUrl())
+        }
+        
     }
     
     async function checkResultAndLogin(){

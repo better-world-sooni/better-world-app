@@ -174,7 +174,7 @@ const MainBottomTabs = () => {
 const setInitialRouteParams = notificationOpenData => {
   if (notificationOpenData) {
     if (
-      ['like_post', 'like_comment', 'comment', 'vote'].includes(
+      ['like_post', 'like_comment', 'comment', 'vote', 'donation'].includes(
         notificationOpenData.event,
       )
     ) {

@@ -42,10 +42,6 @@ import {Img} from './Img';
 import {Row} from './Row';
 import {Span} from './Span';
 import {MenuView} from '@react-native-menu/menu';
-import {
-  useDeletePromiseFnWithToken,
-  usePutPromiseFnWithToken,
-} from 'src/redux/asyncReducer';
 import {ReportTypes} from 'src/screens/ReportScreen';
 import useVote, {VoteCategory, VotingStatus} from 'src/hooks/useVote';
 import {LikeListType} from 'src/screens/LikeListScreen';
@@ -57,7 +53,7 @@ import CollectionEvent from './CollectionEvent';
 import {getAdjustedHeightFromDimensions} from 'src/utils/imageUtils';
 import RepostedTransaction from './RepostedTransaction';
 import {ICONS} from 'src/modules/icons';
-import useDelete from 'src/hooks/useDelete';
+import useDeletePost from 'src/hooks/useDeletePost';
 import AutolinkTextWrapper from './AutolinkTextWrapper';
 import ExpandableVideo from './ExpandableVideo';
 import useDonation from 'src/hooks/useDonation';
@@ -104,8 +100,8 @@ function PostContent({
   const isCurrentNft = useIsCurrentNft(post.nft);
   const isCurrentCollection = useIsCurrentCollection(post.nft);
   const isAdmin = useIsAdmin(post.nft);
-  const {loading, deleted, deleteObject} = useDelete({
-    url: apis.post.postId._(post.id).url,
+  const {loading, deleted, deletePost, reportPost} = useDeletePost({
+    postId: post.id,
   });
   const menuOptions = [
     {
@@ -180,8 +176,8 @@ function PostContent({
   });
 
   const handlePressMenu = ({nativeEvent: {event}}) => {
-    if (event == PostEventTypes.Delete) deleteObject();
-    if (event == PostEventTypes.Report) gotoReport();
+    if (event == PostEventTypes.Delete) deletePost();
+    if (event == PostEventTypes.Report) reportPost();
   };
 
   const gotoLikeList = useGotoLikeList({

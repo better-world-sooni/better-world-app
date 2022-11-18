@@ -95,5 +95,10 @@
 	<false/>
 	<key>UIUserInterfaceStyle</key>
 	<string>Light</string>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>kaikas</string>
+		<string>kakaotalk</string>
+	</array>
 </dict>
 </plist>

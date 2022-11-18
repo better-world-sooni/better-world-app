@@ -177,7 +177,7 @@ const PasswordSigninScreen = () => {
               overflowHidden
               onPress={handleAddressSignIn}>
               <Div absolute>
-                <GradientColorRect height={48} width={400} />
+                <GradientColorRect height={48} width={DEVICE_WIDTH} />
               </Div>
               <Col />
               <Col auto>

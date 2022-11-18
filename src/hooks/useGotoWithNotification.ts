@@ -20,7 +20,7 @@ export function useGotoWithNotification() {
             meta_name,
             meta_image_uri,
         } = notificationData
-        if(['like_post', 'like_comment', 'comment'].includes(event)){
+        if(['like_post', 'like_comment', 'comment', 'donation'].includes(event)){
             apiGETWithToken(apis.post.postId._(post_id));
             notificationNavigate(NAV_NAMES.Post, {postId: post_id, autoFocus: false})
         } 

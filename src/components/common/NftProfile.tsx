@@ -1,4 +1,9 @@
-import {ChevronLeft, MoreHorizontal, Settings} from 'react-native-feather';
+import {
+  ChevronLeft,
+  Flag,
+  MoreHorizontal,
+  Settings,
+} from 'react-native-feather';
 import React, {useEffect, useState} from 'react';
 import {getNftName, useIsCurrentNft} from 'src/utils/nftUtils';
 import {Col} from './Col';
@@ -221,6 +226,7 @@ export default function NftProfile({
               ml15
               relative
               overflowHidden
+              bg={'rgba(0,0,0,0.5)'}
               p5
               rounded100
               onPress={goBack}>
@@ -252,16 +258,22 @@ export default function NftProfile({
               />
             </Col>
           ) : (
-            <MenuView onPressAction={handlePressMenu} actions={menuOptions}>
-              <Col auto mr15 bg={'rgba(0,0,0,0.5)'} p5 rounded100>
-                <MoreHorizontal
-                  width={20}
-                  height={20}
+            !isBlocked && (
+              <Col
+                auto
+                mr15
+                bg={'rgba(0,0,0,0.5)'}
+                p8
+                rounded100
+                onPress={handlePressBlock}>
+                <Flag
+                  width={14}
+                  height={14}
                   color={Colors.white}
                   strokeWidth={2.4}
                 />
               </Col>
-            </MenuView>
+            )
           )}
         </Row>
       </Div>

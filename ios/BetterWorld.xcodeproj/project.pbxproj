@@ -30,7 +30,6 @@
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		84ED35E67A294CE58D67DD5B /* Uni Sans SemiBold Italic.otf in Resources */ = {isa = PBXBuildFile; fileRef = B21D244718064C408CDD1C9E /* Uni Sans SemiBold Italic.otf */; };
 		8C14521A273912FB009592BD /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8C145219273912FA009592BD /* GoogleService-Info.plist */; };
-		8C5044B628A4309D00ED8AE1 /* AppCenter-Config.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8C5044B528A4309D00ED8AE1 /* AppCenter-Config.plist */; };
 		8C914AB92861AC15004DF33D /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C914AB82861AC15004DF33D /* AVFoundation.framework */; };
 		8C916B5126FF182F00AB49D1 /* libswiftWebKit.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 8C916B5026FF182F00AB49D1 /* libswiftWebKit.tbd */; };
 		8CAE2949290E5132009553CA /* AppCenter-Config.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8CAE2948290E5131009553CA /* AppCenter-Config.plist */; };

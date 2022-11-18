@@ -96,7 +96,6 @@ function CarouselItem({
             <Video
               source={{uri: item.uri}}
               repeat
-              muted
               style={{
                 width: sliderWidth,
                 height: imageHeight,

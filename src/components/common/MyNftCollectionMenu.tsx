@@ -60,7 +60,7 @@ const MyNftCollectionMenu = ({nftCollection}) => {
   const gotoSocialSetting = useGotoSocialSetting();
   const gotoStoreSetting = useGotoStoreSetting();
   const notchHeight = HAS_NOTCH ? 44 : 0;
-  const headerHeight = notchHeight + 30;
+  const headerHeight = notchHeight + 50;
   const isAdmin = useIsAdmin();
   return (
     <Div flex={1} bg={backgroundColor} relative borderRight={0.5} borderGray200>
