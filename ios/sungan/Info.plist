@@ -91,14 +91,17 @@
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
 	</array>
-	<key>UIViewControllerBasedStatusBarAppearance</key>
-	<false/>
 	<key>UIUserInterfaceStyle</key>
 	<string>Light</string>
+<<<<<<< HEAD
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>kaikas</string>
 		<string>kakaotalk</string>
 	</array>
+=======
+	<key>UIViewControllerBasedStatusBarAppearance</key>
+	<false/>
+>>>>>>> develop
 </dict>
 </plist>
