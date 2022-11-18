@@ -88,6 +88,7 @@
 		822E0F6174BB00DDAE08A9A8 /* Pods-sungan-sunganTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-sungan-sunganTests.debug.xcconfig"; path = "Target Support Files/Pods-sungan-sunganTests/Pods-sungan-sunganTests.debug.xcconfig"; sourceTree = "<group>"; };
 		8C145219273912FA009592BD /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "sungan/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		8C14521B273919B3009592BD /* sungan.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = sungan.entitlements; path = sungan/sungan.entitlements; sourceTree = "<group>"; };
+		8C5044B528A4309D00ED8AE1 /* AppCenter-Config.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "AppCenter-Config.plist"; path = "sungan/AppCenter-Config.plist"; sourceTree = "<group>"; };
 		8C914AB82861AC15004DF33D /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		8C916B4D26FF154A00AB49D1 /* libswiftWebKit.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libswiftWebKit.tbd; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX11.3.sdk/System/iOSSupport/usr/lib/swift/libswiftWebKit.tbd; sourceTree = DEVELOPER_DIR; };
 		8C916B5026FF182F00AB49D1 /* libswiftWebKit.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libswiftWebKit.tbd; path = usr/lib/swift/libswiftWebKit.tbd; sourceTree = SDKROOT; };
@@ -156,6 +157,7 @@
 		13B07FAE1A68108700A75B9A /* sungan */ = {
 			isa = PBXGroup;
 			children = (
+				8C5044B528A4309D00ED8AE1 /* AppCenter-Config.plist */,
 				8C14521B273919B3009592BD /* sungan.entitlements */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,

@@ -116,24 +116,26 @@ export default function NftProfileHeader({nftCore, nft, isCurrentNft, qrScan}) {
             <Div>
               <Row py6 itemsCenter>
                 <Col />
-                <Col
-                  auto
-                  px12
-                  onPress={() =>
-                    gotoChatRoom(
-                      getNftName(nftCore),
-                      getNftProfileImage(nftCore),
-                      nftCore.contract_address,
-                      nftCore.token_id,
-                    )
-                  }>
-                  <Send
-                    strokeWidth={2}
-                    color={Colors.black}
-                    height={22}
-                    width={22}
-                  />
-                </Col>
+                {!isBlocked && (
+                  <Col
+                    auto
+                    px12
+                    onPress={() =>
+                      gotoChatRoom(
+                        getNftName(nftCore),
+                        getNftProfileImage(nftCore),
+                        nftCore.contract_address,
+                        nftCore.token_id,
+                      )
+                    }>
+                    <Send
+                      strokeWidth={2}
+                      color={Colors.black}
+                      height={22}
+                      width={22}
+                    />
+                  </Col>
+                )}
                 {isBlocked ? (
                   <Col
                     auto
@@ -213,7 +215,7 @@ export default function NftProfileHeader({nftCore, nft, isCurrentNft, qrScan}) {
         <Row itemsCenter {...(isCurrentNft && {onPress: openNftList})}>
           <Col auto>
             <Span fontSize={20} bold numberOfLines={1}>
-              {getNftName(nft || nftCore)}
+              {isBlocked ? '차단된 사용자' : getNftName(nft || nftCore)}
             </Span>
           </Col>
           {isCurrentNft && (
@@ -227,84 +229,90 @@ export default function NftProfileHeader({nftCore, nft, isCurrentNft, qrScan}) {
             </Col>
           )}
         </Row>
-        {nft && (
-          <Div pt3 onPress={gotoNftCollectionProfile}>
-            <Span gray700 bold>
-              {nftCore.nft_metadatum.name}
-            </Span>
-          </Div>
-        )}
-        <Row itemsCenter mt4={nft?.discord_id || nft?.twitter_id}>
-          {nft?.discord_id ? (
-            <>
-              <Col auto mr5>
-                <Img h={232 / 16} w={300 / 16} source={ICONS.discord} />
-              </Col>
-              <Col auto onPress={handlePressDiscordLink} mr12>
+        {!isBlocked && (
+          <>
+            {nft && (
+              <Div pt3 onPress={gotoNftCollectionProfile}>
                 <Span gray700 bold>
-                  {nft.discord_id}
+                  {nftCore.nft_metadatum.name}
                 </Span>
-              </Col>
-            </>
-          ) : null}
-          {nft?.twitter_id ? (
-            <>
-              <Col auto mr4>
-                <Img h={20} w={20} source={ICONS.twitter} />
-              </Col>
-              <Col auto onPress={handlePressTwitterLink}>
-                <Span gray700 bold>
-                  @{nft.twitter_id}
-                </Span>
-              </Col>
-            </>
-          ) : null}
-        </Row>
-
-        {(nft || nftCore).story ? (
-          <Div mt8 bgWhite>
-            {!enlargeStory ? (
-              <TruncatedText
-                text={(nft || nftCore).story}
-                maxLength={100}
-                onPressTruncated={() => setEnlargeStory(true)}
-              />
-            ) : (
-              <Span>{(nft || nftCore).story}</Span>
+              </Div>
             )}
-          </Div>
-        ) : null}
-        {nft && (
-          <Row mt12>
-            <Col auto mr12 onPress={() => gotoFollowList(FollowType.Followers)}>
-              <Span bold fontSize={13}>
-                <Span gray700 regular fontSize={13}>
-                  팔로워
-                </Span>{' '}
-                {followerCount}
-              </Span>
-            </Col>
-            <Col
-              auto
-              mr12
-              onPress={() => gotoFollowList(FollowType.Followings)}>
-              <Span bold fontSize={13}>
-                <Span gray700 regular fontSize={13}>
-                  팔로잉
-                </Span>{' '}
-                {nft.following_count}
-              </Span>
-            </Col>
-            <Col auto mr12 onPress={handlePressContribution}>
-              <Span bold fontSize={13}>
-                {nft.contribution}{' '}
-                <Span gray700 regular fontSize={13}>
-                  인분 기여
-                </Span>
-              </Span>
-            </Col>
-            <Col />
-          </Row>
+            <Row itemsCenter mt4={nft?.discord_id || nft?.twitter_id}>
+              {nft?.discord_id ? (
+                <>
+                  <Col auto mr5>
+                    <Img h={232 / 16} w={300 / 16} source={ICONS.discord} />
+                  </Col>
+                  <Col auto onPress={handlePressDiscordLink} mr12>
+                    <Span gray700 bold>
+                      {nft.discord_id}
+                    </Span>
+                  </Col>
+                </>
+              ) : null}
+              {nft?.twitter_id ? (
+                <>
+                  <Col auto mr4>
+                    <Img h={20} w={20} source={ICONS.twitter} />
+                  </Col>
+                  <Col auto onPress={handlePressTwitterLink}>
+                    <Span gray700 bold>
+                      @{nft.twitter_id}
+                    </Span>
+                  </Col>
+                </>
+              ) : null}
+            </Row>
+            {(nft || nftCore).story ? (
+              <Div mt8 bgWhite>
+                {!enlargeStory ? (
+                  <TruncatedText
+                    text={(nft || nftCore).story}
+                    maxLength={100}
+                    onPressTruncated={() => setEnlargeStory(true)}
+                  />
+                ) : (
+                  <Span>{(nft || nftCore).story}</Span>
+                )}
+              </Div>
+            ) : null}
+            {nft && (
+              <Row mt12>
+                <Col
+                  auto
+                  mr12
+                  onPress={() => gotoFollowList(FollowType.Followers)}>
+                  <Span bold fontSize={13}>
+                    <Span gray700 regular fontSize={13}>
+                      팔로워
+                    </Span>{' '}
+                    {followerCount}
+                  </Span>
+                </Col>
+                <Col
+                  auto
+                  mr12
+                  onPress={() => gotoFollowList(FollowType.Followings)}>
+                  <Span bold fontSize={13}>
+                    <Span gray700 regular fontSize={13}>
+                      팔로잉
+                    </Span>{' '}
+                    {nft.following_count}
+                  </Span>
+                </Col>
+                <Col auto mr12 onPress={handlePressContribution}>
+                  <Span bold fontSize={13}>
+                    {nft.contribution}{' '}
+                    <Span gray700 regular fontSize={13}>
+                      인분 기여
+                    </Span>
+                  </Span>
+                </Col>
+                <Col />
+              </Row>
+            )}
+          </>
         )}
       </Div>
     </>

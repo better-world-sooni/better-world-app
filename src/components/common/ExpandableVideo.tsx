@@ -14,13 +14,7 @@ export default function ExpandableVideo({url, width, height}) {
       borderGray200
       border={0.5}
       overflowHidden>
-      <Video
-        ref={ref}
-        source={{uri: url}}
-        style={{width, height}}
-        muted
-        repeat
-      />
+      <Video ref={ref} source={{uri: url}} style={{width, height}} repeat />
     </Div>
   );
 }

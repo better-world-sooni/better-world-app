@@ -280,7 +280,6 @@ const NewPostScreen = ({
                       width: sliderWidth,
                       height: (sliderWidth * video.height) / video.width,
                     }}
-                    muted
                     repeat
                   />
                 </Div>

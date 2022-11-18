@@ -44,4 +44,9 @@
         </intent-filter>
       </activity>
     </application>
+    <queries>
+        <package android:name="com.kakas.talk" />
+        <package android:name="com.klipwallet.app" />
+        <package android:name="io.klutch.wallet" />
+    </queries>
 </manifest>

@@ -8,7 +8,7 @@ import { useAutoLogin } from 'src/redux/appReducer';
 import { postPromiseFn } from 'src/redux/asyncReducer';
 import { openInfoPopup } from 'src/utils/bottomPopupUtils';
 import { largeBump, smallBump } from 'src/utils/hapticFeedBackUtils';
-import { kaikasApp2AppRequestUrl, klipApp2AppRequestUrl } from 'src/utils/uriUtils';
+import { kaikasApp2AppRequestUrl, kaikasAppDownloadUrl, klipApp2AppRequestUrl } from 'src/utils/uriUtils';
 import { useGotoHome } from './useGoto';
 
 const SERVER_URL = "https://api.kaikas.io/api/v1/k"
@@ -58,7 +58,12 @@ export default function useKaikasLogin(){
         setError('')
         const prepareRes = await prepare.auth({ bappName }) as PrepareResult
         setPrepareAuthResult(prepareRes)
-        Linking.openURL(kaikasApp2AppRequestUrl(prepareRes.request_key))
+        const canOpenUrl = await Linking.canOpenURL(kaikasApp2AppRequestUrl(prepareRes.request_key))
+        if(canOpenUrl) {
+          Linking.openURL(kaikasApp2AppRequestUrl(prepareRes.request_key))
+        } else {
+          Linking.openURL(kaikasAppDownloadUrl())
+        }
     }
     
     async function checkResultAndLogin(){
