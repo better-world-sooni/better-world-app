@@ -15,7 +15,14 @@ import {FlatList, ImageBackground} from 'src/components/common/ViewComponents';
 import ListEmptyComponent from 'src/components/common/ListEmptyComponent';
 import {ActivityIndicator, RefreshControl} from 'react-native';
 import {HAS_NOTCH} from 'src/modules/constants';
-import {Archive, ChevronDown, Clock, Gift, Search} from 'react-native-feather';
+import {
+  Archive,
+  Bookmark,
+  ChevronDown,
+  Clock,
+  Gift,
+  Search,
+} from 'react-native-feather';
 import {
   useGotoEventApplicationList,
   useGotoNftCollectionSearch,
@@ -30,8 +37,8 @@ import {MenuView} from '@react-native-menu/menu';
 
 enum DrawEventFeedFilter {
   All = 'all',
-  Eligible = 'eligible',
-  Following = 'following',
+  Notice = 'notice',
+  Event = 'event',
 }
 
 enum DrawEventOrder {
@@ -49,14 +56,6 @@ const orderTypes = [
   {
     id: `${DrawEventOrder.Recent}`,
     title: '최신 순',
-  },
-  {
-    id: `${DrawEventOrder.Event}`,
-    title: '이벤트',
-  },
-  {
-    id: `${DrawEventOrder.Announcement}`,
-    title: '공지',
   },
 ];
 
@@ -91,21 +90,21 @@ export default function StoreScreen() {
   const handlePressFilter = filter => {
     scrollToTop();
     if (
-      filter == DrawEventFeedFilter.Eligible &&
-      data?.filter !== DrawEventFeedFilter.Eligible
+      filter == DrawEventFeedFilter.Notice &&
+      data?.filter !== DrawEventFeedFilter.Notice
     ) {
       reloadGETWithToken(apis.feed.draw_event._(filter, order));
     }
     if (
-      filter == DrawEventFeedFilter.Following &&
-      data?.filter !== DrawEventFeedFilter.Following
+      filter == DrawEventFeedFilter.Event &&
+      data?.filter !== DrawEventFeedFilter.Event
     ) {
-      reloadGETWithToken(apis.feed.draw_event._(filter, order));
+      reloadGETWithToken(apis.feed.draw_event._(filter, DrawEventOrder.Recent));
     }
   };
   const handlePressOrder = ({nativeEvent: {event}}) => {
     // scrollToTop();
-    console.log(event);
+    // console.log(event);
     setOrder(event);
     reloadGETWithToken(apis.feed.draw_event._(data?.filter, event));
   };
@@ -113,6 +112,8 @@ export default function StoreScreen() {
   const gotoNftCollectionSearch = useGotoNftCollectionSearch();
   const notchHeight = useSafeAreaInsets().top;
   const headerHeight = notchHeight + 50;
+  const numColumns = 2;
+  const paddingX = (DEVICE_WIDTH * 30) / 390;
 
   useEffect(() => {
     const unsubscribe = navigation.addListener(
@@ -121,13 +122,13 @@ export default function StoreScreen() {
       e => {
         const isFocused = navigation.isFocused();
         if (isFocused) {
-          if (data?.filter == DrawEventFeedFilter.Eligible) {
+          if (data?.filter == DrawEventFeedFilter.Notice) {
             reloadGETWithToken(
-              apis.feed.draw_event._(DrawEventFeedFilter.Following),
+              apis.feed.draw_event._(DrawEventFeedFilter.Event),
             );
           } else {
             reloadGETWithToken(
-              apis.feed.draw_event._(DrawEventFeedFilter.Eligible),
+              apis.feed.draw_event._(DrawEventFeedFilter.Notice),
             );
           }
           smallBump();
@@ -145,36 +146,47 @@ export default function StoreScreen() {
           <Col
             auto
             h30
-            w={(30 * 742) / 512}
+            w={(30 * 239) / 158}
             mr12
             itemsCenter
             justifyCenter
-            onPress={() => handlePressFilter(DrawEventFeedFilter.Eligible)}>
-            {data?.filter !== DrawEventFeedFilter.Eligible ? (
+            onPress={() => handlePressFilter(DrawEventFeedFilter.Notice)}>
+            {data?.filter !== DrawEventFeedFilter.Notice ? (
               <Span bold fontSize={19} gray400>
-                {'MY'}
+                {'공지'}
               </Span>
             ) : (
-              <Img source={IMAGES.my} h30 w={(30 * 742) / 512}></Img>
+              <Img
+                source={IMAGES.notificationText}
+                h22
+                w={(22 * 239) / 158}></Img>
             )}
           </Col>
           <Col
             auto
             h30
-            w={(30 * 1624) / 512}
+            w={(30 * 355) / 158}
             mr12
             itemsCenter
             justifyCenter
-            onPress={() => handlePressFilter(DrawEventFeedFilter.Following)}>
-            {data?.filter !== DrawEventFeedFilter.Following ? (
+            onPress={() => handlePressFilter(DrawEventFeedFilter.Event)}>
+            {data?.filter !== DrawEventFeedFilter.Event ? (
               <Span bold fontSize={19} gray400>
-                {'Following'}
+                {'이벤트'}
               </Span>
             ) : (
-              <Img source={IMAGES.following} h30 w={(30 * 1624) / 512}></Img>
+              <Img source={IMAGES.eventText} h22 w={(22 * 355) / 158}></Img>
             )}
           </Col>
           <Col />
+          <Col auto onPress={null} pl18>
+            <Bookmark
+              strokeWidth={2}
+              color={Colors.black}
+              height={22}
+              width={22}
+            />
+          </Col>
           <Col auto onPress={gotoNftCollectionSearch} pl18>
             <Search
               strokeWidth={2}
@@ -191,6 +203,7 @@ export default function StoreScreen() {
       <FlatList
         ref={flatlistRef}
         showsVerticalScrollIndicator={false}
+        numColumns={numColumns}
         keyExtractor={item => (item as any).id}
         ListHeaderComponent={
           <Div>
@@ -224,28 +237,31 @@ export default function StoreScreen() {
                 </Span>
               </Div>
             </ImageBackground>
-            <Div px20 py5>
-              <MenuView onPressAction={handlePressOrder} actions={orderTypes}>
-                <Row itemsCenter onPress={() => {}}>
-                  <Col auto mr2>
-                    <Span bold fontSize={16}>
-                      {
-                        orderTypes.filter(orderType => order == orderType.id)[0]
-                          .title
-                      }
-                    </Span>
-                  </Col>
-                  <Col auto>
-                    <ChevronDown
-                      color={Colors.black}
-                      height={19}
-                      width={19}
-                      strokeWidth={2.4}
-                    />
-                  </Col>
-                </Row>
-              </MenuView>
-            </Div>
+            {data?.filter === DrawEventFeedFilter.Notice && (
+              <Div px20 py5>
+                <MenuView onPressAction={handlePressOrder} actions={orderTypes}>
+                  <Row itemsCenter onPress={() => {}}>
+                    <Col auto mr2>
+                      <Span bold fontSize={16}>
+                        {
+                          orderTypes.filter(
+                            orderType => order == orderType.id,
+                          )[0].title
+                        }
+                      </Span>
+                    </Col>
+                    <Col auto>
+                      <ChevronDown
+                        color={Colors.black}
+                        height={19}
+                        width={19}
+                        strokeWidth={2.4}
+                      />
+                    </Col>
+                  </Row>
+                </MenuView>
+              </Div>
+            )}
           </Div>
         }
         ListEmptyComponent={
@@ -265,9 +281,10 @@ export default function StoreScreen() {
                 (item as any).event_application?.status
               }-${(item as any).status}-${(item as any).read_count}`}
               drawEvent={item}
-              mx={20}
-              my={10}
-              width={DEVICE_WIDTH - 20 * 2}
+              mx={data?.filter === DrawEventFeedFilter.Event ? paddingX : 0}
+              my={8}
+              summary={data?.filter === DrawEventFeedFilter.Event}
+              width={DEVICE_WIDTH}
             />
           );
         }}
@@ -278,7 +295,14 @@ export default function StoreScreen() {
                 <ActivityIndicator />
               </Div>
             )}
-            <Div h={HAS_NOTCH ? 27 : 12} />
+            {isNotPaginatable && (
+              <Div itemsCenter py15>
+                <Span textCenter bold>
+                  모두 확인했습니다.
+                </Span>
+              </Div>
+            )}
+            <Div h={(HAS_NOTCH ? 27 : 12) + 100} />
           </>
         }></FlatList>
     </Div>

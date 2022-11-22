@@ -163,7 +163,9 @@ export default function NftCollectionProfile({
       setBgImgColor(Colors.gray[400]);
     }
   }, [nftCollection, bgImgColor, setBgImgColor]);
-
+  const drawEventsLength = nftCollectionPostListRes?.draw_events
+    ? nftCollectionPostListRes?.draw_events.length
+    : 0;
   return (
     <>
       {Platform.OS === 'android' && (
@@ -439,17 +441,21 @@ export default function NftCollectionProfile({
             </Div>
           </>
         }
-        renderItem={({item}) => {
+        renderItem={({item, index}) => {
           return (
-            <Div bgGray100>
+            <Div
+              bgGray100
+              borderBottom={index < drawEventsLength - 1 ? 1.2 : 0}
+              borderGray200={index < drawEventsLength - 1}>
               <DrawEvent
                 key={`${(item as any).id}-${
                   (item as any).event_application?.status
                 }-${(item as any).status}-${(item as any).read_count}`}
                 drawEvent={item}
-                mx={20}
-                my={10}
-                width={DEVICE_WIDTH - 20 * 2}
+                mx={0}
+                my={0}
+                width={DEVICE_WIDTH}
+                showCollection={false}
               />
             </Div>
           );
