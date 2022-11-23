@@ -43,7 +43,7 @@ import FocusAwareStatusBar from 'src/components/FocusAwareStatusBar';
 import {expandImageViewer} from 'src/utils/imageViewerUtils';
 import GradientColorRect from './GradientColorRect';
 import TruncatedText from './TruncatedText';
-import DrawEvent from './DrawEvent';
+import {DrawEventMemo} from './DrawEvent';
 
 export default function NftCollectionProfile({
   nftCollectionCore,
@@ -447,14 +447,14 @@ export default function NftCollectionProfile({
               bgGray100
               borderBottom={index < drawEventsLength - 1 ? 1.2 : 0}
               borderGray200={index < drawEventsLength - 1}>
-              <DrawEvent
+              <DrawEventMemo
                 key={`${(item as any).id}-${
                   (item as any).event_application?.status
                 }-${(item as any).status}-${(item as any).read_count}`}
                 drawEvent={item}
                 mx={0}
                 my={0}
-                width={DEVICE_WIDTH}
+                width={DEVICE_WIDTH - 0}
                 showCollection={false}
               />
             </Div>

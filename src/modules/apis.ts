@@ -174,8 +174,12 @@ const apis = {
   like: {
     post: postId => apiV1(`/like/post/${postId}`),
     comment: commentId => apiV1(`/like/comment/${commentId}`),
+    drawEvent: eventId => apiV1(`/like/draw_event/${eventId}`),
     list: (likableType, likableId, page?) =>
       apiV1(`/like/${likableType}/${likableId}/list${urlParams({page})}`),
+  },
+  bookmark: {
+    drawEvent: eventId => apiV1(`/bookmark/draw_event/${eventId}`),
   },
   vote: {
     postId: postId => apiV1(`/vote/${postId}`),
@@ -255,8 +259,12 @@ const apis = {
     social: (filter?, page?) =>
       apiV1(`/feed/social${urlParams({page, filter})}`),
     draw_event: {
-      _: (filter?, order?, page?) =>
-        apiV1(`/feed/draw_event${urlParams({page, order, filter})}`),
+      _: (filter?, bookmarked = false, order?, page?) =>
+        bookmarked
+          ? apiV1(
+              `/feed/draw_event/bookmark${urlParams({page, order, filter})}`,
+            )
+          : apiV1(`/feed/draw_event${urlParams({page, order, filter})}`),
       nftCollection: (contractAddress, page?) =>
         apiV1(
           `/feed/draw_event/nft_collection${urlParams({

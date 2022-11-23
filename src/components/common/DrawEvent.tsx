@@ -28,6 +28,9 @@ import {Img} from './Img';
 import {Row} from './Row';
 import {Span} from './Span';
 import TruncatedText from './TruncatedText';
+import useLike, {LikableType} from 'src/hooks/useLike';
+import useBookmark, {BookmarkableType} from 'src/hooks/useBookmark';
+import _ from 'lodash';
 
 enum DrawEventOption {
   DELETE = '0',
@@ -60,7 +63,14 @@ const drawEventOptions = [
   },
 ];
 
-export default function DrawEvent({
+export const DrawEventMemo = React.memo(
+  DrawEvent,
+  (props, nextProps) =>
+    // _.isEqual(props?.drawEvent?.name, nextProps?.drawEvent?.name),
+    false,
+);
+
+function DrawEvent({
   drawEvent: initialDrawEvent,
   width,
   mx,
@@ -99,72 +109,232 @@ export default function DrawEvent({
       updateDrawEventStatus(DrawEventStatus.IN_PROGRESS);
     }
   };
+  const [liked, likesCount, handlePressLike] = useLike(
+    drawEvent.is_liked,
+    drawEvent.likes_count,
+    LikableType.DrawEvent,
+    drawEvent.id,
+  );
+  const [bookmarked, handlePressBookmark] = useBookmark(
+    drawEvent.is_bookmarked,
+    BookmarkableType.DrawEvent,
+    drawEvent.id,
+  );
+
   const actionIconDefaultProps = {
     width: 20,
     height: 20,
     color: Colors.gray[600],
     strokeWidth: 1.6,
   };
+  const heartProps = liked
+    ? {
+        fill: Colors.danger.DEFAULT,
+        width: 20,
+        height: 20,
+        color: Colors.danger.DEFAULT,
+        strokeWidth: 1.6,
+      }
+    : actionIconDefaultProps;
 
-  const expireDay = getNowDifference(new Date(drawEvent?.expires_at));
+  const bookmarkProps = bookmarked
+    ? {
+        fill: Colors.blue.DEFAULT,
+        width: 20,
+        height: 20,
+        color: Colors.blue.DEFAULT,
+        strokeWidth: 1.6,
+      }
+    : actionIconDefaultProps;
+  const expireDay = getNowDifference(drawEvent?.expires_at);
 
   if (deleted) return null;
   return (
-    <Row w={summary ? width / 2 : width} itemsCenter>
-      <Div
-        w={(summary ? width / 2 : width) - 2 * mx}
-        mx={mx}
-        my={my}
-        relative
-        bgWhite={!summary}>
-        {currentNft.privilege &&
-          currentNft.contract_address ==
-            drawEvent.nft_collection.contract_address && (
-            <Div
-              absolute
-              right0
-              mt8
-              mr10
-              zIndex={1}
-              rounded100
-              bg={'rgba(0,0,0,0.5)'}
-              z100>
-              <MenuView
-                onPressAction={handlePressMenu}
-                actions={drawEventOptions}>
-                <Div p4>
-                  {loading ? (
-                    <ActivityIndicator />
-                  ) : (
-                    <MoreHorizontal
-                      color={Colors.white}
-                      width={18}
-                      height={18}
-                    />
+    <Div w={width} mx={mx} my={my} relative bgWhite={!summary}>
+      {currentNft.privilege &&
+        currentNft.contract_address ==
+          drawEvent.nft_collection.contract_address && (
+          <Div absolute right0 mt6 mr10 zIndex={1} z100>
+            <MenuView
+              onPressAction={handlePressMenu}
+              actions={drawEventOptions}>
+              <Div p4>
+                {loading ? (
+                  <ActivityIndicator />
+                ) : (
+                  <MoreHorizontal color={Colors.black} width={18} height={18} />
+                )}
+              </Div>
+            </MenuView>
+          </Div>
+        )}
+      {summary ? (
+        <Col
+          relative
+          onPress={
+            selectableFn ? () => selectableFn(drawEvent) : gotoDrawEvent
+          }>
+          {drawEvent.image_uri && (
+            <Div rounded>
+              <Img uri={drawEvent.image_uri} w={width} h={width} rounded5></Img>
+              {drawEvent.has_application == true && (
+                <>
+                  {drawEvent.status == DrawEventStatus.FINISHED && (
+                    <Div
+                      w={width}
+                      h={width}
+                      bg={'rgba(0,0,0,0.5)'}
+                      rounded5
+                      absolute
+                      top0
+                      left0></Div>
                   )}
-                </Div>
-              </MenuView>
+                  {drawEvent.status == DrawEventStatus.FINISHED && (
+                    <Div
+                      absolute
+                      mt5
+                      ml5
+                      zIndex={1}
+                      rounded5
+                      px10
+                      py5
+                      bgGray500
+                      z100>
+                      <MenuView
+                        onPressAction={handlePressMenu}
+                        actions={drawEventOptions}>
+                        <Span bold fontSize={14} white>
+                          마감
+                        </Span>
+                      </MenuView>
+                    </Div>
+                  )}
+                  {drawEvent.status == DrawEventStatus.IN_PROGRESS && (
+                    <Div
+                      absolute
+                      mt5
+                      ml5
+                      zIndex={1}
+                      rounded5
+                      px10
+                      py5
+                      bg={Colors.primary.DEFAULT}
+                      z100>
+                      <MenuView
+                        onPressAction={handlePressMenu}
+                        actions={drawEventOptions}>
+                        <Span bold fontSize={14} white>
+                          {drawEvent?.expires_at
+                            ? 'D-' +
+                              (expireDay > 100
+                                ? '99+'
+                                : expireDay == 1
+                                ? 'DAY'
+                                : expireDay)
+                            : '진행 중'}
+                        </Span>
+                      </MenuView>
+                    </Div>
+                  )}
+                  {drawEvent.status == DrawEventStatus.ANNOUNCED && (
+                    <Div
+                      absolute
+                      mt5
+                      ml5
+                      zIndex={1}
+                      rounded5
+                      px10
+                      py5
+                      bg={Colors.secondary.DEFAULT}
+                      z100>
+                      <MenuView
+                        onPressAction={handlePressMenu}
+                        actions={drawEventOptions}>
+                        <Span bold fontSize={14} white>
+                          당첨 발표
+                        </Span>
+                      </MenuView>
+                    </Div>
+                  )}
+                </>
+              )}
             </Div>
           )}
-        {summary ? (
-          <Col
-            relative
+          <Div itemsCenter py5>
+            <Span bold fontSize={12} numberOfLines={1} gray500 textCenter>
+              {drawEvent.nft_collection?.name}
+            </Span>
+          </Div>
+          <Div itemsCenter>
+            <Span bold fontSize={16} numberOfLines={1} textCenter>
+              {drawEvent.name}
+            </Span>
+          </Div>
+        </Col>
+      ) : (
+        <Col relative px25>
+          <Row pt12 pb5 itemsCenter px5={showCollection}>
+            {showCollection && (
+              <Row itemsCenter onPress={gotoNftCollection}>
+                <Col auto pr10>
+                  <Img
+                    uri={getNftCollectionProfileImage(
+                      drawEvent.nft_collection,
+                      100,
+                      100,
+                    )}
+                    h28
+                    w28
+                    rounded14
+                  />
+                </Col>
+                <Div>
+                  <Span bold fontSize={13} numberOfLines={1} mr10>
+                    {drawEvent.nft_collection?.name}
+                  </Span>
+                </Div>
+              </Row>
+            )}
+            <Div>
+              <Span fontSize={13} numberOfLines={1} gray500>
+                {createdAtText(drawEvent?.created_at)}
+              </Span>
+            </Div>
+          </Row>
+          <Row
+            pb15
+            itemsCenter
+            borderBottom={1.2}
+            borderGray200
             onPress={
               selectableFn ? () => selectableFn(drawEvent) : gotoDrawEvent
             }>
+            <Col selfStart>
+              <Div mb14>
+                <Span bold fontSize={18} numberOfLines={2}>
+                  {drawEvent.name}
+                </Span>
+              </Div>
+              <Div>
+                <Span bold fontSize={14} numberOfLines={3} gray500>
+                  {drawEvent.description}
+                </Span>
+              </Div>
+              <Col />
+            </Col>
             {drawEvent.image_uri && (
-              <Div rounded>
+              <Div rounded ml15>
                 <Img
                   uri={drawEvent.image_uri}
-                  w={width / 2 - 2 * mx}
-                  h={width / 2 - 2 * mx}
+                  w={(width * 110) / 380}
+                  h={(width * 110) / 380}
                   rounded5></Img>
                 {drawEvent.has_application == true && (
                   <>
                     {drawEvent.status == DrawEventStatus.FINISHED && (
                       <Div
-                        w={width / 2 - 2 * mx}
-                        h={width / 2 - 2 * mx}
+                        w={(width * 110) / 380}
+                        h={(width * 110) / 380}
                         bg={'rgba(0,0,0,0.5)'}
                         rounded5
                         absolute
@@ -206,7 +376,7 @@ export default function DrawEvent({
                           onPressAction={handlePressMenu}
                           actions={drawEventOptions}>
                           <Span bold fontSize={14} white>
-                            {drawEvent?.expires_at
+                            {expireDay
                               ? 'D-' + (expireDay > 100 ? '99+' : expireDay)
                               : '진행 중'}
                           </Span>
@@ -237,210 +407,66 @@ export default function DrawEvent({
                 )}
               </Div>
             )}
-            <Div itemsCenter py5>
-              <Span bold fontSize={12} numberOfLines={1} gray500 textCenter>
-                {drawEvent.nft_collection?.name}
-              </Span>
-            </Div>
-            <Div itemsCenter>
-              <Span bold fontSize={16} numberOfLines={1} textCenter>
-                {drawEvent.name}
-              </Span>
-            </Div>
-          </Col>
-        ) : (
-          <Col relative px25>
-            <Row pt12 pb5 itemsCenter px5={showCollection}>
-              {showCollection && (
-                <>
-                  <Col auto pr10 onPress={gotoNftCollection}>
-                    <Img
-                      uri={getNftCollectionProfileImage(
-                        drawEvent.nft_collection,
-                        100,
-                        100,
-                      )}
-                      h28
-                      w28
-                      rounded14
-                    />
-                  </Col>
-                  <Div>
-                    <Span bold fontSize={13} numberOfLines={1} mr10>
-                      {drawEvent.nft_collection?.name}
-                    </Span>
-                  </Div>
-                </>
-              )}
-              <Div>
-                <Span fontSize={13} numberOfLines={1} gray500>
-                  {createdAtText(drawEvent?.created_at)}
-                </Span>
-              </Div>
-            </Row>
-            <Row
-              pb15
+          </Row>
+          <Row py15 px15>
+            <Col itemsCenter onPress={null}>
+              <Row auto itemsCenter>
+                <Col pr10>
+                  <Repeat {...actionIconDefaultProps} />
+                </Col>
+                <Col>
+                  <Span
+                    fontSize={15}
+                    color={Colors.gray[600]}
+                    style={{fontWeight: '600'}}>
+                    {drawEvent?.repost_count}
+                  </Span>
+                </Col>
+              </Row>
+            </Col>
+            <Col />
+            <Col
               itemsCenter
-              borderBottom={1.2}
-              borderGray200
               onPress={
                 selectableFn ? () => selectableFn(drawEvent) : gotoDrawEvent
               }>
-              <Col selfStart>
-                <Div mb14>
-                  <Span bold fontSize={18} numberOfLines={2}>
-                    {drawEvent.name}
+              <Row auto itemsCenter>
+                <Col pr10>
+                  <MessageCircle {...actionIconDefaultProps} />
+                </Col>
+                <Col>
+                  <Span
+                    fontSize={15}
+                    color={Colors.gray[600]}
+                    style={{fontWeight: '600'}}>
+                    {drawEvent?.comments_count}
                   </Span>
-                </Div>
-                <Div>
-                  <Span bold fontSize={14} numberOfLines={3} gray500>
-                    {drawEvent.description}
+                </Col>
+              </Row>
+            </Col>
+            <Col />
+            <Col itemsCenter onPress={handlePressLike}>
+              <Row auto itemsCenter>
+                <Col pr10>
+                  <Heart {...heartProps} />
+                </Col>
+                <Col>
+                  <Span
+                    fontSize={15}
+                    color={Colors.gray[600]}
+                    style={{fontWeight: '600'}}>
+                    {likesCount}
                   </Span>
-                </Div>
-                <Col />
-              </Col>
-              {drawEvent.image_uri && (
-                <Div rounded ml15>
-                  <Img
-                    uri={drawEvent.image_uri}
-                    w={(width * 110) / 380}
-                    h={(width * 110) / 380}
-                    rounded5></Img>
-                  {drawEvent.has_application == true && (
-                    <>
-                      {drawEvent.status == DrawEventStatus.FINISHED && (
-                        <Div
-                          w={(width * 110) / 380}
-                          h={(width * 110) / 380}
-                          bg={'rgba(0,0,0,0.5)'}
-                          rounded5
-                          absolute
-                          top0
-                          left0></Div>
-                      )}
-                      {drawEvent.status == DrawEventStatus.FINISHED && (
-                        <Div
-                          absolute
-                          mt5
-                          ml5
-                          zIndex={1}
-                          rounded5
-                          px10
-                          py5
-                          bgGray500
-                          z100>
-                          <MenuView
-                            onPressAction={handlePressMenu}
-                            actions={drawEventOptions}>
-                            <Span bold fontSize={14} white>
-                              마감
-                            </Span>
-                          </MenuView>
-                        </Div>
-                      )}
-                      {drawEvent.status == DrawEventStatus.IN_PROGRESS && (
-                        <Div
-                          absolute
-                          mt5
-                          ml5
-                          zIndex={1}
-                          rounded5
-                          px10
-                          py5
-                          bg={Colors.primary.DEFAULT}
-                          z100>
-                          <MenuView
-                            onPressAction={handlePressMenu}
-                            actions={drawEventOptions}>
-                            <Span bold fontSize={14} white>
-                              {drawEvent?.expires_at
-                                ? 'D-' + (expireDay > 100 ? '99+' : expireDay)
-                                : '진행 중'}
-                            </Span>
-                          </MenuView>
-                        </Div>
-                      )}
-                      {drawEvent.status == DrawEventStatus.ANNOUNCED && (
-                        <Div
-                          absolute
-                          mt5
-                          ml5
-                          zIndex={1}
-                          rounded5
-                          px10
-                          py5
-                          bg={Colors.secondary.DEFAULT}
-                          z100>
-                          <MenuView
-                            onPressAction={handlePressMenu}
-                            actions={drawEventOptions}>
-                            <Span bold fontSize={14} white>
-                              당첨 발표
-                            </Span>
-                          </MenuView>
-                        </Div>
-                      )}
-                    </>
-                  )}
-                </Div>
-              )}
-            </Row>
-            <Row py15 px15>
-              <Col itemsCenter onPress={null}>
-                <Row auto itemsCenter>
-                  <Col pr10>
-                    <Repeat {...actionIconDefaultProps} />
-                  </Col>
-                  <Col>
-                    <Span
-                      fontSize={15}
-                      color={Colors.gray[600]}
-                      style={{fontWeight: '600'}}>
-                      {0}
-                    </Span>
-                  </Col>
-                </Row>
-              </Col>
-              <Col />
-              <Col itemsCenter onPress={null}>
-                <Row auto itemsCenter>
-                  <Col pr10>
-                    <MessageCircle {...actionIconDefaultProps} />
-                  </Col>
-                  <Col>
-                    <Span
-                      fontSize={15}
-                      color={Colors.gray[600]}
-                      style={{fontWeight: '600'}}>
-                      {0}
-                    </Span>
-                  </Col>
-                </Row>
-              </Col>
-              <Col />
-              <Col itemsCenter onPress={null}>
-                <Row auto itemsCenter>
-                  <Col pr10>
-                    <Heart {...actionIconDefaultProps} />
-                  </Col>
-                  <Col>
-                    <Span
-                      fontSize={15}
-                      color={Colors.gray[600]}
-                      style={{fontWeight: '600'}}>
-                      {0}
-                    </Span>
-                  </Col>
-                </Row>
-              </Col>
-              <Col />
-              <Col auto onPress={null}>
-                {<Bookmark {...actionIconDefaultProps}></Bookmark>}
-              </Col>
-            </Row>
-          </Col>
-        )}
-      </Div>
-    </Row>
+                </Col>
+              </Row>
+            </Col>
+            <Col />
+            <Col auto onPress={handlePressBookmark}>
+              {<Bookmark {...bookmarkProps}></Bookmark>}
+            </Col>
+          </Row>
+        </Col>
+      )}
+    </Div>
   );
 }

@@ -27,7 +27,7 @@ import {
   useGotoEventApplicationList,
   useGotoNftCollectionSearch,
 } from 'src/hooks/useGoto';
-import DrawEvent from 'src/components/common/DrawEvent';
+import {DrawEventMemo} from 'src/components/common/DrawEvent';
 import {useNavigation} from '@react-navigation/native';
 import {smallBump} from 'src/utils/hapticFeedBackUtils';
 import {Img} from 'src/components/common/Img';
@@ -68,6 +68,7 @@ export default function StoreScreen() {
     apis.nft_collection._(),
   );
   const [order, setOrder] = useState(DrawEventOrder.Recent);
+  const [bookmarked, setBookmarked] = useState(false);
   const nftCollection = nftCollectionRes?.nft_collection;
   const drawEvents = data ? data.draw_events : [];
   const reloadGETWithToken = useReloadGETWithToken();
@@ -75,12 +76,12 @@ export default function StoreScreen() {
   const handleEndReached = () => {
     if (isPaginating || isNotPaginatable) return;
     paginateGetWithToken(
-      apis.feed.draw_event._(data?.filter, order, page + 1),
+      apis.feed.draw_event._(data?.filter, bookmarked, order, page + 1),
       'draw_events',
     );
   };
   const handleRefresh = () => {
-    reloadGETWithToken(apis.feed.draw_event._(data?.filter, order));
+    reloadGETWithToken(apis.feed.draw_event._(data?.filter, bookmarked, order));
   };
   const scrollToTop = () => {
     flatlistRef?.current
@@ -93,20 +94,29 @@ export default function StoreScreen() {
       filter == DrawEventFeedFilter.Notice &&
       data?.filter !== DrawEventFeedFilter.Notice
     ) {
-      reloadGETWithToken(apis.feed.draw_event._(filter, order));
+      reloadGETWithToken(apis.feed.draw_event._(filter, bookmarked, order));
     }
     if (
       filter == DrawEventFeedFilter.Event &&
       data?.filter !== DrawEventFeedFilter.Event
     ) {
-      reloadGETWithToken(apis.feed.draw_event._(filter, DrawEventOrder.Recent));
+      setOrder(DrawEventOrder.Recent);
+      reloadGETWithToken(
+        apis.feed.draw_event._(filter, bookmarked, DrawEventOrder.Recent),
+      );
     }
   };
   const handlePressOrder = ({nativeEvent: {event}}) => {
     // scrollToTop();
     // console.log(event);
     setOrder(event);
-    reloadGETWithToken(apis.feed.draw_event._(data?.filter, event));
+    reloadGETWithToken(apis.feed.draw_event._(data?.filter, bookmarked, event));
+  };
+  const handlePressBookmark = () => {
+    setBookmarked(prev => !prev);
+    reloadGETWithToken(
+      apis.feed.draw_event._(data?.filter, !bookmarked, order),
+    );
   };
   const gotoEventApplicationList = useGotoEventApplicationList();
   const gotoNftCollectionSearch = useGotoNftCollectionSearch();
@@ -137,7 +147,21 @@ export default function StoreScreen() {
     );
     return unsubscribe;
   }, [data?.filter]);
-
+  const actionIconDefaultProps = {
+    strokeWidth: 2,
+    color: Colors.black,
+    height: 22,
+    width: 22,
+  };
+  const bookmarkProps = bookmarked
+    ? {
+        fill: Colors.blue.DEFAULT,
+        width: 22,
+        height: 22,
+        color: Colors.blue.DEFAULT,
+        strokeWidth: 2,
+      }
+    : actionIconDefaultProps;
   return (
     <Div flex={1} bg={'#F4F4F8'}>
       <Div bgWhite h={notchHeight}></Div>
@@ -179,13 +203,8 @@ export default function StoreScreen() {
             )}
           </Col>
           <Col />
-          <Col auto onPress={null} pl18>
-            <Bookmark
-              strokeWidth={2}
-              color={Colors.black}
-              height={22}
-              width={22}
-            />
+          <Col auto onPress={handlePressBookmark} pl18>
+            <Bookmark {...bookmarkProps} />
           </Col>
           <Col auto onPress={gotoNftCollectionSearch} pl18>
             <Search
@@ -213,8 +232,11 @@ export default function StoreScreen() {
                 backgroundColor: Colors.primary.DEFAULT,
               }}
               h={(DEVICE_WIDTH * 93) / 390}
-              wFull
+              w={DEVICE_WIDTH}
               mb12
+              left={
+                data?.filter === DrawEventFeedFilter.Event ? -paddingX / 2 : 0
+              }
               overflowHidden>
               <Div
                 wFull
@@ -273,18 +295,28 @@ export default function StoreScreen() {
           <RefreshControl refreshing={isLoading} onRefresh={handleRefresh} />
         }
         onEndReached={handleEndReached}
+        contentContainerStyle={{
+          paddingRight:
+            data?.filter === DrawEventFeedFilter.Event ? paddingX / 2 : 0,
+          paddingLeft:
+            data?.filter === DrawEventFeedFilter.Event ? paddingX / 2 : 0,
+        }}
         data={drawEvents}
         renderItem={({item}) => {
           return (
-            <DrawEvent
+            <DrawEventMemo
               key={`${(item as any).id}-${
                 (item as any).event_application?.status
               }-${(item as any).status}-${(item as any).read_count}`}
               drawEvent={item}
-              mx={data?.filter === DrawEventFeedFilter.Event ? paddingX : 0}
+              mx={data?.filter === DrawEventFeedFilter.Event ? paddingX / 2 : 0}
               my={8}
               summary={data?.filter === DrawEventFeedFilter.Event}
-              width={DEVICE_WIDTH}
+              width={
+                data?.filter === DrawEventFeedFilter.Event
+                  ? (DEVICE_WIDTH - paddingX) / 2 - paddingX
+                  : DEVICE_WIDTH - 0
+              }
             />
           );
         }}

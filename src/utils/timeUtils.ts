@@ -27,8 +27,9 @@ export function getCalendarDay(time) {
   return kmoment(time).calendar();
 }
 
-export function getNowDifference(date) {
-  if (!date) return null;
+export function getNowDifference(stringDate) {
+  if (!stringDate) return null;
+  const date = new Date(stringDate);
   const date1utc = Date.UTC(
     date.getFullYear(),
     date.getMonth(),
