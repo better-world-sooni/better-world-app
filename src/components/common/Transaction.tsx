@@ -80,7 +80,7 @@ function Transaction({transaction, mainAddress = null, enablePress = false}) {
   const handlePressMenu = ({nativeEvent: {event}}) => {
     if (event == TransactionEventTypes.Klaytnfinder) searchKlaytnfinder();
     if (event == TransactionEventTypes.AdminShare)
-      gotoNewPostAsAdmin(null, null, transaction, PostType.Default);
+      gotoNewPostAsAdmin({transaction, postType: PostType.Default});
     if (event == TransactionEventTypes.Tag)
       gotoNewCollectionFeedTagSelect(
         transaction.transaction_hash,
@@ -185,7 +185,7 @@ function Transaction({transaction, mainAddress = null, enablePress = false}) {
             <Col
               auto
               onPress={() =>
-                gotoNewPost(null, null, transaction, PostType.Default)
+                gotoNewPost({transaction, postType: PostType.Default})
               }>
               <Repeat
                 color={Colors.gray[700]}

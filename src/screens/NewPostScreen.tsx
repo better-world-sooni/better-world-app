@@ -45,6 +45,7 @@ import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import RepostedTransaction from 'src/components/common/RepostedTransaction';
 import {ICONS} from 'src/modules/icons';
 import Video from 'react-native-video';
+import RepostedDrawEvent from 'src/components/common/RepostedDrawEvent';
 
 const postTypes = [
   {
@@ -69,7 +70,14 @@ export enum PostType {
 
 const NewPostScreen = ({
   route: {
-    params: {postOwnerType, repostable, collectionEvent, transaction, postType},
+    params: {
+      postOwnerType,
+      repostable,
+      collectionEvent,
+      transaction,
+      postType,
+      repostDrawEvent,
+    },
   },
 }) => {
   const autoFocusRef = useAutoFocusRef();
@@ -122,6 +130,7 @@ const NewPostScreen = ({
       admin: postOwnerIsCollection,
       uploadSuccessCallback,
       repostId: repostable?.id,
+      repostDrawEventId: repostDrawEvent?.id,
       collectionEventId: collectionEvent?.id,
       transactionHash: transaction?.transaction_hash,
     });
@@ -262,6 +271,9 @@ const NewPostScreen = ({
               </Row>
               {transaction && <RepostedTransaction transaction={transaction} />}
               {repostable && <RepostedPost repostedPost={repostable} />}
+              {repostDrawEvent && (
+                <RepostedDrawEvent repostedDrawEvent={repostDrawEvent} />
+              )}
               {addImages && (
                 <Div mt8>
                   <UploadImageSlideShow

@@ -1,68 +1,105 @@
-import { useState } from "react";
-import apis from "src/modules/apis";
-import { usePostPromiseFnWithToken } from "src/redux/asyncReducer";
-import useUploadImages from "./useUploadImages";
-  
-export default function useUploadPost({initialPostType = ''}){
-    const [loading, setLoading] = useState(false);
-    const [content, setContent] = useState('')
-	const [currentPostType, setPostType] = useState(initialPostType)
-	const [votingDeadline, setVotingDeadline] = useState(null)
-	const [addImages, setAddImages] = useState(false)
-    const { images, video, error, setError, handleAddImages, handleAddVideo, handleRemoveImage, handleRemoveVideo, uploadAllSelectedFiles, uploadVideo } = useUploadImages({attachedRecord:"post"})
-    const postPromiseFnWithToken = usePostPromiseFnWithToken()
+import {useState} from 'react';
+import apis from 'src/modules/apis';
+import {usePostPromiseFnWithToken} from 'src/redux/asyncReducer';
+import useUploadImages from './useUploadImages';
 
-    const uploadPost = async ({admin, uploadSuccessCallback, repostId = null, collectionEventId = null, transactionHash=null}) => {
-		if (loading) {
-			return;
-		}
-		if (!(content)) {
-			setError("글을 작성해주세요.");
-			return;
-		}
-		setLoading(true);
-        const body =  {
-			content,
-			images: [],
-			video: null,
-            admin,
-			type: currentPostType || null,
-			voting_deadline: votingDeadline,
-			image_width: null,
-			image_height: null,
-			repost_id: repostId,
-			collection_event_id: collectionEventId,
-			blockchain_transaction_hash: transactionHash
-		}
-		if(addImages){
-			const signedIdArray = await uploadAllSelectedFiles();
-			body.images = signedIdArray
-			if (signedIdArray.length > 0) {
-				body.image_width = images[0].width
-				body.image_height = images[0].height
-			}
-		}
-		if(video){
-			const signedId = await uploadVideo();
-			body.video = signedId
-			body.image_width = video.width
-			body.image_height = video.height
-		}
-		const {data} = await postPromiseFnWithToken({url: apis.post._().url, body});
-		if (!data.success) {
-			setError("게시물 업로드중 문제가 발생하였습니다.");
-			setLoading(false);
-			return;
-		}
-        uploadSuccessCallback()
-        setLoading(false);
-		setError("");
+export default function useUploadPost({initialPostType = ''}) {
+  const [loading, setLoading] = useState(false);
+  const [content, setContent] = useState('');
+  const [currentPostType, setPostType] = useState(initialPostType);
+  const [votingDeadline, setVotingDeadline] = useState(null);
+  const [addImages, setAddImages] = useState(false);
+  const {
+    images,
+    video,
+    error,
+    setError,
+    handleAddImages,
+    handleAddVideo,
+    handleRemoveImage,
+    handleRemoveVideo,
+    uploadAllSelectedFiles,
+    uploadVideo,
+  } = useUploadImages({attachedRecord: 'post'});
+  const postPromiseFnWithToken = usePostPromiseFnWithToken();
+
+  const uploadPost = async ({
+    admin,
+    uploadSuccessCallback,
+    repostId = null,
+    collectionEventId = null,
+    transactionHash = null,
+    repostDrawEventId = null,
+  }) => {
+    if (loading) {
+      return;
     }
+    if (!content) {
+      setError('글을 작성해주세요.');
+      return;
+    }
+    setLoading(true);
+    const body = {
+      content,
+      images: [],
+      video: null,
+      admin,
+      type: currentPostType || null,
+      voting_deadline: votingDeadline,
+      image_width: null,
+      image_height: null,
+      repost_id: repostId,
+      repost_draw_event_id: repostDrawEventId,
+      collection_event_id: collectionEventId,
+      blockchain_transaction_hash: transactionHash,
+    };
+    if (addImages) {
+      const signedIdArray = await uploadAllSelectedFiles();
+      body.images = signedIdArray;
+      if (signedIdArray.length > 0) {
+        body.image_width = images[0].width;
+        body.image_height = images[0].height;
+      }
+    }
+    if (video) {
+      const signedId = await uploadVideo();
+      body.video = signedId;
+      body.image_width = video.width;
+      body.image_height = video.height;
+    }
+    const {data} = await postPromiseFnWithToken({url: apis.post._().url, body});
+    if (!data.success) {
+      setError('게시물 업로드중 문제가 발생하였습니다.');
+      setLoading(false);
+      return;
+    }
+    uploadSuccessCallback();
+    setLoading(false);
+    setError('');
+  };
 
-    const handleContentChange = (text) => {
-		setContent(text);
-		setError("");
-	};
+  const handleContentChange = text => {
+    setContent(text);
+    setError('');
+  };
 
-    return { error, loading, addImages, setAddImages, currentPostType, setPostType, votingDeadline, setVotingDeadline, content, handleContentChange, images, video, handleAddImages, handleAddVideo, handleRemoveImage, handleRemoveVideo, uploadPost }
+  return {
+    error,
+    loading,
+    addImages,
+    setAddImages,
+    currentPostType,
+    setPostType,
+    votingDeadline,
+    setVotingDeadline,
+    content,
+    handleContentChange,
+    images,
+    video,
+    handleAddImages,
+    handleAddVideo,
+    handleRemoveImage,
+    handleRemoveVideo,
+    uploadPost,
+  };
 }

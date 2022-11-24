@@ -39,7 +39,7 @@ const ProfileScreen = () => {
         bottom15
         right15
         overflowHidden
-        onPress={() => gotoNewPost()}
+        onPress={() => gotoNewPost({})}
         style={{
           shadowOffset: {
             width: 0,

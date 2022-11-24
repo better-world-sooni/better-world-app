@@ -15,7 +15,11 @@ import getDrawEventStatus, {
   DrawEventStatus,
   EventApplicationStatus,
 } from 'src/hooks/getDrawEventStatus';
-import {useGotoDrawEvent, useGotoNftCollectionProfile} from 'src/hooks/useGoto';
+import {
+  useGotoDrawEvent,
+  useGotoNewPost,
+  useGotoNftCollectionProfile,
+} from 'src/hooks/useGoto';
 import useUpdateDrawEvent from 'src/hooks/useUpdateDrawEvent';
 import {IMAGES} from 'src/modules/images';
 import {RootState} from 'src/redux/rootReducer';
@@ -31,6 +35,7 @@ import TruncatedText from './TruncatedText';
 import useLike, {LikableType} from 'src/hooks/useLike';
 import useBookmark, {BookmarkableType} from 'src/hooks/useBookmark';
 import _ from 'lodash';
+import {PostOwnerType} from 'src/screens/NewPostScreen';
 
 enum DrawEventOption {
   DELETE = '0',
@@ -78,6 +83,7 @@ function DrawEvent({
   selectableFn = null,
   summary = false,
   showCollection = true,
+  repost = false,
 }) {
   const {currentNft} = useSelector(
     (root: RootState) => root.app.session,
@@ -94,7 +100,9 @@ function DrawEvent({
   const gotoNftCollection = useGotoNftCollectionProfile({
     nftCollection: drawEvent.nft_collection,
   });
-
+  const gotoNewPost = useGotoNewPost({
+    postOwnerType: PostOwnerType.Nft,
+  });
   const handlePressMenu = ({nativeEvent: {event}}) => {
     if (event == DrawEventOption.DELETE) {
       deleteDrawEvent();
@@ -147,6 +155,7 @@ function DrawEvent({
       }
     : actionIconDefaultProps;
   const expireDay = getNowDifference(drawEvent?.expires_at);
+  const imageWidth = summary ? width : (width * 110) / 380;
 
   if (deleted) return null;
   return (
@@ -156,7 +165,7 @@ function DrawEvent({
           drawEvent.nft_collection.contract_address && (
           <Div absolute right0 mt6 mr10 zIndex={1} z100>
             <MenuView
-              onPressAction={handlePressMenu}
+              onPressAction={!repost && handlePressMenu}
               actions={drawEventOptions}>
               <Div p4>
                 {loading ? (
@@ -172,17 +181,33 @@ function DrawEvent({
         <Col
           relative
           onPress={
-            selectableFn ? () => selectableFn(drawEvent) : gotoDrawEvent
+            selectableFn
+              ? !repost && (() => selectableFn(drawEvent))
+              : !repost && gotoDrawEvent
           }>
-          {drawEvent.image_uri && (
+          {(drawEvent.image_uri ||
+            (drawEvent.image_uris && drawEvent.image_uris.length != 0)) && (
             <Div rounded>
-              <Img uri={drawEvent.image_uri} w={width} h={width} rounded5></Img>
+              {drawEvent.image_uri && (
+                <Img
+                  uri={drawEvent.image_uri}
+                  w={imageWidth}
+                  h={imageWidth}
+                  rounded5></Img>
+              )}
+              {drawEvent.image_uris && drawEvent.image_uris[0] && (
+                <Img
+                  uri={drawEvent.image_uris[0]}
+                  w={imageWidth}
+                  h={imageWidth}
+                  rounded5></Img>
+              )}
               {drawEvent.has_application == true && (
                 <>
                   {drawEvent.status == DrawEventStatus.FINISHED && (
                     <Div
-                      w={width}
-                      h={width}
+                      w={imageWidth}
+                      h={imageWidth}
                       bg={'rgba(0,0,0,0.5)'}
                       rounded5
                       absolute
@@ -192,68 +217,56 @@ function DrawEvent({
                   {drawEvent.status == DrawEventStatus.FINISHED && (
                     <Div
                       absolute
-                      mt5
-                      ml5
+                      mt={repost ? imageWidth / 1.5 / 20 : imageWidth / 20}
+                      ml={repost ? imageWidth / 1.5 / 20 : imageWidth / 20}
                       zIndex={1}
                       rounded5
-                      px10
-                      py5
+                      px={repost ? imageWidth / 1.5 / 20 : imageWidth / 20}
+                      py={repost ? imageWidth / 1.5 / 40 : imageWidth / 40}
                       bgGray500
                       z100>
-                      <MenuView
-                        onPressAction={handlePressMenu}
-                        actions={drawEventOptions}>
-                        <Span bold fontSize={14} white>
-                          마감
-                        </Span>
-                      </MenuView>
+                      <Span bold fontSize={imageWidth / 10} white>
+                        마감
+                      </Span>
                     </Div>
                   )}
                   {drawEvent.status == DrawEventStatus.IN_PROGRESS && (
                     <Div
                       absolute
-                      mt5
-                      ml5
+                      mt={repost ? imageWidth / 1.5 / 20 : imageWidth / 20}
+                      ml={repost ? imageWidth / 1.5 / 20 : imageWidth / 20}
                       zIndex={1}
                       rounded5
-                      px10
-                      py5
+                      px={repost ? imageWidth / 1.5 / 20 : imageWidth / 20}
+                      py={repost ? imageWidth / 1.5 / 40 : imageWidth / 40}
                       bg={Colors.primary.DEFAULT}
                       z100>
-                      <MenuView
-                        onPressAction={handlePressMenu}
-                        actions={drawEventOptions}>
-                        <Span bold fontSize={14} white>
-                          {drawEvent?.expires_at
-                            ? 'D-' +
-                              (expireDay > 100
-                                ? '99+'
-                                : expireDay == 1
-                                ? 'DAY'
-                                : expireDay)
-                            : '진행 중'}
-                        </Span>
-                      </MenuView>
+                      <Span bold fontSize={imageWidth / 10} white>
+                        {drawEvent?.expires_at
+                          ? 'D-' +
+                            (expireDay > 100
+                              ? '99+'
+                              : expireDay == 0
+                              ? 'DAY'
+                              : expireDay)
+                          : '진행 중'}
+                      </Span>
                     </Div>
                   )}
                   {drawEvent.status == DrawEventStatus.ANNOUNCED && (
                     <Div
                       absolute
-                      mt5
-                      ml5
+                      mt={repost ? imageWidth / 1.5 / 20 : imageWidth / 20}
+                      ml={repost ? imageWidth / 1.5 / 20 : imageWidth / 20}
                       zIndex={1}
                       rounded5
-                      px10
-                      py5
+                      px={repost ? imageWidth / 1.5 / 20 : imageWidth / 20}
+                      py={repost ? imageWidth / 1.5 / 40 : imageWidth / 40}
                       bg={Colors.secondary.DEFAULT}
                       z100>
-                      <MenuView
-                        onPressAction={handlePressMenu}
-                        actions={drawEventOptions}>
-                        <Span bold fontSize={14} white>
-                          당첨 발표
-                        </Span>
-                      </MenuView>
+                      <Span bold fontSize={imageWidth / 10} white>
+                        당첨 발표
+                      </Span>
                     </Div>
                   )}
                 </>
@@ -261,7 +274,7 @@ function DrawEvent({
             </Div>
           )}
           <Div itemsCenter py5>
-            <Span bold fontSize={12} numberOfLines={1} gray500 textCenter>
+            <Span fontSize={12} numberOfLines={1} gray500 textCenter>
               {drawEvent.nft_collection?.name}
             </Span>
           </Div>
@@ -272,69 +285,91 @@ function DrawEvent({
           </Div>
         </Col>
       ) : (
-        <Col relative px25>
-          <Row pt12 pb5 itemsCenter px5={showCollection}>
-            {showCollection && (
-              <Row itemsCenter onPress={gotoNftCollection}>
-                <Col auto pr10>
-                  <Img
-                    uri={getNftCollectionProfileImage(
-                      drawEvent.nft_collection,
-                      100,
-                      100,
-                    )}
-                    h28
-                    w28
-                    rounded14
-                  />
-                </Col>
-                <Div>
-                  <Span bold fontSize={13} numberOfLines={1} mr10>
-                    {drawEvent.nft_collection?.name}
+        <Col relative px25={!repost}>
+          {!repost && (
+            <Row pt12 pb5 itemsCenter px5={showCollection}>
+              {showCollection && (
+                <Row itemsCenter onPress={!repost && gotoNftCollection}>
+                  <Col auto pr10>
+                    <Img
+                      uri={getNftCollectionProfileImage(
+                        drawEvent.nft_collection,
+                        100,
+                        100,
+                      )}
+                      h28
+                      w28
+                      rounded14
+                    />
+                  </Col>
+                  <Div>
+                    <Span bold fontSize={13} numberOfLines={1} mr10>
+                      {drawEvent.nft_collection?.name}
+                    </Span>
+                  </Div>
+                </Row>
+              )}
+              <Div>
+                <Span fontSize={13} numberOfLines={1} gray500>
+                  {createdAtText(drawEvent?.created_at)}
+                </Span>
+              </Div>
+            </Row>
+          )}
+          <Row
+            pb15={!repost}
+            itemsCenter
+            borderBottom={repost ? 0 : 1.2}
+            borderGray200={!repost}
+            onPress={
+              selectableFn
+                ? !repost && (() => selectableFn(drawEvent))
+                : !repost && gotoDrawEvent
+            }>
+            {!repost && (
+              <Col selfStart>
+                <Div mb14>
+                  <Span
+                    bold
+                    fontSize={(imageWidth - 14) / 2 / 3}
+                    numberOfLines={2}>
+                    {drawEvent.name}
                   </Span>
                 </Div>
-              </Row>
+                <Div>
+                  <Span
+                    fontSize={(imageWidth - 14) / 2 / 3.5}
+                    numberOfLines={3}
+                    gray500>
+                    {drawEvent.description}
+                  </Span>
+                </Div>
+                <Col />
+              </Col>
             )}
-            <Div>
-              <Span fontSize={13} numberOfLines={1} gray500>
-                {createdAtText(drawEvent?.created_at)}
-              </Span>
-            </Div>
-          </Row>
-          <Row
-            pb15
-            itemsCenter
-            borderBottom={1.2}
-            borderGray200
-            onPress={
-              selectableFn ? () => selectableFn(drawEvent) : gotoDrawEvent
-            }>
-            <Col selfStart>
-              <Div mb14>
-                <Span bold fontSize={18} numberOfLines={2}>
-                  {drawEvent.name}
-                </Span>
-              </Div>
-              <Div>
-                <Span bold fontSize={14} numberOfLines={3} gray500>
-                  {drawEvent.description}
-                </Span>
-              </Div>
-              <Col />
-            </Col>
-            {drawEvent.image_uri && (
-              <Div rounded ml15>
-                <Img
-                  uri={drawEvent.image_uri}
-                  w={(width * 110) / 380}
-                  h={(width * 110) / 380}
-                  rounded5></Img>
+            {(drawEvent.image_uri ||
+              (drawEvent.image_uris && drawEvent.image_uris.length != 0)) && (
+              <Div rounded ml15={!repost} mr15={repost}>
+                {drawEvent.image_uri && (
+                  <Img
+                    uri={drawEvent.image_uri}
+                    w={imageWidth}
+                    h={imageWidth}
+                    rounded5></Img>
+                )}
+                {drawEvent.image_uris && drawEvent.image_uris[0] && (
+                  <Img
+                    uri={drawEvent.image_uris[0]}
+                    w={imageWidth}
+                    h={imageWidth}
+                    rounded5></Img>
+                )}
                 {drawEvent.has_application == true && (
                   <>
                     {drawEvent.status == DrawEventStatus.FINISHED && (
                       <Div
-                        w={(width * 110) / 380}
-                        h={(width * 110) / 380}
+                        w={imageWidth}
+                        h={imageWidth}
                         bg={'rgba(0,0,0,0.5)'}
                         rounded5
                         absolute
@@ -344,127 +379,145 @@ function DrawEvent({
                     {drawEvent.status == DrawEventStatus.FINISHED && (
                       <Div
                         absolute
-                        mt5
-                        ml5
+                        mt={repost ? imageWidth / 30 : imageWidth / 20}
+                        ml={repost ? imageWidth / 30 : imageWidth / 20}
                         zIndex={1}
                         rounded5
-                        px10
-                        py5
+                        px={repost ? imageWidth / 20 : imageWidth / 20}
+                        py={repost ? imageWidth / 20 : imageWidth / 40}
                         bgGray500
                         z100>
-                        <MenuView
-                          onPressAction={handlePressMenu}
-                          actions={drawEventOptions}>
-                          <Span bold fontSize={14} white>
-                            마감
-                          </Span>
-                        </MenuView>
+                        <Span bold fontSize={imageWidth / 8} white>
+                          마감
+                        </Span>
                       </Div>
                     )}
                     {drawEvent.status == DrawEventStatus.IN_PROGRESS && (
                       <Div
                         absolute
-                        mt5
-                        ml5
+                        mt={repost ? imageWidth / 30 : imageWidth / 20}
+                        ml={repost ? imageWidth / 30 : imageWidth / 20}
                         zIndex={1}
                         rounded5
-                        px10
-                        py5
+                        px={repost ? imageWidth / 20 : imageWidth / 20}
+                        py={repost ? imageWidth / 20 : imageWidth / 40}
                         bg={Colors.primary.DEFAULT}
                         z100>
-                        <MenuView
-                          onPressAction={handlePressMenu}
-                          actions={drawEventOptions}>
-                          <Span bold fontSize={14} white>
-                            {expireDay
-                              ? 'D-' + (expireDay > 100 ? '99+' : expireDay)
-                              : '진행 중'}
-                          </Span>
-                        </MenuView>
+                        <Span bold fontSize={imageWidth / 8} white>
+                          {drawEvent?.expires_at
+                            ? 'D-' +
+                              (expireDay > 100
+                                ? '99+'
+                                : expireDay == 0
+                                ? 'DAY'
+                                : expireDay)
+                            : '진행 중'}
+                        </Span>
                       </Div>
                     )}
                     {drawEvent.status == DrawEventStatus.ANNOUNCED && (
                       <Div
                         absolute
-                        mt5
-                        ml5
+                        mt={repost ? imageWidth / 30 : imageWidth / 20}
+                        ml={repost ? imageWidth / 30 : imageWidth / 20}
                         zIndex={1}
                         rounded5
-                        px10
-                        py5
+                        px={repost ? imageWidth / 20 : imageWidth / 20}
+                        py={repost ? imageWidth / 20 : imageWidth / 40}
                         bg={Colors.secondary.DEFAULT}
                         z100>
-                        <MenuView
-                          onPressAction={handlePressMenu}
-                          actions={drawEventOptions}>
-                          <Span bold fontSize={14} white>
-                            당첨 발표
-                          </Span>
-                        </MenuView>
+                        <Span bold fontSize={imageWidth / 8} white>
+                          당첨 발표
+                        </Span>
                       </Div>
                     )}
                   </>
                 )}
               </Div>
             )}
+            {repost && (
+              <Col selfStart>
+                <Div mb7>
+                  <Span
+                    bold
+                    fontSize={(imageWidth - 7) / 2 / 3}
+                    numberOfLines={2}>
+                    {drawEvent.name}
+                  </Span>
+                </Div>
+                <Div>
+                  <Span
+                    fontSize={(imageWidth - 7) / 2 / 3.2}
+                    numberOfLines={3}
+                    gray500>
+                    {drawEvent.description}
+                  </Span>
+                </Div>
+                <Col />
+              </Col>
+            )}
           </Row>
-          <Row py15 px15>
-            <Col itemsCenter onPress={null}>
-              <Row auto itemsCenter>
-                <Col pr10>
-                  <Repeat {...actionIconDefaultProps} />
-                </Col>
-                <Col>
-                  <Span
-                    fontSize={15}
-                    color={Colors.gray[600]}
-                    style={{fontWeight: '600'}}>
-                    {drawEvent?.repost_count}
-                  </Span>
-                </Col>
-              </Row>
-            </Col>
-            <Col />
-            <Col
-              itemsCenter
-              onPress={
-                selectableFn ? () => selectableFn(drawEvent) : gotoDrawEvent
-              }>
-              <Row auto itemsCenter>
-                <Col pr10>
-                  <MessageCircle {...actionIconDefaultProps} />
-                </Col>
-                <Col>
-                  <Span
-                    fontSize={15}
-                    color={Colors.gray[600]}
-                    style={{fontWeight: '600'}}>
-                    {drawEvent?.comments_count}
-                  </Span>
-                </Col>
-              </Row>
-            </Col>
-            <Col />
-            <Col itemsCenter onPress={handlePressLike}>
-              <Row auto itemsCenter>
-                <Col pr10>
-                  <Heart {...heartProps} />
-                </Col>
-                <Col>
-                  <Span
-                    fontSize={15}
-                    color={Colors.gray[600]}
-                    style={{fontWeight: '600'}}>
-                    {likesCount}
-                  </Span>
-                </Col>
-              </Row>
-            </Col>
-            <Col />
-            <Col auto onPress={handlePressBookmark}>
-              {<Bookmark {...bookmarkProps}></Bookmark>}
-            </Col>
-          </Row>
+          {!repost && (
+            <Row py15 px15>
+              <Col
+                itemsCenter
+                onPress={() => gotoNewPost({repostDrawEvent: drawEvent})}>
+                <Row auto itemsCenter>
+                  <Col pr10>
+                    <Repeat {...actionIconDefaultProps} />
+                  </Col>
+                  <Col>
+                    <Span
+                      fontSize={15}
+                      color={Colors.gray[600]}
+                      style={{fontWeight: '600'}}>
+                      {drawEvent?.repost_count}
+                    </Span>
+                  </Col>
+                </Row>
+              </Col>
+              <Col />
+              <Col
+                itemsCenter
+                onPress={
+                  selectableFn ? () => selectableFn(drawEvent) : gotoDrawEvent
+                }>
+                <Row auto itemsCenter>
+                  <Col pr10>
+                    <MessageCircle {...actionIconDefaultProps} />
+                  </Col>
+                  <Col>
+                    <Span
+                      fontSize={15}
+                      color={Colors.gray[600]}
+                      style={{fontWeight: '600'}}>
+                      {drawEvent?.comments_count}
+                    </Span>
+                  </Col>
+                </Row>
+              </Col>
+              <Col />
+              <Col itemsCenter onPress={handlePressLike}>
+                <Row auto itemsCenter>
+                  <Col pr10>
+                    <Heart {...heartProps} />
+                  </Col>
+                  <Col>
+                    <Span
+                      fontSize={15}
+                      color={Colors.gray[600]}
+                      style={{fontWeight: '600'}}>
+                      {likesCount}
+                    </Span>
+                  </Col>
+                </Row>
+              </Col>
+              <Col />
+              <Col auto onPress={handlePressBookmark}>
+                {<Bookmark {...bookmarkProps}></Bookmark>}
+              </Col>
+            </Row>
+          )}
         </Col>
       )}
     </Div>

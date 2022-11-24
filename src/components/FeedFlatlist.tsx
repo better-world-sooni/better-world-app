@@ -35,8 +35,7 @@ function FeedFlatlist(
   ref,
 ) {
   const gotoNewPost = useGotoNewPost({postOwnerType: PostOwnerType.Nft});
-  const gotoNewProposal = () =>
-    gotoNewPost(null, null, null, PostType.Proposal);
+  const gotoNewProposal = () => gotoNewPost({postType: PostType.Proposal});
   const notchHeight = useSafeAreaInsets().top;
   const headerHeight = notchHeight + 50;
   return (
@@ -89,7 +88,7 @@ function FeedFlatlist(
             bottom15
             right15
             overflowHidden
-            onPress={() => gotoNewPost()}
+            onPress={() => gotoNewPost({})}
             style={{
               shadowOffset: {
                 width: 0,

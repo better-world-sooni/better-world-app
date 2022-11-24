@@ -57,6 +57,7 @@ import useDeletePost from 'src/hooks/useDeletePost';
 import AutolinkTextWrapper from './AutolinkTextWrapper';
 import ExpandableVideo from './ExpandableVideo';
 import useDonation from 'src/hooks/useDonation';
+import RepostedDrawEvent from './RepostedDrawEvent';
 
 export enum PostEventTypes {
   Delete = 'DELETE',
@@ -332,6 +333,13 @@ function PostContent({
             {post.reposted_post && (
               <RepostedPost repostedPost={post.reposted_post} enablePress />
             )}
+            {post.reposted_draw_event && (
+              <RepostedDrawEvent
+                repostedDrawEvent={post.reposted_draw_event}
+                enablePress
+                itemWidth={itemWidth}
+              />
+            )}
             {post.image_uris.length > 0 ? (
               <Div mt5>
                 <ImageSlideShow
@@ -393,13 +401,17 @@ function PostContent({
                     </Span>
                   </Col>
                   <Col />
-                  <Col auto onPress={() => gotoNewPost(post)} pr4>
+                  <Col auto onPress={() => gotoNewPost({repostable: post})} pr4>
                     <Repeat {...actionIconDefaultProps} />
                   </Col>
                   <Col
                     auto
                     mr12
-                    onPress={full ? gotoRepostList : () => gotoNewPost(post)}>
+                    onPress={
+                      full
+                        ? gotoRepostList
+                        : () => gotoNewPost({repostable: post})
+                    }>
                     <Span
                       fontSize={13}
                       color={Colors.gray[600]}

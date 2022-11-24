@@ -314,7 +314,7 @@ export default function StoreScreen() {
               summary={data?.filter === DrawEventFeedFilter.Event}
               width={
                 data?.filter === DrawEventFeedFilter.Event
-                  ? (DEVICE_WIDTH - paddingX) / 2 - paddingX
+                  ? (DEVICE_WIDTH - paddingX) / numColumns - paddingX
                   : DEVICE_WIDTH - 0
               }
             />

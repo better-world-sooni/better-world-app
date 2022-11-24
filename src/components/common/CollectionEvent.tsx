@@ -94,11 +94,11 @@ export default function CollectionEvent({
   const handlePressMenu = ({nativeEvent: {event}}) => {
     if (event == CollectionEventActionTypes.Delete) deleteCollectionEvent();
     if (event == CollectionEventActionTypes.AdminShare)
-      gotoNewPostAsAdmin(null, collectionEvent, null, PostType.Default);
+      gotoNewPostAsAdmin({collectionEvent, postType: PostType.Default});
     if (event == CollectionEventActionTypes.Tag)
       gotoNewCollectionFeedTagSelect(collectionEvent.id, 'collection_event_id');
     if (event == CollectionEventActionTypes.MyShare)
-      gotoNewPost(null, collectionEvent);
+      gotoNewPost({collectionEvent});
   };
   const {
     willAttendCount,
@@ -184,7 +184,7 @@ export default function CollectionEvent({
                   absolute
                   top0
                   right0
-                  onPress={() => gotoNewPost(null, collectionEvent)}>
+                  onPress={() => gotoNewPost({collectionEvent})}>
                   <Repeat
                     strokeWidth={2}
                     color={Colors.white}
