@@ -32,7 +32,7 @@ import {ICONS} from 'src/modules/icons';
 
 export default function DrawEventScreen() {
   const {data: drawEventRes, isLoading: drawEventLoading} = useApiSelector(
-    apis.draw_event.drawEventId,
+    apis.draw_event.drawEventId._,
   );
 
   const drawEvent = drawEventRes?.draw_event;

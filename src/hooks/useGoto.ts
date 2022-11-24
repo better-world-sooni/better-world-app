@@ -507,7 +507,7 @@ export function useGotoDrawEvent({drawEventId}) {
   const navigation = useNavigation();
   const apiGETWithToken = useApiGETWithToken();
   const gotoDrawEvent = () => {
-    apiGETWithToken(apis.draw_event.drawEventId(drawEventId));
+    apiGETWithToken(apis.draw_event.drawEventId._(drawEventId));
     navigation.navigate(NAV_NAMES.DrawEvent as never);
   };
   return gotoDrawEvent;
@@ -598,6 +598,21 @@ export function useGotoRepostList({postId}) {
       NAV_NAMES.RepostList as never,
       {
         postId,
+      } as never,
+    );
+  };
+  return gotoCollectionFeed;
+}
+
+export function useGotoRepostDrawEventList({eventId}) {
+  const navigation = useNavigation();
+  const apiGETWithToken = useApiGETWithToken();
+  const gotoCollectionFeed = title => {
+    apiGETWithToken(apis.draw_event.drawEventId.repost.list(eventId, 1));
+    navigation.navigate(
+      NAV_NAMES.RepostDrawEventList as never,
+      {
+        eventId,
       } as never,
     );
   };

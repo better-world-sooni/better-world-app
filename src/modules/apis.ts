@@ -197,7 +197,13 @@ const apis = {
   },
   draw_event: {
     _: () => apiV1(`/draw_event`),
-    drawEventId: drawEventId => apiV1(`/draw_event/${drawEventId}`),
+    drawEventId: {
+      _: drawEventId => apiV1(`/draw_event/${drawEventId}`),
+      repost: {
+        list: (drawEventId, page?) =>
+          apiV1(`/draw_event/${drawEventId}/repost/list${urlParams({page})}`),
+      },
+    },
   },
   event_application: {
     _: () => apiV1(`/event_application`),
