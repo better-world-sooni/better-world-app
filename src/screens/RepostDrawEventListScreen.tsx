@@ -7,7 +7,7 @@ import {
 } from 'src/redux/asyncReducer';
 import PolymorphicOwnerListFlatlist from 'src/components/PolymorphicOwnerListFlatlist';
 
-const repostDrawEventScreen = ({
+const RepostDrawEventScreen = ({
   route: {
     params: {eventId},
   },
@@ -44,4 +44,4 @@ const repostDrawEventScreen = ({
   );
 };
 
-export default repostDrawEventScreen;
+export default RepostDrawEventScreen;

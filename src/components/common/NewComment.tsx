@@ -18,6 +18,7 @@ import {Span} from './Span';
 export enum ReplyToType {
   Comment = 'Comment',
   Post = 'Post',
+  DrawEvent = 'DrawEvent',
 }
 
 export default function NewComment({
@@ -33,7 +34,7 @@ export default function NewComment({
   );
   const [newComment, setNewComment] = useState('');
   const [loading, setLoading] = useState(false);
-  const [commentHeight, setCommentHeight] = useState(33)
+  const [commentHeight, setCommentHeight] = useState(33);
 
   const handleCommentChange = text => {
     setNewComment(text);
@@ -45,7 +46,9 @@ export default function NewComment({
       const {url} =
         replyToType == ReplyToType.Comment
           ? apis.comment.comment(replyToObject.id)
-          : apis.comment.post(replyToObject.id);
+          : replyToType == ReplyToType.Post
+          ? apis.comment.post(replyToObject.id)
+          : apis.comment.drawEvent(replyToObject.id);
       const {data} = await postPromiseFnWithToken({
         url,
         body: {
@@ -84,7 +87,7 @@ export default function NewComment({
           w={'100%'}
           h={commentHeight}
           px8
-          autoFocus
+          autoFocus={autoFocus == true ? autoFocus : null}
           placeholder={'댓글을 달아주세요'}
           value={newComment}
           onChangeText={handleCommentChange}

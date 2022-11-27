@@ -383,75 +383,121 @@ function PostContent({
                 />
               </Div>
             )}
-            <Row itemsCenter mb8 mt8>
+            <Row itemsCenter mb8 mt8 px5>
               {!post.type ? (
                 <>
-                  <Col auto onPress={handlePressDonate} pr4>
-                    <Zap {...actionIconDefaultProps} />
-                  </Col>
-                  <Col
-                    auto
-                    mr12
-                    onPress={full ? gotoDonationList : handlePressDonate}>
-                    <Span
-                      fontSize={13}
-                      color={Colors.gray[600]}
-                      style={{fontWeight: '600'}}>
-                      {full ? `응원 ${donationSum} KLAY` : donationSum}
-                    </Span>
-                  </Col>
-                  <Col />
-                  <Col auto onPress={() => gotoNewPost({repostable: post})} pr4>
-                    <Repeat {...actionIconDefaultProps} />
-                  </Col>
-                  <Col
-                    auto
-                    mr12
-                    onPress={
-                      full
-                        ? gotoRepostList
-                        : () => gotoNewPost({repostable: post})
-                    }>
-                    <Span
-                      fontSize={13}
-                      color={Colors.gray[600]}
-                      style={{fontWeight: '600'}}>
-                      {full
-                        ? `퍼가기 ${post.repost_count}회`
-                        : post.repost_count}
-                    </Span>
-                  </Col>
-                  {votingStatus == null && !full && (
+                  {full && (
                     <>
-                      <Col auto pr4 onPress={() => gotoPost(true)}>
-                        <MessageCircle {...actionIconDefaultProps} />
-                      </Col>
-                      <Col auto pr12>
-                        <Span
-                          fontSize={13}
-                          style={{fontWeight: '600'}}
-                          color={Colors.gray[600]}
-                          onPress={() => gotoPost(true)}>
-                          {post.comments_count}
-                        </Span>
+                      <Col auto itemsCenter>
+                        <Row auto itemsCenter>
+                          <Col auto onPress={handlePressDonate} pr4>
+                            <Zap {...actionIconDefaultProps} />
+                          </Col>
+                          <Col auto mr12 onPress={gotoDonationList}>
+                            <Span
+                              fontSize={13}
+                              color={Colors.gray[600]}
+                              style={{fontWeight: '600'}}>
+                              {donationSum}
+                            </Span>
+                          </Col>
+                        </Row>
                       </Col>
                     </>
                   )}
-                  {
+                  {full && (
                     <>
-                      <Col auto mr4 onPress={handlePressLike}>
-                        {<Heart {...heartProps}></Heart>}
+                      <Col />
+                      <Col />
+                      <Col />
+                    </>
+                  )}
+                  <Col
+                    auto
+                    itemsCenter
+                    onPress={!full && (() => gotoNewPost({repostable: post}))}>
+                    <Row auto itemsCenter>
+                      <Col
+                        auto
+                        onPress={
+                          full && (() => gotoNewPost({repostable: post}))
+                        }
+                        pr4>
+                        <Repeat {...actionIconDefaultProps} />
                       </Col>
-                      <Col auto onPress={full ? gotoLikeList : handlePressLike}>
+                      <Col auto mr12 onPress={full && gotoRepostList}>
                         <Span
                           fontSize={13}
-                          style={{fontWeight: '600'}}
-                          color={Colors.gray[600]}>
-                          {full ? `좋아요 ${likesCount}개` : likesCount}
+                          color={Colors.gray[600]}
+                          style={{fontWeight: '600'}}>
+                          {post.repost_count}
                         </Span>
+                      </Col>
+                    </Row>
+                  </Col>
+                  <Col />
+                  {votingStatus == null && (
+                    <>
+                      <Col
+                        auto
+                        itemsCenter
+                        onPress={!full && (() => gotoPost(true))}>
+                        <Row auto itemsCenter>
+                          <Col auto pr4>
+                            <MessageCircle {...actionIconDefaultProps} />
+                          </Col>
+                          <Col auto pr12>
+                            <Span
+                              fontSize={13}
+                              style={{fontWeight: '600'}}
+                              color={Colors.gray[600]}>
+                              {post.comments_count}
+                            </Span>
+                          </Col>
+                        </Row>
+                      </Col>
+                    </>
+                  )}
+                  <Col />
+                  {
+                    <>
+                      <Col auto itemsCenter onPress={handlePressLike}>
+                        <Row auto itemsCenter>
+                          <Col auto mr4 onPress={full && handlePressLike}>
+                            {<Heart {...heartProps}></Heart>}
+                          </Col>
+                          <Col auto onPress={full && gotoLikeList}>
+                            <Span
+                              fontSize={13}
+                              style={{fontWeight: '600'}}
+                              color={Colors.gray[600]}>
+                              {likesCount}
+                            </Span>
+                          </Col>
+                        </Row>
                       </Col>
                     </>
                   }
+                  {!full && <Col />}
+                  {!full && (
+                    <>
+                      <Col auto itemsCenter onPress={handlePressDonate}>
+                        <Row auto itemsCenter>
+                          <Col auto pr4>
+                            <Zap {...actionIconDefaultProps} />
+                          </Col>
+                          <Col auto mr12>
+                            <Span
+                              fontSize={13}
+                              color={Colors.gray[600]}
+                              style={{fontWeight: '600'}}>
+                              {donationSum}
+                            </Span>
+                          </Col>
+                        </Row>
+                      </Col>
+                    </>
+                  )}
                 </>
               ) : null}
             </Row>

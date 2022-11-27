@@ -95,6 +95,12 @@ function DrawEvent({
     });
   const gotoDrawEvent = useGotoDrawEvent({
     drawEventId: drawEvent.id,
+    image_uri: drawEvent?.image_uri
+      ? drawEvent.image_uri
+      : drawEvent?.image_uris && drawEvent.image_uris.length != 0
+      ? drawEvent.image_uris[0]
+      : null,
+    hasApplication: drawEvent.has_application == true ? true : false,
   });
   const drawEventStatus = getDrawEventStatus({drawEvent});
   const gotoNftCollection = useGotoNftCollectionProfile({
@@ -130,32 +136,37 @@ function DrawEvent({
   );
 
   const actionIconDefaultProps = {
-    width: 20,
-    height: 20,
+    width: 17,
+    height: 17,
     color: Colors.gray[600],
     strokeWidth: 1.6,
   };
+  const actionTextDefaultProps = {
+    fontSize: 14,
+    color: Colors.gray[500],
+    style: {fontWeight: '600'},
+  };
   const heartProps = liked
     ? {
+        ...actionIconDefaultProps,
         fill: Colors.danger.DEFAULT,
-        width: 20,
-        height: 20,
         color: Colors.danger.DEFAULT,
-        strokeWidth: 1.6,
       }
     : actionIconDefaultProps;
 
   const bookmarkProps = bookmarked
     ? {
+        ...actionIconDefaultProps,
         fill: Colors.blue.DEFAULT,
-        width: 20,
-        height: 20,
         color: Colors.blue.DEFAULT,
-        strokeWidth: 1.6,
       }
     : actionIconDefaultProps;
   const expireDay = getNowDifference(drawEvent?.expires_at);
-  const imageWidth = summary ? width : (width * 110) / 380;
+  const imageWidth = summary
+    ? width
+    : repost
+    ? (width * 120) / 380
+    : (width * 110) / 380;
 
   if (deleted) return null;
   return (
@@ -219,11 +230,11 @@ function DrawEvent({
                       absolute
                       mt={repost ? imageWidth / 1.5 / 20 : imageWidth / 20}
                       ml={repost ? imageWidth / 1.5 / 20 : imageWidth / 20}
-                      zIndex={1}
-                      rounded5
                       px={repost ? imageWidth / 1.5 / 20 : imageWidth / 20}
                       py={repost ? imageWidth / 1.5 / 40 : imageWidth / 40}
                       bgGray500
+                      zIndex={1}
+                      rounded5
                       z100>
                       <Span bold fontSize={imageWidth / 10} white>
                         마감
@@ -235,11 +246,11 @@ function DrawEvent({
                       absolute
                       mt={repost ? imageWidth / 1.5 / 20 : imageWidth / 20}
                       ml={repost ? imageWidth / 1.5 / 20 : imageWidth / 20}
-                      zIndex={1}
-                      rounded5
                       px={repost ? imageWidth / 1.5 / 20 : imageWidth / 20}
                       py={repost ? imageWidth / 1.5 / 40 : imageWidth / 40}
                       bg={Colors.primary.DEFAULT}
+                      zIndex={1}
+                      rounded5
                       z100>
                       <Span bold fontSize={imageWidth / 10} white>
                         {drawEvent?.expires_at
@@ -258,10 +269,10 @@ function DrawEvent({
                       absolute
                       mt={repost ? imageWidth / 1.5 / 20 : imageWidth / 20}
                       ml={repost ? imageWidth / 1.5 / 20 : imageWidth / 20}
-                      zIndex={1}
-                      rounded5
                       px={repost ? imageWidth / 1.5 / 20 : imageWidth / 20}
                       py={repost ? imageWidth / 1.5 / 40 : imageWidth / 40}
+                      zIndex={1}
+                      rounded5
                       bg={Colors.secondary.DEFAULT}
                       z100>
                       <Span bold fontSize={imageWidth / 10} white>
@@ -467,10 +478,7 @@ function DrawEvent({
                     <Repeat {...actionIconDefaultProps} />
                   </Col>
                   <Col>
-                    <Span
-                      fontSize={15}
-                      color={Colors.gray[600]}
-                      style={{fontWeight: '600'}}>
+                    <Span {...actionTextDefaultProps}>
                       {drawEvent?.repost_count}
                     </Span>
                   </Col>
@@ -487,10 +495,7 @@ function DrawEvent({
                     <MessageCircle {...actionIconDefaultProps} />
                   </Col>
                   <Col>
-                    <Span
-                      fontSize={15}
-                      color={Colors.gray[600]}
-                      style={{fontWeight: '600'}}>
+                    <Span {...actionTextDefaultProps}>
                       {drawEvent?.comments_count}
                     </Span>
                   </Col>
@@ -503,12 +508,7 @@ function DrawEvent({
                     <Heart {...heartProps} />
                   </Col>
                   <Col>
-                    <Span
-                      fontSize={15}
-                      color={Colors.gray[600]}
-                      style={{fontWeight: '600'}}>
-                      {likesCount}
-                    </Span>
+                    <Span {...actionTextDefaultProps}>{likesCount}</Span>
                   </Col>
                 </Row>
               </Col>

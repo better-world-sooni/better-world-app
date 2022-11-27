@@ -66,7 +66,7 @@ import DonationListScreen from 'src/screens/DonationListScreen';
 import {Div} from './common/Div';
 import PickNftCollectionScreen from 'src/screens/Auth/PickNftCollectionScreen';
 import UgcConfirmationScreen from 'src/screens/UgcConfirmationScreen';
-import repostDrawEventScreen from 'src/screens/RepostDrawEventListScreen';
+import RepostDrawEventScreen from 'src/screens/RepostDrawEventListScreen';
 
 const RootStack = createStackNavigator();
 
@@ -324,7 +324,7 @@ export const AppContent = ({notificationOpenData}) => {
     },
     {
       name: NAV_NAMES.RepostDrawEventList,
-      component: repostDrawEventScreen,
+      component: RepostDrawEventScreen,
     },
     {
       name: NAV_NAMES.CollectionEventList,

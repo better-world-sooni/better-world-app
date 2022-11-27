@@ -10,6 +10,7 @@ import PolymorphicOwnerListFlatlist from 'src/components/PolymorphicOwnerListFla
 export enum LikeListType {
   Comment = 'comment',
   Post = 'post',
+  DrawEvent = 'draw_event',
 }
 
 const LikeListScreen = ({

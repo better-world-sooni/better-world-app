@@ -22,6 +22,13 @@ export default function RepostedDrawEvent({
 }) {
   const gotoDrawEvent = useGotoDrawEvent({
     drawEventId: repostedDrawEvent.id,
+    image_uri: repostedDrawEvent?.image_uri
+      ? repostedDrawEvent.image_uri
+      : repostedDrawEvent?.image_uris &&
+        repostedDrawEvent.image_uris.length != 0
+      ? repostedDrawEvent.image_uris[0]
+      : null,
+    hasApplication: repostedDrawEvent?.has_application,
   });
   const handlePressRepost = () => {
     if (enablePress) gotoDrawEvent();

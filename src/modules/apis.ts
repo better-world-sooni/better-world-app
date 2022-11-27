@@ -168,6 +168,7 @@ const apis = {
     _: () => apiV1(`/social_setting`),
   },
   comment: {
+    drawEvent: drawEventId => apiV1(`/comment/draw_event/${drawEventId}`),
     post: postId => apiV1(`/comment/post/${postId}`),
     comment: commentId => apiV1(`/comment/comment/${commentId}`),
   },

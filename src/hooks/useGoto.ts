@@ -503,12 +503,21 @@ export function useGotoNewDrawEvent() {
   return gotoNewDrawEvent;
 }
 
-export function useGotoDrawEvent({drawEventId}) {
+export function useGotoDrawEvent({
+  drawEventId,
+  image_uri = null,
+  hasApplication = false,
+  onlyComments = false,
+  autoFocus = false,
+}) {
   const navigation = useNavigation();
   const apiGETWithToken = useApiGETWithToken();
   const gotoDrawEvent = () => {
     apiGETWithToken(apis.draw_event.drawEventId._(drawEventId));
-    navigation.navigate(NAV_NAMES.DrawEvent as never);
+    navigation.navigate(
+      NAV_NAMES.DrawEvent as never,
+      {image_uri: image_uri, hasApplication, onlyComments, autoFocus} as never,
+    );
   };
   return gotoDrawEvent;
 }

@@ -42,7 +42,15 @@ export default function EventApplication({eventApplication, admin = false}) {
     updateEventApplicationStatus(parseInt(event));
   };
   const drawEvent = cachedEventApplication.draw_event;
-  const gotoDrawEvent = useGotoDrawEvent({drawEventId: drawEvent.id});
+  const gotoDrawEvent = useGotoDrawEvent({
+    drawEventId: drawEvent.id,
+    image_uri: drawEvent?.image_uri
+      ? drawEvent.image_uri
+      : drawEvent?.image_uris && drawEvent.image_uris.length != 0
+      ? drawEvent.image_uris[0]
+      : null,
+    hasApplication: drawEvent.has_application,
+  });
   const status =
     cachedEventApplication.status == EventApplicationStatus.APPLIED
       ? '응모 완료'

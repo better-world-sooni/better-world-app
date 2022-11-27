@@ -163,7 +163,11 @@ export default function StoreScreen() {
       }
     : actionIconDefaultProps;
   return (
-    <Div flex={1} bg={'#F4F4F8'}>
+    <Div
+      flex={1}
+      bg={
+        data?.filter === DrawEventFeedFilter.Event ? Colors.white : '#F4F4F8'
+      }>
       <Div bgWhite h={notchHeight}></Div>
       <Div bgWhite h={50} justifyCenter borderBottom={0.5} borderGray200>
         <Row itemsCenter py5 h40 px15>
