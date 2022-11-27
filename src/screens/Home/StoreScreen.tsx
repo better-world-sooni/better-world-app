@@ -34,6 +34,7 @@ import {Img} from 'src/components/common/Img';
 import {IMAGES} from 'src/modules/images';
 import {ICONS} from 'src/modules/icons';
 import {MenuView} from '@react-native-menu/menu';
+import GradientTextUnderline from 'src/components/common/GradientTextUnderline';
 
 enum DrawEventFeedFilter {
   All = 'all',
@@ -171,41 +172,32 @@ export default function StoreScreen() {
       <Div bgWhite h={notchHeight}></Div>
       <Div bgWhite h={50} justifyCenter borderBottom={0.5} borderGray200>
         <Row itemsCenter py5 h40 px15>
-          <Col
+          <Row
             auto
-            h30
-            w={(30 * 239) / 158}
-            mr12
+            mr16
             itemsCenter
-            justifyCenter
             onPress={() => handlePressFilter(DrawEventFeedFilter.Notice)}>
-            {data?.filter !== DrawEventFeedFilter.Notice ? (
-              <Span bold fontSize={19} gray400>
-                {'공지'}
-              </Span>
-            ) : (
-              <Img
-                source={IMAGES.notificationText}
-                h22
-                w={(22 * 239) / 158}></Img>
-            )}
-          </Col>
-          <Col
+            <GradientTextUnderline
+              fontSize={20}
+              width={44}
+              height={30}
+              text={'공지'}
+              selected={data?.filter !== DrawEventFeedFilter.Event}
+            />
+          </Row>
+          <Row
             auto
-            h30
-            w={(30 * 355) / 158}
-            mr12
+            mr16
             itemsCenter
-            justifyCenter
             onPress={() => handlePressFilter(DrawEventFeedFilter.Event)}>
-            {data?.filter !== DrawEventFeedFilter.Event ? (
-              <Span bold fontSize={19} gray400>
-                {'이벤트'}
-              </Span>
-            ) : (
-              <Img source={IMAGES.eventText} h22 w={(22 * 355) / 158}></Img>
-            )}
-          </Col>
+            <GradientTextUnderline
+              fontSize={20}
+              width={62}
+              height={30}
+              text={'이벤트'}
+              selected={data?.filter !== DrawEventFeedFilter.Notice}
+            />
+          </Row>
           <Col />
           <Col auto onPress={handlePressBookmark} pl18>
             <Bookmark {...bookmarkProps} />

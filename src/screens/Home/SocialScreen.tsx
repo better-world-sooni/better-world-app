@@ -26,6 +26,7 @@ import {useUpdateUnreadNotificationCount} from 'src/redux/appReducer';
 import {shallowEqual, useSelector} from 'react-redux';
 import {RootState} from 'src/redux/rootReducer';
 import {smallBump} from 'src/utils/hapticFeedBackUtils';
+import GradientTextUnderline from 'src/components/common/GradientTextUnderline';
 
 enum SocialFeedFilter {
   All = 'all',
@@ -250,40 +251,38 @@ export default function SocialScreen() {
             </Row>
           ) : (
             <Row itemsCenter>
-              <Col
+              <Row
                 auto
                 mr16
-                py2
-                borderBottom={menuOptions[0].id == feedRes?.filter ? 2 : 0}
+                itemsCenter
                 onPress={() =>
                   handlePressMenu({nativeEvent: {event: SocialFeedFilter.All}})
                 }>
-                <Span
-                  fontSize={19}
-                  bold
-                  gray400={menuOptions[0].id !== feedRes?.filter}
-                  mx4>
-                  {menuOptions[0].title}
-                </Span>
-              </Col>
-              <Col
+                <GradientTextUnderline
+                  fontSize={20}
+                  width={44}
+                  height={30}
+                  text={menuOptions[0].title}
+                  selected={menuOptions[0].id == feedRes?.filter}
+                />
+              </Row>
+              <Row
                 auto
                 mr16
-                py2
-                borderBottom={menuOptions[1].id == feedRes?.filter ? 2 : 0}
+                itemsCenter
                 onPress={() =>
                   handlePressMenu({
                     nativeEvent: {event: SocialFeedFilter.Following},
                   })
                 }>
-                <Span
-                  fontSize={19}
-                  bold
-                  gray400={menuOptions[1].id !== feedRes?.filter}
-                  mx4>
-                  {menuOptions[1].title}
-                </Span>
-              </Col>
+                <GradientTextUnderline
+                  fontSize={20}
+                  width={62}
+                  height={30}
+                  text={menuOptions[1].title}
+                  selected={menuOptions[1].id == feedRes?.filter}
+                />
+              </Row>
               <Col />
               <Col auto onPress={openSideMenu} pl16>
                 <Search
