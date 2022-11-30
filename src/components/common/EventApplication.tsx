@@ -136,8 +136,9 @@ export default function EventApplication({eventApplication, admin = false}) {
     </Div>
   ) : (
     <Div
-      px20
-      py15
+      pl30
+      pr20
+      py20
       borderBottom={0.5}
       borderGray200
       border={0.5}
@@ -150,7 +151,7 @@ export default function EventApplication({eventApplication, admin = false}) {
       </Div> */}
       <Row itemsCenter>
         <Col auto relative mr12>
-          <Img uri={drawEvent.image_uri} h80 w80 rounded10 />
+          <Img uri={drawEvent.image_uri} h70 w70 rounded10 />
         </Col>
         <Col>
           <DrawEventStatusBanner

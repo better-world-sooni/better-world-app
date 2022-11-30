@@ -42,6 +42,7 @@ export enum EventApplicationInputType {
   CUSTOM_INPUT = 1,
   TWITTER_ID = 2,
   DISCORD_ID = 3,
+  LINK = 4,
 }
 
 export type EventApplicationCategory = {

@@ -1,96 +1,64 @@
-import { useState } from "react";
-import apis from "src/modules/apis";
-import { useApiSelector, usePostPromiseFnWithToken } from "src/redux/asyncReducer";
-import {chain} from 'lodash';
-import getDrawEventStatus from "./getDrawEventStatus";
-import { EventApplicationInputType } from "src/components/NewEventApplicationOptions";
-  
-export type OrderOption = {
-	name: string;
-	id: number;
-	merchandise_id: number;
-	category: string;
-	selected: boolean;
-	value?: string;
-};
-export type SelectableOrderCategory = {
-	name: string;
-	inputType:EventApplicationInputType
-	selectedOption: OrderOption
-	options: OrderOption[];
-}; 
+import {useState} from 'react';
+import {Linking} from 'react-native';
+import {EventApplicationInputType} from 'src/components/NewEventApplicationOptions';
 
-export default function useUploadEventApplication({drawEvent, uploadSuccessCallback}) {
-	const { data } = useApiSelector(apis.nft._());
-	const getOrderCategories = orderOptions => {
-		return chain(orderOptions)
-		  .groupBy('category')
-		  .map((value, key) => {
-			const options = value.map((item) => ({...item, selected: false }))
-			if (options.length==1 && options[0].input_type==EventApplicationInputType.CUSTOM_INPUT) return {name: key, inputType: EventApplicationInputType.CUSTOM_INPUT, selectedOption: null, options} 
-			if (options.length==1 && options[0].input_type==EventApplicationInputType.DISCORD_ID) return {name: key, inputType: EventApplicationInputType.DISCORD_ID, selectedOption: data?.nft?.discord_id ? {...options[0], value:data?.nft?.discord_id}: null, options} 
-			if (options.length==1 && options[0].input_type==EventApplicationInputType.TWITTER_ID) return {name: key, inputType: EventApplicationInputType.TWITTER_ID, selectedOption: data?.nft?.twitter_id ? {...options[0], value:data?.nft?.twitter_id}: null, options} 
-			return {name: key, inputType: EventApplicationInputType.SELECT, selectedOption: null, options} 
-		  })
-		  .value();
-	  };
-	  const orderable = true;
-    const [loading, setLoading] = useState(false);
-	const [error, setError] = useState('')
-	const [orderOptions, setOrderOptions] = useState(drawEvent.draw_event_options ? getOrderCategories(drawEvent.draw_event_options) : [])
-    const postPromiseFnWithToken = usePostPromiseFnWithToken()
-	const drawEventStatus = getDrawEventStatus({drawEvent})
-	
-    const uploadEventApplication = async () => {
-		if (loading) {
-			return;
-		}
-		if(!orderable){
-			return;
-		}
-		const selectedOptions= {}
-		for(const orderCategory of orderOptions){
-			if(orderCategory.selectedOption) selectedOptions[orderCategory.selectedOption.category] = orderCategory.selectedOption
-			else {
-				setError('옵션을 선택해 주세요.')
-			}
-		}
-		setLoading(true);
-        const body =  {
-			draw_event_id: drawEvent.id,
-			draw_event_options: selectedOptions
-		}
-		const {data} = await postPromiseFnWithToken({url: apis.event_application._().url, body});
-		if (!data.success) {
-			setLoading(false);
-			return;
-		}
-        uploadSuccessCallback()
-        setLoading(false);
+export default function useUploadEventApplication({orderOption}) {
+  const [cachedOrderOption, setCachedOrderOption] = useState(orderOption);
+  const [showDetail, setShowDetail] = useState(false);
+  const inputType = cachedOrderOption?.inputType;
+  const [selectedOption, setSelectedOption] = useState(
+    orderOption?.selectedOption,
+  );
+
+  const uploadEventApplication = async (SelectedOption = selectedOption) => {
+    setSelectedOption(SelectedOption);
+    setCachedOrderOption({
+      ...cachedOrderOption,
+      selectedOption: SelectedOption,
+    });
+  };
+  const onPressShowDetail = () => {
+    if (inputType != EventApplicationInputType.LINK) {
+      setShowDetail(prev => !prev);
+      return;
     }
-
-	const handleSelectOption = (categoryIndex, optionIndex) => {
-		setError('')
-		const newOrderOptions = [...orderOptions]
-		const categoryToChange = orderOptions[categoryIndex]
-		const changedOptions = categoryToChange.options.map((option, index) => {
-			const selected = index == optionIndex
-			return {...option, selected}
-		})
-		const changedSelectedCategory = {...categoryToChange, selectedOption: changedOptions[optionIndex], options: changedOptions}
-		newOrderOptions[categoryIndex] = changedSelectedCategory
-		setOrderOptions(newOrderOptions)
-	}
-
-	const handleWriteOption = (categoryIndex, optionValue) => {
-		setError('')
-		const newOrderOptions = [...orderOptions]
-		const categoryToChange = orderOptions[categoryIndex]
-		const changedOptions = {...categoryToChange.options[0], value: optionValue}
-		const changedSelectedCategory = {...categoryToChange, selectedOption: optionValue ? changedOptions : null, value: optionValue}
-		newOrderOptions[categoryIndex] = changedSelectedCategory
-		setOrderOptions(newOrderOptions)
-	}
-
-    return { error, loading, drawEventStatus, orderOptions, handleSelectOption, handleWriteOption, uploadEventApplication }
+    if (inputType == EventApplicationInputType.LINK) {
+      if (!cachedOrderOption.options || cachedOrderOption.options.length == 0)
+        return;
+      Linking.openURL(cachedOrderOption.options[0].name);
+      selectedOption == null &&
+        uploadEventApplication(cachedOrderOption.options[0]);
+      return;
+    }
+  };
+  const isApplied = cachedOrderOption.selectedOption != null;
+  const isChanged =
+    inputType == EventApplicationInputType.SELECT
+      ? cachedOrderOption.selectedOption?.name !== selectedOption?.name
+      : cachedOrderOption.selectedOption?.value !== selectedOption?.value;
+  const loading = false;
+  const detailText =
+    selectedOption == null
+      ? inputType == EventApplicationInputType.CUSTOM_INPUT
+        ? '눌러서 작성'
+        : inputType == EventApplicationInputType.DISCORD_ID
+        ? '눌러서 디스코드 아이디 작성'
+        : inputType == EventApplicationInputType.TWITTER_ID
+        ? '눌러서 트위터 아이디 작성'
+        : inputType == EventApplicationInputType.SELECT
+        ? '눌러서 옵션 선택'
+        : ''
+      : inputType == EventApplicationInputType.SELECT
+      ? selectedOption.name
+      : selectedOption.value;
+  return {
+    cachedOrderOption,
+    uploadEventApplication,
+    onPressShowDetail,
+    showDetail,
+    isApplied,
+    isChanged,
+    loading,
+    detailText,
+  };
 }

@@ -175,55 +175,6 @@ export default function FullDrawEvent({
           onPressExitReplyToComment={resetReplyTo}
         />
       </Div>
-      {/* {drawEvent?.has_application && (
-        <NewEventApplication drawEvent={drawEvent} />
-      )} */}
-      {/* {congratsOn && (
-        <Div
-          w={'100%'}
-          h={'100%'}
-          itemsCenter
-          justifyCenter
-          absolute
-          bg={'rgba(0,0,0,0.4)'}
-          onPress={() => setCongratsOn(false)}>
-          <Div
-            w={(DEVICE_WIDTH * 2) / 3}
-            h={(DEVICE_WIDTH * 2) / 3}
-            {...shadowProps}
-            rounded10
-            bgWhite
-            relative
-            itemsCenter
-            justifyCenter>
-            <Div top8 right8 absolute onPress={() => setCongratsOn(false)}>
-              <X height={34} color={Colors.gray[600]} strokeWidth={2} />
-            </Div>
-            <Div itemsCenter justifyCenter>
-              <Div mt30>
-                <Img
-                  source={ICONS.partyPopper}
-                  h={(559 / 512) * 100}
-                  w100></Img>
-              </Div>
-              <Div mt20 itemsCenter justifyCenter>
-                <GradientText
-                  text={'축하합니다!'}
-                  height={30}
-                  width={100}
-                  fontSize={20}
-                />
-                <GradientText
-                  text={'당첨되었습니다!'}
-                  height={30}
-                  width={140}
-                  fontSize={20}
-                />
-              </Div>
-            </Div>
-          </Div>
-        </Div>
-      )} */}
     </>
   );
 }
@@ -353,6 +304,9 @@ function DrawEvent({drawEvent}) {
             />
           )}
       </Div>
+      {drawEvent.has_application == true && (
+        <NewEventApplication drawEvent={drawEvent} />
+      )}
       <Row py15 px30 borderGray200 borderBottom={1.2} borderTop={1.2}>
         <Col itemsCenter>
           <Row auto itemsCenter>
