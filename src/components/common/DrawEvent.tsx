@@ -173,7 +173,8 @@ function DrawEvent({
     <Div w={width} mx={mx} my={my} relative bgWhite={!summary}>
       {currentNft.privilege &&
         currentNft.contract_address ==
-          drawEvent.nft_collection.contract_address && (
+          drawEvent.nft_collection.contract_address &&
+        !repost && (
           <Div absolute right0 mt6 mr10 zIndex={1} z100>
             <MenuView
               onPressAction={!repost && handlePressMenu}

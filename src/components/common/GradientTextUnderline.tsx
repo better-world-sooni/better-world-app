@@ -12,6 +12,7 @@ import {
   Box,
   rect,
 } from '@shopify/react-native-skia';
+import {Colors} from 'src/modules/styles';
 
 export default function GradientTextUnderline({
   text,
@@ -19,11 +20,11 @@ export default function GradientTextUnderline({
   width,
   height,
   selected,
-  notSelectedColor = '#000000',
+  notSelectedColor = Colors.gray[500],
 }) {
   const font = selected
     ? useFont(require('assets/fonts/NotoSansKR-Bold.otf'), fontSize)
-    : useFont(require('assets/fonts/NotoSansKR-Medium.otf'), fontSize - 2);
+    : useFont(require('assets/fonts/NotoSansKR-Bold.otf'), fontSize - 2);
   if (font === null) {
     return null;
   }
@@ -47,19 +48,13 @@ export default function GradientTextUnderline({
     </Canvas>
   ) : (
     <Canvas style={{width, height}}>
-      <Mask
-        mask={
-          <>
-            <Text x={3} y={fontSize} text={text} font={font} />
-          </>
-        }>
-        <Rect
-          x={0}
-          y={0}
-          width={width}
-          height={height}
-          color={notSelectedColor}></Rect>
-      </Mask>
+      <Text
+        x={3}
+        y={fontSize}
+        text={text}
+        font={font}
+        color={notSelectedColor}
+      />
     </Canvas>
   );
 }

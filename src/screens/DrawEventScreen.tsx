@@ -9,6 +9,11 @@ import {EventApplicationStatus} from 'src/hooks/getDrawEventStatus';
 import {Platform} from 'react-native';
 import FullDrawEvent from 'src/components/common/FullDrawEvent';
 import NotFound from 'src/components/error/NotFound';
+import {Colors, DEVICE_WIDTH} from 'src/modules/styles';
+import {X} from 'react-native-feather';
+import {Img} from 'src/components/common/Img';
+import {ICONS} from 'src/modules/icons';
+import GradientText from 'src/components/common/GradientText';
 
 export default function DrawEventScreen({
   route: {
@@ -65,7 +70,7 @@ export default function DrawEventScreen({
         ) : null}
       </KeyboardAvoidingView>
       <Div h={notchHeight} bgWhite />
-      {/* {congratsOn && (
+      {congratsOn && (
         <Div
           w={'100%'}
           h={'100%'}
@@ -101,7 +106,7 @@ export default function DrawEventScreen({
                   fontSize={20}
                 />
                 <GradientText
-                  text={'당첨되었습니다!'}
+                  text={'당첨되셨습니다!'}
                   height={30}
                   width={140}
                   fontSize={20}
@@ -110,7 +115,7 @@ export default function DrawEventScreen({
             </Div>
           </Div>
         </Div>
-      )} */}
+      )}
     </>
   );
 }

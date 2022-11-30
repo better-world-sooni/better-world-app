@@ -36,7 +36,7 @@ import {ICONS} from 'src/modules/icons';
 import {MenuView} from '@react-native-menu/menu';
 import GradientTextUnderline from 'src/components/common/GradientTextUnderline';
 
-enum DrawEventFeedFilter {
+export enum DrawEventFeedFilter {
   All = 'all',
   Notice = 'notice',
   Event = 'event',

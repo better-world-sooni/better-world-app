@@ -27,6 +27,11 @@ export function getCalendarDay(time) {
   return kmoment(time).calendar();
 }
 
+export function getDate(time, format = 'YYYY.MM.DD HH:mm:ss') {
+  if (!time) return null;
+  return kmoment(time).format(format);
+}
+
 export function getNowDifference(stringDate) {
   if (!stringDate) return null;
   const date = new Date(stringDate);

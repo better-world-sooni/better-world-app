@@ -1,9 +1,13 @@
 import {MenuView} from '@react-native-menu/menu';
 import React from 'react';
 import {ActivityIndicator} from 'react-native';
+import {ChevronRight} from 'react-native-feather';
+import {Colors} from 'src/modules/styles';
+import {DrawEventStatus} from 'src/hooks/getDrawEventStatus';
 import {useGotoDrawEvent} from 'src/hooks/useGoto';
 import useUpdateEventApplication from 'src/hooks/useUpdateEventApplication';
 import {IMAGES} from 'src/modules/images';
+import {getDate, getNowDifference} from 'src/utils/timeUtils';
 import {EventApplicationInputType} from '../NewEventApplicationOptions';
 import PolymorphicOwner from '../PolymorphicOwner';
 import {Col} from './Col';
@@ -57,7 +61,7 @@ export default function EventApplication({eventApplication, admin = false}) {
       : cachedEventApplication.status == EventApplicationStatus.SELECTED
       ? '당첨'
       : '수령 완료';
-  return (
+  return admin == true ? (
     <Div
       mx15
       my8
@@ -66,25 +70,22 @@ export default function EventApplication({eventApplication, admin = false}) {
       borderBottom={0.5}
       borderGray200
       border={0.5}
-      rounded10>
+      rounded10
+      bgWhite>
       <Div absolute top={-4} right10>
-        {admin ? (
-          <MenuView onPressAction={handlePressStatus} actions={airdropTypes}>
-            {loading ? (
-              <ActivityIndicator />
-            ) : cachedEventApplication.status ==
-              EventApplicationStatus.RECEIVED ? (
-              <Img source={IMAGES.received} w={35} h={(35 * 183) / 152}></Img>
-            ) : cachedEventApplication.status ==
-              EventApplicationStatus.SELECTED ? (
-              <Img source={IMAGES.selected} w={35} h={(35 * 183) / 152}></Img>
-            ) : (
-              <Img source={IMAGES.applied} w={35} h={(35 * 183) / 152}></Img>
-            )}
-          </MenuView>
-        ) : cachedEventApplication.status == EventApplicationStatus.SELECTED ? (
-          <Img source={IMAGES.selected} w={35} h={(35 * 183) / 152}></Img>
-        ) : null}
+        <MenuView onPressAction={handlePressStatus} actions={airdropTypes}>
+          {loading ? (
+            <ActivityIndicator />
+          ) : cachedEventApplication.status ==
+            EventApplicationStatus.RECEIVED ? (
+            <Img source={IMAGES.received} w={35} h={(35 * 183) / 152}></Img>
+          ) : cachedEventApplication.status ==
+            EventApplicationStatus.SELECTED ? (
+            <Img source={IMAGES.selected} w={35} h={(35 * 183) / 152}></Img>
+          ) : (
+            <Img source={IMAGES.applied} w={35} h={(35 * 183) / 152}></Img>
+          )}
+        </MenuView>
       </Div>
       <Row itemsCenter>
         <Col auto relative mr12 onPress={gotoDrawEvent}>
@@ -98,14 +99,12 @@ export default function EventApplication({eventApplication, admin = false}) {
           </Div>
         </Col>
       </Row>
-      {admin && (
-        <Div rounded10 overflowHidden border={0.5} borderGray200 mt8>
-          <PolymorphicOwner
-            showFollowing={false}
-            nft={cachedEventApplication.nft}
-          />
-        </Div>
-      )}
+      <Div rounded10 overflowHidden border={0.5} borderGray200 mt8>
+        <PolymorphicOwner
+          showFollowing={false}
+          nft={cachedEventApplication.nft}
+        />
+      </Div>
       {cachedEventApplication.event_application_options?.length > 0 && (
         <Div mt16>
           <Span bold fontSize={16} mb8 primary>
@@ -135,5 +134,105 @@ export default function EventApplication({eventApplication, admin = false}) {
         </Div>
       )}
     </Div>
+  ) : (
+    <Div
+      px20
+      py15
+      borderBottom={0.5}
+      borderGray200
+      border={0.5}
+      onPress={gotoDrawEvent}
+      bgWhite>
+      {/* <Div absolute top={-4} right10>
+        {cachedEventApplication.status == EventApplicationStatus.SELECTED ? (
+          <Img source={IMAGES.selected} w={35} h={(35 * 183) / 152}></Img>
+        ) : null}
+      </Div> */}
+      <Row itemsCenter>
+        <Col auto relative mr12>
+          <Img uri={drawEvent.image_uri} h80 w80 rounded10 />
+        </Col>
+        <Col>
+          <DrawEventStatusBanner
+            status={drawEvent?.status}
+            expires_at={drawEvent?.expires_at}
+          />
+          <Div mt5>
+            <Span bold fontSize={18} numberOfLines={1} mb3>
+              {drawEvent.name}
+            </Span>
+            <Span bold fontSize={12} numberOfLines={1} gray600>
+              {'참여일: '}
+              {getDate(drawEvent?.created_at, 'YYYY.MM.DD')}
+            </Span>
+          </Div>
+        </Col>
+        <Col auto itemsCenter>
+          <ChevronRight
+            height={18}
+            width={18}
+            color={Colors.black}
+            strokeWidth={2}
+          />
+        </Col>
+      </Row>
+      {/* {cachedEventApplication.event_application_options?.length > 0 && (
+        <Div mt16>
+          <Span bold fontSize={16} mb8 primary>
+            선택된 옵션
+          </Span>
+          {cachedEventApplication.event_application_options.map(
+            event_application_option => {
+              return (
+                <Row itemsCenter py2>
+                  <Col auto pr8>
+                    <Span gray600>
+                      {event_application_option.draw_event_option.category} :
+                    </Span>
+                  </Col>
+                  <Col>
+                    <Span bold>
+                      {event_application_option.draw_event_option.input_type ==
+                      EventApplicationInputType.SELECT
+                        ? event_application_option.draw_event_option.name
+                        : event_application_option.value}
+                    </Span>
+                  </Col>
+                </Row>
+              );
+            },
+          )}
+        </Div>
+      )} */}
+    </Div>
   );
 }
+
+const DrawEventStatusBanner = ({status, expires_at}) => {
+  const colors = {
+    [DrawEventStatus.FINISHED]: {bgGray500: true},
+    [DrawEventStatus.IN_PROGRESS]: {bg: Colors.primary.DEFAULT},
+    [DrawEventStatus.ANNOUNCED]: {bg: Colors.secondary.DEFAULT},
+  };
+  const expireDay = getNowDifference(expires_at);
+  const text = {
+    [DrawEventStatus.FINISHED]: '마감',
+    [DrawEventStatus.IN_PROGRESS]: expires_at
+      ? 'D-' + (expireDay > 100 ? '99+' : expireDay == 0 ? 'DAY' : expireDay)
+      : '진행 중',
+    [DrawEventStatus.ANNOUNCED]: '당첨 발표',
+  };
+  const Status =
+    status == DrawEventStatus.IN_PROGRESS && expires_at && expireDay < 0
+      ? DrawEventStatus.FINISHED
+      : status;
+  return (
+    <Row>
+      <Col auto px7 py4 {...colors[Status]} rounded5>
+        <Span fontSzie={14} bold white>
+          {text[Status]}
+        </Span>
+      </Col>
+    </Row>
+  );
+};

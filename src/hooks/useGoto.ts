@@ -11,6 +11,7 @@ import {
 } from 'src/redux/asyncReducer';
 import {RootState} from 'src/redux/rootReducer';
 import {ChatRoomEnterType} from 'src/screens/ChatRoomScreen';
+import {EventApplicationFilter} from 'src/screens/EventApplicationListScreen';
 import {FollowOwnerType, FollowType} from 'src/screens/FollowListScreen';
 import {ForumFeedFilter} from 'src/screens/Home/HomeScreen';
 import {PostType} from 'src/screens/NewPostScreen';
@@ -655,7 +656,9 @@ export function useGotoEventApplicationList() {
   const navigation = useNavigation();
   const apiGETWithToken = useApiGETWithToken();
   const gotoEventApplicationList = () => {
-    apiGETWithToken(apis.nft.eventApplication.list());
+    apiGETWithToken(
+      apis.nft.eventApplication.list(EventApplicationFilter.APPLIED),
+    );
     navigation.navigate(NAV_NAMES.EventApplicationList as never);
   };
   return gotoEventApplicationList;
