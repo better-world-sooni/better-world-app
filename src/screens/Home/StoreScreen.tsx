@@ -24,7 +24,6 @@ import {
   Search,
 } from 'react-native-feather';
 import {
-  useGotoBookmarkedDrawEventListScreen,
   useGotoEventApplicationList,
   useGotoNftCollectionSearch,
 } from 'src/hooks/useGoto';
@@ -43,14 +42,14 @@ export enum DrawEventFeedFilter {
   Event = 'event',
 }
 
-export enum DrawEventOrder {
+enum DrawEventOrder {
   Recent = 'recent',
   Popular = 'popular',
   Event = 'event',
   Announcement = 'announcement',
 }
 
-export const orderTypes = [
+const orderTypes = [
   {
     id: `${DrawEventOrder.Popular}`,
     title: '인기 순',
@@ -69,20 +68,21 @@ export default function StoreScreen() {
   const {data: nftCollectionRes, isLoading: nftCollectionLoad} = useApiSelector(
     apis.nft_collection._(),
   );
-  const nftCollection = nftCollectionRes?.nft_collection;
   const [order, setOrder] = useState(DrawEventOrder.Recent);
+  const [bookmarked, setBookmarked] = useState(false);
+  const nftCollection = nftCollectionRes?.nft_collection;
   const drawEvents = data ? data.draw_events : [];
   const reloadGETWithToken = useReloadGETWithToken();
   const paginateGetWithToken = usePaginateGETWithToken();
   const handleEndReached = () => {
     if (isPaginating || isNotPaginatable) return;
     paginateGetWithToken(
-      apis.feed.draw_event._(data?.filter, order, page + 1),
+      apis.feed.draw_event._(data?.filter, bookmarked, order, page + 1),
       'draw_events',
     );
   };
   const handleRefresh = () => {
-    reloadGETWithToken(apis.feed.draw_event._(data?.filter, order));
+    reloadGETWithToken(apis.feed.draw_event._(data?.filter, bookmarked, order));
   };
   const scrollToTop = () => {
     flatlistRef?.current
@@ -95,31 +95,35 @@ export default function StoreScreen() {
       filter == DrawEventFeedFilter.Notice &&
       data?.filter !== DrawEventFeedFilter.Notice
     ) {
-      reloadGETWithToken(apis.feed.draw_event._(filter, order));
+      reloadGETWithToken(apis.feed.draw_event._(filter, bookmarked, order));
     }
     if (
       filter == DrawEventFeedFilter.Event &&
       data?.filter !== DrawEventFeedFilter.Event
     ) {
       setOrder(DrawEventOrder.Recent);
-      reloadGETWithToken(apis.feed.draw_event._(filter, DrawEventOrder.Recent));
+      reloadGETWithToken(
+        apis.feed.draw_event._(filter, bookmarked, DrawEventOrder.Recent),
+      );
     }
   };
   const handlePressOrder = ({nativeEvent: {event}}) => {
+    // scrollToTop();
+    // console.log(event);
     setOrder(event);
-    reloadGETWithToken(apis.feed.draw_event._(data?.filter, event));
+    reloadGETWithToken(apis.feed.draw_event._(data?.filter, bookmarked, event));
+  };
+  const handlePressBookmark = () => {
+    setBookmarked(prev => !prev);
+    reloadGETWithToken(
+      apis.feed.draw_event._(data?.filter, !bookmarked, order),
+    );
   };
   const gotoEventApplicationList = useGotoEventApplicationList();
-  const gotoBookmarkedDrawEventList = useGotoBookmarkedDrawEventListScreen();
   const gotoNftCollectionSearch = useGotoNftCollectionSearch();
   const notchHeight = useSafeAreaInsets().top;
   const headerHeight = notchHeight + 50;
-  const numColumns =
-    data?.filter == DrawEventFeedFilter.Notice
-      ? 1
-      : data?.filter == DrawEventFeedFilter.Event
-      ? 2
-      : 1;
+  const numColumns = 2;
   const paddingX = (DEVICE_WIDTH * 30) / 390;
 
   useEffect(() => {
@@ -150,6 +154,15 @@ export default function StoreScreen() {
     height: 22,
     width: 22,
   };
+  const bookmarkProps = bookmarked
+    ? {
+        fill: Colors.blue.DEFAULT,
+        width: 22,
+        height: 22,
+        color: Colors.blue.DEFAULT,
+        strokeWidth: 2,
+      }
+    : actionIconDefaultProps;
   return (
     <Div
       flex={1}
@@ -186,8 +199,8 @@ export default function StoreScreen() {
             />
           </Row>
           <Col />
-          <Col auto onPress={gotoBookmarkedDrawEventList} pl18>
-            <Bookmark {...actionIconDefaultProps} />
+          <Col auto onPress={handlePressBookmark} pl18>
+            <Bookmark {...bookmarkProps} />
           </Col>
           <Col auto onPress={gotoNftCollectionSearch} pl18>
             <Search

@@ -14,7 +14,6 @@ import {ChatRoomEnterType} from 'src/screens/ChatRoomScreen';
 import {FollowOwnerType, FollowType} from 'src/screens/FollowListScreen';
 import {PostType} from 'src/screens/NewPostScreen';
 import {EventApplicationFilter} from 'src/screens/EventApplicationListScreen';
-import {DrawEventFeedFilter} from 'src/screens/Home/StoreScreen';
 enum ForumFeedFilter {
   All = 'all',
   Following = 'following',
@@ -664,16 +663,6 @@ export function useGotoEventApplicationList() {
       apis.nft.eventApplication.list(EventApplicationFilter.APPLIED),
     );
     navigation.navigate(NAV_NAMES.EventApplicationList as never);
-  };
-  return gotoEventApplicationList;
-}
-
-export function useGotoBookmarkedDrawEventListScreen() {
-  const navigation = useNavigation();
-  const apiGETWithToken = useApiGETWithToken();
-  const gotoEventApplicationList = () => {
-    apiGETWithToken(apis.feed.draw_event.bookmark(DrawEventFeedFilter.Notice));
-    navigation.navigate(NAV_NAMES.BookmarkedDrawEventList as never);
   };
   return gotoEventApplicationList;
 }

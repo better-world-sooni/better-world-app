@@ -67,7 +67,6 @@ import {Div} from './common/Div';
 import PickNftCollectionScreen from 'src/screens/Auth/PickNftCollectionScreen';
 import UgcConfirmationScreen from 'src/screens/UgcConfirmationScreen';
 import RepostDrawEventScreen from 'src/screens/RepostDrawEventListScreen';
-import BookmarkedDrawEventListScreen from 'src/screens/BookmarkedDrawEventListScreen';
 
 const RootStack = createStackNavigator();
 
@@ -434,10 +433,6 @@ export const AppContent = ({notificationOpenData}) => {
     {
       name: NAV_NAMES.EventApplicationList,
       component: EventApplicationListScreen,
-    },
-    {
-      name: NAV_NAMES.BookmarkedDrawEventList,
-      component: BookmarkedDrawEventListScreen,
     },
     {
       name: NAV_NAMES.NftSetting,
