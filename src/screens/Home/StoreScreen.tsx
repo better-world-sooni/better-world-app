@@ -108,8 +108,6 @@ export default function StoreScreen() {
     }
   };
   const handlePressOrder = ({nativeEvent: {event}}) => {
-    // scrollToTop();
-    // console.log(event);
     setOrder(event);
     reloadGETWithToken(apis.feed.draw_event._(data?.filter, bookmarked, event));
   };
@@ -224,6 +222,7 @@ export default function StoreScreen() {
         ref={flatlistRef}
         showsVerticalScrollIndicator={false}
         numColumns={numColumns}
+        key={numColumns}
         keyExtractor={item => (item as any).id}
         ListHeaderComponent={
           <Div>
