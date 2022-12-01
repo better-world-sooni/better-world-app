@@ -49,6 +49,7 @@ export const NAV_NAMES = {
   KlipSignIn: 'KlipSignIn',
   KaikasSignIn: 'KaikasSignIn',
   EventApplicationList: 'EventApplicationList',
+  BookmarkedDrawEventList: 'BookmarkedDrawEventList',
   CollectionEventApplicationList: 'CollectionEventApplicationList',
   NewDrawEvent: 'NewDrawEvent',
   DrawEvent: 'DrawEvent',
