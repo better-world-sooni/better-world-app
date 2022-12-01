@@ -513,11 +513,10 @@ export function useGotoDrawEvent({
   image_uri = null,
   hasApplication = false,
   onlyComments = false,
-  autoFocus = false,
 }) {
   const navigation = useNavigation();
   const apiGETWithToken = useApiGETWithToken();
-  const gotoDrawEvent = () => {
+  const gotoDrawEvent = (autoFocus = false) => {
     apiGETWithToken(apis.draw_event.drawEventId._(drawEventId));
     navigation.navigate(
       NAV_NAMES.DrawEvent as never,

@@ -24,7 +24,7 @@ import NewEventApplication from 'src/components/common/NewEventApplication';
 import {Linking} from 'react-native';
 import CountdownText from 'src/components/common/CountdownText';
 import ImageSlideShow from 'src/components/common/ImageSlideShow';
-import Animated from 'react-native-reanimated';
+import Animated, {useAnimatedRef} from 'react-native-reanimated';
 import NewComment, {ReplyToType} from './NewComment';
 import Comment from './Comment';
 import useScrollToEndRef from 'src/hooks/useScrollToEndRef';
@@ -77,9 +77,6 @@ export default function FullDrawEvent({
   useEffect(() => {
     setCachedComments(drawEvent.comments || []);
   }, [drawEvent.comments?.length]);
-  useEffect(() => {
-    return scrollToEndRef?.current?.scrollToEnd();
-  }, []);
   const defaultReplyTo = {
     object: drawEvent,
     type: ReplyToType.DrawEvent,

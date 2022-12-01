@@ -9,7 +9,11 @@ import {
 import {isDiscordIdError} from './useDiscordId';
 import {isTwitterIdError} from './useTwitterId';
 
-export default function useUploadEventApplication({orderOption, drawEventId}) {
+export default function useUploadEventApplication({
+  orderOption,
+  drawEventId,
+  setOrderOptionsList,
+}) {
   const {data} = useApiSelector(apis.nft._());
   const nft = data?.nft;
   const [loading, setLoading] = useState(false);
@@ -22,12 +26,7 @@ export default function useUploadEventApplication({orderOption, drawEventId}) {
   );
   const postPromiseFnWithToken = usePostPromiseFnWithToken();
   const uploadEventApplication = async (SelectedOption = selectedOption) => {
-    console.log('upload');
-    setSelectedOption(SelectedOption);
-    setCachedOrderOption({
-      ...cachedOrderOption,
-      selectedOption: SelectedOption,
-    });
+    setLoading(true);
     const body = {
       draw_event_id: drawEventId,
       draw_event_options: {selected: SelectedOption},
@@ -42,9 +41,20 @@ export default function useUploadEventApplication({orderOption, drawEventId}) {
       return;
     }
     setLoading(false);
+    setSelectedOption(SelectedOption);
+    setOrderOptionsList(true);
+    setShowDetail(false);
+    setCachedOrderOption({
+      ...cachedOrderOption,
+      selectedOption: SelectedOption,
+    });
+  };
+  const restoreSelectedOption = () => {
+    setSelectedOption(cachedOrderOption.selectedOption);
   };
   const onPressShowDetail = async () => {
     if (inputType != EventApplicationInputType.LINK) {
+      if (showDetail == true) restoreSelectedOption();
       setShowDetail(prev => !prev);
       return;
     }
@@ -140,6 +150,10 @@ export default function useUploadEventApplication({orderOption, drawEventId}) {
     }
     return null;
   };
+  const setFocus = isFocus => {
+    if (isFocus == true && inputType != EventApplicationInputType.LINK)
+      setShowDetail(true);
+  };
 
   return {
     inputType,
@@ -155,6 +169,7 @@ export default function useUploadEventApplication({orderOption, drawEventId}) {
     editableText,
     handleWriteEditableOption,
     handleSubmitWritableOption,
+    setFocus,
     error: error(),
     autoId: autoId(),
   };

@@ -1,35 +1,14 @@
-import React, {useEffect, useMemo, useRef, useState} from 'react';
-import {Colors, DEVICE_WIDTH, varStyle} from 'src/modules/styles';
+import React, {useEffect, useRef, useState} from 'react';
+import {Colors, DEVICE_WIDTH} from 'src/modules/styles';
 import {Div} from './Div';
 import {Span} from './Span';
-import Accordion from 'react-native-collapsible/Accordion';
 import {Row} from './Row';
 import {Col} from './Col';
-import {Check, ArrowRight, Edit2, X, XCircle} from 'react-native-feather';
-import {HAS_NOTCH} from 'src/modules/constants';
-import {
-  ActivityIndicator,
-  FlatList,
-  Keyboard,
-  Linking,
-  TextInput,
-} from 'react-native';
-import {
-  OrderableType,
-  SelectableOrderCategory,
-} from 'src/hooks/useMakeEventApplication';
-import BottomPopup from './BottomPopup';
-import {BottomSheetModal, BottomSheetScrollView} from '@gorhom/bottom-sheet';
-import {Img} from './Img';
-import {ICONS} from 'src/modules/icons';
-import useTwitterId from 'src/hooks/useTwitterId';
+import {X} from 'react-native-feather';
+import {ActivityIndicator, FlatList, TextInput} from 'react-native';
+import {OrderableType} from 'src/hooks/useMakeEventApplication';
 import {EventApplicationInputType} from '../NewEventApplicationOptions';
-import useDiscordId from 'src/hooks/useDiscordId';
-import useOptionValue from 'src/hooks/useOptionValue';
-import {useApiSelector, useReloadGETWithToken} from 'src/redux/asyncReducer';
-import apis from 'src/modules/apis';
 import {CheckIcon, InfoIcon} from 'native-base';
-import {useGotoEventApplicationList} from 'src/hooks/useGoto';
 import GradientColorButton from './GradientColorButton';
 import useMakeEventApplication from 'src/hooks/useMakeEventApplication';
 import useUploadEventApplication from 'src/hooks/useUploadEventApplication';
@@ -43,12 +22,19 @@ export default function NewEventApplication({drawEvent, setShowNewComment}) {
   //   reloadGETWithToken(apis.feed.draw_event._());
   //   gotoEventApplicationList();
   // };
-  const {orderable, orderableType, drawEventStatus, orderOptions} =
-    useMakeEventApplication({
-      drawEvent,
-    });
-  // const [canUploadEventApplication, setCanUploadEventApplication] =
-  //   useState(false);
+  const {
+    orderable,
+    orderableType,
+    orderOptions,
+    drawEventStatus,
+    setOrderOptionsListAtIndex,
+    isApplied,
+    selectIndex,
+    eventApplicationCount,
+  } = useMakeEventApplication({
+    drawEvent,
+  });
+  const slicedOrderOptions = orderOptions.slice(0, selectIndex + 1);
   return (
     <Col pt10 pb20>
       <Row px20 justifyCenter mb10>
@@ -82,11 +68,7 @@ export default function NewEventApplication({drawEvent, setShowNewComment}) {
           <GradientColorButton
             width={DEVICE_WIDTH}
             height={30}
-            text={`${
-              drawEvent?.event_application_count
-                ? drawEvent?.event_application_count
-                : 0
-            }명 참여중`}
+            text={`${eventApplicationCount}명 참여중`}
             onPress={null}
             fontSize={14}
           />
@@ -101,16 +83,29 @@ export default function NewEventApplication({drawEvent, setShowNewComment}) {
                 </Span>
               </Row>
             }
-            data={orderOptions}
+            ListFooterComponent={
+              isApplied && (
+                <Row px20 justifyCenter mt10>
+                  <Span fontSize={16} ml5 color={defaultColor} bold>
+                    {'참여가 완료되었습나다.'}
+                  </Span>
+                </Row>
+              )
+            }
+            data={slicedOrderOptions}
             renderItem={({item, index}) => {
               return (
                 <OrderOption
                   orderOption={item}
                   index={index}
                   isFirst={index == 0}
-                  isLast={index >= orderOptions.length - 1}
+                  isLast={index >= slicedOrderOptions.length - 1}
                   setShowNewComment={setShowNewComment}
                   drawEventId={drawEvent?.id}
+                  isFocus={selectIndex == index}
+                  setOrderOptionsList={value =>
+                    setOrderOptionsListAtIndex(index, value)
+                  }
                 />
               );
             }}></FlatList>
@@ -127,6 +122,8 @@ function OrderOption({
   isLast,
   setShowNewComment,
   drawEventId,
+  setOrderOptionsList,
+  isFocus,
 }) {
   const marginY = 10;
   const lineLength = 5;
@@ -145,9 +142,17 @@ function OrderOption({
     editableText,
     handleWriteEditableOption,
     handleSubmitWritableOption,
+    setFocus,
     error,
     autoId,
-  } = useUploadEventApplication({orderOption, drawEventId});
+  } = useUploadEventApplication({
+    orderOption,
+    drawEventId,
+    setOrderOptionsList,
+  });
+  useEffect(() => {
+    setFocus(isFocus);
+  }, [isFocus]);
   return (
     <Col px30>
       <Row itemsCenter>
@@ -403,6 +408,7 @@ const WriteOptionInput = ({
             onChangeText={handleWriteEditableOption}
             placeholder={'입력'}
             onBlur={onBlur}
+            autoCapitalize={'none'}
           />
         ) : (
           <Span fontSize={fontSize} color={fontColor}>

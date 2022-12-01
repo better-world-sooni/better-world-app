@@ -1,11 +1,8 @@
 import {useState} from 'react';
 import apis from 'src/modules/apis';
-import {
-  useApiSelector,
-  usePostPromiseFnWithToken,
-} from 'src/redux/asyncReducer';
+import {useApiSelector} from 'src/redux/asyncReducer';
 import {chain} from 'lodash';
-import getDrawEventStatus from './getDrawEventStatus';
+import getDrawEventStatus, {EventApplicationStatus} from './getDrawEventStatus';
 import {EventApplicationInputType} from 'src/components/NewEventApplicationOptions';
 
 export type OrderOption = {
@@ -32,7 +29,6 @@ export default function useMakeEventApplication({drawEvent}) {
   const {data} = useApiSelector(apis.nft._());
   const nft = data?.nft;
   const eventApplicationOptions = drawEvent?.event_application_options;
-
   const isSelectedOption = (targetOptionId, optionIds) => {
     for (const optionId of optionIds) {
       if (targetOptionId == optionId) {
@@ -162,82 +158,45 @@ export default function useMakeEventApplication({drawEvent}) {
         drawEvent?.nft_collection?.contract_address == nft?.contract_address
       ? true
       : false;
-  //   const [loading, setLoading] = useState(false);
-  //   const [error, setError] = useState('');
   const orderOptions = drawEvent.draw_event_options
     ? getOrderCategories(drawEvent.draw_event_options)
     : [];
-  //   const postPromiseFnWithToken = usePostPromiseFnWithToken();
+  const [orderOptionsList, setOrderOptionsList] = useState(
+    orderOptions.map(value => value?.selectedOption != null),
+  );
+  const setOrderOptionsListAtIndex = (index, value) => {
+    if (index >= orderOptionsList.length) return;
+    const changedArray = [...orderOptionsList];
+    changedArray[index] = value;
+    setOrderOptionsList(changedArray);
+  };
+  const selectIndex = orderOptionsList.reduce((acc, cur, idx) => {
+    return (acc += acc == idx && cur == true ? 1 : 0);
+  }, 0);
+
+  const isApplied =
+    orderOptionsList.length != 0 && selectIndex == orderOptionsList.length;
   const drawEventStatus = getDrawEventStatus({drawEvent});
-
-  //   const uploadEventApplication = async () => {
-  //     if (loading) {
-  //       return;
-  //     }
-  //     if (!orderable) {
-  //       return;
-  //     }
-  //     const selectedOptions = {};
-  //     for (const orderCategory of orderOptions) {
-  //       if (orderCategory.selectedOption)
-  //         selectedOptions[orderCategory.selectedOption.category] =
-  //           orderCategory.selectedOption;
-  //       else {
-  //         setError('옵션을 선택해 주세요.');
-  //       }
-  //     }
-  //     setLoading(true);
-  //     const body = {
-  //       draw_event_id: drawEvent.id,
-  //       draw_event_options: selectedOptions,
-  //     };
-  //     const {data} = await postPromiseFnWithToken({
-  //       url: apis.event_application._().url,
-  //       body,
-  //     });
-  //     if (!data.success) {
-  //       setLoading(false);
-  //       return;
-  //     }
-  //     uploadSuccessCallback();
-  //     setLoading(false);
-  //   };
-
-  //   const handleSelectOption = (categoryIndex, optionIndex) => {
-  //     setError('');
-  //     const newOrderOptions = [...orderOptions];
-  //     const categoryToChange = orderOptions[categoryIndex];
-  //     const changedOptions = categoryToChange.options.map((option, index) => {
-  //       const selected = index == optionIndex;
-  //       return {...option, selected};
-  //     });
-  //     const changedSelectedCategory = {
-  //       ...categoryToChange,
-  //       selectedOption: changedOptions[optionIndex],
-  //       options: changedOptions,
-  //     };
-  //     newOrderOptions[categoryIndex] = changedSelectedCategory;
-  //     setOrderOptions(newOrderOptions);
-  //   };
-
-  //   const handleWriteOption = (categoryIndex, optionValue) => {
-  //     setError('');
-  //     const newOrderOptions = [...orderOptions];
-  //     const categoryToChange = orderOptions[categoryIndex];
-  //     const changedOptions = {...categoryToChange.options[0], value: optionValue};
-  //     const changedSelectedCategory = {
-  //       ...categoryToChange,
-  //       selectedOption: optionValue ? changedOptions : null,
-  //       value: optionValue,
-  //     };
-  //     newOrderOptions[categoryIndex] = changedSelectedCategory;
-  //     setOrderOptions(newOrderOptions);
-  //   };
-
+  const eventApplicationCount =
+    (drawEvent?.event_application_count
+      ? drawEvent?.event_application_count
+      : 0) +
+    (!(
+      drawEvent?.event_application &&
+      drawEvent.event_application.status == EventApplicationStatus.APPLIED
+    )
+      ? isApplied
+        ? 1
+        : 0
+      : 0);
   return {
     orderable,
     orderableType,
     orderOptions,
     drawEventStatus,
+    setOrderOptionsListAtIndex,
+    eventApplicationCount,
+    isApplied,
+    selectIndex,
   };
 }

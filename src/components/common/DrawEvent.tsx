@@ -489,7 +489,9 @@ function DrawEvent({
               <Col
                 itemsCenter
                 onPress={
-                  selectableFn ? () => selectableFn(drawEvent) : gotoDrawEvent
+                  selectableFn
+                    ? () => selectableFn(drawEvent)
+                    : () => gotoDrawEvent(true)
                 }>
                 <Row auto itemsCenter>
                   <Col pr10>

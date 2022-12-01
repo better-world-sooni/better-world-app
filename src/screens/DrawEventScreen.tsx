@@ -66,7 +66,10 @@ export default function DrawEventScreen({
         relative
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
         {drawEventRes?.draw_event ? (
-          <FullDrawEvent drawEvent={drawEventRes?.draw_event} />
+          <FullDrawEvent
+            drawEvent={drawEventRes?.draw_event}
+            autoFocus={autoFocus}
+          />
         ) : null}
       </KeyboardAvoidingView>
       <Div h={notchHeight} bgWhite />
