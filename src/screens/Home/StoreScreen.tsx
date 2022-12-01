@@ -123,7 +123,12 @@ export default function StoreScreen() {
   const gotoNftCollectionSearch = useGotoNftCollectionSearch();
   const notchHeight = useSafeAreaInsets().top;
   const headerHeight = notchHeight + 50;
-  const numColumns = 2;
+  const numColumns =
+    data?.filter == DrawEventFeedFilter.Notice
+      ? 1
+      : data?.filter == DrawEventFeedFilter.Event
+      ? 2
+      : 1;
   const paddingX = (DEVICE_WIDTH * 30) / 390;
 
   useEffect(() => {
