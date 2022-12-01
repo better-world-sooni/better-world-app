@@ -43,16 +43,17 @@ export default function useMakeEventApplication({drawEvent}) {
   };
 
   const findSelectedCategory = options => {
-    return null;
     const optionIds = options.map(value => value.id);
-    for (const eventApplicationoption of eventApplicationOptions) {
-      if (
-        isSelectedOption(
-          eventApplicationoption?.draw_event_option?.id,
-          optionIds,
-        )
-      ) {
-        return eventApplicationoption?.draw_event_option;
+    if (eventApplicationOptions != null) {
+      for (const eventApplicationoption of eventApplicationOptions) {
+        if (
+          isSelectedOption(
+            eventApplicationoption?.draw_event_option?.id,
+            optionIds,
+          )
+        ) {
+          return eventApplicationoption?.draw_event_option;
+        }
       }
     }
     return null;
@@ -62,7 +63,6 @@ export default function useMakeEventApplication({drawEvent}) {
     options,
     inputType = EventApplicationInputType.CUSTOM_INPUT,
   ) => {
-    return null;
     if (!options || options.length == 0) return null;
     const option = options[0];
     const optionId = option.id;
@@ -78,10 +78,6 @@ export default function useMakeEventApplication({drawEvent}) {
         }
       }
     }
-    if (inputType == EventApplicationInputType.DISCORD_ID && nft?.discord_id)
-      return {...option, value: nft?.discord_id};
-    if (inputType == EventApplicationInputType.TWITTER_ID && nft?.twitter_id)
-      return {...option, value: nft?.twitter_id};
     return null;
   };
 

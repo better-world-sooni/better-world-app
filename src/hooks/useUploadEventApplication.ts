@@ -1,17 +1,26 @@
 import {useState} from 'react';
 import {Linking} from 'react-native';
 import {EventApplicationInputType} from 'src/components/NewEventApplicationOptions';
+import apis from 'src/modules/apis';
+import {
+  useApiSelector,
+  usePostPromiseFnWithToken,
+} from 'src/redux/asyncReducer';
 import {isDiscordIdError} from './useDiscordId';
 import {isTwitterIdError} from './useTwitterId';
 
-export default function useUploadEventApplication({orderOption}) {
+export default function useUploadEventApplication({orderOption, drawEventId}) {
+  const {data} = useApiSelector(apis.nft._());
+  const nft = data?.nft;
+  const [loading, setLoading] = useState(false);
+
   const [cachedOrderOption, setCachedOrderOption] = useState(orderOption);
   const [showDetail, setShowDetail] = useState(false);
   const inputType = cachedOrderOption?.inputType;
   const [selectedOption, setSelectedOption] = useState(
     orderOption?.selectedOption,
   );
-
+  const postPromiseFnWithToken = usePostPromiseFnWithToken();
   const uploadEventApplication = async (SelectedOption = selectedOption) => {
     console.log('upload');
     setSelectedOption(SelectedOption);
@@ -19,8 +28,22 @@ export default function useUploadEventApplication({orderOption}) {
       ...cachedOrderOption,
       selectedOption: SelectedOption,
     });
+    const body = {
+      draw_event_id: drawEventId,
+      draw_event_options: {selected: SelectedOption},
+      all: false,
+    };
+    const {data} = await postPromiseFnWithToken({
+      url: apis.event_application._().url,
+      body,
+    });
+    if (!data.success) {
+      setLoading(false);
+      return;
+    }
+    setLoading(false);
   };
-  const onPressShowDetail = () => {
+  const onPressShowDetail = async () => {
     if (inputType != EventApplicationInputType.LINK) {
       setShowDetail(prev => !prev);
       return;
@@ -30,7 +53,7 @@ export default function useUploadEventApplication({orderOption}) {
         return;
       Linking.openURL(cachedOrderOption.options[0].name);
       selectedOption == null &&
-        uploadEventApplication(cachedOrderOption.options[0]);
+        (await uploadEventApplication(cachedOrderOption.options[0]));
       return;
     }
   };
@@ -39,7 +62,6 @@ export default function useUploadEventApplication({orderOption}) {
     inputType == EventApplicationInputType.SELECT
       ? cachedOrderOption.selectedOption?.name !== selectedOption?.name
       : cachedOrderOption.selectedOption?.value !== selectedOption?.value;
-  const loading = false;
   const detailText =
     selectedOption == null || selectedOption.value == ''
       ? inputType == EventApplicationInputType.CUSTOM_INPUT
@@ -58,10 +80,10 @@ export default function useUploadEventApplication({orderOption}) {
   const optionTypes = cachedOrderOption.options.map((value, index) => {
     return {id: String(index), title: value.name};
   });
-  const handleSelectOption = ({nativeEvent: {event}}) => {
+  const handleSelectOption = async ({nativeEvent: {event}}) => {
     const selectedOption = cachedOrderOption.options[Number(event)];
     if (selectedOption?.name != cachedOrderOption.selectedOption?.name)
-      uploadEventApplication(selectedOption);
+      await uploadEventApplication(selectedOption);
   };
 
   const editableText = selectedOption?.value ? selectedOption?.value : '';
@@ -98,14 +120,30 @@ export default function useUploadEventApplication({orderOption}) {
     return null;
   };
 
-  const handleSubmitWritableOption = () => {
-    if (!error() && isChanged) uploadEventApplication(selectedOption);
+  const handleSubmitWritableOption = async () => {
+    if (!error() && isChanged) await uploadEventApplication(selectedOption);
+  };
+  const autoId = () => {
+    if (cachedOrderOption.selectedOption == null) {
+      if (
+        inputType == EventApplicationInputType.TWITTER_ID &&
+        nft?.twitter_id &&
+        nft?.twitter_id != ''
+      )
+        return nft?.twitter_id;
+      if (
+        inputType == EventApplicationInputType.DISCORD_ID &&
+        nft?.discord_id &&
+        nft?.discord_id != ''
+      )
+        return nft?.discord_id;
+    }
+    return null;
   };
 
   return {
     inputType,
     cachedOrderOption,
-    uploadEventApplication,
     onPressShowDetail,
     showDetail,
     isApplied,
@@ -118,5 +156,6 @@ export default function useUploadEventApplication({orderOption}) {
     handleWriteEditableOption,
     handleSubmitWritableOption,
     error: error(),
+    autoId: autoId(),
   };
 }
