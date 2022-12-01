@@ -43,6 +43,7 @@ export default function useMakeEventApplication({drawEvent}) {
   };
 
   const findSelectedCategory = options => {
+    return null;
     const optionIds = options.map(value => value.id);
     for (const eventApplicationoption of eventApplicationOptions) {
       if (
@@ -61,6 +62,7 @@ export default function useMakeEventApplication({drawEvent}) {
     options,
     inputType = EventApplicationInputType.CUSTOM_INPUT,
   ) => {
+    return null;
     if (!options || options.length == 0) return null;
     const option = options[0];
     const optionId = option.id;

@@ -33,15 +33,12 @@ import {useGotoEventApplicationList} from 'src/hooks/useGoto';
 import GradientColorButton from './GradientColorButton';
 import useMakeEventApplication from 'src/hooks/useMakeEventApplication';
 import useUploadEventApplication from 'src/hooks/useUploadEventApplication';
+import {MenuView} from '@react-native-menu/menu';
 
 const defaultColor = '#7166F9';
 const notAppliedColor = Colors.gray[500];
 
-export default function NewEventApplication({drawEvent}) {
-  const [expandOptions, setExpandOptions] = useState(-1);
-  const gotoEventApplicationList = useGotoEventApplicationList();
-  const reloadGETWithToken = useReloadGETWithToken();
-
+export default function NewEventApplication({drawEvent, setShowNewComment}) {
   // const uploadSuccessCallback = () => {
   //   reloadGETWithToken(apis.feed.draw_event._());
   //   gotoEventApplicationList();
@@ -112,6 +109,7 @@ export default function NewEventApplication({drawEvent}) {
                   index={index}
                   isFirst={index == 0}
                   isLast={index >= orderOptions.length - 1}
+                  setShowNewComment={setShowNewComment}
                 />
               );
             }}></FlatList>
@@ -121,7 +119,7 @@ export default function NewEventApplication({drawEvent}) {
   );
 }
 
-function OrderOption({orderOption, index, isFirst, isLast}) {
+function OrderOption({orderOption, index, isFirst, isLast, setShowNewComment}) {
   const marginY = 10;
   const lineLength = 5;
   const circleRadius = 28;
@@ -134,6 +132,13 @@ function OrderOption({orderOption, index, isFirst, isLast}) {
     loading,
     uploadEventApplication,
     detailText,
+    optionTypes,
+    handleSelectOption,
+    inputType,
+    editableText,
+    handleWriteEditableOption,
+    handleSubmitWritableOption,
+    error,
   } = useUploadEventApplication({orderOption});
   return (
     <Col px30>
@@ -153,7 +158,13 @@ function OrderOption({orderOption, index, isFirst, isLast}) {
             h={circleRadius * 2}
             w={circleRadius * 2}
             borderRadius={circleRadius}
-            borderColor={isApplied ? defaultColor : notAppliedColor}
+            borderColor={
+              error
+                ? Colors.danger.DEFAULT
+                : isApplied
+                ? defaultColor
+                : notAppliedColor
+            }
             border={0.8}
             itemsCenter
             justifyCenter>
@@ -164,7 +175,13 @@ function OrderOption({orderOption, index, isFirst, isLast}) {
                 <CheckIcon
                   height={circleRadius / 1.5}
                   width={circleRadius / 1.5}
-                  color={isApplied ? defaultColor : notAppliedColor}
+                  color={
+                    error
+                      ? Colors.danger.DEFAULT
+                      : isApplied
+                      ? defaultColor
+                      : notAppliedColor
+                  }
                   strokeWidth={1}
                 />
               )}
@@ -210,10 +227,22 @@ function OrderOption({orderOption, index, isFirst, isLast}) {
           border={0.5}
           rounded15
           onPress={onPressShowDetail}
-          borderColor={isApplied ? defaultColor : notAppliedColor}>
+          borderColor={
+            error
+              ? Colors.danger.DEFAULT
+              : isApplied
+              ? defaultColor
+              : notAppliedColor
+          }>
           <Span
             fontSize={16}
-            color={isApplied ? defaultColor : notAppliedColor}
+            color={
+              error
+                ? Colors.danger.DEFAULT
+                : isApplied
+                ? defaultColor
+                : notAppliedColor
+            }
             bold>
             {cachedOrderOption.name}
           </Span>
@@ -228,31 +257,138 @@ function OrderOption({orderOption, index, isFirst, isLast}) {
           borderTopLeftRadius={lineLength / 2}
           borderTopRightRadius={lineLength / 2}
           bgGray300></Row>
-        <Col
-          itemsCenter
-          justifyCenter
-          ml20
-          h={showDetail ? circleRadius * 2 : 0}
-          border={showDetail ? 0.5 : 0}
-          rounded15
-          mt={marginY}
-          mb={showDetail ? marginY : 0}
-          borderColor={
-            !isChanged && isApplied ? defaultColor : notAppliedColor
-          }>
-          {showDetail && (
-            <Span
-              fontSize={16}
-              color={!isChanged && isApplied ? defaultColor : notAppliedColor}
-              bold>
-              {detailText}
-            </Span>
+        <Col ml20>
+          <Col
+            itemsCenter
+            justifyCenter
+            h={showDetail ? circleRadius * 2 : 0}
+            border={showDetail ? 0.5 : 0}
+            rounded15
+            mt={marginY}
+            mb={showDetail ? marginY : 0}
+            borderColor={
+              error
+                ? Colors.danger.DEFAULT
+                : !isChanged && isApplied
+                ? defaultColor
+                : notAppliedColor
+            }>
+            {showDetail && (
+              <>
+                {inputType == EventApplicationInputType.SELECT && (
+                  <SelectOptionMenu
+                    handleSelectOption={handleSelectOption}
+                    optionTypes={optionTypes}
+                    fontColor={
+                      !isChanged && isApplied ? defaultColor : notAppliedColor
+                    }
+                    fontSize={16}
+                    detailText={detailText}
+                  />
+                )}
+                {inputType != EventApplicationInputType.SELECT && (
+                  <WriteOptionInput
+                    fontSize={16}
+                    fontColor={
+                      error
+                        ? Colors.danger.DEFAULT
+                        : !isChanged && isApplied
+                        ? defaultColor
+                        : notAppliedColor
+                    }
+                    detailText={detailText}
+                    editableText={editableText}
+                    handleWriteEditableOption={handleWriteEditableOption}
+                    handleSubmitWritableOption={handleSubmitWritableOption}
+                    setShowNewComment={setShowNewComment}
+                  />
+                )}
+              </>
+            )}
+          </Col>
+          {showDetail && error && (
+            <Span color={Colors.danger.DEFAULT}>{error}</Span>
           )}
         </Col>
       </Row>
     </Col>
   );
 }
+
+const SelectOptionMenu = ({
+  handleSelectOption,
+  optionTypes,
+  fontColor,
+  fontSize = 16,
+  detailText,
+}) => {
+  return (
+    <MenuView
+      onPressAction={handleSelectOption}
+      actions={optionTypes}
+      style={{height: '100%', width: '100%'}}>
+      <Col itemsCenter justifyCenter>
+        <Row itemsCenter justifyCenter>
+          <Span fontSize={fontSize} color={fontColor} bold>
+            {detailText}
+          </Span>
+        </Row>
+      </Col>
+    </MenuView>
+  );
+};
+
+const WriteOptionInput = ({
+  fontColor,
+  fontSize = 16,
+  detailText,
+  editableText,
+  handleWriteEditableOption,
+  handleSubmitWritableOption,
+  setShowNewComment,
+}) => {
+  const [pressed, setPresed] = useState(false);
+  const onPress = () => {
+    if (pressed == false) {
+      setPresed(true);
+      setShowNewComment(false);
+    } else setPresed(false);
+  };
+  const ref = useRef<TextInput | null>(null);
+  useEffect(() => {
+    if (pressed) ref.current?.focus();
+  }, [pressed]);
+  const onBlur = () => {
+    handleSubmitWritableOption();
+    setPresed(false);
+    setShowNewComment(true);
+  };
+  return (
+    <Col
+      itemsCenter
+      justifyCenter
+      onPress={onPress}
+      style={{height: '100%', width: '100%'}}>
+      <Row itemsCenter justifyCenter>
+        {pressed ? (
+          <TextInput
+            ref={ref}
+            value={editableText}
+            style={{fontSize: fontSize, color: fontColor}}
+            placeholderTextColor={fontColor}
+            onChangeText={handleWriteEditableOption}
+            placeholder={'입력'}
+            onBlur={onBlur}
+          />
+        ) : (
+          <Span fontSize={fontSize} color={fontColor} bold>
+            {detailText}
+          </Span>
+        )}
+      </Row>
+    </Col>
+  );
+};
 
 function OrderCategories({
   orderCategories,

@@ -62,6 +62,7 @@ export default function FullDrawEvent({
   const notchHeight = useSafeAreaInsets().top;
   const headerHeight = notchHeight + 50;
   const scrollToEndRef = useScrollToEndRef();
+  const [showNewComment, setShowNewComment] = useState(true);
 
   const [congratsOn, setCongratsOn] = useState(false);
   useEffect(() => {
@@ -156,7 +157,11 @@ export default function FullDrawEvent({
           ref={scrollToEndRef}
           showsVerticalScrollIndicator={false}
           ListHeaderComponent={
-            !onlyComments && <DrawEvent drawEvent={drawEvent}></DrawEvent>
+            !onlyComments && (
+              <DrawEvent
+                drawEvent={drawEvent}
+                setShowNewComment={setShowNewComment}></DrawEvent>
+            )
           }
           data={cachedComments}
           renderItem={({item}) => {
@@ -167,19 +172,21 @@ export default function FullDrawEvent({
                 onPressReplyTo={handlePressReplyTo}></Comment>
             );
           }}></Animated.FlatList>
-        <NewComment
-          autoFocus={autoFocus}
-          replyToObject={replyTo.object}
-          replyToType={replyTo.type}
-          onSuccess={handleNewCommentSuccess}
-          onPressExitReplyToComment={resetReplyTo}
-        />
+        {showNewComment && (
+          <NewComment
+            autoFocus={autoFocus}
+            replyToObject={replyTo.object}
+            replyToType={replyTo.type}
+            onSuccess={handleNewCommentSuccess}
+            onPressExitReplyToComment={resetReplyTo}
+          />
+        )}
       </Div>
     </>
   );
 }
 
-function DrawEvent({drawEvent}) {
+function DrawEvent({drawEvent, setShowNewComment}) {
   const drawEventStatus = getDrawEventStatus({drawEvent});
   const gotoNewPost = useGotoNewPost({
     postOwnerType: PostOwnerType.Nft,
@@ -305,7 +312,10 @@ function DrawEvent({drawEvent}) {
           )}
       </Div>
       {drawEvent.has_application == true && (
-        <NewEventApplication drawEvent={drawEvent} />
+        <NewEventApplication
+          drawEvent={drawEvent}
+          setShowNewComment={setShowNewComment}
+        />
       )}
       <Row py15 px30 borderGray200 borderBottom={1.2} borderTop={1.2}>
         <Col itemsCenter>
