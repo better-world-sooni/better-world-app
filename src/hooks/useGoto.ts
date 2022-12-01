@@ -11,10 +11,14 @@ import {
 } from 'src/redux/asyncReducer';
 import {RootState} from 'src/redux/rootReducer';
 import {ChatRoomEnterType} from 'src/screens/ChatRoomScreen';
-import {EventApplicationFilter} from 'src/screens/EventApplicationListScreen';
 import {FollowOwnerType, FollowType} from 'src/screens/FollowListScreen';
-import {ForumFeedFilter} from 'src/screens/Home/HomeScreen';
 import {PostType} from 'src/screens/NewPostScreen';
+import {EventApplicationFilter} from 'src/screens/EventApplicationListScreen';
+enum ForumFeedFilter {
+  All = 'all',
+  Following = 'following',
+  Approved = 'approved',
+}
 
 export function useGotoNftProfile({nft}) {
   const apiGETWithToken = useApiGETWithToken();
