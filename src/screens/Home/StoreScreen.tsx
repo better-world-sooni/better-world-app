@@ -301,9 +301,6 @@ export default function StoreScreen() {
         renderItem={({item}) => {
           return (
             <DrawEventMemo
-              key={`${(item as any).id}-${
-                (item as any).event_application?.status
-              }-${(item as any).status}-${(item as any).read_count}`}
               drawEvent={item}
               mx={data?.filter === DrawEventFeedFilter.Event ? paddingX / 2 : 0}
               my={8}

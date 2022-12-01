@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import apis from 'src/modules/apis';
 import {
   useDeletePromiseFnWithToken,
@@ -33,5 +33,8 @@ export default function useUpdateDrawEvent({initialDrawEvent}) {
     if (data) setDeleted(true);
     setLoading(false);
   };
+  useEffect(() => {
+    setDrawEvent(initialDrawEvent);
+  }, [initialDrawEvent]);
   return {drawEvent, loading, deleted, deleteDrawEvent, updateDrawEventStatus};
 }

@@ -36,6 +36,7 @@ import useLike, {LikableType} from 'src/hooks/useLike';
 import useBookmark, {BookmarkableType} from 'src/hooks/useBookmark';
 import _ from 'lodash';
 import {PostOwnerType} from 'src/screens/NewPostScreen';
+import {cps} from 'redux-saga/effects';
 
 enum DrawEventOption {
   DELETE = '0',
@@ -68,11 +69,16 @@ const drawEventOptions = [
   },
 ];
 
-export const DrawEventMemo = React.memo(
-  DrawEvent,
-  (props, nextProps) =>
-    // _.isEqual(props?.drawEvent?.name, nextProps?.drawEvent?.name),
-    false,
+const compareCondition = (props, nextProps) =>
+  props?.drawEvent?.updated_at == nextProps?.drawEvent?.updated_at &&
+  props?.drawEvent?.is_liked == nextProps?.drawEvent?.is_liked &&
+  props?.drawEvent?.likes_count == nextProps?.drawEvent?.likes_count &&
+  props?.drawEvent?.repost_count == nextProps?.drawEvent?.repost_count &&
+  props?.drawEvent?.comments_count == nextProps?.drawEvent?.comments_count &&
+  props?.drawEvent?.is_bookmarked == nextProps?.drawEvent?.is_bookmarked;
+
+export const DrawEventMemo = React.memo(DrawEvent, (props, nextProps) =>
+  compareCondition(props, nextProps),
 );
 
 function DrawEvent({
@@ -215,73 +221,16 @@ function DrawEvent({
                   rounded5></Img>
               )}
               {drawEvent.has_application == true && (
-                <>
-                  {drawEvent.status == DrawEventStatus.FINISHED && (
-                    <Div
-                      w={imageWidth}
-                      h={imageWidth}
-                      bg={'rgba(0,0,0,0.5)'}
-                      rounded5
-                      absolute
-                      top0
-                      left0></Div>
-                  )}
-                  {drawEvent.status == DrawEventStatus.FINISHED && (
-                    <Div
-                      absolute
-                      mt={repost ? imageWidth / 1.5 / 20 : imageWidth / 20}
-                      ml={repost ? imageWidth / 1.5 / 20 : imageWidth / 20}
-                      px={repost ? imageWidth / 1.5 / 20 : imageWidth / 20}
-                      py={repost ? imageWidth / 1.5 / 40 : imageWidth / 40}
-                      bgGray500
-                      zIndex={1}
-                      rounded5
-                      z100>
-                      <Span bold fontSize={imageWidth / 10} white>
-                        마감
-                      </Span>
-                    </Div>
-                  )}
-                  {drawEvent.status == DrawEventStatus.IN_PROGRESS && (
-                    <Div
-                      absolute
-                      mt={repost ? imageWidth / 1.5 / 20 : imageWidth / 20}
-                      ml={repost ? imageWidth / 1.5 / 20 : imageWidth / 20}
-                      px={repost ? imageWidth / 1.5 / 20 : imageWidth / 20}
-                      py={repost ? imageWidth / 1.5 / 40 : imageWidth / 40}
-                      bg={Colors.primary.DEFAULT}
-                      zIndex={1}
-                      rounded5
-                      z100>
-                      <Span bold fontSize={imageWidth / 10} white>
-                        {drawEvent?.expires_at
-                          ? 'D-' +
-                            (expireDay > 100
-                              ? '99+'
-                              : expireDay == 0
-                              ? 'DAY'
-                              : expireDay)
-                          : '진행 중'}
-                      </Span>
-                    </Div>
-                  )}
-                  {drawEvent.status == DrawEventStatus.ANNOUNCED && (
-                    <Div
-                      absolute
-                      mt={repost ? imageWidth / 1.5 / 20 : imageWidth / 20}
-                      ml={repost ? imageWidth / 1.5 / 20 : imageWidth / 20}
-                      px={repost ? imageWidth / 1.5 / 20 : imageWidth / 20}
-                      py={repost ? imageWidth / 1.5 / 40 : imageWidth / 40}
-                      zIndex={1}
-                      rounded5
-                      bg={Colors.secondary.DEFAULT}
-                      z100>
-                      <Span bold fontSize={imageWidth / 10} white>
-                        당첨 발표
-                      </Span>
-                    </Div>
-                  )}
-                </>
+                <DrawEventStatusBanner
+                  mt={repost ? imageWidth / 1.5 / 20 : imageWidth / 20}
+                  ml={repost ? imageWidth / 1.5 / 20 : imageWidth / 20}
+                  px={repost ? imageWidth / 1.5 / 20 : imageWidth / 20}
+                  py={repost ? imageWidth / 1.5 / 40 : imageWidth / 40}
+                  imageWidth={imageWidth}
+                  Status={drawEvent.status}
+                  expires_at={drawEvent?.expires_at}
+                  fontSize={imageWidth / 12}
+                />
               )}
             </Div>
           )}
@@ -377,73 +326,16 @@ function DrawEvent({
                     rounded5></Img>
                 )}
                 {drawEvent.has_application == true && (
-                  <>
-                    {drawEvent.status == DrawEventStatus.FINISHED && (
-                      <Div
-                        w={imageWidth}
-                        h={imageWidth}
-                        bg={'rgba(0,0,0,0.5)'}
-                        rounded5
-                        absolute
-                        top0
-                        left0></Div>
-                    )}
-                    {drawEvent.status == DrawEventStatus.FINISHED && (
-                      <Div
-                        absolute
-                        mt={repost ? imageWidth / 30 : imageWidth / 20}
-                        ml={repost ? imageWidth / 30 : imageWidth / 20}
-                        zIndex={1}
-                        rounded5
-                        px={repost ? imageWidth / 20 : imageWidth / 20}
-                        py={repost ? imageWidth / 20 : imageWidth / 40}
-                        bgGray500
-                        z100>
-                        <Span bold fontSize={imageWidth / 8} white>
-                          마감
-                        </Span>
-                      </Div>
-                    )}
-                    {drawEvent.status == DrawEventStatus.IN_PROGRESS && (
-                      <Div
-                        absolute
-                        mt={repost ? imageWidth / 30 : imageWidth / 20}
-                        ml={repost ? imageWidth / 30 : imageWidth / 20}
-                        zIndex={1}
-                        rounded5
-                        px={repost ? imageWidth / 20 : imageWidth / 20}
-                        py={repost ? imageWidth / 20 : imageWidth / 40}
-                        bg={Colors.primary.DEFAULT}
-                        z100>
-                        <Span bold fontSize={imageWidth / 8} white>
-                          {drawEvent?.expires_at
-                            ? 'D-' +
-                              (expireDay > 100
-                                ? '99+'
-                                : expireDay == 0
-                                ? 'DAY'
-                                : expireDay)
-                            : '진행 중'}
-                        </Span>
-                      </Div>
-                    )}
-                    {drawEvent.status == DrawEventStatus.ANNOUNCED && (
-                      <Div
-                        absolute
-                        mt={repost ? imageWidth / 30 : imageWidth / 20}
-                        ml={repost ? imageWidth / 30 : imageWidth / 20}
-                        zIndex={1}
-                        rounded5
-                        px={repost ? imageWidth / 20 : imageWidth / 20}
-                        py={repost ? imageWidth / 20 : imageWidth / 40}
-                        bg={Colors.secondary.DEFAULT}
-                        z100>
-                        <Span bold fontSize={imageWidth / 8} white>
-                          당첨 발표
-                        </Span>
-                      </Div>
-                    )}
-                  </>
+                  <DrawEventStatusBanner
+                    mt={repost ? imageWidth / 30 : imageWidth / 20}
+                    ml={repost ? imageWidth / 30 : imageWidth / 20}
+                    px={repost ? imageWidth / 20 : imageWidth / 20}
+                    py={repost ? imageWidth / 20 : imageWidth / 40}
+                    imageWidth={imageWidth}
+                    Status={drawEvent.status}
+                    expires_at={drawEvent?.expires_at}
+                    fontSize={imageWidth / 8}
+                  />
                 )}
               </Div>
             )}
@@ -526,3 +418,60 @@ function DrawEvent({
     </Div>
   );
 }
+
+const DrawEventStatusBanner = ({
+  imageWidth,
+  Status,
+  expires_at,
+  mt,
+  ml,
+  px,
+  py,
+  fontSize,
+}) => {
+  const colors = {
+    [DrawEventStatus.FINISHED]: {bgGray500: true},
+    [DrawEventStatus.IN_PROGRESS]: {bg: Colors.primary.DEFAULT},
+    [DrawEventStatus.ANNOUNCED]: {bg: Colors.secondary.DEFAULT},
+  };
+  const expireDay = getNowDifference(expires_at);
+  const text = {
+    [DrawEventStatus.FINISHED]: '마감',
+    [DrawEventStatus.IN_PROGRESS]: expires_at
+      ? 'D-' + (expireDay > 100 ? '99+' : expireDay == 0 ? 'DAY' : expireDay)
+      : '진행 중',
+    [DrawEventStatus.ANNOUNCED]: '당첨 발표',
+  };
+  const status =
+    Status == DrawEventStatus.IN_PROGRESS && expires_at && expireDay < 0
+      ? DrawEventStatus.FINISHED
+      : Status;
+  return (
+    <>
+      {status == DrawEventStatus.FINISHED && (
+        <Div
+          w={imageWidth}
+          h={imageWidth}
+          bg={'rgba(0,0,0,0.5)'}
+          rounded5
+          absolute
+          top0
+          left0></Div>
+      )}
+      <Div
+        absolute
+        mt={mt}
+        ml={ml}
+        px={px}
+        py={py}
+        {...colors[status]}
+        zIndex={1}
+        rounded5
+        z100>
+        <Span bold fontSize={fontSize} white>
+          {text[status]}
+        </Span>
+      </Div>
+    </>
+  );
+};

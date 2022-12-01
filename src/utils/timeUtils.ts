@@ -39,13 +39,20 @@ export function getNowDifference(stringDate) {
     date.getFullYear(),
     date.getMonth(),
     date.getDate(),
+    date.getHours(),
+    date.getMinutes(),
+    date.getSeconds(),
   );
   const nowDate = new Date();
   const date2utc = Date.UTC(
     nowDate.getFullYear(),
     nowDate.getMonth(),
     nowDate.getDate(),
+    nowDate.getMinutes(),
+    nowDate.getSeconds(),
   );
   const day = 1000 * 60 * 60 * 24;
-  return (date1utc - date2utc) / day;
+  return (date1utc - date2utc) / day >= 0
+    ? Math.floor((date1utc - date2utc) / day)
+    : -1;
 }

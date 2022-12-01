@@ -13,24 +13,26 @@ import GradientColorButton from './GradientColorButton';
 import useMakeEventApplication from 'src/hooks/useMakeEventApplication';
 import useUploadEventApplication from 'src/hooks/useUploadEventApplication';
 import {MenuView} from '@react-native-menu/menu';
+import {
+  DrawEventStatus,
+  EventApplicationStatus,
+} from 'src/hooks/getDrawEventStatus';
 
 const defaultColor = '#7166F9';
 const notAppliedColor = Colors.gray[500];
 
 export default function NewEventApplication({drawEvent, setShowNewComment}) {
-  // const uploadSuccessCallback = () => {
-  //   reloadGETWithToken(apis.feed.draw_event._());
-  //   gotoEventApplicationList();
-  // };
   const {
-    orderable,
+    canShow,
+    canModify,
     orderableType,
     orderOptions,
-    drawEventStatus,
     setOrderOptionsListAtIndex,
     isApplied,
     selectIndex,
+    drawEventStatus,
     eventApplicationCount,
+    eventApplicationStatus,
   } = useMakeEventApplication({
     drawEvent,
   });
@@ -46,24 +48,35 @@ export default function NewEventApplication({drawEvent, setShowNewComment}) {
             strokeWidth={2}
           />
         </Div>
-        {orderableType == OrderableType.ALL && (
-          <Span fontSize={12} gray500 ml5>
-            <Span fontSize={12} gray500 bold>
-              {'누구나'}
+        {drawEventStatus == DrawEventStatus.IN_PROGRESS &&
+          orderableType == OrderableType.ALL && (
+            <Span fontSize={12} gray500 ml5>
+              <Span fontSize={12} gray500 bold>
+                {'누구나'}
+              </Span>
+              {' 응모 가능한 이벤트입니다.'}
             </Span>
-            {' 응모 가능한 이벤트입니다.'}
-          </Span>
-        )}
-        {orderableType == OrderableType.HOLDER_ONLY && (
-          <Span fontSize={12} gray500 ml5>
-            <Span fontSize={12} gray500 bold>
-              {drawEvent?.nft_collection?.name}
+          )}
+        {drawEventStatus == DrawEventStatus.IN_PROGRESS &&
+          orderableType == OrderableType.HOLDER_ONLY && (
+            <Span fontSize={12} gray500 ml5>
+              <Span fontSize={12} gray500 bold>
+                {drawEvent?.nft_collection?.name}
+              </Span>
+              {' 홀더만 응모 가능한 이벤트입니다.'}
             </Span>
-            {' 홀더만 응모 가능한 이벤트입니다.'}
+          )}
+        {drawEventStatus != DrawEventStatus.IN_PROGRESS && (
+          <Span fontSize={12} gray500 ml5>
+            {'이 이벤트는 '}
+            <Span fontSize={12} gray500 bold>
+              {'마감'}
+            </Span>
+            {'되었습니다'}
           </Span>
         )}
       </Row>
-      {orderable && (
+      {canShow && (
         <>
           <GradientColorButton
             width={DEVICE_WIDTH}
@@ -87,7 +100,11 @@ export default function NewEventApplication({drawEvent, setShowNewComment}) {
               isApplied && (
                 <Row px20 justifyCenter mt10>
                   <Span fontSize={16} ml5 color={defaultColor} bold>
-                    {'참여가 완료되었습나다.'}
+                    {eventApplicationStatus ==
+                      EventApplicationStatus.SELECTED ||
+                    eventApplicationStatus == EventApplicationStatus.RECEIVED
+                      ? '축하합니다! 당첨되셨습니다.'
+                      : '참여가 완료되었습나다.'}
                   </Span>
                 </Row>
               )
@@ -103,6 +120,7 @@ export default function NewEventApplication({drawEvent, setShowNewComment}) {
                   setShowNewComment={setShowNewComment}
                   drawEventId={drawEvent?.id}
                   isFocus={selectIndex == index}
+                  canModify={canModify}
                   setOrderOptionsList={value =>
                     setOrderOptionsListAtIndex(index, value)
                   }
@@ -123,6 +141,7 @@ function OrderOption({
   setShowNewComment,
   drawEventId,
   setOrderOptionsList,
+  canModify,
   isFocus,
 }) {
   const marginY = 10;
@@ -309,6 +328,7 @@ function OrderOption({
                       !isChanged && isApplied ? defaultColor : notAppliedColor
                     }
                     fontSize={16}
+                    canModify={canModify}
                     detailText={detailText}
                   />
                 )}
@@ -328,6 +348,7 @@ function OrderOption({
                     handleSubmitWritableOption={handleSubmitWritableOption}
                     setShowNewComment={setShowNewComment}
                     autoId={autoId}
+                    canModify={canModify}
                   />
                 )}
               </>
@@ -348,8 +369,9 @@ const SelectOptionMenu = ({
   fontColor,
   fontSize = 16,
   detailText,
+  canModify,
 }) => {
-  return (
+  return canModify ? (
     <MenuView
       onPressAction={handleSelectOption}
       actions={optionTypes}
@@ -362,6 +384,14 @@ const SelectOptionMenu = ({
         </Row>
       </Col>
     </MenuView>
+  ) : (
+    <Col itemsCenter justifyCenter>
+      <Row itemsCenter justifyCenter>
+        <Span fontSize={fontSize} color={fontColor} bold>
+          {detailText}
+        </Span>
+      </Row>
+    </Col>
   );
 };
 
@@ -374,6 +404,7 @@ const WriteOptionInput = ({
   handleSubmitWritableOption,
   setShowNewComment,
   autoId,
+  canModify,
 }) => {
   const [pressed, setPresed] = useState(false);
   const onPress = () => {
@@ -396,7 +427,7 @@ const WriteOptionInput = ({
     <Col
       itemsCenter
       justifyCenter
-      onPress={onPress}
+      onPress={canModify && onPress}
       style={{height: '100%', width: '100%'}}>
       <Row itemsCenter justifyCenter>
         {pressed ? (

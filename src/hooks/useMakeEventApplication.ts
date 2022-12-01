@@ -2,8 +2,12 @@ import {useState} from 'react';
 import apis from 'src/modules/apis';
 import {useApiSelector} from 'src/redux/asyncReducer';
 import {chain} from 'lodash';
-import getDrawEventStatus, {EventApplicationStatus} from './getDrawEventStatus';
+import getDrawEventStatus, {
+  DrawEventStatus,
+  EventApplicationStatus,
+} from './getDrawEventStatus';
 import {EventApplicationInputType} from 'src/components/NewEventApplicationOptions';
+import {getNowDifference} from 'src/utils/timeUtils';
 
 export type OrderOption = {
   name: string;
@@ -158,6 +162,23 @@ export default function useMakeEventApplication({drawEvent}) {
         drawEvent?.nft_collection?.contract_address == nft?.contract_address
       ? true
       : false;
+  const drawEventStatus =
+    drawEvent?.status == DrawEventStatus.IN_PROGRESS &&
+    drawEvent?.expires_at &&
+    getNowDifference(drawEvent?.expires_at) < 0
+      ? DrawEventStatus.FINISHED
+      : drawEvent?.status;
+  const canModify =
+    !(
+      drawEvent?.event_application &&
+      drawEvent.event_application.status == EventApplicationStatus.APPLIED
+    ) && drawEventStatus == DrawEventStatus.IN_PROGRESS;
+  const canShow =
+    (drawEventStatus != DrawEventStatus.IN_PROGRESS &&
+      drawEvent?.event_application &&
+      drawEvent.event_application.status !=
+        EventApplicationStatus.IN_PROGRESS) ||
+    (drawEventStatus == DrawEventStatus.IN_PROGRESS && orderable);
   const orderOptions = drawEvent.draw_event_options
     ? getOrderCategories(drawEvent.draw_event_options)
     : [];
@@ -176,25 +197,25 @@ export default function useMakeEventApplication({drawEvent}) {
 
   const isApplied =
     orderOptionsList.length != 0 && selectIndex == orderOptionsList.length;
-  const drawEventStatus = getDrawEventStatus({drawEvent});
+  const eventApplicationStatus =
+    drawEvent?.event_application && drawEvent.event_application.status;
   const eventApplicationCount =
     (drawEvent?.event_application_count
       ? drawEvent?.event_application_count
       : 0) +
-    (!(
-      drawEvent?.event_application &&
-      drawEvent.event_application.status == EventApplicationStatus.APPLIED
-    )
+    (!(eventApplicationStatus != EventApplicationStatus.IN_PROGRESS)
       ? isApplied
         ? 1
         : 0
       : 0);
   return {
-    orderable,
+    canShow,
+    canModify,
     orderableType,
     orderOptions,
     drawEventStatus,
     setOrderOptionsListAtIndex,
+    eventApplicationStatus,
     eventApplicationCount,
     isApplied,
     selectIndex,
