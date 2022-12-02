@@ -171,7 +171,8 @@ export default function useMakeEventApplication({drawEvent}) {
   const canModify =
     !(
       drawEvent?.event_application &&
-      drawEvent.event_application.status == EventApplicationStatus.APPLIED
+      (drawEvent.event_application.status == EventApplicationStatus.SELECTED ||
+        drawEvent.event_application.status == EventApplicationStatus.RECEIVED)
     ) && drawEventStatus == DrawEventStatus.IN_PROGRESS;
   const canShow =
     (drawEventStatus != DrawEventStatus.IN_PROGRESS &&
