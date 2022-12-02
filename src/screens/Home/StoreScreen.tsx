@@ -36,6 +36,10 @@ import {ICONS} from 'src/modules/icons';
 import {MenuView} from '@react-native-menu/menu';
 import GradientTextUnderline from 'src/components/common/GradientTextUnderline';
 import EventBanner from 'src/components/common/EventBanner';
+import SideMenu from 'react-native-side-menu-updated';
+import MyNftCollectionMenu from 'src/components/common/MyNftCollectionMenu';
+import {shallowEqual, useSelector} from 'react-redux';
+import {RootState} from 'src/redux/rootReducer';
 
 export enum DrawEventFeedFilter {
   All = 'all',
@@ -82,8 +86,16 @@ export default function StoreScreen() {
       'draw_events',
     );
   };
+  const {currentNft} = useSelector(
+    (root: RootState) => root.app.session,
+    shallowEqual,
+  );
+  const sideMenuRef = useRef(null);
+  const openSideMenu = () =>
+    currentNft?.privilege && sideMenuRef?.current?.openMenu(true);
   const handleRefresh = () => {
     reloadGETWithToken(apis.feed.draw_event._(data?.filter, bookmarked, order));
+    reloadGETWithToken(apis.eventBanner._());
   };
   const scrollToTop = () => {
     flatlistRef?.current
@@ -97,6 +109,7 @@ export default function StoreScreen() {
       data?.filter !== DrawEventFeedFilter.Notice
     ) {
       reloadGETWithToken(apis.feed.draw_event._(filter, bookmarked, order));
+      reloadGETWithToken(apis.eventBanner._());
     }
     if (
       filter == DrawEventFeedFilter.Event &&
@@ -106,17 +119,20 @@ export default function StoreScreen() {
       reloadGETWithToken(
         apis.feed.draw_event._(filter, bookmarked, DrawEventOrder.Recent),
       );
+      reloadGETWithToken(apis.eventBanner._());
     }
   };
   const handlePressOrder = ({nativeEvent: {event}}) => {
     setOrder(event);
     reloadGETWithToken(apis.feed.draw_event._(data?.filter, bookmarked, event));
+    reloadGETWithToken(apis.eventBanner._());
   };
   const handlePressBookmark = () => {
     setBookmarked(prev => !prev);
     reloadGETWithToken(
       apis.feed.draw_event._(data?.filter, !bookmarked, order),
     );
+    reloadGETWithToken(apis.eventBanner._());
   };
   const gotoEventApplicationList = useGotoEventApplicationList();
   const gotoNftCollectionSearch = useGotoNftCollectionSearch();
@@ -168,146 +184,177 @@ export default function StoreScreen() {
       }
     : actionIconDefaultProps;
   return (
-    <Div
-      flex={1}
-      bg={
-        data?.filter === DrawEventFeedFilter.Event ? Colors.white : '#F4F4F8'
-      }>
-      <Div bgWhite h={notchHeight}></Div>
-      <Div bgWhite h={50} justifyCenter borderBottom={0.5} borderGray200>
-        <Row itemsCenter py5 h40 px15>
-          <Row
-            auto
-            mr16
-            itemsCenter
-            onPress={() => handlePressFilter(DrawEventFeedFilter.Notice)}>
-            <GradientTextUnderline
-              fontSize={20}
-              width={44}
-              height={30}
-              text={'공지'}
-              selected={data?.filter !== DrawEventFeedFilter.Event}
-            />
+    <SideMenu
+      ref={sideMenuRef}
+      toleranceX={0}
+      edgeHitWidth={70}
+      disableGestures={true}
+      menu={
+        <MyNftCollectionMenu nftCollection={nftCollection} isEvent={true} />
+      }
+      bounceBackOnOverdraw={false}
+      openMenuOffset={DEVICE_WIDTH - 65}>
+      <Div
+        flex={1}
+        bg={
+          data?.filter === DrawEventFeedFilter.Event ? Colors.white : '#F4F4F8'
+        }>
+        <Div bgWhite h={notchHeight}></Div>
+        <Div bgWhite h={50} justifyCenter borderBottom={0.5} borderGray200>
+          <Row itemsCenter py5 h40 px15>
+            <Row
+              auto
+              mr16
+              itemsCenter
+              onPress={() => handlePressFilter(DrawEventFeedFilter.Notice)}>
+              <GradientTextUnderline
+                fontSize={20}
+                width={44}
+                height={30}
+                text={'공지'}
+                selected={data?.filter !== DrawEventFeedFilter.Event}
+              />
+            </Row>
+            <Row
+              auto
+              mr16
+              itemsCenter
+              onPress={() => handlePressFilter(DrawEventFeedFilter.Event)}>
+              <GradientTextUnderline
+                fontSize={20}
+                width={62}
+                height={30}
+                text={'이벤트'}
+                selected={data?.filter !== DrawEventFeedFilter.Notice}
+              />
+            </Row>
+            <Col />
+            <Col auto onPress={handlePressBookmark} pl18>
+              <Bookmark {...bookmarkProps} />
+            </Col>
+            <Col auto onPress={gotoNftCollectionSearch} pl18>
+              <Search
+                strokeWidth={2}
+                color={Colors.black}
+                height={22}
+                width={22}
+              />
+            </Col>
+            <Col auto onPress={gotoEventApplicationList} pl18>
+              <Img source={ICONS.list} h={22} w={(22 * 81) / 96} />
+            </Col>
+            {currentNft?.privilege && (
+              <Col pl18 auto rounded100 onPress={openSideMenu}>
+                {nftCollectionRes?.nft_collection ? (
+                  <Img
+                    h30
+                    w30
+                    rounded100
+                    bgGray200
+                    border={0.5}
+                    borderGray200
+                    uri={nftCollectionRes.nft_collection.image_uri}></Img>
+                ) : (
+                  <Div bgGray200 h30 w30 rounded100 />
+                )}
+              </Col>
+            )}
           </Row>
-          <Row
-            auto
-            mr16
-            itemsCenter
-            onPress={() => handlePressFilter(DrawEventFeedFilter.Event)}>
-            <GradientTextUnderline
-              fontSize={20}
-              width={62}
-              height={30}
-              text={'이벤트'}
-              selected={data?.filter !== DrawEventFeedFilter.Notice}
-            />
-          </Row>
-          <Col />
-          <Col auto onPress={handlePressBookmark} pl18>
-            <Bookmark {...bookmarkProps} />
-          </Col>
-          <Col auto onPress={gotoNftCollectionSearch} pl18>
-            <Search
-              strokeWidth={2}
-              color={Colors.black}
-              height={22}
-              width={22}
-            />
-          </Col>
-          <Col auto onPress={gotoEventApplicationList} pl18>
-            <Img source={ICONS.list} h={22} w={(22 * 81) / 96} />
-          </Col>
-        </Row>
+        </Div>
+        <FlatList
+          ref={flatlistRef}
+          showsVerticalScrollIndicator={false}
+          numColumns={numColumns}
+          key={numColumns}
+          keyExtractor={item => (item as any).id}
+          ListHeaderComponent={
+            <Div>
+              <EventBanner
+                source={{uri: nftCollection?.background_image_uri}}
+                left={
+                  data?.filter === DrawEventFeedFilter.Event ? -paddingX / 2 : 0
+                }
+              />
+              {data?.filter === DrawEventFeedFilter.Notice && (
+                <Div px20 py5>
+                  <MenuView
+                    onPressAction={handlePressOrder}
+                    actions={orderTypes}>
+                    <Row itemsCenter onPress={() => {}}>
+                      <Col auto mr2>
+                        <Span bold fontSize={16}>
+                          {
+                            orderTypes.filter(
+                              orderType => order == orderType.id,
+                            )[0].title
+                          }
+                        </Span>
+                      </Col>
+                      <Col auto>
+                        <ChevronDown
+                          color={Colors.black}
+                          height={19}
+                          width={19}
+                          strokeWidth={2.4}
+                        />
+                      </Col>
+                    </Row>
+                  </MenuView>
+                </Div>
+              )}
+            </Div>
+          }
+          ListEmptyComponent={
+            !isLoading && (
+              <ListEmptyComponent h={DEVICE_HEIGHT - headerHeight * 2 - 100} />
+            )
+          }
+          refreshControl={
+            <RefreshControl refreshing={isLoading} onRefresh={handleRefresh} />
+          }
+          onEndReached={handleEndReached}
+          contentContainerStyle={{
+            paddingRight:
+              data?.filter === DrawEventFeedFilter.Event ? paddingX / 2 : 0,
+            paddingLeft:
+              data?.filter === DrawEventFeedFilter.Event ? paddingX / 2 : 0,
+          }}
+          data={drawEvents}
+          renderItem={({item}) => {
+            return (
+              <DrawEventMemo
+                drawEvent={item}
+                mx={
+                  data?.filter === DrawEventFeedFilter.Event ? paddingX / 2 : 0
+                }
+                my={8}
+                summary={data?.filter === DrawEventFeedFilter.Event}
+                width={
+                  data?.filter === DrawEventFeedFilter.Event
+                    ? (DEVICE_WIDTH - paddingX) / numColumns - paddingX
+                    : DEVICE_WIDTH - 0
+                }
+              />
+            );
+          }}
+          ListFooterComponent={
+            <>
+              {isPaginating && (
+                <Div itemsCenter py15>
+                  <ActivityIndicator />
+                </Div>
+              )}
+              {isNotPaginatable && (
+                <Div itemsCenter py15>
+                  <Span textCenter bold>
+                    모두 확인했습니다.
+                  </Span>
+                </Div>
+              )}
+              <Div h={(HAS_NOTCH ? 27 : 12) + 100} />
+            </>
+          }></FlatList>
       </Div>
-      <FlatList
-        ref={flatlistRef}
-        showsVerticalScrollIndicator={false}
-        numColumns={numColumns}
-        key={numColumns}
-        keyExtractor={item => (item as any).id}
-        ListHeaderComponent={
-          <Div>
-            <EventBanner
-              source={{uri: nftCollection?.background_image_uri}}
-              left={
-                data?.filter === DrawEventFeedFilter.Event ? -paddingX / 2 : 0
-              }
-            />
-            {data?.filter === DrawEventFeedFilter.Notice && (
-              <Div px20 py5>
-                <MenuView onPressAction={handlePressOrder} actions={orderTypes}>
-                  <Row itemsCenter onPress={() => {}}>
-                    <Col auto mr2>
-                      <Span bold fontSize={16}>
-                        {
-                          orderTypes.filter(
-                            orderType => order == orderType.id,
-                          )[0].title
-                        }
-                      </Span>
-                    </Col>
-                    <Col auto>
-                      <ChevronDown
-                        color={Colors.black}
-                        height={19}
-                        width={19}
-                        strokeWidth={2.4}
-                      />
-                    </Col>
-                  </Row>
-                </MenuView>
-              </Div>
-            )}
-          </Div>
-        }
-        ListEmptyComponent={
-          !isLoading && (
-            <ListEmptyComponent h={DEVICE_HEIGHT - headerHeight * 2 - 100} />
-          )
-        }
-        refreshControl={
-          <RefreshControl refreshing={isLoading} onRefresh={handleRefresh} />
-        }
-        onEndReached={handleEndReached}
-        contentContainerStyle={{
-          paddingRight:
-            data?.filter === DrawEventFeedFilter.Event ? paddingX / 2 : 0,
-          paddingLeft:
-            data?.filter === DrawEventFeedFilter.Event ? paddingX / 2 : 0,
-        }}
-        data={drawEvents}
-        renderItem={({item}) => {
-          return (
-            <DrawEventMemo
-              drawEvent={item}
-              mx={data?.filter === DrawEventFeedFilter.Event ? paddingX / 2 : 0}
-              my={8}
-              summary={data?.filter === DrawEventFeedFilter.Event}
-              width={
-                data?.filter === DrawEventFeedFilter.Event
-                  ? (DEVICE_WIDTH - paddingX) / numColumns - paddingX
-                  : DEVICE_WIDTH - 0
-              }
-            />
-          );
-        }}
-        ListFooterComponent={
-          <>
-            {isPaginating && (
-              <Div itemsCenter py15>
-                <ActivityIndicator />
-              </Div>
-            )}
-            {isNotPaginatable && (
-              <Div itemsCenter py15>
-                <Span textCenter bold>
-                  모두 확인했습니다.
-                </Span>
-              </Div>
-            )}
-            <Div h={(HAS_NOTCH ? 27 : 12) + 100} />
-          </>
-        }></FlatList>
-    </Div>
+    </SideMenu>
   );
 }

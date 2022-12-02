@@ -1,23 +1,10 @@
-import {MenuView} from '@react-native-menu/menu';
 import React, {useState} from 'react';
-import {ActivityIndicator} from 'react-native';
-import {ChevronRight} from 'react-native-feather';
 import {Colors, DEVICE_WIDTH} from 'src/modules/styles';
-import {DrawEventStatus} from 'src/hooks/getDrawEventStatus';
 import {useGotoDrawEvent} from 'src/hooks/useGoto';
-import useUpdateEventApplication from 'src/hooks/useUpdateEventApplication';
-import {IMAGES} from 'src/modules/images';
-import {getDate, getNowDifference} from 'src/utils/timeUtils';
-import {EventApplicationInputType} from '../NewEventApplicationOptions';
-import PolymorphicOwner from '../PolymorphicOwner';
-import {Col} from './Col';
 import {Div} from './Div';
-import {Img} from './Img';
-import {Row} from './Row';
 import {Span} from './Span';
 import {ImageBackground} from './ViewComponents';
 import Carousel, {Pagination} from 'react-native-snap-carousel';
-import GradientColorRect from './GradientColorRect';
 import DefaultMarkdown from './DefaultMarkdown';
 import apis from 'src/modules/apis';
 import {useApiSelector} from 'src/redux/asyncReducer';
@@ -116,7 +103,7 @@ function BannerComponent({drawEventId, description}) {
           style={{
             color: Colors.gray[300],
             fontSize: 13,
-            lineHeight: 13,
+            marginTop: -3,
           }}
         />
       </Span>

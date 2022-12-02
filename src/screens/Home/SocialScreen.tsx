@@ -118,9 +118,8 @@ export default function SocialScreen() {
   };
   const sideMenuRef = useRef(null);
   const gotoSearch = useGotoSearch();
-  const openSideMenu = () => {
-    currentNft?.privilege ? sideMenuRef?.current?.openMenu(true) : gotoSearch();
-  };
+  const openSideMenu = () =>
+    currentNft?.privilege && sideMenuRef?.current?.openMenu(true);
   useFocusReloadWithTimeOut({
     reloadUriObject: apis.feed.social(feedRes?.filter),
     cacheTimeoutInSeconds: 480,
@@ -168,7 +167,7 @@ export default function SocialScreen() {
       ref={sideMenuRef}
       toleranceX={0}
       edgeHitWidth={70}
-      disableGestures={!currentNft?.privilege}
+      disableGestures={true}
       menu={<MyNftCollectionMenu nftCollection={nftCollection} />}
       bounceBackOnOverdraw={false}
       openMenuOffset={DEVICE_WIDTH - 65}>
@@ -185,9 +184,76 @@ export default function SocialScreen() {
         }}
         data={feedRes ? feedRes.feed : []}
         TopComponent={
-          currentNft?.privilege ? (
-            <Row itemsCenter>
-              <Col itemsStart rounded100 onPress={openSideMenu}>
+          <Row itemsCenter>
+            <Row
+              auto
+              mr16
+              itemsCenter
+              onPress={() =>
+                handlePressMenu({nativeEvent: {event: SocialFeedFilter.All}})
+              }>
+              <GradientTextUnderline
+                fontSize={20}
+                width={44}
+                height={30}
+                text={menuOptions[0].title}
+                selected={menuOptions[0].id == feedRes?.filter}
+              />
+            </Row>
+            <Row
+              auto
+              mr16
+              itemsCenter
+              onPress={() =>
+                handlePressMenu({
+                  nativeEvent: {event: SocialFeedFilter.Following},
+                })
+              }>
+              <GradientTextUnderline
+                fontSize={20}
+                width={62}
+                height={30}
+                text={menuOptions[1].title}
+                selected={menuOptions[1].id == feedRes?.filter}
+              />
+            </Row>
+            <Col />
+            <Col auto onPress={gotoSearch} pl16>
+              <Search
+                strokeWidth={2}
+                color={Colors.black}
+                height={22}
+                width={22}
+              />
+            </Col>
+            <Col auto pl16>
+              <Div onPress={() => gotoNotifications()} relative>
+                <Bell
+                  strokeWidth={2}
+                  color={Colors.black}
+                  height={22}
+                  width={22}
+                />
+                {unreadNotificationCount > 0 && (
+                  <Div
+                    absolute
+                    top={-10}
+                    right={-10}
+                    auto
+                    rounded100
+                    bgDanger
+                    px8
+                    py4
+                    justifyCenter>
+                    <Span white fontSize={10} bold numberOfLines={1}>
+                      {unreadNotificationCount}
+                    </Span>
+                  </Div>
+                )}
+              </Div>
+            </Col>
+            {currentNft?.privilege && (
+              <Col pl16 auto rounded100 onPress={openSideMenu}>
                 {nftCollectionRes?.nft_collection ? (
                   <Img
                     h30
@@ -201,125 +267,8 @@ export default function SocialScreen() {
                   <Div bgGray200 h30 w30 rounded100 />
                 )}
               </Col>
-              <Col auto>
-                <MenuView onPressAction={handlePressMenu} actions={menuOptions}>
-                  <Row itemsCenter>
-                    <Col auto>
-                      <Span fontSize={19} bold mx4>
-                        {menuOptions.filter(
-                          menuOption => menuOption.id == feedRes?.filter,
-                        )[0]?.title || '피드를 다시 로드해주세요'}
-                      </Span>
-                    </Col>
-                    <Col auto>
-                      <ChevronDown
-                        strokeWidth={2}
-                        color={Colors.black}
-                        height={20}
-                        width={20}
-                      />
-                    </Col>
-                  </Row>
-                </MenuView>
-              </Col>
-              <Col itemsEnd>
-                <Div onPress={() => gotoNotifications()} relative>
-                  <Bell
-                    strokeWidth={2}
-                    color={Colors.black}
-                    height={22}
-                    width={22}
-                  />
-                  {unreadNotificationCount > 0 && (
-                    <Div
-                      absolute
-                      top={-10}
-                      right={-10}
-                      auto
-                      rounded100
-                      bgDanger
-                      px8
-                      py4
-                      justifyCenter>
-                      <Span white fontSize={10} bold>
-                        {unreadNotificationCount}
-                      </Span>
-                    </Div>
-                  )}
-                </Div>
-              </Col>
-            </Row>
-          ) : (
-            <Row itemsCenter>
-              <Row
-                auto
-                mr16
-                itemsCenter
-                onPress={() =>
-                  handlePressMenu({nativeEvent: {event: SocialFeedFilter.All}})
-                }>
-                <GradientTextUnderline
-                  fontSize={20}
-                  width={44}
-                  height={30}
-                  text={menuOptions[0].title}
-                  selected={menuOptions[0].id == feedRes?.filter}
-                />
-              </Row>
-              <Row
-                auto
-                mr16
-                itemsCenter
-                onPress={() =>
-                  handlePressMenu({
-                    nativeEvent: {event: SocialFeedFilter.Following},
-                  })
-                }>
-                <GradientTextUnderline
-                  fontSize={20}
-                  width={62}
-                  height={30}
-                  text={menuOptions[1].title}
-                  selected={menuOptions[1].id == feedRes?.filter}
-                />
-              </Row>
-              <Col />
-              <Col auto onPress={openSideMenu} pl16>
-                <Search
-                  strokeWidth={2}
-                  color={Colors.black}
-                  height={22}
-                  width={22}
-                />
-              </Col>
-              <Col auto pl16>
-                <Div onPress={() => gotoNotifications()} relative>
-                  <Bell
-                    strokeWidth={2}
-                    color={Colors.black}
-                    height={22}
-                    width={22}
-                  />
-                  {unreadNotificationCount > 0 && (
-                    <Div
-                      absolute
-                      top={-10}
-                      right={-10}
-                      auto
-                      rounded100
-                      bgDanger
-                      px8
-                      py4
-                      justifyCenter>
-                      <Span white fontSize={10} bold numberOfLines={1}>
-                        {unreadNotificationCount}
-                      </Span>
-                    </Div>
-                  )}
-                </Div>
-              </Col>
-            </Row>
-          )
+            )}
+          </Row>
         }
       />
     </SideMenu>

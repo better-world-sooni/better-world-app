@@ -36,7 +36,7 @@ import {Colors} from 'src/modules/styles';
 import {ICONS} from 'src/modules/icons';
 import {handlePressAffinity} from 'src/utils/bottomPopupUtils';
 
-const MyNftCollectionMenu = ({nftCollection}) => {
+const MyNftCollectionMenu = ({nftCollection, isEvent = false}) => {
   const {data: feedCountRes, isLoading: feedCountLoading} = useApiSelector(
     apis.feed.count(),
   );
@@ -123,7 +123,7 @@ const MyNftCollectionMenu = ({nftCollection}) => {
               <Col />
             </Row>
           </Div>
-          <Row itemsCenter py16 onPress={gotoSearch}>
+          {/* <Row itemsCenter py16 onPress={gotoSearch}>
             <Col auto mr16>
               <Search
                 strokeWidth={2}
@@ -135,29 +135,10 @@ const MyNftCollectionMenu = ({nftCollection}) => {
             <Col>
               <Span fontSize={16}>NFT 검색</Span>
             </Col>
-          </Row>
-          {communityWalletCount ? (
-            <Row itemsCenter py16 onPress={gotoCommunityWalletList}>
-              <Col auto mr16>
-                <CreditCard
-                  strokeWidth={2}
-                  color={Colors.black}
-                  height={22}
-                  width={22}
-                />
-              </Col>
-              <Col>
-                <Span fontSize={16}>커뮤니티 지갑</Span>
-              </Col>
-              <Col auto>
-                <Span gray700 bold fontSize={14}>
-                  {getSiPrefixedNumber(communityWalletCount)}개
-                </Span>
-              </Col>
-            </Row>
-          ) : (
-            isAdmin && (
-              <Row itemsCenter py16 onPress={gotoNewCommunityWallet}>
+          </Row> */}
+          {!isEvent &&
+            (communityWalletCount ? (
+              <Row itemsCenter py16 onPress={gotoCommunityWalletList}>
                 <Col auto mr16>
                   <CreditCard
                     strokeWidth={2}
@@ -167,52 +148,73 @@ const MyNftCollectionMenu = ({nftCollection}) => {
                   />
                 </Col>
                 <Col>
-                  <Span fontSize={16} admin>
-                    커뮤니티 지갑 추가
+                  <Span fontSize={16}>커뮤니티 지갑</Span>
+                </Col>
+                <Col auto>
+                  <Span gray700 bold fontSize={14}>
+                    {getSiPrefixedNumber(communityWalletCount)}개
                   </Span>
                 </Col>
               </Row>
-            )
-          )}
-          {upcomingEventCount ? (
-            <Row itemsCenter py16 onPress={gotoCollectionEventList}>
-              <Col auto mr16>
-                <Calendar
-                  strokeWidth={2}
-                  color={Colors.black}
-                  height={22}
-                  width={22}
-                />
-              </Col>
-              <Col>
-                <Span fontSize={16}>예정된 일정</Span>
-              </Col>
-              <Col auto>
-                <Span gray700 bold fontSize={14}>
-                  {getSiPrefixedNumber(upcomingEventCount)}개
-                </Span>
-              </Col>
-            </Row>
-          ) : (
-            isAdmin && (
-              <Row itemsCenter py16 onPress={gotoNewCollectionEvent}>
+            ) : (
+              isAdmin && (
+                <Row itemsCenter py16 onPress={gotoNewCommunityWallet}>
+                  <Col auto mr16>
+                    <CreditCard
+                      strokeWidth={2}
+                      color={Colors.black}
+                      height={22}
+                      width={22}
+                    />
+                  </Col>
+                  <Col>
+                    <Span fontSize={16} admin>
+                      커뮤니티 지갑 추가
+                    </Span>
+                  </Col>
+                </Row>
+              )
+            ))}
+          {!isEvent &&
+            (upcomingEventCount ? (
+              <Row itemsCenter py16 onPress={gotoCollectionEventList}>
                 <Col auto mr16>
                   <Calendar
                     strokeWidth={2}
                     color={Colors.black}
-                    height={24}
-                    width={24}
+                    height={22}
+                    width={22}
                   />
                 </Col>
                 <Col>
-                  <Span fontSize={16} admin>
-                    일정 추가
+                  <Span fontSize={16}>예정된 일정</Span>
+                </Col>
+                <Col auto>
+                  <Span gray700 bold fontSize={14}>
+                    {getSiPrefixedNumber(upcomingEventCount)}개
                   </Span>
                 </Col>
               </Row>
-            )
-          )}
-          {isAdmin && (
+            ) : (
+              isAdmin && (
+                <Row itemsCenter py16 onPress={gotoNewCollectionEvent}>
+                  <Col auto mr16>
+                    <Calendar
+                      strokeWidth={2}
+                      color={Colors.black}
+                      height={24}
+                      width={24}
+                    />
+                  </Col>
+                  <Col>
+                    <Span fontSize={16} admin>
+                      일정 추가
+                    </Span>
+                  </Col>
+                </Row>
+              )
+            ))}
+          {isAdmin && isEvent && (
             <Row itemsCenter py16 onPress={gotoStoreSetting}>
               <Col auto mr16>
                 <ShoppingBag

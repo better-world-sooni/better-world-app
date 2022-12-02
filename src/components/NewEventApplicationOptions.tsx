@@ -14,6 +14,10 @@ import {TextInput} from './common/ViewComponents';
 
 const addOptions = [
   {
+    id: 'link',
+    title: '링크 추가',
+  },
+  {
     id: 'select',
     title: '선택 카테고리 추가',
   },
@@ -47,6 +51,7 @@ export enum EventApplicationInputType {
 
 export type EventApplicationCategory = {
   name: string;
+  category: string;
   options: string[];
   inputType: EventApplicationInputType;
 };
@@ -55,6 +60,7 @@ export default function NewEventApplicationOptions({
   applicationCategories,
   addApplicationCategory,
   removeApplicationCategory,
+  changeApplicationName,
   addApplicationOption,
   removeApplicationOption,
 }) {
@@ -95,6 +101,12 @@ export default function NewEventApplicationOptions({
         categoryToAdd,
         EventApplicationInputType.CUSTOM_INPUT,
       );
+    } else if (event == 'link') {
+      if (!categoryToAdd) {
+        openInfoPopup('링크 이름을 작성해주세요.');
+        return;
+      }
+      addApplicationCategory(categoryToAdd, EventApplicationInputType.LINK);
     }
     setCategoryToAdd('');
   };
@@ -102,6 +114,7 @@ export default function NewEventApplicationOptions({
     setActiveSections([]);
     removeApplicationCategory(index);
   };
+
   return (
     <Div border={0.5} borderGray200 rounded10 overflowHidden>
       <Accordion
@@ -117,7 +130,8 @@ export default function NewEventApplicationOptions({
             borderBottom={0.5}
             borderGray200
             itemsCenter
-            {...(content.inputType == EventApplicationInputType.SELECT && {
+            {...((content.inputType == EventApplicationInputType.SELECT ||
+              content.inputType == EventApplicationInputType.LINK) && {
               onPress: () => handlePressSection(index),
             })}>
             <Col auto pr8>
@@ -146,9 +160,12 @@ export default function NewEventApplicationOptions({
                 bold
                 fontSize={16}
                 gray400={
-                  content.inputType !== EventApplicationInputType.SELECT
+                  !(
+                    content.inputType === EventApplicationInputType.SELECT ||
+                    content.inputType === EventApplicationInputType.LINK
+                  )
                 }>
-                {content.name}
+                {content.category}
               </Span>
             </Col>
             <Col auto onPress={() => handleRemoveApplicationCategory(index)}>
@@ -156,16 +173,26 @@ export default function NewEventApplicationOptions({
             </Col>
           </Row>
         )}
-        renderContent={(content, index) =>
-          content.inputType == EventApplicationInputType.SELECT && (
-            <EventApplicationOptions
-              applicationCategory={content}
-              categoryIndex={index}
-              addApplicationOption={addApplicationOption}
-              removeApplicationOption={removeApplicationOption}
-            />
-          )
-        }
+        renderContent={(content, index) => (
+          <>
+            {content.inputType == EventApplicationInputType.SELECT && (
+              <EventApplicationOptions
+                applicationCategory={content}
+                categoryIndex={index}
+                addApplicationOption={addApplicationOption}
+                removeApplicationOption={removeApplicationOption}
+              />
+            )}
+            {content.inputType == EventApplicationInputType.LINK && (
+              <EventApplicationLink
+                initialLink={content.name}
+                changeApplicationName={value =>
+                  changeApplicationName(index, value)
+                }
+              />
+            )}
+          </>
+        )}
         onChange={() => {}}
       />
       <Row py12 px16 itemsCenter>
@@ -241,6 +268,44 @@ function EventApplicationOptions({
             strokeWidth={2}
           />
         </Col>
+      </Row>
+    </>
+  );
+}
+
+function EventApplicationLink({initialLink, changeApplicationName}) {
+  const [linkToChange, setLinkToChange] = useState(initialLink);
+  const handleChangeLinkToChange = text => {
+    setLinkToChange(text);
+  };
+  const handlePressChangeLink = () => {
+    if (linkToChange) {
+      changeApplicationName(linkToChange);
+      setLinkToChange(linkToChange);
+    }
+  };
+  const changed = !(initialLink == linkToChange);
+  return (
+    <>
+      <Row py12 px16 itemsCenter bgGray100>
+        <Col>
+          <TextInput
+            value={linkToChange}
+            placeholder={'링크 (google form, typeform, etc..)'}
+            fontSize={14}
+            w={'100%'}
+            autoCapitalize={'none'}
+            onChangeText={handleChangeLinkToChange}></TextInput>
+        </Col>
+        {changed && (
+          <Col auto onPress={handlePressChangeLink}>
+            <Plus
+              height={19}
+              color={!!linkToChange ? Colors.black : Colors.gray[400]}
+              strokeWidth={2}
+            />
+          </Col>
+        )}
       </Row>
     </>
   );

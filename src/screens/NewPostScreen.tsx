@@ -46,6 +46,8 @@ import RepostedTransaction from 'src/components/common/RepostedTransaction';
 import {ICONS} from 'src/modules/icons';
 import Video from 'react-native-video';
 import RepostedDrawEvent from 'src/components/common/RepostedDrawEvent';
+import {useGotoHome} from 'src/hooks/useGoto';
+import {DrawEventFeedFilter} from './Home/StoreScreen';
 
 const postTypes = [
   {
@@ -82,6 +84,7 @@ const NewPostScreen = ({
 }) => {
   const autoFocusRef = useAutoFocusRef();
   const {goBack} = useNavigation();
+  const gotoHome = useGotoHome();
   const reloadGetWithToken = useReloadGETWithToken();
   const {currentNft} = useSelector(
     (root: RootState) => ({
@@ -101,7 +104,10 @@ const NewPostScreen = ({
     );
     reloadGetWithToken(apis.feed.forum());
     reloadGetWithToken(apis.feed.social());
-    goBack();
+    repostDrawEvent &&
+      reloadGetWithToken(apis.feed.draw_event._(DrawEventFeedFilter.Notice));
+    repostDrawEvent && reloadGetWithToken(apis.eventBanner._());
+    repostDrawEvent ? gotoHome() : goBack();
   };
   const {
     error,

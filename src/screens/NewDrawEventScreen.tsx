@@ -38,6 +38,7 @@ export default function NewDrawEventScreen() {
     applicationCategories,
     handleAddApplicationCategory,
     handleRemoveApplicationCategory,
+    handleChangeApplicationName,
     handleAddApplicationOption,
     handleRemoveApplicationOption,
     enableApplicationLink,
@@ -139,7 +140,7 @@ export default function NewDrawEventScreen() {
                 style={{fontWeight: 'bold'}}
                 onChangeText={handleNameChange}></TextInput>
             </Div>
-            <Row mt16 itemsCenter>
+            {/* <Row mt16 itemsCenter>
               <Col auto m5>
                 <Span fontSize={14}>
                   응모 링크 {enableApplicationLink ? '활성' : '비활성'}
@@ -153,7 +154,7 @@ export default function NewDrawEventScreen() {
                   style={{transform: [{scaleX: 0.8}, {scaleY: 0.8}]}}
                 />
               </Col>
-            </Row>
+            </Row> */}
             <Div mt16>
               {enableApplicationLink ? (
                 <Div
@@ -174,6 +175,7 @@ export default function NewDrawEventScreen() {
                   applicationCategories={applicationCategories}
                   addApplicationCategory={handleAddApplicationCategory}
                   removeApplicationCategory={handleRemoveApplicationCategory}
+                  changeApplicationName={handleChangeApplicationName}
                   addApplicationOption={handleAddApplicationOption}
                   removeApplicationOption={handleRemoveApplicationOption}
                 />
