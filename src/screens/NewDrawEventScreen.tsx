@@ -22,6 +22,7 @@ import DatePicker from 'react-native-date-picker';
 import {kmoment} from 'src/utils/timeUtils';
 import useUploadDrawEvent from 'src/hooks/useUploadDrawEvent';
 import NewEventApplicationOptions from 'src/components/NewEventApplicationOptions';
+import {OrderableType} from 'src/hooks/useMakeEventApplication';
 
 export default function NewDrawEventScreen() {
   const autoFocusRef = useAutoFocusRef();
@@ -41,12 +42,10 @@ export default function NewDrawEventScreen() {
     handleChangeApplicationName,
     handleAddApplicationOption,
     handleRemoveApplicationOption,
-    enableApplicationLink,
-    toggleEnableApplicationLink,
+    orderableType,
+    toggleOrderableType,
     discordLink,
     handleDiscordLinkChange,
-    applicationLink,
-    handleApplicationLinkChange,
     expiresAt,
     setExpiresAt,
     name,
@@ -140,46 +139,32 @@ export default function NewDrawEventScreen() {
                 style={{fontWeight: 'bold'}}
                 onChangeText={handleNameChange}></TextInput>
             </Div>
-            {/* <Row mt16 itemsCenter>
+            <Row mt16 itemsCenter>
               <Col auto m5>
                 <Span fontSize={14}>
-                  응모 링크 {enableApplicationLink ? '활성' : '비활성'}
+                  {orderableType == OrderableType.ALL
+                    ? '누구나 응모 가능'
+                    : '홀더만 응모 가능'}
                 </Span>
               </Col>
               <Col></Col>
               <Col auto>
                 <Switch
-                  value={enableApplicationLink}
-                  onValueChange={toggleEnableApplicationLink}
+                  value={orderableType == OrderableType.ALL ? true : false}
+                  onValueChange={toggleOrderableType}
                   style={{transform: [{scaleX: 0.8}, {scaleY: 0.8}]}}
                 />
               </Col>
-            </Row> */}
+            </Row>
             <Div mt16>
-              {enableApplicationLink ? (
-                <Div
-                  border={0.5}
-                  borderGray200
-                  rounded10
-                  overflowHidden
-                  py12
-                  px16>
-                  <TextInput
-                    value={applicationLink}
-                    placeholder={'응모 링크 (google form, typeform, etc..)'}
-                    w={'100%'}
-                    onChangeText={handleApplicationLinkChange}></TextInput>
-                </Div>
-              ) : (
-                <NewEventApplicationOptions
-                  applicationCategories={applicationCategories}
-                  addApplicationCategory={handleAddApplicationCategory}
-                  removeApplicationCategory={handleRemoveApplicationCategory}
-                  changeApplicationName={handleChangeApplicationName}
-                  addApplicationOption={handleAddApplicationOption}
-                  removeApplicationOption={handleRemoveApplicationOption}
-                />
-              )}
+              <NewEventApplicationOptions
+                applicationCategories={applicationCategories}
+                addApplicationCategory={handleAddApplicationCategory}
+                removeApplicationCategory={handleRemoveApplicationCategory}
+                changeApplicationName={handleChangeApplicationName}
+                addApplicationOption={handleAddApplicationOption}
+                removeApplicationOption={handleRemoveApplicationOption}
+              />
             </Div>
             <Div mt16 border={0.5} borderGray200 rounded10 overflowHidden>
               <Row py12 px16 itemsCenter>

@@ -167,7 +167,7 @@ export default function SocialScreen() {
       ref={sideMenuRef}
       toleranceX={0}
       edgeHitWidth={70}
-      disableGestures={true}
+      disableGestures={!currentNft?.privilege}
       menu={<MyNftCollectionMenu nftCollection={nftCollection} />}
       bounceBackOnOverdraw={false}
       openMenuOffset={DEVICE_WIDTH - 65}>

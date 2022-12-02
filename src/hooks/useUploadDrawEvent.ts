@@ -5,6 +5,7 @@ import {
 } from 'src/components/NewEventApplicationOptions';
 import apis from 'src/modules/apis';
 import {usePostPromiseFnWithToken} from 'src/redux/asyncReducer';
+import {OrderableType} from './useMakeEventApplication';
 import useUploadImages from './useUploadImages';
 
 export default function useUploadDrawEvent({initialHasApplication}) {
@@ -12,8 +13,7 @@ export default function useUploadDrawEvent({initialHasApplication}) {
   const [name, setName] = useState('');
   const [discordLink, setDiscordLink] = useState('');
   const [description, setDescription] = useState('');
-  const [applicationLink, setApplicationLink] = useState('');
-  const [enableApplicationLink, setEnableApplicationLink] = useState(false);
+  const [orderableType, setOrderableType] = useState(OrderableType.HOLDER_ONLY);
   const [expiresAt, setExpiresAt] = useState(null);
   const [applicationCategories, setApplicationCategories] = useState<
     EventApplicationCategory[]
@@ -39,12 +39,12 @@ export default function useUploadDrawEvent({initialHasApplication}) {
       setError('설명을 작성해주세요.');
       return;
     }
-    if (initialHasApplication && enableApplicationLink && !applicationLink) {
-      setError('응모 링크를 작성해주세요.');
-      return;
-    }
     if (initialHasApplication && images.length == 0) {
       setError('이미지를 추가해주세요.');
+      return;
+    }
+    if (initialHasApplication && applicationCategories.length == 0) {
+      setError('옵션을 추가해주세요.');
       return;
     }
     setLoading(true);
@@ -72,9 +72,10 @@ export default function useUploadDrawEvent({initialHasApplication}) {
       images: signedIdArray,
       expires_at: expiresAt,
       has_application: initialHasApplication,
-      application_link: applicationLink ? applicationLink : null,
+      application_link: null,
       discord_link: discordLink ? discordLink : null,
       draw_event_options_attributes: applicationOptions,
+      orderable_type: orderableType,
     };
     const {data} = await postPromiseFnWithToken({
       url: apis.draw_event._().url,
@@ -93,12 +94,15 @@ export default function useUploadDrawEvent({initialHasApplication}) {
     setDiscordLink(text);
     setError('');
   };
-  const handleApplicationLinkChange = text => {
-    setApplicationLink(text);
-    setError('');
-  };
-  const toggleEnableApplicationLink = () => {
-    setEnableApplicationLink(prev => !prev);
+  const toggleOrderableType = () => {
+    if (orderableType == OrderableType.ALL) {
+      setOrderableType(OrderableType.HOLDER_ONLY);
+      return;
+    }
+    if (orderableType == OrderableType.HOLDER_ONLY) {
+      setOrderableType(OrderableType.ALL);
+      return;
+    }
   };
   const handleDescriptionChange = text => {
     setDescription(text);
@@ -182,10 +186,8 @@ export default function useUploadDrawEvent({initialHasApplication}) {
     handleChangeApplicationName,
     handleAddApplicationOption,
     handleRemoveApplicationOption,
-    enableApplicationLink,
-    toggleEnableApplicationLink,
-    applicationLink,
-    handleApplicationLinkChange,
+    orderableType,
+    toggleOrderableType,
     expiresAt,
     setExpiresAt,
     name,

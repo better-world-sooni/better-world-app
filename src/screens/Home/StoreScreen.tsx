@@ -171,7 +171,7 @@ export default function StoreScreen() {
       ref={sideMenuRef}
       toleranceX={0}
       edgeHitWidth={70}
-      disableGestures={true}
+      disableGestures={!currentNft?.privilege}
       menu={
         <MyNftCollectionMenu nftCollection={nftCollection} isEvent={true} />
       }
