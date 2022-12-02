@@ -4,7 +4,7 @@ import {getKeyFromUri} from 'src/utils/uriUtils';
 import {promiseFnPure, usePostPromiseFnWithToken} from 'src/redux/asyncReducer';
 import {Buffer} from 'buffer';
 import {isContentTypeImage} from 'src/utils/imageUtils';
-import useConvertVideo from './useCovertVideo';
+import useConvertVideo from './useConvertVideo';
 
 export enum FileUploadReturnType {
   Key,
@@ -38,20 +38,7 @@ export default function useFileUpload({attachedRecord}) {
     });
     return res;
   };
-  const uploadImageToPresignedUrl = async (presignedUrlObject, base64) => {
-    const res = await promiseFnPure({
-      url: presignedUrlObject.direct_upload.url,
-      body: Buffer.from(base64, 'base64'),
-      method: 'PUT',
-      headers: {
-        ...presignedUrlObject.direct_upload.headers,
-        'Content-Encoding': 'base64',
-      },
-    });
-    if (res.status == 200) return res.url;
-    return '';
-  };
-  const uploadVideoToPresignedUrl = async (presignedUrlObject, file) => {
+  const uploadToPresignedUrl = async (presignedUrlObject, file) => {
     const res = await promiseFnPure({
       url: presignedUrlObject.direct_upload.url,
       body: file,
@@ -62,17 +49,14 @@ export default function useFileUpload({attachedRecord}) {
     return '';
   };
   const uploadFile = async (file, returnType = FileUploadReturnType.Key) => {
-    let blob = null;
-    if (file.type && file.type.startsWith('video')) {
-      if (file.type == 'video/quicktime') {
-        const url = await convert(file.uri);
-        file.uri = url;
-        file.type = 'video/mp4';
-        file.fileName = url.split('/')[url.split('/').length - 1];
-      }
-      blob = await (await fetch(file.uri)).blob();
-      file.fileSize = blob._data.size;
+    if (file.type == 'video/quicktime') {
+      const url = await convert(file.uri);
+      file.uri = url;
+      file.type = 'video/mp4';
+      file.fileName = url.split('/')[url.split('/').length - 1];
     }
+    const blob = await (await fetch(file.uri)).blob();
+    file.fileSize = (blob as any)._data.size;
     if (file.type && file.type == 'image/heic') {
       const fileName = file?.fileName;
       file.fileName = fileName
@@ -87,7 +71,6 @@ export default function useFileUpload({attachedRecord}) {
         .concat('jpg')
         .join('/');
     }
-    console.log(file.uri, file.fileName, file.type);
     const checksum = await fileChecksum(file);
     const {data} = await createPresignedUrl(
       file.fileName,
@@ -96,17 +79,7 @@ export default function useFileUpload({attachedRecord}) {
       checksum,
       attachedRecord,
     );
-    if (isContentTypeImage(file.type)) {
-      const uploadImageToPresignedUrlRes = await uploadImageToPresignedUrl(
-        data.presigned_url_object,
-        file.base64,
-      );
-      if (!uploadImageToPresignedUrlRes) throw new Error();
-      return returnType == FileUploadReturnType.Key
-        ? getKeyFromUri(uploadImageToPresignedUrlRes)
-        : data.presigned_url_object.blob_signed_id;
-    }
-    const uploadToPresignedUrlRes = await uploadVideoToPresignedUrl(
+    const uploadToPresignedUrlRes = await uploadToPresignedUrl(
       data.presigned_url_object,
       blob,
     );

@@ -646,7 +646,7 @@
 				CODE_SIGN_ENTITLEMENTS = sungan/sungan.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_TEAM = GW5FJ3MTHR;
+				DEVELOPMENT_TEAM = JTPH4Y3CZF;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = sungan/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -657,13 +657,13 @@
 					"$(inherited)",
 					"$(SDKROOT)/usr/lib/swift",
 				);
-				MARKETING_VERSION = 0.6.8;
+				MARKETING_VERSION = 0.7.0;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.app.betterworld.j;
+				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.app.betterworld;
 				PRODUCT_NAME = BetterWorld;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -680,7 +680,7 @@
 				CODE_SIGN_ENTITLEMENTS = sungan/sungan.entitlements;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = YES;
-				DEVELOPMENT_TEAM = GW5FJ3MTHR;
+				DEVELOPMENT_TEAM = JTPH4Y3CZF;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = sungan/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -691,13 +691,13 @@
 					"$(inherited)",
 					"$(SDKROOT)/usr/lib/swift",
 				);
-				MARKETING_VERSION = 0.6.8;
+				MARKETING_VERSION = 0.7.0;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.app.betterworld.j;
+				PRODUCT_BUNDLE_IDENTIFIER = org.reactjs.native.app.betterworld;
 				PRODUCT_NAME = BetterWorld;
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -737,7 +737,7 @@
 				COPY_PHASE_STRIP = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
-				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = i386;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "arm64 i386";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -802,7 +802,7 @@
 				COPY_PHASE_STRIP = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = i386;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = "arm64 i386";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
