@@ -23,6 +23,9 @@ export const urlParams = (obj, nullable?) => {
 };
 
 const apis = {
+  eventBanner: {
+    _: () => apiV1('/event_banner'),
+  },
   auth: {
     kaikas: {
       app2app: () => apiV1('/auth/kaikas/app2app'),

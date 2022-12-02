@@ -35,6 +35,7 @@ import {IMAGES} from 'src/modules/images';
 import {ICONS} from 'src/modules/icons';
 import {MenuView} from '@react-native-menu/menu';
 import GradientTextUnderline from 'src/components/common/GradientTextUnderline';
+import EventBanner from 'src/components/common/EventBanner';
 
 export enum DrawEventFeedFilter {
   All = 'all',
@@ -226,39 +227,12 @@ export default function StoreScreen() {
         keyExtractor={item => (item as any).id}
         ListHeaderComponent={
           <Div>
-            <ImageBackground
+            <EventBanner
               source={{uri: nftCollection?.background_image_uri}}
-              style={{
-                backgroundColor: Colors.primary.DEFAULT,
-              }}
-              h={(DEVICE_WIDTH * 93) / 390}
-              w={DEVICE_WIDTH}
-              mb12
               left={
                 data?.filter === DrawEventFeedFilter.Event ? -paddingX / 2 : 0
               }
-              overflowHidden>
-              <Div
-                wFull
-                h={(DEVICE_WIDTH * 93) / 390}
-                bgBlack
-                opacity={0.6}></Div>
-              <Div
-                absolute
-                top0
-                wFull
-                h={(DEVICE_WIDTH * 93) / 390}
-                px30
-                py8
-                justifyCenter>
-                <Span white gray400 fontSize={12}>
-                  오직 홀더를 위한 공지와 이벤트
-                </Span>
-                <Span white bold mt4>
-                  BetterWorld Events
-                </Span>
-              </Div>
-            </ImageBackground>
+            />
             {data?.filter === DrawEventFeedFilter.Notice && (
               <Div px20 py5>
                 <MenuView onPressAction={handlePressOrder} actions={orderTypes}>

@@ -2,7 +2,7 @@ import React from 'react';
 import Markdown from 'react-native-markdown-display';
 
 export default function DefaultMarkdown(props) {
-  const commonProps = {};
+  const commonProps = {...props.style};
   const styles = {
     body: {
       fontSize: 15,
@@ -43,5 +43,5 @@ export default function DefaultMarkdown(props) {
       ...commonProps,
     },
   };
-  return <Markdown style={styles} {...props} />;
+  return <Markdown {...props} style={styles} />;
 }
