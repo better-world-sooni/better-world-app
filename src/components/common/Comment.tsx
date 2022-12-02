@@ -162,14 +162,6 @@ function CommentContent({
                       {createdAtText(updated_at)}
                     </Span>
                   </Col>
-                  {likesCount > 0 ? (
-                    <Row itemsCenter onPress={gotoLikeList}>
-                      <Heart {...defaultProps} />
-                      <Span fontSize={12} gray600 ml5>
-                        {likesCount}
-                      </Span>
-                    </Row>
-                  ) : null}
                 </Row>
               </Row>
               <Col mt5 ml3>
@@ -178,11 +170,20 @@ function CommentContent({
                 </Span>
               </Col>
               {!nested ? (
-                <Col mt5 ml3 auto onPress={handlePressReplyTo}>
-                  <Span fontSize={12} gray600>
-                    답글 달기
-                  </Span>
-                </Col>
+                <Row mt8 ml3 auto>
+                  <Col auto onPress={handlePressReplyTo} pr10>
+                    <Span fontSize={12} gray600>
+                      답글 달기
+                    </Span>
+                  </Col>
+                  {likesCount > 0 && (
+                    <Col auto onPress={gotoLikeList}>
+                      <Span fontSize={12} gray600>
+                        {'좋아요 ' + likesCount + '개'}
+                      </Span>
+                    </Col>
+                  )}
+                </Row>
               ) : null}
             </Col>
             <Col auto onPress={handlePressLike} mt4>
