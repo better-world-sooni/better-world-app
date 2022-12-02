@@ -18,7 +18,6 @@ export default function useUploadDrawEvent({initialHasApplication}) {
   const [applicationCategories, setApplicationCategories] = useState<
     EventApplicationCategory[]
   >([]);
-  console.log(applicationCategories);
   const {
     images,
     error,

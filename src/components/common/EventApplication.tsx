@@ -118,6 +118,9 @@ export default function EventApplication({eventApplication, admin = false}) {
                       {event_application_option.draw_event_option.input_type ==
                       EventApplicationInputType.SELECT
                         ? event_application_option.draw_event_option.name
+                        : event_application_option.draw_event_option
+                            .input_type == EventApplicationInputType.LINK
+                        ? '확인 완료'
                         : event_application_option.value}
                     </Span>
                   </Col>
