@@ -1,47 +1,50 @@
 import React from 'react';
 import Markdown from 'react-native-markdown-display';
 
-export default function DefaultMarkdown(props) {
-  const commonProps = {...props.style};
+export const DefaultMarkdown = props => {
+  const {style, ...commonProps} = props;
+  const {fontSize, ...commonStyles} = style ? style : {fontSize: 15};
   const styles = {
     body: {
-      fontSize: 15,
-      ...commonProps,
+      fontSize: fontSize,
+      ...commonStyles,
     },
     paragraph: {
-      fontSize: 15,
-      ...commonProps,
+      fontSize: fontSize,
+      ...commonStyles,
     },
     heading1: {
-      fontSize: 19,
+      fontSize: fontSize + 4,
       fontWeight: '700',
-      ...commonProps,
+      ...commonStyles,
     },
     heading2: {
-      fontSize: 18,
+      fontSize: fontSize + 3,
       fontWeight: '600',
-      ...commonProps,
+      ...commonStyles,
     },
     heading3: {
-      fontSize: 17,
+      fontSize: fontSize + 2,
       fontWeight: '500',
-      ...commonProps,
+      ...commonStyles,
     },
     heading4: {
-      fontSize: 16,
+      fontSize: fontSize + 1,
       fontWeight: '500',
-      ...commonProps,
+      ...commonStyles,
     },
     heading5: {
-      fontSize: 15,
+      fontSize: fontSize,
       fontWeight: '500',
-      ...commonProps,
+      ...commonStyles,
     },
     heading6: {
-      fontSize: 14,
+      fontSize: fontSize - 1,
       fontWeight: '500',
-      ...commonProps,
+      ...commonStyles,
     },
   };
-  return <Markdown {...props} style={styles} />;
-}
+  return <Markdown {...commonProps} style={styles} />;
+};
+
+export default DefaultMarkdown;

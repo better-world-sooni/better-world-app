@@ -268,9 +268,11 @@ function OrderOption({
           itemsCenter
           justifyCenter
           ml20
-          h={circleRadius * 2}
+          minH={circleRadius * 2}
           border={0.5}
           rounded15
+          py12
+          px15
           onPress={onPressShowDetail}
           borderColor={
             error

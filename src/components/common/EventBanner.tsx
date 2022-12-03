@@ -14,7 +14,7 @@ export default function EventBanner({source, left}) {
   const {data} = useApiSelector(apis.eventBanner._);
   const eventBanners = [
     {
-      description: '오직 홀더를 위한 공지와 이벤트\n # BetterWorld Events',
+      description: '오직 홀더를 위한 공지와 이벤트\n **BetterWorld Events**',
       draw_event_id: null,
       image_uri: null,
     },
@@ -103,7 +103,7 @@ function BannerComponent({drawEventId, description}) {
           style={{
             color: Colors.gray[300],
             fontSize: 13,
-            marginTop: -3,
+            lineHeight: 22,
           }}
         />
       </Span>
