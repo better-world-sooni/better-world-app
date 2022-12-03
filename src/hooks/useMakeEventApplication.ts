@@ -225,7 +225,8 @@ export default function useMakeEventApplication({drawEvent}) {
       ? () => Linking.openURL(applicationLink)
       : null
     : async () => {
-        if (applicationLink != '') Linking.openURL(applicationLink);
+        if (applicationLink && applicationLink != '')
+          Linking.openURL(applicationLink);
         if (!isApplied) {
           setCacheApplied(true);
           const body = {
@@ -239,9 +240,12 @@ export default function useMakeEventApplication({drawEvent}) {
               body,
             });
             if (!data.success) {
+              setCacheApplied(false);
               return;
             }
           } catch (error) {
+            console.log(error);
+            setCacheApplied(false);
             return;
           }
         }

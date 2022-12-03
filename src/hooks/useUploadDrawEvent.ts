@@ -43,10 +43,6 @@ export default function useUploadDrawEvent({initialHasApplication}) {
       setError('이미지를 추가해주세요.');
       return;
     }
-    if (initialHasApplication && applicationCategories.length == 0) {
-      setError('옵션을 추가해주세요.');
-      return;
-    }
     setLoading(true);
     const signedIdArray = await uploadAllSelectedFiles();
     const applicationOptions = applicationCategories

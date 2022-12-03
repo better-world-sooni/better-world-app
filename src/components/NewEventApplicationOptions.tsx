@@ -107,6 +107,7 @@ export default function NewEventApplicationOptions({
         return;
       }
       addApplicationCategory(categoryToAdd, EventApplicationInputType.LINK);
+      setActiveSections([...activeSections, activeSections.length]);
     }
     setCategoryToAdd('');
   };
