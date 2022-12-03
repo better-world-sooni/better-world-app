@@ -2,7 +2,7 @@ import {Heart} from 'react-native-feather';
 import {Colors} from 'src/modules/styles';
 import useLike, {LikableType} from 'src/hooks/useLike';
 import apis from 'src/modules/apis';
-import React from 'react';
+import React, {useRef, useState} from 'react';
 import {getNftName, getNftProfileImage} from 'src/utils/nftUtils';
 import {createdAtText} from 'src/utils/timeUtils';
 import {Col} from './Col';
@@ -13,6 +13,8 @@ import {Span} from './Span';
 import {useGotoLikeList, useGotoNftProfile} from 'src/hooks/useGoto';
 import {LikeListType} from 'src/screens/LikeListScreen';
 import TruncatedText from './TruncatedText';
+import {usePromiseFnWithToken} from 'src/redux/asyncReducer';
+import SideMenu from 'react-native-side-menu-updated';
 
 export default function Comment({
   comment,
@@ -63,6 +65,9 @@ function CommentContent({
     LikableType.Comment,
     id,
   );
+  const [deleted, setDeleted] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const sideMenuRef = useRef(null);
   const cachedComments = comments || [];
   const profileImageSize = nested ? 25 : 36;
   const heartSize = hot ? 15 : 15;
@@ -107,6 +112,27 @@ function CommentContent({
     likableId: id,
     likableType: LikeListType.Comment,
   });
+  const promiseFnWithToken = usePromiseFnWithToken();
+  const handleRemoveComment = async () => {
+    if (loading) return;
+    setLoading(true);
+    try {
+      const {data} = await promiseFnWithToken({
+        url: apis.comment._(id).url,
+        method: 'DELETE',
+      });
+      if (!data?.success) {
+        setLoading(false);
+        return;
+      }
+    } catch (e) {
+      setLoading(false);
+      return;
+    }
+    setLoading(false);
+    setDeleted(true);
+  };
+  if (deleted) return <Div></Div>;
   return hot ? (
     <Div py2>
       <Row py6 mr15 ml16 rounded10 borderGray200>
