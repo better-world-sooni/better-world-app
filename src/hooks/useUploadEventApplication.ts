@@ -26,24 +26,31 @@ export default function useUploadEventApplication({
   );
   const postPromiseFnWithToken = usePostPromiseFnWithToken();
   const uploadEventApplication = async (SelectedOption = selectedOption) => {
+    setOrderOptionsList(true);
+    setShowDetail(false);
     setLoading(true);
     const body = {
       draw_event_id: drawEventId,
       draw_event_options: {selected: SelectedOption},
       all: false,
     };
-    const {data} = await postPromiseFnWithToken({
-      url: apis.event_application._().url,
-      body,
-    });
-    if (!data.success) {
+    try {
+      const {data} = await postPromiseFnWithToken({
+        url: apis.event_application._().url,
+        body,
+      });
+      if (!data.success) {
+        setLoading(false);
+        setShowDetail(true);
+        return;
+      }
+    } catch (error) {
       setLoading(false);
+      setShowDetail(true);
       return;
     }
     setLoading(false);
     setSelectedOption(SelectedOption);
-    setOrderOptionsList(true);
-    setShowDetail(false);
     setCachedOrderOption({
       ...cachedOrderOption,
       selectedOption: SelectedOption,

@@ -75,6 +75,8 @@ const compareCondition = (props, nextProps) =>
   props?.drawEvent?.likes_count == nextProps?.drawEvent?.likes_count &&
   props?.drawEvent?.repost_count == nextProps?.drawEvent?.repost_count &&
   props?.drawEvent?.comments_count == nextProps?.drawEvent?.comments_count &&
+  getNowDifference(props?.drawEvent?.expires_at) ==
+    getNowDifference(nextProps?.drawEvent?.expires_at) &&
   props?.drawEvent?.is_bookmarked == nextProps?.drawEvent?.is_bookmarked;
 
 export const DrawEventMemo = React.memo(DrawEvent, (props, nextProps) =>

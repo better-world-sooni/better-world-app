@@ -48,6 +48,7 @@ export function getNowDifference(stringDate) {
     nowDate.getFullYear(),
     nowDate.getMonth(),
     nowDate.getDate(),
+    nowDate.getHours(),
     nowDate.getMinutes(),
     nowDate.getSeconds(),
   );

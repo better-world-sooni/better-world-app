@@ -156,7 +156,7 @@ export default function EventApplication({eventApplication, admin = false}) {
             </Span>
             <Span bold fontSize={12} numberOfLines={1} gray600>
               {'참여일: '}
-              {getDate(drawEvent?.created_at, 'YYYY.MM.DD')}
+              {getDate(drawEvent?.updated_at, 'YYYY.MM.DD')}
             </Span>
           </Div>
         </Col>

@@ -1,6 +1,9 @@
 import {useState} from 'react';
 import apis from 'src/modules/apis';
-import {useApiSelector} from 'src/redux/asyncReducer';
+import {
+  useApiSelector,
+  usePostPromiseFnWithToken,
+} from 'src/redux/asyncReducer';
 import {chain} from 'lodash';
 import getDrawEventStatus, {
   DrawEventStatus,
@@ -8,6 +11,7 @@ import getDrawEventStatus, {
 } from './getDrawEventStatus';
 import {EventApplicationInputType} from 'src/components/NewEventApplicationOptions';
 import {getNowDifference} from 'src/utils/timeUtils';
+import {Linking} from 'react-native';
 
 export type OrderOption = {
   name: string;
@@ -195,9 +199,12 @@ export default function useMakeEventApplication({drawEvent}) {
   const selectIndex = orderOptionsList.reduce((acc, cur, idx) => {
     return (acc += acc == idx && cur == true ? 1 : 0);
   }, 0);
-
+  const [cacheApplied, setCacheApplied] = useState(
+    drawEvent.event_application ? true : false,
+  );
   const isApplied =
-    orderOptionsList.length != 0 && selectIndex == orderOptionsList.length;
+    (orderOptionsList.length != 0 && selectIndex == orderOptionsList.length) ||
+    (orderOptionsList.length == 0 && cacheApplied);
   const eventApplicationStatus =
     drawEvent?.event_application && drawEvent.event_application.status;
   const eventApplicationCount =
@@ -208,7 +215,37 @@ export default function useMakeEventApplication({drawEvent}) {
       ? isApplied
         ? 1
         : 0
+      : eventApplicationStatus == null && isApplied
+      ? 1
       : 0);
+  const applicationLink = drawEvent?.application_link;
+  const postPromiseFnWithToken = usePostPromiseFnWithToken();
+  const onPressApply = isApplied
+    ? applicationLink && applicationLink != ''
+      ? () => Linking.openURL(applicationLink)
+      : null
+    : async () => {
+        if (applicationLink != '') Linking.openURL(applicationLink);
+        if (!isApplied) {
+          setCacheApplied(true);
+          const body = {
+            draw_event_id: drawEvent?.id,
+            draw_event_options: {},
+            all: true,
+          };
+          try {
+            const {data} = await postPromiseFnWithToken({
+              url: apis.event_application._().url,
+              body,
+            });
+            if (!data.success) {
+              return;
+            }
+          } catch (error) {
+            return;
+          }
+        }
+      };
   return {
     canShow,
     canModify,
@@ -216,6 +253,8 @@ export default function useMakeEventApplication({drawEvent}) {
     orderOptions,
     drawEventStatus,
     setOrderOptionsListAtIndex,
+    applicationLink,
+    onPressApply,
     eventApplicationStatus,
     eventApplicationCount,
     isApplied,
