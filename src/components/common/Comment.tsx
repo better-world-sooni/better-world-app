@@ -26,7 +26,7 @@ export default function Comment({
   nested = false,
   onPressReplyTo = comment => {},
   resetReplyTo = () => {},
-  handleDeleteComment = () => {},
+  handleDeleteComment = id => {},
 }) {
   return (
     <>
@@ -67,7 +67,7 @@ function CommentContent({
   nested = false,
   onPressReplyTo = comment => {},
   resetReplyTo = () => {},
-  handleDeleteComment = () => {},
+  handleDeleteComment = id => {},
 }) {
   const [liked, likesCount, handlePressLike] = useLike(
     is_liked,
@@ -151,7 +151,7 @@ function CommentContent({
       return;
     }
     setLoading(false);
-    handleDeleteComment();
+    handleDeleteComment(id);
     setDeleted(true);
     return;
   };
@@ -309,6 +309,7 @@ function CommentContent({
               key={nestedComment.id}
               comment={nestedComment}
               resetReplyTo={resetReplyTo}
+              handleDeleteComment={handleDeleteComment}
             />
           );
         })}

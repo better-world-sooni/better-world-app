@@ -133,9 +133,7 @@ export default function FullPost({
                 comment={item}
                 onPressReplyTo={handlePressReplyTo}
                 resetReplyTo={resetReplyTo}
-                handleDeleteComment={() =>
-                  handleDeleteComment((item as any).id)
-                }></Comment>
+                handleDeleteComment={handleDeleteComment}></Comment>
             );
           }}></Animated.FlatList>
         <NewComment

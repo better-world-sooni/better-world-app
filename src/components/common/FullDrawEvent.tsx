@@ -167,9 +167,7 @@ export default function FullDrawEvent({
                 comment={item}
                 onPressReplyTo={handlePressReplyTo}
                 resetReplyTo={resetReplyTo}
-                handleDeleteComment={() =>
-                  handleDeleteComment((item as any).id)
-                }></Comment>
+                handleDeleteComment={handleDeleteComment}></Comment>
             );
           }}></Animated.FlatList>
         {showNewComment && (
