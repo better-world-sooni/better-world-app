@@ -188,13 +188,13 @@ function CommentContent({
       </Row>
     </Div>
   ) : (
-    <Div>
+    <Div py2={!nested}>
       {isCurrentNft ? (
         <Swipeable
           ref={ref}
           renderRightActions={RightSwipeActions}
           onSwipeableRightOpen={handleRemoveComment}>
-          <Row py2={!nested} py6 pr15 pl16 borderGray200 bgWhite>
+          <Row py6 pr15 pl16 borderGray200 bgWhite>
             <Col auto mr12 onPress={() => goToProfile()}>
               <Img
                 rounded={100}
@@ -248,7 +248,7 @@ function CommentContent({
           </Row>
         </Swipeable>
       ) : (
-        <Row py2={!nested} py6 pr15 pl16 borderGray200 bgWhite>
+        <Row py6 pr15 pl16 borderGray200 bgWhite>
           <Col auto mr12 onPress={() => goToProfile()}>
             <Img
               rounded={100}
