@@ -161,15 +161,25 @@ export default function FullDrawEvent({
           }
           data={cachedComments}
           renderItem={({item}) => {
-            return (
-              <Comment
-                key={(item as any).id}
-                comment={item}
-                onPressReplyTo={handlePressReplyTo}
-                resetReplyTo={resetReplyTo}
-                handleDeleteComment={handleDeleteComment}></Comment>
-            );
-          }}></Animated.FlatList>
+            return <Div></Div>;
+          }}
+          ListFooterComponent={
+            <Div>
+              <>
+                {cachedComments.map(item => {
+                  return (
+                    <Comment
+                      key={(item as any).id}
+                      comment={item}
+                      onPressReplyTo={handlePressReplyTo}
+                      resetReplyTo={resetReplyTo}
+                      handleDeleteComment={handleDeleteComment}
+                    />
+                  );
+                })}
+              </>
+            </Div>
+          }></Animated.FlatList>
         {showNewComment && (
           <NewComment
             autoFocus={autoFocus}

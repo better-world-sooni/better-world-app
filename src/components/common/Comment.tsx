@@ -16,9 +16,10 @@ import TruncatedText from './TruncatedText';
 import {usePromiseFnWithToken} from 'src/redux/asyncReducer';
 import SideMenu from 'react-native-side-menu-updated';
 import {Swipeable} from 'react-native-gesture-handler';
-import {Animated} from 'react-native';
 import {shallowEqual, useSelector} from 'react-redux';
 import {RootState} from 'src/redux/rootReducer';
+import Animated, {FadeIn, FadeOut, Layout} from 'react-native-reanimated';
+import {Animated as DefaultAnimated} from 'react-native';
 
 export default function Comment({
   comment,
@@ -27,6 +28,7 @@ export default function Comment({
   onPressReplyTo = comment => {},
   resetReplyTo = () => {},
   handleDeleteComment = id => {},
+  key,
 }) {
   return (
     <>
@@ -43,6 +45,7 @@ export default function Comment({
           onPressReplyTo={onPressReplyTo}
           resetReplyTo={resetReplyTo}
           handleDeleteComment={handleDeleteComment}
+          key={key}
         />
       )}
     </>
@@ -64,6 +67,7 @@ function CommentContent({
   nftMetadatumName,
   updated_at,
   hot,
+  key,
   nested = false,
   onPressReplyTo = comment => {},
   resetReplyTo = () => {},
@@ -82,9 +86,7 @@ function CommentContent({
   const isCurrentNft =
     currentNft.contract_address == nftContractAddress &&
     currentNft.token_id == nftTokenId;
-  const [deleted, setDeleted] = useState(false);
   const [loading, setLoading] = useState(false);
-  const sideMenuRef = useRef(null);
   const cachedComments = comments || [];
   const profileImageSize = nested ? 25 : 36;
   const heartSize = hot ? 15 : 15;
@@ -152,10 +154,8 @@ function CommentContent({
     }
     setLoading(false);
     handleDeleteComment(id);
-    setDeleted(true);
     return;
   };
-  if (deleted) return <Div></Div>;
   return hot ? (
     <Div py2>
       <Row py6 mr15 ml16 rounded10 borderGray200>
@@ -188,13 +188,20 @@ function CommentContent({
       </Row>
     </Div>
   ) : (
-    <Div py2={!nested}>
+    <Animated.View entering={FadeIn} exiting={FadeOut} layout={Layout}>
       {isCurrentNft ? (
         <Swipeable
           ref={ref}
           renderRightActions={RightSwipeActions}
           onSwipeableRightOpen={handleRemoveComment}>
-          <Row py6 pr15 pl16 borderGray200 bgWhite>
+          <Row
+            py8={!nested}
+            py6={nested}
+            pr15
+            pl16={!nested}
+            pl56={nested}
+            borderGray200
+            bgWhite>
             <Col auto mr12 onPress={() => goToProfile()}>
               <Img
                 rounded={100}
@@ -248,7 +255,14 @@ function CommentContent({
           </Row>
         </Swipeable>
       ) : (
-        <Row py6 pr15 pl16 borderGray200 bgWhite>
+        <Row
+          py8={!nested}
+          py6={nested}
+          pr15
+          pl16={!nested}
+          pl56={nested}
+          borderGray200
+          bgWhite>
           <Col auto mr12 onPress={() => goToProfile()}>
             <Img
               rounded={100}
@@ -301,20 +315,18 @@ function CommentContent({
           </Col>
         </Row>
       )}
-      <Div ml40>
-        {cachedComments.map(nestedComment => {
-          return (
-            <Comment
-              nested
-              key={nestedComment.id}
-              comment={nestedComment}
-              resetReplyTo={resetReplyTo}
-              handleDeleteComment={handleDeleteComment}
-            />
-          );
-        })}
-      </Div>
-    </Div>
+      {cachedComments.map(nestedComment => {
+        return (
+          <Comment
+            nested
+            key={nestedComment.id}
+            comment={nestedComment}
+            resetReplyTo={resetReplyTo}
+            handleDeleteComment={handleDeleteComment}
+          />
+        );
+      })}
+    </Animated.View>
   );
 }
 
@@ -348,8 +360,8 @@ const RightSwipeActions = progress => {
   };
   return (
     <Div flex={1} bg={Colors.danger.DEFAULT} justifyCenter itemsEnd>
-      <Animated.View style={trashIconContainerStyle}>
-        <Animated.View style={trashIconScaleStyle}>
+      <DefaultAnimated.View style={trashIconContainerStyle}>
+        <DefaultAnimated.View style={trashIconScaleStyle}>
           <Trash
             width={20}
             height={20}
@@ -357,8 +369,8 @@ const RightSwipeActions = progress => {
             strokeWidth={2}
             style={{marginRight: 10}}
           />
-        </Animated.View>
-      </Animated.View>
+        </DefaultAnimated.View>
+      </DefaultAnimated.View>
     </Div>
   );
 };
