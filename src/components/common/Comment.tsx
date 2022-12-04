@@ -1,5 +1,5 @@
-import {Heart} from 'react-native-feather';
-import {Colors} from 'src/modules/styles';
+import {Heart, Trash} from 'react-native-feather';
+import {Colors, DEVICE_WIDTH} from 'src/modules/styles';
 import useLike, {LikableType} from 'src/hooks/useLike';
 import apis from 'src/modules/apis';
 import React, {useRef, useState} from 'react';
@@ -15,12 +15,18 @@ import {LikeListType} from 'src/screens/LikeListScreen';
 import TruncatedText from './TruncatedText';
 import {usePromiseFnWithToken} from 'src/redux/asyncReducer';
 import SideMenu from 'react-native-side-menu-updated';
+import {Swipeable} from 'react-native-gesture-handler';
+import {Animated} from 'react-native';
+import {shallowEqual, useSelector} from 'react-redux';
+import {RootState} from 'src/redux/rootReducer';
 
 export default function Comment({
   comment,
   hot = false,
   nested = false,
   onPressReplyTo = comment => {},
+  resetReplyTo = () => {},
+  handleDeleteComment = () => {},
 }) {
   return (
     <>
@@ -35,6 +41,8 @@ export default function Comment({
           nftImageUri={getNftProfileImage(comment.nft, 100, 100)}
           nested={nested}
           onPressReplyTo={onPressReplyTo}
+          resetReplyTo={resetReplyTo}
+          handleDeleteComment={handleDeleteComment}
         />
       )}
     </>
@@ -58,6 +66,8 @@ function CommentContent({
   hot,
   nested = false,
   onPressReplyTo = comment => {},
+  resetReplyTo = () => {},
+  handleDeleteComment = () => {},
 }) {
   const [liked, likesCount, handlePressLike] = useLike(
     is_liked,
@@ -65,6 +75,13 @@ function CommentContent({
     LikableType.Comment,
     id,
   );
+  const {currentNft} = useSelector(
+    (root: RootState) => root.app.session,
+    shallowEqual,
+  );
+  const isCurrentNft =
+    currentNft.contract_address == nftContractAddress &&
+    currentNft.token_id == nftTokenId;
   const [deleted, setDeleted] = useState(false);
   const [loading, setLoading] = useState(false);
   const sideMenuRef = useRef(null);
@@ -112,10 +129,12 @@ function CommentContent({
     likableId: id,
     likableType: LikeListType.Comment,
   });
+  const ref = useRef(null);
   const promiseFnWithToken = usePromiseFnWithToken();
   const handleRemoveComment = async () => {
     if (loading) return;
     setLoading(true);
+    resetReplyTo();
     try {
       const {data} = await promiseFnWithToken({
         url: apis.comment._(id).url,
@@ -123,14 +142,18 @@ function CommentContent({
       });
       if (!data?.success) {
         setLoading(false);
+        ref.current?.close();
         return;
       }
     } catch (e) {
       setLoading(false);
+      ref.current?.close();
       return;
     }
     setLoading(false);
+    handleDeleteComment();
     setDeleted(true);
+    return;
   };
   if (deleted) return <Div></Div>;
   return hot ? (
@@ -165,43 +188,103 @@ function CommentContent({
       </Row>
     </Div>
   ) : (
-    <Div py2={!nested}>
-      <Row py6 mr15 ml16 rounded10 borderGray200>
-        <Col auto mr12 onPress={() => goToProfile()}>
-          <Img
-            rounded={100}
-            h={profileImageSize}
-            w={profileImageSize}
-            uri={nftImageUri}
-          />
-        </Col>
-        <Col>
-          <Row itemsCenter>
-            <Col mr10>
+    <Div>
+      {isCurrentNft ? (
+        <Swipeable
+          ref={ref}
+          renderRightActions={RightSwipeActions}
+          onSwipeableRightOpen={handleRemoveComment}>
+          <Row py2={!nested} py6 pr15 pl16 borderGray200 bgWhite>
+            <Col auto mr12 onPress={() => goToProfile()}>
+              <Img
+                rounded={100}
+                h={profileImageSize}
+                w={profileImageSize}
+                uri={nftImageUri}
+              />
+            </Col>
+            <Col>
               <Row itemsCenter>
-                <Span bold fontSize={14} onPress={() => goToProfile()}>
-                  {nftName || nftMetadatumName}{' '}
-                </Span>
-                <Row itemsCenter ml5>
-                  <Col auto mr10>
-                    <Span fontSize={12} gray600>
-                      {createdAtText(updated_at)}
+                <Col mr10>
+                  <Row itemsCenter>
+                    <Span bold fontSize={14} onPress={() => goToProfile()}>
+                      {nftName || nftMetadatumName}{' '}
+                    </Span>
+                    <Row itemsCenter ml5>
+                      <Col auto mr10>
+                        <Span fontSize={12} gray600>
+                          {createdAtText(updated_at)}
+                        </Span>
+                      </Col>
+                    </Row>
+                  </Row>
+                  <Col mt5 ml3>
+                    <Span fontSize={14} gray700>
+                      {content}
                     </Span>
                   </Col>
-                </Row>
+                  <Row mt8={!nested || likesCount > 0} ml3 auto>
+                    {!nested && (
+                      <Col auto onPress={handlePressReplyTo} pr10>
+                        <Span fontSize={12} gray600>
+                          답글 달기
+                        </Span>
+                      </Col>
+                    )}
+                    {likesCount > 0 && (
+                      <Col auto onPress={gotoLikeList}>
+                        <Span fontSize={12} gray600>
+                          {'좋아요 ' + likesCount + '개'}
+                        </Span>
+                      </Col>
+                    )}
+                  </Row>
+                </Col>
+                <Col auto onPress={handlePressLike} mt4>
+                  <Heart {...heartProps}></Heart>
+                </Col>
               </Row>
-              <Col mt5 ml3>
-                <Span fontSize={14} gray700>
-                  {content}
-                </Span>
-              </Col>
-              {!nested ? (
-                <Row mt8 ml3 auto>
-                  <Col auto onPress={handlePressReplyTo} pr10>
-                    <Span fontSize={12} gray600>
-                      답글 달기
-                    </Span>
-                  </Col>
+            </Col>
+          </Row>
+        </Swipeable>
+      ) : (
+        <Row py2={!nested} py6 pr15 pl16 borderGray200 bgWhite>
+          <Col auto mr12 onPress={() => goToProfile()}>
+            <Img
+              rounded={100}
+              h={profileImageSize}
+              w={profileImageSize}
+              uri={nftImageUri}
+            />
+          </Col>
+          <Col>
+            <Row itemsCenter>
+              <Col mr10>
+                <Row itemsCenter>
+                  <Span bold fontSize={14} onPress={() => goToProfile()}>
+                    {nftName || nftMetadatumName}{' '}
+                  </Span>
+                  <Row itemsCenter ml5>
+                    <Col auto mr10>
+                      <Span fontSize={12} gray600>
+                        {createdAtText(updated_at)}
+                      </Span>
+                    </Col>
+                  </Row>
+                </Row>
+                <Col mt5 ml3>
+                  <Span fontSize={14} gray700>
+                    {content}
+                  </Span>
+                </Col>
+                <Row mt8={!nested || likesCount > 0} ml3 auto>
+                  {!nested && (
+                    <Col auto onPress={handlePressReplyTo} pr10>
+                      <Span fontSize={12} gray600>
+                        답글 달기
+                      </Span>
+                    </Col>
+                  )}
                   {likesCount > 0 && (
                     <Col auto onPress={gotoLikeList}>
                       <Span fontSize={12} gray600>
@@ -210,21 +293,71 @@ function CommentContent({
                     </Col>
                   )}
                 </Row>
-              ) : null}
-            </Col>
-            <Col auto onPress={handlePressLike} mt4>
-              <Heart {...heartProps}></Heart>
-            </Col>
-          </Row>
-        </Col>
-      </Row>
+              </Col>
+              <Col auto onPress={handlePressLike} mt4>
+                <Heart {...heartProps}></Heart>
+              </Col>
+            </Row>
+          </Col>
+        </Row>
+      )}
       <Div ml40>
         {cachedComments.map(nestedComment => {
           return (
-            <Comment nested key={nestedComment.id} comment={nestedComment} />
+            <Comment
+              nested
+              key={nestedComment.id}
+              comment={nestedComment}
+              resetReplyTo={resetReplyTo}
+            />
           );
         })}
       </Div>
     </Div>
   );
 }
+
+const RightSwipeActions = progress => {
+  const translateX = progress.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, -DEVICE_WIDTH * 0.5],
+  });
+  const scale = progress.interpolate({
+    inputRange: [0, 0.2, 1],
+    outputRange: [0, 1, 1],
+  });
+  const trashIconContainerStyle = {
+    width: 20,
+    height: 20,
+    marginRight: -10,
+    transform: [
+      {
+        translateX: translateX,
+      },
+    ],
+  };
+  const trashIconScaleStyle = {
+    width: 20,
+    height: 20,
+    transform: [
+      {
+        scale: scale,
+      },
+    ],
+  };
+  return (
+    <Div flex={1} bg={Colors.danger.DEFAULT} justifyCenter itemsEnd>
+      <Animated.View style={trashIconContainerStyle}>
+        <Animated.View style={trashIconScaleStyle}>
+          <Trash
+            width={20}
+            height={20}
+            color={Colors.white}
+            strokeWidth={2}
+            style={{marginRight: 10}}
+          />
+        </Animated.View>
+      </Animated.View>
+    </Div>
+  );
+};

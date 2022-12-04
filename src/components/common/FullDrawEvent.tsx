@@ -91,6 +91,23 @@ export default function FullDrawEvent({
     },
     [cachedComments],
   );
+  const handleDeleteComment = useCallback(
+    id => {
+      const newCachedCommentsReplyTo = cachedComments.map(value => {
+        return {
+          ...value,
+          comments: value.comments
+            ? value.comments.filter(value => value?.id != id)
+            : [],
+        };
+      });
+      const newCachedComments = newCachedCommentsReplyTo.filter(
+        value => value?.id != id,
+      );
+      setCachedComments(newCachedComments);
+    },
+    [cachedComments],
+  );
   const resetReplyTo = () => {
     setReplyTo(defaultReplyTo);
   };
@@ -138,7 +155,8 @@ export default function FullDrawEvent({
             !onlyComments && (
               <DrawEvent
                 drawEvent={drawEvent}
-                setShowNewComment={setShowNewComment}></DrawEvent>
+                setShowNewComment={setShowNewComment}
+                commentCount={cachedComments.length}></DrawEvent>
             )
           }
           data={cachedComments}
@@ -147,7 +165,11 @@ export default function FullDrawEvent({
               <Comment
                 key={(item as any).id}
                 comment={item}
-                onPressReplyTo={handlePressReplyTo}></Comment>
+                onPressReplyTo={handlePressReplyTo}
+                resetReplyTo={resetReplyTo}
+                handleDeleteComment={() =>
+                  handleDeleteComment((item as any).id)
+                }></Comment>
             );
           }}></Animated.FlatList>
         {showNewComment && (
@@ -164,7 +186,11 @@ export default function FullDrawEvent({
   );
 }
 
-function DrawEvent({drawEvent, setShowNewComment}) {
+function DrawEvent({
+  drawEvent,
+  setShowNewComment,
+  commentCount = drawEvent?.comments_count,
+}) {
   const drawEventStatus = getDrawEventStatus({drawEvent});
   const gotoNewPost = useGotoNewPost({
     postOwnerType: PostOwnerType.Nft,
@@ -313,9 +339,7 @@ function DrawEvent({drawEvent, setShowNewComment}) {
               <MessageCircle {...actionIconDefaultProps} />
             </Col>
             <Col>
-              <Span {...actionTextDefaultProps}>
-                {drawEvent?.comments_count}
-              </Span>
+              <Span {...actionTextDefaultProps}>{commentCount}</Span>
             </Col>
           </Row>
         </Col>

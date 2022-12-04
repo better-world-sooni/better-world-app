@@ -57,6 +57,23 @@ export default function FullPost({
     },
     [cachedComments],
   );
+  const handleDeleteComment = useCallback(
+    id => {
+      const newCachedCommentsReplyTo = cachedComments.map(value => {
+        return {
+          ...value,
+          comments: value.comments
+            ? value.comments.filter(value => value?.id != id)
+            : [],
+        };
+      });
+      const newCachedComments = newCachedCommentsReplyTo.filter(
+        value => value?.id != id,
+      );
+      setCachedComments(newCachedComments);
+    },
+    [cachedComments],
+  );
   const resetReplyTo = () => {
     setReplyTo(defaultReplyTo);
   };
@@ -67,7 +84,6 @@ export default function FullPost({
     });
   }, []);
   const notchHeight = useSafeAreaInsets().top;
-
   return (
     <>
       <Div h={notchHeight}></Div>
@@ -101,14 +117,25 @@ export default function FullPost({
           contentContainerStyle={{paddingBottom: 100}}
           ref={scrollToEndRef}
           showsVerticalScrollIndicator={false}
-          ListHeaderComponent={!onlyComments && <Post post={post} full></Post>}
+          ListHeaderComponent={
+            !onlyComments && (
+              <Post
+                post={post}
+                commentCount={cachedComments.length}
+                full></Post>
+            )
+          }
           data={cachedComments}
           renderItem={({item}) => {
             return (
               <Comment
                 key={(item as any).id}
                 comment={item}
-                onPressReplyTo={handlePressReplyTo}></Comment>
+                onPressReplyTo={handlePressReplyTo}
+                resetReplyTo={resetReplyTo}
+                handleDeleteComment={() =>
+                  handleDeleteComment((item as any).id)
+                }></Comment>
             );
           }}></Animated.FlatList>
         <NewComment

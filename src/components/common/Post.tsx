@@ -70,6 +70,7 @@ function PostContent({
   displayLabel = false,
   full = false,
   isProfile = false,
+  commentCount = post.comments_count,
 }) {
   const [liked, likesCount, handlePressLike] = useLike(
     post.is_liked,
@@ -451,7 +452,7 @@ function PostContent({
                               fontSize={13}
                               style={{fontWeight: '600'}}
                               color={Colors.gray[600]}>
-                              {post.comments_count}
+                              {commentCount}
                             </Span>
                           </Col>
                         </Row>
