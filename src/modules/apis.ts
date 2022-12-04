@@ -4,9 +4,9 @@ import {isEmpty, omitBy, isNil} from 'lodash';
 
 // const BASE_URL = 'http://3.39.22.255:3000';
 // const BASE_URL = 'http://192.168.1.128:3000';
-// const BASE_URL = 'http://localhost:3000';
+const BASE_URL = 'http://localhost:3000';
 // const BASE_URL = 'http://192.168.0.10:3000';
-const BASE_URL = 'https://api.betterworldapp.io';
+// const BASE_URL = 'https://api.betterworldapp.io';
 
 const toUrl = (...args) => ({url: urljoin(...args)});
 const apiV1 = path => toUrl(BASE_URL, '/api/v1', path);

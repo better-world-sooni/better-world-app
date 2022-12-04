@@ -46,30 +46,11 @@ export default function FullDrawEvent({
   drawEvent,
   autoFocus = false,
 }) {
-  const shadowProps = {
-    style: {
-      shadowOffset: {
-        width: 3,
-        height: 3,
-      },
-      shadowOpacity: 0.1,
-      shadowRadius: 6,
-      elevation: 2,
-    },
-  };
-
   const {goBack} = useNavigation();
   const notchHeight = useSafeAreaInsets().top;
   const headerHeight = notchHeight + 50;
   const scrollToEndRef = useScrollToEndRef();
   const [showNewComment, setShowNewComment] = useState(true);
-
-  const [congratsOn, setCongratsOn] = useState(false);
-  useEffect(() => {
-    setCongratsOn(
-      drawEvent?.event_application?.status == EventApplicationStatus.SELECTED,
-    );
-  }, [drawEvent]);
 
   const [cachedComments, setCachedComments] = useState(
     drawEvent.comments || [],

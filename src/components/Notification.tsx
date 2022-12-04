@@ -126,8 +126,14 @@ const NotificationContent = ({
   } = useFollow(isFollowing, 0, contractAddress, tokenId);
   const handlePressNotification = () => {
     if (event == NotificationEventType.Comment) {
-      gotoPost();
-      return;
+      if (postId) {
+        gotoPost();
+        return;
+      }
+      if (drawEventId) {
+        gotoDrawEvent();
+        return;
+      }
     }
     if (event == NotificationEventType.LikePost) {
       gotoPost();
@@ -142,8 +148,14 @@ const NotificationContent = ({
       return;
     }
     if (event == NotificationEventType.LikeComment) {
-      gotoPost();
-      return;
+      if (postId) {
+        gotoPost();
+        return;
+      }
+      if (drawEventId) {
+        gotoDrawEvent();
+        return;
+      }
     }
     if (event == NotificationEventType.Follow) {
       gotoNftProfile();
