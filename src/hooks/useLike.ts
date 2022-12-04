@@ -41,7 +41,7 @@ export default function useLike(
     const apiFn =
       likableType == LikableType.DrawEvent
         ? apis.like.drawEvent
-        : LikableType.Comment
+        : likableType == LikableType.Comment
         ? apis.like.comment
         : apis.like.post;
     if (!liked) smallBump();
