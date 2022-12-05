@@ -149,7 +149,7 @@ export function NftProfileSummary({nft, token = null}) {
             <Div>
               <Row py8 itemsCenter>
                 <Col />
-                <Col
+                {/* <Col
                   auto
                   px10
                   onPress={() =>
@@ -166,7 +166,7 @@ export function NftProfileSummary({nft, token = null}) {
                     height={22}
                     width={22}
                   />
-                </Col>
+                </Col> */}
                 {token && (
                   <Col auto px10 {...hugButtonProps} onPress={hug}>
                     <Div>

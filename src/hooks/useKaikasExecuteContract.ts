@@ -66,6 +66,10 @@ export default function useKaikasExecuteContract(){
       params,
     }){
         setError('')
+        console.log({ bappName, to,
+          value,
+          abi,
+          params })
         const prepareRes = await prepare.executeContract({ bappName, to,
           value,
           abi,

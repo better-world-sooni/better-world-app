@@ -215,7 +215,7 @@ export default function StoreScreen() {
             <Col auto onPress={gotoBookmarkedDrawEventList} pl18>
               <Bookmark {...actionIconDefaultProps} />
             </Col>
-            <Col auto onPress={gotoNftCollectionSearch} pl18>
+            <Col auto onPress={gotoNftCollectionSearch} pl16>
               <Search
                 strokeWidth={2}
                 color={Colors.black}

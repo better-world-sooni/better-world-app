@@ -389,12 +389,12 @@ function PostContent({
                 <>
                   {full && (
                     <>
-                      <Col auto itemsCenter>
+                      <Col auto itemsStart>
                         <Row auto itemsCenter>
                           <Col auto onPress={handlePressDonate} pr4>
                             <Zap {...actionIconDefaultProps} />
                           </Col>
-                          <Col auto mr12 onPress={gotoDonationList}>
+                          <Col auto onPress={gotoDonationList}>
                             <Span
                               fontSize={13}
                               color={Colors.gray[600]}
@@ -404,17 +404,11 @@ function PostContent({
                           </Col>
                         </Row>
                       </Col>
-                    </>
-                  )}
-                  {full && (
-                    <>
-                      <Col />
-                      <Col />
                       <Col />
                     </>
                   )}
                   <Col
-                    auto
+                    auto={!full}
                     itemsCenter
                     onPress={!full && (() => gotoNewPost({repostable: post}))}>
                     <Row auto itemsCenter>
@@ -426,7 +420,7 @@ function PostContent({
                         pr4>
                         <Repeat {...actionIconDefaultProps} />
                       </Col>
-                      <Col auto mr12 onPress={full && gotoRepostList}>
+                      <Col auto onPress={full && gotoRepostList}>
                         <Span
                           fontSize={13}
                           color={Colors.gray[600]}
@@ -437,57 +431,50 @@ function PostContent({
                     </Row>
                   </Col>
                   <Col />
-                  {votingStatus == null && (
-                    <>
-                      <Col
-                        auto
-                        itemsCenter
-                        onPress={!full && (() => gotoPost(true))}>
-                        <Row auto itemsCenter>
-                          <Col auto pr4>
-                            <MessageCircle {...actionIconDefaultProps} />
-                          </Col>
-                          <Col auto pr12>
-                            <Span
-                              fontSize={13}
-                              style={{fontWeight: '600'}}
-                              color={Colors.gray[600]}>
-                              {commentCount}
-                            </Span>
-                          </Col>
-                        </Row>
+                  <Col
+                    auto
+                    itemsCenter
+                    onPress={!full && (() => gotoPost(true))}>
+                    <Row auto itemsCenter>
+                      <Col auto pr4>
+                        <MessageCircle {...actionIconDefaultProps} />
                       </Col>
-                    </>
-                  )}
+                      <Col auto>
+                        <Span
+                          fontSize={13}
+                          style={{fontWeight: '600'}}
+                          color={Colors.gray[600]}>
+                          {commentCount}
+                        </Span>
+                      </Col>
+                    </Row>
+                  </Col>
                   <Col />
-                  {
-                    <>
-                      <Col auto itemsCenter onPress={handlePressLike}>
-                        <Row auto itemsCenter>
-                          <Col auto mr4 onPress={full && handlePressLike}>
-                            {<Heart {...heartProps}></Heart>}
-                          </Col>
-                          <Col auto onPress={full && gotoLikeList}>
-                            <Span
-                              fontSize={13}
-                              style={{fontWeight: '600'}}
-                              color={Colors.gray[600]}>
-                              {likesCount}
-                            </Span>
-                          </Col>
-                        </Row>
+                  <Col auto onPress={handlePressLike}>
+                    <Row auto itemsCenter>
+                      <Col auto mr4 onPress={full && handlePressLike}>
+                        {<Heart {...heartProps}></Heart>}
                       </Col>
-                    </>
-                  }
-                  {!full && <Col />}
+                      <Col auto onPress={full && gotoLikeList}>
+                        <Span
+                          fontSize={13}
+                          style={{fontWeight: '600'}}
+                          color={Colors.gray[600]}>
+                          {likesCount}
+                        </Span>
+                      </Col>
+                    </Row>
+                  </Col>
+
                   {!full && (
                     <>
+                      <Col />
                       <Col auto itemsCenter onPress={handlePressDonate}>
                         <Row auto itemsCenter>
                           <Col auto pr4>
                             <Zap {...actionIconDefaultProps} />
                           </Col>
-                          <Col auto mr12>
+                          <Col auto>
                             <Span
                               fontSize={13}
                               color={Colors.gray[600]}

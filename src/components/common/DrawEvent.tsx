@@ -250,7 +250,7 @@ function DrawEvent({
       ) : (
         <Col relative px25={!repost}>
           {!repost && (
-            <Row pt12 pb5 itemsCenter px5={showCollection}>
+            <Row py12 itemsCenter>
               {showCollection && (
                 <Row itemsCenter onPress={!repost && gotoNftCollection}>
                   <Col auto pr10>

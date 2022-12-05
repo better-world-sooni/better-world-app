@@ -116,7 +116,7 @@ export default function NftProfileHeader({nftCore, nft, isCurrentNft, qrScan}) {
             <Div>
               <Row py6 itemsCenter>
                 <Col />
-                {!isBlocked && (
+                {/* {!isBlocked && (
                   <Col
                     auto
                     px12
@@ -135,7 +135,7 @@ export default function NftProfileHeader({nftCore, nft, isCurrentNft, qrScan}) {
                       width={22}
                     />
                   </Col>
-                )}
+                )} */}
                 {isBlocked ? (
                   <Col
                     auto

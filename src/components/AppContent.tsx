@@ -108,8 +108,8 @@ const MainBottomTabs = () => {
         options={{
           tabBarIcon: ({focused}) => (
             <Img
-              w={22}
-              h={24}
+              w={20}
+              h={22}
               source={ICONS.drawEvent}
               opacity={focused ? 1 : 0.6}></Img>
           ),
@@ -128,7 +128,7 @@ const MainBottomTabs = () => {
           ),
         }}
       />
-      <Tab.Screen
+      {/* <Tab.Screen
         name={NAV_NAMES.ChatList}
         component={ChatListScreen}
         options={{
@@ -140,7 +140,7 @@ const MainBottomTabs = () => {
               color={focused ? Colors.black : Colors.gray.DEFAULT}></Send>
           ),
         }}
-      />
+      /> */}
       <Tab.Screen
         name={NAV_NAMES.Profile}
         component={ProfileScreen}

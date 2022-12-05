@@ -53,6 +53,7 @@ export default function DonationConfirmationScreen({
   };
 
   const handlePressKaikas = async () => {
+    console.log(nft);
     await requestExecuteContract({
       to: CONTRACT_ADDRESSES.donationRelay,
       value: `${value * 1000000000000000000}`,
