@@ -12,6 +12,7 @@ import Animated from 'react-native-reanimated';
 import useScrollToEndRef from 'src/hooks/useScrollToEndRef';
 import Post from './Post';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {FlatList} from './ViewComponents';
 
 export default function FullPost({
   onlyComments = false,
@@ -113,7 +114,7 @@ export default function FullPost({
         </Row>
       </Div>
       <Div bgWhite flex={1}>
-        <Animated.FlatList
+        <FlatList
           contentContainerStyle={{paddingBottom: 100}}
           ref={scrollToEndRef}
           showsVerticalScrollIndicator={false}
@@ -127,25 +128,16 @@ export default function FullPost({
           }
           data={cachedComments}
           renderItem={({item}) => {
-            return <Div></Div>;
-          }}
-          ListFooterComponent={
-            <Div>
-              <>
-                {cachedComments.map(item => {
-                  return (
-                    <Comment
-                      key={(item as any).id}
-                      comment={item}
-                      onPressReplyTo={handlePressReplyTo}
-                      resetReplyTo={resetReplyTo}
-                      handleDeleteComment={handleDeleteComment}
-                    />
-                  );
-                })}
-              </>
-            </Div>
-          }></Animated.FlatList>
+            return (
+              <Comment
+                key={(item as any).id}
+                comment={item}
+                onPressReplyTo={handlePressReplyTo}
+                resetReplyTo={resetReplyTo}
+                handleDeleteComment={handleDeleteComment}
+              />
+            );
+          }}></FlatList>
         <NewComment
           autoFocus={autoFocus}
           replyToObject={replyTo.object}
