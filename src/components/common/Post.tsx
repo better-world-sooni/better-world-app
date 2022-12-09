@@ -123,36 +123,30 @@ function PostContent({
   ].filter(option => option);
 
   const actionIconDefaultProps = {
-    width: 17,
-    height: 17,
+    width: full ? 19 : 17,
+    height: full ? 19 : 17,
     color: Colors.gray[600],
     strokeWidth: 1.6,
   };
   const heartProps = liked
     ? {
+        ...actionIconDefaultProps,
         fill: Colors.danger.DEFAULT,
-        width: 17,
-        height: 17,
         color: Colors.danger.DEFAULT,
-        strokeWidth: 2,
       }
     : actionIconDefaultProps;
   const forVoteProps = hasVotedFor
     ? {
+        ...actionIconDefaultProps,
         fill: Colors.info.DEFAULT,
-        width: 17,
-        height: 17,
         color: Colors.info.DEFAULT,
-        strokeWidth: 2,
       }
     : actionIconDefaultProps;
   const againstVoteProps = hasVotedAgainst
     ? {
+        ...actionIconDefaultProps,
         fill: Colors.danger.DEFAULT,
-        width: 17,
-        height: 17,
         color: Colors.danger.DEFAULT,
-        strokeWidth: 2,
       }
     : actionIconDefaultProps;
   const gotoPost = useGotoPost({postId: post.id});
@@ -384,31 +378,11 @@ function PostContent({
                 />
               </Div>
             )}
-            <Row itemsCenter mb8 mt8 px5>
+            <Row itemsCenter mb8 mt8={!full} mt12={full} px5={!full}>
               {!post.type ? (
                 <>
-                  {full && (
-                    <>
-                      <Col auto itemsStart>
-                        <Row auto itemsCenter>
-                          <Col auto onPress={handlePressDonate} pr4>
-                            <Zap {...actionIconDefaultProps} />
-                          </Col>
-                          <Col auto onPress={gotoDonationList}>
-                            <Span
-                              fontSize={13}
-                              color={Colors.gray[600]}
-                              style={{fontWeight: '600'}}>
-                              {donationSum}
-                            </Span>
-                          </Col>
-                        </Row>
-                      </Col>
-                      <Col />
-                    </>
-                  )}
                   <Col
-                    auto={!full}
+                    auto
                     itemsCenter
                     onPress={!full && (() => gotoNewPost({repostable: post}))}>
                     <Row auto itemsCenter>
@@ -417,10 +391,15 @@ function PostContent({
                         onPress={
                           full && (() => gotoNewPost({repostable: post}))
                         }
-                        pr4>
+                        px5={full}
+                        pr4={!full}>
                         <Repeat {...actionIconDefaultProps} />
                       </Col>
-                      <Col auto onPress={full && gotoRepostList}>
+                      <Col
+                        auto
+                        onPress={full && gotoRepostList}
+                        pr4={!full}
+                        px5={full}>
                         <Span
                           fontSize={13}
                           color={Colors.gray[600]}
@@ -436,10 +415,10 @@ function PostContent({
                     itemsCenter
                     onPress={!full && (() => gotoPost(true))}>
                     <Row auto itemsCenter>
-                      <Col auto pr4>
+                      <Col auto px4={!full} px5={full}>
                         <MessageCircle {...actionIconDefaultProps} />
                       </Col>
-                      <Col auto>
+                      <Col auto pr4={!full} px5={full}>
                         <Span
                           fontSize={13}
                           style={{fontWeight: '600'}}
@@ -450,12 +429,20 @@ function PostContent({
                     </Row>
                   </Col>
                   <Col />
-                  <Col auto onPress={handlePressLike}>
+                  <Col auto onPress={!full && handlePressLike}>
                     <Row auto itemsCenter>
-                      <Col auto mr4 onPress={full && handlePressLike}>
+                      <Col
+                        auto
+                        px4={!full}
+                        px5={full}
+                        onPress={full && handlePressLike}>
                         {<Heart {...heartProps}></Heart>}
                       </Col>
-                      <Col auto onPress={full && gotoLikeList}>
+                      <Col
+                        auto
+                        pr4={!full}
+                        px5={full}
+                        onPress={full && gotoLikeList}>
                         <Span
                           fontSize={13}
                           style={{fontWeight: '600'}}
@@ -465,27 +452,26 @@ function PostContent({
                       </Col>
                     </Row>
                   </Col>
-
-                  {!full && (
-                    <>
-                      <Col />
-                      <Col auto itemsCenter onPress={handlePressDonate}>
-                        <Row auto itemsCenter>
-                          <Col auto pr4>
-                            <Zap {...actionIconDefaultProps} />
-                          </Col>
-                          <Col auto>
-                            <Span
-                              fontSize={13}
-                              color={Colors.gray[600]}
-                              style={{fontWeight: '600'}}>
-                              {donationSum}
-                            </Span>
-                          </Col>
-                        </Row>
+                  <Col />
+                  <Col auto itemsCenter onPress={!full && handlePressDonate}>
+                    <Row auto itemsCenter>
+                      <Col
+                        auto
+                        px4={!full}
+                        px5={full}
+                        onPress={full && handlePressDonate}>
+                        <Zap {...actionIconDefaultProps} />
                       </Col>
-                    </>
-                  )}
+                      <Col auto px5={full} onPress={full && gotoDonationList}>
+                        <Span
+                          fontSize={13}
+                          color={Colors.gray[600]}
+                          style={{fontWeight: '600'}}>
+                          {donationSum}
+                        </Span>
+                      </Col>
+                    </Row>
+                  </Col>
                 </>
               ) : null}
             </Row>

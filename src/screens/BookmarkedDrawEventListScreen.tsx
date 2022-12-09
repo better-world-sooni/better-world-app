@@ -157,7 +157,7 @@ export default function BookmarkedDrawEventListScreen() {
               </Col>
               <Col auto>
                 <Span bold fontSize={17}>
-                  {'북마크된 이벤트'}
+                  {'북마크'}
                 </Span>
               </Col>
               <Col />

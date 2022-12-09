@@ -8,6 +8,7 @@ import Carousel, {Pagination} from 'react-native-snap-carousel';
 import DefaultMarkdown from './DefaultMarkdown';
 import apis from 'src/modules/apis';
 import {useApiSelector} from 'src/redux/asyncReducer';
+import {Linking} from 'react-native';
 
 export default function EventBanner({source, left}) {
   const [activeSlide, setActiveSlide] = useState(0);
@@ -50,6 +51,7 @@ export default function EventBanner({source, left}) {
               <BannerComponent
                 drawEventId={item?.draw_event_id}
                 description={item?.description}
+                eventLink={item?.banner_uri}
               />
             );
           }}
@@ -81,12 +83,16 @@ export default function EventBanner({source, left}) {
   );
 }
 
-function BannerComponent({drawEventId, description}) {
+function BannerComponent({drawEventId, description, eventLink}) {
   const gotoDrawEvent =
     drawEventId &&
     useGotoDrawEvent({
       drawEventId: drawEventId,
     });
+  const onPressBanner = () => {
+    eventLink && eventLink != '' && Linking.openURL(eventLink);
+    gotoDrawEvent && gotoDrawEvent();
+  };
   return (
     <Div
       absolute
@@ -95,7 +101,7 @@ function BannerComponent({drawEventId, description}) {
       h={(DEVICE_WIDTH * 93) / 390}
       px30
       py8
-      onPress={drawEventId && gotoDrawEvent}
+      onPress={((eventLink && eventLink != '') || drawEventId) && onPressBanner}
       justifyCenter>
       <Span>
         <DefaultMarkdown

@@ -4,6 +4,7 @@ import {Img} from './Img';
 import {Row} from './Row';
 import {Col} from './Col';
 import {expandImageViewer} from 'src/utils/imageViewerUtils';
+import {Image} from 'react-native';
 
 export default function ImageSlideShow({
   imageUris,
@@ -12,6 +13,7 @@ export default function ImageSlideShow({
   roundedTopOnly = false,
   enablePagination = true,
   borderRadius = 10,
+  autoHeight = false,
 }) {
   const [currentPage, setCurrentPage] = useState(0);
   return (
@@ -27,19 +29,31 @@ export default function ImageSlideShow({
           data={imageUris}
           itemWidth={sliderWidth}
           itemHeight={sliderHeight}
+          autoHeight={autoHeight}
         />
       </Div>
     </>
   );
 }
 
-function ExpandableImages({itemWidth, itemHeight, data}) {
+function ExpandableImages({itemWidth, itemHeight, data, autoHeight = false}) {
   const defaultRatio = 0.7;
   const images = data.map(url => ({uri: url}));
+  const [itemSize, setItemSize] = useState({itemWidth, itemHeight});
+  const autoGetHeight = ({nativeEvent: {width, height}}) => {
+    setItemSize({
+      itemWidth: width,
+      itemHeight: (itemWidth * height) / width,
+    });
+  };
   if (data.length == 1)
     return (
       <Div onPress={() => expandImageViewer(images, 0)}>
-        <Img w={itemWidth} h={itemHeight} uri={data[0]}></Img>
+        <Img
+          w={itemWidth}
+          h={autoHeight == true ? itemSize.itemHeight : itemHeight}
+          uri={data[0]}
+          onLoad={autoHeight == true && autoGetHeight}></Img>
       </Div>
     );
   if (data.length == 2)

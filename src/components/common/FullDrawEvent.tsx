@@ -300,6 +300,7 @@ function DrawEvent({
               imageUris={drawEvent.image_uris}
               sliderWidth={DEVICE_WIDTH}
               sliderHeight={DEVICE_WIDTH}
+              autoHeight={true}
             />
           )}
         <Div
@@ -320,6 +321,7 @@ function DrawEvent({
               imageUris={drawEvent.image_uris}
               sliderWidth={DEVICE_WIDTH}
               sliderHeight={DEVICE_WIDTH}
+              autoHeight={true}
             />
           )}
       </Div>
