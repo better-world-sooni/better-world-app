@@ -4,7 +4,6 @@ import {Trash, Upload} from 'react-native-feather';
 import Carousel, {Pagination} from 'react-native-snap-carousel';
 import {Colors} from 'src/modules/styles';
 import {getAdjustedHeightFromDimensions} from 'src/utils/imageUtils';
-import Video from 'react-native-video';
 import {Div} from './Div';
 import {Img} from './Img';
 
