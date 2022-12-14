@@ -650,6 +650,7 @@
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = sungan/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "베터월드";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.social-networking";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -658,7 +659,7 @@
 					"$(inherited)",
 					"$(SDKROOT)/usr/lib/swift",
 				);
-				MARKETING_VERSION = 0.7.2;
+				MARKETING_VERSION = 0.7.4;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -685,6 +686,7 @@
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = sungan/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "베터월드";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.social-networking";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -693,7 +695,7 @@
 					"$(inherited)",
 					"$(SDKROOT)/usr/lib/swift",
 				);
-				MARKETING_VERSION = 0.7.2;
+				MARKETING_VERSION = 0.7.4;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",

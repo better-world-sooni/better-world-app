@@ -12,7 +12,7 @@ import {
   getNftName,
   getNftProfileImage,
 } from 'src/utils/nftUtils';
-import {RefreshControl} from 'react-native';
+import {ActivityIndicator, RefreshControl} from 'react-native';
 import {Img} from 'src/components/common/Img';
 import {Colors, DEVICE_WIDTH} from 'src/modules/styles';
 import {Col} from 'src/components/common/Col';
@@ -104,6 +104,24 @@ const PickNftCollectionScreen = () => {
           <RefreshControl refreshing={isLoading} onRefresh={handleEndReached} />
         }
         data={data?.nft_collections || []}
+        ListFooterComponent={
+          <>
+            {isPaginating && (
+              <Div itemsCenter py15>
+                <ActivityIndicator />
+              </Div>
+            )}
+            {isNotPaginatable && (
+              <Div itemsCenter py15>
+                <Span textCenter bold>
+                  피드를 모두 확인했습니다.
+                </Span>
+              </Div>
+            )}
+            <Div h={50}></Div>
+            <Div h={27} />
+          </>
+        }
         renderItem={({item, index}) => {
           return (
             <PressableNftCollection
@@ -144,7 +162,7 @@ function PressableNftCollection({nftCollection, px, py, width, height}) {
     <Div px={px} py={py} relative onPress={handlePressFollowing}>
       <Img
         bgGray200
-        uri={getNftCollectionProfileImage(nftCollection, 300, 300)}
+        uri={getNftCollectionProfileImage(nftCollection, 150, 150)}
         w={width}
         h={height}
         rounded1000></Img>
